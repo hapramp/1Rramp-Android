@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@drawable/bg_light"
+    tools:context="com.hapramp.RegisterActivity">
+
+    <RelativeLayout
+        android:layout_marginLeft="48dp"
+        android:layout_marginRight="48dp"
+        android:layout_marginTop="72dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/register_caption"
+            android:textSize="22sp"
+            android:gravity="center_horizontal"
+            android:text="REGISTER"
+            android:textColor="@color/colorPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:layout_below="@+id/register_caption"
+            android:hint="NAME"
+            android:layout_marginTop="18dp"
+            android:id="@+id/nameInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+        <EditText
+            android:layout_below="@+id/nameInput"
+            android:hint="EMAIL"
+            android:layout_marginTop="18dp"
+            android:id="@+id/emailInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+        <EditText
+            android:layout_below="@+id/emailInput"
+            android:hint="USERNAME"
+
+            android:layout_marginTop="18dp"
+            android:id="@+id/usernameInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+        <EditText
+            android:layout_below="@+id/usernameInput"
+            android:hint="PASSWORD"
+
+            android:layout_marginTop="18dp"
+            android:id="@+id/passwordInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+        <EditText
+
+            android:layout_marginTop="18dp"
+            android:layout_below="@+id/passwordInput"
+            android:hint="CONFIRM PASSWORD"
+            android:id="@+id/cnfPasswordInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_marginTop="24dp"
+            android:id="@+id/registerButton"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/cnfPasswordInput"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/skills_continue_btn_bg"
+            android:textColor="@color/colorAccent"
+            android:text="REGISTER"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:paddingLeft="48dp"
+            android:paddingRight="48dp"
+            android:textSize="18sp"
+            android:elevation="4dp"
+            android:layout_marginLeft="24dp"
+            android:gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:gravity="center_horizontal"
+            android:layout_marginTop="48dp"
+            android:layout_below="@+id/registerButton"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            
+        
+        <TextView
+            android:layout_below="@+id/registerButton"
+            android:id="@+id/alreadyRegisteredCaption"
+            android:text="Already Registered? "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+        <TextView
+            android:textColor="#000000"
+            android:layout_below="@+id/registerButton"
+            android:layout_toRightOf="@+id/alreadyRegisteredCaption"
+            android:id="@+id/loginInlineButton"
+            android:text="Login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        </LinearLayout>
+        
+    </RelativeLayout>
+
+
+
+</ScrollView>
