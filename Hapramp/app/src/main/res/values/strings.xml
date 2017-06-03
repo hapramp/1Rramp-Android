@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Hapramp</string>
+    <string name="username_hint"><font size="12">USERNAME</font></string>
+    <string name="password_hint"><font size="12">PASSWORD</font></string>
+    <string name="organization_input_hint"><font size="15">YOUR ORGANISATION NAME</font></string>
+</resources>
