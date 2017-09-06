@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.hapramp.DatabaseTestActivity">
+
+    <Button
+        android:id="@+id/add_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="Add Message" />
+
+    <Button
+        android:id="@+id/read_chat_rooms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/add_message"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="31dp"
+        android:text="Read ChatRooms" />
+
+    <Button
+        android:id="@+id/delete_chat_rooms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/read_chat_rooms"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="27dp"
+        android:text="Delete ChatRoom" />
+
+    <EditText
+        android:id="@+id/chatRoomId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:ems="10"
+        android:hint="chatRoomId"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/chatRoomId"
+        android:layout_below="@+id/chatRoomId"
+        android:layout_marginTop="13dp"
+        android:ems="10"
+        android:hint="message"
+        android:inputType="textPersonName" />
+</RelativeLayout>

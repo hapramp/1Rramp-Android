@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/bottom_bar_bg"
+        android:layout_width="match_parent"
+        android:layout_height="76dp" />
+
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:orientation="horizontal"
+        android:weightSum="5">
+
+        <FrameLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:clickable="true"
+                android:background="?android:selectableItemBackgroundBorderless"
+                android:id="@+id/bottomBar_home"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text=""
+                android:textColor="@color/colorPrimary"
+                android:textSize="24sp" />
+
+            <TextView
+                android:textColor="@color/colorPrimary"
+                android:padding="8dp"
+                android:textSize="10sp"
+                android:gravity="center_horizontal"
+                android:layout_gravity="bottom"
+                android:text="Home"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+
+        <TextView
+
+            android:clickable="true"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:id="@+id/bottomBar_competition"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text=""
+            android:textColor="#818080"
+            android:textSize="24sp" />
+
+
+            <TextView
+                android:paddingBottom="8dp"
+                android:textSize="10sp"
+                android:gravity="center_horizontal"
+                android:layout_gravity="bottom"
+                android:text="Competition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:elevation="4dp"
+                android:id="@+id/bottom_bar_more"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:layout_weight="2"
+                android:background="@drawable/home_more_btn_selector"
+                android:gravity="center"
+                android:text=""
+                android:textColor="#ffffff"
+                android:textSize="26sp" />
+
+
+        </FrameLayout>
+
+
+        <FrameLayout
+
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+
+        <TextView
+
+            android:clickable="true"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:id="@+id/bottomBar_profile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text=""
+            android:textColor="#818080"
+            android:textSize="24sp" />
+
+            <TextView
+                android:paddingBottom="8dp"
+                android:textSize="10sp"
+                android:gravity="center_horizontal"
+                android:layout_gravity="bottom"
+                android:text="Profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </FrameLayout>
+
+
+        <FrameLayout
+            android:clickable="true"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+
+        <TextView
+
+            android:id="@+id/bottomBar_settings"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text=""
+            android:textColor="#818080"
+            android:textSize="24sp" />
+
+            <TextView
+                android:paddingBottom="8dp"
+                android:textSize="10sp"
+                android:gravity="center_horizontal"
+                android:layout_gravity="bottom"
+                android:text="Settings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hapramp">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".HapRampMain"
         android:allowBackup="true"
@@ -11,15 +13,22 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".LoginActivity" />
-        <activity android:name=".SkillRegistrationActivity"></activity>
-        <activity android:name=".OrganisationActivity">
+        <activity android:name=".SkillRegistrationActivity" />
+        <activity android:name=".OrganisationActivity" />
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".StoryActivity" />
+        <activity android:name=".HomeActivity" />
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".LeaderboardActivity" />
+        <activity android:name=".DatabaseTestActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RegisterActivity"></activity>
+        <activity android:name=".chat.activity.ChatListActivity" />
+        <activity android:name=".chat.activity.ChatRoomActivity"></activity>
     </application>
 
 </manifest>

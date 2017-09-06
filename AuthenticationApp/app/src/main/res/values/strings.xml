@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">AuthenticationApp</string>
+    <string name="client_id">470407646101-i5nbucgqk8qrmc8fsjv6qm5qeeesm0in.apps.googleusercontent.com</string>
+    <string name="facebook_app_id">791722234335939</string>
+    <string name="fb_login_protocol_scheme">fb791722234335939</string>
+
+    <string name="twitter_consumer_key">OGXYaaiPpCiRHWTvOgpy7QYk3</string>
+    <string name="twitter_consumer_secret">qq8ahIK4CmkRUQX95lpehVlcEXFUvhJkmcZnIvCiv1mwK45Eo6</string>
+    <string name="twitter_oauth_verifier">oauth_verifier</string>
+
+</resources>

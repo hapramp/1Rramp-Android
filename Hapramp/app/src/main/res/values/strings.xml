@@ -3,4 +3,14 @@
     <string name="username_hint"><font size="12">USERNAME</font></string>
     <string name="password_hint"><font size="12">PASSWORD</font></string>
     <string name="organization_input_hint"><font size="15">YOUR ORGANISATION NAME</font></string>
+    <string name="story">Material is the metaphor
+
+A material metaphor is the unifying theory of a rationalized space and a system of motion. The material is grounded in tactile reality, inspired by the study of paper and ink, yet technologically advanced and open to imagination and magic.
+
+Surfaces and edges of the material provide visual cues that are grounded in reality. The use of familiar tactile attributes helps users quickly understand affordances. Yet the flexibility of the material creates new affordances that supersede those in the physical world, without breaking the rules of physics.
+
+The fundamentals of light, surface, and movement are key to conveying how objects move, interact, and exist in space and in relation to each other. Realistic lighting shows seams, divides space, and indicates moving parts.</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

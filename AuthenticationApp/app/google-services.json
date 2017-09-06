@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "470407646101",
+    "firebase_url": "https://authproject-20ad3.firebaseio.com",
+    "project_id": "authproject-20ad3",
+    "storage_bucket": "authproject-20ad3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:470407646101:android:530442bc3eee0725",
+        "android_client_info": {
+          "package_name": "bxute.authenticationapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "470407646101-i5nbucgqk8qrmc8fsjv6qm5qeeesm0in.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bxute.authenticationapp",
+            "certificate_hash": "aedbfdb17119972907895f0dc68ae36cb66b72cb"
+          }
+        },
+        {
+          "client_id": "470407646101-9vogcd6c80fih2tfq98dkit0eggo4ll0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsLJECdXOi18JTWhJm3eg9QPi9kOskmso"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "470407646101-9vogcd6c80fih2tfq98dkit0eggo4ll0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
