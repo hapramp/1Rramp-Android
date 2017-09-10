@@ -13,44 +13,47 @@ import android.widget.TextView;
 import com.hapramp.fragments.FeaturedSection;
 import com.hapramp.fragments.RecentSection;
 import com.hapramp.fragments.TopSection;
-
 import java.util.ArrayList;
-
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.BindView;
 
 public class HomeActivity extends AppCompatActivity {
 
 
-    @InjectView(R.id.search_icon)
+    @BindView(R.id.search_icon)
     TextView searchIcon;
-    @InjectView(R.id.notification_icon)
+    @BindView(R.id.notification_icon)
     TextView notificationIcon;
-    @InjectView(R.id.tabLayout)
+    @BindView(R.id.tabLayout)
     TabLayout tabLayout;
-    @InjectView(R.id.viewpager)
+    @BindView(R.id.viewpager)
     ViewPager viewpager;
     Typeface materialTypeface;
-    @InjectView(R.id.bottomBar_home)
+    @BindView(R.id.bottomBar_home)
     TextView bottomBarHome;
-    @InjectView(R.id.bottomBar_competition)
+    @BindView(R.id.bottomBar_competition)
     TextView bottomBarCompetition;
-    @InjectView(R.id.bottomBar_profile)
+    @BindView(R.id.bottomBar_profile)
     TextView bottomBarProfile;
-    @InjectView(R.id.bottomBar_settings)
+    @BindView(R.id.bottomBar_settings)
     TextView bottomBarSettings;
-    @InjectView(R.id.bottom_bar_more)
+    @BindView(R.id.bottom_bar_more)
     TextView bottomBarMore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         setupToolbar();
         setupTabs();
         setupViewPager();
         setUpBottomBar();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     private void setupToolbar() {

@@ -9,39 +9,39 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.BindView;
 
 public class StoryActivity extends AppCompatActivity {
 
-    @InjectView(R.id.closeBtn)
+    @BindView(R.id.closeBtn)
     TextView closeBtn;
-    @InjectView(R.id.popupMenu)
+    @BindView(R.id.popupMenu)
     TextView popupMenu;
-    @InjectView(R.id.topBar)
+    @BindView(R.id.topBar)
     RelativeLayout topBar;
-    @InjectView(R.id.author_pic)
+    @BindView(R.id.author_pic)
     SimpleDraweeView authorPic;
-    @InjectView(R.id.author_name)
+    @BindView(R.id.author_name)
     TextView authorName;
-    @InjectView(R.id.auther_username_with_ago)
+    @BindView(R.id.auther_username_with_ago)
     TextView autherUsernameWithAgo;
-    @InjectView(R.id.story_featured_pic)
+    @BindView(R.id.story_featured_pic)
     SimpleDraweeView storyFeaturedPic;
-    @InjectView(R.id.likeBtn)
+    @BindView(R.id.likeBtn)
     TextView likeBtn;
-    @InjectView(R.id.likeCount)
+    @BindView(R.id.likeCount)
     TextView likeCount;
-    @InjectView(R.id.commentBtn)
+    @BindView(R.id.commentBtn)
     TextView commentBtn;
-    @InjectView(R.id.commentCount)
+    @BindView(R.id.commentCount)
     TextView commentCount;
-    @InjectView(R.id.shareBtn)
+    @BindView(R.id.shareBtn)
     TextView shareBtn;
-    @InjectView(R.id.shareCount)
+    @BindView(R.id.shareCount)
     TextView shareCount;
-    @InjectView(R.id.story_content)
+    @BindView(R.id.story_content)
     TextView storyContent;
-    @InjectView(R.id.tags)
+    @BindView(R.id.tags)
     TextView tags;
 
     Typeface materialTypeface;
@@ -50,7 +50,7 @@ public class StoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         setTypeFaces();
         bindData();
     }

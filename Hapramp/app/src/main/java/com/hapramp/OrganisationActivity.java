@@ -11,29 +11,28 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.BindView;
 
 public class OrganisationActivity extends AppCompatActivity {
 
-    @InjectView(R.id.organisation_people_icon)
+    @BindView(R.id.organisation_people_icon)
     TextView organisationPeopleIcon;
-    @InjectView(R.id.organisation_name)
+    @BindView(R.id.organisation_name)
     EditText organisationName;
-    @InjectView(R.id.orCaption)
+    @BindView(R.id.orCaption)
     TextView orCaption;
-    @InjectView(R.id.seeCaption)
+    @BindView(R.id.seeCaption)
     TextView seeCaption;
-    @InjectView(R.id.suggestionCaptionContainer)
+    @BindView(R.id.suggestionCaptionContainer)
     LinearLayout suggestionCaptionContainer;
-    @InjectView(R.id.concentric_bottom_circle)
+    @BindView(R.id.concentric_bottom_circle)
     FrameLayout concentricBottomCircle;
-    @InjectView(R.id.concentric_mid_circle)
+    @BindView(R.id.concentric_mid_circle)
     FrameLayout concentricMidCircle;
-    @InjectView(R.id.concentric_top_circle)
+    @BindView(R.id.concentric_top_circle)
     FrameLayout concentricTopCircle;
-    @InjectView(R.id.organisation_continueBtn)
+    @BindView(R.id.organisation_continueBtn)
     TextView organisationContinueBtn;
 
 
@@ -42,25 +41,25 @@ public class OrganisationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_up);
         setContentView(R.layout.activity_organisation);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         setTypeFace();
         attachListeners();
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 revealCircle();
             }
         }, 500);
+
     }
 
     private void attachListeners() {
-            organisationContinueBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    revealCircle();
-                }
-            });
+        organisationContinueBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                revealCircle();
+            }
+        });
     }
 
     private void setTypeFace() {
@@ -72,27 +71,29 @@ public class OrganisationActivity extends AppCompatActivity {
         int startRadius = 0;
         int centerX = concentricTopCircle.getWidth() / 2;
         int centerY = 0;
+        Animator bottomCircleAnimation;
 
-        Animator bottomCircleAnimation = ViewAnimationUtils.createCircularReveal(concentricBottomCircle, centerX, centerY, startRadius, concentricBottomCircle.getHeight());
-        Animator midCircleAnimation = ViewAnimationUtils.createCircularReveal(concentricMidCircle, centerX, centerY, startRadius, concentricMidCircle.getHeight());
-        Animator topCircleAnimation = ViewAnimationUtils.createCircularReveal(concentricTopCircle, centerX, centerY, startRadius, concentricTopCircle.getHeight());
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            bottomCircleAnimation = ViewAnimationUtils.createCircularReveal(concentricBottomCircle, centerX, centerY, startRadius, concentricBottomCircle.getHeight());
+            Animator midCircleAnimation = ViewAnimationUtils.createCircularReveal(concentricMidCircle, centerX, centerY, startRadius, concentricMidCircle.getHeight());
+            Animator topCircleAnimation = ViewAnimationUtils.createCircularReveal(concentricTopCircle, centerX, centerY, startRadius, concentricTopCircle.getHeight());
 
-        bottomCircleAnimation.setDuration(800);
-        bottomCircleAnimation.setInterpolator(new DecelerateInterpolator(1.5f));
+            bottomCircleAnimation.setDuration(800);
+            bottomCircleAnimation.setInterpolator(new DecelerateInterpolator(1.5f));
 
-        midCircleAnimation.setDuration(1000);
-        midCircleAnimation.setInterpolator(new DecelerateInterpolator(1.5f));
+            midCircleAnimation.setDuration(1000);
+            midCircleAnimation.setInterpolator(new DecelerateInterpolator(1.5f));
 
-        topCircleAnimation.setDuration(1200);
-        topCircleAnimation.setInterpolator(new DecelerateInterpolator(1.5f));
+            topCircleAnimation.setDuration(1200);
+            topCircleAnimation.setInterpolator(new DecelerateInterpolator(1.5f));
 
-        bottomCircleAnimation.start();
-        concentricBottomCircle.setVisibility(View.VISIBLE);
-        midCircleAnimation.start();
-        concentricMidCircle.setVisibility(View.VISIBLE);
-        topCircleAnimation.start();
-        concentricTopCircle.setVisibility(View.VISIBLE);
-
+            bottomCircleAnimation.start();
+            concentricBottomCircle.setVisibility(View.VISIBLE);
+            midCircleAnimation.start();
+            concentricMidCircle.setVisibility(View.VISIBLE);
+            topCircleAnimation.start();
+            concentricTopCircle.setVisibility(View.VISIBLE);
+        }
     }
 
 }

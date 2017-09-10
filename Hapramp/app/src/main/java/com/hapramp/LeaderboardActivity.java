@@ -10,32 +10,32 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.BindView;
 
 public class LeaderboardActivity extends AppCompatActivity {
 
-    @InjectView(R.id.closeBtn)
+    @BindView(R.id.closeBtn)
     TextView closeBtn;
-    @InjectView(R.id.popupMenuDots)
+    @BindView(R.id.popupMenuDots)
     TextView popupMenuDots;
-    @InjectView(R.id.toolbar)
+    @BindView(R.id.toolbar)
     RelativeLayout toolbar;
-    @InjectView(R.id.skillsView)
+    @BindView(R.id.skillsView)
     SkillView skillsView;
-    @InjectView(R.id.addMoreBtn)
+    @BindView(R.id.addMoreBtn)
     TextView addMoreBtn;
-    @InjectView(R.id.hapcoins_icon)
+    @BindView(R.id.hapcoins_icon)
     TextView hapcoinsIcon;
-    @InjectView(R.id.leaderboard_caption)
+    @BindView(R.id.leaderboard_caption)
     TextView leaderboardCaption;
-    @InjectView(R.id.category_caption)
+    @BindView(R.id.category_caption)
     TextView categoryCaption;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaderboard);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         setTypefaces();
         addSkills();
     }

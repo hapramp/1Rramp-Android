@@ -1,0 +1,20 @@
+{
+  "chats": {
+    "<uid>": {
+      "<cmp_id1>": {
+        "conversation": [
+          {
+            "id": "a",
+            "text": "something"
+          },
+          {
+            "id": "b",
+            "text": "nothing"
+          }
+        ]
+      },
+      "cmp_id2": {
+      }
+    }
+  }
+}

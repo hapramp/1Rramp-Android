@@ -7,9 +7,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-
 /**
  * Created by Ankit on 6/22/2017.
  */

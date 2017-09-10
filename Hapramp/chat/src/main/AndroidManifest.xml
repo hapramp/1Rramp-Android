@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="bxute.chat">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true">
+
+        <activity android:name="bxute.activity.ChatListActivity"/>
+        <activity android:name="bxute.activity.ChatRoomActivity"/>
+        <activity android:name="bxute.activity.ContactsActivity"/>
+
+    </application>
+</manifest>

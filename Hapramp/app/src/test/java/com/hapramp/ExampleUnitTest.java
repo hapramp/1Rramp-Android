@@ -1,7 +1,11 @@
 package com.hapramp;
 
+import android.net.Uri;
+import android.util.Log;
+
 import org.junit.Test;
 
+import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.*;
 
 /**

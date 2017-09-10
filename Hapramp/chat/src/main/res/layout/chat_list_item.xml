@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:padding="@dimen/chat_list_padding"
+    android:layout_height="@dimen/chat_list_height">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/chat_list_avatar"
+        android:background="#cfcfcf"
+        android:layout_width="@dimen/chat_list_avatar_width"
+        android:layout_height="match_parent"
+        />
+    
+    <TextView
+        android:id="@+id/chat_list_title"
+        android:textColor="#262626"
+        android:text="Ankit Kumar"
+        android:textStyle="bold"
+        android:textSize="@dimen/chat_list_title_size"
+        android:layout_toEndOf="@+id/chat_list_avatar"
+        android:layout_margin="@dimen/chat_list_title_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:textSize="12sp"
+        android:gravity="center"
+        android:text="10"
+        android:layout_alignParentEnd="true"
+        android:layout_width="@dimen/chat_list_unread_count_dimen"
+        android:layout_height="@dimen/chat_list_unread_count_dimen" />
+    
+    <TextView
+        android:textColor="#454545"
+        android:text="@string/lorem"
+        android:layout_marginStart="@dimen/chat_list_message_margin"
+        android:layout_marginEnd="@dimen/chat_list_message_margin"
+        android:layout_toEndOf="@+id/chat_list_avatar"
+        android:layout_below="@+id/chat_list_title"
+        android:id="@+id/chat_list_last_message"
+        android:layout_width="match_parent"
+        android:lines="2"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:text="2 Min Ago"
+        android:textSize="12sp"
+        android:lines="1"
+        android:maxLines="1"
+        android:textColor="#b4b4b4"
+        android:layout_margin="@dimen/chat_list_title_margin"
+        android:layout_below="@+id/chat_list_last_message"
+        android:layout_toEndOf="@+id/chat_list_avatar"
+        android:id="@+id/online_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>
