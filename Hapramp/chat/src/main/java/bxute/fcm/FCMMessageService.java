@@ -24,16 +24,14 @@ import bxute.models.SeenStatusPayloadModel;
 public class FCMMessageService extends FirebaseMessagingService {
 
     private static final String TAG = FCMMessageService.class.getSimpleName();
-    private ChatConfig chatConfig;
     private DatabaseHelper databaseHelper;
     private HaprampTime haprampTime;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        chatConfig = ChatConfig.getInstance();
         databaseHelper = new DatabaseHelper(this);
-     //   notificationManager = HaprampNotificationManager.getInstance();
+        //   notificationManager = HaprampNotificationManager.getInstance();
         haprampTime = HaprampTime.getInstance();
 
     }
@@ -128,23 +126,26 @@ public class FCMMessageService extends FirebaseMessagingService {
         MessagePayloadModel.Payload messagePayload = new Gson().fromJson(payload, MessagePayloadModel.Payload.class);
         // save to databse
         Message message = new Message(
-                chatConfig.getMessageID(messagePayload.senderID),
+                ChatConfig.getMessageID(messagePayload.senderID),
                 messagePayload.text,
                 messagePayload.time,    // message sent time
                 haprampTime.getTime(), // message received time
                 "",                     // seen time
                 MessageStatus.STATUS_RECEIVED,
-                chatConfig.getChatRoomId(messagePayload.senderID)
+                ChatConfig.getChatRoomId(messagePayload.senderID),"",""
         );
 
         // create or update chatroom
-        int already_unread_count = databaseHelper.getUnSeenCount(chatConfig.getChatRoomId(messagePayload.senderID));
+        int already_unread_count = databaseHelper.getUnSeenCount(
+                ChatConfig.getChatRoomId(messagePayload.senderID));
         ChatRoom chatRoom = new ChatRoom(
-                chatConfig.getChatRoomId(messagePayload.senderID),
+                ChatConfig.getChatRoomId(messagePayload.senderID),
                 messagePayload.senderName,
                 message,
                 already_unread_count + 1,       // new unreads
-                1                               // priority of chat this room
+                1  ,
+                "",
+                ""              // priority of chat this room
         );
 
         databaseHelper.incrementChatRoomsPriority();
@@ -161,7 +162,7 @@ public class FCMMessageService extends FirebaseMessagingService {
 
         if (ForegroundCheck.isAppIsInBackground(this)) {
             // TODO: 7/23/2017  generate notifications
-           // notificationManager.generateNotification(message);
+            // notificationManager.generateNotification(message);
         } else {
             // TODO: 7/23/2017  send broadcasts
         }

@@ -1,13 +1,17 @@
 package bxute.fcm;
 
+import android.util.Log;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
+
 import java.util.ArrayList;
 import java.util.Map;
+
 import bxute.config.UserPreference;
 import bxute.logger.L;
 import bxute.models.ChatRoom;
@@ -32,13 +36,14 @@ public class FirebaseDatabaseManager {
     public static void init() {
 
         firebaseDatabase = FirebaseDatabase.getInstance();
-        rootReference = firebaseDatabase.getReference("root");
-        chatRoomsReference = rootReference.child("users").child(UserPreference.getUserId()).child("chatRooms");  // get access to its own node
-        chatsReference = rootReference.child("users").child(UserPreference.getUserId()).child("chats");  // get access to its own node
-        devicesReference = rootReference.child("devices");
-        onlineStatusReference = rootReference.child("onlineStatus");
         firebaseDatabase.setPersistenceEnabled(true);
+        rootReference = firebaseDatabase.getReference("root");
+        chatRoomsReference = rootReference.child("users");// get access to its own node
+        chatsReference = rootReference.child("users");  // get access to its own node
+        devicesReference = rootReference.child("devices");
         devicesReference.keepSynced(true);  // keeping device ids Synced fresh
+        onlineStatusReference = rootReference.child("onlineStatus");
+
 
     }
 
@@ -47,12 +52,60 @@ public class FirebaseDatabaseManager {
             init();
     }
 
+    public static FirebaseDatabase getFirebaseDatabase() {
+        i();
+        return firebaseDatabase;
+    }
+
+    public static DatabaseReference getRootReference() {
+        i();
+        return rootReference;
+    }
+
+    public static DatabaseReference getChatRoomsReferenceForFetching() {
+        i();
+        return chatRoomsReference.child(UserPreference.getUserId()).child("chatRooms");
+    }
+
     /*
-    * Used to register device itself on the server
+    * This method is used to update/create chat room for other companion
     * */
+    public static DatabaseReference getChatRoomsReferenceForUpdatingOrCreate(String companionId) {
+        i();
+        return chatRoomsReference.child(companionId).child("chatRooms");
+    }
+
+    public static DatabaseReference getChatsReferenceForFetching() {
+        i();
+        return chatsReference.child(UserPreference.getUserId()).child("chats");
+    }
+
+
+    /*
+    * This method is used to adding message to other user`s chat list
+    * */
+    public static DatabaseReference getChatsReferenceForSending(String companionId) {
+        i();
+        return chatsReference.child(companionId).child("chats");
+    }
+
+    public static DatabaseReference getDevicesReference() {
+        i();
+        return devicesReference;
+    }
+
+    public static DatabaseReference getOnlineStatusReference() {
+        i();
+        return onlineStatusReference;
+    }
+
+    /*
+        * Used to register device itself on the server
+        * */
     public static void registerDevice() {
         i();
         // Key<UserId>:Value<DeviceId>
+        Log.d("DEBUG", "id " + FirebaseInstanceId.getInstance().getToken());
         devicesReference.child(UserPreference.getUserId()).setValue(FirebaseInstanceId.getInstance().getToken());
     }
 
@@ -60,12 +113,14 @@ public class FirebaseDatabaseManager {
     * Used to get Devices registered
     * */
 
-    public static void getDevices(){
+    public static void getDevices() {
         i();
         devicesReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                L.D.m("DEBUG", dataSnapshot.getValue(String.class));
+                for (DataSnapshot d : dataSnapshot.getChildren()) {
+                    L.D.m("DEBUG", d.getValue(String.class));
+                }
             }
 
             @Override
@@ -87,11 +142,13 @@ public class FirebaseDatabaseManager {
     /*
     * Used to get Online status
     * */
-    public static void getOnlineStatus(final String companionId){
-        onlineStatusReference.addValueEventListener(new ValueEventListener() {
+    public static void getOnlineStatus(final String companionId) {
+        onlineStatusReference.child(companionId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                L.D.m("DEBUG","online:"+dataSnapshot.getValue().toString());
+                for (DataSnapshot d : dataSnapshot.getChildren()) {
+                    L.D.m("DEBUG", d.getValue(String.class));
+                }
                 // TODO: 9/10/2017 get Online status and set to view
             }
 
@@ -103,43 +160,41 @@ public class FirebaseDatabaseManager {
     }
 
     /*
-    *   Used to add/update Chat Room
+    *   Used to add/update Chat Room of remote user
     * */
-
     public static void addChatRoom(ChatRoom chatRoom) {
         i();
-        chatRoomsReference.child(chatRoom.chatRoomId).setValue(chatRoom);
+        // TODO: 9/14/2017 udpate the chatroom model
+        getChatRoomsReferenceForUpdatingOrCreate("").child(chatRoom.getChatRoomId()).setValue(chatRoom);
     }
 
-    /*
-    * Used to get all chat Rooms
-    * */
-    public static void getChatRooms() {
-        i();
-        final ArrayList<ChatRoom> chatRooms = new ArrayList<>();
-        chatRoomsReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot d : dataSnapshot.getChildren()) {
-                    Map<String, ChatRoom> chatRoomMap = (Map<String, ChatRoom>) d.getValue();
-                    L.D.m("DEBUG",chatRoomMap.get(d.getKey()).toString());
-                    chatRooms.add(chatRoomMap.get(d.getKey()));
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
+//    /*
+//    * Used to get all chat Rooms
+//    * */
+//    public static void getChatRooms() {
+//        i();
+//        final ArrayList<ChatRoom> chatRooms = new ArrayList<>();
+//        chatRoomsReference.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                for (DataSnapshot d : dataSnapshot.getChildren()) {
+//                    L.D.m("DEBUG", d.getValue(ChatRoom.class).toString());
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
     /**
      * Used to add Chat
      */
     public static void addMessage(Message message) {
         i();
-        chatsReference.child(message.messageId).setValue(message);
+        chatsReference.child(message.getReceiverId()).child(message.getMessageId()).setValue(message);
     }
 
     /*
@@ -152,9 +207,7 @@ public class FirebaseDatabaseManager {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
-                    Map<String, Message> messageMap = (Map<String, Message>) d.getValue();
-                    L.D.m("DEBUG",messageMap.get(d.getKey()).toString());
-                    messages.add(messageMap.get(d.getKey()));
+                    L.D.m("DEBUG", d.getValue(Message.class).toString());
                 }
             }
 
@@ -164,5 +217,24 @@ public class FirebaseDatabaseManager {
             }
         });
     }
+
+    public static void getKeys() {
+        rootReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot d : dataSnapshot.getChildren()) {
+                    Log.d("DEBUG", d.getKey().toString());
+                }
+            }
+
+            ;
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 
 }

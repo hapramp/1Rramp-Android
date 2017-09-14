@@ -1,22 +1,29 @@
 package bxute.models;
 
 import bxute.config.MessageStatus;
+import bxute.config.UserPreference;
 
 /**
  * Created by Ankit on 7/13/2017.
  */
 
 public class Message {
-    public String messageId;
-    public String content;
-    public String sent_time;
-    public String delivered_time;
-    public String seen_time;
+    private String messageId;
+    private String content;
+    private String sent_time;
+    private String delivered_time;
+    private String seen_time;
     @MessageStatus.MessageType
-    public int status;
-    public String chatRoomId;
+    private int status;
+    private String chatRoomId;
+    private String senderId;
+    private String receiverId;
 
-    public Message(String messageId, String content, String sent_time, String delivered_time, String seen_time, int status, String chatRoomId) {
+    public Message(){
+
+    }
+
+    public Message(String messageId, String content, String sent_time, String delivered_time, String seen_time, int status, String chatRoomId, String senderId, String receiverId) {
         this.messageId = messageId;
         this.content = content;
         this.sent_time = sent_time;
@@ -24,6 +31,32 @@ public class Message {
         this.seen_time = seen_time;
         this.status = status;
         this.chatRoomId = chatRoomId;
+        this.senderId = senderId;
+        this.receiverId = receiverId;
+    }
+
+    public String getSenderId() {
+        return senderId;
+    }
+
+    public void setSenderId(String senderId) {
+        this.senderId = senderId;
+    }
+
+    public String getReceiverId() {
+        return receiverId;
+    }
+
+    public boolean isIncommingMessage(){
+        return UserPreference.getUserId().equals(receiverId);
+    }
+
+    public boolean isOutgoingMessage(){
+        return UserPreference.getUserId().equals(senderId);
+    }
+
+    public void setReceiverId(String receiverId) {
+        this.receiverId = receiverId;
     }
 
     public String getContent() {
@@ -48,6 +81,14 @@ public class Message {
 
     public void setDelivered_time(String delivered_time) {
         this.delivered_time = delivered_time;
+    }
+
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
     }
 
     public String getSeen_time() {

@@ -7,6 +7,7 @@ package bxute.config;
 public class Constants {
 
     public static final boolean DEBUG = true;
+    public static final String EXTRAA_CHAT_ROOM_COMPANION_ID = "userId";
 
     public static class ACTIONS{
         public static final String NEW_OUTGOING_MESSAGE = "com.hapramp.action.outgoing_message";

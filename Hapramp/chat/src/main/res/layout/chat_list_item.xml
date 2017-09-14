@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
+    android:background="#ffffff"
     android:padding="@dimen/chat_list_padding"
     android:layout_height="@dimen/chat_list_height">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/chat_list_avatar"
-        android:background="#cfcfcf"
+        fresco:roundAsCircle="true"
+        fresco:actualImageScaleType="centerCrop"
+        fresco:failureImage="@drawable/unread_count_backgroud"
         android:layout_width="@dimen/chat_list_avatar_width"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/chat_list_avatar_width"
         />
     
     <TextView
         android:id="@+id/chat_list_title"
         android:textColor="#262626"
-        android:text="Ankit Kumar"
         android:textStyle="bold"
         android:textSize="@dimen/chat_list_title_size"
         android:layout_toEndOf="@+id/chat_list_avatar"
@@ -24,16 +27,15 @@
         android:layout_height="wrap_content" />
 
     <TextView
+        android:id="@+id/unread_count"
         android:textSize="12sp"
         android:gravity="center"
-        android:text="10"
         android:layout_alignParentEnd="true"
         android:layout_width="@dimen/chat_list_unread_count_dimen"
         android:layout_height="@dimen/chat_list_unread_count_dimen" />
     
     <TextView
         android:textColor="#454545"
-        android:text="@string/lorem"
         android:layout_marginStart="@dimen/chat_list_message_margin"
         android:layout_marginEnd="@dimen/chat_list_message_margin"
         android:layout_toEndOf="@+id/chat_list_avatar"
@@ -46,7 +48,6 @@
         android:layout_height="wrap_content" />
 
     <TextView
-        android:text="2 Min Ago"
         android:textSize="12sp"
         android:lines="1"
         android:maxLines="1"
@@ -58,4 +59,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <FrameLayout
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:background="#949494"
+        android:layout_height="1dp"/>
 </RelativeLayout>

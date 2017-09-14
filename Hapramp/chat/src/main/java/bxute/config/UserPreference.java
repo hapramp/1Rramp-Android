@@ -7,7 +7,7 @@ package bxute.config;
 public class UserPreference {
 
     public static String getUserId(){
-        return "";
+        return "ankit_460";
     }
 
 }

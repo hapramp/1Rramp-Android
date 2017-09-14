@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="chat_list_height">96dp</dimen>
-    <dimen name="chat_list_avatar_width">96dp</dimen>
+    <dimen name="chat_list_height">64dp</dimen>
+    <dimen name="chat_list_avatar_width">64dp</dimen>
     <dimen name="chat_list_avatar_margin">16dp</dimen>
     <dimen name="chat_list_title_size">18sp</dimen>
     <dimen name="chat_list_title_margin">4dp</dimen>

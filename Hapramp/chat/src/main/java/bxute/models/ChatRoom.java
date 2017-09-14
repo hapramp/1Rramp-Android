@@ -6,18 +6,42 @@ package bxute.models;
 
 public class ChatRoom {
 
-    public String chatRoomId;
-    public String chatRoomName;
-    public Message lastMessage;
-    public int unreadCount;
-    public int priority;
+    private String chatRoomId;
+    private String chatRoomName;
+    private Message lastMessage;
+    private int unreadCount;
+    private int priority;
+    private String chatRoomAvatar;
+    private String onlineStatus;
 
-    public ChatRoom(String chatRoomId, String chatRoomName, Message lastMessage, int unreadCount, int priority) {
+    public ChatRoom(){
+
+    }
+
+    public ChatRoom(String chatRoomId, String chatRoomName, Message lastMessage, int unreadCount, int priority, String chatRoomAvatar, String onlineStatus) {
         this.chatRoomId = chatRoomId;
         this.chatRoomName = chatRoomName;
         this.lastMessage = lastMessage;
         this.unreadCount = unreadCount;
         this.priority = priority;
+        this.chatRoomAvatar = chatRoomAvatar;
+        this.onlineStatus = onlineStatus;
+    }
+
+    public String getChatRoomAvatar() {
+        return chatRoomAvatar;
+    }
+
+    public void setChatRoomAvatar(String chatRoomAvatar) {
+        this.chatRoomAvatar = chatRoomAvatar;
+    }
+
+    public String getOnlineStatus() {
+        return onlineStatus;
+    }
+
+    public void setOnlineStatus(String onlineStatus) {
+        this.onlineStatus = onlineStatus;
     }
 
     public String getChatRoomId() {
@@ -65,9 +89,11 @@ public class ChatRoom {
         return "ChatRoom{" +
                 "chatRoomId='" + chatRoomId + '\'' +
                 ", chatRoomName='" + chatRoomName + '\'' +
-                ", lastMessage='" + lastMessage + '\'' +
+                ", lastMessage=" + lastMessage +
                 ", unreadCount=" + unreadCount +
                 ", priority=" + priority +
+                ", chatRoomAvatar='" + chatRoomAvatar + '\'' +
+                ", onlineStatus='" + onlineStatus + '\'' +
                 '}';
     }
 }

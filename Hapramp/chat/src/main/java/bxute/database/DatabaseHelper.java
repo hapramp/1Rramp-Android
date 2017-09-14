@@ -64,13 +64,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ContentValues getMessageCVObject(Message msg) {
 
         ContentValues values = new ContentValues();
-        values.put(DatabaseContract.MessageColumns.MESSAGE_ID, msg.messageId);
-        values.put(DatabaseContract.MessageColumns.MESSAGE_CONTENT, msg.content);
-        values.put(DatabaseContract.MessageColumns.MESSAGE_SENT_TIME, msg.sent_time);
-        values.put(DatabaseContract.MessageColumns.MESSAGE_DELIVERED_TIME, msg.delivered_time);
-        values.put(DatabaseContract.MessageColumns.MESSAGE_SEEN_TIME, msg.seen_time);
-        values.put(DatabaseContract.MessageColumns.MESSAGE_STATUS, msg.status);
-        values.put(DatabaseContract.MessageColumns.CHAT_ROOM_ID, msg.chatRoomId);
+        values.put(DatabaseContract.MessageColumns.MESSAGE_ID, msg.getMessageId());
+        values.put(DatabaseContract.MessageColumns.MESSAGE_CONTENT, msg.getContent());
+        values.put(DatabaseContract.MessageColumns.MESSAGE_SENT_TIME, msg.getSent_time());
+        values.put(DatabaseContract.MessageColumns.MESSAGE_DELIVERED_TIME, msg.getDelivered_time());
+        values.put(DatabaseContract.MessageColumns.MESSAGE_SEEN_TIME, msg.getSeen_time());
+        values.put(DatabaseContract.MessageColumns.MESSAGE_STATUS, msg.getStatus());
+        values.put(DatabaseContract.MessageColumns.CHAT_ROOM_ID, msg.getChatRoomId());
         return values;
 
     }
@@ -78,11 +78,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ContentValues getChatRoomCVObject(ChatRoom chatRoom) {
 
         ContentValues values = new ContentValues();
-        values.put(DatabaseContract.ChatRoomColumns.CHAT_ROOM_ID, chatRoom.chatRoomId);
-        values.put(DatabaseContract.ChatRoomColumns.CHAT_ROOM_NAME, chatRoom.chatRoomName);
-        values.put(DatabaseContract.ChatRoomColumns.CHAT_ROOM_UNREAD_COUNT, chatRoom.unreadCount);
-        values.put(DatabaseContract.ChatRoomColumns.CHAT_ROOM_PRIORITY, chatRoom.priority);
-        values.put(DatabaseContract.ChatRoomColumns.CHAT_ROOM_LAST_MESSAGE_ID, chatRoom.lastMessage.messageId);
+        values.put(DatabaseContract.ChatRoomColumns.CHAT_ROOM_ID, chatRoom.getChatRoomId());
+        values.put(DatabaseContract.ChatRoomColumns.CHAT_ROOM_NAME, chatRoom.getChatRoomName());
+        values.put(DatabaseContract.ChatRoomColumns.CHAT_ROOM_UNREAD_COUNT, chatRoom.getUnreadCount());
+        values.put(DatabaseContract.ChatRoomColumns.CHAT_ROOM_PRIORITY, chatRoom.getPriority());
+        values.put(DatabaseContract.ChatRoomColumns.CHAT_ROOM_LAST_MESSAGE_ID, chatRoom.getLastMessage().getMessageId());
         return values;
 
     }
@@ -95,12 +95,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             L.D.m(TAG, "inserted Message");
         }
 
-        if(msg.status==MessageStatus.STATUS_PENDING){
-            informNewOutgoingMessage(msg.messageId);
+        if(msg.getStatus()==MessageStatus.STATUS_PENDING){
+            informNewOutgoingMessage(msg.getMessageId());
         }
 
-        if(msg.status== MessageStatus.STATUS_RECEIVED){
-            informNewIncommingMessage(msg.messageId);
+        if(msg.getStatus()== MessageStatus.STATUS_RECEIVED){
+            informNewIncommingMessage(msg.getMessageId());
         }
 
     }
@@ -136,7 +136,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndex(DatabaseContract.MessageColumns.MESSAGE_DELIVERED_TIME)),
                     cursor.getString(cursor.getColumnIndex(DatabaseContract.MessageColumns.MESSAGE_SEEN_TIME)),
                     (int) cursor.getDouble(cursor.getColumnIndex(DatabaseContract.MessageColumns.MESSAGE_STATUS)),
-                    cursor.getString(cursor.getColumnIndex(DatabaseContract.MessageColumns.CHAT_ROOM_ID))
+                    cursor.getString(cursor.getColumnIndex(DatabaseContract.MessageColumns.CHAT_ROOM_ID)),"",""
             );
         }
         return message;
@@ -166,7 +166,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndex(DatabaseContract.MessageColumns.MESSAGE_DELIVERED_TIME)),
                     cursor.getString(cursor.getColumnIndex(DatabaseContract.MessageColumns.MESSAGE_SEEN_TIME)),
                     (int) cursor.getDouble(cursor.getColumnIndex(DatabaseContract.MessageColumns.MESSAGE_STATUS)),
-                    cursor.getString(cursor.getColumnIndex(DatabaseContract.MessageColumns.CHAT_ROOM_ID))
+                    cursor.getString(cursor.getColumnIndex(DatabaseContract.MessageColumns.CHAT_ROOM_ID)),"",""
             ));
 
             hasNext = cursor.moveToNext();
@@ -193,7 +193,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndex(DatabaseContract.ChatRoomColumns.CHAT_ROOM_NAME)),
                     getMessage(cursor.getString(cursor.getColumnIndex(DatabaseContract.ChatRoomColumns.CHAT_ROOM_LAST_MESSAGE_ID))),
                     (int) cursor.getDouble(cursor.getColumnIndex(DatabaseContract.ChatRoomColumns.CHAT_ROOM_UNREAD_COUNT)),
-                    (int) cursor.getDouble(cursor.getColumnIndex(DatabaseContract.ChatRoomColumns.CHAT_ROOM_PRIORITY))
+                    (int) cursor.getDouble(cursor.getColumnIndex(DatabaseContract.ChatRoomColumns.CHAT_ROOM_PRIORITY)),
+                    "-url-",
+                    "online"
             ));
             hasNext = cursor.moveToNext();
         }
@@ -207,7 +209,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 DatabaseContract.TABLE_CHAT_ROOM,
                 getChatRoomCVObject(newChatRoom),
                 DatabaseContract.ChatRoomColumns.CHAT_ROOM_ID+"= ?",
-                new String[]{newChatRoom.chatRoomId});
+                new String[]{newChatRoom.getChatRoomId()});
 
         if (id > -1) {
             L.D.m(TAG, "updated Chatroom");
@@ -220,13 +222,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long id = database.update(DatabaseContract.TABLE_MESSAGE,
                 getMessageCVObject(newMessage),
                 DatabaseContract.MessageColumns.MESSAGE_ID+"= ?",
-                new String[]{newMessage.messageId});
+                new String[]{newMessage.getMessageId()});
         if (id > -1) {
             L.D.m(TAG, "updated message");
         }
 
-        if(newMessage.status==MessageStatus.STATUS_DELIVERY_CONFIRMED){
-            informMessageSeen(newMessage.messageId);
+        if(newMessage.getStatus()==MessageStatus.STATUS_DELIVERY_CONFIRMED){
+            informMessageSeen(newMessage.getMessageId());
         }
 
     }
@@ -296,21 +298,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    cursor.getString(cursor.getColumnIndex(DatabaseContract.MessageColumns.MESSAGE_DELIVERED_TIME)),
                    cursor.getString(cursor.getColumnIndex(DatabaseContract.MessageColumns.MESSAGE_SEEN_TIME)),
                    (int) cursor.getDouble(cursor.getColumnIndex(DatabaseContract.MessageColumns.MESSAGE_STATUS)),
-                   cursor.getString(cursor.getColumnIndex(DatabaseContract.MessageColumns.CHAT_ROOM_ID))
+                   cursor.getString(cursor.getColumnIndex(DatabaseContract.MessageColumns.CHAT_ROOM_ID)),"",""
            );
 
-            int jobType = message.status==MessageStatus.STATUS_PENDING
+            int jobType = message.getStatus()==MessageStatus.STATUS_PENDING
                     ?
                     JobModel.JOB_TYPE_MESSAGE
                     :
-                    (   message.status==MessageStatus.STATUS_RECEIVED
+                    (   message.getStatus()==MessageStatus.STATUS_RECEIVED
                             ?
                             JobModel.JOB_TYPE_RECEIVING
                             :
                             JobModel.JOB_TYPE_SEEN
                     );
 
-            jobs.add(new JobModel(jobType,message.messageId));
+            jobs.add(new JobModel(jobType,message.getMessageId()));
             hasNext = cursor.moveToNext();
         }
 
