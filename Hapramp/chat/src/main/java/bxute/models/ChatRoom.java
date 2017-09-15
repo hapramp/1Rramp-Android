@@ -7,6 +7,7 @@ package bxute.models;
 public class ChatRoom {
 
     private String chatRoomId;
+    private String ownerId;
     private String chatRoomName;
     private Message lastMessage;
     private int unreadCount;
@@ -18,14 +19,23 @@ public class ChatRoom {
 
     }
 
-    public ChatRoom(String chatRoomId, String chatRoomName, Message lastMessage, int unreadCount, int priority, String chatRoomAvatar, String onlineStatus) {
+    public ChatRoom(String chatRoomId, String ownerId, String chatRoomName, Message lastMessage, int unreadCount, int priority, String chatRoomAvatar, String onlineStatus) {
         this.chatRoomId = chatRoomId;
+        this.ownerId = ownerId;
         this.chatRoomName = chatRoomName;
         this.lastMessage = lastMessage;
         this.unreadCount = unreadCount;
         this.priority = priority;
         this.chatRoomAvatar = chatRoomAvatar;
         this.onlineStatus = onlineStatus;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
     }
 
     public String getChatRoomAvatar() {
@@ -88,6 +98,7 @@ public class ChatRoom {
     public String toString() {
         return "ChatRoom{" +
                 "chatRoomId='" + chatRoomId + '\'' +
+                ", ownerId='" + ownerId + '\'' +
                 ", chatRoomName='" + chatRoomName + '\'' +
                 ", lastMessage=" + lastMessage +
                 ", unreadCount=" + unreadCount +

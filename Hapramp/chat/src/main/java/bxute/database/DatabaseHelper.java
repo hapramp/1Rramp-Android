@@ -189,7 +189,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         while (hasNext) {
             chatRooms.add(new ChatRoom(
-                    cursor.getString(cursor.getColumnIndex(DatabaseContract.ChatRoomColumns.CHAT_ROOM_ID)),
+                    cursor.getString(cursor.getColumnIndex(DatabaseContract.ChatRoomColumns.CHAT_ROOM_ID)),"",
                     cursor.getString(cursor.getColumnIndex(DatabaseContract.ChatRoomColumns.CHAT_ROOM_NAME)),
                     getMessage(cursor.getString(cursor.getColumnIndex(DatabaseContract.ChatRoomColumns.CHAT_ROOM_LAST_MESSAGE_ID))),
                     (int) cursor.getDouble(cursor.getColumnIndex(DatabaseContract.ChatRoomColumns.CHAT_ROOM_UNREAD_COUNT)),

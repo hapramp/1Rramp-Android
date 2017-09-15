@@ -139,7 +139,7 @@ public class FCMMessageService extends FirebaseMessagingService {
         int already_unread_count = databaseHelper.getUnSeenCount(
                 ChatConfig.getChatRoomId(messagePayload.senderID));
         ChatRoom chatRoom = new ChatRoom(
-                ChatConfig.getChatRoomId(messagePayload.senderID),
+                ChatConfig.getChatRoomId(messagePayload.senderID),"",
                 messagePayload.senderName,
                 message,
                 already_unread_count + 1,       // new unreads

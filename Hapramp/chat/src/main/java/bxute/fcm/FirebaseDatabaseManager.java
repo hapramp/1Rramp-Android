@@ -140,101 +140,32 @@ public class FirebaseDatabaseManager {
     }
 
     /*
-    * Used to get Online status
+    *   Used to add/update Chat Room of both sender and receiver
+    *   Anybody who sends the message will perform update of both chat room
     * */
-    public static void getOnlineStatus(final String companionId) {
-        onlineStatusReference.child(companionId).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot d : dataSnapshot.getChildren()) {
-                    L.D.m("DEBUG", d.getValue(String.class));
-                }
-                // TODO: 9/10/2017 get Online status and set to view
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    /*
-    *   Used to add/update Chat Room of remote user
-    * */
-    public static void addChatRoom(ChatRoom chatRoom) {
+    public static void createOrUpdateChatroom(ChatRoom chatRoom) {
         i();
-        // TODO: 9/14/2017 udpate the chatroom model
-        getChatRoomsReferenceForUpdatingOrCreate("").child(chatRoom.getChatRoomId()).setValue(chatRoom);
+        getChatRoomsReferenceForUpdatingOrCreate(chatRoom.getOwnerId()).child(chatRoom.getChatRoomId()).setValue(chatRoom);
     }
 
-//    /*
-//    * Used to get all chat Rooms
-//    * */
-//    public static void getChatRooms() {
-//        i();
-//        final ArrayList<ChatRoom> chatRooms = new ArrayList<>();
-//        chatRoomsReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                for (DataSnapshot d : dataSnapshot.getChildren()) {
-//                    L.D.m("DEBUG", d.getValue(ChatRoom.class).toString());
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
 
     /**
-     * Used to add Chat
+     * Used to add/update message of both sender and receiver
      */
-    public static void addMessage(Message message) {
+    public static void addMessageToSelfNode(Message message) {
         i();
-        chatsReference.child(message.getReceiverId()).child(message.getMessageId()).setValue(message);
+        // for self node
+        getChatsReferenceForSending(message.getSenderId()).child(message.getMessageId()).setValue(message);
     }
 
-    /*
-    * Used to get all chats
-    * */
-    public static void getMessages() {
 
-        final ArrayList<Message> messages = new ArrayList<>();
-        chatsReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot d : dataSnapshot.getChildren()) {
-                    L.D.m("DEBUG", d.getValue(Message.class).toString());
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+    /**
+     * Used to add/update message of both sender and receiver
+     */
+    public static void addMessageToRemoteNode(Message message) {
+        i();
+        // for self node
+        getChatsReferenceForSending(message.getReceiverId()).child(message.getMessageId()).setValue(message);
     }
-
-    public static void getKeys() {
-        rootReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot d : dataSnapshot.getChildren()) {
-                    Log.d("DEBUG", d.getKey().toString());
-                }
-            }
-
-            ;
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
 
 }

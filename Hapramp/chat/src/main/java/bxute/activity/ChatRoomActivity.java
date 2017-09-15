@@ -95,5 +95,5 @@ public class ChatRoomActivity extends AppCompatActivity {
             Toast.makeText(this, "No User Id", Toast.LENGTH_LONG).show();
         }
     }
-
+// TODO: 9/15/2017 Add input box + add dispatchers + add Online status + add typing status + add notifications
 }
