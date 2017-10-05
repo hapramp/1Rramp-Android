@@ -1,6 +1,8 @@
 package bxute.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +13,10 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import bxute.FontManager;
 import bxute.chat.R;
 import bxute.chat.R2;
+import bxute.config.MessageStatus;
 import bxute.models.Message;
 
 /**
@@ -25,10 +29,12 @@ public class ChatRoomRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
     private ArrayList<Message> messages;
     private int VIEW_TYPE_INCOMMING = 12;
     private int VIEW_TYPE_OUTGOING = 11;
+    Typeface typeface;
 
     public ChatRoomRecyclerAdapter(Context mContext) {
         this.mContext = mContext;
         messages = new ArrayList<>();
+        typeface = new FontManager(mContext).getDefault();
     }
 
     public void setMessages(ArrayList<Message> messages) {
@@ -89,6 +95,7 @@ public class ChatRoomRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         public void bind(Message message) {
             content.setText(message.getContent());
+            time.setText(message.getSent_time());
         }
     }
 
@@ -99,6 +106,8 @@ public class ChatRoomRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
         TextView content;
         @BindView(R2.id.time)
         TextView time;
+        @BindView(R2.id.msg_state)
+        TextView msgState;
 
         public OutgoingBubbleViewHolder(View itemView) {
             super(itemView);
@@ -107,6 +116,23 @@ public class ChatRoomRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         public void bind(Message message) {
             content.setText(message.getContent());
+            time.setText(message.getSent_time());
+            msgState.setTypeface(typeface);
+
+            switch (message.getStatus()){
+                case MessageStatus.STATUS_SENT:
+                    msgState.setTextColor(Color.GRAY);
+                    msgState.setText(FontManager.SENT_ICON);
+                    break;
+                case MessageStatus.STATUS_DELIVERED:
+                    msgState.setTextColor(Color.GRAY);
+                    msgState.setText(FontManager.DELIVERED_ICON);
+                    break;
+                case MessageStatus.STATUS_SEEN:
+                    msgState.setText(FontManager.DELIVERED_ICON);
+                    msgState.setTextColor(Color.GREEN);
+                    break;
+            }
         }
     }
 

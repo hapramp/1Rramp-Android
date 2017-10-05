@@ -1,5 +1,8 @@
 package bxute.models;
 
+import bxute.config.ChatConfig;
+import bxute.config.UserPreference;
+
 /**
  * Created by Ankit on 7/13/2017.
  */
@@ -107,4 +110,9 @@ public class ChatRoom {
                 ", onlineStatus='" + onlineStatus + '\'' +
                 '}';
     }
+
+    private void aVoid(){
+
+    }
+
 }

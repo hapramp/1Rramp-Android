@@ -84,7 +84,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListitemC
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
                     // Update the
-                    updateStatus(ChatConfig.getChatRoomId(d.getKey()), d.getValue(String.class)); // key is userID
+                    //updateStatus(ChatConfig.getChatRoomId(,d.getKey()), d.getValue(String.class)); // key is userID
                 }
             }
 

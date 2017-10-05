@@ -26,6 +26,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import bxute.logger.L;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -109,6 +110,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==RC_GC_SIGNIN){
+            L.D.m(TAG,"received result from google");
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
         }
@@ -117,18 +119,22 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private void handleSignInResult(GoogleSignInResult result) {
         if(result.isSuccess()){
             t("Success");
-            showProgress("Logging In....");
+            L.D.m(TAG,"handle signin...");
+            showProgress("Logging In...");
             GoogleSignInAccount account = result.getSignInAccount();
+            L.D.m(TAG,"account received :"+account.getEmail());
             signInWithFirebase(account);
+
         }else{
             Log.d(TAG,result.getStatus().getStatus()+"");
             t("failed ! ");
         }
     }
 
-    private void signInWithFirebase(GoogleSignInAccount account) {
+    private void signInWithFirebase(final GoogleSignInAccount account) {
 
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(),null);
+        L.D.m(TAG,"Id token: "+account.getIdToken());
 
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -137,6 +143,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         hideProgress();
                         if(task.isSuccessful()){
                             t("Success");
+                            L.D.m(TAG,"signed in with firebase");
                             FirebaseUser user = task.getResult().getUser();
                             Bundle bundle = new Bundle();
                             bundle.putString("email",user.getEmail());
@@ -166,7 +173,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void redirect(Bundle bundle) {
-        Intent intent = new Intent(this, HomeActivity.class);
+        Intent intent = new Intent(this, OrganisationActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
     }

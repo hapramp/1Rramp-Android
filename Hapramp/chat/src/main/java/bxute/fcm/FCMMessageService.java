@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 
 import bxute.ForegroundCheck;
 import bxute.config.ChatConfig;
-import bxute.config.HaprampTime;
+import bxute.config.LocalTimeManager;
 import bxute.config.MessageStatus;
 import bxute.config.RemoteDataType;
 import bxute.database.DatabaseHelper;
@@ -25,14 +25,14 @@ public class FCMMessageService extends FirebaseMessagingService {
 
     private static final String TAG = FCMMessageService.class.getSimpleName();
     private DatabaseHelper databaseHelper;
-    private HaprampTime haprampTime;
+    private LocalTimeManager haprampTime;
 
     @Override
     public void onCreate() {
         super.onCreate();
         databaseHelper = new DatabaseHelper(this);
         //   notificationManager = HaprampNotificationManager.getInstance();
-        haprampTime = HaprampTime.getInstance();
+        haprampTime = LocalTimeManager.getInstance();
 
     }
 
@@ -43,7 +43,7 @@ public class FCMMessageService extends FirebaseMessagingService {
         String payload = remoteMessage.getData().get("Payload");
         switch (type) {
             case RemoteDataType.TYPE_MESSAGE:
-                handleNewMessage(payload);
+               // handleNewMessage(payload);
                 break;
             case RemoteDataType.TYPE_RECEIVING:
                 handleReceiving(payload);
@@ -114,58 +114,6 @@ public class FCMMessageService extends FirebaseMessagingService {
             }
         }
 
-    }
-
-    /*
-    *   when new message arrives
-    *   It creates new message and invalidate the order of chat rooms
-    *   and broadcast the event for UI Update
-    * */
-    private void handleNewMessage(String payload) {
-
-        MessagePayloadModel.Payload messagePayload = new Gson().fromJson(payload, MessagePayloadModel.Payload.class);
-        // save to databse
-        Message message = new Message(
-                ChatConfig.getMessageID(messagePayload.senderID),
-                messagePayload.text,
-                messagePayload.time,    // message sent time
-                haprampTime.getTime(), // message received time
-                "",                     // seen time
-                MessageStatus.STATUS_RECEIVED,
-                ChatConfig.getChatRoomId(messagePayload.senderID),"",""
-        );
-
-        // create or update chatroom
-        int already_unread_count = databaseHelper.getUnSeenCount(
-                ChatConfig.getChatRoomId(messagePayload.senderID));
-        ChatRoom chatRoom = new ChatRoom(
-                ChatConfig.getChatRoomId(messagePayload.senderID),"",
-                messagePayload.senderName,
-                message,
-                already_unread_count + 1,       // new unreads
-                1  ,
-                "",
-                ""              // priority of chat this room
-        );
-
-        databaseHelper.incrementChatRoomsPriority();
-        if (databaseHelper.addChatRooms(chatRoom) == -1) {  // chat room already exists
-            // update
-            databaseHelper.updateChatRoom(chatRoom);
-        } else {
-            // insert new
-            databaseHelper.addChatRooms(chatRoom);
-        }
-
-        // insert message
-        databaseHelper.addMessage(message);
-
-        if (ForegroundCheck.isAppIsInBackground(this)) {
-            // TODO: 7/23/2017  generate notifications
-            // notificationManager.generateNotification(message);
-        } else {
-            // TODO: 7/23/2017  send broadcasts
-        }
     }
 
 }

@@ -9,9 +9,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import java.util.ArrayList;
-import java.util.Map;
-
 import bxute.config.UserPreference;
 import bxute.logger.L;
 import bxute.models.ChatRoom;
@@ -84,7 +81,7 @@ public class FirebaseDatabaseManager {
     /*
     * This method is used to adding message to other user`s chat list
     * */
-    public static DatabaseReference getChatsReferenceForSending(String companionId) {
+    public static DatabaseReference getChatsRemoteUserNodeRef(String companionId) {
         i();
         return chatsReference.child(companionId).child("chats");
     }
@@ -155,7 +152,7 @@ public class FirebaseDatabaseManager {
     public static void addMessageToSelfNode(Message message) {
         i();
         // for self node
-        getChatsReferenceForSending(message.getSenderId()).child(message.getMessageId()).setValue(message);
+        getChatsRemoteUserNodeRef(message.getSenderId()).child(message.getMessageId()).setValue(message);
     }
 
 
@@ -165,7 +162,7 @@ public class FirebaseDatabaseManager {
     public static void addMessageToRemoteNode(Message message) {
         i();
         // for self node
-        getChatsReferenceForSending(message.getReceiverId()).child(message.getMessageId()).setValue(message);
+        getChatsRemoteUserNodeRef(message.getReceiverId()).child(message.getMessageId()).setValue(message);
     }
 
 }

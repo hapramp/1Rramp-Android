@@ -36,7 +36,26 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/chatsRecyclerView"
         android:layout_below="@+id/toolbar"
+        android:layout_above="@+id/msg_input"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+        
+        <EditText
+            android:id="@+id/msg_input"
+            android:layout_toStartOf="@+id/send_btn"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="64dp" />
 
+    <ImageView
+        android:padding="12dp"
+        android:background="@drawable/send_btn_bg"
+        android:id="@+id/send_btn"
+        android:layout_margin="4dp"
+        android:src="@drawable/send"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_width="56dp"
+        android:layout_height="56dp" />
+    
 </RelativeLayout>

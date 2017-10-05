@@ -1,5 +1,6 @@
 package bxute.models;
 
+import bxute.config.ChatConfig;
 import bxute.config.MessageStatus;
 import bxute.config.UserPreference;
 
@@ -125,6 +126,9 @@ public class Message {
                 ", seen_time='" + seen_time + '\'' +
                 ", status=" + status +
                 ", chatRoomId='" + chatRoomId + '\'' +
+                ", senderId='" + senderId + '\'' +
+                ", receiverId='" + receiverId + '\'' +
                 '}';
     }
+
 }

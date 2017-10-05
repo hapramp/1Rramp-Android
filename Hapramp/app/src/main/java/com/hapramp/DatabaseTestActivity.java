@@ -4,10 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import bxute.activity.ChatListActivity;
 import bxute.activity.ChatRoomActivity;
-import bxute.config.*;
+import bxute.config.ChatConfig;
 import bxute.config.Constants;
+import bxute.config.MessageStatus;
+import bxute.config.UserPreference;
 import bxute.fcm.FirebaseDatabaseManager;
 import bxute.models.ChatRoom;
 import bxute.models.Message;
@@ -18,30 +19,61 @@ public class DatabaseTestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_database_test);
-        injectData(ChatConfig.getChatRoomId("123"));
-        injectData(ChatConfig.getChatRoomId("124"));
-        injectData(ChatConfig.getChatRoomId("125"));
+        injectData();
         test();
     }
 
     private void test(){
         Intent intent = new Intent(this, ChatRoomActivity.class);
-        intent.putExtra(Constants.EXTRAA_CHAT_ROOM_COMPANION_ID,"123");
+        intent.putExtra(Constants.EXTRAA_CHAT_ROOM_COMPANION_ID,"raj123");
         startActivity(intent);
     }
 
-    private void injectData(String crid){
-        Message m = new Message(ChatConfig.getMessageID("124"),"hi","sent_time","delivered_time","seen_time", MessageStatus.STATUS_PENDING,crid,UserPreference.getUserId(),"124");
-        ChatRoom chatRoom = new ChatRoom(crid,"123","Ankit Kumar",m,2,1,"http://cutehotpics.com/wp-content/gallery/rakul-preet-singh/Rakul-Preet-Singh-Hot-Pics-1.jpg","Online");
-        FirebaseDatabaseManager.registerDevice();
+    private void injectData(){
+        String MyId = UserPreference.getUserId();
+        String compId = "raj123";
 
-        FirebaseDatabaseManager.createOrUpdateChatroom(chatRoom);
-        FirebaseDatabaseManager.addMessageToSelfNode(m);
-        FirebaseDatabaseManager.addMessageToRemoteNode(m);
+        Message message = new Message(ChatConfig.getMessageID(compId,MyId),
+                "Message from Rajat",
+                "08:00 AM",
+                "",
+                "",
+                MessageStatus.STATUS_SENT,
+                ChatConfig.getChatRoomId(compId,MyId),
+                compId,MyId
+        );
 
-        FirebaseDatabaseManager.getOnlineStatusReference().child("123").setValue("Online");
-        FirebaseDatabaseManager.getOnlineStatusReference().child("124").setValue("Last seen today at: 1:00 PM");
-        FirebaseDatabaseManager.getOnlineStatusReference().child("125").setValue("Online");
+        ChatRoom myChatRoom = new ChatRoom(
+                ChatConfig.getChatRoomId(compId,MyId),
+                compId,
+                "Ankit",
+                message,
+                0,
+                0,
+                "--no--avatar",
+                "Online"
+        );
+        // get self node and add message
+        FirebaseDatabaseManager.addMessageToSelfNode(message);
+        FirebaseDatabaseManager.createOrUpdateChatroom(myChatRoom);
+
+        // change message modo[change chat room id]
+        message.setChatRoomId(ChatConfig.getChatRoomId(MyId,compId));
+        message.setMessageId(ChatConfig.getMessageID(MyId,compId));
+
+        ChatRoom compChatRoom = new ChatRoom(
+                ChatConfig.getChatRoomId(MyId,compId),
+                MyId,
+                "Rajat",
+                message,
+                0,
+                0,
+                "--no--avatar",
+                "Online"
+        );
+
+        FirebaseDatabaseManager.addMessageToRemoteNode(message);
+        FirebaseDatabaseManager.createOrUpdateChatroom(compChatRoom);
 
     }
 

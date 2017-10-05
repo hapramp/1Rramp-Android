@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import java.util.ArrayList;
 
 import bxute.config.Constants;
-import bxute.config.HaprampTime;
+import bxute.config.LocalTimeManager;
 import bxute.config.MessageStatus;
 import bxute.database.DatabaseHelper;
 import bxute.interfaces.MessageDispatchCallback;
@@ -26,14 +26,14 @@ public class DispatchService extends Service implements MessageDispatchCallback,
     ArrayList<JobModel> jobs;
     private final String TAG = DispatchService.class.getSimpleName();
     private DatabaseHelper databaseHelper;
-    private HaprampTime time;
+    private LocalTimeManager time;
 
     @Override
     public void onCreate() {
         super.onCreate();
         jobs = new ArrayList<>();
         databaseHelper = new DatabaseHelper(this);
-        time = HaprampTime.getInstance();
+        time = LocalTimeManager.getInstance();
 
     }
 
