@@ -48,12 +48,11 @@
         android:layout_height="wrap_content" />
 
     <TextView
-        android:textSize="12sp"
-        android:lines="1"
+        android:textSize="24sp"
         android:maxLines="1"
-        android:textColor="#b4b4b4"
+        android:text=""
+        android:textColor="#9e9e9e"
         android:layout_margin="@dimen/chat_list_title_margin"
-        android:layout_below="@+id/chat_list_last_message"
         android:layout_toEndOf="@+id/chat_list_avatar"
         android:id="@+id/online_status"
         android:layout_width="match_parent"
@@ -62,6 +61,7 @@
     <FrameLayout
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:background="#949494"
+        android:background="#bebfbd"
         android:layout_height="1dp"/>
+
 </RelativeLayout>

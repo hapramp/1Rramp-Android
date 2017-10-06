@@ -1,6 +1,8 @@
 package bxute.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import bxute.FontManager;
 import bxute.chat.R;
 import bxute.chat.R2;
 import bxute.config.ChatConfig;
@@ -34,11 +37,13 @@ public class ChatListRecyclerAdapter extends RecyclerView.Adapter<ChatListRecycl
     private Context context;
     private ArrayList<ChatRoom> chatRooms;
     private ChatListitemClickListener listitemClickListener;
+    private Typeface typeface;
 
     public ChatListRecyclerAdapter(Context context, ChatListitemClickListener chatListitemClickListener) {
         this.context = context;
         this.listitemClickListener = chatListitemClickListener;
         chatRooms = new ArrayList<>();
+        typeface = new FontManager(context).getDefault();
     }
 
     public void setChatRooms(ArrayList<ChatRoom> chatRooms) {
@@ -85,15 +90,18 @@ public class ChatListRecyclerAdapter extends RecyclerView.Adapter<ChatListRecycl
         public void bind(final ChatRoom chatRoom, final ChatListitemClickListener listitemClickListener) {
             chatListAvatar.setImageURI(chatRoom.getChatRoomAvatar());
             chatListTitle.setText(chatRoom.getChatRoomName());
-            onlineStatus.setText(chatRoom.getOnlineStatus());
             chatListLastMessage.setText(chatRoom.getLastMessage().getContent());
             unreadCount.setText(String.valueOf(chatRoom.getUnreadCount()));
+
             container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     listitemClickListener.onItemClicked(ChatConfig.getCompanionIdFromChatRoomId(chatRoom.getChatRoomId()));
                 }
             });
+            onlineStatus.setTypeface(typeface);
+            int onlineSymbolColor = chatRoom.getOnlineStatus().equals("Online") ? Color.parseColor("#FF2FBC04") : Color.parseColor("#bebfbd");
+            onlineStatus.setTextColor(onlineSymbolColor);
         }
 
     }

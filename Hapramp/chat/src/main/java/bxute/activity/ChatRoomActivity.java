@@ -30,6 +30,7 @@ import bxute.config.LocalTimeManager;
 import bxute.config.MessageStatus;
 import bxute.config.UserPreference;
 import bxute.fcm.FirebaseDatabaseManager;
+import bxute.logger.L;
 import bxute.models.ChatRoom;
 import bxute.models.Message;
 
@@ -50,6 +51,7 @@ public class ChatRoomActivity extends AppCompatActivity {
     @BindView(R2.id.send_btn)
     ImageView sendBtn;
     private String mCompanionId;
+    private String mChatRoomId;
     private ArrayList<Message> messages;
     private LocalTimeManager timeManager;
     private ChatRoomRecyclerAdapter chatRoomRecyclerAdapter;
@@ -68,14 +70,12 @@ public class ChatRoomActivity extends AppCompatActivity {
 
     private void fetchAndListenToolbarInfo() {
 
-        FirebaseDatabaseManager.getChatRoomsReferenceForFetching()
-                .child(ChatConfig.getChatRoomId(UserPreference.getUserId(),mCompanionId))
-                .child("chatRoomAvatar")
+        FirebaseDatabaseManager.getChatRoomAvatarRef(UserPreference.getUserId(), mChatRoomId)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                            Log.d("__DEBUG", dataSnapshot.getValue().toString());
-                            chatRoomAvatar.setImageURI(dataSnapshot.getValue().toString());
+                        Log.d("__DEBUG", dataSnapshot.getValue().toString());
+                        chatRoomAvatar.setImageURI(dataSnapshot.getValue().toString());
                     }
 
                     @Override
@@ -84,9 +84,7 @@ public class ChatRoomActivity extends AppCompatActivity {
                     }
                 });
 
-        FirebaseDatabaseManager.getChatRoomsReferenceForFetching()
-                .child(ChatConfig.getChatRoomId(UserPreference.getUserId(),mCompanionId))
-                .child("chatRoomName")
+        FirebaseDatabaseManager.getChatRoomNameRef(UserPreference.getUserId(), mChatRoomId)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -100,9 +98,7 @@ public class ChatRoomActivity extends AppCompatActivity {
                     }
                 });
 
-        FirebaseDatabaseManager.getChatRoomsReferenceForFetching()
-                .child(ChatConfig.getChatRoomId(UserPreference.getUserId(),mCompanionId))
-                .child("onlineStatus")
+        FirebaseDatabaseManager.getChatRoomOnlineStatusRef(UserPreference.getUserId(), mChatRoomId)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -119,40 +115,45 @@ public class ChatRoomActivity extends AppCompatActivity {
 
     private void initObjects() {
         timeManager = LocalTimeManager.getInstance();
+        mChatRoomId = ChatConfig.getChatRoomId(UserPreference.getUserId(), mCompanionId);
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isValidMessage())
+                if (isValidMessage())
                     prepareAndSendMessage();
             }
         });
     }
 
     private void setAdapter() {
+
         messages = new ArrayList<>();
         chatRoomRecyclerAdapter = new ChatRoomRecyclerAdapter(this);
         chatRoomRecyclerAdapter.setMessages(messages);
         chatsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         chatsRecyclerView.setAdapter(chatRoomRecyclerAdapter);
+
     }
 
     private void fetchAndListenChats() {
 
-        FirebaseDatabaseManager.getChatsReferenceForFetching().addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                messages.clear();
-                for (DataSnapshot d : dataSnapshot.getChildren()) {
-                    messages.add(d.getValue(Message.class));
-                    chatRoomRecyclerAdapter.notifyDataSetChanged();
-                }
-            }
+        FirebaseDatabaseManager.getChatsReference(UserPreference.getUserId(), mChatRoomId)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        messages.clear();
+                        for (DataSnapshot d : dataSnapshot.getChildren()) {
+                            L.D.m("__DEBUG",d.getValue().toString());
+                            messages.add(d.getValue(Message.class));
+                            chatRoomRecyclerAdapter.notifyDataSetChanged();
+                        }
+                    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                    }
+                });
     }
 
     private void collectCompanionInfo() {
@@ -164,60 +165,63 @@ public class ChatRoomActivity extends AppCompatActivity {
     }
 // TODO: 9/15/2017 Add input box + add dispatchers + add Online status + add typing status + add notifications
 
-    private boolean isValidMessage(){
-        return msgInput.getText().toString().trim().length()>0;
+    private boolean isValidMessage() {
+        return msgInput.getText().toString().trim().length() > 0;
     }
 
-    private String getMessage(){
+    private String getMessage() {
         // TODO: 10/4/2017 add message moderator and validations
         return msgInput.getText().toString();
     }
 
-    private void prepareAndSendMessage(){
+    private void prepareAndSendMessage() {
 
         String MyId = UserPreference.getUserId();
         String compId = mCompanionId;
-        Message message = new Message(ChatConfig.getMessageID(MyId,compId),
+        Message message = new Message(ChatConfig.getMessageID(MyId, compId),
                 getMessage(),
                 timeManager.getTime(),
                 "",
                 "",
                 MessageStatus.STATUS_SENT,
-                ChatConfig.getChatRoomId(MyId,compId),
-                MyId,compId
-                );
+                ChatConfig.getChatRoomId(MyId, compId),
+                MyId, compId
+        );
+
 
         ChatRoom myChatRoom = new ChatRoom(
-                ChatConfig.getChatRoomId(MyId,compId),
+                ChatConfig.getChatRoomId(MyId, compId),
                 MyId,
-                "Rajat",
+                chatRoomTitle.getText().toString(),
                 message,
                 0,
                 0,
-                "--no--avatar",
+                "https://lh3.googleusercontent.com/-i3eYqs47cXs/AAAAAAAAAAI/AAAAAAAAAAA/ACnBePbq5DiyG23GGHEvxhS1K14h5fvKnw/s48-c-mo/photo.jpg",
                 "Online"
         );
         // get self node and add message
-        FirebaseDatabaseManager.addMessageToSelfNode(message);
         FirebaseDatabaseManager.createOrUpdateChatroom(myChatRoom);
+        FirebaseDatabaseManager.addMessageToSelf(message);
+
 
         // change message modo[change chat room id]
-        message.setChatRoomId(ChatConfig.getChatRoomId(compId,MyId));
-        message.setMessageId(ChatConfig.getMessageID(compId,MyId));
+        message.setChatRoomId(ChatConfig.getChatRoomId(compId, MyId));
+        message.setMessageId(ChatConfig.getMessageID(compId, MyId));
 
         ChatRoom compChatRoom = new ChatRoom(
-                ChatConfig.getChatRoomId(compId,MyId),
+                ChatConfig.getChatRoomId(compId, MyId),
                 compId,
-                "Ankit",
+                "Ankit Kumar",
                 message,
                 0,
                 0,
-                "--no--avatar",
+                "https://lh3.googleusercontent.com/-i3eYqs47cXs/AAAAAAAAAAI/AAAAAAAAAAA/ACnBePbq5DiyG23GGHEvxhS1K14h5fvKnw/s48-c-mo/photo.jpg",
                 "Online"
         );
 
-        FirebaseDatabaseManager.addMessageToRemoteNode(message);
         FirebaseDatabaseManager.createOrUpdateChatroom(compChatRoom);
+        FirebaseDatabaseManager.addMessageToRemote(message);
+
 
     }
 }

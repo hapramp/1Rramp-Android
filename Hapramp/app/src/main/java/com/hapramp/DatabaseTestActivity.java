@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import bxute.activity.ChatListActivity;
 import bxute.activity.ChatRoomActivity;
 import bxute.config.ChatConfig;
 import bxute.config.Constants;
@@ -19,61 +20,69 @@ public class DatabaseTestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_database_test);
-        injectData();
+
+        String rajatId = "Rajat";
+        String rajeshId = "Rajesh";
+        String chanchalId = "Chanchal";
+
+        injectChatRoom(chanchalId);
+        injectChatRoom(rajeshId);
+        injectChatRoom(rajatId);
+
         test();
     }
 
     private void test(){
-        Intent intent = new Intent(this, ChatRoomActivity.class);
-        intent.putExtra(Constants.EXTRAA_CHAT_ROOM_COMPANION_ID,"raj123");
+        Intent intent = new Intent(this, ChatListActivity.class);
         startActivity(intent);
     }
 
-    private void injectData(){
-        String MyId = UserPreference.getUserId();
-        String compId = "raj123";
+    private void injectChatRoom(String chanchalId){
 
-        Message message = new Message(ChatConfig.getMessageID(compId,MyId),
-                "Message from Rajat",
+        String MyId = UserPreference.getUserId();
+        Message message = new Message(
+                ChatConfig.getMessageID(chanchalId,MyId),  // message from chanchal
+                "Message from "+chanchalId,
                 "08:00 AM",
                 "",
                 "",
                 MessageStatus.STATUS_SENT,
-                ChatConfig.getChatRoomId(compId,MyId),
-                compId,MyId
+                ChatConfig.getChatRoomId(chanchalId,MyId),
+                chanchalId,MyId
         );
 
         ChatRoom myChatRoom = new ChatRoom(
-                ChatConfig.getChatRoomId(compId,MyId),
-                compId,
-                "Ankit",
+                ChatConfig.getChatRoomId(chanchalId,MyId),
+                chanchalId,
+                "Ankit Kumar",
                 message,
                 0,
                 0,
-                "--no--avatar",
+                "https://lh3.googleusercontent.com/-oB-qfI6Mmwc/AAAAAAAAAAI/AAAAAAAAAAA/ACnBePYLfOpmginapw-BdNcUE_VORECrKA/s48-c-mo/photo.jpg",
                 "Online"
         );
         // get self node and add message
-        FirebaseDatabaseManager.addMessageToSelfNode(message);
         FirebaseDatabaseManager.createOrUpdateChatroom(myChatRoom);
+        FirebaseDatabaseManager.addMessageToSelf(message);
+
 
         // change message modo[change chat room id]
-        message.setChatRoomId(ChatConfig.getChatRoomId(MyId,compId));
-        message.setMessageId(ChatConfig.getMessageID(MyId,compId));
+        message.setChatRoomId(ChatConfig.getChatRoomId(MyId,chanchalId));
+        message.setMessageId(ChatConfig.getMessageID(MyId,chanchalId));
 
         ChatRoom compChatRoom = new ChatRoom(
-                ChatConfig.getChatRoomId(MyId,compId),
+                ChatConfig.getChatRoomId(MyId,chanchalId),
                 MyId,
-                "Rajat",
+                "Cr- "+chanchalId,
                 message,
                 0,
                 0,
-                "--no--avatar",
+                "https://lh3.googleusercontent.com/-oB-qfI6Mmwc/AAAAAAAAAAI/AAAAAAAAAAA/ACnBePYLfOpmginapw-BdNcUE_VORECrKA/s48-c-mo/photo.jpg",
                 "Online"
         );
 
-        FirebaseDatabaseManager.addMessageToRemoteNode(message);
         FirebaseDatabaseManager.createOrUpdateChatroom(compChatRoom);
+        FirebaseDatabaseManager.addMessageToRemote(message);
 
     }
 

@@ -34,7 +34,6 @@ public class ChatListActivity extends AppCompatActivity implements ChatListitemC
     RecyclerView chatList;
     ChatListRecyclerAdapter adapter;
     ArrayList<ChatRoom> chatRooms;
-    HashMap<String, Integer> indexMap; // key:chatRoomId
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +41,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListitemC
         setContentView(R.layout.activity_chat_list);
         ButterKnife.bind(this);
         setAdapter();
-        indexMap = new HashMap<>();
         fetchChatRooms();
-        fetchOnlineStatus();
     }
 
     private void setAdapter() {
@@ -60,14 +57,15 @@ public class ChatListActivity extends AppCompatActivity implements ChatListitemC
     private void fetchChatRooms() {
 
 
-        FirebaseDatabaseManager.getChatRoomsReferenceForFetching().addValueEventListener(new ValueEventListener() {
+        FirebaseDatabaseManager.getChatRoomsRef()
+                .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {   //datasnapshot represent childs of "chatRooms"
+                chatRooms.clear();
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
-                    Log.d("__DEBUG", "putting into index");
-                    indexMap.put(d.getKey(), chatRooms.size());     // key: chatRoomId
                     chatRooms.add(d.getValue(ChatRoom.class));
                 }
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -75,41 +73,6 @@ public class ChatListActivity extends AppCompatActivity implements ChatListitemC
 
             }
         });
-    }
-
-    private void fetchOnlineStatus() {
-
-        FirebaseDatabaseManager.getOnlineStatusReference().addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot d : dataSnapshot.getChildren()) {
-                    // Update the
-                    //updateStatus(ChatConfig.getChatRoomId(,d.getKey()), d.getValue(String.class)); // key is userID
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-    }
-
-    private void updateStatus(String userId, String onlineStatus) {
-
-        Log.d("__DEBUG", "setting online status :" + userId + " - " + onlineStatus);
-        try {
-            Log.d("__DEBUG", indexMap.toString());
-            if (indexMap.get(userId) != null) {
-                chatRooms.get(indexMap.get(userId)).setOnlineStatus(onlineStatus);
-            }
-        } catch (Exception e) {
-            Log.d("__DEBUG", e.toString());
-        }
-
-        adapter.notifyDataSetChanged();
-
     }
 
     private void navigateToChatRoom(String userId) {

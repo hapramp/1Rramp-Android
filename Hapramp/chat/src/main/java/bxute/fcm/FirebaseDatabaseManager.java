@@ -1,7 +1,5 @@
 package bxute.fcm;
 
-import android.util.Log;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -9,6 +7,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import bxute.config.ChatConfig;
 import bxute.config.UserPreference;
 import bxute.logger.L;
 import bxute.models.ChatRoom;
@@ -22,7 +21,7 @@ public class FirebaseDatabaseManager {
 
     private static FirebaseDatabase firebaseDatabase;
     private static DatabaseReference rootReference;
-    private static DatabaseReference chatRoomsReference;
+    private static DatabaseReference usersNodeReference;
     private static DatabaseReference chatsReference;
     private static DatabaseReference devicesReference;
     private static DatabaseReference onlineStatusReference;
@@ -34,12 +33,11 @@ public class FirebaseDatabaseManager {
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         firebaseDatabase.setPersistenceEnabled(true);
-        rootReference = firebaseDatabase.getReference("root");
-        chatRoomsReference = rootReference.child("users");// get access to its own node
-        chatsReference = rootReference.child("users");  // get access to its own node
-        devicesReference = rootReference.child("devices");
+        rootReference = firebaseDatabase.getReference(Node.ROOT);
+        usersNodeReference = rootReference.child(Node.USERS);// get access to its own node
+        devicesReference = rootReference.child(Node.DEVICES);
         devicesReference.keepSynced(true);  // keeping device ids Synced fresh
-        onlineStatusReference = rootReference.child("onlineStatus");
+        onlineStatusReference = rootReference.child(Node.ONLINE_STATUS);
 
 
     }
@@ -59,36 +57,51 @@ public class FirebaseDatabaseManager {
         return rootReference;
     }
 
-    public static DatabaseReference getChatRoomsReferenceForFetching() {
+    public static DatabaseReference getUserNodeRefByUserId(String userId){ // User Level Node
         i();
-        return chatRoomsReference.child(UserPreference.getUserId()).child("chatRooms");
+        return usersNodeReference.child(userId);
     }
 
     /*
-    * This method is used to update/create chat room for other companion
+    * Helper method for reference to all chat rooms
     * */
-    public static DatabaseReference getChatRoomsReferenceForUpdatingOrCreate(String companionId) {
+    public static DatabaseReference getChatRoomsRef(){
         i();
-        return chatRoomsReference.child(companionId).child("chatRooms");
+        return getUserNodeRefByUserId(UserPreference.getUserId()).child(Node.CHATROOMS);
     }
-
-    public static DatabaseReference getChatsReferenceForFetching() {
-        i();
-        return chatsReference.child(UserPreference.getUserId()).child("chats");
-    }
-
 
     /*
-    * This method is used to adding message to other user`s chat list
+    * Helper method for reference to a single chat room
     * */
-    public static DatabaseReference getChatsRemoteUserNodeRef(String companionId) {
+
+    public static DatabaseReference getChatRoomRef(String userId, String chatRoomId){
         i();
-        return chatsReference.child(companionId).child("chats");
+        return getUserNodeRefByUserId(userId).child(Node.CHATROOMS).child(chatRoomId);
     }
 
-    public static DatabaseReference getDevicesReference() {
+    /*
+    * Helper methods for reference to all chats
+    * */
+    public static DatabaseReference getChatsReference(String userId, String chatRoomId){
         i();
-        return devicesReference;
+        return getUserNodeRefByUserId(userId).child(Node.CHATS).child(chatRoomId);
+    }
+
+    /*
+    * Helper methods for reference to a single chat
+    * */
+    public static DatabaseReference getChatReference(String userId, String chatRoomId , String messageId){
+        i();
+        return getUserNodeRefByUserId(userId).child(Node.CHATS).child(chatRoomId).child(messageId);
+    }
+
+    /*
+    * Helper methods for reference to all devices
+    * */
+
+    public static DatabaseReference getDeviceReference(String deviceId){
+        i();
+        return devicesReference.child(deviceId);
     }
 
     public static DatabaseReference getOnlineStatusReference() {
@@ -97,34 +110,11 @@ public class FirebaseDatabaseManager {
     }
 
     /*
-        * Used to register device itself on the server
-        * */
+     * Used to register device itself on the server
+     * */
     public static void registerDevice() {
         i();
-        // Key<UserId>:Value<DeviceId>
-        Log.d("DEBUG", "id " + FirebaseInstanceId.getInstance().getToken());
         devicesReference.child(UserPreference.getUserId()).setValue(FirebaseInstanceId.getInstance().getToken());
-    }
-
-    /*
-    * Used to get Devices registered
-    * */
-
-    public static void getDevices() {
-        i();
-        devicesReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot d : dataSnapshot.getChildren()) {
-                    L.D.m("DEBUG", d.getValue(String.class));
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
     /*
@@ -140,29 +130,82 @@ public class FirebaseDatabaseManager {
     *   Used to add/update Chat Room of both sender and receiver
     *   Anybody who sends the message will perform update of both chat room
     * */
-    public static void createOrUpdateChatroom(ChatRoom chatRoom) {
+    public static void createOrUpdateChatroom(final ChatRoom chatRoom) {
         i();
-        getChatRoomsReferenceForUpdatingOrCreate(chatRoom.getOwnerId()).child(chatRoom.getChatRoomId()).setValue(chatRoom);
+        getChatRoomRef(chatRoom.getOwnerId(),chatRoom.getChatRoomId()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    //update existing
+                    L.D.m("__DEBUG","updating...");
+                    getChatRoomRef(chatRoom.getOwnerId(),chatRoom.getChatRoomId()).child(Node.LAST_MESSAGE).setValue(chatRoom.getLastMessage());
+                }else{
+                    // create one
+                    L.D.m("__DEBUG","creating new...");
+                    getChatRoomRef(chatRoom.getOwnerId(),chatRoom.getChatRoomId()).setValue(chatRoom);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    /**
+     * Used to add/update message of sender
+     */
+    public static void addMessageToSelf(Message message) {
+        i();
+        getChatReference(message.getSenderId(),message.getChatRoomId(),message.getMessageId()).setValue(message);
     }
 
 
     /**
-     * Used to add/update message of both sender and receiver
+     * Used to add/update message of receiver
      */
-    public static void addMessageToSelfNode(Message message) {
+    public static void addMessageToRemote(Message message) {
         i();
-        // for self node
-        getChatsRemoteUserNodeRef(message.getSenderId()).child(message.getMessageId()).setValue(message);
+        getChatReference(message.getReceiverId(),message.getChatRoomId(),message.getMessageId()).setValue(message);
+    }
+
+    /*
+    * Helper method to get ref to Chat Room Avatar
+    * */
+    public static DatabaseReference getChatRoomAvatarRef(String userId,String chatRoomId){
+        return getChatRoomRef(userId,chatRoomId)
+                .child(Node.CHAT_ROOM_AVATAR);
+    }
+
+    /*
+    * Helper method to get ref to Chat Room Name
+    * */
+    public static DatabaseReference getChatRoomNameRef(String userId,String chatRoomId){
+        return getChatRoomRef(userId,chatRoomId)
+                .child(Node.CHAT_ROOM_NAME);
+    }
+
+    /*
+   * Helper method to get ref to Online Status of a Chat Room
+   * */
+    public static DatabaseReference getChatRoomOnlineStatusRef(String userId,String chatRoomId){
+        return getChatRoomRef(userId,chatRoomId)
+                .child(Node.ONLINE_STATUS);
     }
 
 
-    /**
-     * Used to add/update message of both sender and receiver
-     */
-    public static void addMessageToRemoteNode(Message message) {
-        i();
-        // for self node
-        getChatsRemoteUserNodeRef(message.getReceiverId()).child(message.getMessageId()).setValue(message);
+    public static class Node{
+        public static final String ROOT = "root";
+        public static final String USERS = "users";
+        public static final String DEVICES = "devices";
+        public static final String ONLINE_STATUS = "onlineStatus";
+        public static final String CHATS = "chats";
+        public static final String CHATROOMS = "chatRooms";
+        public static final String LAST_MESSAGE = "lastMessage";
+        public static final String CHAT_ROOM_AVATAR = "chatRoomAvatar";
+        public static final String CHAT_ROOM_NAME = "chatRoomName";
     }
 
 }

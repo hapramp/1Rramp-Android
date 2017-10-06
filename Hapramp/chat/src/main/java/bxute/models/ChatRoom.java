@@ -110,9 +110,4 @@ public class ChatRoom {
                 ", onlineStatus='" + onlineStatus + '\'' +
                 '}';
     }
-
-    private void aVoid(){
-
-    }
-
 }
