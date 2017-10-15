@@ -15,13 +15,21 @@
       },
       "oauth_client": [
         {
+          "client_id": "574002232827-0tcq9trh3qk9b8ph6mmug4fmh31l7o59.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hapramp",
+            "certificate_hash": "18ff7d4760c41d9a30dada97d60ebb4751e9157c"
+          }
+        },
+        {
           "client_id": "574002232827-bjtftpo4t07akdnlvnsmbt02ssqgnlsg.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAH7mVdW2suYNLY93iJ3NTSXDNFQd5UPdo"
+          "current_key": "AIzaSyBVUoUB41eL2GS_ERrG5bAfrjr1bukCu2g"
         }
       ],
       "services": {
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "574002232827-bjtftpo4t07akdnlvnsmbt02ssqgnlsg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

@@ -13,6 +13,7 @@ public class MessageStatus {
     public static final int STATUS_SENT = 0;
     public static final int STATUS_DELIVERED = 1;
     public static final int STATUS_SEEN = 2;
+    public static final int STATUS_DELETED = 4;
     //for incomming message
     public static final int STATUS_RECEIVED = 3;
     public static final int STATUS_DELIVERY_CONFIRMED = 4;

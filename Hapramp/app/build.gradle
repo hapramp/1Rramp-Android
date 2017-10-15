@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        release {
+            keyAlias 'hapramp-and'
+            keyPassword 'hapramp'
+            storeFile file("$rootDir\\hapramp.jks")
+            storePassword 'hapramp'
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
@@ -44,6 +52,8 @@ dependencies {
     compile 'com.google.android.gms:play-services-auth:10.0.1'
     compile 'com.jakewharton:butterknife:8.6.0'
     testCompile 'junit:junit:4.12'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
     compile project(':chat')
 }

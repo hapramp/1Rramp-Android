@@ -11,7 +11,7 @@
         android:layout_alignParentEnd="true"
         android:textColor="#ffffff"
         android:id="@+id/content"
-        android:text="Ankit Kumar"
+        android:text="Ankit Kuma"
         android:background="@drawable/chat_bubble_outgoing_bg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -20,13 +20,13 @@
         android:layout_toStartOf="@+id/msg_state"
         android:id="@+id/time"
         android:text="12:00"
+        android:textColor="@color/chatColorPrimary"
         android:textSize="12sp"
         android:layout_below="@+id/content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <TextView
-        android:textColor="#369413"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="0dp"
         android:text="A"

@@ -1,8 +1,5 @@
 package bxute.models;
 
-import bxute.config.ChatConfig;
-import bxute.config.UserPreference;
-
 /**
  * Created by Ankit on 7/13/2017.
  */
@@ -16,7 +13,7 @@ public class ChatRoom {
     private int unreadCount;
     private int priority;
     private String chatRoomAvatar;
-    private String onlineStatus;
+    private String typingStatus;
 
     public ChatRoom(){
 
@@ -30,7 +27,7 @@ public class ChatRoom {
         this.unreadCount = unreadCount;
         this.priority = priority;
         this.chatRoomAvatar = chatRoomAvatar;
-        this.onlineStatus = onlineStatus;
+        this.typingStatus = onlineStatus;
     }
 
     public String getOwnerId() {
@@ -49,12 +46,12 @@ public class ChatRoom {
         this.chatRoomAvatar = chatRoomAvatar;
     }
 
-    public String getOnlineStatus() {
-        return onlineStatus;
+    public String getTypingStatus() {
+        return typingStatus;
     }
 
-    public void setOnlineStatus(String onlineStatus) {
-        this.onlineStatus = onlineStatus;
+    public void setTypingStatus(String typingStatus) {
+        this.typingStatus = typingStatus;
     }
 
     public String getChatRoomId() {
@@ -107,7 +104,7 @@ public class ChatRoom {
                 ", unreadCount=" + unreadCount +
                 ", priority=" + priority +
                 ", chatRoomAvatar='" + chatRoomAvatar + '\'' +
-                ", onlineStatus='" + onlineStatus + '\'' +
+                ", typingStatus='" + typingStatus + '\'' +
                 '}';
     }
 }

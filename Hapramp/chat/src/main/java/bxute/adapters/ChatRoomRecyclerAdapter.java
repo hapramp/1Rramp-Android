@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import bxute.FontManager;
+import bxute.LocalTimeFormatter;
 import bxute.chat.R;
 import bxute.chat.R2;
 import bxute.config.MessageStatus;
@@ -30,10 +31,12 @@ public class ChatRoomRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
     private int VIEW_TYPE_INCOMMING = 12;
     private int VIEW_TYPE_OUTGOING = 11;
     Typeface typeface;
+    LocalTimeFormatter timeFormatter;
 
     public ChatRoomRecyclerAdapter(Context mContext) {
         this.mContext = mContext;
         messages = new ArrayList<>();
+        timeFormatter = new LocalTimeFormatter();
         typeface = new FontManager(mContext).getDefault();
     }
 
@@ -95,7 +98,7 @@ public class ChatRoomRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         public void bind(Message message) {
             content.setText(message.getContent());
-            time.setText(message.getSent_time());
+            time.setText(timeFormatter.getFormattedTimeStamp(message.getSent_time(),LocalTimeFormatter.FORMAT_MESSAGE_TIP));
         }
     }
 
@@ -115,8 +118,9 @@ public class ChatRoomRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
 
         public void bind(Message message) {
+
             content.setText(message.getContent());
-            time.setText(message.getSent_time());
+            time.setText(timeFormatter.getFormattedTimeStamp(message.getSent_time(),LocalTimeFormatter.FORMAT_MESSAGE_TIP));
             msgState.setTypeface(typeface);
 
             switch (message.getStatus()){
@@ -133,6 +137,7 @@ public class ChatRoomRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
                     msgState.setTextColor(Color.GREEN);
                     break;
             }
+
         }
     }
 

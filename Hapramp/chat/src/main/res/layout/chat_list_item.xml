@@ -4,58 +4,84 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:background="#ffffff"
-    android:padding="@dimen/chat_list_padding"
     android:layout_height="@dimen/chat_list_height">
+
+    <FrameLayout
+        android:padding="4dp"
+        android:id="@+id/chat_list_avatar_container"
+        android:layout_width="@dimen/chat_list_avatar_width"
+        android:layout_height="@dimen/chat_list_avatar_width">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/chat_list_avatar"
         fresco:roundAsCircle="true"
+        android:layout_margin="4dp"
         fresco:actualImageScaleType="centerCrop"
         fresco:failureImage="@drawable/unread_count_backgroud"
-        android:layout_width="@dimen/chat_list_avatar_width"
-        android:layout_height="@dimen/chat_list_avatar_width"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         />
-    
+
+    <bxute.views.OnlineIndicatorView
+        android:text="0"
+        android:background="@drawable/online_indicator_bg"
+        android:layout_gravity="end"
+        android:gravity="center"
+        android:textSize="14sp"
+        android:textColor="#0a0909"
+        android:id="@+id/online_status"
+        android:layout_width="18dp"
+        android:layout_height="18dp" />
+
+    </FrameLayout>
+
     <TextView
         android:id="@+id/chat_list_title"
         android:textColor="#262626"
         android:textStyle="bold"
         android:textSize="@dimen/chat_list_title_size"
-        android:layout_toEndOf="@+id/chat_list_avatar"
+        android:layout_toEndOf="@+id/chat_list_avatar_container"
         android:layout_margin="@dimen/chat_list_title_margin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <TextView
+        android:layout_margin="4dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:text="8"
+        android:textColor="#ffffff"
+        android:background="@drawable/unread_count_bg"
         android:id="@+id/unread_count"
         android:textSize="12sp"
         android:gravity="center"
         android:layout_alignParentEnd="true"
-        android:layout_width="@dimen/chat_list_unread_count_dimen"
-        android:layout_height="@dimen/chat_list_unread_count_dimen" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     
     <TextView
         android:textColor="#454545"
         android:layout_marginStart="@dimen/chat_list_message_margin"
         android:layout_marginEnd="@dimen/chat_list_message_margin"
-        android:layout_toEndOf="@+id/chat_list_avatar"
+        android:layout_toEndOf="@+id/chat_list_avatar_container"
         android:layout_below="@+id/chat_list_title"
+        android:layout_toStartOf="@+id/chat_list_last_message_time"
         android:id="@+id/chat_list_last_message"
         android:layout_width="match_parent"
-        android:lines="2"
-        android:maxLines="2"
+        android:lines="1"
+        android:maxLines="1"
         android:ellipsize="end"
         android:layout_height="wrap_content" />
 
     <TextView
-        android:textSize="24sp"
-        android:maxLines="1"
-        android:text=""
-        android:textColor="#9e9e9e"
-        android:layout_margin="@dimen/chat_list_title_margin"
-        android:layout_toEndOf="@+id/chat_list_avatar"
-        android:id="@+id/online_status"
-        android:layout_width="match_parent"
+        android:layout_margin="4dp"
+        android:textSize="12sp"
+        android:textColor="#535353"
+        android:text="1:00 Pm"
+        android:id="@+id/chat_list_last_message_time"
+        android:layout_below="@+id/chat_list_title"
+        android:layout_alignParentEnd="true"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <FrameLayout

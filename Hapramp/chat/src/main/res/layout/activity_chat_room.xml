@@ -6,56 +6,82 @@
 
     <RelativeLayout
         android:id="@+id/toolbar"
-        android:background="#1f7896"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize">
+        android:layout_height="?actionBarSize"
+        android:background="@color/chatColorPrimary">
+
+        <TextView
+            android:id="@+id/backBtn"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:text=""
+            android:textColor="#ffffff"
+            android:textSize="28sp" />
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/chatRoomAvatar"
-            fresco:roundAsCircle="true"
-            android:layout_width="64dp"
-            android:layout_height="64dp" />
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/backBtn"
+            fresco:roundAsCircle="true" />
 
         <TextView
-            android:textColor="#ffffff"
             android:id="@+id/chatRoomTitle"
-            android:layout_toEndOf="@+id/chatRoomAvatar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_toEndOf="@+id/chatRoomAvatar"
+            android:text="Ankit Kumar"
+            android:textColor="#ffffff"
+            android:textSize="18sp" />
 
         <TextView
-            android:textColor="#ffffff"
             android:id="@+id/online_status"
-            android:layout_toEndOf="@id/chatRoomAvatar"
-            android:layout_below="@+id/chatRoomTitle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/chatRoomTitle"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@id/chatRoomAvatar"
+            android:text="Online"
+            android:textColor="#ffffff" />
 
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/chatsRecyclerView"
-        android:layout_below="@+id/toolbar"
-        android:layout_above="@+id/msg_input"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-        
-        <EditText
-            android:id="@+id/msg_input"
-            android:layout_toStartOf="@+id/send_btn"
-            android:layout_alignParentBottom="true"
-            android:layout_width="match_parent"
-            android:layout_height="64dp" />
+        android:layout_height="match_parent"
+        android:layout_above="@+id/msg_input"
+        android:layout_below="@+id/toolbar" />
 
-    <ImageView
-        android:padding="12dp"
-        android:background="@drawable/send_btn_bg"
-        android:id="@+id/send_btn"
+    <EditText
+        android:id="@+id/msg_input"
+        android:layout_width="match_parent"
         android:layout_margin="4dp"
-        android:src="@drawable/send"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/send_btn"
+        android:background="@drawable/input_box_bg"
+        android:hint="Type Message Here..."
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"/>
+
+    <TextView
+        android:textColor="#ffffff"
+        android:text=""
+        android:gravity="center"
+        android:textSize="24sp"
+        android:id="@+id/send_btn"
+        android:background="@drawable/send_btn_bg"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_width="56dp"
-        android:layout_height="56dp" />
-    
+        android:layout_margin="4dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp" />
+
 </RelativeLayout>

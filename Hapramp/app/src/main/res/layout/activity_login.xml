@@ -42,6 +42,7 @@
                     android:theme="@style/HaprampLoginTheme">
 
                     <EditText
+                        android:id="@+id/email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableLeft="@drawable/ic_person_white_24dp"
@@ -59,6 +60,7 @@
                     android:theme="@style/HaprampLoginTheme">
 
                     <EditText
+                        android:id="@+id/password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableLeft="@drawable/ic_https_white_24dp"

@@ -1,32 +1,27 @@
 package bxute.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import bxute.FontManager;
+import bxute.LocalTimeFormatter;
 import bxute.chat.R;
 import bxute.chat.R2;
 import bxute.config.ChatConfig;
-import bxute.fcm.FirebaseDatabaseManager;
 import bxute.interfaces.ChatListitemClickListener;
-import bxute.logger.L;
 import bxute.models.ChatRoom;
+import bxute.views.OnlineIndicatorView;
 
 /**
  * Created by Ankit on 9/9/2017.
@@ -38,11 +33,13 @@ public class ChatListRecyclerAdapter extends RecyclerView.Adapter<ChatListRecycl
     private ArrayList<ChatRoom> chatRooms;
     private ChatListitemClickListener listitemClickListener;
     private Typeface typeface;
+    private LocalTimeFormatter timeFormatter;
 
     public ChatListRecyclerAdapter(Context context, ChatListitemClickListener chatListitemClickListener) {
         this.context = context;
         this.listitemClickListener = chatListitemClickListener;
         chatRooms = new ArrayList<>();
+        timeFormatter = new LocalTimeFormatter();
         typeface = new FontManager(context).getDefault();
     }
 
@@ -76,10 +73,12 @@ public class ChatListRecyclerAdapter extends RecyclerView.Adapter<ChatListRecycl
         @BindView(R2.id.chat_list_last_message)
         TextView chatListLastMessage;
         @BindView(R2.id.online_status)
-        TextView onlineStatus;
+        OnlineIndicatorView onlineStatus;
         @BindView(R2.id.unread_count)
         TextView unreadCount;
         View container;
+        @BindView(R2.id.chat_list_last_message_time)
+        TextView chatListLastMessageTime;
 
         public ChatListItemViewHolder(View itemView) {
             super(itemView);
@@ -88,10 +87,17 @@ public class ChatListRecyclerAdapter extends RecyclerView.Adapter<ChatListRecycl
         }
 
         public void bind(final ChatRoom chatRoom, final ChatListitemClickListener listitemClickListener) {
+
             chatListAvatar.setImageURI(chatRoom.getChatRoomAvatar());
             chatListTitle.setText(chatRoom.getChatRoomName());
             chatListLastMessage.setText(chatRoom.getLastMessage().getContent());
-            unreadCount.setText(String.valueOf(chatRoom.getUnreadCount()));
+            if (chatRoom.getUnreadCount() > 0) {
+                unreadCount.setVisibility(View.VISIBLE);
+                unreadCount.setText(String.valueOf(chatRoom.getUnreadCount()));
+            } else {
+                unreadCount.setVisibility(View.INVISIBLE);
+            }
+            chatListLastMessageTime.setText(timeFormatter.getFormattedTimeStamp(chatRoom.getLastMessage().getSent_time(),LocalTimeFormatter.FORMAT_CHAT_WALL));
 
             container.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -99,9 +105,9 @@ public class ChatListRecyclerAdapter extends RecyclerView.Adapter<ChatListRecycl
                     listitemClickListener.onItemClicked(ChatConfig.getCompanionIdFromChatRoomId(chatRoom.getChatRoomId()));
                 }
             });
-            onlineStatus.setTypeface(typeface);
-            int onlineSymbolColor = chatRoom.getOnlineStatus().equals("Online") ? Color.parseColor("#FF2FBC04") : Color.parseColor("#bebfbd");
-            onlineStatus.setTextColor(onlineSymbolColor);
+
+            onlineStatus.setUserId(ChatConfig.getCompanionIdFromChatRoomId(chatRoom.getChatRoomId()), typeface);
+
         }
 
     }

@@ -9,6 +9,7 @@
         android:background="@drawable/chat_bubble_incomming_bg"
         android:id="@+id/content"
         android:text="Ankti Kumar"
+        android:textColor="#ffffff"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -16,6 +17,7 @@
         android:layout_below="@+id/content"
         android:id="@+id/time"
         android:text="12:00"
+        android:textColor="@color/chatColorSecondary"
         android:textSize="12sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

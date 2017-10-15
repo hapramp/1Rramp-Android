@@ -6,6 +6,9 @@ package bxute.config;
 
 public class ChatConfig {
 
+    public static final String STATUS_TYPING = "1";
+    public static final String STATUS_NOT_TYPING = "0";
+
     public static String getChatRoomId(String myId,String companionID) {
         return new StringBuilder().append("cr_" + myId + "_" + companionID).toString();
     }

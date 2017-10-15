@@ -1,9 +1,12 @@
 package bxute.activity;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -21,6 +24,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import bxute.FontManager;
 import bxute.adapters.ChatRoomRecyclerAdapter;
 import bxute.chat.R;
 import bxute.chat.R2;
@@ -30,7 +34,6 @@ import bxute.config.LocalTimeManager;
 import bxute.config.MessageStatus;
 import bxute.config.UserPreference;
 import bxute.fcm.FirebaseDatabaseManager;
-import bxute.logger.L;
 import bxute.models.ChatRoom;
 import bxute.models.Message;
 
@@ -49,12 +52,17 @@ public class ChatRoomActivity extends AppCompatActivity {
     @BindView(R2.id.msg_input)
     EditText msgInput;
     @BindView(R2.id.send_btn)
-    ImageView sendBtn;
+    TextView sendBtn;
+    @BindView(R2.id.backBtn)
+    TextView backBtn;
     private String mCompanionId;
     private String mChatRoomId;
     private ArrayList<Message> messages;
+    private Message mTempMessage;
     private LocalTimeManager timeManager;
+    private Typeface typeface;
     private ChatRoomRecyclerAdapter chatRoomRecyclerAdapter;
+    private String TYPING_TEXT = "typing...";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,39 +74,75 @@ public class ChatRoomActivity extends AppCompatActivity {
         setAdapter();
         fetchAndListenChats();
         fetchAndListenToolbarInfo();
+        attachTypingListener();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        resetUnreadCount();
     }
 
     private void fetchAndListenToolbarInfo() {
 
-        FirebaseDatabaseManager.getChatRoomAvatarRef(UserPreference.getUserId(), mChatRoomId)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        Log.d("__DEBUG", dataSnapshot.getValue().toString());
-                        chatRoomAvatar.setImageURI(dataSnapshot.getValue().toString());
-                    }
+        FirebaseDatabaseManager.getIdPoolRef(mChatRoomId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                String key = dataSnapshot.getValue().toString();
+                Log.d("__DEBUG", "key - " + key + " | chat room " + mChatRoomId);
 
-                    }
-                });
+                FirebaseDatabaseManager.getChatRoomAvatarRef(UserPreference.getUserId(), key)
+                        .addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
 
-        FirebaseDatabaseManager.getChatRoomNameRef(UserPreference.getUserId(), mChatRoomId)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        Log.d("__DEBUG", dataSnapshot.getValue().toString());
-                        chatRoomTitle.setText(dataSnapshot.getValue().toString());
-                    }
+                                Log.d("__DEBUG", dataSnapshot.getValue().toString());
+                                chatRoomAvatar.setImageURI(dataSnapshot.getValue().toString());
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                            }
 
-                    }
-                });
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
 
-        FirebaseDatabaseManager.getChatRoomOnlineStatusRef(UserPreference.getUserId(), mChatRoomId)
+                            }
+                        });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+        FirebaseDatabaseManager.getIdPoolRef(mChatRoomId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                String key = dataSnapshot.getValue().toString();
+                FirebaseDatabaseManager.getChatRoomNameRef(UserPreference.getUserId(), key)
+                        .addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Log.d("__DEBUG", dataSnapshot.getValue().toString());
+                                chatRoomTitle.setText(dataSnapshot.getValue().toString());
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        FirebaseDatabaseManager.getUserOnlineRef(mCompanionId)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -111,16 +155,60 @@ public class ChatRoomActivity extends AppCompatActivity {
 
                     }
                 });
+
+        FirebaseDatabaseManager.getIdPoolRef(mChatRoomId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String key = dataSnapshot.getValue().toString();
+                FirebaseDatabaseManager.getTypingInfoRef(key).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.d("__DEBUG", dataSnapshot.getValue().toString());
+                        if (dataSnapshot.getValue().toString().equals("1")) {
+                            onlineStatus.setText(TYPING_TEXT);
+                        } else {
+                            onlineStatus.setText("Online");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
     private void initObjects() {
+        typeface = new FontManager(this).getDefault();
+        backBtn.setTypeface(typeface);
+        sendBtn.setTypeface(typeface);
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         timeManager = LocalTimeManager.getInstance();
         mChatRoomId = ChatConfig.getChatRoomId(UserPreference.getUserId(), mCompanionId);
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isValidMessage())
+                if (isValidMessage()) {
                     prepareAndSendMessage();
+                    msgInput.setText("");
+                }
             }
         });
     }
@@ -143,9 +231,12 @@ public class ChatRoomActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         messages.clear();
                         for (DataSnapshot d : dataSnapshot.getChildren()) {
-                            L.D.m("__DEBUG",d.getValue().toString());
-                            messages.add(d.getValue(Message.class));
+                            mTempMessage = d.getValue(Message.class);
+                            messages.add(mTempMessage);
+                            notifyMessageSeen(mTempMessage);
                             chatRoomRecyclerAdapter.notifyDataSetChanged();
+                            chatsRecyclerView.smoothScrollToPosition(chatRoomRecyclerAdapter.getItemCount() - 1);
+
                         }
                     }
 
@@ -156,6 +247,20 @@ public class ChatRoomActivity extends AppCompatActivity {
                 });
     }
 
+    private void notifyMessageSeen(Message msg) {
+
+        if (msg.getStatus() == MessageStatus.STATUS_SEEN || msg.getStatus() == MessageStatus.STATUS_DELETED || msg.isOutgoingMessage())
+            return;
+
+        Log.d("__DEBUG", "[Updating Seen]-" + msg.getMessageId() + "[Status]-" + msg.getStatus());
+
+        msg.setDelivered_time(LocalTimeManager.getInstance().getTime());
+        msg.setSeen_time(LocalTimeManager.getInstance().getTime());
+        msg.setStatus(MessageStatus.STATUS_SEEN);
+        FirebaseDatabaseManager.updateMessageSeen(mCompanionId, msg);
+
+    }
+
     private void collectCompanionInfo() {
         try {
             mCompanionId = getIntent().getExtras().getString(Constants.EXTRAA_CHAT_ROOM_COMPANION_ID);
@@ -163,7 +268,31 @@ public class ChatRoomActivity extends AppCompatActivity {
             Toast.makeText(this, "No User Id", Toast.LENGTH_LONG).show();
         }
     }
-// TODO: 9/15/2017 Add input box + add dispatchers + add Online status + add typing status + add notifications
+
+    private void attachTypingListener() {
+
+        msgInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                notifyTyping(true);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                notifyTyping(false);
+            }
+        });
+    }
+
+    private void notifyTyping(boolean isTyping) {
+        String _text = isTyping ? ChatConfig.STATUS_TYPING : ChatConfig.STATUS_NOT_TYPING;
+        FirebaseDatabaseManager.setTypingStatus(mCompanionId, _text);
+    }
 
     private boolean isValidMessage() {
         return msgInput.getText().toString().trim().length() > 0;
@@ -178,9 +307,10 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         String MyId = UserPreference.getUserId();
         String compId = mCompanionId;
+
         Message message = new Message(ChatConfig.getMessageID(MyId, compId),
                 getMessage(),
-                timeManager.getTime(),
+                LocalTimeManager.getInstance().getDateTime(),
                 "",
                 "",
                 MessageStatus.STATUS_SENT,
@@ -188,11 +318,12 @@ public class ChatRoomActivity extends AppCompatActivity {
                 MyId, compId
         );
 
+        FirebaseDatabaseManager.addMessage(message);
 
         ChatRoom myChatRoom = new ChatRoom(
                 ChatConfig.getChatRoomId(MyId, compId),
                 MyId,
-                chatRoomTitle.getText().toString(),
+                "Cr-Rajat",
                 message,
                 0,
                 0,
@@ -201,13 +332,9 @@ public class ChatRoomActivity extends AppCompatActivity {
         );
         // get self node and add message
         FirebaseDatabaseManager.createOrUpdateChatroom(myChatRoom);
-        FirebaseDatabaseManager.addMessageToSelf(message);
 
-
-        // change message modo[change chat room id]
-        message.setChatRoomId(ChatConfig.getChatRoomId(compId, MyId));
-        message.setMessageId(ChatConfig.getMessageID(compId, MyId));
-
+        // message`s chatroom invalidation
+        message.setChatRoomId(ChatConfig.getChatRoomId(message.getReceiverId(), message.getSenderId()));
         ChatRoom compChatRoom = new ChatRoom(
                 ChatConfig.getChatRoomId(compId, MyId),
                 compId,
@@ -219,9 +346,14 @@ public class ChatRoomActivity extends AppCompatActivity {
                 "Online"
         );
 
-        FirebaseDatabaseManager.createOrUpdateChatroom(compChatRoom);
-        FirebaseDatabaseManager.addMessageToRemote(message);
 
+        FirebaseDatabaseManager.createOrUpdateChatroom(compChatRoom);
+        FirebaseDatabaseManager.updateUnreadCount(mCompanionId, compChatRoom.getChatRoomId());
 
     }
+
+    private void resetUnreadCount() {
+        FirebaseDatabaseManager.resetUnreadCount(UserPreference.getUserId(), mChatRoomId);
+    }
+
 }
