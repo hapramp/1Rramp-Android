@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:layout_width="match_parent"
+    android:background="#e9e9e9"
+    android:layout_height="64dp">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/contactAvatar"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/backBtn"
+        fresco:roundAsCircle="true" />
+
+    <TextView
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="6dp"
+        android:textColor="@color/chatColorPrimary"
+        android:textSize="18sp"
+        android:text="Ankit Kumar"
+        android:id="@+id/contact_display_name"
+        android:layout_toRightOf="@+id/contactAvatar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_marginStart="8dp"
+        android:textColor="@color/chatColorSecondary"
+        android:textSize="14sp"
+        android:text="ankit@gmail.com"
+        android:id="@+id/contact_email"
+        android:layout_below="@+id/contact_display_name"
+        android:layout_toRightOf="@+id/contactAvatar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:visibility="gone"
+        android:background="@drawable/send_chat_request_bg"
+        android:id="@+id/send_requestBtn"
+        android:padding="12dp"
+        android:textColor="#ffffff"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:text="Send Request"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:visibility="gone"
+        android:background="@drawable/accept_request_btn"
+        android:id="@+id/accept_requestBtn"
+        android:padding="12dp"
+        android:textColor="#ffffff"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:text="Accept"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:visibility="gone"
+        android:background="@drawable/pending_btn"
+        android:id="@+id/pending_btn"
+        android:padding="12dp"
+        android:textColor="#ffffff"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:text="Pending..."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/blocked_me_btn"
+        android:padding="12dp"
+        android:textColor="#5c5c5c"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:text=""
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+
+</RelativeLayout>

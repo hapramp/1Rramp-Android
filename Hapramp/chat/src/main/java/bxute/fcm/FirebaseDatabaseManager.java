@@ -16,6 +16,7 @@ import bxute.config.UserPreference;
 import bxute.logger.L;
 import bxute.models.ChatRoom;
 import bxute.models.Message;
+import bxute.models.UserContactModel;
 
 /**
  * Created by Ankit on 9/9/2017.
@@ -27,6 +28,8 @@ public class FirebaseDatabaseManager {
     private static DatabaseReference rootReference;
     private static DatabaseReference usersNodeReference;
     private static DatabaseReference devicesNodeReference;
+    private static DatabaseReference registeredUsersRef;
+    private static DatabaseReference conversationRef;
     private static DatabaseReference idPoolRef;
 
     /*
@@ -38,7 +41,9 @@ public class FirebaseDatabaseManager {
         firebaseDatabase.setPersistenceEnabled(true);
         rootReference = firebaseDatabase.getReference(Node.ROOT);
         idPoolRef = rootReference.child(Node.ID_POOL);
-        usersNodeReference = rootReference.child(Node.USERS);// get access to its own node
+        registeredUsersRef = rootReference.child(Node.REGISTERED_USERS);
+        conversationRef = rootReference.child(Node.CONVERSATION);
+        usersNodeReference = conversationRef.child(Node.USERS);// get access to its own node
         devicesNodeReference = rootReference.child(Node.DEVICES);
         devicesNodeReference.keepSynced(true);  // keeping device ids Synced fresh
     }
@@ -62,6 +67,50 @@ public class FirebaseDatabaseManager {
         i();
         return usersNodeReference.child(userId);
     }
+
+    /*
+    * Helper method to add self to registered Users [called Once the app is installed]
+    * */
+    public static void registerMe(UserContactModel contactModel){
+        registeredUsersRef.child(contactModel.getUserId()).setValue(contactModel);
+    }
+    
+    /*
+    * Helper method for contacts ref
+    * */
+    public static DatabaseReference getContactRef(String userId) {
+        return usersNodeReference.child(userId).child(Node.CONTACTS);
+    }
+
+    /*
+    * Helper method for pending-in ref
+    * */
+    public static DatabaseReference getPendingInRef(String userId) {
+        return usersNodeReference.child(userId).child(Node.PENDING_IN);
+    }
+
+    /*
+    * Helper method for pending-in ref
+    * */
+    public static DatabaseReference getPendingOutRef(String userId) {
+        return usersNodeReference.child(userId).child(Node.PENDING_OUT);
+    }
+
+    /*
+    * Helper method for pending-in ref
+    * */
+    public static DatabaseReference getBlockedMeRef(String userId){
+        return usersNodeReference.child(userId).child(Node.BLOCKED_ME);
+    }
+
+    /*
+    * Helper method for pending-in ref
+    * */
+    public static DatabaseReference getMyBlackListRef(String userId){
+        return usersNodeReference.child(userId).child(Node.MY_BLACKLIST);
+    }
+
+
 
     /*
     * Helper method for reference to all chat rooms
@@ -358,10 +407,41 @@ public class FirebaseDatabaseManager {
         });
     }
 
+    public static void sendChatRequest(UserContactModel myContact,UserContactModel remoteUserContact){
+        // i want to send req to remoteUserContact
+        // add remote to self PO
+        getPendingOutRef(myContact.getUserId()).child(remoteUserContact.getUserId()).setValue(remoteUserContact);
+        // add self to remote`s PI
+        getPendingInRef(remoteUserContact.getUserId()).child(myContact.getUserId()).setValue(myContact);
+
+    }
+
+    public static void acceptChatRequest(UserContactModel myContact,UserContactModel remoteContactModel){
+        // i want to accept changes
+        // add remote user to self`s contact
+        getContactRef(myContact.getUserId()).child(remoteContactModel.getUserId()).setValue(remoteContactModel);
+        getContactRef(remoteContactModel.getUserId()).child(myContact.getUserId()).setValue(myContact);
+    }
+
+    public static void blockUser(UserContactModel myContact,UserContactModel remoteContactModel){
+        // myContact blocks remoteContactModel
+        // add to my black list
+        getMyBlackListRef(myContact.getUserId()).child(remoteContactModel.getUserId()).setValue(remoteContactModel);
+        // add self to blockedMe of remote
+        getBlockedMeRef(remoteContactModel.getUserId()).child(myContact.getUserId()).setValue(myContact);
+    }
+
     public static class Node {
 
         public static final String ROOT = "root";
         public static final String USERS = "users";
+        public static final String REGISTERED_USERS = "registered_users";
+        public static final String CONVERSATION = "conversations";
+        public static final String CONTACTS = "contacts";
+        public static final String PENDING_IN = "pending_ins";
+        public static final String PENDING_OUT = "pending_outs";
+        public static final String BLOCKED_ME = "blocked_me";
+        public static final String MY_BLACKLIST = "my_blacklist";
         public static final String DEVICES = "devices";
         public static final String DEVICE_ID = "device_id";
         public static final String ONLINE_STATUS = "onlineStatus";

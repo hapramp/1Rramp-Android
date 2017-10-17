@@ -12,4 +12,13 @@ public class ContactsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
     }
+
+    private void sendRequest(String remoteUserId){
+
+    }
+
+    private void acceptRequest(String remoteUserId){
+
+    }
+
 }

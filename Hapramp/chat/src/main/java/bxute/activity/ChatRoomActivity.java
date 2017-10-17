@@ -1,7 +1,12 @@
 package bxute.activity;
 
+import android.content.AsyncTaskLoader;
+import android.content.Loader;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.LoaderManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +14,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -37,7 +44,7 @@ import bxute.fcm.FirebaseDatabaseManager;
 import bxute.models.ChatRoom;
 import bxute.models.Message;
 
-public class ChatRoomActivity extends AppCompatActivity {
+public class ChatRoomActivity extends AppCompatActivity{
 
     @BindView(R2.id.chatRoomAvatar)
     SimpleDraweeView chatRoomAvatar;
@@ -355,5 +362,6 @@ public class ChatRoomActivity extends AppCompatActivity {
     private void resetUnreadCount() {
         FirebaseDatabaseManager.resetUnreadCount(UserPreference.getUserId(), mChatRoomId);
     }
+
 
 }
