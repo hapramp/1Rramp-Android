@@ -3,12 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff"
-    tools:context="com.hapramp.fragments.FeaturedSection">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    tools:context="com.hapramp.fragments.HomeFragment">
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/homeRv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-
+        android:layout_height="match_parent"/>
 </FrameLayout>
