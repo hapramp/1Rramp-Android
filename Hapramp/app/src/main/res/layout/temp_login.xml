@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:background="#ffffff"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize">
+
+        <TextView
+            android:padding="8dp"
+            android:id="@+id/toolbar_title"
+            android:text="Home"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:textSize="24sp"
+            android:gravity="center"
+            android:text=""
+            android:layout_toStartOf="@+id/notification"
+            android:id="@+id/search"
+            android:layout_width="?actionBarSize"
+            android:layout_height="match_parent" />
+
+
+        <com.hapramp.NotificationView
+            android:layout_alignParentEnd="true"
+            android:id="@+id/notification"
+            android:layout_width="?actionBarSize"
+            android:layout_height="match_parent" />
+
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

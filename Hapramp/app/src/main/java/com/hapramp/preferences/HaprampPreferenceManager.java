@@ -3,7 +3,10 @@ package com.hapramp.preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
 import com.hapramp.HapRampMain;
+import com.hapramp.logger.L;
+import com.hapramp.models.UserAccountModel;
 
 /**
  * Created by Ankit on 5/15/2017.
@@ -18,7 +21,7 @@ public class HaprampPreferenceManager {
     private static final String PREF_NAME = "hapramp_pref";
     private static final int PREF_MODE_PRIVATE = 1;
 
-    public HaprampPreferenceManager() {
+    public HaprampPreferenceManager(int i) {
 
         preferences = HapRampMain.getContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = preferences.edit();
@@ -27,19 +30,19 @@ public class HaprampPreferenceManager {
 
     public static HaprampPreferenceManager getInstance() {
         if (mInstance == null) {
-            mInstance = new HaprampPreferenceManager();
+            mInstance = new HaprampPreferenceManager(0);
         }
         return mInstance;
     }
 
     public void clearPreferences(){
         editor.clear();
-        editor.commit();
+        editor.apply();
     }
 
     public void setLoggedIn(boolean loggedIn){
         editor.putBoolean("isLoggedIn",loggedIn);
-        editor.commit();
+        editor.apply();
     }
 
     public boolean isLoggedIn() {
@@ -48,7 +51,7 @@ public class HaprampPreferenceManager {
 
     private void setLandingPagesVisited(boolean visited){
         editor.putBoolean("isLandingPagesViewed",visited);
-        editor.commit();
+        editor.apply();
     }
 
     public boolean isLandingPagesVisited() {
@@ -56,8 +59,9 @@ public class HaprampPreferenceManager {
     }
 
     public void saveToken(String token){
+        L.D.m("Pref","Saving user token "+token);
         editor.putString("userToken",token);
-        editor.commit();
+        editor.apply();
     }
 
     public String getUserToken(){
@@ -66,12 +70,12 @@ public class HaprampPreferenceManager {
 
     public void saveUserFirstName(String firstname) {
         editor.putString("ufname",firstname);
-        editor.commit();
+        editor.apply();
     }
 
     public void saveUserLastName(String lastname) {
         editor.putString("ulname",lastname);
-        editor.commit();
+        editor.apply();
     }
 
     public String getFname(){
@@ -85,7 +89,7 @@ public class HaprampPreferenceManager {
 
     public void setUserFirstName(String firstname) {
         editor.putString("fname",firstname);
-        editor.commit();
+        editor.apply();
     }
 
     public String getFirstName(){
@@ -94,7 +98,7 @@ public class HaprampPreferenceManager {
 
     public void setUserLastName(String lastname){
         editor.putString("lname",lastname);
-        editor.commit();
+        editor.apply();
     }
 
     public String getLastName(){
@@ -103,7 +107,7 @@ public class HaprampPreferenceManager {
 
     public void setUserId(String id){
         editor.putString("userId",id);
-        editor.commit();
+        editor.apply();
     }
 
     public String getUserId(){
@@ -112,7 +116,7 @@ public class HaprampPreferenceManager {
 
     public void setUserProfilePicUrl(String profilePic) {
         editor.putString("profilePic",profilePic);
-        editor.commit();
+        editor.apply();
     }
 
     public String getProfilePicUrl(){
@@ -122,7 +126,7 @@ public class HaprampPreferenceManager {
     public void setNotificationsCount(int size) {
 
         editor.putString("noti_c",size+"");
-        editor.commit();
+        editor.apply();
     }
 
     public String getNotificationCount(){
@@ -136,7 +140,7 @@ public class HaprampPreferenceManager {
 
     public void setDeviceId(String refreshedToken) {
         editor.putString("devId",refreshedToken);
-        editor.commit();
+        editor.apply();
     }
 
     public String getDeviceId(){
@@ -145,11 +149,21 @@ public class HaprampPreferenceManager {
 
     public void setUserEmail(String s) {
         editor.putString("userEmail",s);
-        editor.commit();
+        editor.apply();
     }
 
     public String getUserEmail(){
         return preferences.getString("userEmail","");
+    }
+
+    public void setUser(String user){
+        L.D.m("Pref","User json "+user);
+        editor.putString("userJson",user);
+        editor.apply();
+    }
+
+    public UserAccountModel getUser(){
+        return new Gson().fromJson(preferences.getString("userJson",""),UserAccountModel.class);
     }
 
 }

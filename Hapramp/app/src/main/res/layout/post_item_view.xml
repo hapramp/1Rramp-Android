@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/post_header_container"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="#ffffff">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/feed_owner_pic"
+            android:layout_width="?actionBarSize"
+            android:layout_height="match_parent"
+            android:background="@drawable/star_post_bg"
+            android:padding="8dp" />
+
+        <TextView
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@+id/feed_owner_pic"
+            android:id="@+id/feed_owner_title"
+            android:textStyle="bold"
+            android:text="Ankit Kumar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+        <TextView
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="2dp"
+            android:layout_toEndOf="@+id/feed_owner_pic"
+            android:id="@+id/feed_owner_subtitle"
+            android:layout_below="@+id/feed_owner_title"
+            android:text="iiit | 2 days ago"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/featured_image_post"
+        android:layout_width="match_parent"
+        android:layout_height="196dp"
+        android:layout_below="@+id/post_header_container"
+        android:background="#1c81bc" />
+
+
+    <RelativeLayout
+        android:id="@+id/post_meta_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/featured_image_post"
+        android:background="#ffffff"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:paddingTop="24dp">
+
+        <TextView
+            android:id="@+id/post_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cheap Romantic Vaccations"
+            android:textColor="@color/gradientEndPink"
+            android:textSize="18sp" />
+
+
+        <TextView
+            android:id="@+id/tags"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/post_title"
+            android:padding="4dp"
+            android:text="#hapramp #dance #colors"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/post_snippet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tags"
+            android:layout_marginTop="8dp"
+            android:maxLines="4"
+            android:text="@string/lorem"
+            android:textColor="@color/lightGrey"
+            android:textSize="14sp" />
+
+        <FrameLayout
+            android:id="@+id/faded_edge"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_below="@+id/post_snippet"
+            android:layout_marginTop="-48dp"
+            android:background="@drawable/post_snippet_faded_edge" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/post_snippet"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/read_more_bg"
+            android:gravity="center"
+            android:paddingBottom="8dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp"
+            android:text="Read More."
+            android:textColor="@color/darkGrey"
+            android:textSize="14sp" />
+
+
+        <TextView
+            android:id="@+id/likeBtn"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_below="@+id/faded_edge"
+            android:layout_marginTop="24dp"
+            android:gravity="center"
+            android:text=""
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/likeCount"
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            android:layout_below="@+id/faded_edge"
+            android:layout_marginTop="24dp"
+            android:layout_toEndOf="@id/likeBtn"
+            android:gravity="center_vertical"
+            android:text="24" />
+
+
+        <TextView
+            android:id="@+id/commentBtn"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_below="@+id/faded_edge"
+            android:layout_marginTop="24dp"
+            android:layout_toEndOf="@+id/likeCount"
+            android:gravity="center"
+            android:text=""
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/commentCount"
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            android:layout_below="@+id/faded_edge"
+            android:layout_marginTop="24dp"
+            android:layout_toEndOf="@id/commentBtn"
+            android:gravity="center_vertical"
+            android:text="24" />
+
+        <TextView
+            android:id="@+id/hapcoinBtn"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_below="@+id/faded_edge"
+            android:layout_marginTop="24dp"
+            android:layout_toEndOf="@+id/commentCount"
+            android:gravity="center"
+            android:text=""
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/hapcoins_count"
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            android:layout_below="@+id/faded_edge"
+            android:layout_marginTop="24dp"
+            android:layout_toEndOf="@id/hapcoinBtn"
+            android:gravity="center_vertical"
+            android:text="24" />
+
+        <TextView
+            android:id="@+id/shareBtn"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_below="@+id/faded_edge"
+            android:layout_marginTop="24dp"
+            android:layout_toEndOf="@+id/hapcoins_count"
+            android:gravity="center"
+            android:text=""
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/share_count"
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            android:layout_below="@+id/faded_edge"
+            android:layout_marginTop="24dp"
+            android:layout_toEndOf="@id/shareBtn"
+            android:gravity="center_vertical"
+            android:text="24" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_below="@+id/featured_image_post"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-24dp"
+        android:background="@drawable/star_post_bg"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text=""
+        android:textColor="#ffffff"
+        android:textSize="24sp" />
+
+</RelativeLayout>

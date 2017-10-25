@@ -1,27 +1,68 @@
 package com.hapramp.models;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Ankit on 9/7/2017.
  */
 
 public class UserAccountModel {
-    public String authToken;
-    public String userEmail;
-    public String userProfileName;
 
-    public UserAccountModel(String authToken, String userEmail, String userProfileName) {
-        this.authToken = authToken;
-        this.userEmail = userEmail;
-        this.userProfileName = userProfileName;
+    @SerializedName("id")
+    public int id;
+    @SerializedName("username")
+    public String username;
+    @SerializedName("full_name")
+    public String full_name;
+    @SerializedName("karma")
+    public int karma;
+
+    public UserAccountModel(int id, String username, String full_name, int karma) {
+        this.id = id;
+        this.username = username;
+        this.full_name = full_name;
+        this.karma = karma;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getFull_name() {
+        return full_name;
+    }
+
+    public void setFull_name(String full_name) {
+        this.full_name = full_name;
+    }
+
+    public int getKarma() {
+        return karma;
+    }
+
+    public void setKarma(int karma) {
+        this.karma = karma;
     }
 
     @Override
     public String toString() {
         return "UserAccountModel{" +
-                "authToken='" + authToken + '\'' +
-                ", userEmail='" + userEmail + '\'' +
-                ", userProfileName='" + userProfileName + '\'' +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", full_name='" + full_name + '\'' +
+                ", karma=" + karma +
                 '}';
     }
-
 }

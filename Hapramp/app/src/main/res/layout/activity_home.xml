@@ -1,75 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.hapramp.HomeActivity">
 
-    <android.support.design.widget.AppBarLayout
-        android:elevation="4dp"
+    <RelativeLayout
+        android:id="@+id/action_bar_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="?actionBarSize"
+        android:background="#fefefe">
 
-     <RelativeLayout
-         app:layout_scrollFlags="scroll|enterAlways|snap"
-         android:background="#fefefe"
-         android:layout_width="match_parent"
-         android:layout_height="?actionBarSize">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text="Home"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-         <TextView
-             android:background="?android:selectableItemBackgroundBorderless"
-             android:clickable="true"
-             android:gravity="center"
-             android:padding="16dp"
-             android:textStyle="bold"
-             android:textSize="20sp"
-             android:text="Home"
-             android:layout_width="wrap_content"
-             android:layout_height="match_parent" />
+        <TextView
+            android:id="@+id/search_icon"
+            android:layout_width="?actionBarSize"
+            android:layout_height="match_parent"
+            android:layout_toStartOf="@+id/notification_container"
+            android:clickable="true"
+            android:gravity="center"
+            android:text=""
+            android:textSize="24sp" />
 
-
-         <TextView
-             android:background="?android:selectableItemBackgroundBorderless"
-             android:clickable="true"
-             android:layout_toLeftOf="@+id/notification_icon"
-             android:textSize="24sp"
-             android:gravity="center"
-             android:text=""
-             android:id="@+id/search_icon"
-             android:layout_width="?actionBarSize"
-             android:layout_height="match_parent" />
-
-         <TextView
-             android:background="?android:selectableItemBackgroundBorderless"
-             android:clickable="true"
-             android:layout_alignParentEnd="true"
-             android:textSize="24sp"
-             android:gravity="center"
-             android:id="@+id/notification_icon"
-             android:text=""
-             android:layout_width="?actionBarSize"
-             android:layout_height="match_parent" />
-
-     </RelativeLayout>
-        
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabLayout"
-            android:background="#fefefe"
-            android:layout_width="match_parent"
+        <RelativeLayout
+            android:id="@+id/notification_container"
+            android:layout_width="?actionBarSize"
             android:layout_height="?actionBarSize"
-            app:tabMode="scrollable"
-            app:tabGravity="fill"
-            />
+            android:layout_alignParentEnd="true">
 
-    </android.support.design.widget.AppBarLayout>
+            <TextView
+                android:id="@+id/notification_icon"
+                android:layout_width="?actionBarSize"
+                android:layout_height="?actionBarSize"
+                android:gravity="center"
+                android:text=""
+                android:textSize="24sp" />
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
+            <TextView
+                android:id="@+id/notification_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/notification_badge_count"
+                android:paddingEnd="4dp"
+                android:paddingStart="4dp"
+                android:text="34"
+                android:textColor="#ffffff"
+                android:textSize="12sp"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="16dp"
+        android:layout_below="@+id/action_bar_container"
+        android:id="@+id/sectionsRv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"  />
+        android:layout_height="96dp"
+        android:background="#ffffff" />
 
-    <include layout="@layout/home_bottom_bar"/>
+    <FrameLayout
+        android:layout_below="@+id/sectionsRv"
+        android:id="@+id/contentPlaceHolder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-</android.support.design.widget.CoordinatorLayout>
+    <include layout="@layout/home_bottom_bar" />
+
+</RelativeLayout>

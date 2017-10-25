@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.hapramp.HomeActivity">
+
+    <RelativeLayout
+        android:id="@+id/action_bar_container"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="#fefefe">
+
+        <TextView
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text="Home"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:id="@+id/search_icon"
+            android:layout_width="?actionBarSize"
+            android:layout_height="match_parent"
+            android:layout_toStartOf="@+id/notification_container"
+            android:clickable="true"
+            android:gravity="center"
+            android:text=""
+            android:textSize="24sp" />
+
+        <RelativeLayout
+        android:background="?android:selectableItemBackgroundBorderless"
+            android:id="@+id/notification_container"
+            android:layout_width="?actionBarSize"
+            android:layout_height="?actionBarSize"
+            android:layout_alignParentEnd="true">
+
+            <TextView
+                android:id="@+id/notification_icon"
+                android:layout_width="?actionBarSize"
+                android:layout_height="?actionBarSize"
+                android:gravity="center"
+                android:text=""
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/notification_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/notification_badge_count"
+                android:paddingEnd="4dp"
+                android:paddingStart="4dp"
+                android:text="34"
+                android:textColor="#ffffff"
+                android:textSize="12sp"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="16dp"
+        android:layout_below="@+id/action_bar_container"
+        android:id="@+id/sectionsRv"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:background="#ffffff" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <include layout="@layout/home_bottom_bar" />
+
+</RelativeLayout>

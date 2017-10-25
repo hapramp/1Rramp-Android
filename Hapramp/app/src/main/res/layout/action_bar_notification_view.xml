@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="?actionBarSize"
+    android:layout_height="?actionBarSize">
+
+    <TextView
+        android:background="#eeeeee"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:text=""
+        android:id="@+id/notification_icon"
+        android:layout_width="?actionBarSize"
+        android:layout_height="?actionBarSize" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/notification_count"
+        android:paddingEnd="4dp"
+        android:paddingStart="4dp"
+        android:textSize="12sp"
+        android:text="34"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/notification_badge_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

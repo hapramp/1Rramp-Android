@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    tools:context="com.hapramp.activity.RegistrationPage2">
+
+    <TextView
+        android:id="@+id/backBtn"
+        android:text=""
+        android:gravity="center"
+        android:textSize="24sp"
+        android:layout_width="48dp"
+        android:layout_height="?actionBarSize" />
+
+    <TextView
+        android:padding="8dp"
+        android:textColor="@color/lightGrey"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:text="Register"
+        android:layout_width="wrap_content"
+        android:layout_height="?actionBarSize" />
+
+    <LinearLayout
+        android:layout_marginTop="144dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="48dp"
+        android:id="@+id/usernameHolder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/lightGrey"
+            android:id="@+id/user_icon"
+            android:text=""
+            android:textSize="24sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/userName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:hint="Username"
+            android:inputType="textPersonName" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginTop="24dp"
+        android:layout_below="@+id/usernameHolder"
+        android:id="@+id/passwordHolder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/lightGrey"
+            android:id="@+id/lock_icon"
+            android:text=""
+            android:textSize="24sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:hint="Password"
+            android:inputType="textPassword" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginTop="24dp"
+        android:layout_below="@+id/passwordHolder"
+        android:id="@+id/cnf_passwordHolder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/lightGrey"
+            android:id="@+id/cnf_lock_icon"
+            android:text=""
+            android:textSize="24sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/cnf_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:hint="Re-Enter Password" />
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/registerButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cnf_passwordHolder"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/sign_in_txt_bg"
+        android:clickable="true"
+        android:elevation="4dp"
+        android:gravity="center_horizontal"
+        android:padding="12dp"
+        android:text="REGISTER"
+        android:textColor="#ffffff"
+        android:textSize="16sp" />
+
+
+</RelativeLayout>

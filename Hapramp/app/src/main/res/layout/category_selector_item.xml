@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="108dp"
+    android:layout_height="108dp"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        fresco:roundAsCircle="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/skills_bg_image"
+        android:layout_width="72dp"
+        android:layout_height="72dp" />
+
+    <TextView
+        android:id="@+id/skill_title"
+        android:padding="4dp"
+        android:textSize="12sp"
+        android:layout_centerHorizontal="true"
+        android:text="Ankit Kumar"
+        android:layout_below="@+id/skills_bg_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <FrameLayout
+        android:background="#6efdfdfd"
+        android:id="@+id/selector_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</RelativeLayout>

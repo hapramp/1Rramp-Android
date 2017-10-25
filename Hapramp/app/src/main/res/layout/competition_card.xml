@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff">
+
+    <RelativeLayout
+        android:id="@+id/post_header_container"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/feed_owner_pic"
+            android:layout_width="?actionBarSize"
+            android:layout_height="match_parent"
+            android:background="@drawable/star_post_bg"
+            android:padding="8dp" />
+
+        <TextView
+            android:id="@+id/feed_owner_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@+id/feed_owner_pic"
+            android:text="Ankit Kumar"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:id="@+id/feed_owner_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/feed_owner_title"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="2dp"
+            android:layout_toEndOf="@+id/feed_owner_pic"
+            android:text="iiit | 2 days ago" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_marginStart="16dp"
+        android:id="@+id/tags"
+        android:textColor="@color/colorPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/post_header_container"
+        android:padding="4dp"
+        android:text="#hapramp #dance #colors"
+        android:textSize="12sp" />
+
+    <TextView
+        android:layout_below="@+id/tags"
+        android:id="@+id/entry_fee_icon"
+        android:text=""
+        android:gravity="center"
+        android:padding="8dp"
+        android:textSize="24sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+    <TextView
+        android:layout_below="@+id/tags"
+        android:layout_toEndOf="@+id/entry_fee_icon"
+        android:id="@+id/entry_fee_caption"
+        android:text="Entry Fee:"
+        android:gravity="center"
+        android:padding="8dp"
+        android:textSize="16sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_below="@+id/tags"
+        android:textColor="@color/colorPrimary"
+        android:layout_toEndOf="@+id/entry_fee_caption"
+        android:id="@+id/entry_fee"
+        android:text="20 Hapcoins"
+        android:gravity="center"
+        android:padding="8dp"
+        android:textSize="16sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_below="@+id/entry_fee_icon"
+        android:id="@+id/prize_money_icon"
+        android:text=""
+        android:gravity="center"
+        android:padding="8dp"
+        android:textSize="24sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+    <TextView
+        android:layout_below="@+id/entry_fee_caption"
+        android:layout_toEndOf="@+id/entry_fee_icon"
+        android:id="@+id/prize_caption"
+        android:text="Prize Money:"
+        android:gravity="center"
+        android:padding="8dp"
+        android:textSize="16sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_below="@+id/entry_fee"
+        android:textColor="@color/colorPrimary"
+        android:layout_toEndOf="@+id/entry_fee_caption"
+        android:id="@+id/prize_money"
+        android:text="500 Hapcoins"
+        android:gravity="center"
+        android:padding="8dp"
+        android:textSize="16sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_marginStart="56dp"
+        android:layout_below="@+id/prize_caption"
+        android:id="@+id/join_now_btn"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:textSize="16dp"
+        android:textColor="#ffffff"
+        android:background="@drawable/skills_continue_btn_bg"
+        android:text="Join Now"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_marginEnd="56dp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/prize_money"
+        android:id="@+id/know_more_btn"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:textSize="16dp"
+        android:textColor="@color/colorPrimary"
+        android:background="@drawable/sign_in_with_google_btn_bg"
+        android:text="Know More"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/participantIcon"
+        android:layout_marginStart="24dp"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_below="@+id/join_now_btn"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:text=""
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/participantCount"
+        android:layout_width="wrap_content"
+        android:layout_height="64dp"
+        android:layout_below="@+id/join_now_btn"
+        android:layout_marginTop="24dp"
+        android:layout_toEndOf="@id/participantIcon"
+        android:gravity="center_vertical"
+        android:text="24" />
+
+
+    <TextView
+        android:id="@+id/shareIcon"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_toEndOf="@+id/participantCount"
+        android:layout_below="@+id/join_now_btn"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:text=""
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/shareCount"
+        android:layout_width="wrap_content"
+        android:layout_height="64dp"
+        android:layout_below="@+id/join_now_btn"
+        android:layout_marginTop="24dp"
+        android:layout_toEndOf="@id/shareIcon"
+        android:gravity="center_vertical"
+        android:text="24" />
+
+
+</RelativeLayout>

@@ -74,7 +74,7 @@ public class FirebaseDatabaseManager {
     public static void registerMe(UserContactModel contactModel){
         registeredUsersRef.child(contactModel.getUserId()).setValue(contactModel);
     }
-    
+
     /*
     * Helper method for contacts ref
     * */

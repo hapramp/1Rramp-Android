@@ -6,115 +6,64 @@
     android:background="#ffffff"
     tools:context="com.hapramp.OrganisationActivity">
 
-    <FrameLayout
-        android:visibility="invisible"
-        android:background="@drawable/organization_header_bottom_circle"
-        android:id="@+id/concentric_bottom_circle"
-        android:layout_width="720dp"
-        android:layout_height="360dp"
-        android:layout_marginTop="-110dp"
-        android:layout_marginLeft="-30dp"
-        android:layout_marginRight="-30dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
-
-    <FrameLayout
-        android:visibility="invisible"
-        android:background="@drawable/organization_header_middle_circle"
-        android:id="@+id/concentric_mid_circle"
-        android:layout_width="720dp"
-        android:layout_height="360dp"
-        android:layout_marginTop="-140dp"
-        android:layout_marginLeft="-20dp"
-        android:layout_marginRight="-20dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
-
-    <FrameLayout
-        android:visibility="invisible"
-        android:background="@drawable/organization_header_top_circle"
-        android:id="@+id/concentric_top_circle"
-        android:layout_width="720dp"
-        android:layout_height="360dp"
-        android:layout_marginTop="-170dp"
-        android:layout_marginLeft="-10dp"
-        android:layout_marginRight="-10dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+    <TextView
+        android:id="@+id/backBtn"
+        android:text=""
+        android:gravity="center"
+        android:textSize="24sp"
+        android:layout_width="48dp"
+        android:layout_height="?actionBarSize" />
 
     <TextView
-        android:id="@+id/organisation_people_icon"
+        android:id="@+id/actionbar_title"
+        android:padding="8dp"
+        android:textColor="@color/lightGrey"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:text="CHOOSE YOUR ORGANISATION"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="?actionBarSize" />
+
+    <TextView
+        android:layout_below="@+id/actionbar_title"
+        android:background="@drawable/org_icon_bg"
+        android:id="@+id/organisation_people_icon"
+        android:layout_width="108dp"
+        android:layout_margin="48dp"
+        android:gravity="center"
+        android:layout_height="108dp"
         android:layout_centerHorizontal="true"
         android:text=""
         android:textColor="@color/colorAccent"
-        android:textSize="124sp" />
-
-    <EditText
-        android:id="@+id/organisation_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/concentric_bottom_circle"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="48dp"
-        android:layout_marginRight="48dp"
-        android:layout_marginTop="48dp"
-
-        android:layout_marginBottom="16dp"
-        android:gravity="center_horizontal"
-        android:hint="@string/organization_input_hint" />
+        android:textSize="72sp" />
 
     <TextView
-        android:id="@+id/orCaption"
+        android:textSize="18sp"
+        android:textColor="@color/darkGrey"
+        android:layout_marginLeft="24dp"
+        android:layout_above="@+id/orgs"
+        android:text="All Organisation"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/organisation_name"
-        android:layout_centerHorizontal="true"
-        android:padding="8dp"
-        android:text="Or"
-        android:textSize="16sp" />
+        android:layout_height="wrap_content" />
 
-    <LinearLayout
-        android:id="@+id/suggestionCaptionContainer"
-        android:gravity="center_horizontal"
-        android:layout_below="@+id/orCaption"
+    <ListView
+        android:layout_above="@+id/organisation_continueBtn"
+        android:layout_below="@+id/organisation_people_icon"
+        android:id="@+id/orgs"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/seeCaption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/orCaption"
-            android:layout_centerHorizontal="true"
-            android:text="See"
-            android:textSize="16sp" />
-
-        <TextView
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            android:paddingLeft="8dp"
-            android:textColor="@color/colorPrimary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/orCaption"
-            android:layout_centerHorizontal="true"
-            android:layout_toRightOf="@+id/seeCaption"
-            android:text="Our Suggestion"
-            android:textSize="16sp" />
-
-    </LinearLayout>
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/organisation_continueBtn"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/suggestionCaptionContainer"
+        android:layout_alignParentBottom="true"
         android:layout_marginTop="16dp"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/skills_continue_btn_bg"
         android:textColor="@color/colorAccent"
         android:text="CONTINUE"
+        android:layout_margin="16dp"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:paddingLeft="48dp"

@@ -1,37 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:background="#ffffff"
     android:layout_height="match_parent">
 
     <TextView
-        android:layout_marginTop="108dp"
-        android:textColor="@color/colorPrimary"
-        android:layout_gravity="center_horizontal"
+        android:id="@+id/backBtn"
+        android:text=""
+        android:gravity="center"
         android:textSize="24sp"
-        android:text="PICK YOUR SKILLS"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <com.hapramp.SkillView
-        android:layout_marginTop="24dp"
-        android:id="@+id/skillsView"
-        android:layout_width="match_parent"
-        android:layout_height="144dp"/>
+        android:layout_width="48dp"
+        android:layout_height="?actionBarSize" />
 
     <TextView
-        android:layout_marginTop="48dp"
+        android:id="@+id/action_bar_title"
+        android:padding="8dp"
+        android:textColor="@color/lightGrey"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:text="PICK YOUR SKILLS"
+        android:layout_width="wrap_content"
+        android:layout_height="?actionBarSize" />
+
+    <GridView
+        android:layout_centerHorizontal="true"
+        android:horizontalSpacing="4dp"
+        android:verticalSpacing="16dp"
+        android:numColumns="3"
+        android:columnWidth="96dp"
+        android:layout_above="@+id/skills_continueBtn"
+        android:layout_below="@+id/action_bar_title"
+        android:id="@+id/skillsGridView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+    <TextView
+        android:id="@+id/skills_continueBtn"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="16dp"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/skills_continue_btn_bg"
         android:textColor="@color/colorAccent"
         android:text="CONTINUE"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
+        android:layout_margin="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:paddingLeft="48dp"
         android:paddingRight="48dp"
-        android:textSize="18sp"
-        android:elevation="4dp"
+        android:textSize="16sp"
+        android:elevation="2dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-
-</LinearLayout>
+</RelativeLayout>
