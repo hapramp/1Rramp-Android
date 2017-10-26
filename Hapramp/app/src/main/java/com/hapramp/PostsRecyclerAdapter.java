@@ -44,12 +44,12 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
 
     @Override
     public void onBindViewHolder(PostViewHolder viewHolder, int i) {
-        viewHolder.bind(postResponses.get(i));
+        viewHolder.bind(postResponses.get(0));
     }
 
     @Override
     public int getItemCount() {
-        return postResponses!=null?postResponses.size():0;
+        return postResponses!=null?2:0;
     }
 
     class PostViewHolder extends RecyclerView.ViewHolder {

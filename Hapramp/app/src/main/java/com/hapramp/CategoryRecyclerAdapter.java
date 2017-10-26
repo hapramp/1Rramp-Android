@@ -5,9 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.hapramp.logger.L;
 import com.hapramp.models.response.SkillsModel;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Ankit on 10/25/2017.
@@ -16,28 +17,29 @@ import java.util.ArrayList;
 public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecyclerAdapter.CategoryViewHolder> {
 
     private Context context;
-    private ArrayList<SkillsModel> category;
+    private List<SkillsModel> category;
     private OnCategoryItemClickListener categoryItemClickListener;
+    private int selectedSkillId = -1;
 
     public CategoryRecyclerAdapter(Context context, OnCategoryItemClickListener categoryItemClickListener) {
         this.context = context;
         this.categoryItemClickListener = categoryItemClickListener;
     }
 
-    public void setCategories(ArrayList<SkillsModel> category){
+    public void setCategories(List<SkillsModel> category){
         this.category = category;
         notifyDataSetChanged();
     }
 
     @Override
     public CategoryViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = new CategoryItemView(context);
-        return new CategoryViewHolder(view);
+        return new CategoryViewHolder(new CategoryItemView(context));
     }
 
     @Override
     public void onBindViewHolder(CategoryViewHolder categoryViewHolder, int pos) {
         categoryViewHolder.bind(category.get(pos),categoryItemClickListener);
+        L.D.m("Cate","binding "+category.get(pos).getName());
     }
 
     @Override
@@ -54,11 +56,25 @@ public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecycl
             categoryItemView = (CategoryItemView) itemView;
         }
 
-        public void bind(SkillsModel model,OnCategoryItemClickListener categoryItemClickListener){
+        public void bind(final SkillsModel model, final OnCategoryItemClickListener categoryItemClickListener){
 
             categoryItemView.setSkillsBgImage(model.getId());
             categoryItemView.setSkillTitle(model.getName());
-            categoryItemView.setOnClickListener(categoryItemClickListener);
+
+            if(selectedSkillId==model.getId()){
+                categoryItemView.setSelected(true);
+            }else{
+                categoryItemView.setSelected(false);
+            }
+
+            categoryItemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectedSkillId = model.getId();
+                    notifyDataSetChanged();
+                    categoryItemClickListener.onCategoryClicked(selectedSkillId);
+                }
+            });
 
         }
 

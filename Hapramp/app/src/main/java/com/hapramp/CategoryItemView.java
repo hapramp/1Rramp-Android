@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.hapramp.logger.L;
 
 import butterknife.BindView;
 
@@ -37,7 +38,7 @@ public class CategoryItemView extends FrameLayout {
 
     public CategoryItemView(@NonNull Context context) {
         super(context);
-        View view = LayoutInflater.from(context).inflate(R.layout.category_selector_item, null);
+        View view = LayoutInflater.from(context).inflate(R.layout.category_selector_item, this);
         skillsBgImage = (SimpleDraweeView) view.findViewById(R.id.skills_bg_image);
         skillTitle = (TextView) view.findViewById(R.id.skill_title);
         selectorOverlay = (FrameLayout) view.findViewById(R.id.selector_overlay);
@@ -52,16 +53,16 @@ public class CategoryItemView extends FrameLayout {
         setSelection(isSelected);
     }
 
-    public void setOnClickListener(final CategoryRecyclerAdapter.OnCategoryItemClickListener clickListener){
-        selectorOverlay.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v){
-                setSelected(!isSelected);
-                clickListener.onCategoryClicked(id);
-            }
-        });
-    }
-
+//    public void setOnClickListener(final CategoryRecyclerAdapter.OnCategoryItemClickListener clickListener){
+//        selectorOverlay.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v){
+//                setSelected(!isSelected);
+//                clickListener.onCategoryClicked(id);
+//            }
+//        });
+//    }
+//
     public void setSkillsBgImage(int type){
         int resId = -1;
         this.id = type;
@@ -88,7 +89,11 @@ public class CategoryItemView extends FrameLayout {
             case LITERATURE:
                 resId = R.drawable.literature_icon;
                 break;
+            default:
+                resId = R.drawable.profile_user_dp_circle;
+                break;
         }
+        L.D.m("Cate","setting resource id");
         skillsBgImage.setImageResource(resId);
     }
 

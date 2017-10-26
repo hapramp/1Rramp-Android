@@ -69,20 +69,19 @@
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:visibility="gone"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_below="@+id/action_bar_container"
         android:id="@+id/sectionsRv"
+        android:background="#ffffff"
         android:layout_width="match_parent"
-        android:layout_height="96dp"
-        android:background="#ffffff" />
+        android:layout_height="96dp" />
 
     <FrameLayout
+        android:layout_marginTop="8dp"
         android:layout_below="@+id/sectionsRv"
         android:id="@+id/contentPlaceHolder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
 
     <include layout="@layout/home_bottom_bar" />
 

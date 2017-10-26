@@ -49,4 +49,5 @@ public interface HaprampAPI {
     @GET("posts")
     Call<List<PostResponse>> getPosts();
 
+    
 }

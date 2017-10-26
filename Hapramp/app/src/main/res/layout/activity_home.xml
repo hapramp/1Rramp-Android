@@ -66,15 +66,16 @@
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:visibility="gone"
         android:layout_marginTop="16dp"
         android:layout_below="@+id/action_bar_container"
         android:id="@+id/sectionsRv"
         android:layout_width="match_parent"
         android:layout_height="96dp"
-        android:background="#ffffff" />
+        android:background="#787878" />
 
     <FrameLayout
+        android:background="#862465"
+        android:layout_marginTop="8dp"
         android:layout_below="@+id/sectionsRv"
         android:id="@+id/contentPlaceHolder"
         android:layout_width="match_parent"

@@ -2,6 +2,7 @@ package com.hapramp;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -11,12 +12,18 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.hapramp.api.DataServer;
 import com.hapramp.fragments.HomeFragment;
+import com.hapramp.interfaces.FetchSkillsResponse;
+import com.hapramp.logger.L;
+import com.hapramp.models.response.SkillsModel;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeActivity extends AppCompatActivity implements CategoryRecyclerAdapter.OnCategoryItemClickListener {
+public class HomeActivity extends AppCompatActivity implements CategoryRecyclerAdapter.OnCategoryItemClickListener, FetchSkillsResponse {
 
 
     @BindView(R.id.search_icon)
@@ -44,11 +51,14 @@ public class HomeActivity extends AppCompatActivity implements CategoryRecyclerA
 
     CategoryRecyclerAdapter categoryRecyclerAdapter;
 
+    private Fragment currentFragment;
+
     private final int FRAGMENT_HOME = 12;
     private final int FRAGMENT_COMPETITION = 13;
     private final int FRAGMENT_PROFILE = 14;
     private final int FRAGMENT_SETTINGS = 15;
 
+    private int selectedCategoryId = -1;
     private Typeface materialTypface;
     private FragmentManager fragmentManager;
     private HomeFragment homeFragment;
@@ -62,14 +72,18 @@ public class HomeActivity extends AppCompatActivity implements CategoryRecyclerA
         setCategory();
         initObjects();
         attachListeners();
+        transactFragment(FRAGMENT_HOME);
+        fetchCategories();
     }
 
     private void initObjects(){
         fragmentManager = getSupportFragmentManager();
         homeFragment = new HomeFragment();
+        currentFragment = homeFragment;
     }
 
     private void setupToolbar() {
+
         materialTypface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
         searchIcon.setTypeface(materialTypface);
         notificationIcon.setTypeface(materialTypface);
@@ -80,6 +94,7 @@ public class HomeActivity extends AppCompatActivity implements CategoryRecyclerA
         bottomBarMore.setTypeface(materialTypface);
         notificationCount.setVisibility(View.VISIBLE);
         notificationCount.setText("23");
+
     }
 
     private void attachListeners(){
@@ -126,9 +141,8 @@ public class HomeActivity extends AppCompatActivity implements CategoryRecyclerA
         sectionsRv.setAdapter(categoryRecyclerAdapter);
     }
 
-    @Override
-    public void onCategoryClicked(int id) {
-        // TODO: 10/25/2017 fetch posts on category basis
+    private void fetchCategories(){
+        DataServer.fetchSkills(this);
     }
 
     private void transactFragment(int fragment){
@@ -139,6 +153,7 @@ public class HomeActivity extends AppCompatActivity implements CategoryRecyclerA
                         .replace(R.id.contentPlaceHolder,homeFragment)
                         .addToBackStack(null)
                         .commit();
+                currentFragment = homeFragment;
 
                 break;
             case FRAGMENT_COMPETITION:
@@ -147,6 +162,8 @@ public class HomeActivity extends AppCompatActivity implements CategoryRecyclerA
                         .replace(R.id.contentPlaceHolder,homeFragment)
                         .addToBackStack(null)
                         .commit();
+                // TODO: 10/26/2017  change fragment
+                currentFragment = homeFragment;
 
                 break;
             case FRAGMENT_PROFILE:
@@ -156,6 +173,9 @@ public class HomeActivity extends AppCompatActivity implements CategoryRecyclerA
                         .addToBackStack(null)
                         .commit();
 
+                // TODO: 10/26/2017 change fragment
+                currentFragment = homeFragment;
+
                 break;
             case FRAGMENT_SETTINGS:
 
@@ -164,10 +184,32 @@ public class HomeActivity extends AppCompatActivity implements CategoryRecyclerA
                         .addToBackStack(null)
                         .commit();
 
+                // TODO: 10/26/2017 change fragment
+                currentFragment = homeFragment;
+
                 break;
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onCategoryClicked(int id) {
+        L.D.m("Category"," clicked");
+        selectedCategoryId = id;
+        if(currentFragment == homeFragment || currentFragment == homeFragment){
+            // pass the category
+        }
+    }
+
+    @Override
+    public void onSkillsFetched(List<SkillsModel> skillsModels) {
+            categoryRecyclerAdapter.setCategories(skillsModels);
+    }
+
+    @Override
+    public void onSkillFetchError() {
+
     }
 }
 
