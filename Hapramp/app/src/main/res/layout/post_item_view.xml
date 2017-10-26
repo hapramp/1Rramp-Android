@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
         android:id="@+id/post_header_container"
@@ -13,7 +14,7 @@
             android:id="@+id/feed_owner_pic"
             android:layout_width="?actionBarSize"
             android:layout_height="match_parent"
-            android:background="@drawable/star_post_bg"
+            fresco:roundAsCircle="true"
             android:padding="8dp" />
 
         <TextView
@@ -117,7 +118,7 @@
             android:layout_below="@+id/faded_edge"
             android:layout_marginTop="24dp"
             android:gravity="center"
-            android:text=""
+            android:text=""
             android:textSize="24sp" />
 
         <TextView
@@ -139,7 +140,7 @@
             android:layout_marginTop="24dp"
             android:layout_toEndOf="@+id/likeCount"
             android:gravity="center"
-            android:text=""
+            android:text=""
             android:textSize="24sp" />
 
         <TextView
@@ -181,7 +182,7 @@
             android:layout_marginTop="24dp"
             android:layout_toEndOf="@+id/hapcoins_count"
             android:gravity="center"
-            android:text=""
+            android:text=""
             android:textSize="24sp" />
 
         <TextView
@@ -196,7 +197,13 @@
 
     </RelativeLayout>
 
+    <FrameLayout
+        android:layout_below="@+id/post_meta_container"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"/>
+
     <TextView
+        android:id="@+id/starBtn"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_below="@+id/featured_image_post"
@@ -205,7 +212,7 @@
         android:background="@drawable/star_post_bg"
         android:gravity="center"
         android:padding="8dp"
-        android:text=""
+        android:text=""
         android:textColor="#ffffff"
         android:textSize="24sp" />
 

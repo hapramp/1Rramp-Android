@@ -1,6 +1,7 @@
 package com.hapramp;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,12 +16,13 @@ import com.hapramp.models.response.PostResponse;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by Ankit on 10/25/2017.
  */
 
-public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdapter.PostViewHolder> {
 
     public Context mContext;
     public List<PostResponse> postResponses;
@@ -35,19 +37,19 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public PostViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.post_item_view, null);
         return new PostViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
-
+    public void onBindViewHolder(PostViewHolder viewHolder, int i) {
+        viewHolder.bind(postResponses.get(i));
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return postResponses!=null?postResponses.size():0;
     }
 
     class PostViewHolder extends RecyclerView.ViewHolder {
@@ -88,17 +90,32 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         TextView shareCount;
         @BindView(R.id.post_meta_container)
         RelativeLayout postMetaContainer;
+        @BindView(R.id.starBtn)
+        TextView starBtn;
 
         public PostViewHolder(View itemView) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
+
+            starBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+            likeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+            shareBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+            hapcoinBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+            commentBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         }
 
-        public void bind(PostResponse postResponse){
-            // TODO: 10/25/2017 bind data
+        public void bind(PostResponse postResponse) {
+            feedOwnerPic.setImageURI(postResponse.getUser().getImage_uri());
+            feedOwnerTitle.setText(postResponse.getUser().getFull_name());
+            feedOwnerSubtitle.setText(postResponse.getUser().getUsername());
+            featuredImagePost.setImageURI(postResponse.getMedia_uri());
+            postTitle.setText("Missing Title");
+            postSnippet.setText(postResponse.getContent());
+
         }
     }
 
-    interface OnPostElementsClickListener{
+    interface OnPostElementsClickListener {
         void onReadMoreTapped();
     }
 }
