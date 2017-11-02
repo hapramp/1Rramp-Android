@@ -93,7 +93,7 @@ public class CategoryItemView extends FrameLayout {
                 resId = R.drawable.profile_user_dp_circle;
                 break;
         }
-        L.D.m("Cate","setting resource id");
+
         skillsBgImage.setImageResource(resId);
     }
 

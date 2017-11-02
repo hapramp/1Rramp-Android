@@ -96,6 +96,7 @@
             android:background="@drawable/post_snippet_faded_edge" />
 
         <TextView
+            android:id="@+id/readMoreBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/post_snippet"
@@ -118,7 +119,7 @@
             android:layout_below="@+id/faded_edge"
             android:layout_marginTop="24dp"
             android:gravity="center"
-            android:text=""
+            android:text=""
             android:textSize="24sp" />
 
         <TextView
@@ -174,33 +175,12 @@
             android:gravity="center_vertical"
             android:text="24" />
 
-        <TextView
-            android:id="@+id/shareBtn"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_below="@+id/faded_edge"
-            android:layout_marginTop="24dp"
-            android:layout_toEndOf="@+id/hapcoins_count"
-            android:gravity="center"
-            android:text=""
-            android:textSize="24sp" />
-
-        <TextView
-            android:id="@+id/share_count"
-            android:layout_width="wrap_content"
-            android:layout_height="64dp"
-            android:layout_below="@+id/faded_edge"
-            android:layout_marginTop="24dp"
-            android:layout_toEndOf="@id/shareBtn"
-            android:gravity="center_vertical"
-            android:text="24" />
-
     </RelativeLayout>
 
     <FrameLayout
         android:layout_below="@+id/post_meta_container"
         android:layout_width="match_parent"
-        android:layout_height="48dp"/>
+        android:layout_height="16dp"/>
 
     <TextView
         android:id="@+id/starBtn"

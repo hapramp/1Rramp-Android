@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Ankit on 10/25/2017.
  */
 
-public class CompetionResponse {
+public class CompetitionResponse {
 
     @SerializedName("id")
     public int id;
@@ -27,7 +27,7 @@ public class CompetionResponse {
     @SerializedName("entry_fee")
     public int entry_fee;
     @SerializedName("give_out_ratio")
-    public int give_out_ratio;
+    public double give_out_ratio;
     @SerializedName("club")
     public Club club;
 
@@ -41,14 +41,43 @@ public class CompetionResponse {
         @SerializedName("description")
         public String description;
 
-        @Override
-        public String toString() {
-            return "Skill{" +
-                    "id=" + id +
-                    ", name='" + name + '\'' +
-                    ", image_uri='" + image_uri + '\'' +
-                    ", description='" + description + '\'' +
-                    '}';
+        public Skill(int id, String name, String image_uri, String description) {
+            this.id = id;
+            this.name = name;
+            this.image_uri = image_uri;
+            this.description = description;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getImage_uri() {
+            return image_uri;
+        }
+
+        public void setImage_uri(String image_uri) {
+            this.image_uri = image_uri;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
         }
     }
 
@@ -64,15 +93,52 @@ public class CompetionResponse {
         @SerializedName("description")
         public String description;
 
-        @Override
-        public String toString() {
-            return "Organization{" +
-                    "id=" + id +
-                    ", name='" + name + '\'' +
-                    ", username='" + username + '\'' +
-                    ", image_uri='" + image_uri + '\'' +
-                    ", description='" + description + '\'' +
-                    '}';
+        public Organization(int id, String name, String username, String image_uri, String description) {
+            this.id = id;
+            this.name = name;
+            this.username = username;
+            this.image_uri = image_uri;
+            this.description = description;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getImage_uri() {
+            return image_uri;
+        }
+
+        public void setImage_uri(String image_uri) {
+            this.image_uri = image_uri;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
         }
     }
 
@@ -94,22 +160,83 @@ public class CompetionResponse {
         @SerializedName("organization")
         public Organization organization;
 
-        @Override
-        public String toString() {
-            return "Club{" +
-                    "id=" + id +
-                    ", name='" + name + '\'' +
-                    ", handle='" + handle + '\'' +
-                    ", description='" + description + '\'' +
-                    ", created_at='" + created_at + '\'' +
-                    ", logo_uri='" + logo_uri + '\'' +
-                    ", skill=" + skill +
-                    ", organization=" + organization +
-                    '}';
+        public Club(int id, String name, String handle, String description, String created_at, String logo_uri, Skill skill, Organization organization) {
+            this.id = id;
+            this.name = name;
+            this.handle = handle;
+            this.description = description;
+            this.created_at = created_at;
+            this.logo_uri = logo_uri;
+            this.skill = skill;
+            this.organization = organization;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getHandle() {
+            return handle;
+        }
+
+        public void setHandle(String handle) {
+            this.handle = handle;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public String getCreated_at() {
+            return created_at;
+        }
+
+        public void setCreated_at(String created_at) {
+            this.created_at = created_at;
+        }
+
+        public String getLogo_uri() {
+            return logo_uri;
+        }
+
+        public void setLogo_uri(String logo_uri) {
+            this.logo_uri = logo_uri;
+        }
+
+        public Skill getSkill() {
+            return skill;
+        }
+
+        public void setSkill(Skill skill) {
+            this.skill = skill;
+        }
+
+        public Organization getOrganization() {
+            return organization;
+        }
+
+        public void setOrganization(Organization organization) {
+            this.organization = organization;
         }
     }
 
-    public CompetionResponse(int id, String name, String handle, String description, String logo_uri, String created_at, String start_time, String end_time, int entry_fee, int give_out_ratio, Club club) {
+    public CompetitionResponse(int id, String name, String handle, String description, String logo_uri, String created_at, String start_time, String end_time, int entry_fee, double give_out_ratio, Club club) {
         this.id = id;
         this.name = name;
         this.handle = handle;
@@ -195,11 +322,11 @@ public class CompetionResponse {
         this.entry_fee = entry_fee;
     }
 
-    public int getGive_out_ratio() {
+    public double getGive_out_ratio() {
         return give_out_ratio;
     }
 
-    public void setGive_out_ratio(int give_out_ratio) {
+    public void setGive_out_ratio(double give_out_ratio) {
         this.give_out_ratio = give_out_ratio;
     }
 
@@ -213,7 +340,7 @@ public class CompetionResponse {
 
     @Override
     public String toString() {
-        return "CompetionResponse{" +
+        return "CompetitionResponse{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", handle='" + handle + '\'' +

@@ -13,6 +13,7 @@
         android:background="#fefefe">
 
         <TextView
+
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:clickable="true"
@@ -65,18 +66,8 @@
 
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:layout_marginTop="16dp"
-        android:layout_below="@+id/action_bar_container"
-        android:id="@+id/sectionsRv"
-        android:layout_width="match_parent"
-        android:layout_height="96dp"
-        android:background="#787878" />
-
     <FrameLayout
-        android:background="#862465"
-        android:layout_marginTop="8dp"
-        android:layout_below="@+id/sectionsRv"
+        android:layout_below="@+id/action_bar_container"
         android:id="@+id/contentPlaceHolder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

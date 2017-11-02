@@ -3,6 +3,7 @@
 
 
     <color name="colorPrimary">#FF6B95</color>
+    <color name="colorPrimaryDark">#c75475</color>
     <color name="Yellow">#FFEB3B</color>
     <color name="Blue">#2196f3</color>
     <color name="Green">#8Bc34a</color>
@@ -20,7 +21,6 @@
 
 
 
-    <color name="colorPrimaryDark">#d43226</color>
     <color name="colorAccent">#ffffff</color>
     <color name="textColorSkills">#999999</color>
 

@@ -9,27 +9,28 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.hapramp.models.response.CompetionResponse;
+import com.hapramp.models.response.CompetitionResponse;
 
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
- * Created by Ankit on 10/25/2017.
+ * Created by Ankit on 10/28/2017.
  */
 
-public class CompetionRecyclerAdapter extends RecyclerView.Adapter<CompetionRecyclerAdapter.CompetitionViewHolder> {
+public class CompetitionRecyclerAdapter extends RecyclerView.Adapter<CompetitionRecyclerAdapter.CompetitionViewHolder> {
 
     public Context mContext;
-    public List<CompetionResponse> competionResponses;
+    public List<CompetitionResponse> competitionResponse;
 
-    public CompetionRecyclerAdapter(Context mContext) {
+    public CompetitionRecyclerAdapter(Context mContext) {
         this.mContext = mContext;
     }
 
-    public void setPostResponses(List<CompetionResponse> competionResponses) {
-        this.competionResponses = competionResponses;
+    public void setCompetitionResponses(List<CompetitionResponse> competitionResponse) {
+        this.competitionResponse = competitionResponse;
         notifyDataSetChanged();
     }
 
@@ -41,12 +42,12 @@ public class CompetionRecyclerAdapter extends RecyclerView.Adapter<CompetionRecy
 
     @Override
     public void onBindViewHolder(CompetitionViewHolder viewHolder, int i) {
-
+        viewHolder.bind(competitionResponse.get(i));
     }
 
     @Override
     public int getItemCount() {
-        return competionResponses != null ? competionResponses.size() : 0;
+        return competitionResponse != null ? competitionResponse.size() : 0;
     }
 
     class CompetitionViewHolder extends RecyclerView.ViewHolder {
@@ -81,21 +82,26 @@ public class CompetionRecyclerAdapter extends RecyclerView.Adapter<CompetionRecy
         TextView participantIcon;
         @BindView(R.id.participantCount)
         TextView participantCount;
-        @BindView(R.id.shareIcon)
-        TextView shareIcon;
-        @BindView(R.id.shareCount)
-        TextView shareCount;
 
         public CompetitionViewHolder(View itemView) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
+
+            entryFeeIcon.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+            prizeMoneyIcon.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+            participantIcon.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+
         }
 
-        public void bind(CompetionResponse competionResponse) {
-            // TODO: 10/25/2017 bind data
+        public void bind(CompetitionResponse postResponse) {
+            feedOwnerPic.setImageURI(postResponse.getLogo_uri());
+            feedOwnerTitle.setText(postResponse.getName());
+            feedOwnerSubtitle.setText(postResponse.getHandle());
+            entryFee.setText(String.valueOf(postResponse.getEntry_fee()));
         }
     }
 
-    interface OnPostElementsClickListener {
+    interface OnCompetitionElementsClickListener {
         void onReadMoreTapped();
     }
 }

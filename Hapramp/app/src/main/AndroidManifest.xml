@@ -3,6 +3,8 @@
     package="com.hapramp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"  />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".HapRampMain"
@@ -12,13 +14,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity">
-        </activity>
+        <activity android:name=".LoginActivity" />
         <activity android:name=".SkillRegistrationActivity" />
         <activity android:name=".OrganisationActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".StoryActivity" />
-        <activity android:name=".HomeActivity">
+        <activity
+            android:name=".HomeActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,8 +30,10 @@
         </activity>
         <activity android:name=".ProfileActivity" />
         <activity android:name=".LeaderboardActivity" />
-        <activity android:name=".DatabaseTestActivity"></activity>
-        <activity android:name=".activity.RegistrationPage2"></activity>
+        <activity android:name=".DatabaseTestActivity" />
+        <activity android:name=".activity.RegistrationPage2" />
+        <activity android:name=".activity.DetailsPost" />
+        <activity android:name=".activity.NewPostCreationActivity"></activity>
     </application>
 
 </manifest>

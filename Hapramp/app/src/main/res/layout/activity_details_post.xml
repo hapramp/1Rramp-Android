@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/toolbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:layout_marginBottom="4dp"
+        android:background="#ffffff">
+
+        <TextView
+            android:background="?selectableItemBackgroundBorderless"
+            android:id="@+id/closeBtn"
+            android:layout_width="?actionBarSize"
+            android:layout_height="?actionBarSize"
+            android:gravity="center"
+            android:text=""
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/overflowBtn"
+            android:layout_width="?actionBarSize"
+            android:layout_height="?actionBarSize"
+            android:layout_alignParentEnd="true"
+            android:gravity="center"
+            android:text=""
+            android:textSize="24sp" />
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:fillViewport="true"
+        android:layout_below="@+id/toolbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/post_header_container"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:background="#ffffff">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/feed_owner_pic"
+                android:layout_width="?actionBarSize"
+                android:layout_height="match_parent"
+                android:padding="8dp"
+                fresco:roundAsCircle="true" />
+
+            <TextView
+                android:id="@+id/feed_owner_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_toEndOf="@+id/feed_owner_pic"
+                android:text="Ankit Kumar"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/feed_owner_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/feed_owner_title"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="2dp"
+                android:layout_toEndOf="@+id/feed_owner_pic"
+                android:text="iiit | 2 days ago" />
+
+        </RelativeLayout>
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/featured_image_post"
+            android:layout_width="match_parent"
+            android:layout_height="196dp"
+            android:layout_below="@+id/post_header_container"
+            android:background="#1c81bc" />
+
+        <RelativeLayout
+            android:id="@+id/post_meta_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/featured_image_post"
+            android:background="#ffffff"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="24dp">
+
+            <TextView
+                android:id="@+id/post_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cheap Romantic Vaccations"
+                android:textColor="@color/gradientEndPink"
+                android:textSize="18sp" />
+
+
+            <TextView
+                android:id="@+id/tags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/post_title"
+                android:padding="4dp"
+                android:text="#hapramp #dance #colors"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/post_snippet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tags"
+                android:layout_marginTop="8dp"
+                android:padding="4dp"
+                android:text="@string/lorem"
+                android:textColor="@color/lightGrey"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/shareWithFriendBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/post_snippet"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/share_with_friend_bg"
+                android:gravity="center"
+                android:paddingBottom="8dp"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp"
+                android:paddingTop="8dp"
+                android:text="SHARE TO FRIEND"
+                android:textColor="#ffffff"
+                android:textSize="16sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/shareWithFriendBtn">
+
+                <TextView
+                    android:id="@+id/startIcon"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:gravity="center"
+                    android:text=""
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/likeCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="64dp"
+                    android:layout_toEndOf="@id/startIcon"
+                    android:gravity="center_vertical"
+                    android:text="24" />
+
+
+                <TextView
+                    android:id="@+id/commentBtn"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_toEndOf="@+id/likeCount"
+                    android:gravity="center"
+                    android:text=""
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/commentCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="64dp"
+                    android:layout_toEndOf="@id/commentBtn"
+                    android:gravity="center_vertical"
+                    android:text="24" />
+
+                <TextView
+                    android:id="@+id/hapcoinBtn"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_toEndOf="@+id/commentCount"
+                    android:gravity="center"
+                    android:text=""
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/hapcoins_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="64dp"
+                    android:layout_toEndOf="@id/hapcoinBtn"
+                    android:gravity="center_vertical"
+                    android:text="24" />
+
+            </RelativeLayout>
+
+
+
+        </RelativeLayout>
+
+            <TextView
+                android:id="@+id/commentsCaption"
+                android:layout_marginStart="16dp"
+                android:text="Comments"
+                android:textSize="16sp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:layout_below="@+id/post_meta_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <RelativeLayout
+                android:background="@drawable/write_comment_bg"
+                android:layout_below="@+id/commentsCaption"
+                android:id="@+id/writeCommentComment"
+                android:layout_width="match_parent"
+                android:layout_margin="24dp"
+                android:layout_height="64dp">
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:layout_centerVertical="true"
+                    android:id="@+id/writeCommentUserAvatar"
+                    fresco:placeholderImage="@drawable/ic_person_white_24dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="16dp"/>
+
+                <EditText
+                    android:id="@+id/commentEt"
+                    android:hint="Type Comment..."
+                    android:layout_toEndOf="@+id/writeCommentUserAvatar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </RelativeLayout>
+
+            <ListView
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_below="@+id/writeCommentComment"
+                android:id="@+id/commentsListView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/starBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_below="@+id/featured_image_post"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-24dp"
+            android:background="@drawable/star_post_bg"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text=""
+            android:textColor="#ffffff"
+            android:textSize="24sp" />
+
+    </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

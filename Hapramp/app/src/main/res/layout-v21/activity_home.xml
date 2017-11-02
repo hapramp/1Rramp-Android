@@ -35,13 +35,13 @@
             android:textSize="24sp" />
 
         <RelativeLayout
-        android:background="?android:selectableItemBackgroundBorderless"
             android:id="@+id/notification_container"
             android:layout_width="?actionBarSize"
             android:layout_height="?actionBarSize"
             android:layout_alignParentEnd="true">
 
             <TextView
+                android:background="?android:selectableItemBackgroundBorderless"
                 android:id="@+id/notification_icon"
                 android:layout_width="?actionBarSize"
                 android:layout_height="?actionBarSize"
@@ -68,17 +68,8 @@
 
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:layout_marginTop="8dp"
-        android:layout_below="@+id/action_bar_container"
-        android:id="@+id/sectionsRv"
-        android:background="#ffffff"
-        android:layout_width="match_parent"
-        android:layout_height="96dp" />
-
     <FrameLayout
-        android:layout_marginTop="8dp"
-        android:layout_below="@+id/sectionsRv"
+        android:layout_below="@+id/action_bar_container"
         android:id="@+id/contentPlaceHolder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

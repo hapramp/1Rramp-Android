@@ -5,28 +5,28 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.hapramp.logger.L;
 import com.hapramp.models.response.SkillsModel;
+import com.hapramp.models.response.UserModel;
 
 import java.util.List;
 
 /**
- * Created by Ankit on 10/25/2017.
+ * Created by Ankit on 10/29/2017.
  */
 
-public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecyclerAdapter.CategoryViewHolder> {
+public class ProfileSkillsRecyclerAdapter extends RecyclerView.Adapter<ProfileSkillsRecyclerAdapter.CategoryViewHolder>{
 
     private Context context;
-    private List<SkillsModel> category;
+    private List<UserModel.Skills> category;
     private OnCategoryItemClickListener categoryItemClickListener;
     private int selectedSkillId = -1;
 
-    public CategoryRecyclerAdapter(Context context, OnCategoryItemClickListener categoryItemClickListener) {
+    public ProfileSkillsRecyclerAdapter(Context context, OnCategoryItemClickListener categoryItemClickListener) {
         this.context = context;
         this.categoryItemClickListener = categoryItemClickListener;
     }
 
-    public void setCategories(List<SkillsModel> category){
+    public void setCategories(List<UserModel.Skills> category){
         this.category = category;
         notifyDataSetChanged();
     }
@@ -55,7 +55,7 @@ public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecycl
             categoryItemView = (CategoryItemView) itemView;
         }
 
-        public void bind(final SkillsModel model, final OnCategoryItemClickListener categoryItemClickListener){
+        public void bind(final UserModel.Skills model, final OnCategoryItemClickListener categoryItemClickListener){
 
             categoryItemView.setSkillsBgImage(model.getId());
             categoryItemView.setSkillTitle(model.getName());

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    >
+
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.hapramp.activity.NewPostCreationActivity">
+
+
+    <RelativeLayout
+        android:id="@+id/toolbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:layout_marginBottom="4dp"
+        android:background="#ffffff">
+
+        <TextView
+            android:background="?selectableItemBackgroundBorderless"
+            android:id="@+id/closeBtn"
+            android:layout_width="?actionBarSize"
+            android:layout_height="?actionBarSize"
+            android:gravity="center"
+            android:text=""
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/postButton"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:text="POST"
+            android:background="@drawable/share_with_friend_bg"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textSize="18sp"
+            android:layout_marginEnd="16dp"
+            />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_below="@+id/toolbar_container"
+        android:id="@+id/postMedia"
+        android:background="#3c819b"
+        android:scaleType="centerCrop"
+        android:layout_width="match_parent"
+        android:layout_height="172dp" />
+
+    <EditText
+        android:layout_below="@+id/postMedia"
+        android:id="@+id/title"
+        android:hint="Title Here.."
+        android:textSize="24sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:layout_below="@+id/title"
+        android:id="@+id/content"
+        android:hint="Content.."
+        android:textSize="18sp"
+        android:layout_width="match_parent"
+        android:layout_height="360dp" />
+
+</RelativeLayout>
+
+</ScrollView>

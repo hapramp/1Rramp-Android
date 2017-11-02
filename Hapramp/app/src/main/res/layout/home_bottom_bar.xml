@@ -4,73 +4,78 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:layout_alignParentBottom="true"
-        android:src="@drawable/bottom_bar_bg"
         android:layout_width="match_parent"
+        android:layout_height="76dp"
+        android:layout_alignParentBottom="true"
         android:scaleType="centerCrop"
-        android:layout_height="76dp" />
+        android:src="@drawable/bottom_bar_bg" />
 
     <LinearLayout
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="72dp"
+        android:layout_alignParentBottom="true"
         android:orientation="horizontal"
         android:weightSum="5">
 
         <FrameLayout
-            android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="match_parent">
+            android:layout_height="56dp"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:background="#ffffff">
 
             <TextView
-                android:clickable="true"
-                android:background="?android:selectableItemBackgroundBorderless"
                 android:id="@+id/bottomBar_home"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
+                android:background="?selectableItemBackgroundBorderless"
+                android:gravity="center_horizontal"
+                android:paddingTop="8dp"
                 android:text=""
                 android:textColor="@color/colorPrimary"
                 android:textSize="24sp" />
 
             <TextView
-                android:textColor="@color/colorPrimary"
-                android:padding="8dp"
-                android:textSize="10sp"
-                android:gravity="center_horizontal"
-                android:layout_gravity="bottom"
-                android:text="Home"
+                android:id="@+id/bottomBar_home_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:gravity="center_horizontal"
+                android:padding="8dp"
+                android:text="Home"
+                android:textColor="@color/colorPrimary"
+                android:textSize="10sp" />
 
         </FrameLayout>
 
         <FrameLayout
-            android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="match_parent">
+            android:layout_height="56dp"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:background="#ffffff">
 
-        <TextView
-
-            android:clickable="true"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:id="@+id/bottomBar_competition"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text=""
-            android:textColor="#818080"
-            android:textSize="24sp" />
+            <TextView
+                android:id="@+id/bottomBar_competition"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?selectableItemBackgroundBorderless"
+                android:gravity="center_horizontal"
+                android:paddingTop="8dp"
+                android:text=""
+                android:textColor="#818080"
+                android:textSize="24sp" />
 
 
             <TextView
-                android:paddingBottom="8dp"
-                android:textSize="10sp"
-                android:gravity="center_horizontal"
-                android:layout_gravity="bottom"
-                android:text="Competition"
+                android:id="@+id/bottomBar_competition_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:gravity="center_horizontal"
+                android:paddingBottom="8dp"
+                android:text="Competition"
+                android:textSize="10sp" />
 
         </FrameLayout>
 
@@ -80,13 +85,14 @@
             android:layout_weight="1">
 
             <TextView
-                android:elevation="4dp"
+                android:clickable="true"
                 android:id="@+id/bottom_bar_more"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
                 android:layout_gravity="center"
                 android:layout_weight="2"
                 android:background="@drawable/home_more_btn_selector"
+                android:elevation="4dp"
                 android:gravity="center"
                 android:text=""
                 android:textColor="#ffffff"
@@ -97,60 +103,63 @@
 
 
         <FrameLayout
-
-            android:layout_weight="1"
+            android:background="#ffffff"
             android:layout_width="0dp"
-            android:layout_height="match_parent">
-
-        <TextView
-
-            android:clickable="true"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:id="@+id/bottomBar_profile"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text=""
-            android:textColor="#818080"
-            android:textSize="24sp" />
+            android:layout_height="56dp"
+            android:layout_gravity="bottom"
+            android:layout_weight="1">
 
             <TextView
-                android:paddingBottom="8dp"
-                android:textSize="10sp"
-                android:gravity="center_horizontal"
-                android:layout_gravity="bottom"
-                android:text="Profile"
+                android:id="@+id/bottomBar_profile"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent"
+                android:background="?selectableItemBackgroundBorderless"
+                android:gravity="center_horizontal"
+                android:paddingTop="8dp"
+                android:text=""
+                android:textColor="#818080"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/bottomBar_profile_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:gravity="center_horizontal"
+                android:paddingBottom="8dp"
+                android:text="Profile"
+                android:textSize="10sp" />
 
         </FrameLayout>
 
 
         <FrameLayout
-            android:clickable="true"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:layout_weight="1"
+            android:background="#ffffff"
             android:layout_width="0dp"
-            android:layout_height="match_parent">
-
-        <TextView
-
-            android:id="@+id/bottomBar_settings"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text=""
-            android:textColor="#818080"
-            android:textSize="24sp" />
+            android:layout_height="56dp"
+            android:layout_gravity="bottom"
+            android:layout_weight="1">
 
             <TextView
-                android:paddingBottom="8dp"
-                android:textSize="10sp"
-                android:gravity="center_horizontal"
-                android:layout_gravity="bottom"
-                android:text="Settings"
+                android:id="@+id/bottomBar_settings"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent"
+                android:background="?selectableItemBackgroundBorderless"
+                android:gravity="center_horizontal"
+                android:paddingTop="8dp"
+                android:text=""
+                android:textColor="#818080"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/bottomBar_settings_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:gravity="center_horizontal"
+                android:paddingBottom="8dp"
+                android:text="Settings"
+                android:textSize="10sp" />
 
         </FrameLayout>
 

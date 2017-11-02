@@ -1,6 +1,7 @@
 package com.hapramp;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +12,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.hapramp.api.DataServer;
+import com.hapramp.logger.L;
+import com.hapramp.models.LikeBody;
 import com.hapramp.models.response.PostResponse;
 
 import java.util.List;
@@ -26,6 +30,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
 
     public Context mContext;
     public List<PostResponse> postResponses;
+    public OnPostElementsClickListener postElementsClickListener;
 
     public PostsRecyclerAdapter(Context mContext) {
         this.mContext = mContext;
@@ -36,6 +41,10 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
         notifyDataSetChanged();
     }
 
+    public void setPostElementsClickListener(OnPostElementsClickListener postElementsClickListener) {
+        this.postElementsClickListener = postElementsClickListener;
+    }
+
     @Override
     public PostViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.post_item_view, null);
@@ -44,12 +53,12 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
 
     @Override
     public void onBindViewHolder(PostViewHolder viewHolder, int i) {
-        viewHolder.bind(postResponses.get(0));
+        viewHolder.bind(postResponses.get(i),postElementsClickListener);
     }
 
     @Override
     public int getItemCount() {
-        return postResponses!=null?2:0;
+        return postResponses!=null?postResponses.size():0;
     }
 
     class PostViewHolder extends RecyclerView.ViewHolder {
@@ -82,12 +91,12 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
         TextView commentCount;
         @BindView(R.id.hapcoinBtn)
         TextView hapcoinBtn;
+        @BindView(R.id.readMoreBtn)
+        TextView readMoreBtn;
         @BindView(R.id.hapcoins_count)
         TextView hapcoinsCount;
         @BindView(R.id.shareBtn)
         TextView shareBtn;
-        @BindView(R.id.share_count)
-        TextView shareCount;
         @BindView(R.id.post_meta_container)
         RelativeLayout postMetaContainer;
         @BindView(R.id.starBtn)
@@ -104,7 +113,8 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
             commentBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         }
 
-        public void bind(PostResponse postResponse) {
+        public void bind(final PostResponse postResponse , final OnPostElementsClickListener postElementsClickListener) {
+            final boolean isLiked = false;
             feedOwnerPic.setImageURI(postResponse.getUser().getImage_uri());
             feedOwnerTitle.setText(postResponse.getUser().getFull_name());
             feedOwnerSubtitle.setText(postResponse.getUser().getUsername());
@@ -112,10 +122,18 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
             postTitle.setText("Missing Title");
             postSnippet.setText(postResponse.getContent());
 
+            readMoreBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+
         }
+
     }
 
-    interface OnPostElementsClickListener {
+    public interface OnPostElementsClickListener {
         void onReadMoreTapped();
     }
 }
