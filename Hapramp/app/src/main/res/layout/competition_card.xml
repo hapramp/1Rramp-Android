@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/competition_card_bg">
+    android:background="@drawable/competition_card_bg"
+    android:padding="16dp">
 
     <RelativeLayout
         android:id="@+id/post_header_container"
@@ -12,11 +12,11 @@
         android:layout_height="?actionBarSize">
 
         <com.facebook.drawee.view.SimpleDraweeView
-            fresco:roundAsCircle = "true"
             android:id="@+id/feed_owner_pic"
             android:layout_width="?actionBarSize"
             android:layout_height="match_parent"
-            android:padding="4dp" />
+            android:padding="4dp"
+            fresco:roundAsCircle="true" />
 
         <TextView
             android:id="@+id/feed_owner_title"
@@ -42,144 +42,153 @@
     </RelativeLayout>
 
     <TextView
-        android:layout_marginStart="16dp"
         android:id="@+id/tags"
-        android:textColor="@color/colorPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/post_header_container"
+        android:layout_marginStart="16dp"
         android:padding="4dp"
         android:text="#hapramp #dance #colors"
+        android:textColor="@color/colorPrimary"
         android:textSize="12sp" />
 
     <TextView
-        android:layout_below="@+id/tags"
         android:id="@+id/entry_fee_icon"
-        android:text=""
-        android:gravity="center"
-        android:paddingTop="4dp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:paddingBottom="4dp"
-        android:textSize="24sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:layout_below="@+id/tags"
-        android:layout_toEndOf="@+id/entry_fee_icon"
-        android:id="@+id/entry_fee_caption"
-        android:text="Entry Fee:"
-        android:gravity="center"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:layout_below="@+id/tags"
-        android:textColor="@color/colorPrimary"
-        android:layout_toEndOf="@+id/entry_fee_caption"
-        android:id="@+id/entry_fee"
-        android:text="20 Hapcoins"
-        android:gravity="center"
-        android:padding="8dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:layout_below="@+id/entry_fee_icon"
-        android:id="@+id/prize_money_icon"
-        android:text=""
-        android:gravity="center"
-        android:paddingTop="4dp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:paddingBottom="4dp"
-        android:textSize="24sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:layout_below="@+id/entry_fee_caption"
-        android:layout_toEndOf="@+id/prize_money_icon"
-        android:id="@+id/prize_caption"
-        android:text="Prize Money:"
-        android:gravity="center"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:layout_below="@+id/entry_fee"
-        android:textColor="@color/colorPrimary"
-        android:layout_toEndOf="@+id/prize_caption"
-        android:id="@+id/prize_money"
-        android:text="500 Hapcoins"
-        android:gravity="center"
-        android:padding="4dp"
-        android:textSize="14sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:layout_marginStart="48dp"
-        android:layout_below="@+id/prize_caption"
-        android:id="@+id/join_now_btn"
-        android:layout_marginTop="16dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:paddingStart="24dp"
-        android:paddingEnd="24dp"
-        android:textSize="16dp"
-        android:textColor="#ffffff"
-        android:background="@drawable/skills_continue_btn_bg"
-        android:text="Join Now"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:layout_marginEnd="48dp"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/prize_money"
-        android:id="@+id/know_more_btn"
-        android:paddingTop="8dp"
-        android:layout_marginTop="16dp"
-        android:paddingBottom="8dp"
-        android:paddingStart="24dp"
-        android:paddingEnd="24dp"
-        android:textSize="16dp"
-        android:textColor="@color/colorPrimary"
-        android:background="@drawable/sign_in_with_google_btn_bg"
-        android:text="Know More"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <RelativeLayout
-        android:padding="4dp"
-    android:layout_below="@+id/join_now_btn"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-
-        <TextView
-        android:id="@+id/participantIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:text=""
+        android:layout_below="@+id/tags"
+        android:gravity="center"
+        android:paddingBottom="4dp"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:text=""
         android:textSize="24sp" />
 
     <TextView
-        android:id="@+id/participantCount"
+        android:id="@+id/entry_fee_caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:padding="4dp"
-        android:layout_toEndOf="@id/participantIcon"
-        android:gravity="center_vertical"
-        android:text="24" />
+        android:layout_below="@+id/tags"
+        android:layout_toEndOf="@+id/entry_fee_icon"
+        android:gravity="center"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:text="Entry Fee:" />
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/entry_fee"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tags"
+        android:layout_toEndOf="@+id/entry_fee_caption"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="20 Hapcoins"
+        android:textColor="@color/colorPrimary" />
+
+    <TextView
+        android:id="@+id/prize_money_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/entry_fee_icon"
+        android:gravity="center"
+        android:paddingBottom="4dp"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:text=""
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/prize_caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/entry_fee_caption"
+        android:layout_toEndOf="@+id/prize_money_icon"
+        android:gravity="center"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp"
+        android:text="Prize Money:" />
+
+    <TextView
+        android:id="@+id/prize_money"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/entry_fee"
+        android:layout_toEndOf="@+id/prize_caption"
+        android:gravity="center"
+        android:padding="4dp"
+        android:text="500 Hapcoins"
+        android:textColor="@color/colorPrimary"
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:gravity="center"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:id="@+id/buttonContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/prize_caption"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:layout_marginEnd="8dp"
+            android:id="@+id/join_now_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/skills_continue_btn_bg"
+            android:paddingBottom="8dp"
+            android:paddingEnd="24dp"
+            android:paddingStart="24dp"
+            android:paddingTop="8dp"
+            android:text="Join Now"
+            android:textColor="#ffffff"
+            android:textSize="16dp" />
+
+        <TextView
+            android:layout_marginStart="8dp"
+            android:id="@+id/know_more_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sign_in_with_google_btn_bg"
+            android:paddingBottom="8dp"
+            android:paddingEnd="24dp"
+            android:paddingStart="24dp"
+            android:paddingTop="8dp"
+            android:text="Know More"
+            android:textColor="@color/colorPrimary"
+            android:textSize="16dp" />
+
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buttonContainer"
+        android:padding="4dp">
+
+        <TextView
+            android:id="@+id/participantIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text=""
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/participantCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_toEndOf="@id/participantIcon"
+            android:gravity="center_vertical"
+            android:padding="4dp"
+            android:text="24" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

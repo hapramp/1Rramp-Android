@@ -191,7 +191,6 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
 
     @Override
     public void onPostFetchError() {
-
         hideContentLoadingProgress();
         Toast.makeText(mContext, "Error Loading Content. Inconvienience is regreted :(", Toast.LENGTH_LONG).show();
         L.D.m("HomeFragment", "Fetch Error: Post");
@@ -211,8 +210,11 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
 
 
     @Override
-    public void onReadMoreTapped() {
+    public void onReadMoreTapped(PostResponse postResponse) {
         Intent intent = new Intent(mContext, DetailsPost.class);
+        intent.putExtra("username",postResponse.getUser().getFull_name());
+        intent.putExtra("mediaUri",postResponse.getMedia_uri());
+        intent.putExtra("content",postResponse.getContent());
         mContext.startActivity(intent);
     }
 

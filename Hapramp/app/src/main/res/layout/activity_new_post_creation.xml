@@ -37,7 +37,6 @@
             android:layout_alignParentEnd="true"
             android:gravity="center"
             android:textColor="#ffffff"
-            android:textStyle="bold"
             android:text="POST"
             android:background="@drawable/share_with_friend_bg"
             android:paddingTop="4dp"
@@ -50,16 +49,33 @@
 
     </RelativeLayout>
 
-    <ImageView
+
+    <FrameLayout
+        android:id="@+id/postMediaContainer"
         android:layout_below="@+id/toolbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <ImageView
         android:id="@+id/postMedia"
         android:background="#3c819b"
         android:scaleType="centerCrop"
         android:layout_width="match_parent"
         android:layout_height="172dp" />
 
+        <ProgressBar
+            android:visibility="gone"
+            android:id="@+id/postMediaUploadProgress"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </FrameLayout>
+
+
     <EditText
-        android:layout_below="@+id/postMedia"
+        android:layout_marginTop="16dp"
+        android:layout_below="@+id/postMediaContainer"
         android:id="@+id/title"
         android:hint="Title Here.."
         android:textSize="24sp"

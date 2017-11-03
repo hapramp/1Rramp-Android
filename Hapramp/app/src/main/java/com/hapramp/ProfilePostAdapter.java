@@ -84,8 +84,6 @@ public class ProfilePostAdapter extends RecyclerView.Adapter<ProfilePostAdapter.
             TextView hapcoinBtn;
             @BindView(R.id.hapcoins_count)
             TextView hapcoinsCount;
-            @BindView(R.id.shareBtn)
-            TextView shareBtn;
             @BindView(R.id.post_meta_container)
             RelativeLayout postMetaContainer;
             @BindView(R.id.starBtn)
@@ -97,7 +95,6 @@ public class ProfilePostAdapter extends RecyclerView.Adapter<ProfilePostAdapter.
 
                 starBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
                 likeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-                shareBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
                 hapcoinBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
                 commentBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
             }

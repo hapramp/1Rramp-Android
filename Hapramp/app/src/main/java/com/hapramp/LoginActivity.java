@@ -287,7 +287,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void redirect() {
-        Intent intent = new Intent(this, OrganisationActivity.class);
+        Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
     }
 

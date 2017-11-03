@@ -65,7 +65,7 @@ public class HaprampPreferenceManager {
     }
 
     public String getUserToken(){
-        return preferences.getString("userToken","--token");
+        return preferences.getString("userToken","Token token");
     }
 
     public void saveUserFirstName(String firstname) {

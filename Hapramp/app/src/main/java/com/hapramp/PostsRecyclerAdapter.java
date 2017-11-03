@@ -95,8 +95,6 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
         TextView readMoreBtn;
         @BindView(R.id.hapcoins_count)
         TextView hapcoinsCount;
-        @BindView(R.id.shareBtn)
-        TextView shareBtn;
         @BindView(R.id.post_meta_container)
         RelativeLayout postMetaContainer;
         @BindView(R.id.starBtn)
@@ -108,7 +106,6 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
 
             starBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
             likeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-            shareBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
             hapcoinBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
             commentBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         }
@@ -125,7 +122,8 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
             readMoreBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    if(postElementsClickListener!=null)
+                        postElementsClickListener.onReadMoreTapped(postResponse);
                 }
             });
 
@@ -134,6 +132,6 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
     }
 
     public interface OnPostElementsClickListener {
-        void onReadMoreTapped();
+        void onReadMoreTapped(PostResponse postResponse);
     }
 }

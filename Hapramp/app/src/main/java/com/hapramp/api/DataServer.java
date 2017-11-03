@@ -193,7 +193,7 @@ public class DataServer {
     }
 
     public static void getPosts(int skills_id, final PostFetchCallback callback) {
-        L.D.m(TAG, "Fetching posts...");
+        L.D.m(TAG, "Fetching posts by skills...");
 
         getService()
                 .getPostsBySkills(skills_id)
@@ -212,6 +212,7 @@ public class DataServer {
                     @Override
                     public void onFailure(Call<List<PostResponse>> call, Throwable t) {
                         callback.onPostFetchError();
+                        L.D.m(TAG,"Post Fetch Error "+t.toString());
                     }
                 });
     }
@@ -228,13 +229,15 @@ public class DataServer {
                             L.D.m(TAG, "Posts: " + response.body().toString());
                             callback.onPostFetched(response.body());
                         } else {
+                            L.E.m(TAG, "Error: " + ErrorUtils.parseError(response).toString());
                             callback.onPostFetchError();
-                            L.E.m(TAG, "Error: " + ErrorUtils.parseError(response));
                         }
                     }
 
                     @Override
                     public void onFailure(Call<List<PostResponse>> call, Throwable t) {
+
+                        L.D.m(TAG,"Post Fetch Error "+t.toString());
                         callback.onPostFetchError();
                     }
                 });
@@ -353,6 +356,7 @@ public class DataServer {
                         if (response.isSuccessful()) {
                             callback.onPostCreated();
                         } else {
+                            L.D.m(TAG,ErrorUtils.parseError(response).toString());
                             callback.onPostCreateError();
                         }
                     }

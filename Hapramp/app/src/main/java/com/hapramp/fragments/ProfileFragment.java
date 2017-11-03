@@ -109,7 +109,7 @@ public class ProfileFragment extends Fragment implements FullUserDetailsCallback
     private void initCategoryView() {
 
         profilePostAdapter = new ProfilePostAdapter(mContext);
-        profileSkillsRecyclerAdapter = new ProfileSkillsRecyclerAdapter(mContext,this);
+        profileSkillsRecyclerAdapter = new ProfileSkillsRecyclerAdapter(mContext, this);
         sectionsRv.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         sectionsRv.setAdapter(profileSkillsRecyclerAdapter);
 
@@ -142,13 +142,16 @@ public class ProfileFragment extends Fragment implements FullUserDetailsCallback
     @Override
     public void onFullUserDetailsFetched(UserModel userModel) {
 
-        profilePic.setImageURI(userModel.getImage_uri());
-        username.setText(userModel.getUsername());
-        hapname.setText("@hapname");
-        bio.setText("-----Bio----- Here-----");
+        try {
+            profilePic.setImageURI(userModel.getImage_uri());
+            username.setText(userModel.getUsername());
+            hapname.setText("@hapname");
+            bio.setText("-----Bio----- Here-----");
+            bindSkillsCategory(userModel.getSkills());
+            bindPosts(userModel.getPosts());
+        } catch (Exception e) {
 
-        bindSkillsCategory(userModel.getSkills());
-        bindPosts(userModel.getPosts());
+        }
 
     }
 
@@ -182,7 +185,6 @@ public class ProfileFragment extends Fragment implements FullUserDetailsCallback
         if (categoryLoadingProgress != null)
             categoryLoadingProgress.setVisibility(View.GONE);
     }
-
 
 
     @Override

@@ -69,13 +69,25 @@ public class DetailsPost extends AppCompatActivity {
     @BindView(R.id.starBtn)
     TextView starBtn;
 
+    private String mContent;
+    private String mMediaUri;
+    private String mUserName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details_post);
         ButterKnife.bind(this);
+        collectExtras();
         setTypefaces();
+        bindValues();
         attachListener();
+    }
+
+    private void collectExtras() {
+        mContent = getIntent().getExtras().getString("content");
+        mMediaUri = getIntent().getExtras().getString("mediaUri");
+        mUserName = getIntent().getExtras().getString("username");
     }
 
     private void attachListener() {
@@ -97,5 +109,9 @@ public class DetailsPost extends AppCompatActivity {
         hapcoinBtn.setTypeface(t);
     }
 
-
+    private void bindValues(){
+        postSnippet.setText(mContent);
+        feedOwnerTitle.setText(mUserName);
+        featuredImagePost.setImageURI(mMediaUri);
+    }
 }
