@@ -1,95 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true"
-    >
-
-<RelativeLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
     tools:context="com.hapramp.activity.NewPostCreationActivity">
 
-
     <RelativeLayout
+        android:background="#ffffff"
         android:id="@+id/toolbar_container"
-        android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:layout_marginBottom="4dp"
-        android:background="#ffffff">
+        android:layout_width="match_parent">
 
         <TextView
             android:background="?selectableItemBackgroundBorderless"
-            android:id="@+id/closeBtn"
-            android:layout_width="?actionBarSize"
-            android:layout_height="?actionBarSize"
             android:gravity="center"
+            android:id="@+id/closeBtn"
+            android:layout_height="?actionBarSize"
+            android:layout_width="?actionBarSize"
             android:text=""
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/postButton"
             android:layout_centerVertical="true"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:gravity="center"
-            android:textColor="#ffffff"
+            android:layout_marginStart="16dp"
+            android:layout_toRightOf="@+id/closeBtn"
+            android:layout_width="wrap_content"
             android:text="POST"
-            android:background="@drawable/share_with_friend_bg"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textSize="18sp"
+            android:textSize="18sp" />
+
+        <TextView
+            android:background="@drawable/light_btn_bg"
+            android:gravity="center"
+            android:id="@+id/postButton"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            />
+            android:layout_width="wrap_content"
+            android:paddingBottom="4dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="4dp"
+            android:text="NEXT"
+            android:textColor="@color/colorPrimary"
+            android:textSize="16sp" />
 
     </RelativeLayout>
 
-
-    <FrameLayout
-        android:id="@+id/postMediaContainer"
+    <ScrollView
         android:layout_below="@+id/toolbar_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-    <ImageView
-        android:id="@+id/postMedia"
-        android:background="#3c819b"
-        android:scaleType="centerCrop"
-        android:layout_width="match_parent"
-        android:layout_height="172dp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <ProgressBar
-            android:visibility="gone"
-            android:id="@+id/postMediaUploadProgress"
-            android:layout_gravity="center"
+            <FrameLayout
+                android:id="@+id/postMediaContainer"
+                android:layout_below="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/postMedia"
+                    android:layout_width="match_parent"
+                    android:layout_height="172dp"
+                    android:background="#3c819b"
+                    android:scaleType="centerCrop" />
+
+                <TextView
+                    android:textSize="36sp"
+                    android:textColor="#ffffff"
+                    android:id="@+id/removeImageBtn"
+                    android:text=""
+                    android:gravity="center"
+                    android:layout_gravity="end"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp" />
+
+                <ProgressBar
+                    android:id="@+id/postMediaUploadProgress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
+
+            </FrameLayout>
+
+            <EditText
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="100dp"
+                android:background="@drawable/post_editor_bg"
+                android:gravity="top"
+                android:hint="Share photos, videos,music or anything you like..."
+                android:padding="16dp"
+                android:textSize="14sp" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+    <RelativeLayout
+        android:background="#ffffff"
+        android:id="@+id/bottom_options_container"
+        android:layout_alignParentBottom="true"
+        android:layout_height="?actionBarSize"
+        android:layout_width="match_parent">
+
+
+        <TextView
+            android:background="?selectableItemBackgroundBorderless"
+            android:gravity="center"
+            android:id="@+id/photosBtn"
+            android:layout_height="?actionBarSize"
+            android:layout_width="?actionBarSize"
+            android:text=""
+            android:textSize="24sp" />
+
+        <TextView
+            android:background="?selectableItemBackgroundBorderless"
+            android:gravity="center"
+            android:id="@+id/audioBtn"
+            android:layout_height="?actionBarSize"
+            android:layout_toEndOf="@+id/photosBtn"
+            android:layout_width="?actionBarSize"
+            android:text=""
+            android:textSize="24sp" />
+
+        <TextView
+            android:background="?selectableItemBackgroundBorderless"
+            android:gravity="center"
+            android:id="@+id/videoBtn"
+            android:layout_height="?actionBarSize"
+            android:layout_toEndOf="@id/audioBtn"
+            android:layout_width="?actionBarSize"
+            android:text=""
+            android:textSize="24sp" />
+
+
+        <TextView
+            android:clickable="true"
+            android:background="@drawable/light_btn_bg"
+            android:gravity="center"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:padding="8dp"
+            android:paddingBottom="4dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="4dp"
+            android:text="ARTICLE VIEW"
+            android:textColor="@color/colorPrimary"
+            android:textSize="16sp" />
 
-    </FrameLayout>
-
-
-    <EditText
-        android:layout_marginTop="16dp"
-        android:layout_below="@+id/postMediaContainer"
-        android:id="@+id/title"
-        android:hint="Title Here.."
-        android:textSize="24sp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <EditText
-        android:layout_below="@+id/title"
-        android:id="@+id/content"
-        android:hint="Content.."
-        android:textSize="18sp"
-        android:layout_width="match_parent"
-        android:layout_height="360dp" />
+    </RelativeLayout>
 
 </RelativeLayout>
-
-</ScrollView>

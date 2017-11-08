@@ -43,6 +43,7 @@
             <TextView
                 android:background="?android:selectableItemBackgroundBorderless"
                 android:id="@+id/notification_icon"
+                android:clickable="true"
                 android:layout_width="?actionBarSize"
                 android:layout_height="?actionBarSize"
                 android:gravity="center"

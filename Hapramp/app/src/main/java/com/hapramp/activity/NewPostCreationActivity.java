@@ -6,16 +6,19 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -39,6 +42,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -55,32 +59,59 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
     RelativeLayout toolbarContainer;
     @BindView(R.id.postMedia)
     ImageView postMedia;
-    @BindView(R.id.title)
-    EditText title;
     @BindView(R.id.content)
     EditText content;
     FirebaseStorage storage;
     @BindView(R.id.postMediaUploadProgress)
     ProgressBar postMediaUploadProgress;
-    private Uri mediaUri;
+    @BindView(R.id.postMediaContainer)
+    FrameLayout postMediaContainer;
+    @BindView(R.id.photosBtn)
+    TextView photosBtn;
+    @BindView(R.id.audioBtn)
+    TextView audioBtn;
+    @BindView(R.id.videoBtn)
+    TextView videoBtn;
+    @BindView(R.id.bottom_options_container)
+    RelativeLayout bottomOptionsContainer;
+    @BindView(R.id.removeImageBtn)
+    TextView removeImageBtn;
+    private Uri uploadedMediaUri;
+    private String localMediaLocation = "";
     private ProgressDialog progressDialog;
+
+    private final static int POST_TYPE_PHOTO = 12;
+    private final static int POST_TYPE_AUDIO = 13;
+    private final static int POST_TYPE_VIDEO = 14;
+    int mediaType = -1;
+    String galleryType = "";
+    private String rootFolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_post_creation);
         ButterKnife.bind(this);
         init();
         initProgressDialog();
         attachListener();
+
     }
 
     private void init() {
+
         storage = FirebaseStorage.getInstance();
         closeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+        photosBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+        audioBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+        videoBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+        removeImageBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+
     }
 
     private void attachListener() {
+
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,21 +122,51 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createPost();
+                uploadMedia(mediaType, localMediaLocation);
             }
         });
 
-        postMedia.setOnClickListener(new View.OnClickListener() {
+        audioBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                galleryType = "audio/*";
+                rootFolder = "audio";
+                mediaType = POST_TYPE_AUDIO;
                 openGallery();
+            }
+        });
+
+        photosBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                galleryType = "image/*";
+                rootFolder = "photo";
+                mediaType = POST_TYPE_PHOTO;
+                openGallery();
+            }
+        });
+
+        videoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                galleryType = "video/*";
+                rootFolder = "video";
+                mediaType = POST_TYPE_VIDEO;
+                openGallery();
+            }
+        });
+
+        removeImageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                postMediaContainer.setVisibility(View.GONE);
             }
         });
     }
 
-    private void createPost() {
+    private void uploadPost() {
         showProgressDialog(true);
-        String mu = mediaUri!=null?mediaUri.toString():"";
+        String mu = uploadedMediaUri != null ? uploadedMediaUri.toString() : "";
         List<Integer> skills = new ArrayList<>();
         PostCreateBody body = new PostCreateBody(content.getText().toString(),
                 mu,
@@ -114,28 +175,28 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
 
     }
 
-    private void initProgressDialog(){
+    private void initProgressDialog() {
 
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Post Upload");
-            progressDialog.setIndeterminate(true);
-            progressDialog.setMessage("Uploading Your Post...");
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Post Upload");
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Uploading Your Post...");
 
     }
 
-    private void showProgressDialog(boolean show){
-        if(progressDialog!=null){
-            if(show){
+    private void showProgressDialog(boolean show) {
+        if (progressDialog != null) {
+            if (show) {
                 progressDialog.show();
-            }else{
+            } else {
                 progressDialog.hide();
             }
         }
     }
 
-    private void showMediaProgress(boolean show){
-        int v = show?View.VISIBLE:View.GONE;
-        if(postMediaUploadProgress!=null){
+    private void showMediaProgress(boolean show) {
+        int v = show ? View.VISIBLE : View.GONE;
+        if (postMediaUploadProgress != null) {
             postMediaUploadProgress.setVisibility(v);
         }
     }
@@ -152,11 +213,11 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
         L.D.m("PostCreate", "unable to create post");
     }
 
-    private void uploadMedia(String uri) {
+    private void uploadMedia(int type, String uri) {
 
         showMediaProgress(true);
         StorageReference storageRef = storage.getReference();
-        StorageReference mountainsRef = storageRef.child("postMedia").child(System.currentTimeMillis()+"_postMedia.jpg");
+        StorageReference mountainsRef = storageRef.child(rootFolder).child(System.currentTimeMillis() + "_" + uri.substring(uri.lastIndexOf('/')));
         InputStream stream = null;
         L.D.m("PostCreate", "Uploading from..." + uri);
         try {
@@ -172,18 +233,20 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
             public void onFailure(@NonNull Exception exception) {
                 // Handle unsuccessful uploads
                 showMediaProgress(false);
-                Toast.makeText(NewPostCreationActivity.this,"Failed To Upload Media",Toast.LENGTH_LONG).show();
+                Toast.makeText(NewPostCreationActivity.this, "Failed To Upload Media", Toast.LENGTH_LONG).show();
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                mediaUri = downloadUrl;
+                uploadedMediaUri = downloadUrl;
                 showMediaProgress(false);
+                uploadPost();
                 L.D.m("PostCreate", " uploaded to : " + downloadUrl.toString());
             }
         });
+
     }
 
     private void openGallery() {
@@ -193,6 +256,7 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
                 ActivityCompat.requestPermissions(NewPostCreationActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_SELECTOR);
             } else {
                 Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                galleryIntent.setType(galleryType);
                 startActivityForResult(galleryIntent, REQUEST_IMAGE_SELECTOR);
             }
         } catch (Exception e) {
@@ -224,19 +288,31 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
 
             String[] filePathColumn = {MediaStore.Images.Media.DATA};
             Cursor cursor = getContentResolver().query(data.getData(), filePathColumn, null, null, null);
-            if(cursor!=null) {
+            if (cursor != null) {
                 cursor.moveToFirst();
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 if (columnIndex < 0) {
-
                     L.D.m("PostCreate", "Photo Url error!");
-
                 } else {
+                    localMediaLocation = cursor.getString(columnIndex);
+                    postMediaContainer.setVisibility(View.VISIBLE);
+                    if (mediaType == POST_TYPE_VIDEO) {
+                        L.D.m("Gallery", "Video");
+                        try {
+                            postMedia.setImageBitmap(retriveVideoFrameFromVideo(localMediaLocation));
+                        } catch (Throwable throwable) {
+                            throwable.printStackTrace();
+                        }
 
-                    String uri = cursor.getString(columnIndex);
-                    postMedia.setImageBitmap(BitmapFactory.decodeFile(uri));
-                    Toast.makeText(this, "Uploading Image...", Toast.LENGTH_LONG).show();
-                    uploadMedia(cursor.getString(columnIndex));
+                    } else if (mediaType == POST_TYPE_PHOTO) {
+                        L.D.m("Gallery", "Photo");
+                        postMedia.setImageBitmap(BitmapFactory.decodeFile(localMediaLocation));
+
+                    } else {
+                        L.D.m("Gallery", "Audio");
+                        // thumail of audio
+                        //postMedia.setImageBitmap(BitmapFactory.decodeFile(localMediaLocation));
+                    }
 
                 }
                 cursor.close();
@@ -244,4 +320,26 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
         }
     }
 
+    public static Bitmap retriveVideoFrameFromVideo(String videoPath) throws Throwable {
+        Bitmap bitmap = null;
+        MediaMetadataRetriever mediaMetadataRetriever = null;
+        try {
+            mediaMetadataRetriever = new MediaMetadataRetriever();
+            if (Build.VERSION.SDK_INT >= 14)
+                mediaMetadataRetriever.setDataSource(videoPath, new HashMap<String, String>());
+            else
+                mediaMetadataRetriever.setDataSource(videoPath);
+            //   mediaMetadataRetriever.setDataSource(videoPath);
+            bitmap = mediaMetadataRetriever.getFrameAtTime();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Throwable("Exception in retriveVideoFrameFromVideo(String videoPath)" + e.getMessage());
+
+        } finally {
+            if (mediaMetadataRetriever != null) {
+                mediaMetadataRetriever.release();
+            }
+        }
+        return bitmap;
+    }
 }
