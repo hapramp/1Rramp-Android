@@ -95,6 +95,7 @@ public class CategoryItemView extends FrameLayout {
         }
 
         skillsBgImage.setImageResource(resId);
+
     }
 
     private void setSelection(boolean selected){

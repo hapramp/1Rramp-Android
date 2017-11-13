@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -99,6 +100,8 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
         RelativeLayout postMetaContainer;
         @BindView(R.id.starBtn)
         TextView starBtn;
+        @BindView(R.id.clubsContainer)
+        ClubTagView clubTagView;
 
         public PostViewHolder(View itemView) {
             super(itemView);
@@ -119,6 +122,8 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
             postTitle.setText("Missing Title");
             postSnippet.setText(postResponse.getContent());
 
+            clubTagView.setClubs("L","T","P");
+
             readMoreBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -128,10 +133,10 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
             });
 
         }
-
     }
 
     public interface OnPostElementsClickListener {
         void onReadMoreTapped(PostResponse postResponse);
     }
+
 }

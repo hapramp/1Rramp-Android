@@ -20,8 +20,7 @@
             android:gravity="center"
             android:padding="16dp"
             android:text="Home"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textSize="20sp" />
 
         <TextView
             android:background="?android:selectableItemBackgroundBorderless"
@@ -60,7 +59,7 @@
                 android:background="@drawable/notification_badge_count"
                 android:paddingEnd="4dp"
                 android:paddingStart="4dp"
-                android:text="34"
+                android:text=""
                 android:textColor="#ffffff"
                 android:textSize="12sp"
                 android:visibility="gone" />

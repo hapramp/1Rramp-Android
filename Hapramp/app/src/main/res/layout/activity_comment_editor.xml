@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.hapramp.activity.CommentEditorActivity">
+
+    <RelativeLayout
+        android:id="@+id/toolbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:layout_marginBottom="4dp"
+        android:background="#ffffff">
+
+        <TextView
+            android:id="@+id/closeBtn"
+            android:layout_width="?actionBarSize"
+            android:layout_height="?actionBarSize"
+            android:background="?selectableItemBackgroundBorderless"
+            android:gravity="center"
+            android:text=""
+            android:textSize="24sp" />
+
+        <TextView
+            android:clickable="true"
+            android:background="?selectableItemBackground"
+            android:id="@+id/commentPublishBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="?actionBarSize"
+            android:layout_alignParentEnd="true"
+            android:gravity="center"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="Publish"
+            android:textSize="24sp" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_below="@+id/toolbar_container"
+        android:id="@+id/inContextOf"
+        android:padding="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:padding="8dp"
+        android:background="@drawable/post_editor_bg"
+        android:layout_below="@+id/inContextOf"
+        android:id="@+id/commentEt"
+        android:gravity="top"
+        android:hint="Type Comment..."
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</RelativeLayout>

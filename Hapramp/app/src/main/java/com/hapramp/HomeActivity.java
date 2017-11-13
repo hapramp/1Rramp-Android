@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hapramp.activity.NewPostCreationActivity;
+import com.hapramp.activity.NotificationsActivity;
 import com.hapramp.api.DataServer;
 import com.hapramp.fragments.CompetitionFragment;
 import com.hapramp.fragments.HomeFragment;
@@ -112,8 +113,6 @@ public class HomeActivity extends AppCompatActivity{
         bottomBarProfile.setTypeface(materialTypface);
         bottomBarSettings.setTypeface(materialTypface);
         bottomBarMore.setTypeface(materialTypface);
-        notificationCount.setVisibility(View.VISIBLE);
-        notificationCount.setText("23");
 
     }
 
@@ -174,6 +173,14 @@ public class HomeActivity extends AppCompatActivity{
                 startActivity(intent);
             }
         });
+
+        notificationIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeActivity.this, NotificationsActivity.class));
+            }
+        });
+
     }
 
     private void transactFragment(int fragment) {

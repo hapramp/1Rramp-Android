@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:layout_height="match_parent">
+
+<RelativeLayout
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="#ffffff"
     tools:context="com.hapramp.activity.RegistrationPage2">
 
     <TextView
         android:id="@+id/backBtn"
-        android:text=""
+        android:text=""
         android:gravity="center"
         android:textSize="24sp"
         android:layout_width="48dp"
@@ -38,7 +43,7 @@
             android:layout_gravity="center_vertical"
             android:textColor="@color/lightGrey"
             android:id="@+id/user_icon"
-            android:text=""
+            android:text=""
             android:textSize="24sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -67,7 +72,7 @@
             android:layout_gravity="center_vertical"
             android:textColor="@color/lightGrey"
             android:id="@+id/lock_icon"
-            android:text=""
+            android:text=""
             android:textSize="24sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -96,7 +101,7 @@
             android:layout_gravity="center_vertical"
             android:textColor="@color/lightGrey"
             android:id="@+id/cnf_lock_icon"
-            android:text=""
+            android:text=""
             android:textSize="24sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -119,7 +124,7 @@
         android:layout_centerInParent="true"
         android:layout_marginStart="96dp"
         android:layout_marginTop="24dp"
-        android:background="@drawable/sign_in_txt_bg"
+        android:background="@drawable/filled_btn_bg"
         android:clickable="true"
         android:elevation="4dp"
         android:gravity="center_horizontal"
@@ -130,3 +135,4 @@
 
 
 </RelativeLayout>
+</ScrollView>

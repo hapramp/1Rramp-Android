@@ -2,7 +2,10 @@ package com.hapramp.api;
 
 import android.util.Log;
 
+import com.hapramp.interfaces.CommentCreateCallback;
+import com.hapramp.interfaces.CommentFetchCallback;
 import com.hapramp.interfaces.CompetitionFetchCallback;
+import com.hapramp.interfaces.CompetitionsPostFetchCallback;
 import com.hapramp.interfaces.CreateUserCallback;
 import com.hapramp.interfaces.FetchSkillsResponse;
 import com.hapramp.interfaces.FetchUserCallback;
@@ -14,12 +17,16 @@ import com.hapramp.interfaces.OrgsFetchCallback;
 import com.hapramp.interfaces.PostCreateCallback;
 import com.hapramp.interfaces.PostFetchCallback;
 import com.hapramp.logger.L;
+import com.hapramp.CompetitionsPostReponse;
 import com.hapramp.models.LikeBody;
+import com.hapramp.models.requests.CommentBody;
 import com.hapramp.models.requests.CreateUserRequest;
 import com.hapramp.models.error.GeneralErrorModel;
 import com.hapramp.models.requests.PostCreateBody;
 import com.hapramp.models.requests.SkillsUpdateBody;
 import com.hapramp.models.requests.UserUpdateModel;
+import com.hapramp.models.response.CommentCreateResponse;
+import com.hapramp.models.response.CommentsResponse;
 import com.hapramp.models.response.CompetitionResponse;
 import com.hapramp.models.response.CreateUserReponse;
 import com.hapramp.models.response.FetchUserResponse;
@@ -193,6 +200,12 @@ public class DataServer {
     }
 
     public static void getPosts(int skills_id, final PostFetchCallback callback) {
+
+        if (skills_id == 0) {
+            getPosts(callback);
+            return;
+        }
+
         L.D.m(TAG, "Fetching posts by skills...");
 
         getService()
@@ -212,7 +225,38 @@ public class DataServer {
                     @Override
                     public void onFailure(Call<List<PostResponse>> call, Throwable t) {
                         callback.onPostFetchError();
-                        L.D.m(TAG,"Post Fetch Error "+t.toString());
+                        L.D.m(TAG, "Post Fetch Error " + t.toString());
+                    }
+                });
+    }
+
+    public static void getPosts(int skills_id,String userId,  final PostFetchCallback callback) {
+
+        if (skills_id == 0) {
+            getPosts(callback);
+            return;
+        }
+
+        L.D.m(TAG, "Fetching posts by skills...");
+
+        getService()
+                .getPostsBySkillsAndUserId(skills_id,userId)
+                .enqueue(new Callback<List<PostResponse>>() {
+                    @Override
+                    public void onResponse(Call<List<PostResponse>> call, Response<List<PostResponse>> response) {
+                        if (response.isSuccessful()) {
+                            L.D.m(TAG, "Posts: " + response.body().toString());
+                            callback.onPostFetched(response.body());
+                        } else {
+                            callback.onPostFetchError();
+                            L.E.m(TAG, "Error: " + ErrorUtils.parseError(response));
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<PostResponse>> call, Throwable t) {
+                        callback.onPostFetchError();
+                        L.D.m(TAG, "Post Fetch Error " + t.toString());
                     }
                 });
     }
@@ -237,7 +281,7 @@ public class DataServer {
                     @Override
                     public void onFailure(Call<List<PostResponse>> call, Throwable t) {
 
-                        L.D.m(TAG,"Post Fetch Error "+t.toString());
+                        L.D.m(TAG, "Post Fetch Error " + t.toString());
                         callback.onPostFetchError();
                     }
                 });
@@ -356,7 +400,7 @@ public class DataServer {
                         if (response.isSuccessful()) {
                             callback.onPostCreated();
                         } else {
-                            L.D.m(TAG,ErrorUtils.parseError(response).toString());
+                            L.D.m(TAG, ErrorUtils.parseError(response).toString());
                             callback.onPostCreateError();
                         }
                     }
@@ -368,4 +412,74 @@ public class DataServer {
                 });
 
     }
+
+    public static void createComment(String postId, CommentBody body, final CommentCreateCallback callback) {
+
+        Log.d(TAG, "Creating comment..");
+        getService()
+                .createComment(postId, body)
+                .enqueue(new Callback<CommentCreateResponse>() {
+                    @Override
+                    public void onResponse(Call<CommentCreateResponse> call, Response<CommentCreateResponse> response) {
+                        if (response.isSuccessful()) {
+                            callback.onCommentCreated();
+                        } else {
+                            Log.d(TAG, ErrorUtils.parseError(response).toString());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<CommentCreateResponse> call, Throwable t) {
+                        Log.d(TAG, "Error :" + t.toString());
+                    }
+                });
+
+    }
+
+    public static void getComments(String postId, final CommentFetchCallback callback) {
+
+        Log.d(TAG,"Fetching comments...");
+
+        getService()
+                .getComments(postId)
+                .enqueue(new Callback<CommentsResponse>() {
+                    @Override
+                    public void onResponse(Call<CommentsResponse> call, Response<CommentsResponse> response) {
+                        if (response.isSuccessful()) {
+                            callback.onCommentFetched(response.body());
+                        } else {
+                            Log.d(TAG, ErrorUtils.parseError(response).toString());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<CommentsResponse> call, Throwable t) {
+                        Log.d(TAG, "Error " + t.toString());
+                    }
+                });
+
+    }
+
+    public static void getCompetitionsPosts(String compId,final CompetitionsPostFetchCallback callback){
+
+        getService()
+                .getCompetitionsPosts(compId)
+                .enqueue(new Callback<CompetitionsPostReponse>() {
+                    @Override
+                    public void onResponse(Call<CompetitionsPostReponse> call, Response<CompetitionsPostReponse> response) {
+                        if(response.isSuccessful()){
+                            callback.onCompetitionsPostsFetched(response.body());
+                        }else {
+                            Log.d(TAG,"Error : "+ErrorUtils.parseError(response).toString());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<CompetitionsPostReponse> call, Throwable t) {
+                        Log.d(TAG,"Error: "+t.toString());
+                    }
+                });
+
+    }
+
 }

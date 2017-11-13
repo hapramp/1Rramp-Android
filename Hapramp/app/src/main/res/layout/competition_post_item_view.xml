@@ -47,12 +47,12 @@
             android:layout_height="wrap_content"/>
 
         <!--<LinearLayout-->
-            <!--android:layout_alignParentEnd="true"-->
-            <!--android:orientation="horizontal"-->
-            <!--android:id="@+id/clubsContainer"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:id="@+id/clubsContainer"-->
 
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="match_parent"/>-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent"/>-->
 
     </RelativeLayout>
 
@@ -102,39 +102,16 @@
             android:layout_below="@+id/tags"
             android:layout_marginTop="8dp"
             android:maxLines="4"
+            android:textStyle="italic"
+            android:textSize="16sp"
             android:text="@string/lorem"
             android:textColor="@color/lightGrey" />
-
-        <FrameLayout
-            android:id="@+id/faded_edge"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_below="@+id/post_snippet"
-            android:layout_marginTop="-48dp"
-            android:background="@drawable/post_snippet_faded_edge" />
-
-        <TextView
-            android:id="@+id/readMoreBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/post_snippet"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/read_more_bg"
-            android:gravity="center"
-            android:paddingBottom="8dp"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp"
-            android:paddingTop="8dp"
-            android:text="Read More."
-            android:textColor="@color/darkGrey"
-            android:textSize="14sp" />
-
 
         <TextView
             android:id="@+id/likeBtn"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:layout_below="@+id/faded_edge"
+            android:layout_below="@+id/post_snippet"
             android:layout_marginTop="24dp"
             android:gravity="center"
             android:text=""
@@ -144,7 +121,7 @@
             android:id="@+id/likeCount"
             android:layout_width="wrap_content"
             android:layout_height="64dp"
-            android:layout_below="@+id/faded_edge"
+            android:layout_below="@+id/post_snippet"
             android:layout_marginTop="24dp"
             android:layout_toEndOf="@id/likeBtn"
             android:gravity="center_vertical"
@@ -155,7 +132,7 @@
             android:id="@+id/commentBtn"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:layout_below="@+id/faded_edge"
+            android:layout_below="@+id/post_snippet"
             android:layout_marginTop="24dp"
             android:layout_toEndOf="@+id/likeCount"
             android:gravity="center"
@@ -166,7 +143,7 @@
             android:id="@+id/commentCount"
             android:layout_width="wrap_content"
             android:layout_height="64dp"
-            android:layout_below="@+id/faded_edge"
+            android:layout_below="@+id/post_snippet"
             android:layout_marginTop="24dp"
             android:layout_toEndOf="@id/commentBtn"
             android:gravity="center_vertical"
@@ -176,7 +153,7 @@
             android:id="@+id/hapcoinBtn"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:layout_below="@+id/faded_edge"
+            android:layout_below="@+id/post_snippet"
             android:layout_marginTop="24dp"
             android:layout_toEndOf="@+id/commentCount"
             android:gravity="center"

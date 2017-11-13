@@ -19,7 +19,7 @@ public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecycl
     private Context context;
     private List<SkillsModel> category;
     private OnCategoryItemClickListener categoryItemClickListener;
-    private int selectedSkillId = -1;
+    private int selectedSkillId = 0;
 
     public CategoryRecyclerAdapter(Context context, OnCategoryItemClickListener categoryItemClickListener) {
         this.context = context;

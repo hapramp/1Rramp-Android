@@ -1,10 +1,14 @@
 package com.hapramp.api;
 
+import com.hapramp.CompetitionsPostReponse;
 import com.hapramp.models.LikeBody;
+import com.hapramp.models.requests.CommentBody;
 import com.hapramp.models.requests.CreateUserRequest;
 import com.hapramp.models.requests.PostCreateBody;
 import com.hapramp.models.requests.SkillsUpdateBody;
 import com.hapramp.models.requests.UserUpdateModel;
+import com.hapramp.models.response.CommentCreateResponse;
+import com.hapramp.models.response.CommentsResponse;
 import com.hapramp.models.response.CompetitionResponse;
 import com.hapramp.models.response.CreateUserReponse;
 import com.hapramp.models.response.FetchUserResponse;
@@ -74,4 +78,17 @@ public interface HaprampAPI {
 
     @POST("posts")
     Call<PostResponse> createPost(@Body PostCreateBody body);
+
+    @POST("posts/{post_id}/comments")
+    Call<CommentCreateResponse> createComment(@Path("post_id") String postId , @Body CommentBody body);
+
+    @GET("posts/{post_id}/comments")
+    Call<CommentsResponse> getComments(@Path("post_id") String post_id);
+
+    @GET("posts")
+    Call<List<PostResponse>> getPostsBySkillsAndUserId(@Query("skills_or") int skills_id,@Query("user_id") String userId);
+
+    @GET("contests/{contest_id}/posts")
+     Call<CompetitionsPostReponse> getCompetitionsPosts(String compId);
+
 }

@@ -30,6 +30,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.hapramp.Constants;
 import com.hapramp.FontManager;
 import com.hapramp.R;
 import com.hapramp.api.DataServer;
@@ -76,6 +77,8 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
     RelativeLayout bottomOptionsContainer;
     @BindView(R.id.removeImageBtn)
     TextView removeImageBtn;
+    @BindView(R.id.articleBtn)
+    TextView articleBtn;
     private Uri uploadedMediaUri;
     private String localMediaLocation = "";
     private ProgressDialog progressDialog;
@@ -122,7 +125,7 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                uploadMedia(mediaType, localMediaLocation);
+                    uploadPost();
             }
         });
 
@@ -162,15 +165,29 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
                 postMediaContainer.setVisibility(View.GONE);
             }
         });
+
+        articleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(NewPostCreationActivity.this,CreateArticleActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+    }
+
+    private void showAddHapskills(){
+
     }
 
     private void uploadPost() {
+
         showProgressDialog(true);
         String mu = uploadedMediaUri != null ? uploadedMediaUri.toString() : "";
         List<Integer> skills = new ArrayList<>();
         PostCreateBody body = new PostCreateBody(content.getText().toString(),
-                mu,
-                1, skills, 1);
+                mu, Constants.CONTENT_TYPE_POST, skills, 1);
         DataServer.createPost(body, this);
 
     }
@@ -213,7 +230,7 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
         L.D.m("PostCreate", "unable to create post");
     }
 
-    private void uploadMedia(int type, String uri) {
+    private void uploadMedia(String uri) {
 
         showMediaProgress(true);
         StorageReference storageRef = storage.getReference();
@@ -242,7 +259,6 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
                 uploadedMediaUri = downloadUrl;
                 showMediaProgress(false);
-                uploadPost();
                 L.D.m("PostCreate", " uploaded to : " + downloadUrl.toString());
             }
         });
@@ -294,7 +310,8 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
                 if (columnIndex < 0) {
                     L.D.m("PostCreate", "Photo Url error!");
                 } else {
-                    localMediaLocation = cursor.getString(columnIndex);
+
+                    uploadMedia(cursor.getString(columnIndex));
                     postMediaContainer.setVisibility(View.VISIBLE);
                     if (mediaType == POST_TYPE_VIDEO) {
                         L.D.m("Gallery", "Video");
@@ -342,4 +359,5 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
         }
         return bitmap;
     }
+
 }

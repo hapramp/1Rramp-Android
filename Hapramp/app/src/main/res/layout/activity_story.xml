@@ -161,7 +161,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/socialButtonContainer"
                 android:lineSpacingExtra="4dp"
-                android:text="@string/story"
                 android:textColor="#1d1d1d"
                 android:textSize="16sp" />
 

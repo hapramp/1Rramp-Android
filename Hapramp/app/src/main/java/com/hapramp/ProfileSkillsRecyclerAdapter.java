@@ -19,7 +19,7 @@ public class ProfileSkillsRecyclerAdapter extends RecyclerView.Adapter<ProfileSk
     private Context context;
     private List<UserModel.Skills> category;
     private OnCategoryItemClickListener categoryItemClickListener;
-    private int selectedSkillId = -1;
+    private int selectedSkillId = 0;
 
     public ProfileSkillsRecyclerAdapter(Context context, OnCategoryItemClickListener categoryItemClickListener) {
         this.context = context;

@@ -30,6 +30,13 @@ public class UserModel {
     public List<Posts> posts;
     @SerializedName("clubs")
     public List<Clubs> clubs;
+    @SerializedName("followers")
+    public int followers;
+    @SerializedName("followings")
+    public int followings;
+    @SerializedName("hapcoins")
+    public int hapcoins;
+
 
     public static class Organization {
         @SerializedName("id")
@@ -755,7 +762,7 @@ public class UserModel {
         }
     }
 
-    public UserModel(int id, String email, String username, Organization organization, String full_name, List<Skills> skills, int karma, String image_uri, List<Posts> posts, List<Clubs> clubs) {
+    public UserModel(int id, String email, String username, Organization organization, String full_name, List<Skills> skills, int karma, String image_uri, List<Posts> posts, List<Clubs> clubs, int followers, int followings) {
         this.id = id;
         this.email = email;
         this.username = username;
@@ -766,6 +773,8 @@ public class UserModel {
         this.image_uri = image_uri;
         this.posts = posts;
         this.clubs = clubs;
+        this.followers = followers;
+        this.followings = followings;
     }
 
     public int getId() {

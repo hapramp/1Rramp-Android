@@ -2,7 +2,6 @@ package com.hapramp.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,26 +14,25 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.hapramp.CategoryRecyclerAdapter;
-import com.hapramp.PostsRecyclerAdapter;
 import com.hapramp.ProfilePostAdapter;
 import com.hapramp.ProfileSkillsRecyclerAdapter;
 import com.hapramp.R;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.FullUserDetailsCallback;
-import com.hapramp.models.response.SkillsModel;
+import com.hapramp.interfaces.PostFetchCallback;
+import com.hapramp.models.response.PostResponse;
 import com.hapramp.models.response.UserModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class ProfileFragment extends Fragment implements FullUserDetailsCallback, ProfileSkillsRecyclerAdapter.OnCategoryItemClickListener {
+public class ProfileFragment extends Fragment implements FullUserDetailsCallback, ProfileSkillsRecyclerAdapter.OnCategoryItemClickListener, PostFetchCallback {
 
     @BindView(R.id.profile_pic)
     SimpleDraweeView profilePic;
@@ -75,6 +73,10 @@ public class ProfileFragment extends Fragment implements FullUserDetailsCallback
     ProgressBar contentLoadingProgress;
     @BindView(R.id.profilePostRv)
     RecyclerView profilePostRv;
+    @BindView(R.id.hapcoins_count)
+    TextView hapcoinsCount;
+    @BindView(R.id.trophies_count)
+    TextView trophiesCount;
     private Context mContext;
     private ProfileSkillsRecyclerAdapter profileSkillsRecyclerAdapter;
     private ProfilePostAdapter profilePostAdapter;
@@ -98,12 +100,14 @@ public class ProfileFragment extends Fragment implements FullUserDetailsCallback
         profilePostRv.setLayoutManager(new LinearLayoutManager(mContext));
         profilePostRv.setAdapter(profilePostAdapter);
         return view;
+
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         fetchUserDetails();
+        fetchUserProfilePosts(0);
     }
 
     private void initCategoryView() {
@@ -115,11 +119,20 @@ public class ProfileFragment extends Fragment implements FullUserDetailsCallback
 
     }
 
-
     private void fetchUserDetails() {
         showContentLoadingProgress();
         showCategoryLoadingProgress();
         DataServer.getFullUserDetails("26", this);
+    }
+
+    private void fetchUserProfilePosts(int skill_id){
+
+        if (skill_id == -1) {
+            DataServer.getPosts(this);
+        } else {
+            DataServer.getPosts(skill_id, this);
+        }
+
     }
 
     @Override
@@ -143,28 +156,41 @@ public class ProfileFragment extends Fragment implements FullUserDetailsCallback
     public void onFullUserDetailsFetched(UserModel userModel) {
 
         try {
+
             profilePic.setImageURI(userModel.getImage_uri());
             username.setText(userModel.getUsername());
             hapname.setText("@hapname");
             bio.setText("-----Bio----- Here-----");
+            String _t = String.format(getResources().getString(R.string.profile_posts_count_caption), userModel.getSkills().size());
+            postCounts.setText(_t);
+            _t = String.format(getResources().getString(R.string.profile_followers_caption), userModel.followers);
+            followersCount.setText(_t);
+            _t = String.format(getResources().getString(R.string.profile_following_count_caption), userModel.followings);
+            followingsCount.setText(_t);
+            hapcoinsCount.setText(String.valueOf(userModel.hapcoins));
+            trophiesCount.setText("0");
             bindSkillsCategory(userModel.getSkills());
-            bindPosts(userModel.getPosts());
+
         } catch (Exception e) {
 
         }
 
     }
 
-    private void bindPosts(List<UserModel.Posts> posts) {
+    private void bindPosts(List<PostResponse> posts) {
+
         hideContentLoadingProgress();
         profilePostAdapter.setPostResponses(posts);
+
     }
 
     private void bindSkillsCategory(List<UserModel.Skills> skills) {
-        hideCategoryLoadingProgress();
-        profileSkillsRecyclerAdapter.setCategories(skills);
-    }
 
+        hideCategoryLoadingProgress();
+        skills.add(0,new UserModel.Skills(0,"All","",""));
+        profileSkillsRecyclerAdapter.setCategories(skills);
+
+    }
 
     private void showContentLoadingProgress() {
         if (contentLoadingProgress != null)
@@ -186,7 +212,6 @@ public class ProfileFragment extends Fragment implements FullUserDetailsCallback
             categoryLoadingProgress.setVisibility(View.GONE);
     }
 
-
     @Override
     public void onFullUserDetailsFetchError() {
 
@@ -195,6 +220,18 @@ public class ProfileFragment extends Fragment implements FullUserDetailsCallback
     @Override
     public void onCategoryClicked(int id) {
 
+        // fetch the selected posts
+        fetchUserProfilePosts(id);
+
     }
 
+    @Override
+    public void onPostFetched(List<PostResponse> postResponses) {
+        bindPosts(postResponses);
+    }
+
+    @Override
+    public void onPostFetchError() {
+        Toast.makeText(mContext,"Error Fetching Your Posts...",Toast.LENGTH_SHORT).show();
+    }
 }

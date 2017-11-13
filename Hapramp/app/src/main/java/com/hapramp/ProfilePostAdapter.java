@@ -25,13 +25,13 @@ import butterknife.ButterKnife;
 public class ProfilePostAdapter extends RecyclerView.Adapter<ProfilePostAdapter.PostViewHolder>{
 
         public Context mContext;
-        public List<UserModel.Posts> postResponses;
+        public List<PostResponse> postResponses;
 
         public ProfilePostAdapter(Context mContext) {
             this.mContext = mContext;
         }
 
-        public void setPostResponses(List<UserModel.Posts> postResponses) {
+        public void setPostResponses(List<PostResponse> postResponses) {
             this.postResponses = postResponses;
             notifyDataSetChanged();
         }
@@ -99,7 +99,7 @@ public class ProfilePostAdapter extends RecyclerView.Adapter<ProfilePostAdapter.
                 commentBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
             }
 
-            public void bind(UserModel.Posts postResponse) {
+            public void bind(PostResponse postResponse) {
                 feedOwnerPic.setImageURI(postResponse.getUser().getImage_uri());
                 feedOwnerTitle.setText(postResponse.getUser().getFull_name());
                 feedOwnerSubtitle.setText(postResponse.getUser().getUsername());
@@ -108,10 +108,6 @@ public class ProfilePostAdapter extends RecyclerView.Adapter<ProfilePostAdapter.
                 postSnippet.setText(postResponse.getContent());
 
             }
-        }
-
-        interface OnPostElementsClickListener {
-            void onReadMoreTapped();
         }
 
 }

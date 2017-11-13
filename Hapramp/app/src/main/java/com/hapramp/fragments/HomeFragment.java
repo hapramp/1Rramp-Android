@@ -18,16 +18,16 @@ import android.widget.Toast;
 import com.hapramp.CategoryRecyclerAdapter;
 import com.hapramp.PostsRecyclerAdapter;
 import com.hapramp.R;
-import com.hapramp.activity.DetailsPost;
+import com.hapramp.activity.DetailedPostActivity;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.FetchSkillsResponse;
 import com.hapramp.interfaces.LikePostCallback;
 import com.hapramp.interfaces.PostFetchCallback;
 import com.hapramp.logger.L;
-import com.hapramp.models.LikeBody;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.models.response.SkillsModel;
 
+import java.text.NumberFormat;
 import java.util.List;
 
 import butterknife.BindView;
@@ -83,7 +83,7 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
         homeRv.setLayoutManager(new LinearLayoutManager(mContext));
         homeRv.setAdapter(recyclerAdapter);
         fetchCategories();
-        fetchPosts(-1);
+        fetchPosts(0);
     }
 
     private void initCategoryView() {
@@ -97,7 +97,7 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     @Override
     public void onCategoryClicked(int id) {
 
-        L.D.m("Category", " clicked");
+        L.D.m("Category", " clicked :"+id);
         fetchPosts(id);
 
     }
@@ -110,6 +110,7 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     @Override
     public void onSkillsFetched(List<SkillsModel> skillsModels) {
         hideCategoryLoadingProgress();
+        skillsModels.add(0,new SkillsModel(0,"All","",""));
         categoryRecyclerAdapter.setCategories(skillsModels);
     }
 
@@ -146,7 +147,7 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
         hideContent();
         showContentLoadingProgress();
 
-        if (id == -1) {
+        if (id == 0) {
             DataServer.getPosts(this);
         } else {
             DataServer.getPosts(id, this);
@@ -211,10 +212,11 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
 
     @Override
     public void onReadMoreTapped(PostResponse postResponse) {
-        Intent intent = new Intent(mContext, DetailsPost.class);
+        Intent intent = new Intent(mContext, DetailedPostActivity.class);
         intent.putExtra("username",postResponse.getUser().getFull_name());
         intent.putExtra("mediaUri",postResponse.getMedia_uri());
         intent.putExtra("content",postResponse.getContent());
+        intent.putExtra("postId",String.valueOf(postResponse.getId()));
         mContext.startActivity(intent);
     }
 
@@ -227,4 +229,5 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     public void onPostLikeError() {
         L.D.m("Home Fragment","unable to like the post");
     }
+
 }

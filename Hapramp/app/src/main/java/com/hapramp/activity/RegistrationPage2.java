@@ -1,6 +1,7 @@
 package com.hapramp.activity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,8 +19,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.hapramp.LoginActivity;
 import com.hapramp.R;
 import com.hapramp.RegisterActivity;
+import com.hapramp.Validator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -91,6 +94,8 @@ public class RegistrationPage2 extends AppCompatActivity {
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!validDetails())
+                    return;
                 applyRegistration();
             }
         });
@@ -111,7 +116,6 @@ public class RegistrationPage2 extends AppCompatActivity {
 
     private void applyRegistration() {
         showProgress("Applying For Registration...");
-        if (validDetails())
             mAuth.createUserWithEmailAndPassword(email, password.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
@@ -124,6 +128,7 @@ public class RegistrationPage2 extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Void> task) {
                                 hideProgress();
                                 Toast.makeText(RegistrationPage2.this, "Your Verification Mail Sent, Plz Confirm!", Toast.LENGTH_LONG).show();
+                                redirectToLoginPage();
                             }
                         });
                     } else {
@@ -132,6 +137,13 @@ public class RegistrationPage2 extends AppCompatActivity {
                     }
                 }
             });
+
+    }
+
+    private void redirectToLoginPage() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void updateUserProfile(FirebaseUser user) {
@@ -153,7 +165,26 @@ public class RegistrationPage2 extends AppCompatActivity {
     }
 
     private boolean validDetails() {
-        // TODO: 10/22/2017 add contraints
-        return true;
+
+        String _u = userName.getText().toString().trim();
+        String _p = password.getText().toString().trim();
+        String _cp = cnfPassword.getText().toString().trim();
+
+        if(Validator.validateUsername(_u)){
+            //validate password
+            if(Validator.validatePassword(_p)){
+                // check match
+                if(_p.equals(_cp)){
+                    return true;
+                }else{
+                    Toast.makeText(this,"Passwords Donot Match!",Toast.LENGTH_SHORT).show();
+                }
+            }else{
+                Toast.makeText(this,"Passwords Too short!",Toast.LENGTH_SHORT).show();
+            }
+        }else{
+            Toast.makeText(this,"Invalid Username!",Toast.LENGTH_SHORT).show();
+        }
+        return false;
     }
 }

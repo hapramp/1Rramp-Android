@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
@@ -35,7 +34,7 @@
         <TextView
             android:background="@drawable/light_btn_bg"
             android:gravity="center"
-            android:id="@+id/postButton"
+            android:id="@+id/nextButton"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_height="wrap_content"
@@ -45,7 +44,7 @@
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
             android:paddingTop="4dp"
-            android:text="POST"
+            android:text="NEXT"
             android:textColor="@color/colorPrimary"
             android:textSize="16sp" />
 
@@ -66,7 +65,7 @@
                 android:layout_below="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/postMedia"
@@ -101,11 +100,9 @@
                 android:minHeight="100dp"
                 android:background="@drawable/post_editor_bg"
                 android:gravity="top"
-                android:hint="Share photos, videos,music or anything you like..."
+                android:hint="Write your article..."
                 android:padding="16dp"
                 android:textSize="14sp" />
-
-
 
         </RelativeLayout>
 
@@ -120,37 +117,51 @@
 
 
         <TextView
+            android:clickable="true"
             android:background="?selectableItemBackgroundBorderless"
             android:gravity="center"
-            android:id="@+id/photosBtn"
+            android:id="@+id/textSizeBtn"
             android:layout_height="?actionBarSize"
             android:layout_width="?actionBarSize"
-            android:text=""
+            android:text=""
             android:textSize="24sp" />
 
         <TextView
+            android:clickable="true"
             android:background="?selectableItemBackgroundBorderless"
             android:gravity="center"
-            android:id="@+id/audioBtn"
+            android:id="@+id/quoteBtn"
             android:layout_height="?actionBarSize"
-            android:layout_toEndOf="@+id/photosBtn"
+            android:layout_toEndOf="@+id/textSizeBtn"
             android:layout_width="?actionBarSize"
-            android:text=""
+            android:text=""
             android:textSize="24sp" />
 
         <TextView
+            android:clickable="true"
             android:background="?selectableItemBackgroundBorderless"
             android:gravity="center"
-            android:id="@+id/videoBtn"
+            android:id="@+id/bulletBtn"
             android:layout_height="?actionBarSize"
-            android:layout_toEndOf="@id/audioBtn"
+            android:layout_toEndOf="@id/quoteBtn"
             android:layout_width="?actionBarSize"
-            android:text=""
+            android:text=""
             android:textSize="24sp" />
 
 
         <TextView
-            android:id="@+id/articleBtn"
+            android:clickable="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:gravity="center"
+            android:id="@+id/linkBtn"
+            android:layout_height="?actionBarSize"
+            android:layout_toEndOf="@id/bulletBtn"
+            android:layout_width="?actionBarSize"
+            android:text=""
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/postViewBtn"
             android:clickable="true"
             android:background="@drawable/light_btn_bg"
             android:gravity="center"
@@ -164,7 +175,7 @@
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
             android:paddingTop="4dp"
-            android:text="ARTICLE VIEW"
+            android:text="POST VIEW"
             android:textColor="@color/colorPrimary"
             android:textSize="16sp" />
 

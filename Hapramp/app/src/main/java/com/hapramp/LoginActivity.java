@@ -27,8 +27,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.gson.Gson;
+import com.hapramp.activity.ForgetPasswordActivity;
 import com.hapramp.api.DataServer;
-import com.hapramp.api.HaprampApiClient;
 import com.hapramp.interfaces.CreateUserCallback;
 import com.hapramp.interfaces.FetchUserCallback;
 import com.hapramp.models.UserAccountModel;
@@ -103,11 +103,26 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
 
+        forgotPassButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                redirectToForgetPassword();
+            }
+        });
+
+    }
+
+    private void redirectToForgetPassword() {
+        Intent intent = new Intent(this, ForgetPasswordActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void navigateToRegisterPage() {
+
         Intent intent = new Intent(this,RegisterActivity.class);
         startActivity(intent);
+
     }
 
     private void authenticateWithEmailPassword() {
@@ -117,43 +132,21 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private boolean validFields() {
-        if (password.getText().toString().length() < 6)
-            return false;
-        if (email.getText().length() < 6)
-            return false;
-        return true;
-    }
 
-    private void signInWithFirebase(String email, String password) {
-
-        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                hideProgress();
-                if (task.isSuccessful()) {
-                    t("Success");
-                    L.D.m(TAG, "signed in with firebase");
-                    user = task.getResult().getUser();
-                    if (user.isEmailVerified()) {
-                        fetchUserFromAppServer(user);
-                    } else {
-                        // send verification email
-                        user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    notifyUserForEmailSent();
-                                }
-                            }
-                        });
-                    }
-                } else {
-                    failedToSignIn();
-                }
-
+        String _e = email.getText().toString().trim();
+        String _p = password.getText().toString().trim();
+        //check email
+        if(Validator.validateEmail(_e)){
+            // check password
+            if(_p.length()>6){
+                return true;
+            }else {
+                Toast.makeText(this, "Short Password", Toast.LENGTH_SHORT).show();
             }
-        });
-
+        }else {
+            Toast.makeText(this, "Invalid Email!", Toast.LENGTH_SHORT).show();
+        }
+        return false;
     }
 
     private void failedToSignIn() {
@@ -161,12 +154,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void notifyUserForEmailSent() {
-        Toast.makeText(this, "We sent Confirmation Link to you email.", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "We have sent you a Confirmation Link to Your Email!", Toast.LENGTH_LONG).show();
     }
 
     private void checkLastStatus(){
         if(HaprampPreferenceManager.getInstance().isLoggedIn()){
-            redirect();
+            redirectToHome();
         }
     }
 
@@ -224,17 +217,53 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private void handleSignInResult(GoogleSignInResult result) {
         if (result.isSuccess()) {
-            t("Success With Google User Account");
             L.D.m(TAG, "handle signin...");
-            showProgress("Logging In...");
+
             GoogleSignInAccount account = result.getSignInAccount();
             L.D.m(TAG, "account received :" + account.getEmail());
+            showProgress("Logging In as : "+account.getEmail());
             signInWithFirebase(account);
 
         } else {
             Log.d(TAG, result.getStatus().getStatus() + "");
-            t("failed ! ");
+            t("Something Went Wrong! :(");
         }
+    }
+
+    private void signInWithFirebase(String email, String password) {
+
+        showProgress("Signing In...");
+
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                hideProgress();
+                if (task.isSuccessful()) {
+                    L.D.m(TAG, "signed in with firebase");
+                    user = task.getResult().getUser();
+                    if (user.isEmailVerified()) {
+                        hideProgress();
+                        fetchUserFromAppServer(user);
+                    } else {
+                        // send verification email
+                        user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    hideProgress();
+                                    notifyUserForEmailSent();
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    hideProgress();
+                    failedToSignIn();
+                }
+
+            }
+        });
+
     }
 
     private void signInWithFirebase(final GoogleSignInAccount account) {
@@ -244,9 +273,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        hideProgress();
+
                         if (task.isSuccessful()) {
-                            t("Success With firebase Auth");
                             L.D.m(TAG, "signed in with firebase");
                              user = task.getResult().getUser();
                             fetchUserFromAppServer(user);
@@ -259,7 +287,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void fetchUserFromAppServer(final FirebaseUser user) {
-        showProgress("Fetching User From App Server...");
+
+        showProgress("Preparing Your Account...");
         user.getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
             @Override
             public void onComplete(@NonNull Task<GetTokenResult> task) {
@@ -286,9 +315,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 
-    private void redirect() {
+    private void redirectToHome() {
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
+        hideProgress();
+        finish();
     }
 
     @Override
@@ -318,8 +349,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         HaprampPreferenceManager.getInstance().setUser(new Gson().toJson(accountModel));
         HaprampPreferenceManager.getInstance().setLoggedIn(true);
         HaprampPreferenceManager.getInstance().setUserEmail(userResponse.email);
-        hideProgress();
-        redirect();
+        redirectToHome();
     }
 
     @Override
@@ -347,7 +377,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         HaprampPreferenceManager.getInstance().setUser(new Gson().toJson(accountModel));
         HaprampPreferenceManager.getInstance().setLoggedIn(true);
         HaprampPreferenceManager.getInstance().setUserEmail(body.email);
-        redirect();
+        redirectToHome();
         hideProgress();
     }
 

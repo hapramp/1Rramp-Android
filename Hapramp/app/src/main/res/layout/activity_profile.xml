@@ -5,6 +5,4 @@
     android:layout_height="match_parent"
     tools:context="com.hapramp.ProfileActivity">
 
-    <include layout="@layout/profile_card" />
-
 </RelativeLayout>

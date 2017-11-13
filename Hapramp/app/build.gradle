@@ -57,7 +57,14 @@ dependencies {
     compile 'com.google.firebase:firebase-storage:10.0.1'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+
 }
+
+
+
+
+
+
 
 
 

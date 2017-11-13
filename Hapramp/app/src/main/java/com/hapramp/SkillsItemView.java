@@ -18,20 +18,21 @@ import java.lang.annotation.RetentionPolicy;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.hapramp.SkillsConverter.ACTION;
+import static com.hapramp.SkillsConverter.ART;
+import static com.hapramp.SkillsConverter.DANCE;
+import static com.hapramp.SkillsConverter.LITERATURE;
+import static com.hapramp.SkillsConverter.MUSIC;
+import static com.hapramp.SkillsConverter.PHOTOGRAPHY;
+import static com.hapramp.SkillsConverter.TRAVEL;
+
 /**
  * Created by Ankit on 6/22/2017.
  */
 
 public class SkillsItemView extends FrameLayout {
 
-    public static final int ART = 1;
-    public static final int DANCE = 2;
-    public static final int TRAVEL = 3;
-    public static final int LITERATURE = 4;
-    public static final int ACTION = 5;
-    public static final int PHOTOGRAPHY = 6;
-    public static final int SOCIAL = 7;
-    public static final int MUSIC = 8;
+
 
     SimpleDraweeView skillsBgImage;
     TextView skillSelectionOverlay;
@@ -47,8 +48,10 @@ public class SkillsItemView extends FrameLayout {
     }
 
     public void setSkillsBgImage(int type){
+
         int resId = -1;
         String color = "#795548";
+
         switch (type){
             case PHOTOGRAPHY:
                 resId = R.drawable.photography_icon;
@@ -79,8 +82,10 @@ public class SkillsItemView extends FrameLayout {
                 color = "#ff5722";
                 break;
         }
+
         skillsBgImage.setImageResource(resId);
         setOverlayColor(color);
+
     }
 
     private void setOverlayColor(String color){

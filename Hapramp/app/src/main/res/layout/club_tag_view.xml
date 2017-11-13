@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="32sp">
+
+    <TextView
+        android:visibility="gone"
+        android:background="@drawable/club_item_bg"
+        android:padding="2dp"
+        android:textColor="#ffffff"
+        android:gravity="center"
+        android:id="@+id/club1"
+        android:textSize="16sp"
+        android:text="T"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_width="24sp"
+        android:layout_height="24sp" />
+
+
+    <TextView
+        android:visibility="gone"
+        android:background="@drawable/club_item_bg"
+        android:padding="2dp"
+        android:textColor="#ffffff"
+        android:gravity="center"
+        android:id="@+id/club2"
+        android:textSize="16sp"
+        android:text="T"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_width="24sp"
+        android:layout_height="24sp" />
+
+
+    <TextView
+        android:visibility="gone"
+        android:background="@drawable/club_item_bg"
+        android:padding="2dp"
+        android:textColor="#ffffff"
+        android:gravity="center"
+        android:id="@+id/club3"
+        android:textSize="16sp"
+        android:text="T"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_width="24sp"
+        android:layout_height="24sp" />
+
+</LinearLayout>
