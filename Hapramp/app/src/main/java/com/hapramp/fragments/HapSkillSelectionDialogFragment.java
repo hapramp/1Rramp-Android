@@ -16,7 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.hapramp.R;
-import com.hapramp.SkillsItemView;
+import com.hapramp.views.SkillsItemView;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.FetchSkillsResponse;
 import com.hapramp.logger.L;

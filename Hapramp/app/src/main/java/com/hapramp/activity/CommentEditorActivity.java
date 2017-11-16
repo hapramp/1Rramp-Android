@@ -10,7 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hapramp.FontManager;
+import com.hapramp.utils.FontManager;
 import com.hapramp.R;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.CommentCreateCallback;

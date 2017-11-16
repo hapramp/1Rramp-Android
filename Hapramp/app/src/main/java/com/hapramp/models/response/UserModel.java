@@ -14,6 +14,8 @@ public class UserModel {
     public int id;
     @SerializedName("email")
     public String email;
+    @SerializedName("bio")
+    public String bio;
     @SerializedName("username")
     public String username;
     @SerializedName("organization")

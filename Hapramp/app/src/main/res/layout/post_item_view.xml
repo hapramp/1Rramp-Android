@@ -5,10 +5,16 @@
     xmlns:fresco="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
+        android:clickable="true"
         android:id="@+id/post_header_container"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:background="#ffffff">
+        android:background="?selectableItemBackgroundBorderless">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:background="#ffffff"
+            android:layout_height="match_parent"/>
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/feed_owner_pic"
@@ -38,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <com.hapramp.ClubTagView
+        <com.hapramp.views.ClubTagView
             android:paddingEnd="8dp"
             android:id="@+id/clubsContainer"
             android:layout_centerVertical="true"

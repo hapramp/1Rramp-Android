@@ -23,6 +23,7 @@
                 android:layout_width="?actionBarSize"
                 android:layout_height="?actionBarSize"
                 android:background="?selectableItemBackgroundBorderless"
+                android:clickable="true"
                 android:gravity="center"
                 android:text=""
                 android:textSize="24sp" />
@@ -61,6 +62,8 @@
                 android:layout_width="?actionBarSize"
                 android:layout_height="?actionBarSize"
                 android:layout_alignParentEnd="true"
+                android:background="?selectableItemBackgroundBorderless"
+                android:clickable="true"
                 android:gravity="center"
                 android:text=""
                 android:textSize="24sp" />

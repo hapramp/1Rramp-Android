@@ -9,6 +9,7 @@ import com.hapramp.interfaces.CompetitionsPostFetchCallback;
 import com.hapramp.interfaces.CreateUserCallback;
 import com.hapramp.interfaces.FetchSkillsResponse;
 import com.hapramp.interfaces.FetchUserCallback;
+import com.hapramp.interfaces.FollowUserCallback;
 import com.hapramp.interfaces.FullUserDetailsCallback;
 import com.hapramp.interfaces.LikePostCallback;
 import com.hapramp.interfaces.OnSkillsUpdateCallback;
@@ -16,9 +17,15 @@ import com.hapramp.interfaces.OrgUpdateCallback;
 import com.hapramp.interfaces.OrgsFetchCallback;
 import com.hapramp.interfaces.PostCreateCallback;
 import com.hapramp.interfaces.PostFetchCallback;
+import com.hapramp.interfaces.UserBioUpdateRequestCallback;
+import com.hapramp.interfaces.UserDpUpdateRequestCallback;
 import com.hapramp.logger.L;
-import com.hapramp.CompetitionsPostReponse;
-import com.hapramp.models.LikeBody;
+import com.hapramp.models.UserResponse;
+import com.hapramp.models.requests.FollowRequestBody;
+import com.hapramp.models.requests.UserBioUpdateRequestBody;
+import com.hapramp.models.requests.UserDpUpdateRequestBody;
+import com.hapramp.models.response.CompetitionsPostReponse;
+import com.hapramp.models.requests.LikeBody;
 import com.hapramp.models.requests.CommentBody;
 import com.hapramp.models.requests.CreateUserRequest;
 import com.hapramp.models.error.GeneralErrorModel;
@@ -42,7 +49,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Body;
 
 /**
  * Created by Ankit on 10/11/2017.
@@ -230,7 +236,7 @@ public class DataServer {
                 });
     }
 
-    public static void getPosts(int skills_id,String userId,  final PostFetchCallback callback) {
+    public static void getPosts(int skills_id, String userId, final PostFetchCallback callback) {
 
         if (skills_id == 0) {
             getPosts(callback);
@@ -240,7 +246,7 @@ public class DataServer {
         L.D.m(TAG, "Fetching posts by skills...");
 
         getService()
-                .getPostsBySkillsAndUserId(skills_id,userId)
+                .getPostsBySkillsAndUserId(skills_id, userId)
                 .enqueue(new Callback<List<PostResponse>>() {
                     @Override
                     public void onResponse(Call<List<PostResponse>> call, Response<List<PostResponse>> response) {
@@ -438,7 +444,7 @@ public class DataServer {
 
     public static void getComments(String postId, final CommentFetchCallback callback) {
 
-        Log.d(TAG,"Fetching comments...");
+        Log.d(TAG, "Fetching comments...");
 
         getService()
                 .getComments(postId)
@@ -460,23 +466,89 @@ public class DataServer {
 
     }
 
-    public static void getCompetitionsPosts(String compId,final CompetitionsPostFetchCallback callback){
+    public static void getCompetitionsPosts(String compId, final CompetitionsPostFetchCallback callback) {
 
         getService()
                 .getCompetitionsPosts(compId)
                 .enqueue(new Callback<CompetitionsPostReponse>() {
                     @Override
                     public void onResponse(Call<CompetitionsPostReponse> call, Response<CompetitionsPostReponse> response) {
-                        if(response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             callback.onCompetitionsPostsFetched(response.body());
-                        }else {
-                            Log.d(TAG,"Error : "+ErrorUtils.parseError(response).toString());
+                        } else {
+                            Log.d(TAG, "Error : " + ErrorUtils.parseError(response).toString());
                         }
                     }
 
                     @Override
                     public void onFailure(Call<CompetitionsPostReponse> call, Throwable t) {
-                        Log.d(TAG,"Error: "+t.toString());
+                        Log.d(TAG, "Error: " + t.toString());
+                    }
+                });
+
+    }
+
+    public static void setFollowUser(String userId, final FollowRequestBody requestBody, final FollowUserCallback callback) {
+
+        getService()
+                .followUser(userId, requestBody)
+                .enqueue(new Callback<UserResponse>() {
+                    @Override
+                    public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                        if (response.isSuccessful()) {
+                            callback.onUserFollowSet(requestBody.follow);
+                        } else {
+                            callback.onUserFollowSetFailed(!requestBody.follow);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserResponse> call, Throwable t) {
+                        callback.onUserFollowSetFailed(!requestBody.follow);
+                    }
+                });
+
+    }
+
+    public static void updataUserDpUrl(String userId, final UserDpUpdateRequestBody body, final UserDpUpdateRequestCallback callback) {
+
+        getService()
+                .updateUserDp(userId, body)
+                .enqueue(new Callback<UserResponse>() {
+                    @Override
+                    public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                        if (response.isSuccessful()) {
+                            callback.onUserDpUpdated();
+                        } else {
+                            callback.onUserDpUpdateFailed();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserResponse> call, Throwable t) {
+                        callback.onUserDpUpdateFailed();
+                    }
+                });
+
+    }
+
+    public static void updateUserBio(String userId, final UserBioUpdateRequestBody body, final UserBioUpdateRequestCallback callback) {
+
+        getService()
+                .updateUserBio(userId, body)
+                .enqueue(new Callback<UserResponse>() {
+                    @Override
+                    public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                        if (response.isSuccessful()) {
+                            callback.onBioUpdated();
+                        } else {
+                            callback.onBioUpdateError();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserResponse> call, Throwable t) {
+                        callback.onBioUpdateError();
                     }
                 });
 

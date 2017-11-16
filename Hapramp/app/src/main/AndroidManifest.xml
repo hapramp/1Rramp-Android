@@ -7,38 +7,73 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".HapRampMain"
+        android:name=".main.HapRampMain"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity">
+        <activity
+            android:name=".activity.LoginActivity"
+            android:noHistory="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SkillRegistrationActivity" />
-        <activity android:name=".OrganisationActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".StoryActivity" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".activity.SkillRegistrationActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".LeaderboardActivity" />
-        <activity android:name=".DatabaseTestActivity" />
-        <activity android:name=".activity.RegistrationPage2" />
-        <activity android:name=".activity.DetailedPostActivity" />
-        <activity android:name=".activity.NewPostCreationActivity" />
-        <activity android:name=".activity.CreateArticleActivity" />
-        <activity android:name=".activity.ForgetPasswordActivity" />
-        <activity android:name=".activity.NotificationsActivity" />
-        <activity android:name=".activity.CommentEditorActivity" />
-        <activity android:name=".activity.CompetitionsDetailedActivity"></activity>
+        <activity
+            android:name=".activity.OrganisationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.RegisterActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.StoryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.HomeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ProfileActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.LeaderboardActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.DatabaseTestActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.RegistrationPage2"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.DetailedPostActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.NewPostCreationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.CreateArticleActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ForgetPasswordActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.NotificationsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.CommentEditorActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.CompetitionsDetailedActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.InfoEditingActivity"
+            android:windowSoftInputMode="adjustResize"/>
     </application>
 
 </manifest>

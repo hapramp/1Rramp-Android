@@ -1,0 +1,33 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.hapramp.fragments.SettingsFragment">
+
+    <LinearLayout
+        android:id="@+id/logoutContainer"
+        android:clickable="true"
+        android:background="?selectableItemBackgroundBorderless"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/logoutIcon"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:gravity="center"
+            android:text=""
+            android:textSize="32sp" />
+
+        <TextView
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="Logout"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

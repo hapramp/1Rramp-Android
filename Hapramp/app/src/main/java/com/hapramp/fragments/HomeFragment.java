@@ -15,8 +15,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hapramp.CategoryRecyclerAdapter;
-import com.hapramp.PostsRecyclerAdapter;
+import com.hapramp.activity.ProfileActivity;
+import com.hapramp.adapters.CategoryRecyclerAdapter;
+import com.hapramp.adapters.PostsRecyclerAdapter;
 import com.hapramp.R;
 import com.hapramp.activity.DetailedPostActivity;
 import com.hapramp.api.DataServer;
@@ -27,7 +28,6 @@ import com.hapramp.logger.L;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.models.response.SkillsModel;
 
-import java.text.NumberFormat;
 import java.util.List;
 
 import butterknife.BindView;
@@ -218,6 +218,15 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
         intent.putExtra("content",postResponse.getContent());
         intent.putExtra("postId",String.valueOf(postResponse.getId()));
         mContext.startActivity(intent);
+    }
+
+    @Override
+    public void onUserInfoTapped(int userId) {
+        // redirect to profile page
+        Intent intent = new Intent(mContext, ProfileActivity.class);
+        intent.putExtra("userId",String.valueOf(userId));
+        startActivity(intent);
+
     }
 
     @Override

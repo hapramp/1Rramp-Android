@@ -1,22 +1,23 @@
 package com.hapramp.activity;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.hapramp.CompetitionPostsRecyclerAdapter;
-import com.hapramp.CompetitionsPostReponse;
-import com.hapramp.PostsRecyclerAdapter;
+import com.hapramp.adapters.CompetitionPostsRecyclerAdapter;
+import com.hapramp.models.response.CompetitionsPostReponse;
+import com.hapramp.utils.FontManager;
 import com.hapramp.R;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.CompetitionsPostFetchCallback;
-import com.hapramp.models.response.CompetitionResponse;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -86,13 +87,23 @@ public class CompetitionsDetailedActivity extends AppCompatActivity implements C
 
         compId = getIntent().getExtras().getString("compId");
         recyclerAdapter = new CompetitionPostsRecyclerAdapter(this);
+        submittedPostsRv.setNestedScrollingEnabled(false);
         submittedPostsRv.setLayoutManager(new LinearLayoutManager(this));
         submittedPostsRv.setAdapter(recyclerAdapter);
-
+        Typeface typeface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
+        closeBtn.setTypeface(typeface);
+        overflowBtn.setTypeface(typeface);
+        entryFeeIcon.setTypeface(typeface);
+        prizeMoneyIcon.setTypeface(typeface);
     }
 
     private void attachListeners() {
-
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void fetchCompetitionsPosts(){

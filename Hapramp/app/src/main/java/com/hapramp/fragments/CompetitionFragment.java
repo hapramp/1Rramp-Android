@@ -2,6 +2,7 @@ package com.hapramp.fragments;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,9 +15,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hapramp.CategoryRecyclerAdapter;
-import com.hapramp.CompetitionRecyclerAdapter;
+import com.hapramp.adapters.CategoryRecyclerAdapter;
+import com.hapramp.adapters.CompetitionRecyclerAdapter;
 import com.hapramp.R;
+import com.hapramp.activity.CompetitionsDetailedActivity;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.CompetitionFetchCallback;
 import com.hapramp.interfaces.FetchSkillsResponse;
@@ -33,7 +35,7 @@ import butterknife.Unbinder;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CompetitionFragment extends Fragment implements CompetitionFetchCallback, CategoryRecyclerAdapter.OnCategoryItemClickListener, FetchSkillsResponse {
+public class CompetitionFragment extends Fragment implements CompetitionFetchCallback, CategoryRecyclerAdapter.OnCategoryItemClickListener, FetchSkillsResponse, CompetitionRecyclerAdapter.OnCompetitionElementsClickListener {
 
 
     @BindView(R.id.competitionRv)
@@ -61,6 +63,7 @@ public class CompetitionFragment extends Fragment implements CompetitionFetchCal
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         recyclerAdapter = new CompetitionRecyclerAdapter(mContext);
+        recyclerAdapter.setCompetitionElementsClickListener(this);
     }
 
     @Override
@@ -78,7 +81,7 @@ public class CompetitionFragment extends Fragment implements CompetitionFetchCal
         comptetionRv.setLayoutManager(new LinearLayoutManager(mContext));
         comptetionRv.setAdapter(recyclerAdapter);
         fetchCategories();
-        fetchCompetitions(-1);
+        fetchCompetitions(0);
 
     }
 
@@ -104,6 +107,7 @@ public class CompetitionFragment extends Fragment implements CompetitionFetchCal
     @Override
     public void onSkillsFetched(List<SkillsModel> skillsModels) {
         hideCategoryLoadingProgress();
+        skillsModels.add(0,new SkillsModel(0,"All","",""));
         categoryRecyclerAdapter.setCategories(skillsModels);
     }
 
@@ -111,7 +115,6 @@ public class CompetitionFragment extends Fragment implements CompetitionFetchCal
     public void onSkillFetchError() {
         hideCategoryLoadingProgress();
     }
-
 
     private void showContentLoadingProgress() {
         if (contentLoadingProgress != null)
@@ -139,7 +142,7 @@ public class CompetitionFragment extends Fragment implements CompetitionFetchCal
         hideContent();
         showContentLoadingProgress();
 
-        if (id == -1) {
+        if (id == 0) {
             DataServer.getCompetitions(this);
         } else {
             DataServer.getCompetitionsBySkills(id, this);
@@ -193,11 +196,24 @@ public class CompetitionFragment extends Fragment implements CompetitionFetchCal
             emptyMessage.setVisibility(View.GONE);
     }
 
-
     @Override
     public void onCompetitionsFetchError() {
         hideContentLoadingProgress();
         Toast.makeText(mContext, "Error Loading Content. Inconvienience is regreted :(", Toast.LENGTH_LONG).show();
         L.D.m("CompFragment", "Fetch Error: Post");
+    }
+
+    @Override
+    public void onKnowMoreTapped(String compId) {
+        // redirect to comp. details page
+        Intent intent = new Intent(mContext, CompetitionsDetailedActivity.class);
+        intent.putExtra("compId",compId);
+        mContext.startActivity(intent);
+
+    }
+
+    @Override
+    public void onJoinNowTapped(String compId) {
+        // do something
     }
 }

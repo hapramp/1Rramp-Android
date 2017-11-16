@@ -44,7 +44,7 @@
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
             android:paddingTop="4dp"
-            android:text="NEXT"
+            android:text="POST"
             android:textColor="@color/colorPrimary"
             android:textSize="16sp" />
 

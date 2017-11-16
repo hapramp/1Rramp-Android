@@ -1,8 +1,6 @@
 package com.hapramp.interfaces;
 
-import com.hapramp.CompetitionsPostReponse;
-import com.hapramp.models.response.CommentsResponse;
-import com.hapramp.models.response.CompetitionResponse;
+import com.hapramp.models.response.CompetitionsPostReponse;
 
 /**
  * Created by Ankit on 11/13/2017.

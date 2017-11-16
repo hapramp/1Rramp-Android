@@ -8,12 +8,11 @@
     <TextView
         android:visibility="gone"
         android:background="@drawable/club_item_bg"
-        android:padding="2dp"
         android:textColor="#ffffff"
         android:gravity="center"
         android:id="@+id/club1"
         android:textSize="16sp"
-        android:text="T"
+        android:text="A"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
         android:layout_width="24sp"
@@ -23,7 +22,6 @@
     <TextView
         android:visibility="gone"
         android:background="@drawable/club_item_bg"
-        android:padding="2dp"
         android:textColor="#ffffff"
         android:gravity="center"
         android:id="@+id/club2"
@@ -38,7 +36,6 @@
     <TextView
         android:visibility="gone"
         android:background="@drawable/club_item_bg"
-        android:padding="2dp"
         android:textColor="#ffffff"
         android:gravity="center"
         android:id="@+id/club3"

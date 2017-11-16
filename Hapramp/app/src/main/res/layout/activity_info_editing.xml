@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.hapramp.activity.InfoEditingActivity">
+
+    <RelativeLayout
+        android:id="@+id/toolbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:layout_marginBottom="4dp"
+        android:background="#ffffff">
+
+        <TextView
+            android:textColor="@color/Black87"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:layout_toRightOf="@+id/closeBtn"
+            android:text="Enter Your Bio"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
+
+    <EditText
+        android:layout_margin="8dp"
+        android:hint="Bio"
+        android:layout_below="@+id/toolbar_container"
+        android:id="@+id/bioEt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/okBtn"
+        android:layout_margin="8dp"
+        android:textColor="#ffffff"
+        android:textSize="18sp"
+        android:background="@drawable/filled_btn_bg"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:text="OK"
+        android:padding="8dp"
+        android:gravity="center"
+        android:layout_width="144dp"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/cancelBtn"
+        android:layout_margin="8dp"
+        android:textColor="@color/colorPrimary"
+        android:textSize="18sp"
+        android:background="@drawable/light_btn_bg"
+        android:layout_alignParentBottom="true"
+        android:text="CANCEL"
+        android:padding="8dp"
+        android:gravity="center"
+        android:layout_width="144dp"
+        android:layout_height="wrap_content" />
+
+
+</RelativeLayout>

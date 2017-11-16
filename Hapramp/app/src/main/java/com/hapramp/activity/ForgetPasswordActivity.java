@@ -15,10 +15,9 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.hapramp.FontManager;
-import com.hapramp.LoginActivity;
+import com.hapramp.utils.FontManager;
 import com.hapramp.R;
-import com.hapramp.Validator;
+import com.hapramp.utils.Validator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
-import com.hapramp.HapRampMain;
+import com.hapramp.main.HapRampMain;
 import com.hapramp.logger.L;
 import com.hapramp.models.UserAccountModel;
 

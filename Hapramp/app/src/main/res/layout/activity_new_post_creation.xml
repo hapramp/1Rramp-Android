@@ -1,46 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:context="com.hapramp.activity.NewPostCreationActivity">
 
     <RelativeLayout
-        android:background="#ffffff"
         android:id="@+id/toolbar_container"
+        android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:layout_marginBottom="4dp"
-        android:layout_width="match_parent">
+        android:background="#ffffff">
 
         <TextView
+            android:id="@+id/closeBtn"
+            android:layout_width="?actionBarSize"
+            android:layout_height="?actionBarSize"
             android:background="?selectableItemBackgroundBorderless"
             android:gravity="center"
-            android:id="@+id/closeBtn"
-            android:layout_height="?actionBarSize"
-            android:layout_width="?actionBarSize"
             android:text=""
             android:textSize="24sp" />
 
         <TextView
-            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
             android:layout_toRightOf="@+id/closeBtn"
-            android:layout_width="wrap_content"
             android:text="POST"
             android:textSize="18sp" />
 
         <TextView
-            android:background="@drawable/light_btn_bg"
-            android:gravity="center"
             android:id="@+id/postButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:layout_width="wrap_content"
+            android:background="@drawable/light_btn_bg"
+            android:gravity="center"
             android:paddingBottom="4dp"
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
@@ -52,9 +51,9 @@
     </RelativeLayout>
 
     <ScrollView
-        android:layout_below="@+id/toolbar_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar_container"
         android:fillViewport="true">
 
         <RelativeLayout
@@ -62,28 +61,47 @@
             android:layout_height="wrap_content">
 
             <FrameLayout
+                android:background="#119fdc"
                 android:id="@+id/postMediaContainer"
-                android:layout_below="@+id/content"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="visible">
+                android:layout_height="172dp"
+                android:layout_below="@+id/content"
+                android:visibility="gone">
 
                 <ImageView
+                    android:visibility="gone"
                     android:id="@+id/postMedia"
                     android:layout_width="match_parent"
                     android:layout_height="172dp"
-                    android:background="#3c819b"
                     android:scaleType="centerCrop" />
 
                 <TextView
-                    android:textSize="36sp"
+                    android:visibility="visible"
+                    android:id="@+id/audioIcon"
+                    android:textSize="48sp"
+                    android:text=""
                     android:textColor="#ffffff"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:visibility="gone"
+                    android:textSize="18sp"
+                    android:layout_gravity="bottom|center"
+                    android:id="@+id/audioFileName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
                     android:id="@+id/removeImageBtn"
-                    android:text=""
-                    android:gravity="center"
-                    android:layout_gravity="end"
                     android:layout_width="48dp"
-                    android:layout_height="48dp" />
+                    android:layout_height="48dp"
+                    android:layout_gravity="end"
+                    android:gravity="center"
+                    android:text=""
+                    android:textColor="#ffffff"
+                    android:textSize="36sp" />
 
                 <ProgressBar
                     android:id="@+id/postMediaUploadProgress"
@@ -98,13 +116,12 @@
                 android:id="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="100dp"
                 android:background="@drawable/post_editor_bg"
                 android:gravity="top"
                 android:hint="Share photos, videos,music or anything you like..."
+                android:minHeight="100dp"
                 android:padding="16dp"
                 android:textSize="14sp" />
-
 
 
         </RelativeLayout>
@@ -112,53 +129,53 @@
     </ScrollView>
 
     <RelativeLayout
-        android:background="#ffffff"
         android:id="@+id/bottom_options_container"
-        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:layout_width="match_parent">
+        android:layout_alignParentBottom="true"
+        android:background="#ffffff">
 
 
         <TextView
+            android:id="@+id/photosBtn"
+            android:layout_width="?actionBarSize"
+            android:layout_height="?actionBarSize"
             android:background="?selectableItemBackgroundBorderless"
             android:gravity="center"
-            android:id="@+id/photosBtn"
-            android:layout_height="?actionBarSize"
-            android:layout_width="?actionBarSize"
             android:text=""
             android:textSize="24sp" />
 
         <TextView
-            android:background="?selectableItemBackgroundBorderless"
-            android:gravity="center"
             android:id="@+id/audioBtn"
+            android:layout_width="?actionBarSize"
             android:layout_height="?actionBarSize"
             android:layout_toEndOf="@+id/photosBtn"
-            android:layout_width="?actionBarSize"
+            android:background="?selectableItemBackgroundBorderless"
+            android:gravity="center"
             android:text=""
             android:textSize="24sp" />
 
         <TextView
-            android:background="?selectableItemBackgroundBorderless"
-            android:gravity="center"
             android:id="@+id/videoBtn"
+            android:layout_width="?actionBarSize"
             android:layout_height="?actionBarSize"
             android:layout_toEndOf="@id/audioBtn"
-            android:layout_width="?actionBarSize"
+            android:background="?selectableItemBackgroundBorderless"
+            android:gravity="center"
             android:text=""
             android:textSize="24sp" />
 
 
         <TextView
             android:id="@+id/articleBtn"
-            android:clickable="true"
-            android:background="@drawable/light_btn_bg"
-            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:layout_width="wrap_content"
+            android:background="@drawable/light_btn_bg"
+            android:clickable="true"
+            android:gravity="center"
             android:padding="8dp"
             android:paddingBottom="4dp"
             android:paddingEnd="16dp"

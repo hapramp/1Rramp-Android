@@ -1,7 +1,7 @@
 package com.hapramp.logger;
 import android.util.Log;
 
-import com.hapramp.Constants;
+import com.hapramp.utils.Constants;
 
 /**
  * Created by Ankit on 5/13/2017.

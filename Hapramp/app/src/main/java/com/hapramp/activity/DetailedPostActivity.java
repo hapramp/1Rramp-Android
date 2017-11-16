@@ -13,8 +13,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.hapramp.CommentsAdapter;
-import com.hapramp.FontManager;
+import com.hapramp.adapters.CommentsAdapter;
+import com.hapramp.utils.FontManager;
 import com.hapramp.R;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.CommentFetchCallback;

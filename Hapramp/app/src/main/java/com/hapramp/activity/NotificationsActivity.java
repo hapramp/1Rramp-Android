@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import com.hapramp.FontManager;
+import com.hapramp.utils.FontManager;
 import com.hapramp.R;
 
 import butterknife.BindView;

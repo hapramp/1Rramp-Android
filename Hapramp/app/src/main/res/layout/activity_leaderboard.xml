@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.hapramp.LeaderboardActivity">
+    tools:context="com.hapramp.activity.LeaderboardActivity">
 
     <RelativeLayout
         android:id="@+id/toolbar"
@@ -47,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.hapramp.SkillView
+            <com.hapramp.views.SkillView
                 android:id="@+id/skillsView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

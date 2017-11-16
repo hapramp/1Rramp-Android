@@ -19,10 +19,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.hapramp.LoginActivity;
 import com.hapramp.R;
-import com.hapramp.RegisterActivity;
-import com.hapramp.Validator;
+import com.hapramp.utils.Validator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -1,7 +1,11 @@
 package com.hapramp.api;
 
-import com.hapramp.CompetitionsPostReponse;
-import com.hapramp.models.LikeBody;
+import com.hapramp.models.UserResponse;
+import com.hapramp.models.requests.FollowRequestBody;
+import com.hapramp.models.requests.UserBioUpdateRequestBody;
+import com.hapramp.models.requests.UserDpUpdateRequestBody;
+import com.hapramp.models.response.CompetitionsPostReponse;
+import com.hapramp.models.requests.LikeBody;
 import com.hapramp.models.requests.CommentBody;
 import com.hapramp.models.requests.CreateUserRequest;
 import com.hapramp.models.requests.PostCreateBody;
@@ -22,10 +26,8 @@ import com.hapramp.models.response.UserModel;
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
@@ -89,6 +91,16 @@ public interface HaprampAPI {
     Call<List<PostResponse>> getPostsBySkillsAndUserId(@Query("skills_or") int skills_id,@Query("user_id") String userId);
 
     @GET("contests/{contest_id}/posts")
-     Call<CompetitionsPostReponse> getCompetitionsPosts(String compId);
+    Call<CompetitionsPostReponse> getCompetitionsPosts(@Path("contest_id") String compId);
+
+    @POST("users/{user_id}/_follow")
+    Call<UserResponse> followUser(@Path("user_id") String userId , @Body FollowRequestBody body);
+
+    @PUT("users/{user_id}")
+    Call<UserResponse> updateUserDp(@Path("user_id") String userId,@Body UserDpUpdateRequestBody body);
+
+    @PUT("users/{user_id}")
+    Call<UserResponse> updateUserBio(@Path("user_id") String userId,@Body UserBioUpdateRequestBody body);
+
 
 }

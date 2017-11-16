@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <com.hapramp.ClubTagView
+        <com.hapramp.views.ClubTagView
             android:paddingEnd="8dp"
             android:id="@+id/clubsContainer"
             android:layout_centerVertical="true"
@@ -164,10 +164,10 @@
             android:id="@+id/hapcoins_count"
             android:layout_width="wrap_content"
             android:layout_height="64dp"
-            android:layout_below="@+id/faded_edge"
             android:layout_marginTop="24dp"
+            android:layout_below="@+id/post_snippet"
             android:layout_toEndOf="@id/hapcoinBtn"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:text="24" />
 
     </RelativeLayout>
