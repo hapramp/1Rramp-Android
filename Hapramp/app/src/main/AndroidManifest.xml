@@ -18,11 +18,13 @@
             android:name=".activity.LoginActivity"
             android:noHistory="true"
             android:screenOrientation="portrait">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity
             android:name=".activity.SkillRegistrationActivity"
@@ -46,8 +48,10 @@
             android:name=".activity.LeaderboardActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.DatabaseTestActivity"
-            android:screenOrientation="portrait" />
+            android:name=".activity.TestActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
         <activity
             android:name=".activity.RegistrationPage2"
             android:screenOrientation="portrait" />

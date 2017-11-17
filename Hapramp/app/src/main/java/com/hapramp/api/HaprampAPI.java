@@ -4,6 +4,7 @@ import com.hapramp.models.UserResponse;
 import com.hapramp.models.requests.FollowRequestBody;
 import com.hapramp.models.requests.UserBioUpdateRequestBody;
 import com.hapramp.models.requests.UserDpUpdateRequestBody;
+import com.hapramp.models.requests.VoteRequestBody;
 import com.hapramp.models.response.CompetitionsPostReponse;
 import com.hapramp.models.requests.LikeBody;
 import com.hapramp.models.requests.CommentBody;
@@ -22,6 +23,7 @@ import com.hapramp.models.response.SkillsModel;
 import com.hapramp.models.response.SkillsUpdateResponse;
 import com.hapramp.models.response.UpdateUserResponse;
 import com.hapramp.models.response.UserModel;
+import com.hapramp.models.response.VotePostResponse;
 
 import java.util.List;
 
@@ -101,6 +103,9 @@ public interface HaprampAPI {
 
     @PUT("users/{user_id}")
     Call<UserResponse> updateUserBio(@Path("user_id") String userId,@Body UserBioUpdateRequestBody body);
+
+    @POST("posts/{post_id}/votes")
+    Call<VotePostResponse> votePost(@Path("post_id") String postId , @Body VoteRequestBody body);
 
 
 }

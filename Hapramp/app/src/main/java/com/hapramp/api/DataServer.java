@@ -19,11 +19,13 @@ import com.hapramp.interfaces.PostCreateCallback;
 import com.hapramp.interfaces.PostFetchCallback;
 import com.hapramp.interfaces.UserBioUpdateRequestCallback;
 import com.hapramp.interfaces.UserDpUpdateRequestCallback;
+import com.hapramp.interfaces.VotePostCallback;
 import com.hapramp.logger.L;
 import com.hapramp.models.UserResponse;
 import com.hapramp.models.requests.FollowRequestBody;
 import com.hapramp.models.requests.UserBioUpdateRequestBody;
 import com.hapramp.models.requests.UserDpUpdateRequestBody;
+import com.hapramp.models.requests.VoteRequestBody;
 import com.hapramp.models.response.CompetitionsPostReponse;
 import com.hapramp.models.requests.LikeBody;
 import com.hapramp.models.requests.CommentBody;
@@ -43,6 +45,7 @@ import com.hapramp.models.response.SkillsModel;
 import com.hapramp.models.response.SkillsUpdateResponse;
 import com.hapramp.models.response.UpdateUserResponse;
 import com.hapramp.models.response.UserModel;
+import com.hapramp.models.response.VotePostResponse;
 
 import java.util.List;
 
@@ -549,6 +552,28 @@ public class DataServer {
                     @Override
                     public void onFailure(Call<UserResponse> call, Throwable t) {
                         callback.onBioUpdateError();
+                    }
+                });
+
+    }
+
+    public static void votePost(String postId, final VoteRequestBody body, final VotePostCallback callback) {
+
+        getService()
+                .votePost(postId, body)
+                .enqueue(new Callback<VotePostResponse>() {
+                    @Override
+                    public void onResponse(Call<VotePostResponse> call, Response<VotePostResponse> response) {
+                        if (response.isSuccessful()) {
+                            callback.onPostVoted();
+                        } else {
+                            callback.onPostVoteError();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<VotePostResponse> call, Throwable t) {
+                        callback.onPostVoteError();
                     }
                 });
 

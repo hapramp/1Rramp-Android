@@ -16,6 +16,25 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
+        String S = "aaaaa";
+        int len  = S.length() - 1;
+        int max = 0;
+        String first = S.substring(0,len);
+        String sec = S.substring(1);
+
+        for(int i = len;i>=1;i--){
+            int li = len - i;
+            if(first.substring(0,i).equals(sec.substring(li))){
+                max = i;
+                break;
+            }
+        }
+
+        p(String.valueOf(max));
+
+    }
+
+    private void p(String s ){
+        System.out.println(s);
     }
 }

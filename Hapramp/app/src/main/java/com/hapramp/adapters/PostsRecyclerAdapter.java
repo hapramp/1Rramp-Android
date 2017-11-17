@@ -14,6 +14,7 @@ import com.hapramp.utils.FontManager;
 import com.hapramp.R;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.views.ClubTagView;
+import com.hapramp.views.RatingView;
 
 import java.util.List;
 
@@ -51,12 +52,12 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
 
     @Override
     public void onBindViewHolder(PostViewHolder viewHolder, int i) {
-        viewHolder.bind(postResponses.get(i),postElementsClickListener);
+        viewHolder.bind(postResponses.get(i), postElementsClickListener);
     }
 
     @Override
     public int getItemCount() {
-        return postResponses!=null?postResponses.size():0;
+        return postResponses != null ? postResponses.size() : 0;
     }
 
     class PostViewHolder extends RecyclerView.ViewHolder {
@@ -65,6 +66,8 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
         SimpleDraweeView feedOwnerPic;
         @BindView(R.id.feed_owner_title)
         TextView feedOwnerTitle;
+        @BindView(R.id.ratingView)
+        RatingView ratingView;
         @BindView(R.id.feed_owner_subtitle)
         TextView feedOwnerSubtitle;
         @BindView(R.id.post_header_container)
@@ -110,7 +113,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
             commentBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         }
 
-        public void bind(final PostResponse postResponse , final OnPostElementsClickListener postElementsClickListener) {
+        public void bind(final PostResponse postResponse, final OnPostElementsClickListener postElementsClickListener) {
             final boolean isLiked = false;
             feedOwnerPic.setImageURI(postResponse.getUser().getImage_uri());
             feedOwnerTitle.setText(postResponse.getUser().getFull_name());
@@ -118,13 +121,13 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
             featuredImagePost.setImageURI(postResponse.getMedia_uri());
             postTitle.setText("Missing Title");
             postSnippet.setText(postResponse.getContent());
-
+            ratingView.setPostId(String.valueOf(postResponse.getId()));
             clubTagView.setPostSkills(postResponse.getSkills());
 
             readMoreBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(postElementsClickListener!=null)
+                    if (postElementsClickListener != null)
                         postElementsClickListener.onReadMoreTapped(postResponse);
                 }
             });
@@ -132,17 +135,26 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
             postHeaderContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(postElementsClickListener!=null){
+                    if (postElementsClickListener != null) {
                         postElementsClickListener.onUserInfoTapped(postResponse.getUser().getId());
                     }
                 }
             });
 
+            starBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ratingView.addRating();
+                }
+            });
+
         }
+
     }
 
     public interface OnPostElementsClickListener {
         void onReadMoreTapped(PostResponse postResponse);
+
         void onUserInfoTapped(int userId);
     }
 

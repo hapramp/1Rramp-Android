@@ -4,53 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.hapramp.activity.DatabaseTestActivity">
+    tools:context="com.hapramp.activity.TestActivity">
+
+    <com.hapramp.views.RatingView
+        android:id="@+id/ratingBar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"/>
 
     <Button
-        android:id="@+id/add_message"
+        android:id="@+id/ratingBtn"
+        android:layout_margin="8dp"
+        android:layout_below="@id/ratingBar"
+        android:text="Rate"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:text="Add Message" />
+        android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/read_chat_rooms"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/add_message"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="31dp"
-        android:text="Read ChatRooms" />
 
-    <Button
-        android:id="@+id/delete_chat_rooms"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/read_chat_rooms"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="27dp"
-        android:text="Delete ChatRoom" />
-
-    <EditText
-        android:id="@+id/chatRoomId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:ems="10"
-        android:hint="chatRoomId"
-        android:inputType="textPersonName" />
-
-    <EditText
-        android:id="@+id/message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/chatRoomId"
-        android:layout_below="@+id/chatRoomId"
-        android:layout_marginTop="13dp"
-        android:ems="10"
-        android:hint="message"
-        android:inputType="textPersonName" />
 </RelativeLayout>
