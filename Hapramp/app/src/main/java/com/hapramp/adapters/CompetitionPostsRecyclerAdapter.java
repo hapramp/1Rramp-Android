@@ -10,10 +10,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.hapramp.R;
 import com.hapramp.models.response.CompetitionsPostReponse;
 import com.hapramp.utils.FontManager;
-import com.hapramp.R;
 import com.hapramp.views.ClubTagView;
+import com.hapramp.views.RatingView;
 
 import java.util.List;
 
@@ -94,6 +95,8 @@ public class CompetitionPostsRecyclerAdapter extends RecyclerView.Adapter<Compet
         RelativeLayout postMetaContainer;
         @BindView(R.id.starBtn)
         TextView starBtn;
+        @BindView(R.id.ratingView)
+        RatingView ratingView;
 
         public CompetitionPostViewHolder(View itemView) {
             super(itemView);
@@ -116,7 +119,22 @@ public class CompetitionPostsRecyclerAdapter extends RecyclerView.Adapter<Compet
             likeCount.setText(String.valueOf(post.vote_count));
             commentCount.setText(String.valueOf(post.comment_count));
             hapcoinsCount.setText("H");
+            ratingView.setIntials(String.valueOf(post.id),post.is_voted,post.current_vote);
             clubsContainer.setCompetitionSkills(post.skills);
+
+            starBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ratingView.addRating();
+                }
+            });
+
+            featuredImagePost.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ratingView.addRating();
+                }
+            });
 
         }
 

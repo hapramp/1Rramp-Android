@@ -115,14 +115,14 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
 
         public void bind(final PostResponse postResponse, final OnPostElementsClickListener postElementsClickListener) {
             final boolean isLiked = false;
-            feedOwnerPic.setImageURI(postResponse.getUser().getImage_uri());
-            feedOwnerTitle.setText(postResponse.getUser().getFull_name());
-            feedOwnerSubtitle.setText(postResponse.getUser().getUsername());
-            featuredImagePost.setImageURI(postResponse.getMedia_uri());
+            feedOwnerPic.setImageURI(postResponse.user.image_uri);
+            feedOwnerTitle.setText(postResponse.user.full_name);
+            feedOwnerSubtitle.setText(postResponse.user.username);
+            featuredImagePost.setImageURI(postResponse.media_uri);
             postTitle.setText("Missing Title");
-            postSnippet.setText(postResponse.getContent());
-            ratingView.setPostId(String.valueOf(postResponse.getId()));
-            clubTagView.setPostSkills(postResponse.getSkills());
+            postSnippet.setText(postResponse.content);
+            ratingView.setIntials(String.valueOf(postResponse.id),postResponse.is_voted,postResponse.current_vote);
+            clubTagView.setPostSkills(postResponse.skills);
 
             readMoreBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -136,12 +136,19 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
                 @Override
                 public void onClick(View v) {
                     if (postElementsClickListener != null) {
-                        postElementsClickListener.onUserInfoTapped(postResponse.getUser().getId());
+                        postElementsClickListener.onUserInfoTapped(postResponse.user.id);
                     }
                 }
             });
 
             starBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ratingView.addRating();
+                }
+            });
+
+            featuredImagePost.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     ratingView.addRating();

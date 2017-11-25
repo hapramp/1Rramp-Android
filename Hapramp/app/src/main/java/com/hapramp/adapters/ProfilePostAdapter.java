@@ -13,6 +13,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.hapramp.R;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.utils.FontManager;
+import com.hapramp.views.RatingView;
 
 import java.util.List;
 
@@ -55,6 +56,8 @@ public class ProfilePostAdapter extends RecyclerView.Adapter<ProfilePostAdapter.
 
         class PostViewHolder extends RecyclerView.ViewHolder {
 
+            @BindView(R.id.ratingView)
+            RatingView ratingView;
             @BindView(R.id.feed_owner_pic)
             SimpleDraweeView feedOwnerPic;
             @BindView(R.id.feed_owner_title)
@@ -100,13 +103,28 @@ public class ProfilePostAdapter extends RecyclerView.Adapter<ProfilePostAdapter.
                 commentBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
             }
 
-            public void bind(PostResponse postResponse) {
+            public void bind(final PostResponse postResponse) {
                 feedOwnerPic.setImageURI(postResponse.getUser().getImage_uri());
                 feedOwnerTitle.setText(postResponse.getUser().getFull_name());
                 feedOwnerSubtitle.setText(postResponse.getUser().getUsername());
                 featuredImagePost.setImageURI(postResponse.getMedia_uri());
                 postTitle.setText("Missing Title");
+                ratingView.setIntials(String.valueOf(postResponse.id),postResponse.is_voted,postResponse.current_vote);
                 postSnippet.setText(postResponse.getContent());
+
+                starBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ratingView.addRating();
+                    }
+                });
+
+                featuredImagePost.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ratingView.addRating();
+                    }
+                });
 
             }
         }

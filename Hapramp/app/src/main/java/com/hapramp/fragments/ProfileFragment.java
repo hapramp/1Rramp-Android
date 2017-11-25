@@ -272,7 +272,6 @@ public class ProfileFragment extends Fragment implements FullUserDetailsCallback
 
     }
 
-
     private void bindPosts(List<PostResponse> posts) {
 
         hideContentLoadingProgress();

@@ -2,6 +2,7 @@ package com.hapramp.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.hapramp.main.HapRampMain;
@@ -38,6 +39,7 @@ public class HaprampPreferenceManager {
     public void clearPreferences(){
         editor.clear();
         editor.apply();
+        Log.d("Pref","Cleared Prefs.");
     }
 
     public void setLoggedIn(boolean loggedIn){
@@ -106,6 +108,7 @@ public class HaprampPreferenceManager {
     }
 
     public void setUserId(String id){
+        Log.d("Pref","setting user Id " +id);
         editor.putString("userId",id);
         editor.apply();
     }

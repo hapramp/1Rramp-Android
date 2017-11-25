@@ -346,13 +346,21 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     @Override
     public void onUserFetched(FetchUserResponse userResponse) {
+
         L.D.m(TAG,"User fetched : "+userResponse.toString());
         UserAccountModel accountModel = new UserAccountModel(userResponse.id,userResponse.username,userResponse.full_name,userResponse.karma);
         HaprampPreferenceManager.getInstance().setUser(new Gson().toJson(accountModel));
         HaprampPreferenceManager.getInstance().setLoggedIn(true);
         HaprampPreferenceManager.getInstance().setUserId(String.valueOf(accountModel.getId()));
         HaprampPreferenceManager.getInstance().setUserEmail(userResponse.email);
-        redirectToHome();
+
+        if(userResponse.organization==null){
+            redirectToOrgsPage();
+        }else{
+            redirectToHome();
+        }
+
+
     }
 
     @Override
@@ -375,13 +383,16 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     @Override
     public void onUserCreated(CreateUserReponse body) {
+
         L.D.m(TAG,"User Created! :)");
+
         UserAccountModel accountModel = new UserAccountModel(body.id,body.username,body.full_name,body.karma);
         HaprampPreferenceManager.getInstance().setUser(new Gson().toJson(accountModel));
         HaprampPreferenceManager.getInstance().setLoggedIn(true);
         HaprampPreferenceManager.getInstance().setUserEmail(body.email);
-        redirectToHome();
+        redirectToOrgsPage();
         hideProgress();
+
     }
 
     @Override
@@ -389,4 +400,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         L.D.m(TAG,"Failed To Create User :(");
         hideProgress();
     }
+
+    private void redirectToOrgsPage(){
+        Intent intent = new Intent(this,OrganisationActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
 }

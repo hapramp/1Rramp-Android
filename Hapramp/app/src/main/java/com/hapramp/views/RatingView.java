@@ -115,33 +115,44 @@ public class RatingView extends FrameLayout implements VotePostCallback {
 
     }
 
-    public void setPostId(String postId){
+
+    public void setIntials(String postId, boolean isVoted , int vote){
         this.mPostId = postId;
+        this.isVoted = isVoted;
+        this.mRate = vote;
     }
 
-    /**
-     *
-     * @param rate is to be set
-     *
-     */
-    private void setRate(int rate) {
+    private void setRate() {
 
         showRatingBar();
-        this.mRate = rate;
-        pushRateStar(rate);
+        pushRateStar(mRate);
 
     }
 
-    public void addRating(){
-        setRate(++mRate);
+    public void addRating() {
+
+        if (isVoted) {
+
+            showRatingBar();
+
+            for (int i = 1; i <= mRate; i++) {
+                pushRateStar(i);
+            }
+
+            Toast.makeText(mContext, "You have Already Voted " + mRate, Toast.LENGTH_SHORT).show();
+
+        } else {
+            incrementVote();
+            setRate();
+        }
+
+    }
+
+    private void incrementVote() {
+        mRate += (mRate<5)?1:0;
     }
 
     private void showRatingBar() {
-
-        if(isVoted){
-            Toast.makeText(mContext,"You have Already Voted "+mRate,Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         ratingView.setVisibility(VISIBLE);
         // move empty view out of screen
@@ -162,7 +173,7 @@ public class RatingView extends FrameLayout implements VotePostCallback {
         set.start();
 
         mHandler.removeCallbacks(hideRunnable);
-        mHandler.postDelayed(hideRunnable,HIDE_RATING_BAR_DELAY);
+        mHandler.postDelayed(hideRunnable, HIDE_RATING_BAR_DELAY);
 
     }
 
@@ -190,26 +201,26 @@ public class RatingView extends FrameLayout implements VotePostCallback {
     }
 
     private void animateFiveStar() {
-        animateView(fiveStar,fiveStarFilled);
+        animateView(fiveStar, fiveStarFilled);
     }
 
     private void animateFourStar() {
-        animateView(fourStar,fourStarFilled);
+        animateView(fourStar, fourStarFilled);
     }
 
     private void animateThreeStar() {
-        animateView(threeStar,threeStarFilled);
+        animateView(threeStar, threeStarFilled);
     }
 
     private void animateTwoStar() {
-        animateView(twoStar,twoStarFilled);
+        animateView(twoStar, twoStarFilled);
     }
 
     private void animateOneStar() {
-        animateView(oneStar,oneStarFilled);
+        animateView(oneStar, oneStarFilled);
     }
 
-    private void animateView(View outView , View inView){
+    private void animateView(View outView, View inView) {
 
         // move empty view out of screen
         ObjectAnimator toOut = ObjectAnimator.ofFloat(outView, "translationY", -40f);
@@ -261,19 +272,22 @@ public class RatingView extends FrameLayout implements VotePostCallback {
         return (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 
-    private void updateAppServer(){
-        DataServer.votePost(mPostId,new VoteRequestBody(mRate),this);
+    private void updateAppServer() {
+
+        if (!isVoted)
+            DataServer.votePost(mPostId, new VoteRequestBody(mRate), this);
+
     }
 
     @Override
     public void onPostVoted() {
-        Toast.makeText(mContext,"You Voted : "+mRate,Toast.LENGTH_LONG).show();
+        Toast.makeText(mContext, "You Voted : " + mRate, Toast.LENGTH_LONG).show();
         isVoted = true;
     }
 
     @Override
     public void onPostVoteError() {
         mRate = 0;
-        Toast.makeText(mContext,"Cannot Vote!",Toast.LENGTH_LONG).show();
+        Toast.makeText(mContext, "Cannot Vote!", Toast.LENGTH_LONG).show();
     }
 }

@@ -77,13 +77,18 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        fetchCategories();
+        fetchPosts(0);
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
         super.onViewCreated(view, savedInstanceState);
         homeRv.setLayoutManager(new LinearLayoutManager(mContext));
         homeRv.setAdapter(recyclerAdapter);
-        fetchCategories();
-        fetchPosts(0);
     }
 
     private void initCategoryView() {

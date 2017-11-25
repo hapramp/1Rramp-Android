@@ -5,6 +5,11 @@ import android.util.Log;
 
 import org.junit.Test;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Scanner;
+
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.*;
 
@@ -16,21 +21,17 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
-        String S = "aaaaa";
-        int len  = S.length() - 1;
-        int max = 0;
-        String first = S.substring(0,len);
-        String sec = S.substring(1);
+        URL url = new URL("http://api.themoviedb.org/3/movie/popular?api_key=98ff9a55378b9f07827a7dc0925d7d77");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-        for(int i = len;i>=1;i--){
-            int li = len - i;
-            if(first.substring(0,i).equals(sec.substring(li))){
-                max = i;
-                break;
-            }
+        InputStream inputStream = connection.getInputStream();
+        Scanner scanner = new Scanner(inputStream);
+        //scanner.useDelimiter("\\A");
+        if(scanner.hasNext()){
+            p(scanner.next());
+        }else{
+            p("Nothing");
         }
-
-        p(String.valueOf(max));
 
     }
 

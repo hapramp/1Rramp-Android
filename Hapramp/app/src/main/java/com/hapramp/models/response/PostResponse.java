@@ -10,6 +10,7 @@ import java.util.List;
 
 public class PostResponse {
 
+
     @SerializedName("id")
     public int id;
     @SerializedName("created_at")
@@ -28,10 +29,118 @@ public class PostResponse {
     public int vote_count;
     @SerializedName("vote_sum")
     public int vote_sum;
+    @SerializedName("is_voted")
+    public boolean is_voted;
+    @SerializedName("current_vote")
+    public int current_vote;
     @SerializedName("comment_count")
     public int comment_count;
     @SerializedName("contest_post")
     public Contest_post contest_post;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getMedia_uri() {
+        return media_uri;
+    }
+
+    public void setMedia_uri(String media_uri) {
+        this.media_uri = media_uri;
+    }
+
+    public int getPost_type() {
+        return post_type;
+    }
+
+    public void setPost_type(int post_type) {
+        this.post_type = post_type;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public List<Skills> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(List<Skills> skills) {
+        this.skills = skills;
+    }
+
+    public int getVote_count() {
+        return vote_count;
+    }
+
+    public void setVote_count(int vote_count) {
+        this.vote_count = vote_count;
+    }
+
+    public int getVote_sum() {
+        return vote_sum;
+    }
+
+    public void setVote_sum(int vote_sum) {
+        this.vote_sum = vote_sum;
+    }
+
+    public boolean isIs_voted() {
+        return is_voted;
+    }
+
+    public void setIs_voted(boolean is_voted) {
+        this.is_voted = is_voted;
+    }
+
+    public int getCurrent_vote() {
+        return current_vote;
+    }
+
+    public void setCurrent_vote(int current_vote) {
+        this.current_vote = current_vote;
+    }
+
+    public int getComment_count() {
+        return comment_count;
+    }
+
+    public void setComment_count(int comment_count) {
+        this.comment_count = comment_count;
+    }
+
+    public Contest_post getContest_post() {
+        return contest_post;
+    }
+
+    public void setContest_post(Contest_post contest_post) {
+        this.contest_post = contest_post;
+    }
 
     public static class User {
         @SerializedName("id")
@@ -84,17 +193,6 @@ public class PostResponse {
         public void setImage_uri(String image_uri) {
             this.image_uri = image_uri;
         }
-
-        @Override
-        public String toString() {
-            return "User{" +
-                    "id=" + id +
-                    ", username='" + username + '\'' +
-                    ", full_name='" + full_name + '\'' +
-                    ", karma=" + karma +
-                    ", image_uri='" + image_uri + '\'' +
-                    '}';
-        }
     }
 
     public static class Skills {
@@ -138,16 +236,6 @@ public class PostResponse {
         public void setDescription(String description) {
             this.description = description;
         }
-
-        @Override
-        public String toString() {
-            return "Skills{" +
-                    "id=" + id +
-                    ", name='" + name + '\'' +
-                    ", image_uri='" + image_uri + '\'' +
-                    ", description='" + description + '\'' +
-                    '}';
-        }
     }
 
     public static class Skill {
@@ -190,16 +278,6 @@ public class PostResponse {
 
         public void setDescription(String description) {
             this.description = description;
-        }
-
-        @Override
-        public String toString() {
-            return "Skill{" +
-                    "id=" + id +
-                    ", name='" + name + '\'' +
-                    ", image_uri='" + image_uri + '\'' +
-                    ", description='" + description + '\'' +
-                    '}';
         }
     }
 
@@ -253,17 +331,6 @@ public class PostResponse {
 
         public void setDescription(String description) {
             this.description = description;
-        }
-
-        @Override
-        public String toString() {
-            return "Organization{" +
-                    "id=" + id +
-                    ", name='" + name + '\'' +
-                    ", username='" + username + '\'' +
-                    ", image_uri='" + image_uri + '\'' +
-                    ", description='" + description + '\'' +
-                    '}';
         }
     }
 
@@ -348,20 +415,6 @@ public class PostResponse {
         public void setOrganization(Organization organization) {
             this.organization = organization;
         }
-
-        @Override
-        public String toString() {
-            return "Club{" +
-                    "id=" + id +
-                    ", name='" + name + '\'' +
-                    ", handle='" + handle + '\'' +
-                    ", description='" + description + '\'' +
-                    ", created_at='" + created_at + '\'' +
-                    ", logo_uri='" + logo_uri + '\'' +
-                    ", skill=" + skill +
-                    ", organization=" + organization +
-                    '}';
-        }
     }
 
     public static class Contest_post {
@@ -387,6 +440,8 @@ public class PostResponse {
         public int give_out_ratio;
         @SerializedName("club")
         public Club club;
+        @SerializedName("participant_count")
+        public int participant_count;
 
         public int getId() {
             return id;
@@ -476,140 +531,12 @@ public class PostResponse {
             this.club = club;
         }
 
-        @Override
-        public String toString() {
-            return "Contest_post{" +
-                    "id=" + id +
-                    ", name='" + name + '\'' +
-                    ", handle='" + handle + '\'' +
-                    ", description='" + description + '\'' +
-                    ", logo_uri='" + logo_uri + '\'' +
-                    ", created_at='" + created_at + '\'' +
-                    ", start_time='" + start_time + '\'' +
-                    ", end_time='" + end_time + '\'' +
-                    ", entry_fee=" + entry_fee +
-                    ", give_out_ratio=" + give_out_ratio +
-                    ", club=" + club +
-                    '}';
+        public int getParticipant_count() {
+            return participant_count;
         }
-    }
 
-    public PostResponse(int id, String created_at, String content, String media_uri, int post_type, User user, List<Skills> skills, int vote_count, int vote_sum, int comment_count, Contest_post contest_post) {
-        this.id = id;
-        this.created_at = created_at;
-        this.content = content;
-        this.media_uri = media_uri;
-        this.post_type = post_type;
-        this.user = user;
-        this.skills = skills;
-        this.vote_count = vote_count;
-        this.vote_sum = vote_sum;
-        this.comment_count = comment_count;
-        this.contest_post = contest_post;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(String created_at) {
-        this.created_at = created_at;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getMedia_uri() {
-        return media_uri;
-    }
-
-    public void setMedia_uri(String media_uri) {
-        this.media_uri = media_uri;
-    }
-
-    public int getPost_type() {
-        return post_type;
-    }
-
-    public void setPost_type(int post_type) {
-        this.post_type = post_type;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public List<Skills> getSkills() {
-        return skills;
-    }
-
-    public void setSkills(List<Skills> skills) {
-        this.skills = skills;
-    }
-
-    public int getVote_count() {
-        return vote_count;
-    }
-
-    public void setVote_count(int vote_count) {
-        this.vote_count = vote_count;
-    }
-
-    public int getVote_sum() {
-        return vote_sum;
-    }
-
-    public void setVote_sum(int vote_sum) {
-        this.vote_sum = vote_sum;
-    }
-
-    public int getComment_count() {
-        return comment_count;
-    }
-
-    public void setComment_count(int comment_count) {
-        this.comment_count = comment_count;
-    }
-
-    public Contest_post getContest_post() {
-        return contest_post;
-    }
-
-    public void setContest_post(Contest_post contest_post) {
-        this.contest_post = contest_post;
-    }
-
-    @Override
-    public String toString() {
-        return "PostResponse{" +
-                "id=" + id +
-                ", created_at='" + created_at + '\'' +
-                ", content='" + content + '\'' +
-                ", media_uri='" + media_uri + '\'' +
-                ", post_type=" + post_type +
-                ", user=" + user +
-                ", skills=" + skills +
-                ", vote_count=" + vote_count +
-                ", vote_sum=" + vote_sum +
-                ", comment_count=" + comment_count +
-                ", contest_post=" + contest_post +
-                '}';
+        public void setParticipant_count(int participant_count) {
+            this.participant_count = participant_count;
+        }
     }
 }

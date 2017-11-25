@@ -257,6 +257,7 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
     public void onPostCreated() {
         showProgressDialog(false);
         L.D.m("PostCreate", "Post Created!");
+        finish();
     }
 
     @Override
