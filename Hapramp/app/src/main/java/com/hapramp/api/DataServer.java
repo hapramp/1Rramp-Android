@@ -66,11 +66,17 @@ public class DataServer {
     private static HaprampAPI haprampAPI = null;
 
     public static HaprampAPI getService() {
+
         if (haprampAPI == null) {
             haprampAPI = HaprampApiClient.getClient()
                     .create(HaprampAPI.class);
         }
         return haprampAPI;
+
+    }
+
+    public static void resetAPI(){
+        haprampAPI = null;
     }
 
     public static void fetchUser(final FetchUserCallback callback) {

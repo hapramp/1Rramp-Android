@@ -4,10 +4,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
+import com.hapramp.api.DataServer;
 import com.hapramp.main.HapRampMain;
 import com.hapramp.logger.L;
 import com.hapramp.models.UserAccountModel;
+import com.hapramp.models.UserResponse;
 
 /**
  * Created by Ankit on 5/15/2017.
@@ -37,6 +41,8 @@ public class HaprampPreferenceManager {
     }
 
     public void clearPreferences(){
+        FirebaseAuth.getInstance().signOut();
+        DataServer.resetAPI();
         editor.clear();
         editor.apply();
         Log.d("Pref","Cleared Prefs.");
@@ -165,8 +171,8 @@ public class HaprampPreferenceManager {
         editor.apply();
     }
 
-    public UserAccountModel getUser(){
-        return new Gson().fromJson(preferences.getString("userJson",""),UserAccountModel.class);
+    public UserResponse getUser(){
+        return new Gson().fromJson(preferences.getString("userJson",""),UserResponse.class);
     }
 
 }

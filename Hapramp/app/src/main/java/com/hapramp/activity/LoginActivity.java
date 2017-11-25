@@ -114,19 +114,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     }
 
-    private void redirectToForgetPassword() {
-        Intent intent = new Intent(this, ForgetPasswordActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    private void navigateToRegisterPage() {
-
-        Intent intent = new Intent(this,RegisterActivity.class);
-        startActivity(intent);
-
-    }
-
     private void authenticateWithEmailPassword() {
         if (validFields()) {
             signInWithFirebase(email.getText().toString(), password.getText().toString());
@@ -138,14 +125,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         String _e = email.getText().toString().trim();
         String _p = password.getText().toString().trim();
         //check email
-        if(Validator.validateEmail(_e)){
+        if (Validator.validateEmail(_e)) {
             // check password
-            if(_p.length()>6){
+            if (_p.length() > 6) {
                 return true;
-            }else {
+            } else {
                 Toast.makeText(this, "Short Password", Toast.LENGTH_SHORT).show();
             }
-        }else {
+        } else {
             Toast.makeText(this, "Invalid Email!", Toast.LENGTH_SHORT).show();
         }
         return false;
@@ -159,8 +146,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         Toast.makeText(this, "We have sent you a Confirmation Link to Your Email!", Toast.LENGTH_LONG).show();
     }
 
-    private void checkLastStatus(){
-        if(HaprampPreferenceManager.getInstance().isLoggedIn()){
+    private void checkLastStatus() {
+        if (HaprampPreferenceManager.getInstance().isLoggedIn()) {
             redirectToHome();
         }
     }
@@ -223,7 +210,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
             GoogleSignInAccount account = result.getSignInAccount();
             L.D.m(TAG, "account received :" + account.getEmail());
-            showProgress("Logging In as : "+account.getEmail());
+            showProgress("Logging In as : " + account.getEmail());
             signInWithFirebase(account);
 
         } else {
@@ -278,7 +265,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                         if (task.isSuccessful()) {
                             L.D.m(TAG, "signed in with firebase");
-                             user = task.getResult().getUser();
+                            user = task.getResult().getUser();
                             fetchUserFromAppServer(user);
                         } else {
                             L.D.m(TAG, "Error:" + task.getException());
@@ -317,13 +304,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 
-    private void redirectToHome() {
-        Intent intent = new Intent(this, HomeActivity.class);
-        startActivity(intent);
-        hideProgress();
-        finish();
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -347,17 +327,20 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     public void onUserFetched(FetchUserResponse userResponse) {
 
-        L.D.m(TAG,"User fetched : "+userResponse.toString());
-        UserAccountModel accountModel = new UserAccountModel(userResponse.id,userResponse.username,userResponse.full_name,userResponse.karma);
-        HaprampPreferenceManager.getInstance().setUser(new Gson().toJson(accountModel));
+        L.D.m(TAG, "User fetched : " + userResponse.toString());
+        HaprampPreferenceManager.getInstance().setUser(new Gson().toJson(userResponse));
         HaprampPreferenceManager.getInstance().setLoggedIn(true);
-        HaprampPreferenceManager.getInstance().setUserId(String.valueOf(accountModel.getId()));
+        HaprampPreferenceManager.getInstance().setUserId(String.valueOf(userResponse.id));
         HaprampPreferenceManager.getInstance().setUserEmail(userResponse.email);
 
-        if(userResponse.organization==null){
+        if (userResponse.organization == null) {
             redirectToOrgsPage();
-        }else{
-            redirectToHome();
+        } else {
+            if (userResponse.skills.size() == 0) {
+                redirectToSkillsPage();
+            } else {
+                redirectToHome();
+            }
         }
 
 
@@ -371,22 +354,22 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     @Override
     public void onUserNotExists() {
-        L.D.m(TAG,"User doesn`t exists, Creating new :)");
+        L.D.m(TAG, "User doesn`t exists, Creating new :)");
         hideProgress();
         createUser();
     }
 
     private void createUser() {
         showProgress("Creating User New...");
-        DataServer.createUser(new CreateUserRequest(user.getEmail(),user.getDisplayName(),user.getDisplayName(),token,1),this);
+        DataServer.createUser(new CreateUserRequest(user.getEmail(), user.getDisplayName(), user.getDisplayName(), token, 1), this);
     }
 
     @Override
     public void onUserCreated(CreateUserReponse body) {
 
-        L.D.m(TAG,"User Created! :)");
+        L.D.m(TAG, "User Created! :)");
 
-        UserAccountModel accountModel = new UserAccountModel(body.id,body.username,body.full_name,body.karma);
+        UserAccountModel accountModel = new UserAccountModel(body.id, body.username, body.full_name, body.karma);
         HaprampPreferenceManager.getInstance().setUser(new Gson().toJson(accountModel));
         HaprampPreferenceManager.getInstance().setLoggedIn(true);
         HaprampPreferenceManager.getInstance().setUserEmail(body.email);
@@ -397,13 +380,39 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     @Override
     public void onFailedToCreateUser() {
-        L.D.m(TAG,"Failed To Create User :(");
+        L.D.m(TAG, "Failed To Create User :(");
         hideProgress();
     }
 
-    private void redirectToOrgsPage(){
-        Intent intent = new Intent(this,OrganisationActivity.class);
+    private void redirectToOrgsPage() {
+        Intent intent = new Intent(this, OrganisationActivity.class);
         startActivity(intent);
+        finish();
+    }
+
+    private void redirectToSkillsPage() {
+        Intent intent = new Intent(this, SkillRegistrationActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void redirectToForgetPassword() {
+        Intent intent = new Intent(this, ForgetPasswordActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void navigateToRegisterPage() {
+
+        Intent intent = new Intent(this, RegisterActivity.class);
+        startActivity(intent);
+
+    }
+
+    private void redirectToHome() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        startActivity(intent);
+        hideProgress();
         finish();
     }
 

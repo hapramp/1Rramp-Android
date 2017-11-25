@@ -15,7 +15,7 @@
         android:visibility="gone"
         android:layout_centerHorizontal="true"
         android:background="@drawable/skill_selection_overlat"
-        android:text=""
+        android:text=""
         android:gravity="center"
         android:textSize="36sp"
         android:textColor="#ffffff"

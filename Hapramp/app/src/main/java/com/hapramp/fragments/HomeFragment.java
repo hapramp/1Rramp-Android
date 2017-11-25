@@ -27,6 +27,7 @@ import com.hapramp.interfaces.PostFetchCallback;
 import com.hapramp.logger.L;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.models.response.SkillsModel;
+import com.hapramp.preferences.HaprampPreferenceManager;
 
 import java.util.List;
 
@@ -79,7 +80,7 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     @Override
     public void onResume() {
         super.onResume();
-        fetchCategories();
+       // fetchCategories();
         fetchPosts(0);
     }
 
@@ -96,6 +97,11 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
         categoryRecyclerAdapter = new CategoryRecyclerAdapter(mContext, this);
         sectionsRv.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         sectionsRv.setAdapter(categoryRecyclerAdapter);
+
+        List<SkillsModel> skillsModels = SkillsModel.marshelSkills(HaprampPreferenceManager.getInstance().getUser().skills);
+        skillsModels.add(0,new SkillsModel(0,"All","",""));
+        categoryRecyclerAdapter.setCategories(skillsModels);
+        hideCategoryLoadingProgress();
 
     }
 
@@ -218,6 +224,8 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     @Override
     public void onReadMoreTapped(PostResponse postResponse) {
         Intent intent = new Intent(mContext, DetailedPostActivity.class);
+        intent.putExtra("isVoted",postResponse.is_voted);
+        intent.putExtra("vote",postResponse.current_vote);
         intent.putExtra("username",postResponse.getUser().getFull_name());
         intent.putExtra("mediaUri",postResponse.getMedia_uri());
         intent.putExtra("content",postResponse.getContent());

@@ -1,6 +1,10 @@
 package com.hapramp.models.response;
 
 import com.google.gson.annotations.SerializedName;
+import com.hapramp.models.UserResponse;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Ankit on 10/22/2017.
@@ -64,5 +68,13 @@ public class SkillsModel {
                 ", image_uri='" + image_uri + '\'' +
                 ", description='" + description + '\'' +
                 '}';
+    }
+
+    public static List<SkillsModel> marshelSkills(List<UserResponse.Skills> skills) {
+        List<SkillsModel> skillsModels = new ArrayList<>();
+        for (UserResponse.Skills s:skills) {
+            skillsModels.add(new SkillsModel(s.id,s.name,s.image_uri,s.description));
+        }
+        return skillsModels;
     }
 }

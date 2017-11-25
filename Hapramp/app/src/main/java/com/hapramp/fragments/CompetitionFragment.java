@@ -25,6 +25,7 @@ import com.hapramp.interfaces.FetchSkillsResponse;
 import com.hapramp.logger.L;
 import com.hapramp.models.response.CompetitionResponse;
 import com.hapramp.models.response.SkillsModel;
+import com.hapramp.preferences.HaprampPreferenceManager;
 
 import java.util.List;
 
@@ -80,7 +81,6 @@ public class CompetitionFragment extends Fragment implements CompetitionFetchCal
         super.onViewCreated(view, savedInstanceState);
         comptetionRv.setLayoutManager(new LinearLayoutManager(mContext));
         comptetionRv.setAdapter(recyclerAdapter);
-        fetchCategories();
         fetchCompetitions(0);
 
     }
@@ -90,6 +90,10 @@ public class CompetitionFragment extends Fragment implements CompetitionFetchCal
         categoryRecyclerAdapter = new CategoryRecyclerAdapter(mContext, this);
         sectionsRv.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         sectionsRv.setAdapter(categoryRecyclerAdapter);
+        List<SkillsModel> skillsModels = SkillsModel.marshelSkills(HaprampPreferenceManager.getInstance().getUser().skills);
+        skillsModels.add(0,new SkillsModel(0,"All","",""));
+        categoryRecyclerAdapter.setCategories(skillsModels);
+        hideCategoryLoadingProgress();
 
     }
 

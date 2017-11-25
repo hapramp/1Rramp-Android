@@ -1,6 +1,8 @@
 package com.hapramp.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -42,6 +44,7 @@ public class SkillRegistrationActivity extends AppCompatActivity implements Fetc
     SkillsGridAdapter skillsGridAdapter;
     private List<SkillsModel> skills;
     private HashMap<String, Integer> selectionMap;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,15 +73,19 @@ public class SkillRegistrationActivity extends AppCompatActivity implements Fetc
     }
 
     private void fetchSkills() {
+        showProgress("Fetching Skills");
         DataServer.fetchSkills(this);
     }
 
     private void requestSkillsUpdate(){
+        showProgress("Setting Your Skills...");
         SkillsUpdateBody body = new SkillsUpdateBody(getSelectionIds());
         DataServer.setSkills(body,this);
     }
 
     private void init() {
+
+        progressDialog = new ProgressDialog(this);
         backBtn.setTypeface(new FontManager().getTypeFace(FontManager.FONT_MATERIAL));
         // set Adapter
         skillsGridAdapter = new SkillsGridAdapter(this);
@@ -86,23 +93,40 @@ public class SkillRegistrationActivity extends AppCompatActivity implements Fetc
         selectionMap = new HashMap<>();
     }
 
+    private void showProgress(String msg) {
+        progressDialog.setMessage(msg);
+        progressDialog.show();
+    }
+
+    private void hideProgress() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
+
+
     @Override
     public void onSkillsFetched(List<SkillsModel> skillsModels) {
+        hideProgress();
         skillsGridAdapter.onDataLoaded(skillsModels);
     }
 
     @Override
     public void onSkillFetchError() {
+        hideProgress();
         L.D.m("SkillsActivity", "Error While Fetching..");
     }
 
     @Override
     public void onSkillsUpdated() {
+        hideProgress();
         L.D.m("SkillsActivity", "Updated Skills");
+       redirectToHome();
     }
 
     @Override
     public void onSkillsUpdateFailed() {
+        hideProgress();
         L.D.m("SkillsActivity", "Error While Updating Skills..");
     }
 
@@ -153,7 +177,6 @@ public class SkillRegistrationActivity extends AppCompatActivity implements Fetc
         public int getCount() {
             return skills == null ? 0 : skills.size();
         }
-
         @Override
         public Object getItem(int position) {
             return null;
@@ -176,6 +199,13 @@ public class SkillRegistrationActivity extends AppCompatActivity implements Fetc
             ids[i++] = (Integer) pair.getValue();
         }
         return ids;
+    }
+
+    private void redirectToHome() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        startActivity(intent);
+        hideProgress();
+        finish();
     }
 
 }

@@ -5,7 +5,7 @@
 
     <TextView
         android:id="@+id/backBtn"
-        android:text=""
+        android:text=""
         android:gravity="center"
         android:textSize="24sp"
         android:layout_width="48dp"

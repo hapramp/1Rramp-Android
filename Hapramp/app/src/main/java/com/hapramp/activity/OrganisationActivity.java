@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.hapramp.models.UserResponse;
 import com.hapramp.utils.FontManager;
 import com.hapramp.R;
 import com.hapramp.api.DataServer;
@@ -83,16 +84,16 @@ public class OrganisationActivity extends AppCompatActivity implements OrgsFetch
 
     private void requestSetOrg(int position) {
 
-        UserAccountModel userAccountModel = HaprampPreferenceManager.getInstance().getUser();
+        UserResponse userAccountModel = HaprampPreferenceManager.getInstance().getUser();
         UserUpdateModel userUpdateModel = new UserUpdateModel(
                 HaprampPreferenceManager.getInstance().getUserEmail(),
-                userAccountModel.getUsername(),
+                userAccountModel.username,
                 HaprampPreferenceManager.getInstance().getFirstName()+" "+HaprampPreferenceManager.getInstance().getLastName(),
                 mOrgs.get(position).id);
 
         L.D.m("Org","UserUpdateModel "+userAccountModel.toString());
         showProgress("Setting Your Organisation...");
-        DataServer.updateOrg(String.valueOf(userAccountModel.getId()),userUpdateModel,this);
+        DataServer.updateOrg(String.valueOf(userAccountModel.id),userUpdateModel,this);
 
     }
 

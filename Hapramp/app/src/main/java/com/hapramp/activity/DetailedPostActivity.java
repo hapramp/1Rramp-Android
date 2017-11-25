@@ -13,12 +13,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.hapramp.adapters.CommentsAdapter;
-import com.hapramp.utils.FontManager;
 import com.hapramp.R;
+import com.hapramp.adapters.CommentsAdapter;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.CommentFetchCallback;
 import com.hapramp.models.response.CommentsResponse;
+import com.hapramp.utils.FontManager;
+import com.hapramp.views.RatingView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -69,19 +70,23 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
     ListView commentsListView;
     @BindView(R.id.starBtn)
     TextView starBtn;
+    @BindView(R.id.ratingView)
+    RatingView ratingView;
     private String mContent;
     private String mMediaUri;
     private String mUserName;
     private String postId;
     private CommentsAdapter commentsAdapter;
+    private boolean isVoted;
+    private int mVote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details_post);
         ButterKnife.bind(this);
-        init();
         collectExtras();
+        init();
         setTypefaces();
         bindValues();
         attachListener();
@@ -90,7 +95,7 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Log.d("TAG","onNew Intent...");
+        Log.d("TAG", "onNew Intent...");
     }
 
     @Override
@@ -102,9 +107,12 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
     private void init() {
         commentsAdapter = new CommentsAdapter(this);
         commentsListView.setAdapter(commentsAdapter);
+        ratingView.setIntials(postId,isVoted,mVote);
     }
 
     private void collectExtras() {
+        isVoted = getIntent().getExtras().getBoolean("isVoted");
+        mVote = getIntent().getExtras().getInt("vote");
         mContent = getIntent().getExtras().getString("content");
         mMediaUri = getIntent().getExtras().getString("mediaUri");
         mUserName = getIntent().getExtras().getString("username");
@@ -127,10 +135,24 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
         commentBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(DetailedPostActivity.this,CommentEditorActivity.class);
-                i.putExtra("context",mContent);
-                i.putExtra("postId",postId);
+                Intent i = new Intent(DetailedPostActivity.this, CommentEditorActivity.class);
+                i.putExtra("context", mContent);
+                i.putExtra("postId", postId);
                 startActivity(i);
+            }
+        });
+
+        featuredImagePost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ratingView.addRating();
+            }
+        });
+
+        starBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ratingView.addRating();
             }
         });
 

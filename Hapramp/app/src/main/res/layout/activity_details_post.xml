@@ -225,7 +225,20 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp" />
 
+
+            <com.hapramp.views.RatingView
+                android:layout_centerHorizontal="true"
+                android:visibility="gone"
+                android:id="@+id/ratingView"
+                android:alpha="0"
+                android:layout_marginTop="-64dp"
+                android:layout_below="@+id/featured_image_post"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"/>
+
             <TextView
+                android:focusable="true"
+                android:clickable="true"
                 android:id="@+id/starBtn"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
