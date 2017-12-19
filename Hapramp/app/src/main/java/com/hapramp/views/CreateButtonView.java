@@ -29,7 +29,7 @@ import butterknife.BindView;
 public class CreateButtonView extends FrameLayout {
 
 
-    private static final long REVEAL_DELAY = 200;
+    private static final long REVEAL_DELAY = 600;
     TextView createArticleBtn;
     TextView createPostBtn;
     TextView plusBtn;
@@ -217,7 +217,7 @@ public class CreateButtonView extends FrameLayout {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             overlay.setVisibility(View.VISIBLE);
             Animator revealAnimator = ViewAnimationUtils.createCircularReveal(overlay, cx, cy, 0, endRadius);
-            revealAnimator.setInterpolator(new DecelerateInterpolator(2f));
+            revealAnimator.setInterpolator(new DecelerateInterpolator(5f));
             revealAnimator.setDuration(REVEAL_DELAY);
             revealAnimator.start();
 
@@ -243,7 +243,7 @@ public class CreateButtonView extends FrameLayout {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             overlay.setVisibility(View.VISIBLE);
             Animator revealAnimator = ViewAnimationUtils.createCircularReveal(overlay, cx, cy,endRadius,0);
-            revealAnimator.setInterpolator(new DecelerateInterpolator(2f));
+            revealAnimator.setInterpolator(new DecelerateInterpolator(5f));
             revealAnimator.setDuration(REVEAL_DELAY);
             revealAnimator.addListener(new Animator.AnimatorListener() {
                 @Override
