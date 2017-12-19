@@ -73,7 +73,7 @@ public class HaprampPreferenceManager {
     }
 
     public String getUserToken(){
-        return preferences.getString("userToken","Token token");
+        return preferences.getString("userToken","--no--token--");
     }
 
     public void saveUserFirstName(String firstname) {
@@ -175,4 +175,30 @@ public class HaprampPreferenceManager {
         return new Gson().fromJson(preferences.getString("userJson",""),UserResponse.class);
     }
 
+    public void savePostDraft(String s) {
+        editor.putString("post_draft",s);
+        editor.apply();
+    }
+
+    public String getPostDraft(){
+        return preferences.getString("post_draft","");
+    }
+
+    public void savePostMediaDraft(String filePath) {
+        editor.putString("pmdraft",filePath);
+        editor.apply();
+    }
+
+    public String getPostMediaDraft(){
+        return preferences.getString("pmdraft","");
+    }
+
+    public void saveArticleDraft(String s){
+        editor.putString("articleDraft",s);;
+        editor.apply();
+    }
+
+    public String getArticleDraft() {
+        return preferences.getString("articleDraft","");
+    }
 }

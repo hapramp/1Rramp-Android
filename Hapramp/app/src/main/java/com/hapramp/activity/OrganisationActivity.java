@@ -86,9 +86,9 @@ public class OrganisationActivity extends AppCompatActivity implements OrgsFetch
 
         UserResponse userAccountModel = HaprampPreferenceManager.getInstance().getUser();
         UserUpdateModel userUpdateModel = new UserUpdateModel(
-                HaprampPreferenceManager.getInstance().getUserEmail(),
+                userAccountModel.email,
                 userAccountModel.username,
-                HaprampPreferenceManager.getInstance().getFirstName()+" "+HaprampPreferenceManager.getInstance().getLastName(),
+                userAccountModel.full_name,
                 mOrgs.get(position).id);
 
         L.D.m("Org","UserUpdateModel "+userAccountModel.toString());

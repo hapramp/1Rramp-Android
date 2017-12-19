@@ -21,6 +21,8 @@
         android:background="#ffffff">
 
         <TextView
+            android:clickable="true"
+            android:focusable="true"
             android:id="@+id/closeBtn"
             android:layout_width="?actionBarSize"
             android:layout_height="?actionBarSize"
@@ -63,16 +65,14 @@
                         android:scaleType="fitXY"
                         android:src="@drawable/profile_wall" />
 
-                    <com.facebook.drawee.view.SimpleDraweeView
+                    <ImageView
                         android:id="@+id/profile_pic"
                         android:layout_width="96dp"
                         android:layout_height="96dp"
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
                         android:layout_marginBottom="10dp"
-                        android:src="@drawable/profile_user_dp_circle"
-                        fresco:actualImageScaleType="focusCrop"
-                        fresco:roundAsCircle="true" />
+                        android:src="@drawable/profile_user_dp_circle" />
 
                 </RelativeLayout>
 
@@ -117,6 +117,7 @@
                     android:paddingRight="16dp"
                     android:paddingTop="4dp"
                     android:text="Follow"
+                    android:textSize="16dp"
                     android:textColor="#ffffff" />
 
                 <TextView
@@ -125,10 +126,10 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/follow_btn"
                     android:layout_margin="8dp"
-                    android:layout_marginTop="4dp"
-                    android:ellipsize="end"
-                    android:lines="4"
-                    android:maxLines="4"
+                    android:textSize="16sp"
+                    android:textColor="@color/Black87"
+                    android:lineSpacingExtra="2dp"
+                    android:hint="Your Bio"
                     android:padding="4dp"/>
 
                 <FrameLayout
@@ -342,11 +343,7 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="24dp"/>
 
-                    <ProgressBar
-                        android:id="@+id/contentLoadingProgress"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true" />
+                    <include android:id="@+id/loadingShimmer" layout="@layout/load_more_progress_view"/>
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/profilePostRv"

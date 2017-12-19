@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingEnd="8dp"
+    android:gravity="center_vertical"
+    android:paddingStart="8dp">
+
+
+    <TextView
+        android:id="@+id/starIndicator"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:text=""
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/starInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/starIndicator"
+        android:gravity="center_vertical"
+        android:text=""
+        android:textColor="@color/Black87" />
+
+    <LinearLayout
+        android:id="@+id/ratingBarContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rating_bar_bg"
+        android:clickable="false"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            style="?android:attr/ratingBarStyleIndicator"
+            android:isIndicator="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:numStars="5"
+            android:rating="0"
+            android:stepSize="1"
+            android:visibility="visible" />
+
+        <TextView
+            android:clickable="true"
+            android:focusable="true"
+            android:id="@+id/cancelBtn"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="8dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:gravity="center"
+            android:text="| "
+            android:textColor="@color/Black38"
+            android:textSize="24sp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</RelativeLayout>

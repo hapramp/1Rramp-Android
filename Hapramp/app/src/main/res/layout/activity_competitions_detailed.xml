@@ -29,13 +29,12 @@
                 android:textSize="24sp" />
 
 
-            <com.facebook.drawee.view.SimpleDraweeView
+            <ImageView
                 android:id="@+id/feed_owner_pic"
                 android:layout_width="?actionBarSize"
                 android:layout_height="match_parent"
                 android:layout_toEndOf="@+id/closeBtn"
-                android:padding="8dp"
-                fresco:roundAsCircle="true" />
+                android:padding="8dp" />
 
             <TextView
                 android:id="@+id/feed_owner_title"
@@ -82,7 +81,6 @@
                 android:id="@+id/tags"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/toolbar_container"
                 android:layout_marginStart="16dp"
                 android:padding="4dp"
                 android:text="#hapramp #dance #colors"
@@ -97,7 +95,6 @@
                 android:layout_marginStart="16dp"
                 android:maxLines="4"
                 android:padding="4dp"
-                android:text="@string/lorem"
                 android:textSize="14sp" />
 
             <LinearLayout

@@ -28,6 +28,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.gson.Gson;
+import com.hapramp.logger.L;
+import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.FontManager;
 import com.hapramp.R;
 import com.hapramp.api.DataServer;
@@ -37,7 +40,6 @@ import com.hapramp.models.response.CreateUserReponse;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import bxute.logger.L;
 
 public class RegisterActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, CreateUserCallback {
 
@@ -116,6 +118,7 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
                 finish();
             }
         });
+
     }
 
     private boolean validEmail() {
@@ -149,9 +152,10 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
+
         if (result.isSuccess()) {
             L.D.m(TAG, "handle signin...");
-            showProgress("Logging In...");
+            showProgress("Registering...");
             GoogleSignInAccount account = result.getSignInAccount();
             L.D.m(TAG, "account received :" + account.getEmail());
             signInWithFirebase(account);
@@ -159,6 +163,7 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
         } else {
             Log.d(TAG, result.getStatus().getStatus() + "");
         }
+
     }
 
     private void signInWithFirebase(final GoogleSignInAccount account) {
@@ -189,14 +194,17 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
         user.getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
             @Override
             public void onComplete(@NonNull Task<GetTokenResult> task) {
+
+                String token = task.getResult().getToken();
+                HaprampPreferenceManager.getInstance().saveToken(token);
+
                 DataServer.createUser(new CreateUserRequest(user.getEmail()
                                 , user.getDisplayName()
                                 , user.getDisplayName()
-                                , task.getResult().getToken(), 1)
+                                , token, 1)
                         , RegisterActivity.this);
             }
         });
-
 
     }
 
@@ -219,20 +227,31 @@ public class RegisterActivity extends AppCompatActivity implements GoogleApiClie
 
     @Override
     public void onUserCreated(CreateUserReponse body) {
-        finish();
+
+        HaprampPreferenceManager.getInstance().setUser(new Gson().toJson(body));
         redirect();
+
     }
 
 
     private void redirect() {
-
+        hideProgress();
         Intent intent = new Intent(this, OrganisationActivity.class);
         startActivity(intent);
+
     }
 
     @Override
-    public void onFailedToCreateUser() {
+    public void onFailedToCreateUser(String message) {
+        hideProgress();
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        navigateToLogin();
+    }
+
+    private void navigateToLogin(){
+        hideProgress();
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
         finish();
-        Toast.makeText(this, "Cannot Create User", Toast.LENGTH_LONG).show();
     }
 }

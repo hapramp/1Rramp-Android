@@ -3,9 +3,11 @@ package com.hapramp.fragments;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -13,31 +15,41 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.hapramp.R;
+import com.hapramp.activity.DetailedPostActivity;
 import com.hapramp.activity.InfoEditingActivity;
-import com.hapramp.adapters.ProfilePostAdapter;
+import com.hapramp.activity.ProfileActivity;
+import com.hapramp.adapters.PostsRecyclerAdapter;
 import com.hapramp.adapters.ProfileSkillsRecyclerAdapter;
 import com.hapramp.api.DataServer;
+import com.hapramp.api.URLS;
 import com.hapramp.interfaces.FullUserDetailsCallback;
+import com.hapramp.interfaces.OnPostDeleteCallback;
 import com.hapramp.interfaces.PostFetchCallback;
 import com.hapramp.interfaces.UserDpUpdateRequestCallback;
 import com.hapramp.logger.L;
@@ -47,6 +59,8 @@ import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
+import com.hapramp.utils.ImageHandler;
+import com.hapramp.utils.ViewItemDecoration;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -58,11 +72,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class ProfileFragment extends Fragment implements FullUserDetailsCallback, ProfileSkillsRecyclerAdapter.OnCategoryItemClickListener, PostFetchCallback, UserDpUpdateRequestCallback {
+public class ProfileFragment extends Fragment implements
+        FullUserDetailsCallback,
+        ProfileSkillsRecyclerAdapter.OnCategoryItemClickListener,
+        PostFetchCallback,
+        UserDpUpdateRequestCallback,
+        OnPostDeleteCallback,
+        PostsRecyclerAdapter.postListener {
 
     private static final int REQUEST_IMAGE_SELECTOR = 101;
     @BindView(R.id.profile_pic)
-    SimpleDraweeView profilePic;
+    ImageView profilePic;
     @BindView(R.id.profile_header_container)
     RelativeLayout profileHeaderContainer;
     @BindView(R.id.username)
@@ -96,8 +116,10 @@ public class ProfileFragment extends Fragment implements FullUserDetailsCallback
     RecyclerView sectionsRv;
     @BindView(R.id.categoryLoadingProgress)
     ProgressBar categoryLoadingProgress;
-    @BindView(R.id.contentLoadingProgress)
-    ProgressBar contentLoadingProgress;
+    @BindView(R.id.shimmer_view_container)
+    ShimmerFrameLayout shimmerFrameLayout;
+    @BindView(R.id.loadingShimmer)
+    View loadingShimmer;
     @BindView(R.id.profilePostRv)
     RecyclerView profilePostRv;
     @BindView(R.id.hapcoins_count)
@@ -120,12 +142,13 @@ public class ProfileFragment extends Fragment implements FullUserDetailsCallback
     ProgressBar contentProgress;
     private Context mContext;
     private ProfileSkillsRecyclerAdapter profileSkillsRecyclerAdapter;
-    private ProfilePostAdapter profilePostAdapter;
+    private PostsRecyclerAdapter profilePostAdapter;
     private FirebaseStorage storage;
     private Uri uploadedMediaUri;
     private boolean isMediaUploaded;
     private String dpUrl;
     private String bio = "";
+    private ViewItemDecoration viewItemDecoration;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -164,8 +187,14 @@ public class ProfileFragment extends Fragment implements FullUserDetailsCallback
     private void init() {
 
         storage = FirebaseStorage.getInstance();
+        profilePostAdapter = new PostsRecyclerAdapter(mContext,profilePostRv);
+        profilePostAdapter.setListener(this);
+        Drawable drawable = ContextCompat.getDrawable(mContext,R.drawable.post_item_divider_view);
+        viewItemDecoration = new ViewItemDecoration(drawable);
 
-        profilePostAdapter = new ProfilePostAdapter(mContext);
+        profilePostRv.addItemDecoration(viewItemDecoration);
+
+        // profilePostAdapter.setPostItemActionListener(this);
         profileSkillsRecyclerAdapter = new ProfileSkillsRecyclerAdapter(mContext, this);
         sectionsRv.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         sectionsRv.setAdapter(profileSkillsRecyclerAdapter);
@@ -173,6 +202,7 @@ public class ProfileFragment extends Fragment implements FullUserDetailsCallback
         profilePostRv.setLayoutManager(new LinearLayoutManager(mContext));
         profilePostRv.setAdapter(profilePostAdapter);
         profilePostRv.setNestedScrollingEnabled(false);
+
         bioEditorBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         dpEditBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
 
@@ -184,6 +214,7 @@ public class ProfileFragment extends Fragment implements FullUserDetailsCallback
                 mContext.startActivity(i);
             }
         });
+
         dpEditBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -204,9 +235,12 @@ public class ProfileFragment extends Fragment implements FullUserDetailsCallback
     private void fetchUserProfilePosts(int skill_id) {
 
         if (skill_id == -1) {
-            DataServer.getPosts(this);
+            // get all post of this user
+            DataServer.getPostsByUserId(URLS.POST_FETCH_START_URL,Integer.valueOf(HaprampPreferenceManager.getInstance().getUserId()), this);
         } else {
-            DataServer.getPosts(skill_id, this);
+            // get post by user and skills
+            DataServer.getPosts(URLS.POST_FETCH_START_URL,skill_id, Integer.valueOf(HaprampPreferenceManager.getInstance().getUserId()), this);
+
         }
 
     }
@@ -233,7 +267,8 @@ public class ProfileFragment extends Fragment implements FullUserDetailsCallback
 
         try {
             dpUrl = userModel.image_uri;
-            profilePic.setImageURI(dpUrl);
+           // profilePic.setImageURI(dpUrl);
+            ImageHandler.loadCircularImage(mContext,profilePic,dpUrl);
             bio = userModel.bio != null ? userModel.bio : "";
             username.setText(userModel.username);
             hapname.setText("@hapname");
@@ -272,10 +307,10 @@ public class ProfileFragment extends Fragment implements FullUserDetailsCallback
 
     }
 
-    private void bindPosts(List<PostResponse> posts) {
+    private void bindPosts(List<PostResponse.Results> posts) {
 
         hideContentLoadingProgress();
-        profilePostAdapter.setPostResponses(posts);
+        profilePostAdapter.appendResult(posts);
 
     }
 
@@ -287,14 +322,16 @@ public class ProfileFragment extends Fragment implements FullUserDetailsCallback
 
     }
 
+
     private void showContentLoadingProgress() {
-        if (contentLoadingProgress != null)
-            contentLoadingProgress.setVisibility(View.VISIBLE);
+        loadingShimmer.setVisibility(View.VISIBLE);
+        shimmerFrameLayout.startShimmerAnimation();
+
     }
 
     private void hideContentLoadingProgress() {
-        if (contentLoadingProgress != null)
-            contentLoadingProgress.setVisibility(View.GONE);
+        if(loadingShimmer!=null)
+            loadingShimmer.setVisibility(View.GONE);
     }
 
     private void showCategoryLoadingProgress() {
@@ -313,8 +350,7 @@ public class ProfileFragment extends Fragment implements FullUserDetailsCallback
         StorageReference storageRef = storage.getReference();
         StorageReference dpRef = storageRef
                 .child(Constants.userDpFolder)
-                .child(HaprampPreferenceManager.getInstance().getUserId())
-                .child(System.currentTimeMillis() + "_" + uri.substring(uri.lastIndexOf('/')));
+                .child(HaprampPreferenceManager.getInstance().getUserId());
 
         InputStream stream = null;
         L.D.m("Profile", "Uploading from..." + uri);
@@ -380,6 +416,47 @@ public class ProfileFragment extends Fragment implements FullUserDetailsCallback
 
     }
 
+    private void showPopUp(View v, final int post_id, final int position) {
+
+        final PopupMenu popupMenu = new PopupMenu(mContext, v);
+        popupMenu.getMenuInflater().inflate(R.menu.post_item_menu, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                showAlertDialogForDelete(post_id, position);
+                return true;
+            }
+        });
+
+        Log.d("POP", "show PopUp");
+
+        popupMenu.show();
+
+    }
+
+    private void showAlertDialogForDelete(final int post_id, final int position) {
+
+        new AlertDialog.Builder(mContext)
+                .setTitle("Post Delete")
+                .setMessage("Delete This Post")
+                .setPositiveButton("Delete",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                requestPostDelete(post_id, position);
+                            }
+                        })
+                .setNegativeButton("Cancel",
+                        null)
+                .show();
+
+
+    }
+
+    private void requestPostDelete(int post_id, int pos) {
+        DataServer.deletePost(String.valueOf(post_id), pos, this);
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -432,13 +509,14 @@ public class ProfileFragment extends Fragment implements FullUserDetailsCallback
     }
 
     @Override
-    public void onPostFetched(List<PostResponse> postResponses) {
-        if (postResponses.size() > 0) {
+    public void onPostFetched(PostResponse postResponses) {
+
+        if (postResponses.results.size() > 0) {
             showEmptyMessage(false);
         } else {
             showEmptyMessage(true);
         }
-        bindPosts(postResponses);
+        bindPosts(postResponses.results);
     }
 
     private void showEmptyMessage(boolean show) {
@@ -461,8 +539,55 @@ public class ProfileFragment extends Fragment implements FullUserDetailsCallback
 
     @Override
     public void onUserDpUpdateFailed() {
-        profilePic.setImageURI(dpUrl);
+//        profilePic.setImageURI(dpUrl);
+        ImageHandler.load(mContext,profilePic,dpUrl);
         showDpUpdateProgress(false);
         // revert back the pic
     }
+
+    @Override
+    public void onPostDeleted(int pos) {
+        profilePostAdapter.removeItem(pos);
+    }
+
+    @Override
+    public void onPostDeleteFailed() {
+
+    }
+
+    @Override
+    public void onReadMoreTapped(PostResponse.Results postResponse) {
+
+        Intent intent = new Intent(mContext, DetailedPostActivity.class);
+        intent.putExtra("isVoted",postResponse.is_voted);
+        intent.putExtra("vote",postResponse.current_vote);
+        intent.putExtra("username",postResponse.user.username);
+        intent.putExtra("mediaUri",postResponse.media_uri);
+        intent.putExtra("content",postResponse.content);
+        intent.putExtra("postId",String.valueOf(postResponse.id));
+        intent.putExtra("userDpUrl",postResponse.user.image_uri);
+        intent.putExtra("totalVotes",String.valueOf(postResponse.vote_sum));
+
+
+        mContext.startActivity(intent);
+    }
+
+    @Override
+    public void onUserInfoTapped(int userId) {
+        // redirect to profile page
+        Intent intent = new Intent(mContext, ProfileActivity.class);
+        intent.putExtra("userId", String.valueOf(userId));
+        startActivity(intent);
+    }
+
+    @Override
+    public void onLoadMore() {
+
+    }
+
+    @Override
+    public void onOverflowIconTapped(View view, int postId, int position) {
+        showPopUp(view, postId, position);
+    }
+
 }

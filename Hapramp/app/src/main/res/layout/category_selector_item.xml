@@ -1,31 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="78dp"
-    android:layout_height="96dp"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto">
+    android:layout_width="72dp"
+    android:layout_height="84dp">
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:layout_centerHorizontal="true"
         android:id="@+id/skills_bg_image"
-        android:padding="8dp"
+        android:padding="12dp"
+        android:src="@drawable/dance_icon"
         android:layout_width="72dp"
         android:layout_height="72dp" />
 
     <TextView
         android:id="@+id/skill_title"
-        android:textSize="12sp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
         android:textColor="@color/Black87"
         android:gravity="center_horizontal"
         android:layout_centerHorizontal="true"
-        android:text="Ankit Kumar"
-        android:layout_below="@+id/skills_bg_image"
-        android:layout_width="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="All"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <FrameLayout
-        android:background="#6efdfdfd"
+        android:visibility="visible"
+        android:background="#b0fdfdfd"
         android:id="@+id/selector_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <FrameLayout
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        android:id="@+id/selection_tab_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
 
 </RelativeLayout>

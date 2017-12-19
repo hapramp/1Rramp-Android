@@ -58,4 +58,33 @@ public class SkillsConverter {
 
         return -1;
     }
+
+    public static String getSkillTitleFromId(int id) {
+        switch (id) {
+            case ART:
+                return "Art";
+
+            case DANCE:
+                return "Dance";
+
+            case TRAVEL:
+                return "Travel";
+
+            case LITERATURE:
+                return "Literature";
+
+            case ACTION:
+                return "Action";
+
+            case PHOTOGRAPHY:
+                return "Photography";
+
+            case MUSIC:
+                return "Music";
+
+        }
+
+        return "None";
+
+    }
 }

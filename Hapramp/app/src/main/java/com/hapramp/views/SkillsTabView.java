@@ -1,28 +1,25 @@
 package com.hapramp.views;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.hapramp.R;
-import com.hapramp.logger.L;
-
-import butterknife.BindView;
 
 /**
  * Created by Ankit on 10/25/2017.
  */
 
-public class CategoryItemView extends FrameLayout {
+public class SkillsTabView extends FrameLayout {
 
-    SimpleDraweeView skillsBgImage;
+    ImageView skillsBgImage;
     TextView skillTitle;
     FrameLayout selectorOverlay;
+    FrameLayout selectionTabIndicator;
 
     private boolean isSelected = false;
 
@@ -32,17 +29,17 @@ public class CategoryItemView extends FrameLayout {
     public static final int LITERATURE = 4;
     public static final int ACTION = 5;
     public static final int PHOTOGRAPHY = 6;
-    public static final int SOCIAL = 7;
     public static final int MUSIC = 8;
 
     private int id = -1;
 
-    public CategoryItemView(@NonNull Context context) {
+    public SkillsTabView(@NonNull Context context) {
         super(context);
         View view = LayoutInflater.from(context).inflate(R.layout.category_selector_item, this);
-        skillsBgImage = (SimpleDraweeView) view.findViewById(R.id.skills_bg_image);
+        skillsBgImage = (ImageView) view.findViewById(R.id.skills_bg_image);
         skillTitle = (TextView) view.findViewById(R.id.skill_title);
         selectorOverlay = (FrameLayout) view.findViewById(R.id.selector_overlay);
+        selectionTabIndicator = (FrameLayout) view.findViewById(R.id.selection_tab_indicator);
     }
 
     public boolean getIsSelected(){
@@ -65,34 +62,52 @@ public class CategoryItemView extends FrameLayout {
 //    }
 //
     public void setSkillsBgImage(int type){
+
         int resId = -1;
         this.id = type;
 
         switch (type){
+
             case PHOTOGRAPHY:
+
                 resId = R.drawable.photography_icon;
                 break;
+
             case DANCE:
+
                 resId = R.drawable.dance_icon;
                 break;
+
             case ACTION:
+
                 resId = R.drawable.act_icon;
                 break;
+
             case ART:
+
                 resId = R.drawable.art_icon;
                 break;
+
             case MUSIC:
+
                 resId = R.drawable.music_icon;
                 break;
+
             case TRAVEL:
+
                 resId = R.drawable.travel_icon;
                 break;
+
             case LITERATURE:
+
                 resId = R.drawable.literature_icon;
                 break;
+
             default:
+
                 resId = R.drawable.profile_user_dp_circle;
                 break;
+
         }
 
         skillsBgImage.setImageResource(resId);
@@ -101,8 +116,10 @@ public class CategoryItemView extends FrameLayout {
 
     private void setSelection(boolean selected){
         if(selected){
+            selectionTabIndicator.setVisibility(VISIBLE);
             selectorOverlay.setVisibility(GONE);
         }else{
+            selectionTabIndicator.setVisibility(GONE);
             selectorOverlay.setVisibility(VISIBLE);
         }
     }

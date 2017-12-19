@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.hapramp.models.response.SkillsModel;
-import com.hapramp.views.CategoryItemView;
+import com.hapramp.views.SkillsTabView;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecycl
 
     @Override
     public CategoryViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        return new CategoryViewHolder(new CategoryItemView(context));
+        return new CategoryViewHolder(new SkillsTabView(context));
     }
 
     @Override
@@ -48,11 +48,11 @@ public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecycl
 
     class CategoryViewHolder extends RecyclerView.ViewHolder{
 
-        CategoryItemView categoryItemView;
+        SkillsTabView categoryItemView;
 
         public CategoryViewHolder(View itemView) {
             super(itemView);
-            categoryItemView = (CategoryItemView) itemView;
+            categoryItemView = (SkillsTabView) itemView;
         }
 
         public void bind(final SkillsModel model, final OnCategoryItemClickListener categoryItemClickListener){

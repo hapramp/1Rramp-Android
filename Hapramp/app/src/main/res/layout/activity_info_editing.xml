@@ -19,7 +19,6 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
-            android:layout_toRightOf="@+id/closeBtn"
             android:text="Enter Your Bio"
             android:textSize="18sp" />
 
@@ -27,9 +26,13 @@
 
     <EditText
         android:layout_margin="8dp"
-        android:hint="Bio"
+        android:hint="Type Here..."
+        android:padding="8dp"
+        android:background="@drawable/bio_editor_bg"
+        android:gravity="top"
         android:layout_below="@+id/toolbar_container"
         android:id="@+id/bioEt"
+        android:layout_above="@+id/okBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

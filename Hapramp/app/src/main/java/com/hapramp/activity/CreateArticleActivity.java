@@ -5,7 +5,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -15,15 +19,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hapramp.R;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.PostCreateCallback;
 import com.hapramp.models.requests.PostCreateBody;
+import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
-import com.hapramp.R;
 import com.hapramp.utils.SkillsConverter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,15 +61,23 @@ public class CreateArticleActivity extends AppCompatActivity implements PostCrea
     TextView bulletBtn;
     @BindView(R.id.linkBtn)
     TextView linkBtn;
-    @BindView(R.id.postViewBtn)
-    TextView postViewBtn;
     @BindView(R.id.bottom_options_container)
     RelativeLayout bottomOptionsContainer;
+    @BindView(R.id.skillsTagView)
+    TextView skillsTagView;
+    @BindView(R.id.addSkillBtn)
+    TextView addSkillBtn;
+    @BindView(R.id.skills_wrapper)
+    RelativeLayout skillsWrapper;
+    @BindView(R.id.characterLimit)
+    TextView characterLimit;
     private Typeface typeface;
     private ArrayList<Integer> selectedSkills;
 
     private boolean isSkillSelected = false;
     private ProgressDialog progressDialog;
+    final String[] skills = {"Art", "Dance", "Music", "Literature", "Action", "Photography"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +90,30 @@ public class CreateArticleActivity extends AppCompatActivity implements PostCrea
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveDraft();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadDraft();
+    }
+
+    private void loadDraft(){
+        content.setText(HaprampPreferenceManager.getInstance().getArticleDraft());
+    }
+
+    private void clearDraft(){
+        HaprampPreferenceManager.getInstance().saveArticleDraft("");
+    }
+
+    private void saveDraft(){
+        HaprampPreferenceManager.getInstance().saveArticleDraft(content.getText().toString());
+    }
+
     private void init() {
 
         typeface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
@@ -84,18 +122,34 @@ public class CreateArticleActivity extends AppCompatActivity implements PostCrea
         bulletBtn.setTypeface(typeface);
         linkBtn.setTypeface(typeface);
         closeBtn.setTypeface(typeface);
+        selectedSkills = new ArrayList<>();
         initProgressDialog();
 
     }
 
     private void attachListeners() {
 
-        postViewBtn.setOnClickListener(new View.OnClickListener() {
+        content.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                characterLimit.setText(String.valueOf(s.length()));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        addSkillBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CreateArticleActivity.this,NewPostCreationActivity.class);
-                startActivity(intent);
-                finish();
+                showAddSkillsDialog();
             }
         });
 
@@ -115,26 +169,30 @@ public class CreateArticleActivity extends AppCompatActivity implements PostCrea
 
     }
 
-    private void prepareArticle(){
+    private void prepareArticle() {
 
-        if(!validatePostContent())
+        if (!validatePostContent())
             return;
 
-        if(!isSkillSelected){
-            showAddSkillsDialog();
+        if (!isSkillSelected()) {
+            toast("You Should Select Skills Regarding Your Post");
             return;
         }
 
         uploadArticle();
     }
 
-    public void uploadArticle(){
+    private boolean isSkillSelected() {
+        return selectedSkills.size()>0;
+    }
+
+    public void uploadArticle() {
 
         showProgressDialog(true);
         PostCreateBody body = new PostCreateBody(
                 content.getText().toString(),
                 "",
-                Constants.CONTENT_TYPE_POST,
+                Constants.CONTENT_TYPE_ARTICLE,
                 selectedSkills,
                 1);
 
@@ -144,8 +202,8 @@ public class CreateArticleActivity extends AppCompatActivity implements PostCrea
 
     private boolean validatePostContent() {
 
-        if (content.getText().toString().length() < 10) {
-            Toast.makeText(this, "Your Content is Small", Toast.LENGTH_LONG).show();
+        if (content.getText().toString().length() < 140) {
+            Toast.makeText(this, "Your Content is Small. Minimum Article Size is 140", Toast.LENGTH_LONG).show();
             return false;
         } else {
             return true;
@@ -174,13 +232,12 @@ public class CreateArticleActivity extends AppCompatActivity implements PostCrea
 
     private void showAddSkillsDialog() {
 
-        selectedSkills = new ArrayList<>();
+        boolean[] checked = getSelectedSkills();
 
-        final String[] skills = {"Art", "Dance", "Music", "Literature", "Drama", "Photography"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Skills");
 
-        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
-        builder.setTitle("Select Tags");
-        builder.setMultiChoiceItems(skills, null, new DialogInterface.OnMultiChoiceClickListener() {
+        builder.setMultiChoiceItems(skills, checked, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                 // user checked or unchecked a box
@@ -188,7 +245,11 @@ public class CreateArticleActivity extends AppCompatActivity implements PostCrea
                 if (index == -1) {
                     // do not exists
                     if (isChecked) {
-                        selectedSkills.add(SkillsConverter.getSkillIdFromName(skills[which]));
+                        if (selectedSkills.size() > 2) {
+                            toast("Maximum 3 Skills");
+                        } else {
+                            selectedSkills.add(SkillsConverter.getSkillIdFromName(skills[which]));
+                        }
                     }
                 } else {
                     // exists
@@ -202,13 +263,42 @@ public class CreateArticleActivity extends AppCompatActivity implements PostCrea
         builder.setPositiveButton("ADD", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // user clicked OK
+                showSelectedSkills();
                 dialog.dismiss();
             }
         });
+
         builder.setNegativeButton("CANCEL", null);
-        android.support.v7.app.AlertDialog dialog = builder.create();
+        AlertDialog dialog = builder.create();
         dialog.show();
+
+    }
+
+    private void toast(String s) {
+        Toast.makeText(this, s, Toast.LENGTH_LONG).show();
+    }
+
+
+    private boolean[] getSelectedSkills() {
+
+        boolean[] selected = new boolean[6];
+
+        for (int i = 0; i < selected.length; i++) {
+            selected[i] = selectedSkills.contains(SkillsConverter.getSkillIdFromName(skills[i]));
+            Log.d("POST", SkillsConverter.getSkillIdFromName(skills[i]) + " vs " + Arrays.toString(selectedSkills.toArray()));
+        }
+        return selected;
+
+    }
+
+    private void showSelectedSkills() {
+        StringBuilder builder = new StringBuilder();
+
+        for (Integer skillId : selectedSkills) {
+            builder.append(" #").append(SkillsConverter.getSkillTitleFromId(skillId));
+        }
+
+        skillsTagView.setText(builder.toString());
 
     }
 
@@ -216,14 +306,16 @@ public class CreateArticleActivity extends AppCompatActivity implements PostCrea
     @Override
     public void onPostCreated() {
         showProgressDialog(false);
-        Toast.makeText(this,"Article Created!",Toast.LENGTH_SHORT).show();
+        // clear draft
+        clearDraft();
+        Toast.makeText(this, "Article Created!", Toast.LENGTH_SHORT).show();
         finish();
     }
 
     @Override
     public void onPostCreateError() {
         showProgressDialog(false);
-        Toast.makeText(this,"Cannot Create Article!",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Cannot Create Article!", Toast.LENGTH_SHORT).show();
         finish();
     }
 

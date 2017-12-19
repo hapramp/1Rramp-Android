@@ -7,17 +7,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.hapramp.adapters.CompetitionPostsRecyclerAdapter;
-import com.hapramp.models.response.CompetitionsPostReponse;
-import com.hapramp.utils.FontManager;
 import com.hapramp.R;
+import com.hapramp.adapters.CompetitionPostsRecyclerAdapter;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.CompetitionsPostFetchCallback;
+import com.hapramp.models.response.CompetitionsPostReponse;
+import com.hapramp.utils.FontManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,7 +27,7 @@ public class CompetitionsDetailedActivity extends AppCompatActivity implements C
     @BindView(R.id.closeBtn)
     TextView closeBtn;
     @BindView(R.id.feed_owner_pic)
-    SimpleDraweeView feedOwnerPic;
+    ImageView feedOwnerPic;
     @BindView(R.id.feed_owner_title)
     TextView feedOwnerTitle;
     @BindView(R.id.feed_owner_subtitle)

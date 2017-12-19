@@ -9,6 +9,6 @@ import java.util.List;
  */
 
 public interface PostFetchCallback {
-    void onPostFetched(List<PostResponse> postResponses);
+    void onPostFetched(PostResponse postResponses);
     void onPostFetchError();
 }

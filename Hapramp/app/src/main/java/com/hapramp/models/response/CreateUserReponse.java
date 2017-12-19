@@ -71,6 +71,7 @@ public class CreateUserReponse {
                     ", description='" + description + '\'' +
                     '}';
         }
+
     }
 
     public CreateUserReponse(int id, String email, String username, Organization organization, String full_name, List<Skills> skills, int karma) {
@@ -83,4 +84,16 @@ public class CreateUserReponse {
         this.karma = karma;
     }
 
+    @Override
+    public String toString() {
+        return "CreateUserReponse{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                ", organization=" + organization +
+                ", full_name='" + full_name + '\'' +
+                ", skills=" + skills +
+                ", karma=" + karma +
+                '}';
+    }
 }

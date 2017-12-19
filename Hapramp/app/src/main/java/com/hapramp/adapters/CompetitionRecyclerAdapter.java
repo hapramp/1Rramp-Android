@@ -5,13 +5,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.hapramp.utils.FontManager;
 import com.hapramp.R;
 import com.hapramp.models.response.CompetitionResponse;
+import com.hapramp.utils.FontManager;
+import com.hapramp.utils.ImageHandler;
 
 import java.util.List;
 
@@ -60,7 +61,7 @@ public class CompetitionRecyclerAdapter extends RecyclerView.Adapter<Competition
     class CompetitionViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.feed_owner_pic)
-        SimpleDraweeView feedOwnerPic;
+        ImageView feedOwnerPic;
         @BindView(R.id.feed_owner_title)
         TextView feedOwnerTitle;
         @BindView(R.id.feed_owner_subtitle)
@@ -101,7 +102,8 @@ public class CompetitionRecyclerAdapter extends RecyclerView.Adapter<Competition
         }
 
         public void bind(final CompetitionResponse postResponse , final OnCompetitionElementsClickListener competitionElementsClickListener) {
-            feedOwnerPic.setImageURI(postResponse.getLogo_uri());
+            ImageHandler.load(mContext,feedOwnerPic,postResponse.getLogo_uri());
+            //feedOwnerPic.setImageURI(postResponse.getLogo_uri());
             feedOwnerTitle.setText(postResponse.getName());
             feedOwnerSubtitle.setText(postResponse.getHandle());
             entryFee.setText(String.valueOf(postResponse.getEntry_fee()));

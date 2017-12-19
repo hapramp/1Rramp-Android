@@ -16,12 +16,10 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activity.LoginActivity"
-            android:noHistory="true"
             android:screenOrientation="portrait">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
@@ -35,9 +33,7 @@
         <activity
             android:name=".activity.RegisterActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.StoryActivity"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".activity.HomeActivity"
             android:screenOrientation="portrait" />
@@ -76,8 +72,10 @@
         <activity
             android:name=".activity.CompetitionsDetailedActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.InfoEditingActivity"
-            android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".activity.InfoEditingActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".activity.HowToEarnActivity"></activity>
     </application>
 
 </manifest>

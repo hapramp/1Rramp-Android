@@ -6,18 +6,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.hapramp.R;
 import com.hapramp.models.response.CompetitionsPostReponse;
 import com.hapramp.utils.FontManager;
+import com.hapramp.utils.ImageHandler;
 import com.hapramp.views.ClubTagView;
 import com.hapramp.views.RatingView;
-
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -62,7 +60,7 @@ public class CompetitionPostsRecyclerAdapter extends RecyclerView.Adapter<Compet
     class CompetitionPostViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.feed_owner_pic)
-        SimpleDraweeView feedOwnerPic;
+        ImageView feedOwnerPic;
         @BindView(R.id.feed_owner_title)
         TextView feedOwnerTitle;
         @BindView(R.id.feed_owner_subtitle)
@@ -72,7 +70,7 @@ public class CompetitionPostsRecyclerAdapter extends RecyclerView.Adapter<Compet
         @BindView(R.id.post_header_container)
         RelativeLayout postHeaderContainer;
         @BindView(R.id.featured_image_post)
-        SimpleDraweeView featuredImagePost;
+        ImageView featuredImagePost;
         @BindView(R.id.post_title)
         TextView postTitle;
         @BindView(R.id.tags)
@@ -81,7 +79,7 @@ public class CompetitionPostsRecyclerAdapter extends RecyclerView.Adapter<Compet
         TextView postSnippet;
         @BindView(R.id.likeBtn)
         TextView likeBtn;
-        @BindView(R.id.likeCount)
+        @BindView(R.id.voteCount)
         TextView likeCount;
         @BindView(R.id.commentBtn)
         TextView commentBtn;
@@ -111,10 +109,12 @@ public class CompetitionPostsRecyclerAdapter extends RecyclerView.Adapter<Compet
 
         public void bind(final CompetitionsPostReponse.Posts post) {
 
-            feedOwnerPic.setImageURI(post.user.image_uri);
+//            feedOwnerPic.setImageURI(post.user.image_uri);
+            ImageHandler.load(mContext,feedOwnerPic,post.user.image_uri);
             feedOwnerTitle.setText(post.user.full_name);
             feedOwnerSubtitle.setText(post.user.username);
-            featuredImagePost.setImageURI(post.media_uri);
+ //           featuredImagePost.setImageURI(post.media_uri);
+            ImageHandler.load(mContext,featuredImagePost,post.media_uri);
             postSnippet.setText(post.content);
             likeCount.setText(String.valueOf(post.vote_count));
             commentCount.setText(String.valueOf(post.comment_count));

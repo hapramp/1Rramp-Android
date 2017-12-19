@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -50,48 +49,81 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/skills_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_below="@+id/toolbar_container">
+
+        <TextView
+            android:id="@+id/skillsTagView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toStartOf="@+id/addSkillBtn"
+            android:padding="8dp"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/addSkillBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:layout_margin="8dp"
+            android:background="@drawable/light_btn_bg"
+            android:padding="8dp"
+            android:text="+ Add Skills"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+
     <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_above="@+id/bottom_options_container"
+        android:layout_below="@+id/skills_wrapper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar_container"
         android:fillViewport="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_above="@id/bottom_options_container"
+            android:layout_below="@+id/skills_wrapper">
 
             <FrameLayout
-                android:background="#119fdc"
                 android:id="@+id/postMediaContainer"
                 android:layout_width="match_parent"
                 android:layout_height="172dp"
-                android:layout_below="@+id/content"
+                android:layout_below="@id/content"
+                android:background="#119fdc"
                 android:visibility="gone">
 
                 <ImageView
-                    android:visibility="gone"
                     android:id="@+id/postMedia"
                     android:layout_width="match_parent"
                     android:layout_height="172dp"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
 
                 <TextView
-                    android:visibility="visible"
                     android:id="@+id/audioIcon"
-                    android:textSize="48sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:text=""
                     android:textColor="#ffffff"
-                    android:layout_gravity="center"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:textSize="48sp"
+                    android:visibility="visible" />
 
                 <TextView
-                    android:visibility="gone"
-                    android:textSize="18sp"
-                    android:layout_gravity="bottom|center"
                     android:id="@+id/audioFileName"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center"
+                    android:textSize="18sp"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/removeImageBtn"
@@ -112,6 +144,7 @@
 
             </FrameLayout>
 
+
             <EditText
                 android:id="@+id/content"
                 android:layout_width="match_parent"
@@ -119,9 +152,19 @@
                 android:background="@drawable/post_editor_bg"
                 android:gravity="top"
                 android:hint="Share photos, videos,music or anything you like..."
+                android:maxLength="140"
                 android:minHeight="100dp"
-                android:padding="16dp"
-                android:textSize="14sp" />
+                android:padding="24dp"
+                android:textColor="@color/Black87"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/characterLimit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:padding="4dp"
+                android:text="0/140" />
 
 
         </RelativeLayout>
@@ -165,25 +208,6 @@
             android:text=""
             android:textSize="24sp" />
 
-
-        <TextView
-            android:id="@+id/articleBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/light_btn_bg"
-            android:clickable="true"
-            android:gravity="center"
-            android:padding="8dp"
-            android:paddingBottom="4dp"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp"
-            android:paddingTop="4dp"
-            android:text="ARTICLE VIEW"
-            android:textColor="@color/colorPrimary"
-            android:textSize="16sp" />
 
     </RelativeLayout>
 

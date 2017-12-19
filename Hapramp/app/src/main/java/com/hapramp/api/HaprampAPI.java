@@ -27,13 +27,16 @@ import com.hapramp.models.response.VotePostResponse;
 
 import java.util.List;
 
+import okhttp3.Response;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
 
 /**
  * Created by Ankit on 5/13/2017.
@@ -47,6 +50,9 @@ public interface HaprampAPI {
     @GET("organizations")
     Call<List<OrgsResponse>> getOrgs();
 
+    @GET("users/{user_id}")
+    Call<UserResponse> fetchUser(@Path("user_id") int user_id);
+
     @GET("users/user")
     Call<FetchUserResponse> getUserFromToken();
 
@@ -59,14 +65,17 @@ public interface HaprampAPI {
     @PUT("users/skills")
     Call<SkillsUpdateResponse> setSkills(@Body SkillsUpdateBody skillsUpdateBody);
 
-    @GET("posts")
-    Call<List<PostResponse>> getAlltPosts();
+    @GET
+    Call<PostResponse> getAlltPosts(@Url String url);
 
-    @GET("posts")
-    Call<List<PostResponse>> getPostsBySkills(@Query("skills_or") int skills_id);
+    @GET
+    Call<PostResponse> getPostsBySkills(@Url String url, @Query("skills_or") int skills_id);
 
-    @GET("posts")
-    Call<List<PostResponse>> getPostsByContest(@Query("contest_id") String contest_id);
+    @GET
+    Call<PostResponse> getPostsByUserId(@Url String url, @Query("user_id") int user_id);
+
+    @GET
+    Call<PostResponse> getPostsByContest(@Url String url, @Query("contest_id") String contest_id);
 
     @GET("contests")
     Call<List<CompetitionResponse>> getAllCompetitions();
@@ -83,14 +92,17 @@ public interface HaprampAPI {
     @POST("posts")
     Call<PostResponse> createPost(@Body PostCreateBody body);
 
+    @DELETE("posts/{post_id}")
+    Call<PostResponse> deletePost(@Path("post_id") String post_id);
+
     @POST("posts/{post_id}/comments")
     Call<CommentCreateResponse> createComment(@Path("post_id") String postId , @Body CommentBody body);
 
     @GET("posts/{post_id}/comments")
     Call<CommentsResponse> getComments(@Path("post_id") String post_id);
 
-    @GET("posts")
-    Call<List<PostResponse>> getPostsBySkillsAndUserId(@Query("skills_or") int skills_id,@Query("user_id") String userId);
+    @GET
+    Call<PostResponse> getPostsBySkillsAndUserId(@Url String url, @Query("skills_or") int skills_id,@Query("user_id") int userId);
 
     @GET("contests/{contest_id}/posts")
     Call<CompetitionsPostReponse> getCompetitionsPosts(@Path("contest_id") String compId);
@@ -106,6 +118,9 @@ public interface HaprampAPI {
 
     @POST("posts/{post_id}/votes")
     Call<VotePostResponse> votePost(@Path("post_id") String postId , @Body VoteRequestBody body);
+
+    @DELETE("posts/{post_id}/votes")
+    Call<VotePostResponse> deleteVote(@Path("post_id") int postId);
 
 
 }

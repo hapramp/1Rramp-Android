@@ -31,6 +31,7 @@ import com.hapramp.R;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.CreateUserCallback;
 import com.hapramp.interfaces.FetchUserCallback;
+import com.hapramp.logger.L;
 import com.hapramp.models.UserAccountModel;
 import com.hapramp.models.requests.CreateUserRequest;
 import com.hapramp.models.response.CreateUserReponse;
@@ -41,7 +42,6 @@ import com.hapramp.utils.Validator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import bxute.logger.L;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, FetchUserCallback, CreateUserCallback {
 
@@ -191,7 +191,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
 
         Intent intent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        intent.setFlags(0);
         startActivityForResult(intent, RC_GC_SIGNIN);
+
     }
 
     @Override
@@ -210,7 +212,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
             GoogleSignInAccount account = result.getSignInAccount();
             L.D.m(TAG, "account received :" + account.getEmail());
-            showProgress("Logging In as : " + account.getEmail());
+            showProgress("Logging in as : " + account.getEmail());
             signInWithFirebase(account);
 
         } else {
@@ -379,7 +381,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     @Override
-    public void onFailedToCreateUser() {
+    public void onFailedToCreateUser(String message) {
         L.D.m(TAG, "Failed To Create User :(");
         hideProgress();
     }

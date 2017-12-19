@@ -11,12 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize">
 
-        <com.facebook.drawee.view.SimpleDraweeView
+        <ImageView
             android:id="@+id/feed_owner_pic"
             android:layout_width="?actionBarSize"
             android:layout_height="match_parent"
-            android:padding="4dp"
-            fresco:roundAsCircle="true" />
+            android:padding="4dp" />
 
         <TextView
             android:id="@+id/feed_owner_title"

@@ -3,12 +3,13 @@ package com.hapramp.views;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.hapramp.R;
 import com.hapramp.utils.FontManager;
 
@@ -28,14 +29,14 @@ public class SkillsItemView extends FrameLayout {
 
 
 
-    SimpleDraweeView skillsBgImage;
+    ImageView skillsBgImage;
     TextView skillSelectionOverlay;
     TextView skillTitle;
 
     public SkillsItemView(Context context) {
         super(context);
         View view = LayoutInflater.from(context).inflate(R.layout.skills_view, this);
-        skillsBgImage = (SimpleDraweeView) view.findViewById(R.id.skills_bg_image);
+        skillsBgImage = (ImageView) view.findViewById(R.id.skills_bg_image);
         skillSelectionOverlay = (TextView) view.findViewById(R.id.skill_selection_overlay);
         skillTitle = (TextView) view.findViewById(R.id.skill_title);
         skillSelectionOverlay.setTypeface(new FontManager().getTypeFace(FontManager.FONT_MATERIAL));

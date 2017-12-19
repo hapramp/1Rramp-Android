@@ -47,13 +47,11 @@
             android:layout_below="@+id/topBar"
             android:background="#fefefe">
 
-            <com.facebook.drawee.view.SimpleDraweeView
+            <ImageView
                 android:id="@+id/author_pic"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:padding="12dp"
-                fresco:placeholderImage="@drawable/ic_account_circle_black_24dp"
-                fresco:roundAsCircle="true" />
+                android:padding="12dp" />
 
             <TextView
                 android:id="@+id/author_name"
@@ -100,7 +98,7 @@
                     android:textSize="24sp" />
 
                 <TextView
-                    android:id="@+id/likeCount"
+                    android:id="@+id/voteCount"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_below="@+id/story_featured_pic"
@@ -114,7 +112,7 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_below="@+id/story_featured_pic"
-                    android:layout_toRightOf="@+id/likeCount"
+                    android:layout_toRightOf="@+id/voteCount"
                     android:background="?android:selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:gravity="center"

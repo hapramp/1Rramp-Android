@@ -5,5 +5,7 @@ package com.hapramp.api;
  */
 
 public class URLS {
+
     public static final String BASE_URL = "http://hapramp.herokuapp.com/api/";
+    public static final String POST_FETCH_START_URL = "http://hapramp.herokuapp.com/api/posts?start=1&limit=20";
 }

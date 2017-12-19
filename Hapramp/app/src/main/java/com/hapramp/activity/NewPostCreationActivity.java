@@ -10,10 +10,14 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -34,9 +38,11 @@ import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.PostCreateCallback;
 import com.hapramp.logger.L;
 import com.hapramp.models.requests.PostCreateBody;
+import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FileUtils;
 import com.hapramp.utils.FontManager;
+import com.hapramp.utils.ImageUrlGenerator;
 import com.hapramp.utils.SkillsConverter;
 
 import java.io.File;
@@ -44,7 +50,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -77,13 +83,19 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
     RelativeLayout bottomOptionsContainer;
     @BindView(R.id.removeImageBtn)
     TextView removeImageBtn;
-    @BindView(R.id.articleBtn)
-    TextView articleBtn;
     @BindView(R.id.audioIcon)
     TextView audioIcon;
     @BindView(R.id.audioFileName)
     TextView audioFileName;
-    private Uri uploadedMediaUri;
+    @BindView(R.id.skillsTagView)
+    TextView skillsTagView;
+    @BindView(R.id.addSkillBtn)
+    TextView addSkillBtn;
+    @BindView(R.id.skills_wrapper)
+    RelativeLayout skillsWrapper;
+    @BindView(R.id.characterLimit)
+    TextView characterLimit;
+    private String uploadedMediaUri;
     private ProgressDialog progressDialog;
     private boolean isSkillSelected = false;
     private boolean isMediaUploaded = false;
@@ -95,7 +107,7 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
     private String rootFolder;
     private ArrayList<Integer> selectedSkills;
     private boolean isMediaSelected = false;
-
+    final String[] skills = {"Art", "Dance", "Music", "Literature", "Action", "Photography"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +121,39 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        HaprampPreferenceManager.getInstance().savePostDraft(content.getText().toString());
+    }
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+
+        loadDraft();
+    }
+
+    private void loadDraft() {
+
+        //load content
+        content.setText(HaprampPreferenceManager.getInstance().getPostDraft());
+        //load image
+        if(HaprampPreferenceManager.getInstance().getPostMediaDraft().length()>0){
+            loadImageIntoView(HaprampPreferenceManager.getInstance().getPostMediaDraft());
+        }
+
+    }
+
+    private void clearDraft(){
+        // clear post content
+        HaprampPreferenceManager.getInstance().savePostDraft("");
+        // clear image draft
+        HaprampPreferenceManager.getInstance().savePostMediaDraft("");
+
+    }
+
     private void init() {
 
         storage = FirebaseStorage.getInstance();
@@ -117,15 +162,40 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
         audioBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         videoBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         removeImageBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+        selectedSkills = new ArrayList<>();
 
     }
 
     private void attachListener() {
 
+        content.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                characterLimit.setText(String.format(getResources().getString(R.string.post_limit),s.length()));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        addSkillBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddSkillsDialog();
             }
         });
 
@@ -136,11 +206,14 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
             }
         });
 
+
         audioBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                galleryType = "audio/*";
-                openGallery();
+                toast("Coming Soon! We Apreciate Your Patience :)");
+                //todo: Implement audio Upload
+//                galleryType = "audio/*";
+//                openGallery();
             }
         });
 
@@ -155,43 +228,39 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
         videoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                galleryType = "video/*";
-                openGallery();
+                toast("Coming Soon!  We Apreciate Your Patience :)");
+                //todo :  Implement video feature
+//                galleryType = "video/*";
+//                openGallery();
             }
         });
 
         removeImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isMediaSelected = false;
-                postMediaContainer.setVisibility(View.GONE);
-            }
-        });
-
-        articleBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(NewPostCreationActivity.this, CreateArticleActivity.class);
-                startActivity(intent);
-                finish();
+               removeImageFromView();
             }
         });
 
     }
 
+    private void toast(String s) {
+        Toast.makeText(this, s, Toast.LENGTH_LONG).show();
+    }
+
     private void preparePost() {
 
-        if (!validatePostContent())
-            return;
-
-        if (!isSkillSelected) {
-            isSkillSelected = true;
-            showAddSkillsDialog();
+        if (!isSkillsSelected()) {
+            toast("You Should Select Skills Regarding Your Post");
             return;
         }
 
         uploadPost();
 
+    }
+
+    private boolean isSkillsSelected() {
+        return selectedSkills.size()>0;
     }
 
     private void uploadPost() {
@@ -217,14 +286,7 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
     }
 
     private boolean validatePostContent() {
-
-        if (content.getText().toString().length() < 10) {
-            Toast.makeText(this, "Your Content is Small", Toast.LENGTH_LONG).show();
-            return false;
-        } else {
-            return true;
-        }
-
+        return true;
     }
 
     private void initProgressDialog() {
@@ -255,9 +317,13 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
 
     @Override
     public void onPostCreated() {
+
         showProgressDialog(false);
+        // clear post draft
+        clearDraft();
         L.D.m("PostCreate", "Post Created!");
         finish();
+
     }
 
     @Override
@@ -270,7 +336,8 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
 
         showMediaProgress(true);
         StorageReference storageRef = storage.getReference();
-        StorageReference mountainsRef = storageRef.child(rootFolder).child(System.currentTimeMillis() + "_" + uri.substring(uri.lastIndexOf('/')));
+        // Store image in /<type-folder>/<user-id>/img.png
+        StorageReference ref = storageRef.child(rootFolder).child(String.valueOf(HaprampPreferenceManager.getInstance().getUserId()));
         InputStream stream = null;
         L.D.m("PostCreate", "Uploading from..." + uri);
         try {
@@ -280,7 +347,7 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
             showMediaProgress(false);
         }
 
-        UploadTask uploadTask = mountainsRef.putStream(stream);
+        UploadTask uploadTask = ref.putStream(stream);
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
@@ -293,7 +360,7 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                uploadedMediaUri = downloadUrl;
+                uploadedMediaUri = downloadUrl.toString();
                 isMediaUploaded = true;
                 showMediaProgress(false);
                 L.D.m("PostCreate", " uploaded to : " + downloadUrl.toString());
@@ -360,14 +427,10 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
         // check type
         String mimeType = FileUtils.getMimeType(filePath);
         postMediaContainer.setVisibility(View.VISIBLE);
+
         if (FileUtils.isImage(mimeType)) {
             // image
-            audioIcon.setVisibility(View.GONE);
-            audioFileName.setVisibility(View.GONE);
-            postMedia.setVisibility(View.VISIBLE);
-            Glide.with(this)
-                    .load(Uri.fromFile(new File(filePath)))
-                    .into(postMedia);
+            loadImageIntoView(filePath);
             rootFolder = "images";
             askForUpload("Image", filePath);
 
@@ -376,9 +439,6 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
             audioIcon.setVisibility(View.GONE);
             audioFileName.setVisibility(View.GONE);
             postMedia.setVisibility(View.VISIBLE);
-            Glide.with(this)
-                    .load(Uri.fromFile(new File(filePath)))
-                    .into(postMedia);
             rootFolder = "videos";
             askForUpload("Video", filePath);
 
@@ -394,6 +454,30 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
             askForUpload("Audio", filePath);
 
         }
+    }
+
+    private void loadImageIntoView(String filePath){
+
+        audioIcon.setVisibility(View.GONE);
+        audioFileName.setVisibility(View.GONE);
+        postMedia.setVisibility(View.VISIBLE);
+
+        Glide.with(this)
+                .load(Uri.fromFile(new File(filePath)))
+                .into(postMedia);
+
+        //save as draft
+        HaprampPreferenceManager.getInstance().savePostMediaDraft(filePath);
+
+    }
+
+    private void removeImageFromView(){
+
+        isMediaSelected = false;
+        postMediaContainer.setVisibility(View.GONE);
+        // remove from draft
+        HaprampPreferenceManager.getInstance().savePostMediaDraft("");
+
     }
 
     private void askForUpload(String s, final String path) {
@@ -414,13 +498,12 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
 
     private void showAddSkillsDialog() {
 
-        selectedSkills = new ArrayList<>();
-
-        final String[] skills = {"Art", "Dance", "Music", "Literature", "Drama", "Photography"};
+        boolean[] checked = getSelectedSkills();
 
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
-        builder.setTitle("Select Tags");
-        builder.setMultiChoiceItems(skills, null, new DialogInterface.OnMultiChoiceClickListener() {
+        builder.setTitle("Select Skills");
+
+        builder.setMultiChoiceItems(skills,checked, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                 // user checked or unchecked a box
@@ -428,7 +511,11 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
                 if (index == -1) {
                     // do not exists
                     if (isChecked) {
-                        selectedSkills.add(SkillsConverter.getSkillIdFromName(skills[which]));
+                        if(selectedSkills.size()>2){
+                            toast("Maximum 3 Skills");
+                        }else {
+                            selectedSkills.add(SkillsConverter.getSkillIdFromName(skills[which]));
+                        }
                     }
                 } else {
                     // exists
@@ -442,13 +529,37 @@ public class NewPostCreationActivity extends AppCompatActivity implements PostCr
         builder.setPositiveButton("ADD", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // user clicked OK
+                showSelectedSkills();
                 dialog.dismiss();
             }
         });
+
         builder.setNegativeButton("CANCEL", null);
         android.support.v7.app.AlertDialog dialog = builder.create();
         dialog.show();
+
+    }
+
+    private boolean[] getSelectedSkills() {
+
+        boolean[] selected = new boolean[6];
+
+        for (int i=0;i<selected.length;i++){
+            selected[i] = selectedSkills.contains(SkillsConverter.getSkillIdFromName(skills[i]));
+            Log.d("POST",SkillsConverter.getSkillIdFromName(skills[i]) +" vs "+ Arrays.toString(selectedSkills.toArray()));
+        }
+        return selected;
+
+    }
+
+    private void showSelectedSkills(){
+        StringBuilder builder = new StringBuilder();
+
+        for (Integer skillId:selectedSkills){
+            builder.append(" #").append(SkillsConverter.getSkillTitleFromId(skillId));
+        }
+
+        skillsTagView.setText(builder.toString());
 
     }
 

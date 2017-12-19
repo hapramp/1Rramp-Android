@@ -1,11 +1,14 @@
 package com.hapramp.activity;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -13,11 +16,12 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.hapramp.R;
-import com.hapramp.adapters.ProfilePostAdapter;
+import com.hapramp.adapters.PostsRecyclerAdapter;
 import com.hapramp.adapters.ProfileSkillsRecyclerAdapter;
 import com.hapramp.api.DataServer;
+import com.hapramp.api.URLS;
 import com.hapramp.interfaces.FollowUserCallback;
 import com.hapramp.interfaces.FullUserDetailsCallback;
 import com.hapramp.interfaces.PostFetchCallback;
@@ -25,6 +29,8 @@ import com.hapramp.models.requests.FollowRequestBody;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.utils.FontManager;
+import com.hapramp.utils.ImageHandler;
+import com.hapramp.utils.ViewItemDecoration;
 
 import java.util.List;
 
@@ -37,7 +43,7 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
     @BindView(R.id.profile_progress_bar)
     ProgressBar profileProgressBar;
     @BindView(R.id.profile_pic)
-    SimpleDraweeView profilePic;
+    ImageView profilePic;
     @BindView(R.id.profile_header_container)
     RelativeLayout profileHeaderContainer;
     @BindView(R.id.username)
@@ -74,8 +80,10 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
     RecyclerView sectionsRv;
     @BindView(R.id.categoryLoadingProgress)
     ProgressBar categoryLoadingProgress;
-    @BindView(R.id.contentLoadingProgress)
-    ProgressBar contentLoadingProgress;
+    @BindView(R.id.shimmer_view_container)
+    ShimmerFrameLayout shimmerFrameLayout;
+    @BindView(R.id.loadingShimmer)
+    View loadingShimmer;
     @BindView(R.id.profilePostRv)
     RecyclerView profilePostRv;
     @BindView(R.id.emptyMessage)
@@ -89,9 +97,11 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
     @BindView(R.id.toolbar_container)
     RelativeLayout toolbarContainer;
     private String userId;
-    private ProfilePostAdapter profilePostAdapter;
+    private PostsRecyclerAdapter profilePostAdapter;
     private ProfileSkillsRecyclerAdapter profileSkillsRecyclerAdapter;
     private boolean followed = false;
+    private String TICK_TEXT = "\u2713";
+    private ViewItemDecoration viewItemDecoration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +125,7 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
 
         userId = getIntent().getExtras().getString("userId");
 
-        profilePostAdapter = new ProfilePostAdapter(this);
+        profilePostAdapter = new PostsRecyclerAdapter(this,profilePostRv);
         closeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         overflowBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
 
@@ -123,12 +133,25 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
         sectionsRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         sectionsRv.setAdapter(profileSkillsRecyclerAdapter);
         profilePostRv.setLayoutManager(new LinearLayoutManager(this));
+
+        Drawable drawable = ContextCompat.getDrawable(this,R.drawable.post_item_divider_view);
+
+        viewItemDecoration = new ViewItemDecoration(drawable);
+        profilePostRv.addItemDecoration(viewItemDecoration);
         profilePostRv.setAdapter(profilePostAdapter);
         profilePostRv.setNestedScrollingEnabled(false);
 
     }
 
     private void attachListeners() {
+
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         followBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,7 +167,16 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
     }
 
     private void fetchProfilePosts(int skill_id) {
-        DataServer.getPosts(skill_id, this);
+
+        if (skill_id == -1) {
+            // get all post of this user
+            DataServer.getPostsByUserId(URLS.POST_FETCH_START_URL,Integer.valueOf(userId), this);
+        } else {
+            // get post by user and skills
+            DataServer.getPosts(URLS.POST_FETCH_START_URL,skill_id, Integer.valueOf(userId), this);
+
+        }
+
     }
 
     @Override
@@ -153,10 +185,11 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
         profileContent.setVisibility(View.VISIBLE);
         // TODO: 11/16/2017 set user followed
         try {
-            profilePic.setImageURI(userModel.getImage_uri());
+            //profilePic.setImageURI(userModel.getImage_uri());
+            ImageHandler.loadCircularImage(this,profilePic,userModel.getImage_uri());
             username.setText(userModel.getUsername());
             hapname.setText("@hapname");
-            bio.setText("-----Bio----- Here-----");
+            bio.setText(userModel.bio);
             String _t = String.format(getResources().getString(R.string.profile_posts_count_caption), userModel.getSkills().size());
             postCounts.setText(_t);
             _t = String.format(getResources().getString(R.string.profile_followers_caption), userModel.followers);
@@ -173,10 +206,10 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
 
     }
 
-    private void bindPosts(List<PostResponse> posts) {
+    private void bindPosts(List<PostResponse.Results> posts) {
 
         hideContentLoadingProgress();
-        profilePostAdapter.setPostResponses(posts);
+        profilePostAdapter.appendResult(posts);
 
     }
 
@@ -196,15 +229,15 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
     }
 
     private void showContentLoadingProgress() {
-        if (contentLoadingProgress != null)
-            contentLoadingProgress.setVisibility(View.VISIBLE);
+        loadingShimmer.setVisibility(View.VISIBLE);
+        shimmerFrameLayout.startShimmerAnimation();
+
     }
 
     private void hideContentLoadingProgress() {
-        if (contentLoadingProgress != null)
-            contentLoadingProgress.setVisibility(View.GONE);
+        if(loadingShimmer!=null)
+            loadingShimmer.setVisibility(View.GONE);
     }
-
     private void showCategoryLoadingProgress() {
         if (categoryLoadingProgress != null)
             categoryLoadingProgress.setVisibility(View.VISIBLE);
@@ -229,13 +262,15 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
     }
 
     @Override
-    public void onPostFetched(List<PostResponse> postResponses) {
-        if (postResponses.size() > 0) {
+    public void onPostFetched(PostResponse postResponses) {
+
+        if (postResponses.results.size() > 0) {
             emptyMessage.setVisibility(View.GONE);
         } else {
             emptyMessage.setVisibility(View.VISIBLE);
         }
-        bindPosts(postResponses);
+        bindPosts(postResponses.results);
+
     }
 
     @Override
@@ -254,13 +289,15 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
     }
 
     private void setFollowState(boolean state){
+
         if(state){
-            followBtn.setText("Following");
+            followBtn.setText(TICK_TEXT+" Following");
             followed = true;
         }else{
             followBtn.setText("Follow");
             followed = false;
         }
+
     }
 
 }

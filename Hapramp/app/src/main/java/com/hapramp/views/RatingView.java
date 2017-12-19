@@ -55,7 +55,7 @@ public class RatingView extends FrameLayout implements VotePostCallback {
         @Override
         public void run() {
             ratingView.setVisibility(GONE);
-            //update App server with the vote
+            //update App server with the myVote
             updateAppServer();
         }
     };
@@ -274,7 +274,7 @@ public class RatingView extends FrameLayout implements VotePostCallback {
 
     private void updateAppServer() {
 
-        if (!isVoted)
+        if (!isVoted && mRate>0)
             DataServer.votePost(mPostId, new VoteRequestBody(mRate), this);
 
     }
@@ -289,5 +289,9 @@ public class RatingView extends FrameLayout implements VotePostCallback {
     public void onPostVoteError() {
         mRate = 0;
         Toast.makeText(mContext, "Cannot Vote!", Toast.LENGTH_LONG).show();
+    }
+
+    public String getRating() {
+        return String.valueOf(mRate);
     }
 }

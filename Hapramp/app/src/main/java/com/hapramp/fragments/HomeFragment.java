@@ -3,24 +3,29 @@ package com.hapramp.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.hapramp.activity.ProfileActivity;
 import com.hapramp.adapters.CategoryRecyclerAdapter;
 import com.hapramp.adapters.PostsRecyclerAdapter;
 import com.hapramp.R;
 import com.hapramp.activity.DetailedPostActivity;
 import com.hapramp.api.DataServer;
+import com.hapramp.api.URLS;
 import com.hapramp.interfaces.FetchSkillsResponse;
 import com.hapramp.interfaces.LikePostCallback;
 import com.hapramp.interfaces.PostFetchCallback;
@@ -28,6 +33,7 @@ import com.hapramp.logger.L;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.models.response.SkillsModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.utils.ViewItemDecoration;
 
 import java.util.List;
 
@@ -35,26 +41,29 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class HomeFragment extends Fragment implements PostFetchCallback, FetchSkillsResponse, CategoryRecyclerAdapter.OnCategoryItemClickListener, PostsRecyclerAdapter.OnPostElementsClickListener, LikePostCallback {
+
+public class HomeFragment extends Fragment implements PostFetchCallback, FetchSkillsResponse, CategoryRecyclerAdapter.OnCategoryItemClickListener, PostsRecyclerAdapter.postListener, LikePostCallback {
 
     @BindView(R.id.homeRv)
-    RecyclerView homeRv;
+    RecyclerView postsRecyclerView;
     Unbinder unbinder;
-    @BindView(R.id.contentLoadingProgress)
-    ProgressBar contentLoadingProgress;
+    @BindView(R.id.shimmer_view_container)
+    ShimmerFrameLayout shimmerFrameLayout;
+    @BindView(R.id.loadingShimmer)
+    View loadingShimmer;
     @BindView(R.id.emptyMessage)
     TextView emptyMessage;
     @BindView(R.id.sectionsRv)
     RecyclerView sectionsRv;
-    @BindView(R.id.categoryLoadingProgress)
-    ProgressBar categoryLoadingProgress;
+
     private PostsRecyclerAdapter recyclerAdapter;
     private Context mContext;
-    private int category;
+    private PostResponse currentPostReponse;
+    private int currentSelectedSkillId;
+
     private CategoryRecyclerAdapter categoryRecyclerAdapter;
+    private LinearLayoutManager layoutManager;
+    private ViewItemDecoration viewItemDecoration;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -63,8 +72,6 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        recyclerAdapter = new PostsRecyclerAdapter(mContext);
-        recyclerAdapter.setPostElementsClickListener(this);
     }
 
     @Override
@@ -75,12 +82,13 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
         unbinder = ButterKnife.bind(this, view);
         initCategoryView();
         return view;
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
-       // fetchCategories();
+        // fetchCategories();
         fetchPosts(0);
     }
 
@@ -88,8 +96,19 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
         super.onViewCreated(view, savedInstanceState);
-        homeRv.setLayoutManager(new LinearLayoutManager(mContext));
-        homeRv.setAdapter(recyclerAdapter);
+        layoutManager = new LinearLayoutManager(mContext);
+        postsRecyclerView.setLayoutManager(layoutManager);
+
+        Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
+        viewItemDecoration = new ViewItemDecoration(drawable);
+
+        recyclerAdapter = new PostsRecyclerAdapter(mContext, postsRecyclerView);
+        recyclerAdapter.setListener(this);
+        postsRecyclerView.addItemDecoration(viewItemDecoration);
+        postsRecyclerView.setAdapter(recyclerAdapter);
+        postsRecyclerView.setNestedScrollingEnabled(false);
+        attachListeners();
+
     }
 
     private void initCategoryView() {
@@ -99,56 +118,61 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
         sectionsRv.setAdapter(categoryRecyclerAdapter);
 
         List<SkillsModel> skillsModels = SkillsModel.marshelSkills(HaprampPreferenceManager.getInstance().getUser().skills);
-        skillsModels.add(0,new SkillsModel(0,"All","",""));
+        skillsModels.add(0, new SkillsModel(0, "All", "", ""));
         categoryRecyclerAdapter.setCategories(skillsModels);
-        hideCategoryLoadingProgress();
+    }
 
+    private void attachListeners() {
+
+//        firstVisibleInListview = layoutManager.findFirstVisibleItemPosition();
+//
+//        postsRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//
+//                int currentFirstVisible = layoutManager.findFirstVisibleItemPosition();
+//
+//                if(currentFirstVisible > firstVisibleInListview) {
+//                    // Scrolling Up: Hide the Category Section
+//                    sectionsRv.animate().translationY(-100).start();
+//                }else {
+//                    // Scrolling Up: Show the Category Section
+//                    sectionsRv.animate().translationY(0).start();
+//                }
+//
+//            }
+//        });
     }
 
     @Override
     public void onCategoryClicked(int id) {
 
-        L.D.m("Category", " clicked :"+id);
+        currentSelectedSkillId = id;
         fetchPosts(id);
 
     }
 
-    private void fetchCategories() {
-        showCategoryLoadingProgress();
-        DataServer.fetchSkills(this);
-    }
-
     @Override
     public void onSkillsFetched(List<SkillsModel> skillsModels) {
-        hideCategoryLoadingProgress();
-        skillsModels.add(0,new SkillsModel(0,"All","",""));
+        skillsModels.add(0, new SkillsModel(0, "All", "", ""));
         categoryRecyclerAdapter.setCategories(skillsModels);
     }
 
     @Override
     public void onSkillFetchError() {
-        hideCategoryLoadingProgress();
+
     }
 
-
     private void showContentLoadingProgress() {
-        if (contentLoadingProgress != null)
-            contentLoadingProgress.setVisibility(View.VISIBLE);
+        loadingShimmer.setVisibility(View.VISIBLE);
+        shimmerFrameLayout.startShimmerAnimation();
+
     }
 
     private void hideContentLoadingProgress() {
-        if (contentLoadingProgress != null)
-            contentLoadingProgress.setVisibility(View.GONE);
-    }
-
-    private void showCategoryLoadingProgress() {
-        if (categoryLoadingProgress != null)
-            categoryLoadingProgress.setVisibility(View.VISIBLE);
-    }
-
-    private void hideCategoryLoadingProgress() {
-        if (categoryLoadingProgress != null)
-            categoryLoadingProgress.setVisibility(View.GONE);
+        if(loadingShimmer!=null)
+            loadingShimmer.setVisibility(View.GONE);
     }
 
 
@@ -159,44 +183,63 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
         showContentLoadingProgress();
 
         if (id == 0) {
-            DataServer.getPosts(this);
+            DataServer.getPosts(URLS.POST_FETCH_START_URL, this);
         } else {
-            DataServer.getPosts(id, this);
+            DataServer.getPosts(URLS.POST_FETCH_START_URL, id, this);
+        }
+
+    }
+
+    private void loadMore(int id) {
+
+        if (currentPostReponse.next.length() == 0)
+            return;
+
+        if (id == 0) {
+            DataServer.getPosts(currentPostReponse.next, this);
+        } else {
+            DataServer.getPosts(currentPostReponse.next, id, this);
         }
 
     }
 
     @Override
-    public void onPostFetched(List<PostResponse> postResponses) {
-        hideContentLoadingProgress();
-        if (postResponses.size() > 0) {
+    public void onPostFetched(PostResponse postResponses) {
+
+        //todo: Don`t reverse the list. It should be modified by server end
+        //Collections.reverse(postResponses);
+        currentPostReponse = postResponses;
+        // append Result
+        if (postResponses.results.size() > 0) {
             hideErrorMessage();
             showContent();
-            recyclerAdapter.setPostResponses(postResponses);
+            recyclerAdapter.appendResult(postResponses.results);
         } else {
             showErrorMessage();
             hideContent();
         }
 
+        hideContentLoadingProgress();
+
     }
 
     private void showContent() {
-        if(homeRv!=null)
-            homeRv.setVisibility(View.VISIBLE);
+        if (postsRecyclerView != null)
+            postsRecyclerView.setVisibility(View.VISIBLE);
     }
 
     private void hideContent() {
 
-        if(homeRv!=null)
-            homeRv.setVisibility(View.GONE);
+        if (postsRecyclerView != null)
+            postsRecyclerView.setVisibility(View.GONE);
     }
 
-    private void showErrorMessage(){
+    private void showErrorMessage() {
         if (emptyMessage != null)
             emptyMessage.setVisibility(View.VISIBLE);
     }
 
-    private void hideErrorMessage(){
+    private void hideErrorMessage() {
         if (emptyMessage != null)
             emptyMessage.setVisibility(View.GONE);
     }
@@ -222,14 +265,18 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
 
 
     @Override
-    public void onReadMoreTapped(PostResponse postResponse) {
+    public void onReadMoreTapped(PostResponse.Results postResponse) {
+
         Intent intent = new Intent(mContext, DetailedPostActivity.class);
-        intent.putExtra("isVoted",postResponse.is_voted);
-        intent.putExtra("vote",postResponse.current_vote);
-        intent.putExtra("username",postResponse.getUser().getFull_name());
-        intent.putExtra("mediaUri",postResponse.getMedia_uri());
-        intent.putExtra("content",postResponse.getContent());
-        intent.putExtra("postId",String.valueOf(postResponse.getId()));
+        intent.putExtra("isVoted", postResponse.is_voted);
+        intent.putExtra("vote", postResponse.current_vote);
+        intent.putExtra("username", postResponse.user.username);
+        intent.putExtra("mediaUri", postResponse.media_uri);
+        intent.putExtra("content", postResponse.content);
+        intent.putExtra("postId", String.valueOf(postResponse.id));
+        intent.putExtra("userDpUrl", postResponse.user.image_uri);
+        intent.putExtra("totalVotes", String.valueOf(postResponse.vote_sum));
+
         mContext.startActivity(intent);
     }
 
@@ -237,19 +284,29 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     public void onUserInfoTapped(int userId) {
         // redirect to profile page
         Intent intent = new Intent(mContext, ProfileActivity.class);
-        intent.putExtra("userId",String.valueOf(userId));
+        intent.putExtra("userId", String.valueOf(userId));
         startActivity(intent);
 
     }
 
     @Override
+    public void onLoadMore() {
+        loadMore(currentSelectedSkillId);
+    }
+
+    @Override
+    public void onOverflowIconTapped(View view, int postId, int position) {
+        // do nothing...
+    }
+
+    @Override
     public void onPostLiked(int postId) {
-        L.D.m("Home Fragment","liked the post");
+        L.D.m("Home Fragment", "liked the post");
     }
 
     @Override
     public void onPostLikeError() {
-        L.D.m("Home Fragment","unable to like the post");
+        L.D.m("Home Fragment", "unable to like the post");
     }
 
 }

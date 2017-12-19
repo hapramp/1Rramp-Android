@@ -12,6 +12,7 @@ import com.hapramp.interfaces.FetchUserCallback;
 import com.hapramp.interfaces.FollowUserCallback;
 import com.hapramp.interfaces.FullUserDetailsCallback;
 import com.hapramp.interfaces.LikePostCallback;
+import com.hapramp.interfaces.OnPostDeleteCallback;
 import com.hapramp.interfaces.OnSkillsUpdateCallback;
 import com.hapramp.interfaces.OrgUpdateCallback;
 import com.hapramp.interfaces.OrgsFetchCallback;
@@ -19,6 +20,8 @@ import com.hapramp.interfaces.PostCreateCallback;
 import com.hapramp.interfaces.PostFetchCallback;
 import com.hapramp.interfaces.UserBioUpdateRequestCallback;
 import com.hapramp.interfaces.UserDpUpdateRequestCallback;
+import com.hapramp.interfaces.UserFetchCallback;
+import com.hapramp.interfaces.VoteDeleteCallback;
 import com.hapramp.interfaces.VotePostCallback;
 import com.hapramp.logger.L;
 import com.hapramp.models.UserResponse;
@@ -75,7 +78,7 @@ public class DataServer {
 
     }
 
-    public static void resetAPI(){
+    public static void resetAPI() {
         haprampAPI = null;
     }
 
@@ -101,6 +104,7 @@ public class DataServer {
                 callback.onUserFetchedError();
             }
         });
+
     }
 
     public static void createUser(CreateUserRequest createUserRequest, final CreateUserCallback createUserCallback) {
@@ -114,6 +118,7 @@ public class DataServer {
                     createUserCallback.onUserCreated(response.body());
                 } else {
                     GeneralErrorModel error = ErrorUtils.parseError(response);
+                    createUserCallback.onFailedToCreateUser(error.getMessage());
                     L.D.m(TAG, "Create Error " + error.toString());
                 }
             }
@@ -121,9 +126,10 @@ public class DataServer {
             @Override
             public void onFailure(Call<CreateUserReponse> call, Throwable t) {
                 L.D.m(TAG, "Failure : " + t.toString());
-                createUserCallback.onFailedToCreateUser();
+                createUserCallback.onFailedToCreateUser("Something Went Wrong!!");
             }
         });
+
     }
 
     public static void getOrgs(final OrgsFetchCallback callback) {
@@ -214,20 +220,20 @@ public class DataServer {
                 });
     }
 
-    public static void getPosts(int skills_id, final PostFetchCallback callback) {
+    public static void getPosts(String url , int skills_id, final PostFetchCallback callback) {
 
         if (skills_id == 0) {
-            getPosts(callback);
+            getPosts(url,callback);
             return;
         }
 
         L.D.m(TAG, "Fetching posts by skills...");
 
         getService()
-                .getPostsBySkills(skills_id)
-                .enqueue(new Callback<List<PostResponse>>() {
+                .getPostsBySkills(url,skills_id)
+                .enqueue(new Callback<PostResponse>() {
                     @Override
-                    public void onResponse(Call<List<PostResponse>> call, Response<List<PostResponse>> response) {
+                    public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
                         if (response.isSuccessful()) {
                             L.D.m(TAG, "Posts: " + response.body().toString());
                             callback.onPostFetched(response.body());
@@ -238,54 +244,22 @@ public class DataServer {
                     }
 
                     @Override
-                    public void onFailure(Call<List<PostResponse>> call, Throwable t) {
+                    public void onFailure(Call<PostResponse> call, Throwable t) {
                         callback.onPostFetchError();
                         L.D.m(TAG, "Post Fetch Error " + t.toString());
                     }
                 });
     }
 
-    public static void getPosts(int skills_id, String userId, final PostFetchCallback callback) {
-
-        if (skills_id == 0) {
-            getPosts(callback);
-            return;
-        }
-
-        L.D.m(TAG, "Fetching posts by skills...");
-
-        getService()
-                .getPostsBySkillsAndUserId(skills_id, userId)
-                .enqueue(new Callback<List<PostResponse>>() {
-                    @Override
-                    public void onResponse(Call<List<PostResponse>> call, Response<List<PostResponse>> response) {
-                        if (response.isSuccessful()) {
-                            L.D.m(TAG, "Posts: " + response.body().toString());
-                            callback.onPostFetched(response.body());
-                        } else {
-                            callback.onPostFetchError();
-                            L.E.m(TAG, "Error: " + ErrorUtils.parseError(response));
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<PostResponse>> call, Throwable t) {
-                        callback.onPostFetchError();
-                        L.D.m(TAG, "Post Fetch Error " + t.toString());
-                    }
-                });
-    }
-
-    public static void getPosts(final PostFetchCallback callback) {
+    public static void getPosts(final String url, final PostFetchCallback callback) {
 
         L.D.m(TAG, "Fetching posts...");
 
-        getService().getAlltPosts()
-                .enqueue(new Callback<List<PostResponse>>() {
+        getService().getAlltPosts(url)
+                .enqueue(new Callback<PostResponse>() {
                     @Override
-                    public void onResponse(Call<List<PostResponse>> call, Response<List<PostResponse>> response) {
+                    public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
                         if (response.isSuccessful()) {
-                            L.D.m(TAG, "Posts: " + response.body().toString());
                             callback.onPostFetched(response.body());
                         } else {
                             L.E.m(TAG, "Error: " + ErrorUtils.parseError(response).toString());
@@ -294,12 +268,65 @@ public class DataServer {
                     }
 
                     @Override
-                    public void onFailure(Call<List<PostResponse>> call, Throwable t) {
+                    public void onFailure(Call<PostResponse> call, Throwable t) {
 
                         L.D.m(TAG, "Post Fetch Error " + t.toString());
                         callback.onPostFetchError();
                     }
                 });
+    }
+
+    public static void getPostsByUserId(final String url, int userId, final PostFetchCallback callback) {
+
+        getService()
+                .getPostsByUserId(url,userId)
+                .enqueue(new Callback<PostResponse>() {
+                    @Override
+                    public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+                        if (response.isSuccessful()) {
+                            L.D.m(TAG, "Posts: " + response.body().toString());
+                            callback.onPostFetched(response.body());
+                        } else {
+                            callback.onPostFetchError();
+                            L.E.m(TAG, "Error: " + ErrorUtils.parseError(response));
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<PostResponse> call, Throwable t) {
+                        callback.onPostFetchError();
+                        L.D.m(TAG, "Post Fetch Error " + t.toString());
+                    }
+                });
+    }
+
+    public static void getPosts(final String url , int skill_id, int user_id, final PostFetchCallback callback) {
+
+        if (skill_id == 0) {
+            getPostsByUserId(url,user_id, callback);
+            return;
+        }
+
+        getService().getPostsBySkillsAndUserId(url,skill_id, user_id)
+                .enqueue(new Callback<PostResponse>() {
+                    @Override
+                    public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+                        if (response.isSuccessful()) {
+                            callback.onPostFetched(response.body());
+                        } else {
+                            L.E.m(TAG, "Error: " + ErrorUtils.parseError(response).toString());
+                            callback.onPostFetchError();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<PostResponse> call, Throwable t) {
+
+                        L.D.m(TAG, "Post Fetch Error " + t.toString());
+                        callback.onPostFetchError();
+                    }
+                });
+
     }
 
     public static void getCompetitions(final CompetitionFetchCallback callback) {
@@ -377,29 +404,6 @@ public class DataServer {
                     public void onFailure(Call<UserModel> call, Throwable t) {
                         callback.onFullUserDetailsFetchError();
                         L.D.m(TAG, "Error:" + t.toString());
-                    }
-                });
-
-    }
-
-    public static void likePost(String postId, LikeBody body, final LikePostCallback callback) {
-
-        getService()
-                .likePost(postId, body)
-                .enqueue(new Callback<PostResponse>() {
-                    @Override
-                    public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
-                        if (response.isSuccessful()) {
-                            callback.onPostLiked(response.body().getId());
-                        } else {
-                            callback.onPostLikeError();
-                            L.D.m(TAG, ErrorUtils.parseError(response).toString());
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<PostResponse> call, Throwable t) {
-                        callback.onPostLikeError();
                     }
                 });
 
@@ -585,4 +589,73 @@ public class DataServer {
 
     }
 
+    public static void deletePost(String post_id, final int position, final OnPostDeleteCallback callback) {
+
+        getService()
+                .deletePost(post_id)
+                .enqueue(new Callback<PostResponse>() {
+                    @Override
+                    public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+                        if (response.isSuccessful()) {
+                            callback.onPostDeleted(position);
+                        } else {
+                            callback.onPostDeleteFailed();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<PostResponse> call, Throwable t) {
+                        callback.onPostDeleteFailed();
+                    }
+                });
+
+
+    }
+
+    public static void requestUser(final int commentPosition, int user_id, final UserFetchCallback callback) {
+
+        L.D.m(TAG, "Fetching user.." + user_id);
+
+        getService()
+                .fetchUser(user_id)
+                .enqueue(new Callback<UserResponse>() {
+                    @Override
+                    public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                        if (response.isSuccessful()) {
+                            callback.onUserFetched(commentPosition, response.body());
+                        } else {
+                            callback.onUserFetchError();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserResponse> call, Throwable t) {
+                        callback.onUserFetchError();
+                    }
+                });
+
+    }
+
+    public static void deleteVote(int postId, final VoteDeleteCallback callback) {
+
+        getService().deleteVote(postId)
+                .enqueue(new Callback<VotePostResponse>() {
+                    @Override
+                    public void onResponse(Call<VotePostResponse> call, Response<VotePostResponse> response) {
+                        if (response.isSuccessful()) {
+                            callback.onVoteDeleted();
+                        } else {
+                            Log.d(TAG,ErrorUtils.parseError(response).toString());
+                            callback.onVoteDeleteError();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<VotePostResponse> call, Throwable t) {
+                        Log.d(TAG,t.toString());
+                        callback.onVoteDeleteError();
+                    }
+                });
+
+    }
 }

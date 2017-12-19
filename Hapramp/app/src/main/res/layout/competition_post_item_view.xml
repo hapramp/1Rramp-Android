@@ -10,11 +10,10 @@
         android:layout_height="?actionBarSize"
         android:background="#ffffff">
 
-        <com.facebook.drawee.view.SimpleDraweeView
+        <ImageView
             android:id="@+id/feed_owner_pic"
             android:layout_width="?actionBarSize"
             android:layout_height="match_parent"
-            fresco:roundAsCircle="true"
             android:padding="8dp" />
 
         <TextView
@@ -56,7 +55,7 @@
 
     </RelativeLayout>
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@+id/featured_image_post"
         android:layout_width="match_parent"
         android:layout_height="196dp"
@@ -104,7 +103,6 @@
             android:maxLines="4"
             android:textStyle="italic"
             android:textSize="16sp"
-            android:text="@string/lorem"
             android:textColor="@color/lightGrey" />
 
         <TextView
@@ -118,7 +116,7 @@
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/likeCount"
+            android:id="@+id/voteCount"
             android:layout_width="wrap_content"
             android:layout_height="64dp"
             android:layout_below="@+id/post_snippet"
@@ -134,7 +132,7 @@
             android:layout_height="64dp"
             android:layout_below="@+id/post_snippet"
             android:layout_marginTop="24dp"
-            android:layout_toEndOf="@+id/likeCount"
+            android:layout_toEndOf="@+id/voteCount"
             android:gravity="center"
             android:text=""
             android:textSize="24sp" />

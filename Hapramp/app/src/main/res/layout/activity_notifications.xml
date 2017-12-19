@@ -30,7 +30,7 @@
     <TextView
         android:id="@+id/notificationsMsg"
         android:textSize="16sp"
-        android:text="No Notifications For You!"
+        android:text="No notifications"
         android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

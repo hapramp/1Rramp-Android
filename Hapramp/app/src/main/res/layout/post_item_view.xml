@@ -1,94 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <RelativeLayout
-        android:clickable="true"
-        android:focusable="true"
         android:id="@+id/post_header_container"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:background="?selectableItemBackgroundBorderless">
+        android:layout_height="64dp"
+        android:background="#ffffff"
+        android:clickable="true"
+        android:focusable="true">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:background="#ffffff"
-            android:layout_height="match_parent"/>
-
-        <com.facebook.drawee.view.SimpleDraweeView
+        <ImageView
+            android:src="@drawable/dance_icon"
             android:id="@+id/feed_owner_pic"
-            android:layout_width="?actionBarSize"
+            android:layout_width="64dp"
             android:layout_height="match_parent"
-            fresco:roundAsCircle="true"
-            android:padding="8dp" />
+            android:padding="12dp" />
+
+        <android.support.v4.widget.Space
+            android:id="@+id/reference_line"
+            android:layout_centerVertical="true"
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
 
         <TextView
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_toEndOf="@+id/feed_owner_pic"
             android:id="@+id/feed_owner_title"
-            android:textStyle="bold"
-            android:text="Ankit Kumar"
+            android:textColor="@color/Black87"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/reference_line"
+            android:layout_toEndOf="@+id/feed_owner_pic"
+            android:text="Ankit Kumar"
+            android:textStyle="bold" />
 
 
         <TextView
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="2dp"
-            android:layout_toEndOf="@+id/feed_owner_pic"
             android:id="@+id/feed_owner_subtitle"
-            android:layout_below="@+id/feed_owner_title"
-            android:text="iiit | 2 days ago"
+            android:textColor="@color/Black54"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/reference_line"
+            android:layout_toEndOf="@+id/feed_owner_pic"
+            android:text="iiit | 2 days ago" />
 
         <com.hapramp.views.ClubTagView
-            android:paddingEnd="8dp"
             android:id="@+id/clubsContainer"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <!--<LinearLayout-->
-            <!--android:layout_alignParentEnd="true"-->
-            <!--android:orientation="horizontal"-->
-            <!--android:id="@+id/clubsContainer"-->
-
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="match_parent"/>-->
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:paddingEnd="8dp" />
 
     </RelativeLayout>
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@+id/featured_image_post"
         android:layout_width="match_parent"
-        android:layout_height="196dp"
+        android:layout_height="wrap_content"
+        android:scaleType="fitCenter"
         android:layout_below="@+id/post_header_container"
-        android:background="#1c81bc" />
-
+        android:visibility="visible" />
 
     <RelativeLayout
         android:id="@+id/post_meta_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/featured_image_post"
-        android:background="#ffffff"
-        android:paddingEnd="16dp"
-        android:paddingStart="16dp"
-        android:paddingTop="24dp">
+        android:background="#ffffff">
 
         <TextView
-            android:visibility="gone"
             android:id="@+id/post_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cheap Romantic Vaccations"
             android:textColor="@color/gradientEndPink"
-            android:textSize="18sp" />
+            android:textSize="16sp"
+            android:paddingTop="8dp"
+            android:paddingStart="8dp"
+            android:text="Travel Photography"
+            android:visibility="gone" />
 
 
         <TextView
@@ -96,29 +86,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/post_title"
-            android:padding="4dp"
+            android:padding="8dp"
             android:text="#hapramp #dance #colors"
             android:textSize="12sp"
-            android:visibility="gone"
-            />
+            android:visibility="visible" />
 
         <TextView
             android:id="@+id/post_snippet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tags"
-            android:layout_marginTop="8dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/sample"
             android:maxLines="4"
-            android:text="@string/lorem"
+            android:minHeight="36dp"
+            android:ellipsize="end"
             android:textColor="@color/lightGrey" />
 
-        <FrameLayout
-            android:id="@+id/faded_edge"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_below="@+id/post_snippet"
-            android:layout_marginTop="-48dp"
-            android:background="@drawable/post_snippet_faded_edge" />
 
         <TextView
             android:id="@+id/readMoreBtn"
@@ -129,106 +114,85 @@
             android:background="@drawable/read_more_bg"
             android:gravity="center"
             android:paddingBottom="8dp"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp"
+            android:paddingEnd="20dp"
+            android:paddingStart="20dp"
             android:paddingTop="8dp"
-            android:text="Read More."
+            android:text="Read More"
             android:textColor="@color/darkGrey"
             android:textSize="14sp" />
 
 
-        <TextView
-            android:id="@+id/likeBtn"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_below="@+id/faded_edge"
-            android:layout_marginTop="24dp"
-            android:gravity="center"
-            android:text=""
-            android:textSize="24sp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_below="@+id/readMoreBtn">
 
-        <TextView
-            android:id="@+id/likeCount"
-            android:layout_width="wrap_content"
-            android:layout_height="64dp"
-            android:layout_below="@+id/faded_edge"
-            android:layout_marginTop="24dp"
-            android:layout_toEndOf="@id/likeBtn"
-            android:gravity="center_vertical"
-            android:text="24" />
+            <TextView
+                android:layout_toEndOf="@+id/starView"
+                android:id="@+id/commentBtn"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="24dp"
+                android:gravity="center"
+                android:text=""
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_toEndOf="@+id/commentBtn"
+                android:id="@+id/commentCount"
+                android:layout_width="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:layout_height="36dp"
+                android:text="0" />
+
+            <TextView
+                android:layout_toEndOf="@+id/commentCount"
+                android:id="@+id/hapcoinBtn"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:textColor="#ffffff"
+                android:background="@drawable/rs_coin_bg"
+                android:text="@string/Rs"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/hapcoins_count"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@+id/hapcoinBtn"
+                android:gravity="center_vertical"
+                android:text="0.0"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/post_overflow_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="8dp"
+                android:text=""
+                android:textSize="24sp"
+                android:visibility="gone" />
+
+            <com.hapramp.views.StarView
+               android:layout_centerVertical="true"
+                android:id="@+id/starView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
 
-        <TextView
-            android:id="@+id/commentBtn"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_below="@+id/faded_edge"
-            android:layout_marginTop="24dp"
-            android:layout_toEndOf="@+id/likeCount"
-            android:gravity="center"
-            android:text=""
-            android:textSize="24sp" />
-
-        <TextView
-            android:id="@+id/commentCount"
-            android:layout_width="wrap_content"
-            android:layout_height="64dp"
-            android:layout_below="@+id/faded_edge"
-            android:layout_marginTop="24dp"
-            android:layout_toEndOf="@id/commentBtn"
-            android:gravity="center_vertical"
-            android:text="24" />
-
-        <TextView
-            android:id="@+id/hapcoinBtn"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_below="@+id/faded_edge"
-            android:layout_marginTop="24dp"
-            android:layout_toEndOf="@+id/commentCount"
-            android:gravity="center"
-            android:text=""
-            android:textSize="24sp" />
-
-        <TextView
-            android:id="@+id/hapcoins_count"
-            android:layout_width="wrap_content"
-            android:layout_height="64dp"
-            android:layout_below="@+id/faded_edge"
-            android:layout_marginTop="24dp"
-            android:layout_toEndOf="@id/hapcoinBtn"
-            android:gravity="center_vertical"
-            android:text="24" />
+        </RelativeLayout>
 
     </RelativeLayout>
 
-    <FrameLayout
-        android:layout_below="@+id/post_meta_container"
-        android:layout_width="match_parent"
-        android:layout_height="16dp"/>
-
-    <com.hapramp.views.RatingView
-        android:layout_centerHorizontal="true"
-        android:visibility="gone"
-        android:id="@+id/ratingView"
-        android:alpha="0"
-        android:layout_marginTop="-64dp"
-        android:layout_below="@+id/featured_image_post"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"/>
-
-    <TextView
-        android:id="@+id/starBtn"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_below="@+id/featured_image_post"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="-24dp"
-        android:background="@drawable/star_post_bg"
-        android:gravity="center"
-        android:padding="8dp"
-        android:text=""
-        android:textColor="#ffffff"
-        android:textSize="24sp" />
 
 </RelativeLayout>

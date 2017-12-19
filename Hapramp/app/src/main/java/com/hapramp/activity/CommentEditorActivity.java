@@ -74,7 +74,7 @@ public class CommentEditorActivity extends AppCompatActivity implements CommentC
 
         String cmnt = commentEt.getText().toString().trim();
         if(cmnt.length()>2) {
-            showProgress("Posting Your Comment...");
+            showProgress("Posting Your Comment..."+postId);
             DataServer.createComment(postId, new CommentBody(cmnt),this);
         }
 

@@ -71,10 +71,12 @@ public class SkillsModel {
     }
 
     public static List<SkillsModel> marshelSkills(List<UserResponse.Skills> skills) {
+
         List<SkillsModel> skillsModels = new ArrayList<>();
         for (UserResponse.Skills s:skills) {
             skillsModels.add(new SkillsModel(s.id,s.name,s.image_uri,s.description));
         }
         return skillsModels;
     }
+
 }

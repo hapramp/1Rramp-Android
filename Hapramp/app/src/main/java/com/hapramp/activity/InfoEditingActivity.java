@@ -65,11 +65,13 @@ public class InfoEditingActivity extends AppCompatActivity implements UserBioUpd
     }
 
     private void saveBio() {
+
         if(validateBio()){
             showProgress("Updating Your Bio...");
             DataServer.updateUserBio(HaprampPreferenceManager.getInstance().getUserId(),
                     new UserBioUpdateRequestBody(bioEt.getText().toString()),this);
         }
+
     }
 
     private boolean validateBio(){
@@ -85,9 +87,11 @@ public class InfoEditingActivity extends AppCompatActivity implements UserBioUpd
 
     @Override
     public void onBioUpdated() {
+
         hideProgress();
         Toast.makeText(this,"Bio Updated !",Toast.LENGTH_LONG).show();
         finish();
+
     }
 
     @Override

@@ -20,11 +20,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.hapramp.R;
+import com.hapramp.utils.FontManager;
 import com.hapramp.utils.Validator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import bxute.FontManager;
 
 public class RegistrationPage2 extends AppCompatActivity {
 
@@ -73,7 +73,7 @@ public class RegistrationPage2 extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(this);
         mAuth = FirebaseAuth.getInstance();
-        materialTypeface = new FontManager(this).getDefault();
+        materialTypeface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
         userIcon.setTypeface(materialTypeface);
         lockIcon.setTypeface(materialTypeface);
         cnfLockIcon.setTypeface(materialTypeface);
@@ -175,7 +175,7 @@ public class RegistrationPage2 extends AppCompatActivity {
                 if(_p.equals(_cp)){
                     return true;
                 }else{
-                    Toast.makeText(this,"Passwords Donot Match!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this,"Passwords do not Match!",Toast.LENGTH_SHORT).show();
                 }
             }else{
                 Toast.makeText(this,"Passwords Too short!",Toast.LENGTH_SHORT).show();
