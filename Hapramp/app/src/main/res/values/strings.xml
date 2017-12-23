@@ -7,8 +7,10 @@
     <string name="profile_followers_caption">%1$d Followers</string>
     <string name="profile_following_count_caption">%1$d Following</string>
     <string name="Rs">\u20B9</string>
+    <string name="earnedHapcoins">\u20B9 %.3f</string>
     <string name="post_limit">%1$d/140</string>
     <string name="star_info">%.1f of %2$d</string>
+    <string name="commentUrl">"http://hapramp.herokuapp.com/api/posts/%1$d/comments?start=1</string>
 
     <string name="sample">Bitcoin uses peer-to-peer technology to operate with no central authority or banks
         managing transactions and the issuing of bitcoins is carried out collectively by the network. Bitcoin is open-source; its design is public, nobody owns or controls Bitcoin and everyone can take part. Through many of its unique properties,

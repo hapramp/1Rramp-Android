@@ -6,7 +6,7 @@
 
     <FrameLayout
         android:visibility="gone"
-        android:background="#e5ffffff"
+        android:background="#e3ffffff"
         android:id="@+id/overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

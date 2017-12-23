@@ -36,10 +36,11 @@
                 android:id="@+id/post_created_count"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
+                android:textColor="@color/Black54"
                 android:layout_gravity="center_vertical|end"
                 android:background="@drawable/haptrofies_count_badges"
                 android:gravity="center"
-                android:text="+0" />
+                android:text="" />
 
             <TextView
                 android:id="@+id/post_created_text"
@@ -73,11 +74,11 @@
             <TextView
                 android:id="@+id/post_rated_count"
                 android:layout_width="36dp"
+                android:textColor="@color/Black54"
                 android:layout_height="36dp"
                 android:layout_gravity="center_vertical|end"
                 android:background="@drawable/hapcoins_count_badge"
                 android:gravity="center"
-                android:text="+0"
                 android:textSize="12sp" />
 
             <TextView
@@ -110,7 +111,6 @@
             android:background="@drawable/earning_fragment_earned_bg"
             android:gravity="center"
             android:textColor="#ffffff"
-            android:text="@string/Rs"
             android:textSize="20sp"
             android:layout_width="84dp"
             android:layout_height="84dp" />

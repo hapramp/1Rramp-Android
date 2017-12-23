@@ -21,6 +21,7 @@ import com.hapramp.interfaces.PostFetchCallback;
 import com.hapramp.interfaces.UserBioUpdateRequestCallback;
 import com.hapramp.interfaces.UserDpUpdateRequestCallback;
 import com.hapramp.interfaces.UserFetchCallback;
+import com.hapramp.interfaces.UserStatsCallback;
 import com.hapramp.interfaces.VoteDeleteCallback;
 import com.hapramp.interfaces.VotePostCallback;
 import com.hapramp.logger.L;
@@ -48,7 +49,8 @@ import com.hapramp.models.response.SkillsModel;
 import com.hapramp.models.response.SkillsUpdateResponse;
 import com.hapramp.models.response.UpdateUserResponse;
 import com.hapramp.models.response.UserModel;
-import com.hapramp.models.response.VotePostResponse;
+import com.hapramp.models.response.PostResponse.Results;
+import com.hapramp.models.response.UserStatsModel;
 
 import java.util.List;
 
@@ -220,17 +222,17 @@ public class DataServer {
                 });
     }
 
-    public static void getPosts(String url , int skills_id, final PostFetchCallback callback) {
+    public static void getPosts(String url, int skills_id, final PostFetchCallback callback) {
 
         if (skills_id == 0) {
-            getPosts(url,callback);
+            getPosts(url, callback);
             return;
         }
 
         L.D.m(TAG, "Fetching posts by skills...");
 
         getService()
-                .getPostsBySkills(url,skills_id)
+                .getPostsBySkills(url, skills_id)
                 .enqueue(new Callback<PostResponse>() {
                     @Override
                     public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
@@ -279,7 +281,7 @@ public class DataServer {
     public static void getPostsByUserId(final String url, int userId, final PostFetchCallback callback) {
 
         getService()
-                .getPostsByUserId(url,userId)
+                .getPostsByUserId(url, userId)
                 .enqueue(new Callback<PostResponse>() {
                     @Override
                     public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
@@ -300,14 +302,14 @@ public class DataServer {
                 });
     }
 
-    public static void getPosts(final String url , int skill_id, int user_id, final PostFetchCallback callback) {
+    public static void getPosts(final String url, int skill_id, int user_id, final PostFetchCallback callback) {
 
         if (skill_id == 0) {
-            getPostsByUserId(url,user_id, callback);
+            getPostsByUserId(url, user_id, callback);
             return;
         }
 
-        getService().getPostsBySkillsAndUserId(url,skill_id, user_id)
+        getService().getPostsBySkillsAndUserId(url, skill_id, user_id)
                 .enqueue(new Callback<PostResponse>() {
                     @Override
                     public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
@@ -455,12 +457,12 @@ public class DataServer {
 
     }
 
-    public static void getComments(String postId, final CommentFetchCallback callback) {
+    public static void getComments(String url, final CommentFetchCallback callback) {
 
         Log.d(TAG, "Fetching comments...");
 
         getService()
-                .getComments(postId)
+                .getComments(url)
                 .enqueue(new Callback<CommentsResponse>() {
                     @Override
                     public void onResponse(Call<CommentsResponse> call, Response<CommentsResponse> response) {
@@ -571,18 +573,18 @@ public class DataServer {
 
         getService()
                 .votePost(postId, body)
-                .enqueue(new Callback<VotePostResponse>() {
+                .enqueue(new Callback<PostResponse.Results>() {
                     @Override
-                    public void onResponse(Call<VotePostResponse> call, Response<VotePostResponse> response) {
+                    public void onResponse(Call<PostResponse.Results> call, Response<PostResponse.Results> response) {
                         if (response.isSuccessful()) {
-                            callback.onPostVoted();
+                            callback.onPostVoted(response.body());
                         } else {
                             callback.onPostVoteError();
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<VotePostResponse> call, Throwable t) {
+                    public void onFailure(Call<PostResponse.Results> call, Throwable t) {
                         callback.onPostVoteError();
                     }
                 });
@@ -639,21 +641,42 @@ public class DataServer {
     public static void deleteVote(int postId, final VoteDeleteCallback callback) {
 
         getService().deleteVote(postId)
-                .enqueue(new Callback<VotePostResponse>() {
+                .enqueue(new Callback<PostResponse.Results>() {
                     @Override
-                    public void onResponse(Call<VotePostResponse> call, Response<VotePostResponse> response) {
+                    public void onResponse(Call<PostResponse.Results> call, Response<PostResponse.Results> response) {
                         if (response.isSuccessful()) {
-                            callback.onVoteDeleted();
+                            callback.onVoteDeleted(response.body());
                         } else {
-                            Log.d(TAG,ErrorUtils.parseError(response).toString());
+                            Log.d(TAG, ErrorUtils.parseError(response).toString());
                             callback.onVoteDeleteError();
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<VotePostResponse> call, Throwable t) {
-                        Log.d(TAG,t.toString());
+                    public void onFailure(Call<PostResponse.Results> call, Throwable t) {
+                        Log.d(TAG, t.toString());
                         callback.onVoteDeleteError();
+                    }
+                });
+
+    }
+
+    public static void getUserStats(String userId, final UserStatsCallback callback) {
+
+        getService().getUserStats(userId)
+                .enqueue(new Callback<UserStatsModel>() {
+                    @Override
+                    public void onResponse(Call<UserStatsModel> call, Response<UserStatsModel> response) {
+                        if (response.isSuccessful()) {
+                            callback.onUserStatsFetched(response.body());
+                        } else {
+                            callback.onUserStatsFetchError();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserStatsModel> call, Throwable t) {
+                        callback.onUserStatsFetchError();
                     }
                 });
 

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,10 @@ import android.widget.TextView;
 
 import com.hapramp.R;
 import com.hapramp.activity.HowToEarnActivity;
+import com.hapramp.api.DataServer;
+import com.hapramp.interfaces.UserStatsCallback;
+import com.hapramp.models.response.UserStatsModel;
+import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.FontManager;
 
 import butterknife.BindView;
@@ -21,7 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public class EarningFragment extends Fragment {
+public class EarningFragment extends Fragment implements UserStatsCallback {
 
 
     @BindView(R.id.post_created_count)
@@ -46,6 +51,7 @@ public class EarningFragment extends Fragment {
     @BindView(R.id.post_rated_icon)
     TextView postRatedIcon;
 
+    private static String userId;
     public EarningFragment() {
         // Required empty public constructor
     }
@@ -70,11 +76,17 @@ public class EarningFragment extends Fragment {
                 showHowToRedeemPage();
             }
         });
+        userId = HaprampPreferenceManager.getInstance().getUserId();
+        fetchUserStats();
     }
 
     private void showHowToRedeemPage() {
         Intent intent = new Intent(getActivity(), HowToEarnActivity.class);
         startActivity(intent);
+    }
+
+    private void fetchUserStats(){
+        DataServer.getUserStats(userId,this);
     }
 
     @Override
@@ -83,4 +95,19 @@ public class EarningFragment extends Fragment {
         unbinder.unbind();
     }
 
+    @Override
+    public void onUserStatsFetched(UserStatsModel stats) {
+        bindStats(stats);
+    }
+
+    private void bindStats(UserStatsModel stats) {
+        postCreatedCount.setText(String.valueOf(stats.posts));
+        postRatedCount.setText(String.valueOf(stats.rated));
+        earnedBadge.setText(String.format(getResources().getString(R.string.earnedHapcoins),stats.hapcoins));
+    }
+
+    @Override
+    public void onUserStatsFetchError() {
+
+    }
 }

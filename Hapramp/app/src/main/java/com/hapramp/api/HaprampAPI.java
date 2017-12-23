@@ -23,6 +23,7 @@ import com.hapramp.models.response.SkillsModel;
 import com.hapramp.models.response.SkillsUpdateResponse;
 import com.hapramp.models.response.UpdateUserResponse;
 import com.hapramp.models.response.UserModel;
+import com.hapramp.models.response.UserStatsModel;
 import com.hapramp.models.response.VotePostResponse;
 
 import java.util.List;
@@ -98,8 +99,8 @@ public interface HaprampAPI {
     @POST("posts/{post_id}/comments")
     Call<CommentCreateResponse> createComment(@Path("post_id") String postId , @Body CommentBody body);
 
-    @GET("posts/{post_id}/comments")
-    Call<CommentsResponse> getComments(@Path("post_id") String post_id);
+    @GET
+    Call<CommentsResponse> getComments(@Url String url);
 
     @GET
     Call<PostResponse> getPostsBySkillsAndUserId(@Url String url, @Query("skills_or") int skills_id,@Query("user_id") int userId);
@@ -117,10 +118,12 @@ public interface HaprampAPI {
     Call<UserResponse> updateUserBio(@Path("user_id") String userId,@Body UserBioUpdateRequestBody body);
 
     @POST("posts/{post_id}/votes")
-    Call<VotePostResponse> votePost(@Path("post_id") String postId , @Body VoteRequestBody body);
+    Call<PostResponse.Results> votePost(@Path("post_id") String postId , @Body VoteRequestBody body);
 
     @DELETE("posts/{post_id}/votes")
-    Call<VotePostResponse> deleteVote(@Path("post_id") int postId);
+    Call<PostResponse.Results> deleteVote(@Path("post_id") int postId);
 
+    @GET("users/{user_id}/stats")
+    Call<UserStatsModel> getUserStats(@Path("user_id") String userId);
 
 }

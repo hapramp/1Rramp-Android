@@ -81,15 +81,9 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         unbinder = ButterKnife.bind(this, view);
         initCategoryView();
+        fetchPosts(0);
         return view;
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        // fetchCategories();
-        fetchPosts(0);
     }
 
     @Override
@@ -275,7 +269,8 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
         intent.putExtra("content", postResponse.content);
         intent.putExtra("postId", String.valueOf(postResponse.id));
         intent.putExtra("userDpUrl", postResponse.user.image_uri);
-        intent.putExtra("totalVotes", String.valueOf(postResponse.vote_sum));
+        intent.putExtra("totalVoteSum", String.valueOf(postResponse.vote_sum));
+        intent.putExtra("totalUserVoted",String.valueOf(postResponse.vote_count));
 
         mContext.startActivity(intent);
     }

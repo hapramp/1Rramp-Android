@@ -70,7 +70,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <com.facebook.drawee.view.SimpleDraweeView
+            <ImageView
                 android:id="@+id/featured_image_post"
                 android:layout_width="match_parent"
                 android:layout_height="196dp"
@@ -120,57 +120,66 @@
                     android:layout_below="@+id/shareWithFriendBtn">
 
                     <TextView
-                        android:id="@+id/starIcon"
-                        android:layout_width="32dp"
-                        android:layout_height="64dp"
-                        android:gravity="center"
-                        android:text=""
-                        android:textSize="24sp" />
-
-                    <TextView
-                        android:id="@+id/voteCount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="64dp"
-                        android:layout_toEndOf="@id/starIcon"
-                        android:gravity="center_vertical"
-                        android:text="24" />
-
-
-                    <TextView
+                        android:layout_toEndOf="@+id/starView"
                         android:id="@+id/commentBtn"
-                        android:layout_width="32dp"
-                        android:layout_height="64dp"
-                        android:layout_toEndOf="@+id/voteCount"
-                        android:layout_marginLeft="32dp"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="24dp"
                         android:gravity="center"
                         android:text=""
                         android:textSize="24sp" />
 
                     <TextView
+                        android:layout_toEndOf="@+id/commentBtn"
                         android:id="@+id/commentCount"
                         android:layout_width="wrap_content"
-                        android:layout_height="64dp"
-                        android:layout_toEndOf="@id/commentBtn"
-                        android:gravity="center_vertical"
+                        android:layout_marginStart="8dp"
+                        android:layout_centerVertical="true"
+                        android:gravity="center"
+                        android:layout_height="36dp"
                         android:text="0" />
 
                     <TextView
-                        android:id="@+id/hapcoinBtn"
-                        android:layout_width="32dp"
-                        android:layout_height="64dp"
                         android:layout_toEndOf="@+id/commentCount"
+                        android:id="@+id/hapcoinBtn"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_centerVertical="true"
                         android:gravity="center"
-                        android:layout_marginLeft="32dp"
+                        android:textColor="#ffffff"
+                        android:background="@drawable/rs_coin_bg"
                         android:text="@string/Rs"
-                        android:textSize="24sp" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/hapcoins_count"
                         android:layout_width="wrap_content"
-                        android:layout_height="64dp"
-                        android:layout_toEndOf="@id/hapcoinBtn"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_toEndOf="@+id/hapcoinBtn"
                         android:gravity="center_vertical"
-                        android:text="0" />
+                        android:text="0.0"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/post_overflow_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="8dp"
+                        android:text=""
+                        android:textSize="24sp"
+                        android:visibility="gone" />
+
+                    <com.hapramp.views.StarView
+                        android:layout_centerVertical="true"
+                        android:id="@+id/starView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
 
                 </RelativeLayout>
 
@@ -227,32 +236,6 @@
                 android:layout_below="@+id/writeCommentComment"
                 android:layout_marginEnd="0dp"
                 android:layout_marginStart="0dp" />
-
-            <com.hapramp.views.RatingView
-                android:layout_centerHorizontal="true"
-                android:visibility="gone"
-                android:id="@+id/ratingView"
-                android:alpha="0"
-                android:layout_marginTop="-64dp"
-                android:layout_below="@+id/featured_image_post"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"/>
-
-            <TextView
-                android:focusable="true"
-                android:clickable="true"
-                android:id="@+id/starBtn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_below="@+id/featured_image_post"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="-24dp"
-                android:background="@drawable/star_post_bg"
-                android:gravity="center"
-                android:padding="8dp"
-                android:text=""
-                android:textColor="#ffffff"
-                android:textSize="24sp" />
 
         </RelativeLayout>
 

@@ -27,7 +27,7 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.ViewItemDecoration;
-import com.hapramp.views.RatingView;
+import com.hapramp.views.StarView;
 
 import java.util.List;
 
@@ -35,6 +35,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DetailedPostActivity extends AppCompatActivity implements CommentFetchCallback, UserFetchCallback {
+
 
     @BindView(R.id.closeBtn)
     TextView closeBtn;
@@ -54,10 +55,6 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
     TextView postSnippet;
     @BindView(R.id.shareWithFriendBtn)
     TextView shareWithFriendBtn;
-    @BindView(R.id.starIcon)
-    TextView startIcon;
-    @BindView(R.id.voteCount)
-    TextView voteCount;
     @BindView(R.id.commentBtn)
     TextView commentBtn;
     @BindView(R.id.commentCount)
@@ -66,6 +63,10 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
     TextView hapcoinBtn;
     @BindView(R.id.hapcoins_count)
     TextView hapcoinsCount;
+    @BindView(R.id.post_overflow_icon)
+    TextView postOverflowIcon;
+    @BindView(R.id.starView)
+    StarView starView;
     @BindView(R.id.post_meta_container)
     RelativeLayout postMetaContainer;
     @BindView(R.id.commentsCaption)
@@ -78,10 +79,6 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
     RelativeLayout writeCommentComment;
     @BindView(R.id.commentsRecyclerView)
     RecyclerView commentsRecyclerView;
-    @BindView(R.id.starBtn)
-    TextView starBtn;
-    @BindView(R.id.ratingView)
-    RatingView ratingView;
     private String mContent;
     private String mMediaUri;
     private String mUserName;
@@ -90,10 +87,13 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
     private boolean isVoted;
     private int mVote;
     private String dpUrl;
-    private String totalVotes;
-    private List<CommentsResponse.Comments> comments;
+    private String totalVoteSum;
+    private List<CommentsResponse.Results> comments;
     private int ITEM_DECORATION_SPACE = 12;
     private ViewItemDecoration viewItemDecoration;
+    private String totalUserVoted;
+    private String currentCommentUrl;
+    private String moreCommentsAt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,16 +121,15 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
         fetchComments();
     }
 
-
     private void init() {
 
         commentsAdapter = new CommentsAdapter(this);
         commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        Drawable drawable = ContextCompat.getDrawable(this,R.drawable.post_item_divider_view);
+        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.comment_item_divider_view);
         viewItemDecoration = new ViewItemDecoration(drawable);
         commentsRecyclerView.addItemDecoration(viewItemDecoration);
         commentsRecyclerView.setAdapter(commentsAdapter);
-        ratingView.setIntials(postId, isVoted, mVote);
+
 
     }
 
@@ -143,19 +142,20 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
         mUserName = getIntent().getExtras().getString("username");
         postId = getIntent().getExtras().getString("postId");
         dpUrl = getIntent().getExtras().getString("userDpUrl");
-        totalVotes = getIntent().getExtras().getString("totalVotes");
+        totalVoteSum = getIntent().getExtras().getString("totalVoteSum");
+        totalUserVoted = getIntent().getExtras().getString("totalUserVoted");
+        currentCommentUrl = String.format(getResources().getString(R.string.commentUrl),Integer.valueOf(postId));
         //TODO: total income
 
     }
 
-
     private void fetchComments() {
 
-        DataServer.getComments(postId, this);
+        DataServer.getComments(currentCommentUrl, this);
         // reset comments
         commentsAdapter.resetList();
-    }
 
+    }
 
     private void attachListener() {
 
@@ -176,24 +176,17 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
             }
         });
 
-        featuredImagePost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ratingView.addRating();
-            }
-        });
-
-        starBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ratingView.addRating();
-            }
-        });
-
         shareWithFriendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(DetailedPostActivity.this, "Hey Dear! Excited about sharing this :). We are Working for You ", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        starView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                starView.onStarIndicatorTapped();
             }
         });
 
@@ -203,8 +196,6 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
         Typeface t = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
         closeBtn.setTypeface(t);
         overflowBtn.setTypeface(t);
-        startIcon.setTypeface(t);
-        starBtn.setTypeface(t);
         commentBtn.setTypeface(t);
         hapcoinBtn.setTypeface(t);
     }
@@ -213,40 +204,55 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
 
         postSnippet.setText(mContent);
         feedOwnerTitle.setText(mUserName);
-       // featuredImagePost.setImageURI(mMediaUri);
-        ImageHandler.load(this,featuredImagePost,mMediaUri);
-//        feedOwnerPic.setImageURI(dpUrl);
-        ImageHandler.load(this,feedOwnerPic,dpUrl);
+        if(mMediaUri.length()>0){
+            ImageHandler.load(this, featuredImagePost, mMediaUri);
+        }else{
+            featuredImagePost.setVisibility(View.GONE);
+        }
+
+        ImageHandler.loadCircularImage(this, feedOwnerPic, dpUrl);
         feedOwnerSubtitle.setText(mUserName);
-        voteCount.setText(totalVotes);
-        //todo: add the value of post here
         hapcoinsCount.setText("0.0");
-//        writeCommentUserAvatar.setImageURI(HaprampPreferenceManager.getInstance().getUser().image_uri);
-        ImageHandler.load(this,writeCommentUserAvatar,HaprampPreferenceManager.getInstance().getUser().image_uri);
-        ratingView.setIntials(
-                String.valueOf(postId),
-                isVoted,
-                mVote);
+        ImageHandler.load(this, writeCommentUserAvatar, HaprampPreferenceManager.getInstance().getUser().image_uri);
+
+        // initialize the starview
+        starView.setVoteState(
+                new StarView.Vote(
+                        isVoted,
+                        Integer.valueOf(postId),
+                        mVote,
+                        Float.valueOf(totalVoteSum),
+                        Float.valueOf(totalUserVoted)
+                        ));
+
+
+    }
+
+    private void loadMoreComments(){
+
+        if(moreCommentsAt.length()>0)
+            DataServer.getComments(moreCommentsAt, this);
 
     }
 
     @Override
     public void onCommentFetched(CommentsResponse response) {
 
-        prepareComments(response.comments);
-        commentCount.setText(String.valueOf(response.comment_count));
+        prepareComments(response.results);
+        commentCount.setText(String.valueOf(response.results.size()));
+        moreCommentsAt = response.next;
 
     }
 
-    private void prepareComments(List<CommentsResponse.Comments> comments) {
+    private void prepareComments(List<CommentsResponse.Results> comments) {
 
         // fetch all commetns
         // for each comment - request user and merge the infos
         // at the end set the result to recyclerView
         this.comments = comments;
-        for(int i = 0;i<comments.size();i++){
+        for (int i = 0; i < comments.size(); i++) {
             // request user
-            DataServer.requestUser(i,comments.get(i).user_id,this);
+            DataServer.requestUser(i, comments.get(i).user.id, this);
         }
     }
 
@@ -255,39 +261,14 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
 
     }
 
-//
-//    public static void setListViewHeightBasedOnChildren(ListView listView) {
-//
-//        ListAdapter listAdapter = listView.getAdapter();
-//        if (listAdapter == null)
-//            return;
-//
-//        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
-//        int totalHeight = 0;
-//        View view = null;
-//        for (int i = 0; i < listAdapter.getCount(); i++) {
-//            view = listAdapter.getView(i, view, listView);
-//            if (i == 0)
-//                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
-//
-//            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-//            totalHeight += view.getMeasuredHeight();
-//        }
-//
-//        ViewGroup.LayoutParams params = listView.getLayoutParams();
-//        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-//        listView.setLayoutParams(params);
-//
-//    }
-
     @Override
-    public void onUserFetched(int commentPosition , UserResponse response) {
+    public void onUserFetched(int commentPosition, UserResponse response) {
 
         // get the comments and response to create new CommentModel and add to recycler view
 
         commentsAdapter.addComment(new CommentModel(
                 String.valueOf(comments.get(commentPosition).id),
-                String.valueOf(comments.get(commentPosition).user_id),
+                String.valueOf(comments.get(commentPosition).user.id),
                 response.image_uri,
                 response.full_name,
                 comments.get(commentPosition).content,
@@ -298,6 +279,6 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
 
     @Override
     public void onUserFetchError() {
-        Toast.makeText(this,"Error While Fetching Comments!",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Error While Fetching Comments!", Toast.LENGTH_SHORT).show();
     }
 }

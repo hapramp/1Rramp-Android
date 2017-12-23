@@ -21,12 +21,14 @@ import com.hapramp.R;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.VotePostCallback;
 import com.hapramp.models.requests.VoteRequestBody;
+import com.hapramp.models.response.PostResponse;
 import com.hapramp.utils.FontManager;
 
 /**
  * Created by Ankit on 11/17/2017.
  */
 
+@Deprecated
 public class RatingView extends FrameLayout implements VotePostCallback {
 
     private static final long HIDE_RATING_BAR_DELAY = 2000;
@@ -280,7 +282,7 @@ public class RatingView extends FrameLayout implements VotePostCallback {
     }
 
     @Override
-    public void onPostVoted() {
+    public void onPostVoted(PostResponse.Results results) {
         Toast.makeText(mContext, "You Voted : " + mRate, Toast.LENGTH_LONG).show();
         isVoted = true;
     }

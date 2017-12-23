@@ -97,7 +97,12 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
         setupToolbar();
         initObjects();
         attachListeners();
-        fetchCompleteUserInfo();
+
+        if(!HaprampPreferenceManager.getInstance().isUserInfoAvailable()) {
+            fetchCompleteUserInfo();
+        }else{
+            transactFragment(FRAGMENT_HOME);
+        }
 
     }
 
@@ -310,6 +315,7 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
     public void onUserFetched(FetchUserResponse userResponse) {
 
         hideProgress();
+        HaprampPreferenceManager.getInstance().setUserInfoAvailable(true);
         HaprampPreferenceManager.getInstance().setUser(new Gson().toJson(userResponse));
         HaprampPreferenceManager.getInstance().setLoggedIn(true);
         HaprampPreferenceManager.getInstance().setUserId(String.valueOf(userResponse.id));
@@ -327,8 +333,8 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
             }
         }
 
-
     }
+
 
     private void redirectToOrgsPage() {
         hideProgress();

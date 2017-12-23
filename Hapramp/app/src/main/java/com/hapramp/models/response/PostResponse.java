@@ -139,6 +139,8 @@ public class PostResponse {
         public int vote_sum;
         @SerializedName("is_voted")
         public boolean is_voted;
+        @SerializedName("hapcoins")
+        public float hapcoins;
         @SerializedName("current_vote")
         public int current_vote;
         @SerializedName("comment_count")

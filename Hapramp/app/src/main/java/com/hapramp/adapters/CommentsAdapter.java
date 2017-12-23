@@ -73,7 +73,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
 
         public void bind(CommentModel comment){
 
-            ImageHandler.load(mContext,commentUserDp,comment.getUserDpUrl());
+            ImageHandler.loadCircularImage(mContext,commentUserDp,comment.getUserDpUrl());
             commentUserName.setText(comment.getUserName());
             commentTime.setText(comment.getCommentTime());
             content.setText(comment.getComment());

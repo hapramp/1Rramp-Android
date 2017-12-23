@@ -57,60 +57,25 @@ public class HaprampPreferenceManager {
         return preferences.getBoolean("isLoggedIn",false);
     }
 
-    private void setLandingPagesVisited(boolean visited){
-        editor.putBoolean("isLandingPagesViewed",visited);
-        editor.apply();
-    }
-
-    public boolean isLandingPagesVisited() {
-        return preferences.getBoolean("isLandingPagesViewed",true);
-    }
-
     public void saveToken(String token){
         L.D.m("Pref","Saving user token "+token);
         editor.putString("userToken",token);
         editor.apply();
     }
 
+
     public String getUserToken(){
         return preferences.getString("userToken","--no--token--");
     }
 
-    public void saveUserFirstName(String firstname) {
-        editor.putString("ufname",firstname);
+    public void setUserInfoAvailable(boolean available){
+        editor.putBoolean("userInfoAvailable",available);
         editor.apply();
     }
 
-    public void saveUserLastName(String lastname) {
-        editor.putString("ulname",lastname);
-        editor.apply();
-    }
 
-    public String getFname(){
-        return preferences.getString("ufname","");
-    }
-
-    public String getLname(){
-        return preferences.getString("ulname","");
-    }
-
-
-    public void setUserFirstName(String firstname) {
-        editor.putString("fname",firstname);
-        editor.apply();
-    }
-
-    public String getFirstName(){
-        return preferences.getString("fname","");
-    }
-
-    public void setUserLastName(String lastname){
-        editor.putString("lname",lastname);
-        editor.apply();
-    }
-
-    public String getLastName(){
-        return preferences.getString("lname","");
+    public boolean isUserInfoAvailable(){
+        return preferences.getBoolean("userInfoAvailable",false);
     }
 
     public void setUserId(String id){
@@ -123,46 +88,9 @@ public class HaprampPreferenceManager {
         return preferences.getString("userId","");
     }
 
-    public void setUserProfilePicUrl(String profilePic) {
-        editor.putString("profilePic",profilePic);
-        editor.apply();
-    }
-
-    public String getProfilePicUrl(){
-        return preferences.getString("profilePic","");
-    }
-
-    public void setNotificationsCount(int size) {
-
-        editor.putString("noti_c",size+"");
-        editor.apply();
-    }
-
-    public String getNotificationCount(){
-
-        return preferences.getString("noti_c","0");
-    }
-
-    public void incrementNotificationCount() {
-        setNotificationsCount(Integer.parseInt(getNotificationCount())+1);
-    }
-
-    public void setDeviceId(String refreshedToken) {
-        editor.putString("devId",refreshedToken);
-        editor.apply();
-    }
-
-    public String getDeviceId(){
-        return preferences.getString("devId","");
-    }
-
     public void setUserEmail(String s) {
         editor.putString("userEmail",s);
         editor.apply();
-    }
-
-    public String getUserEmail(){
-        return preferences.getString("userEmail","");
     }
 
     public void setUser(String user){

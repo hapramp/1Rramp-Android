@@ -29,7 +29,7 @@ import butterknife.BindView;
 public class CreateButtonView extends FrameLayout {
 
 
-    private static final long REVEAL_DELAY = 600;
+    private static final long REVEAL_DELAY = 1500;
     TextView createArticleBtn;
     TextView createPostBtn;
     TextView plusBtn;
@@ -202,35 +202,35 @@ public class CreateButtonView extends FrameLayout {
     }
 
     private void revealOverlay() {
-        // View to reveal -> ratingBarContainer
-        // width of view
-        int w = overlay.getWidth();
-        // height of view
-        int h = overlay.getHeight();
-
-        // radius of reveal
-        int endRadius = (int) Math.hypot(w, h);
-
-        int cx = w/2;
-        int cy = h - getShiftAmount(24);
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            overlay.setVisibility(View.VISIBLE);
-            Animator revealAnimator = ViewAnimationUtils.createCircularReveal(overlay, cx, cy, 0, endRadius);
-            revealAnimator.setInterpolator(new DecelerateInterpolator(5f));
-            revealAnimator.setDuration(REVEAL_DELAY);
-            revealAnimator.start();
-
-        } else {
+//        // View to reveal -> ratingBarContainer
+//        // width of view
+//        int w = overlay.getWidth();
+//        // height of view
+//        int h = overlay.getHeight();
+//
+//        // radius of reveal
+//        int endRadius = (int) Math.hypot(w, h);
+//
+//        int cx = w/2;
+//        int cy = h - getShiftAmount(24);
+//
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+//            overlay.setVisibility(View.VISIBLE);
+//            Animator revealAnimator = ViewAnimationUtils.createCircularReveal(overlay, cx, cy, 0, endRadius);
+//            revealAnimator.setInterpolator(new DecelerateInterpolator(2f));
+//            revealAnimator.setDuration(REVEAL_DELAY);
+//            revealAnimator.start();
+//
+//        } else {
            overlay.setVisibility(View.VISIBLE);
-        }
+        //}
 
     }
 
     private void revertOverlayReveal(){
         // View to reveal -> ratingBarContainer
         // width of view
-        int w = overlay.getWidth();
+       /* int w = overlay.getWidth();
         // height of view
         int h = overlay.getHeight();
 
@@ -268,9 +268,9 @@ public class CreateButtonView extends FrameLayout {
             });
             revealAnimator.start();
 
-        } else {
-            overlay.setVisibility(View.VISIBLE);
-        }
+        } else {*/
+            overlay.setVisibility(View.GONE);
+        //}
     }
 
     private int getShiftAmount(int dp) {

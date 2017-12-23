@@ -24,6 +24,7 @@ import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.VoteDeleteCallback;
 import com.hapramp.interfaces.VotePostCallback;
 import com.hapramp.models.requests.VoteRequestBody;
+import com.hapramp.models.response.PostResponse;
 import com.hapramp.utils.FontManager;
 
 /**
@@ -50,7 +51,7 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
     };
     private Vote currentState;
     private Vote legacyState;
-
+    private onVoteUpdateCallback onVoteUpdateCallback;
 
     public StarView(@NonNull Context context) {
 
@@ -98,7 +99,7 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
 
     }
 
-    public void setVoteState(Vote voteState) {
+    public StarView setVoteState(Vote voteState) {
 
         this.legacyState = new Vote(
                 voteState.iHaveVoted,
@@ -108,7 +109,11 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
                 voteState.totalVotesSum);
 
         setCurrentState(voteState);
+        return this;
+    }
 
+    public void setOnVoteUpdateCallback(StarView.onVoteUpdateCallback onVoteUpdateCallback) {
+        this.onVoteUpdateCallback = onVoteUpdateCallback;
     }
 
     private void setCurrentState(Vote voteState) {
@@ -203,77 +208,77 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
     }
 
     private void revealRatingBar() {
-        // View to reveal -> ratingBarContainer
-        // width of view
-        int w = ratingBarContainer.getWidth();
-        // height of view
-        int h = ratingBarContainer.getHeight();
-
-        // radius of reveal
-        int endRadius = (int) Math.hypot(w, h);
-
-        int cx = (int) (ratingBarContainer.getX() + REVEAL_START_OFFSET);
-        int cy = (int) (ratingBarContainer.getY()) + ratingBarContainer.getHeight();
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+//        // View to reveal -> ratingBarContainer
+//        // width of view
+//        int w = ratingBarContainer.getWidth();
+//        // height of view
+//        int h = ratingBarContainer.getHeight();
+//
+//        // radius of reveal
+//        int endRadius = (int) Math.hypot(w, h);
+//
+//        int cx = (int) (ratingBarContainer.getX() + REVEAL_START_OFFSET);
+//        int cy = (int) (ratingBarContainer.getY()) + ratingBarContainer.getHeight();
+//
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+//            ratingBarContainer.setVisibility(View.VISIBLE);
+//            Animator revealAnimator = ViewAnimationUtils.createCircularReveal(ratingBarContainer, cx, cy, 0, endRadius);
+//            revealAnimator.setInterpolator(new DecelerateInterpolator(2f));
+//            revealAnimator.setDuration(REVEAL_DELAY);
+//            revealAnimator.start();
+//
+//        }else{
             ratingBarContainer.setVisibility(View.VISIBLE);
-            Animator revealAnimator = ViewAnimationUtils.createCircularReveal(ratingBarContainer, cx, cy, 0, endRadius);
-            revealAnimator.setInterpolator(new DecelerateInterpolator(2f));
-            revealAnimator.setDuration(REVEAL_DELAY);
-            revealAnimator.start();
-
-        }else{
-            ratingBarContainer.setVisibility(View.VISIBLE);
-        }
+        //}
 
 
     }
 
     private void collapseRatingBar() {
 
-        // View to collapse -> ratingBarContainer
-        // width of view
-        int w = ratingBarContainer.getWidth();
-        // height of view
-        int h = ratingBarContainer.getHeight();
-
-        // radius of reveal/collapse
-        int endRadius = (int) Math.hypot(w, h);
-
-        int cx = (int) (ratingBarContainer.getX() + REVEAL_START_OFFSET);
-        int cy = (int) (ratingBarContainer.getY()) + ratingBarContainer.getHeight();
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-
-            Animator revealAnimator = ViewAnimationUtils.createCircularReveal(ratingBarContainer, cx, cy, endRadius, 0);
-            revealAnimator.addListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    ratingBarContainer.setVisibility(GONE);
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
-            });
-            revealAnimator.setInterpolator(new AccelerateInterpolator(2f));
-            revealAnimator.setDuration(REVEAL_DELAY);
-            revealAnimator.start();
-
-        } else {
+//        // View to collapse -> ratingBarContainer
+//        // width of view
+//        int w = ratingBarContainer.getWidth();
+//        // height of view
+//        int h = ratingBarContainer.getHeight();
+//
+//        // radius of reveal/collapse
+//        int endRadius = (int) Math.hypot(w, h);
+//
+//        int cx = (int) (ratingBarContainer.getX() + REVEAL_START_OFFSET);
+//        int cy = (int) (ratingBarContainer.getY()) + ratingBarContainer.getHeight();
+//
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+//
+//            Animator revealAnimator = ViewAnimationUtils.createCircularReveal(ratingBarContainer, cx, cy, endRadius, 0);
+//            revealAnimator.addListener(new Animator.AnimatorListener() {
+//                @Override
+//                public void onAnimationStart(Animator animation) {
+//
+//                }
+//
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+//                    ratingBarContainer.setVisibility(GONE);
+//                }
+//
+//                @Override
+//                public void onAnimationCancel(Animator animation) {
+//
+//                }
+//
+//                @Override
+//                public void onAnimationRepeat(Animator animation) {
+//
+//                }
+//            });
+//            revealAnimator.setInterpolator(new AccelerateInterpolator(2f));
+//            revealAnimator.setDuration(REVEAL_DELAY);
+//            revealAnimator.start();
+//
+//        } else {
             ratingBarContainer.setVisibility(View.GONE);
-        }
+        //}
 
     }
 
@@ -326,23 +331,19 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
     }
 
     private void l(String s) {
-        Log.i("STRV", s);
+     //   Log.i("STRV", s);
     }
 
     private void sendVoteToAppServer() {
-
-        DataServer.votePost(String.valueOf(currentState.postId), new VoteRequestBody((int) currentState.myVote), this);
-
+        onVoteUpdateCallback.onVoted(currentState.postId,(int) currentState.myVote);
     }
 
     private void deleteVoteFromAppServer() {
-
-        DataServer.deleteVote(currentState.postId, this);
-
+        onVoteUpdateCallback.onVoteDeleted(currentState.postId);
     }
 
     @Override
-    public void onPostVoted() {
+    public void onPostVoted(final PostResponse.Results updatedResult) {
         // set new state as the legacy state
         this.legacyState = currentState;
     }
@@ -357,17 +358,16 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
 
     }
 
+
     @Override
-    public void onVoteDeleted() {
-        l("Deleted Vote!");
-        // set new state as the legacy state
-        this.legacyState = currentState;
+    public void onVoteDeleted(PostResponse.Results updatedPost) {
+
     }
 
     @Override
     public void onVoteDeleteError() {
         // re-gain the legacy state
-        l("Vote Cannot Delete!");
+     //   l("Vote Cannot Delete!");
         this.currentState = legacyState;
         setCurrentState(currentState);
     }
@@ -434,4 +434,12 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
                     '}';
         }
     }
+
+    public interface onVoteUpdateCallback{
+
+        void onVoted(int postId, int vote);
+        void onVoteDeleted(int postId);
+
+    }
+
 }
