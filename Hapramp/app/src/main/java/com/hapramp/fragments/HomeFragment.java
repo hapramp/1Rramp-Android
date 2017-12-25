@@ -35,6 +35,7 @@ import com.hapramp.models.response.SkillsModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.ViewItemDecoration;
 
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -201,8 +202,8 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     public void onPostFetched(PostResponse postResponses) {
 
         //todo: Don`t reverse the list. It should be modified by server end
-        //Collections.reverse(postResponses);
         currentPostReponse = postResponses;
+        Collections.reverse(postResponses.results);
         // append Result
         if (postResponses.results.size() > 0) {
             hideErrorMessage();
@@ -304,4 +305,7 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
         L.D.m("Home Fragment", "unable to like the post");
     }
 
+    public void forceReloadData() {
+        fetchPosts(0);
+    }
 }

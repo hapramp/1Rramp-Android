@@ -34,7 +34,7 @@ import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class CreateArticleActivity extends AppCompatActivity implements PostCreateCallback {
+public class CreateArticleActivity extends AppCompatActivity{
 
 
     @BindView(R.id.closeBtn)
@@ -196,7 +196,6 @@ public class CreateArticleActivity extends AppCompatActivity implements PostCrea
                 selectedSkills,
                 1);
 
-        DataServer.createPost(body, this);
 
     }
 
@@ -300,23 +299,6 @@ public class CreateArticleActivity extends AppCompatActivity implements PostCrea
 
         skillsTagView.setText(builder.toString());
 
-    }
-
-
-    @Override
-    public void onPostCreated() {
-        showProgressDialog(false);
-        // clear draft
-        clearDraft();
-        Toast.makeText(this, "Article Created!", Toast.LENGTH_SHORT).show();
-        finish();
-    }
-
-    @Override
-    public void onPostCreateError() {
-        showProgressDialog(false);
-        Toast.makeText(this, "Cannot Create Article!", Toast.LENGTH_SHORT).show();
-        finish();
     }
 
 }

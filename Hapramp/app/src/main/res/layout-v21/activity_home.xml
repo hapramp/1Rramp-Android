@@ -77,6 +77,17 @@
         android:layout_below="@+id/action_bar_container"
         android:background="@drawable/toolbar_shadow" />
 
+    <TextView
+        android:layout_below="@+id/toolbar_drop_shadow"
+        android:id="@+id/postUploadStatus"
+        android:background="#e3ffffff"
+        android:padding="2dp"
+        android:visibility="gone"
+        android:lines="1"
+        android:ellipsize="end"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <include layout="@layout/home_bottom_bar" />
 
     <com.hapramp.views.CreateButtonView

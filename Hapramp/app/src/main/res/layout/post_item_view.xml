@@ -87,7 +87,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/post_title"
             android:padding="8dp"
-            android:text="#hapramp #dance #colors"
             android:textSize="12sp"
             android:visibility="visible" />
 

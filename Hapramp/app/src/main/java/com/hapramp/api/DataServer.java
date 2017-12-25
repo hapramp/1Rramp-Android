@@ -411,7 +411,7 @@ public class DataServer {
 
     }
 
-    public static void createPost(PostCreateBody postCreateBody, final PostCreateCallback callback) {
+    public static void createPost(final String jobId , PostCreateBody postCreateBody, final PostCreateCallback callback) {
 
         getService()
                 .createPost(postCreateBody)
@@ -419,16 +419,16 @@ public class DataServer {
                     @Override
                     public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
                         if (response.isSuccessful()) {
-                            callback.onPostCreated();
+                            callback.onPostCreated(jobId);
                         } else {
                             L.D.m(TAG, ErrorUtils.parseError(response).toString());
-                            callback.onPostCreateError();
+                            callback.onPostCreateError(jobId);
                         }
                     }
 
                     @Override
                     public void onFailure(Call<PostResponse> call, Throwable t) {
-                        callback.onPostCreateError();
+                        callback.onPostCreateError(jobId);
                     }
                 });
 

@@ -1,14 +1,21 @@
 package com.hapramp.activity;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +24,7 @@ import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.adapters.CategoryRecyclerAdapter;
 import com.hapramp.api.DataServer;
+import com.hapramp.controller.PostCreationController;
 import com.hapramp.fragments.CompetitionFragment;
 import com.hapramp.fragments.EarningFragment;
 import com.hapramp.fragments.HomeFragment;
@@ -25,6 +33,7 @@ import com.hapramp.fragments.SettingsFragment;
 import com.hapramp.interfaces.FetchUserCallback;
 import com.hapramp.models.response.FetchUserResponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.views.CreateButtonView;
 
@@ -72,6 +81,14 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
     private final int BOTTOM_MENU_PROFILE = 9;
     private final int BOTTOM_MENU_SETTINGS = 10;
     private final int BOTTOM_MENU_EARNINGS = 11;
+    @BindView(R.id.toolbar_drop_shadow)
+    FrameLayout toolbarDropShadow;
+    @BindView(R.id.postUploadStatus)
+    TextView postUploadStatus;
+    @BindView(R.id.shadow)
+    ImageView shadow;
+    @BindView(R.id.bottombar_container)
+    LinearLayout bottombarContainer;
     private int lastMenuSelection = BOTTOM_MENU_HOME;
 
     private final int FRAGMENT_HOME = 12;
@@ -80,6 +97,7 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
     private final int FRAGMENT_SETTINGS = 15;
     private final int FRAGMENT_EARNINGS = 16;
 
+    private Fragment currentVisibleFragment;
     private Typeface materialTypface;
     private FragmentManager fragmentManager;
     private HomeFragment homeFragment;
@@ -88,6 +106,56 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
     private SettingsFragment settingsFragment;
     private EarningFragment earningFragment;
     private ProgressDialog progressDialog;
+    private PostUploadReceiver postUploadReceiver;
+    private boolean isReceiverRegistered;
+
+    private final Runnable hideStatus = new Runnable() {
+        @Override
+        public void run() {
+            postUploadStatus.setVisibility(View.GONE);
+        }
+    };
+
+    private Handler mHandler = new Handler();
+
+    public class PostUploadReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int type = intent.getExtras().getInt("type");
+            if(type==Constants.BROADCAST_TYPE_STATUS){
+
+                postUploadStatus.setVisibility(View.VISIBLE);
+                String msg = intent.getExtras().getString("msg");
+                postUploadStatus.setText(msg);
+
+            }else if(type == Constants.BROADCAST_TYPE_FINISHED){
+
+                // close the msg bar
+                postUploadStatus.setText("Post Uploaded!");
+                postUploadStatus.setTextColor(Color.GREEN);
+
+  //              postUploadStatus.setVisibility(View.GONE);
+                // load the content again
+                mHandler.postDelayed(hideStatus,2000);
+                if(currentVisibleFragment==homeFragment){
+                    homeFragment.forceReloadData();
+                }
+
+            }else if(type == Constants.BROADCAST_TYPE_ERROR){
+                // close the msg bar
+                postUploadStatus.setText("Post Failed!");
+                postUploadStatus.setTextColor(Color.RED);
+//                postUploadStatus.setVisibility(View.GONE);
+                mHandler.postDelayed(hideStatus,2000);
+
+            }else{
+
+            }
+
+        }
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,10 +166,34 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
         initObjects();
         attachListeners();
 
-        if(!HaprampPreferenceManager.getInstance().isUserInfoAvailable()) {
+        postUploadReceiver = new PostUploadReceiver();
+
+        if (!HaprampPreferenceManager.getInstance().isUserInfoAvailable()) {
             fetchCompleteUserInfo();
-        }else{
+        } else {
             transactFragment(FRAGMENT_HOME);
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (!isReceiverRegistered) {
+            registerReceiver(postUploadReceiver, new IntentFilter(Constants.ACTION_POST_UPLOAD));
+            isReceiverRegistered = true;
+        }
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (isReceiverRegistered) {
+            unregisterReceiver(postUploadReceiver);
+            isReceiverRegistered = false;
         }
 
     }
@@ -115,6 +207,8 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
         settingsFragment = new SettingsFragment();
         earningFragment = new EarningFragment();
         progressDialog = new ProgressDialog(this);
+        // putting the jobs in right state
+        PostCreationController.invalidateJobs();
 
     }
 
@@ -197,6 +291,7 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
         switch (fragment) {
             case FRAGMENT_HOME:
 
+                currentVisibleFragment = homeFragment;
                 fragmentManager.beginTransaction()
                         .replace(R.id.contentPlaceHolder, homeFragment)
                         .commit();
@@ -204,6 +299,7 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
                 break;
             case FRAGMENT_COMPETITION:
 
+                currentVisibleFragment = competitionFragment;
                 fragmentManager.beginTransaction()
                         .replace(R.id.contentPlaceHolder, competitionFragment)
                         .commit();
@@ -211,6 +307,7 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
                 break;
             case FRAGMENT_PROFILE:
 
+                currentVisibleFragment = profileFragment;
                 fragmentManager.beginTransaction()
                         .replace(R.id.contentPlaceHolder, profileFragment)
                         .commit();
@@ -218,6 +315,7 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
                 break;
             case FRAGMENT_SETTINGS:
 
+                currentVisibleFragment = settingsFragment;
                 fragmentManager.beginTransaction()
                         .replace(R.id.contentPlaceHolder, settingsFragment)
                         .commit();
@@ -225,6 +323,8 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
                 break;
 
             case FRAGMENT_EARNINGS:
+
+                currentVisibleFragment = earningFragment;
                 fragmentManager.beginTransaction()
                         .replace(R.id.contentPlaceHolder, earningFragment)
                         .commit();

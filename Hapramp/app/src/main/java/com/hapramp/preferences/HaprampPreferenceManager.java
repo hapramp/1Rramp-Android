@@ -129,4 +129,14 @@ public class HaprampPreferenceManager {
     public String getArticleDraft() {
         return preferences.getString("articleDraft","");
     }
+
+    public boolean isPostingServiceRunning() {
+        return preferences.getBoolean("runningService",false);
+    }
+
+    public void setPostingServiceRunning(boolean running){
+        editor.putBoolean("runningService",running);
+        editor.apply();
+    }
+
 }

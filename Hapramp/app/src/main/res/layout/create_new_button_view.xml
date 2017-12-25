@@ -27,7 +27,7 @@
         android:paddingStart="20dp"
         android:paddingTop="8dp"
         android:text="ARTICLE"
-        android:textColor="@color/Black87"
+        android:textColor="@color/Black38"
         android:textSize="14sp" />
 
     <TextView
@@ -46,7 +46,7 @@
         android:paddingStart="20dp"
         android:paddingTop="8dp"
         android:text="POST"
-        android:textColor="@color/Black87"
+        android:textColor="@color/Black38"
         android:textSize="14sp" />
 
 

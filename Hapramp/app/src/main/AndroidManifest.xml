@@ -76,6 +76,11 @@
             android:name=".activity.InfoEditingActivity"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".activity.HowToEarnActivity"></activity>
+
+        <service android:name=".services.PostJobDispatcherService"/>
+
+        <receiver android:name=".activity.HomeActivity$PostUploadReceiver"/>
+
     </application>
 
 </manifest>

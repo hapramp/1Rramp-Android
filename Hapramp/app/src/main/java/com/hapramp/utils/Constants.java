@@ -15,4 +15,9 @@ public class Constants {
     public static final String userDpFolder = "userProfile";
 
 
+    public static final String ACTION_POST_UPLOAD = "com.hapramp.postupload";
+    public static final int BROADCAST_TYPE_STATUS = 1;
+    public static final int BROADCAST_TYPE_FINISHED = 2;
+    public static final int BROADCAST_TYPE_ERROR = 3;
+
 }
