@@ -9,25 +9,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.hapramp.R;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.utils.SkillsUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Ankit on 12/26/2017.
  */
 
-public class InterestsView extends FrameLayout {
-
-    private ViewGroup rootView;
+public class InterestsView extends FrameLayout{
+    
     private Context mContext;
-    private String[] skills;
-    private ArrayList<Integer> selectedSkills;
+    private ViewGroup parentView;
+    private List<UserModel.Skills> interests;
 
     public InterestsView(@NonNull Context context) {
         super(context);
@@ -50,66 +47,29 @@ public class InterestsView extends FrameLayout {
     private void init() {
 
         View view = LayoutInflater.from(mContext).inflate(R.layout.category_view_container, this);
-        rootView = (ViewGroup) view.findViewById(R.id.viewWrapper);
-        selectedSkills = new ArrayList<>();
-        skills = SkillsUtils.getSkillsSet();
+        parentView = (ViewGroup) view.findViewById(R.id.viewWrapper);
 
     }
 
     private void addViews() {
 
-        for (int i = 0; i < skills.length; i++) {
+        for (int i = 0; i < interests.size(); i++) {
 
             final SkillsItemView view = new SkillsItemView(mContext);
-            view.setSkillTitle(skills[i]);
-            // set selection
-            view.setSelection((selectedSkills.indexOf(SkillsUtils.getSkillIdFromName(skills[i])) > -1));
+            view.setSkillTitle(SkillsUtils.getSkillTitleFromId(interests.get(i).id));
+            view.setSelection(false);
 
-
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    int index = selectedSkills.indexOf(SkillsUtils.getSkillIdFromName(view.getSkill()));
-                    if (index == -1) {
-                        // select it
-                        view.setSelection(true);
-
-                        selectedSkills.add(SkillsUtils.getSkillIdFromName(view.getSkill()));
-
-                    } else {
-                        // de-select it
-                        if (selectedSkills.size() <2) {
-                            // warn for selecting atleast one
-                            Toast.makeText(mContext, "Atleast One Skill Should be There", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        view.setSelection(false);
-                        selectedSkills.remove(index);
-
-                    }
-
-                }
-            });
-
-            rootView.addView(view, i,
+            parentView.addView(view, i,
                     new ViewGroup.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.MATCH_PARENT));
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT));
         }
 
-    }
-
-    public List<Integer> getSelectedSkills() {
-        return selectedSkills;
     }
 
     public void setInterests(List<UserModel.Skills> skills) {
-        for (UserModel.Skills skill : skills) {
-            selectedSkills.add(skill.getId());
-        }
+       this.interests = skills;
         addViews();
     }
-
 
 }

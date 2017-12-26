@@ -1,69 +1,42 @@
 package com.hapramp.fragments;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.hapramp.R;
-import com.hapramp.activity.DetailedPostActivity;
-import com.hapramp.activity.ProfileActivity;
 import com.hapramp.activity.ProfileEditActivity;
 import com.hapramp.adapters.PostsRecyclerAdapter;
 import com.hapramp.adapters.ProfileSkillsRecyclerAdapter;
 import com.hapramp.api.DataServer;
 import com.hapramp.api.URLS;
 import com.hapramp.interfaces.FullUserDetailsCallback;
-import com.hapramp.interfaces.OnPostDeleteCallback;
 import com.hapramp.interfaces.PostFetchCallback;
-import com.hapramp.interfaces.UserDpUpdateRequestCallback;
-import com.hapramp.logger.L;
-import com.hapramp.models.requests.UserDpUpdateRequestBody;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.utils.Constants;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.ViewItemDecoration;
+import com.hapramp.views.InterestsView;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.List;
 
 import butterknife.BindView;
@@ -74,7 +47,7 @@ public class ProfileFragment extends Fragment implements
         FullUserDetailsCallback,
         PostFetchCallback {
 
-    private static final int REQUEST_IMAGE_SELECTOR = 101;
+
     @BindView(R.id.profile_pic)
     ImageView profilePic;
     @BindView(R.id.profile_header_container)
@@ -88,7 +61,7 @@ public class ProfileFragment extends Fragment implements
     @BindView(R.id.edit_btn)
     TextView editBtn;
     @BindView(R.id.bio)
-    TextView bioTextView;
+    TextView bio;
     @BindView(R.id.divider_top)
     FrameLayout dividerTop;
     @BindView(R.id.post_counts)
@@ -103,8 +76,8 @@ public class ProfileFragment extends Fragment implements
     FrameLayout dividerBottom;
     @BindView(R.id.interestCaption)
     TextView interestCaption;
-    @BindView(R.id.sectionsRv)
-    RecyclerView sectionsRv;
+    @BindView(R.id.interestsView)
+    InterestsView interestsView;
     @BindView(R.id.postsCaption)
     TextView postsCaption;
     @BindView(R.id.profilePostRv)
@@ -115,15 +88,11 @@ public class ProfileFragment extends Fragment implements
     ScrollView scroller;
     @BindView(R.id.contentLoadingProgress)
     ProgressBar contentLoadingProgress;
-
     private Context mContext;
-    private ProfileSkillsRecyclerAdapter profileSkillsRecyclerAdapter;
+
     private PostsRecyclerAdapter profilePostAdapter;
-    private FirebaseStorage storage;
-    private Uri uploadedMediaUri;
-    private boolean isMediaUploaded;
     private String dpUrl;
-    private String bio = "";
+    private String mBio = "";
     private ViewItemDecoration viewItemDecoration;
     private Unbinder unbinder;
     private String _t;
@@ -135,6 +104,7 @@ public class ProfileFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -144,16 +114,11 @@ public class ProfileFragment extends Fragment implements
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         unbinder = ButterKnife.bind(this, view);
         init();
-
+        fetchUserDetails();
         return view;
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        fetchUserDetails();
-    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -169,12 +134,6 @@ public class ProfileFragment extends Fragment implements
         viewItemDecoration = new ViewItemDecoration(drawable);
 
         profilePostRv.addItemDecoration(viewItemDecoration);
-
-        // profilePostAdapter.setPostItemActionListener(this);
-        profileSkillsRecyclerAdapter = new ProfileSkillsRecyclerAdapter(mContext);
-        sectionsRv.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
-        sectionsRv.setAdapter(profileSkillsRecyclerAdapter);
-
         profilePostRv.setLayoutManager(new LinearLayoutManager(mContext));
         profilePostRv.setAdapter(profilePostAdapter);
         profilePostRv.setNestedScrollingEnabled(false);
@@ -228,21 +187,24 @@ public class ProfileFragment extends Fragment implements
     @Override
     public void onFullUserDetailsFetched(UserModel userModel) {
 
-        dpUrl = userModel.image_uri;
-        // profilePic.setImageURI(dpUrl);
-        ImageHandler.loadCircularImage(mContext, profilePic, dpUrl);
-        bio = userModel.bio != null ? userModel.bio : "";
-        username.setText(userModel.username);
-        hapname.setText("@hapname");
-        bioTextView.setText(bio);
-//            String _t = String.format(getResources().getString(R.string.profile_posts_count_caption), );
-//            postCounts.setText(_t);
-        _t = String.format(getResources().getString(R.string.profile_followers_caption), userModel.followers);
-        followersCount.setText(_t);
-        _t = String.format(getResources().getString(R.string.profile_following_count_caption), userModel.followings);
-        followingsCount.setText(_t);
-        bindSkillsCategory(userModel.skills);
+        try {
 
+            dpUrl = userModel.image_uri;
+            ImageHandler.loadCircularImage(mContext, profilePic, dpUrl);
+            mBio = userModel.bio != null ? userModel.bio : "";
+            username.setText(userModel.username);
+            hapname.setText("@hapname");
+            bio.setText(mBio);
+            _t = String.format(getResources().getString(R.string.profile_followers_caption), userModel.followers);
+            followersCount.setText(_t);
+            _t = String.format(getResources().getString(R.string.profile_following_count_caption), userModel.followings);
+            followingsCount.setText(_t);
+            Log.d("InterestView","UserData:"+userModel.toString());
+            interestsView.setInterests(userModel.skills);
+
+        } catch (Exception e) {
+
+        }
 
         showContent(true);
 
@@ -267,12 +229,6 @@ public class ProfileFragment extends Fragment implements
     private void bindPosts(List<PostResponse.Results> posts) {
 
         profilePostAdapter.appendResult(posts);
-
-    }
-
-    private void bindSkillsCategory(List<UserModel.Skills> skills) {
-
-        profileSkillsRecyclerAdapter.setCategories(skills);
 
     }
 

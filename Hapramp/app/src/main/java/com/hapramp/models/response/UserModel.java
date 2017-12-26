@@ -118,6 +118,16 @@ public class UserModel {
         public void setDescription(String description) {
             this.description = description;
         }
+
+        @Override
+        public String toString() {
+            return "Skills{" +
+                    "id=" + id +
+                    ", name='" + name + '\'' +
+                    ", image_uri='" + image_uri + '\'' +
+                    ", description='" + description + '\'' +
+                    '}';
+        }
     }
 
     public UserModel(int id, String email, String username, Organization organization, String full_name, List<Skills> skills, int karma, String image_uri, String bio, int hapcoins, List<Clubs> clubs, int followers, int followings) {

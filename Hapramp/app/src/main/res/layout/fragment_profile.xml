@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -178,12 +178,13 @@
                 android:textColor="@color/colorPrimary"
                 android:textSize="16sp" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/sectionsRv"
+            <com.hapramp.views.InterestsView
+                android:id="@+id/interestsView"
                 android:layout_width="match_parent"
-                android:layout_height="96dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/interestCaption"
                 android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 />
 
             <TextView
@@ -192,7 +193,7 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:background="@color/Black12"
-                android:layout_below="@+id/sectionsRv"
+                android:layout_below="@+id/interestsView"
                 android:text="POSTS"
                 android:textStyle="bold"
                 android:id="@+id/postsCaption"

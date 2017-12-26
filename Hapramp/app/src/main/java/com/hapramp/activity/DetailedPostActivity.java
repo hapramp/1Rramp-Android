@@ -25,9 +25,13 @@ import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.CommentFetchCallback;
 import com.hapramp.interfaces.OnPostDeleteCallback;
 import com.hapramp.interfaces.UserFetchCallback;
+import com.hapramp.interfaces.VoteDeleteCallback;
+import com.hapramp.interfaces.VotePostCallback;
 import com.hapramp.models.CommentModel;
 import com.hapramp.models.UserResponse;
+import com.hapramp.models.requests.VoteRequestBody;
 import com.hapramp.models.response.CommentsResponse;
+import com.hapramp.models.response.PostResponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
@@ -39,7 +43,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DetailedPostActivity extends AppCompatActivity implements CommentFetchCallback, UserFetchCallback, OnPostDeleteCallback {
+public class DetailedPostActivity extends AppCompatActivity implements CommentFetchCallback, UserFetchCallback, OnPostDeleteCallback, VoteDeleteCallback, VotePostCallback {
 
 
     @BindView(R.id.closeBtn)
@@ -99,6 +103,7 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
     private String totalUserVoted;
     private String currentCommentUrl;
     private String moreCommentsAt;
+    private String mHapcoins;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,8 +154,8 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
         dpUrl = getIntent().getExtras().getString("userDpUrl");
         totalVoteSum = getIntent().getExtras().getString("totalVoteSum");
         totalUserVoted = getIntent().getExtras().getString("totalUserVoted");
-        currentCommentUrl = String.format(getResources().getString(R.string.commentUrl),Integer.valueOf(postId));
-        //TODO: total income
+        currentCommentUrl = String.format(getResources().getString(R.string.commentUrl), Integer.valueOf(postId));
+        mHapcoins = getIntent().getExtras().getString("hapcoins");
 
     }
 
@@ -209,15 +214,15 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
 
         postSnippet.setText(mContent);
         feedOwnerTitle.setText(mUserName);
-        if(mMediaUri.length()>0){
+        if (mMediaUri.length() > 0) {
             ImageHandler.load(this, featuredImagePost, mMediaUri);
-        }else{
+        } else {
             featuredImagePost.setVisibility(View.GONE);
         }
 
         ImageHandler.loadCircularImage(this, feedOwnerPic, dpUrl);
         feedOwnerSubtitle.setText(mUserName);
-        hapcoinsCount.setText("0.0");
+        hapcoinsCount.setText(mHapcoins);
         ImageHandler.load(this, writeCommentUserAvatar, HaprampPreferenceManager.getInstance().getUser().image_uri);
 
         // initialize the starview
@@ -228,18 +233,27 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
                         mVote,
                         Float.valueOf(totalVoteSum),
                         Float.valueOf(totalUserVoted)
-                        ));
+                )).setOnVoteUpdateCallback(new StarView.onVoteUpdateCallback() {
+            @Override
+            public void onVoted(int postId, int vote) {
+                vote(postId, vote);
+            }
+
+            @Override
+            public void onVoteDeleted(int postId) {
+                deleteVote(postId);
+            }
+        });
 
 
     }
 
-    private void loadMoreComments(){
+    private void loadMoreComments() {
 
-        if(moreCommentsAt.length()>0)
+        if (moreCommentsAt.length() > 0)
             DataServer.getComments(moreCommentsAt, this);
 
     }
-
 
 
     private void showPopUp(View v, final int post_id, final int position) {
@@ -282,6 +296,7 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
     private void requestPostDelete(int post_id, int pos) {
         DataServer.deletePost(String.valueOf(post_id), pos, this);
     }
+
     @Override
     public void onCommentFetched(CommentsResponse response) {
 
@@ -336,6 +351,36 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
 
     @Override
     public void onPostDeleteFailed() {
+
+    }
+
+    private void deleteVote(int postId) {
+        DataServer.deleteVote(postId, this);
+    }
+
+    private void vote(int postId, int vote) {
+        DataServer.votePost(String.valueOf(postId), new VoteRequestBody((int) vote), this);
+    }
+
+    @Override
+    public void onVoteDeleted(PostResponse.Results updatedPost) {
+        //update mHapcoins
+        hapcoinsCount.setText(String.valueOf(updatedPost.hapcoins));
+    }
+
+    @Override
+    public void onVoteDeleteError() {
+
+    }
+
+    @Override
+    public void onPostVoted(PostResponse.Results updatedPost) {
+        //update mHapcoins
+        hapcoinsCount.setText(String.valueOf(updatedPost.hapcoins));
+    }
+
+    @Override
+    public void onPostVoteError() {
 
     }
 }

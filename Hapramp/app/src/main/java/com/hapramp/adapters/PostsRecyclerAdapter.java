@@ -124,11 +124,10 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int pos) {
 
         if (viewHolder instanceof LoadMoreViewHolder) {
-            Log.d("Adapter", "binding shimmer");
+
             ((LoadMoreViewHolder) viewHolder).startSimmer();
         } else {
 
-            Log.d("Adapter", "binding post");
             ((PostViewHolder) viewHolder).bind(postResponses.get(pos), postElementsClickListener, this);
         }
 

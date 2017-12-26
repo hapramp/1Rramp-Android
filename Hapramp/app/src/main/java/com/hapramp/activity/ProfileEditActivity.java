@@ -11,8 +11,8 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -35,14 +35,13 @@ import com.hapramp.interfaces.OrgsFetchCallback;
 import com.hapramp.interfaces.UserDpUpdateRequestCallback;
 import com.hapramp.logger.L;
 import com.hapramp.models.UserDataUpdateBody;
-import com.hapramp.models.requests.UserDpUpdateRequestBody;
 import com.hapramp.models.response.OrgsResponse;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
-import com.hapramp.views.InterestsView;
+import com.hapramp.views.SelectableInterestsView;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -73,7 +72,7 @@ public class ProfileEditActivity extends AppCompatActivity implements UserDpUpda
     @BindView(R.id.emailEt)
     EditText emailEt;
     @BindView(R.id.interestView)
-    InterestsView interestView;
+    SelectableInterestsView interestView;
     @BindView(R.id.backButton)
     TextView backBtn;
     @BindView(R.id.saveButton)
@@ -96,9 +95,28 @@ public class ProfileEditActivity extends AppCompatActivity implements UserDpUpda
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_edit);
         ButterKnife.bind(this);
+        init();
+
+    }
+
+    private void init() {
+
         storage = FirebaseStorage.getInstance();
         fetchOrgs();
         fetchUserDetailsFull();
+        //back button
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        backBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+    }
+
+    private void attachListeners() {
 
     }
 
@@ -254,9 +272,7 @@ public class ProfileEditActivity extends AppCompatActivity implements UserDpUpda
     private void bindValues(UserModel userModel) {
 
         userData = userModel;
-        //back button
-        backBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-        //dp
+       //dp
         dpUrl = userModel.image_uri;
         ImageHandler.loadCircularImage(this, profilePic, userModel.image_uri);
         //edit Btn
@@ -302,12 +318,7 @@ public class ProfileEditActivity extends AppCompatActivity implements UserDpUpda
             }
         });
 
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+
 
     }
 

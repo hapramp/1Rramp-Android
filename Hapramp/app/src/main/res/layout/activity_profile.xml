@@ -125,12 +125,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/follow_btn"
-                    android:layout_margin="8dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/Black87"
+                    android:layout_margin="16dp"
+                    android:textStyle="italic"
+                    android:text="Your Bio..."
                     android:lineSpacingExtra="2dp"
-                    android:hint="Your Bio"
-                    android:padding="4dp"/>
+                    android:textColor="@color/Black54"
+                    android:textSize="14sp" />
+
 
                 <FrameLayout
                     android:id="@+id/divider_top"
@@ -194,176 +195,63 @@
                     android:layout_marginStart="16dp"
                     android:background="@color/Black38" />
 
-                <LinearLayout
-                    android:id="@+id/badge_containers"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/post_stats"
-                    android:gravity="center_horizontal"
-                    android:orientation="horizontal"
-                    android:paddingBottom="24sp"
-                    android:paddingRight="22dp"
-                    android:weightSum="3">
-
-                    <FrameLayout
-                        android:layout_width="120dp"
-                        android:layout_height="120dp">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_margin="22dp"
-                            android:background="@drawable/hapcoins_text_badge"
-                            android:gravity="center"
-                            android:text="H"
-                            android:textColor="#71690C"
-                            android:textSize="36sp" />
-
-                        <TextView
-                            android:id="@+id/hapcoins_count"
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:layout_gravity="center_vertical|end"
-                            android:background="@drawable/hapcoins_count_badge"
-                            android:gravity="center"
-                            android:text=""
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:gravity="center_horizontal"
-                            android:text="Hapcoin"
-                            android:textColor="#333333" />
-
-                    </FrameLayout>
-
-                    <FrameLayout
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
-                        android:visibility="gone">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_margin="22dp"
-                            android:background="@drawable/hapgems_text_badge"
-                            android:gravity="center"
-                            android:text="G"
-                            android:textColor="#ffffff"
-                            android:textSize="36sp" />
-
-                        <TextView
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:layout_gravity="center_vertical|end"
-                            android:background="@drawable/hapgems_count_badge"
-                            android:gravity="center"
-                            android:text=""
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:gravity="center_horizontal"
-                            android:text="Gems"
-                            android:textColor="#333333" />
-
-                    </FrameLayout>
-
-                    <FrameLayout
-                        android:layout_width="120dp"
-                        android:layout_height="120dp">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_margin="22dp"
-                            android:background="@drawable/haptrofies_text_badge"
-                            android:gravity="center"
-                            android:text="T"
-                            android:textColor="#ffffff"
-                            android:textSize="36sp" />
-
-                        <TextView
-                            android:id="@+id/trophies_count"
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:layout_gravity="center_vertical|end"
-                            android:background="@drawable/haptrofies_count_badges"
-                            android:gravity="center"
-                            android:text=""
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:gravity="center_horizontal"
-                            android:text="Trophies"
-                            android:textColor="#333333" />
-
-                    </FrameLayout>
-
-
-                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/recentPostsCaption"
+                    android:id="@+id/interestCaption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/badge_containers"
-                    android:background="#f8f8f8"
+                    android:layout_below="@+id/divider_bottom"
                     android:gravity="center_vertical"
-                    android:padding="24dp"
-                    android:text="RECENT POSTS"
-                    android:textColor="#6c6c6c"
+                    android:padding="16dp"
+                    android:text="Interests"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="16sp" />
 
-                <RelativeLayout
-                    android:background="#d6d6d6"
+                <com.hapramp.views.InterestsView
+                    android:layout_below="@+id/interestCaption"
+                    android:id="@+id/interestsView"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:paddingTop="14dp"
+                    android:paddingBottom="14dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:background="@color/Black12"
+                    android:layout_below="@+id/interestsView"
+                    android:text="POSTS"
+                    android:textStyle="bold"
+                    android:id="@+id/postsCaption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/profilePostRv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/postsCaption"
+                    android:layout_marginTop="4dp" />
+
+                <TextView
+                    android:id="@+id/emptyMessage"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minHeight="256dp"
-                    android:layout_below="@+id/recentPostsCaption">
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/sectionsRv"
-                        android:layout_width="match_parent"
-                        android:layout_height="96dp"
-                        android:layout_marginTop="4dp"
-                        android:background="#ffffff" />
-
-                    <ProgressBar
-                        android:id="@+id/categoryLoadingProgress"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="24dp"/>
-
-                    <include android:id="@+id/loadingShimmer" layout="@layout/load_more_progress_view"/>
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/profilePostRv"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_below="@+id/sectionsRv"
-                        android:layout_marginTop="4dp" />
-
-                    <TextView
-                        android:id="@+id/emptyMessage"
-                        android:visibility="gone"
-                        android:text="No Posts Available"
-                        android:layout_centerInParent="true"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                </RelativeLayout>
+                    android:layout_centerInParent="true"
+                    android:text="No Posts Available"
+                    android:visibility="gone" />
 
             </RelativeLayout>
 
-        </ScrollView>
+    </ScrollView>
 
-    </RelativeLayout>
+    <ProgressBar
+        android:visibility="gone"
+        android:id="@+id/contentLoadingProgress"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

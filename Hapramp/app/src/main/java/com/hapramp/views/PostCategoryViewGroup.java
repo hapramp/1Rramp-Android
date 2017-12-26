@@ -90,7 +90,6 @@ public class PostCategoryViewGroup extends ViewGroup {
         int childState = 0;
         int mLeftWidth = 0;
         int rowCount = 0;
-
         // Iterate through all children, measuring them and computing our dimensions
         // from their size.
         for (int i = 0; i < count; i++) {
@@ -114,7 +113,7 @@ public class PostCategoryViewGroup extends ViewGroup {
         }
 
         // Check against our minimum height and width
-        maxHeight = Math.max(maxHeight, getSuggestedMinimumHeight())/3;
+        maxHeight = Math.max(maxHeight, getSuggestedMinimumHeight());
         maxWidth = Math.max(maxWidth, getSuggestedMinimumWidth());
 
         // Report our final dimensions.

@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -129,6 +130,7 @@ public class CreateArticleActivity extends AppCompatActivity {
         closeBtn.setTypeface(typeface);
         selectedSkills = new ArrayList<>();
         articleCategoryView.setCategoryItems(SkillsUtils.getSkillsSet());
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
     }
 

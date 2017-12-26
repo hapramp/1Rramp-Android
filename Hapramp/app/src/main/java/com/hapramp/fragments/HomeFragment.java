@@ -274,6 +274,7 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
         intent.putExtra("userDpUrl", postResponse.user.image_uri);
         intent.putExtra("totalVoteSum", String.valueOf(postResponse.vote_sum));
         intent.putExtra("totalUserVoted",String.valueOf(postResponse.vote_count));
+        intent.putExtra("hapcoins",String.valueOf(postResponse.hapcoins));
 
         mContext.startActivity(intent);
     }

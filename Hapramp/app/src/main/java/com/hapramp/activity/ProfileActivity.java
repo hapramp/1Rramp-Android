@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,7 +17,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.hapramp.R;
 import com.hapramp.adapters.PostsRecyclerAdapter;
 import com.hapramp.adapters.ProfileSkillsRecyclerAdapter;
@@ -31,6 +31,8 @@ import com.hapramp.models.response.UserModel;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.ViewItemDecoration;
+import com.hapramp.views.InterestsView;
+import com.hapramp.views.SelectableInterestsView;
 
 import java.util.List;
 
@@ -38,10 +40,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 // Activity for User Profile
-public class ProfileActivity extends AppCompatActivity implements FullUserDetailsCallback, PostFetchCallback,FollowUserCallback {
+public class ProfileActivity extends AppCompatActivity implements FullUserDetailsCallback, PostFetchCallback, FollowUserCallback {
+
 
     @BindView(R.id.profile_progress_bar)
     ProgressBar profileProgressBar;
+    @BindView(R.id.closeBtn)
+    TextView closeBtn;
+    @BindView(R.id.overflowBtn)
+    TextView overflowBtn;
+    @BindView(R.id.toolbar_container)
+    RelativeLayout toolbarContainer;
     @BindView(R.id.profile_pic)
     ImageView profilePic;
     @BindView(R.id.profile_header_container)
@@ -68,35 +77,22 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
     LinearLayout postStats;
     @BindView(R.id.divider_bottom)
     FrameLayout dividerBottom;
-    @BindView(R.id.hapcoins_count)
-    TextView hapcoinsCount;
-    @BindView(R.id.trophies_count)
-    TextView trophiesCount;
-    @BindView(R.id.badge_containers)
-    LinearLayout badgeContainers;
-    @BindView(R.id.recentPostsCaption)
-    TextView recentPostsCaption;
-    @BindView(R.id.sectionsRv)
-    RecyclerView sectionsRv;
-    @BindView(R.id.categoryLoadingProgress)
-    ProgressBar categoryLoadingProgress;
-    @BindView(R.id.shimmer_view_container)
-    ShimmerFrameLayout shimmerFrameLayout;
-    @BindView(R.id.loadingShimmer)
-    View loadingShimmer;
+    @BindView(R.id.interestCaption)
+    TextView interestCaption;
+    @BindView(R.id.interestsView)
+    InterestsView interestsView;
+    @BindView(R.id.postsCaption)
+    TextView postsCaption;
     @BindView(R.id.profilePostRv)
     RecyclerView profilePostRv;
     @BindView(R.id.emptyMessage)
     TextView emptyMessage;
     @BindView(R.id.profile_content)
     ScrollView profileContent;
-    @BindView(R.id.closeBtn)
-    TextView closeBtn;
-    @BindView(R.id.overflowBtn)
-    TextView overflowBtn;
-    @BindView(R.id.toolbar_container)
-    RelativeLayout toolbarContainer;
+    @BindView(R.id.contentLoadingProgress)
+    ProgressBar contentLoadingProgress;
     private String userId;
+
     private PostsRecyclerAdapter profilePostAdapter;
     private ProfileSkillsRecyclerAdapter profileSkillsRecyclerAdapter;
     private boolean followed = false;
@@ -124,18 +120,11 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
     private void init() {
 
         userId = getIntent().getExtras().getString("userId");
-
-        profilePostAdapter = new PostsRecyclerAdapter(this,profilePostRv);
+        profilePostAdapter = new PostsRecyclerAdapter(this, profilePostRv);
         closeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         overflowBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-
-        profileSkillsRecyclerAdapter = new ProfileSkillsRecyclerAdapter(this);
-        sectionsRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        sectionsRv.setAdapter(profileSkillsRecyclerAdapter);
         profilePostRv.setLayoutManager(new LinearLayoutManager(this));
-
-        Drawable drawable = ContextCompat.getDrawable(this,R.drawable.post_item_divider_view);
-
+        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.post_item_divider_view);
         viewItemDecoration = new ViewItemDecoration(drawable);
         profilePostRv.addItemDecoration(viewItemDecoration);
         profilePostRv.setAdapter(profilePostAdapter);
@@ -155,7 +144,7 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
         followBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               setUserFollow(!followed);
+                setUserFollow(!followed);
             }
         });
     }
@@ -170,10 +159,10 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
 
         if (skill_id == -1) {
             // get all post of this user
-            DataServer.getPostsByUserId(URLS.POST_FETCH_START_URL,Integer.valueOf(userId), this);
+            DataServer.getPostsByUserId(URLS.POST_FETCH_START_URL, Integer.valueOf(userId), this);
         } else {
             // get post by user and skills
-            DataServer.getPosts(URLS.POST_FETCH_START_URL,skill_id, Integer.valueOf(userId), this);
+            DataServer.getPosts(URLS.POST_FETCH_START_URL, skill_id, Integer.valueOf(userId), this);
 
         }
 
@@ -186,7 +175,7 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
         // TODO: 11/16/2017 set user followed
         try {
             //profilePic.setImageURI(userModel.getImage_uri());
-            ImageHandler.loadCircularImage(this,profilePic,userModel.image_uri);
+            ImageHandler.loadCircularImage(this, profilePic, userModel.image_uri);
             username.setText(userModel.username);
             hapname.setText("@hapname");
             bio.setText(userModel.bio);
@@ -196,9 +185,7 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
             followersCount.setText(_t);
             _t = String.format(getResources().getString(R.string.profile_following_count_caption), userModel.followings);
             followingsCount.setText(_t);
-            hapcoinsCount.setText(String.valueOf(userModel.hapcoins));
-            trophiesCount.setText("0");
-            bindSkillsCategory(userModel.skills);
+            interestsView.setInterests(userModel.skills);
 
         } catch (Exception e) {
 
@@ -206,45 +193,11 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
 
     }
 
-    private void bindPosts(List<PostResponse.Results> posts) {
-
-        hideContentLoadingProgress();
-        profilePostAdapter.appendResult(posts);
-
-    }
-
-    private void bindSkillsCategory(List<UserModel.Skills> skills) {
-
-        hideCategoryLoadingProgress();
-        profileSkillsRecyclerAdapter.setCategories(skills);
-
-    }
-
-    private void setUserFollow(boolean state){
+    private void setUserFollow(boolean state) {
         DataServer.setFollowUser(
                 userId,
-                new FollowRequestBody(state),this
+                new FollowRequestBody(state), this
         );
-    }
-
-    private void showContentLoadingProgress() {
-        loadingShimmer.setVisibility(View.VISIBLE);
-        shimmerFrameLayout.startShimmerAnimation();
-
-    }
-
-    private void hideContentLoadingProgress() {
-        if(loadingShimmer!=null)
-            loadingShimmer.setVisibility(View.GONE);
-    }
-    private void showCategoryLoadingProgress() {
-        if (categoryLoadingProgress != null)
-            categoryLoadingProgress.setVisibility(View.VISIBLE);
-    }
-
-    private void hideCategoryLoadingProgress() {
-        if (categoryLoadingProgress != null)
-            categoryLoadingProgress.setVisibility(View.GONE);
     }
 
     @Override
@@ -260,8 +213,13 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
         } else {
             emptyMessage.setVisibility(View.VISIBLE);
         }
+
         bindPosts(postResponses.results);
 
+    }
+
+    private void bindPosts(List<PostResponse.Results> results) {
+        profilePostAdapter.appendResult(results);
     }
 
     @Override
@@ -279,12 +237,12 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
         setFollowState(state);
     }
 
-    private void setFollowState(boolean state){
+    private void setFollowState(boolean state) {
 
-        if(state){
-            followBtn.setText(TICK_TEXT+" Following");
+        if (state) {
+            followBtn.setText(TICK_TEXT + " Following");
             followed = true;
-        }else{
+        } else {
             followBtn.setText("Follow");
             followed = false;
         }

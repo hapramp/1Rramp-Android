@@ -52,11 +52,13 @@ public class SkillsItemView extends FrameLayout {
     }
 
     private void init(Context context){
+
         View view = LayoutInflater.from(context).inflate(R.layout.skills_view, this);
         skillsBgImage = (ImageView) view.findViewById(R.id.skills_bg_image);
         skillSelectionOverlay = (TextView) view.findViewById(R.id.skill_selection_overlay);
         skillTitle = (TextView) view.findViewById(R.id.skill_title);
         skillSelectionOverlay.setTypeface(new FontManager().getTypeFace(FontManager.FONT_MATERIAL));
+
     }
 
     private void setSkillsBgImage(int type){

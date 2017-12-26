@@ -391,7 +391,6 @@ public class DataServer {
                     public void onResponse(Call<UserModel> call, Response<UserModel> response) {
                         if (response.isSuccessful()) {
                             callback.onFullUserDetailsFetched(response.body());
-                            L.D.m(TAG, "User Details " + response.body().toString());
                         } else {
                             callback.onFullUserDetailsFetchError();
                             L.D.m(TAG, "User Details Error : " + ErrorUtils.parseError(response).toString());
