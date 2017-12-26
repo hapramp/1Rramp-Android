@@ -32,6 +32,7 @@ import com.hapramp.interfaces.PostFetchCallback;
 import com.hapramp.logger.L;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.models.response.SkillsModel;
+import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.ViewItemDecoration;
 
@@ -112,9 +113,10 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
         sectionsRv.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         sectionsRv.setAdapter(categoryRecyclerAdapter);
 
-        List<SkillsModel> skillsModels = SkillsModel.marshelSkills(HaprampPreferenceManager.getInstance().getUser().skills);
-        skillsModels.add(0, new SkillsModel(0, "All", "", ""));
+        List<UserModel.Skills> skillsModels = HaprampPreferenceManager.getInstance().getUser().skills;
+        skillsModels.add(0, new UserModel.Skills(0, "All", "", ""));
         categoryRecyclerAdapter.setCategories(skillsModels);
+
     }
 
     private void attachListeners() {
@@ -149,8 +151,8 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     }
 
     @Override
-    public void onSkillsFetched(List<SkillsModel> skillsModels) {
-        skillsModels.add(0, new SkillsModel(0, "All", "", ""));
+    public void onSkillsFetched(List<UserModel.Skills> skillsModels) {
+        skillsModels.add(0, new UserModel.Skills(0, "All", "", ""));
         categoryRecyclerAdapter.setCategories(skillsModels);
     }
 

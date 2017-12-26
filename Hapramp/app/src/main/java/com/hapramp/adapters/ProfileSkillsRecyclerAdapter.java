@@ -2,6 +2,7 @@ package com.hapramp.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -18,12 +19,9 @@ public class ProfileSkillsRecyclerAdapter extends RecyclerView.Adapter<ProfileSk
 
     private Context context;
     private List<UserModel.Skills> category;
-    private OnCategoryItemClickListener categoryItemClickListener;
-    private int selectedSkillId = 0;
 
-    public ProfileSkillsRecyclerAdapter(Context context, OnCategoryItemClickListener categoryItemClickListener) {
+    public ProfileSkillsRecyclerAdapter(Context context) {
         this.context = context;
-        this.categoryItemClickListener = categoryItemClickListener;
     }
 
     public void setCategories(List<UserModel.Skills> category){
@@ -38,7 +36,7 @@ public class ProfileSkillsRecyclerAdapter extends RecyclerView.Adapter<ProfileSk
 
     @Override
     public void onBindViewHolder(CategoryViewHolder categoryViewHolder, int pos) {
-        categoryViewHolder.bind(category.get(pos),categoryItemClickListener);
+        categoryViewHolder.bind(category.get(pos));
     }
 
     @Override
@@ -55,31 +53,14 @@ public class ProfileSkillsRecyclerAdapter extends RecyclerView.Adapter<ProfileSk
             categoryItemView = (SkillsTabView) itemView;
         }
 
-        public void bind(final UserModel.Skills model, final OnCategoryItemClickListener categoryItemClickListener){
+        public void bind(final UserModel.Skills model){
 
-            categoryItemView.setSkillsBgImage(model.getId());
-            categoryItemView.setSkillTitle(model.getName());
-
-            if(selectedSkillId==model.getId()){
-                categoryItemView.setSelected(true);
-            }else{
-                categoryItemView.setSelected(false);
-            }
-
-            categoryItemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    selectedSkillId = model.getId();
-                    notifyDataSetChanged();
-                    categoryItemClickListener.onCategoryClicked(selectedSkillId);
-                }
-            });
+            categoryItemView.setSkillsBgImage(model.id);
+            categoryItemView.setSkillTitle(model.name);
+            categoryItemView.setSelected(true);
+            categoryItemView.enableTabIndicator(false);
 
         }
 
-    }
-
-    public interface OnCategoryItemClickListener{
-        void onCategoryClicked(int id);
     }
 }

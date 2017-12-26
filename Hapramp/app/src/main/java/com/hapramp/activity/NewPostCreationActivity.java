@@ -3,7 +3,6 @@ package com.hapramp.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -13,11 +12,9 @@ import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -29,7 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.storage.FirebaseStorage;
 import com.hapramp.R;
 import com.hapramp.controller.PostCreationController;
 import com.hapramp.logger.L;
@@ -38,12 +34,11 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FileUtils;
 import com.hapramp.utils.FontManager;
-import com.hapramp.utils.SkillsConverter;
+import com.hapramp.utils.SkillsUtils;
 import com.hapramp.views.PostCategoryView;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -102,7 +97,6 @@ public class NewPostCreationActivity extends AppCompatActivity {
     private String rootFolder;
     private ArrayList<Integer> selectedSkills;
     private boolean isMediaSelected = false;
-    final String[] skills = {"Art", "Dance", "Music", "Literature", "Action", "Photography"};
     private String mediaUri = "";
 
     @Override
@@ -157,7 +151,7 @@ public class NewPostCreationActivity extends AppCompatActivity {
         videoBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         removeImageBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         selectedSkills = new ArrayList<>();
-        postCategoryView.setCategoryItems(skills);
+        postCategoryView.setCategoryItems(SkillsUtils.getSkillsSet());
 
     }
 

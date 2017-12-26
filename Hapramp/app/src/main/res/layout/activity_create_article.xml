@@ -28,60 +28,31 @@
             android:layout_marginStart="16dp"
             android:layout_toRightOf="@+id/closeBtn"
             android:layout_width="wrap_content"
-            android:text="ARTICLE"
+            android:text="Article"
             android:textSize="18sp" />
 
         <TextView
-            android:background="@drawable/light_btn_bg"
-            android:gravity="center"
             android:id="@+id/nextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:layout_width="wrap_content"
-            android:paddingBottom="4dp"
+            android:background="@drawable/light_btn_bg"
+            android:gravity="center"
+            android:paddingBottom="6dp"
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
-            android:paddingTop="4dp"
-            android:text="PUBLISH"
+            android:paddingTop="6dp"
+            android:text="NEXT"
             android:textColor="@color/colorPrimary"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
+
 
     </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/skills_wrapper"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:layout_below="@+id/toolbar_container">
-
-        <TextView
-            android:padding="8dp"
-            android:textColor="@color/colorPrimary"
-            android:id="@+id/skillsTagView"
-            android:layout_toStartOf="@+id/addSkillBtn"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TextView
-            android:id="@+id/addSkillBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerInParent="true"
-            android:layout_margin="8dp"
-            android:background="@drawable/light_btn_bg"
-            android:padding="8dp"
-            android:text="+ Add Skills"
-            android:textColor="@color/colorPrimary"
-            android:textSize="12sp" />
-
-    </RelativeLayout>
-
 
     <ScrollView
-        android:layout_below="@+id/skills_wrapper"
+        android:layout_below="@+id/toolbar_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
@@ -124,21 +95,37 @@
             </FrameLayout>
 
             <EditText
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:background="@drawable/post_editor_bg"
+                android:gravity="top"
+                android:maxLines="1"
+                android:textColor="@color/Black87"
+                android:hint="Title"
+                android:textStyle="bold"
+                android:padding="16dp"
+                android:textSize="16sp" />
+
+            <EditText
+                android:layout_below="@+id/title"
                 android:id="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="100dp"
                 android:background="@drawable/post_editor_bg"
                 android:gravity="top"
-                android:textColor="@color/Black87"
-                android:hint="Write your article..."
+                android:textColor="@color/Black54"
+                android:hint="Write article..."
                 android:padding="16dp"
-                android:textSize="18sp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:layout_alignParentEnd="true"
                 android:padding="4dp"
                 android:text="0"
+                android:layout_below="@+id/title"
                 android:id="@+id/characterLimit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -201,5 +188,11 @@
             android:textSize="24sp" />
 
     </RelativeLayout>
+
+    <include
+        android:id="@+id/metaView"
+        layout="@layout/article_meta_view"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"/>
 
 </RelativeLayout>

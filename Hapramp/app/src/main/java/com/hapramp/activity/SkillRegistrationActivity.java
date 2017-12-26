@@ -1,27 +1,23 @@
 package com.hapramp.activity;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
 
-import com.hapramp.utils.FontManager;
 import com.hapramp.R;
-import com.hapramp.views.SkillsItemView;
+import com.hapramp.adapters.SkillsGridAdapter;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.FetchSkillsResponse;
 import com.hapramp.interfaces.OnSkillsUpdateCallback;
 import com.hapramp.logger.L;
 import com.hapramp.models.requests.SkillsUpdateBody;
-import com.hapramp.models.response.SkillsModel;
+import com.hapramp.models.response.UserModel;
+import com.hapramp.models.response.UserModel.Skills;
+import com.hapramp.utils.FontManager;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -42,8 +38,8 @@ public class SkillRegistrationActivity extends AppCompatActivity implements Fetc
     @BindView(R.id.skills_continueBtn)
     TextView skillsContinueBtn;
     SkillsGridAdapter skillsGridAdapter;
-    private List<SkillsModel> skills;
-    private HashMap<String, Integer> selectionMap;
+    private List<UserModel.Skills> skills;
+
     private ProgressDialog progressDialog;
 
     @Override
@@ -90,7 +86,7 @@ public class SkillRegistrationActivity extends AppCompatActivity implements Fetc
         // set Adapter
         skillsGridAdapter = new SkillsGridAdapter(this);
         skillsGridView.setAdapter(skillsGridAdapter);
-        selectionMap = new HashMap<>();
+
     }
 
     private void showProgress(String msg) {
@@ -106,7 +102,7 @@ public class SkillRegistrationActivity extends AppCompatActivity implements Fetc
 
 
     @Override
-    public void onSkillsFetched(List<SkillsModel> skillsModels) {
+    public void onSkillsFetched(List<UserModel.Skills> skillsModels) {
         hideProgress();
         skillsGridAdapter.onDataLoaded(skillsModels);
     }
@@ -130,69 +126,11 @@ public class SkillRegistrationActivity extends AppCompatActivity implements Fetc
         L.D.m("SkillsActivity", "Error While Updating Skills..");
     }
 
-    class SkillsGridAdapter extends BaseAdapter {
-
-        private List<SkillsModel> skills;
-        private Context context;
-
-        public SkillsGridAdapter(@NonNull Context context) {
-            this.context = context;
-        }
-
-        public void onDataLoaded(List<SkillsModel> skills) {
-            this.skills = skills;
-            notifyDataSetChanged();
-        }
-
-        @NonNull
-        @Override
-        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            SkillsItemView view = convertView == null ? new SkillsItemView(context) : (SkillsItemView) convertView;
-            bindDataView(position, view);
-            return view;
-        }
-
-        private void bindDataView(final int position, final SkillsItemView view) {
-            // set background image
-            view.setSkillsBgImage(skills.get(position).getId());
-            view.setSkillTitle(skills.get(position).getName());
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String key = skills.get(position).getName();
-                    if(selectionMap.get(key)!=null) {
-                        //selected already
-                        view.setSelection(false);
-                        selectionMap.remove(key);
-                    }else{
-                        // prev. unselected
-                        view.setSelection(true);
-                        selectionMap.put(key,skills.get(position).getId());
-                    }
-                }
-            });
-        }
-
-        @Override
-        public int getCount() {
-            return skills == null ? 0 : skills.size();
-        }
-        @Override
-        public Object getItem(int position) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-    }
-
     public Integer[] getSelectionIds(){
         // get the iterator
         int i=0;
         Integer[] ids = new Integer[10];
-        Iterator it = selectionMap.entrySet().iterator();
+        Iterator it = skillsGridAdapter.getSelectionMap().entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
             L.D.m("Skills Selection",pair.getKey() + " = " + pair.getValue());

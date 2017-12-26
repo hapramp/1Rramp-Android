@@ -40,13 +40,14 @@ public class SkillsTabView extends FrameLayout {
         skillTitle = (TextView) view.findViewById(R.id.skill_title);
         selectorOverlay = (FrameLayout) view.findViewById(R.id.selector_overlay);
         selectionTabIndicator = (FrameLayout) view.findViewById(R.id.selection_tab_indicator);
+
     }
 
-    public boolean getIsSelected(){
+    public boolean getIsSelected() {
         return isSelected;
     }
 
-    public void setSelected(boolean isSelected){
+    public void setSelected(boolean isSelected) {
         this.isSelected = isSelected;
         setSelection(isSelected);
     }
@@ -61,12 +62,23 @@ public class SkillsTabView extends FrameLayout {
 //        });
 //    }
 //
-    public void setSkillsBgImage(int type){
+
+    public void enableTabIndicator(boolean enable) {
+        if (enable) {
+            selectionTabIndicator.setVisibility(VISIBLE);
+        }else{
+            selectionTabIndicator.setVisibility(GONE);
+        }
+
+
+    }
+
+    public void setSkillsBgImage(int type) {
 
         int resId = -1;
         this.id = type;
 
-        switch (type){
+        switch (type) {
 
             case PHOTOGRAPHY:
 
@@ -114,20 +126,19 @@ public class SkillsTabView extends FrameLayout {
 
     }
 
-    private void setSelection(boolean selected){
-        if(selected){
+    private void setSelection(boolean selected) {
+        if (selected) {
             selectionTabIndicator.setVisibility(VISIBLE);
             selectorOverlay.setVisibility(GONE);
-        }else{
+        } else {
             selectionTabIndicator.setVisibility(GONE);
             selectorOverlay.setVisibility(VISIBLE);
         }
     }
 
-    public void setSkillTitle(String title){
+    public void setSkillTitle(String title) {
         skillTitle.setText(title);
     }
-
 
 
 }

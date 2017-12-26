@@ -126,7 +126,7 @@ public class PostJobDispatcherService extends Service implements PostCreateCallb
 
         l("Uploading Post");
 
-        sendStatusBroadcast("Uploading Post : "+postJob.content);
+        sendStatusBroadcast("Uploading: "+postJob.content);
 
         String media_url = uploadedMediaUri != null ? uploadedMediaUri.toString() : "";
 

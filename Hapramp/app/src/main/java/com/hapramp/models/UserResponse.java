@@ -1,6 +1,7 @@
 package com.hapramp.models;
 
 import com.google.gson.annotations.SerializedName;
+import com.hapramp.models.response.UserModel;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class UserResponse {
     @SerializedName("full_name")
     public String full_name;
     @SerializedName("skills")
-    public List<Skills> skills;
+    public List<UserModel.Skills> skills;
     @SerializedName("karma")
     public int karma;
     @SerializedName("image_uri")
@@ -44,18 +45,8 @@ public class UserResponse {
         public String description;
     }
 
-    public static class Skills {
-        @SerializedName("id")
-        public int id;
-        @SerializedName("name")
-        public String name;
-        @SerializedName("image_uri")
-        public String image_uri;
-        @SerializedName("description")
-        public String description;
-    }
 
-    public UserResponse(int id, String email, String username, Organization organization, String full_name, List<Skills> skills, int karma, String image_uri, String bio, int hapcoins) {
+    public UserResponse(int id, String email, String username, Organization organization, String full_name, List<UserModel.Skills> skills, int karma, String image_uri, String bio, int hapcoins) {
         this.id = id;
         this.email = email;
         this.username = username;

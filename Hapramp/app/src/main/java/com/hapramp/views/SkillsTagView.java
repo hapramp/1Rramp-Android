@@ -14,10 +14,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
-import com.hapramp.logger.L;
-import com.hapramp.models.response.PostResponse;
 import com.hapramp.utils.FontManager;
-import com.hapramp.utils.SkillsConverter;
+import com.hapramp.utils.SkillsUtils;
 
 import java.util.ArrayList;
 
@@ -113,7 +111,7 @@ public class SkillsTagView extends FrameLayout{
 
         private void removeItem(String title){
             for (int i=0;i<skills.size();i++){
-                if(skills.get(i)==SkillsConverter.getSkillIdFromName(title)){
+                if(skills.get(i)== SkillsUtils.getSkillIdFromName(title)){
                     //remove
                 }
             }
@@ -139,7 +137,7 @@ public class SkillsTagView extends FrameLayout{
 
             public void bind(final int tagId , final OnCancelListener onCancelListener){
 
-                skillTitle.setText(SkillsConverter.getSkillTitleFromId(tagId));
+                skillTitle.setText(SkillsUtils.getSkillTitleFromId(tagId));
                 cancelBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
                 cancelBtn.setOnClickListener(new OnClickListener() {
                     @Override

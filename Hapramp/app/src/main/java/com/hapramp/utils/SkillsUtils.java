@@ -4,7 +4,7 @@ package com.hapramp.utils;
  * Created by Ankit on 11/13/2017.
  */
 
-public class SkillsConverter {
+public class SkillsUtils {
 
     public static final int ART = 1;
     public static final int DANCE = 2;
@@ -13,6 +13,8 @@ public class SkillsConverter {
     public static final int ACTION = 5;
     public static final int PHOTOGRAPHY = 6;
     public static final int MUSIC = 8;
+
+    final static String[] skills = {"Art", "Dance", "Music","Travel", "Literature", "Action", "Photography"};
 
     public static String getSkillCharacter(int id) {
 
@@ -86,5 +88,9 @@ public class SkillsConverter {
 
         return "None";
 
+    }
+
+    public static String[] getSkillsSet(){
+        return skills;
     }
 }

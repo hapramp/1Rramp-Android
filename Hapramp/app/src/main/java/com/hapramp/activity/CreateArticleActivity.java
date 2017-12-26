@@ -1,15 +1,11 @@
 package com.hapramp.activity;
 
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -20,29 +16,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
-import com.hapramp.api.DataServer;
-import com.hapramp.interfaces.PostCreateCallback;
-import com.hapramp.models.requests.PostCreateBody;
+import com.hapramp.controller.PostCreationController;
+import com.hapramp.models.PostJobModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
-import com.hapramp.utils.SkillsConverter;
+import com.hapramp.utils.SkillsUtils;
+import com.hapramp.views.PostCategoryView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class CreateArticleActivity extends AppCompatActivity{
-
+public class CreateArticleActivity extends AppCompatActivity {
 
     @BindView(R.id.closeBtn)
     TextView closeBtn;
     @BindView(R.id.nextButton)
-    TextView postButton;
-    @BindView(R.id.toolbar_container)
-    RelativeLayout toolbarContainer;
+    TextView nextButton;
     @BindView(R.id.postMedia)
     ImageView postMedia;
     @BindView(R.id.removeImageBtn)
@@ -51,8 +43,12 @@ public class CreateArticleActivity extends AppCompatActivity{
     ProgressBar postMediaUploadProgress;
     @BindView(R.id.postMediaContainer)
     FrameLayout postMediaContainer;
+    @BindView(R.id.title)
+    EditText title;
     @BindView(R.id.content)
     EditText content;
+    @BindView(R.id.characterLimit)
+    TextView characterLimit;
     @BindView(R.id.textSizeBtn)
     TextView textSizeBtn;
     @BindView(R.id.quoteBtn)
@@ -63,20 +59,28 @@ public class CreateArticleActivity extends AppCompatActivity{
     TextView linkBtn;
     @BindView(R.id.bottom_options_container)
     RelativeLayout bottomOptionsContainer;
-    @BindView(R.id.skillsTagView)
-    TextView skillsTagView;
-    @BindView(R.id.addSkillBtn)
-    TextView addSkillBtn;
+    @BindView(R.id.backBtnFromArticleMeta)
+    TextView backBtnFromArticleMeta;
+    @BindView(R.id.publishButton)
+    TextView publishButton;
+    @BindView(R.id.toolbar_container)
+    RelativeLayout toolbarContainer;
+    @BindView(R.id.category_caption)
+    TextView categoryCaption;
+    @BindView(R.id.articleCategoryView)
+    PostCategoryView articleCategoryView;
+    @BindView(R.id.tagsCaption)
+    TextView tagsCaption;
+    @BindView(R.id.tagsInputBox)
+    EditText tagsInputBox;
     @BindView(R.id.skills_wrapper)
     RelativeLayout skillsWrapper;
-    @BindView(R.id.characterLimit)
-    TextView characterLimit;
+    @BindView(R.id.metaView)
+    RelativeLayout metaView;
+
     private Typeface typeface;
     private ArrayList<Integer> selectedSkills;
-
-    private boolean isSkillSelected = false;
-    private ProgressDialog progressDialog;
-    final String[] skills = {"Art", "Dance", "Music", "Literature", "Action", "Photography"};
+    private String mediaUri ="";
 
 
     @Override
@@ -102,15 +106,15 @@ public class CreateArticleActivity extends AppCompatActivity{
         loadDraft();
     }
 
-    private void loadDraft(){
+    private void loadDraft() {
         content.setText(HaprampPreferenceManager.getInstance().getArticleDraft());
     }
 
-    private void clearDraft(){
+    private void clearDraft() {
         HaprampPreferenceManager.getInstance().saveArticleDraft("");
     }
 
-    private void saveDraft(){
+    private void saveDraft() {
         HaprampPreferenceManager.getInstance().saveArticleDraft(content.getText().toString());
     }
 
@@ -120,10 +124,11 @@ public class CreateArticleActivity extends AppCompatActivity{
         textSizeBtn.setTypeface(typeface);
         quoteBtn.setTypeface(typeface);
         bulletBtn.setTypeface(typeface);
+        backBtnFromArticleMeta.setTypeface(typeface);
         linkBtn.setTypeface(typeface);
         closeBtn.setTypeface(typeface);
         selectedSkills = new ArrayList<>();
-        initProgressDialog();
+        articleCategoryView.setCategoryItems(SkillsUtils.getSkillsSet());
 
     }
 
@@ -146,12 +151,6 @@ public class CreateArticleActivity extends AppCompatActivity{
             }
         });
 
-        addSkillBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAddSkillsDialog();
-            }
-        });
 
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,16 +159,36 @@ public class CreateArticleActivity extends AppCompatActivity{
             }
         });
 
-        postButton.setOnClickListener(new View.OnClickListener() {
+        nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                prepareArticle();
+
+                metaView.setVisibility(View.VISIBLE);
+                // avoid touch input pass to underneath views
+                metaView.setClickable(true);
+
+            }
+        });
+
+        backBtnFromArticleMeta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //hide meta view
+                metaView.setVisibility(View.GONE);
+                metaView.setClickable(false);
+            }
+        });
+
+        publishButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                prepareAndPublishArticle();
             }
         });
 
     }
 
-    private void prepareArticle() {
+    private void prepareAndPublishArticle() {
 
         if (!validatePostContent())
             return;
@@ -179,25 +198,26 @@ public class CreateArticleActivity extends AppCompatActivity{
             return;
         }
 
-        uploadArticle();
+
+        PostJobModel postJob = new PostJobModel(
+                String.valueOf(SystemClock.currentThreadTimeMillis()),
+                content.getText().toString(),
+                mediaUri,
+                Constants.CONTENT_TYPE_ARTICLE,
+                articleCategoryView.getSelectedSkills(),
+                1,
+                PostJobModel.JOB_PENDING);
+
+        PostCreationController.addJob(postJob);
+
+        finish();
+
     }
 
     private boolean isSkillSelected() {
-        return selectedSkills.size()>0;
+        return articleCategoryView.getSelectedSkills().size() > 0;
     }
 
-    public void uploadArticle() {
-
-        showProgressDialog(true);
-        PostCreateBody body = new PostCreateBody(
-                content.getText().toString(),
-                "",
-                Constants.CONTENT_TYPE_ARTICLE,
-                selectedSkills,
-                1);
-
-
-    }
 
     private boolean validatePostContent() {
 
@@ -210,95 +230,9 @@ public class CreateArticleActivity extends AppCompatActivity{
 
     }
 
-    private void initProgressDialog() {
-
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Post Upload");
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Uploading Your Post...");
-
-    }
-
-    private void showProgressDialog(boolean show) {
-        if (progressDialog != null) {
-            if (show) {
-                progressDialog.show();
-            } else {
-                progressDialog.hide();
-            }
-        }
-    }
-
-    private void showAddSkillsDialog() {
-
-        boolean[] checked = getSelectedSkills();
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Select Skills");
-
-        builder.setMultiChoiceItems(skills, checked, new DialogInterface.OnMultiChoiceClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                // user checked or unchecked a box
-                int index = selectedSkills.indexOf(SkillsConverter.getSkillIdFromName(skills[which]));
-                if (index == -1) {
-                    // do not exists
-                    if (isChecked) {
-                        if (selectedSkills.size() > 2) {
-                            toast("Maximum 3 Skills");
-                        } else {
-                            selectedSkills.add(SkillsConverter.getSkillIdFromName(skills[which]));
-                        }
-                    }
-                } else {
-                    // exists
-                    if (!isChecked) {
-                        selectedSkills.remove(index);
-                    }
-                }
-            }
-        });
-
-        builder.setPositiveButton("ADD", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                showSelectedSkills();
-                dialog.dismiss();
-            }
-        });
-
-        builder.setNegativeButton("CANCEL", null);
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-    }
-
     private void toast(String s) {
         Toast.makeText(this, s, Toast.LENGTH_LONG).show();
     }
 
-
-    private boolean[] getSelectedSkills() {
-
-        boolean[] selected = new boolean[6];
-
-        for (int i = 0; i < selected.length; i++) {
-            selected[i] = selectedSkills.contains(SkillsConverter.getSkillIdFromName(skills[i]));
-            Log.d("POST", SkillsConverter.getSkillIdFromName(skills[i]) + " vs " + Arrays.toString(selectedSkills.toArray()));
-        }
-        return selected;
-
-    }
-
-    private void showSelectedSkills() {
-        StringBuilder builder = new StringBuilder();
-
-        for (Integer skillId : selectedSkills) {
-            builder.append(" #").append(SkillsConverter.getSkillTitleFromId(skillId));
-        }
-
-        skillsTagView.setText(builder.toString());
-
-    }
 
 }

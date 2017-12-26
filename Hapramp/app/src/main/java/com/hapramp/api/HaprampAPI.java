@@ -1,5 +1,6 @@
 package com.hapramp.api;
 
+import com.hapramp.models.UserDataUpdateBody;
 import com.hapramp.models.UserResponse;
 import com.hapramp.models.requests.FollowRequestBody;
 import com.hapramp.models.requests.UserBioUpdateRequestBody;
@@ -61,7 +62,7 @@ public interface HaprampAPI {
     Call<UpdateUserResponse> updateOrg(@Path("user_id") String userID, @Body UserUpdateModel user);
 
     @GET("skills")
-    Call<List<SkillsModel>> getSkills();
+    Call<List<UserModel.Skills>> getSkills();
 
     @PUT("users/skills")
     Call<SkillsUpdateResponse> setSkills(@Body SkillsUpdateBody skillsUpdateBody);
@@ -112,7 +113,7 @@ public interface HaprampAPI {
     Call<UserResponse> followUser(@Path("user_id") String userId , @Body FollowRequestBody body);
 
     @PUT("users/{user_id}")
-    Call<UserResponse> updateUserDp(@Path("user_id") String userId,@Body UserDpUpdateRequestBody body);
+    Call<UserResponse> updateUserDp(@Path("user_id") String userId,@Body UserDataUpdateBody body);
 
     @PUT("users/{user_id}")
     Call<UserResponse> updateUserBio(@Path("user_id") String userId,@Body UserBioUpdateRequestBody body);

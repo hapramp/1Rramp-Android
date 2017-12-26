@@ -17,12 +17,11 @@
         <activity
             android:name=".activity.LoginActivity"
             android:screenOrientation="portrait">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".activity.SkillRegistrationActivity"
@@ -33,7 +32,6 @@
         <activity
             android:name=".activity.RegisterActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".activity.HomeActivity"
             android:screenOrientation="portrait" />
@@ -45,9 +43,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.TestActivity"
-            android:screenOrientation="portrait">
-
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".activity.RegistrationPage2"
             android:screenOrientation="portrait" />
@@ -75,12 +71,13 @@
         <activity
             android:name=".activity.InfoEditingActivity"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".activity.HowToEarnActivity"></activity>
+        <activity android:name=".activity.HowToEarnActivity" />
 
-        <service android:name=".services.PostJobDispatcherService"/>
+        <service android:name=".services.PostJobDispatcherService" />
 
-        <receiver android:name=".activity.HomeActivity$PostUploadReceiver"/>
+        <receiver android:name=".activity.HomeActivity$PostUploadReceiver" />
 
+        <activity android:name=".activity.ProfileEditActivity" android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

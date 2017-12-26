@@ -1,16 +1,20 @@
 package com.hapramp.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +23,7 @@ import com.hapramp.R;
 import com.hapramp.adapters.CommentsAdapter;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.CommentFetchCallback;
+import com.hapramp.interfaces.OnPostDeleteCallback;
 import com.hapramp.interfaces.UserFetchCallback;
 import com.hapramp.models.CommentModel;
 import com.hapramp.models.UserResponse;
@@ -34,7 +39,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DetailedPostActivity extends AppCompatActivity implements CommentFetchCallback, UserFetchCallback {
+public class DetailedPostActivity extends AppCompatActivity implements CommentFetchCallback, UserFetchCallback, OnPostDeleteCallback {
 
 
     @BindView(R.id.closeBtn)
@@ -235,6 +240,48 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
 
     }
 
+
+
+    private void showPopUp(View v, final int post_id, final int position) {
+
+        final PopupMenu popupMenu = new PopupMenu(this, v);
+        popupMenu.getMenuInflater().inflate(R.menu.post_item_menu, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                showAlertDialogForDelete(post_id, position);
+                return true;
+            }
+        });
+
+        Log.d("POP", "show PopUp");
+
+        popupMenu.show();
+
+    }
+
+    private void showAlertDialogForDelete(final int post_id, final int position) {
+
+        new AlertDialog.Builder(this)
+                .setTitle("Post Delete")
+                .setMessage("Delete This Post")
+                .setPositiveButton("Delete",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                requestPostDelete(post_id, position);
+                            }
+                        })
+                .setNegativeButton("Cancel",
+                        null)
+                .show();
+
+
+    }
+
+    private void requestPostDelete(int post_id, int pos) {
+        DataServer.deletePost(String.valueOf(post_id), pos, this);
+    }
     @Override
     public void onCommentFetched(CommentsResponse response) {
 
@@ -280,5 +327,15 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
     @Override
     public void onUserFetchError() {
         Toast.makeText(this, "Error While Fetching Comments!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onPostDeleted(int position) {
+
+    }
+
+    @Override
+    public void onPostDeleteFailed() {
+
     }
 }

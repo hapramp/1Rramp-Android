@@ -3,6 +3,7 @@ package com.hapramp.views;
 import android.content.Context;
 import android.graphics.Point;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,17 +33,14 @@ public class PostCategoryViewGroup extends ViewGroup {
     }
 
     private void init(Context context) {
-
         final Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         Point deviceDisplay = new Point();
         display.getSize(deviceDisplay);
         deviceWidth = deviceDisplay.x;
-
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-
         final int count = getChildCount();
         int curWidth, curHeight, curLeft, curTop, maxHeight;
 
@@ -116,7 +114,7 @@ public class PostCategoryViewGroup extends ViewGroup {
         }
 
         // Check against our minimum height and width
-        maxHeight = Math.max(maxHeight, getSuggestedMinimumHeight());
+        maxHeight = Math.max(maxHeight, getSuggestedMinimumHeight())/3;
         maxWidth = Math.max(maxWidth, getSuggestedMinimumWidth());
 
         // Report our final dimensions.

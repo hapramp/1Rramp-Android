@@ -13,8 +13,8 @@
 
     <TextView
         android:alpha="0"
-        android:clickable="true"
-        android:focusable="true"
+        android:clickable="false"
+        android:focusable="false"
         android:id="@+id/createArticleBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,8 +31,8 @@
         android:textSize="14sp" />
 
     <TextView
-        android:clickable="true"
-        android:focusable="true"
+        android:clickable="false"
+        android:focusable="false"
         android:alpha="0"
         android:id="@+id/createPostBtn"
         android:layout_width="wrap_content"

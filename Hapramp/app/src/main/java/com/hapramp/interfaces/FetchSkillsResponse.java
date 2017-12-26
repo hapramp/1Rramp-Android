@@ -1,6 +1,7 @@
 package com.hapramp.interfaces;
 
 import com.hapramp.models.response.SkillsModel;
+import com.hapramp.models.response.UserModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,6 @@ import java.util.List;
  */
 
 public interface FetchSkillsResponse {
-    void onSkillsFetched(List<SkillsModel> skillsModels);
+    void onSkillsFetched(List<UserModel.Skills> skillsModels);
     void onSkillFetchError();
 }

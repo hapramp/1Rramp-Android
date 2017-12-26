@@ -137,6 +137,8 @@ public class CreateButtonView extends FrameLayout {
         root.setClickable(true);
         createArticleBtn.setVisibility(VISIBLE);
         createPostBtn.setVisibility(VISIBLE);
+        createPostBtn.setClickable(true);
+        createArticleBtn.setClickable(true);
 
         // rotate + button
         plusBtn.animate()

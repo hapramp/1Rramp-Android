@@ -11,7 +11,6 @@ import com.hapramp.interfaces.FetchSkillsResponse;
 import com.hapramp.interfaces.FetchUserCallback;
 import com.hapramp.interfaces.FollowUserCallback;
 import com.hapramp.interfaces.FullUserDetailsCallback;
-import com.hapramp.interfaces.LikePostCallback;
 import com.hapramp.interfaces.OnPostDeleteCallback;
 import com.hapramp.interfaces.OnSkillsUpdateCallback;
 import com.hapramp.interfaces.OrgUpdateCallback;
@@ -25,13 +24,12 @@ import com.hapramp.interfaces.UserStatsCallback;
 import com.hapramp.interfaces.VoteDeleteCallback;
 import com.hapramp.interfaces.VotePostCallback;
 import com.hapramp.logger.L;
+import com.hapramp.models.UserDataUpdateBody;
 import com.hapramp.models.UserResponse;
 import com.hapramp.models.requests.FollowRequestBody;
 import com.hapramp.models.requests.UserBioUpdateRequestBody;
-import com.hapramp.models.requests.UserDpUpdateRequestBody;
 import com.hapramp.models.requests.VoteRequestBody;
 import com.hapramp.models.response.CompetitionsPostReponse;
-import com.hapramp.models.requests.LikeBody;
 import com.hapramp.models.requests.CommentBody;
 import com.hapramp.models.requests.CreateUserRequest;
 import com.hapramp.models.error.GeneralErrorModel;
@@ -45,11 +43,9 @@ import com.hapramp.models.response.CreateUserReponse;
 import com.hapramp.models.response.FetchUserResponse;
 import com.hapramp.models.response.OrgsResponse;
 import com.hapramp.models.response.PostResponse;
-import com.hapramp.models.response.SkillsModel;
 import com.hapramp.models.response.SkillsUpdateResponse;
 import com.hapramp.models.response.UpdateUserResponse;
 import com.hapramp.models.response.UserModel;
-import com.hapramp.models.response.PostResponse.Results;
 import com.hapramp.models.response.UserStatsModel;
 
 import java.util.List;
@@ -182,9 +178,9 @@ public class DataServer {
     public static void fetchSkills(final FetchSkillsResponse callback) {
 
         L.D.m(TAG, "Fetching Skills...");
-        getService().getSkills().enqueue(new Callback<List<SkillsModel>>() {
+        getService().getSkills().enqueue(new Callback<List<UserModel.Skills>>() {
             @Override
-            public void onResponse(Call<List<SkillsModel>> call, Response<List<SkillsModel>> response) {
+            public void onResponse(Call<List<UserModel.Skills>> call, Response<List<UserModel.Skills>> response) {
                 if (response.isSuccessful()) {
                     L.D.m(TAG, "Skills " + response.body().toString());
                     callback.onSkillsFetched(response.body());
@@ -194,7 +190,7 @@ public class DataServer {
             }
 
             @Override
-            public void onFailure(Call<List<SkillsModel>> call, Throwable t) {
+            public void onFailure(Call<List<UserModel.Skills>> call, Throwable t) {
                 callback.onSkillFetchError();
             }
         });
@@ -525,7 +521,7 @@ public class DataServer {
 
     }
 
-    public static void updataUserDpUrl(String userId, final UserDpUpdateRequestBody body, final UserDpUpdateRequestCallback callback) {
+    public static void updataUserDpUrl(String userId, final UserDataUpdateBody body, final UserDpUpdateRequestCallback callback) {
 
         getService()
                 .updateUserDp(userId, body)
@@ -533,15 +529,15 @@ public class DataServer {
                     @Override
                     public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                         if (response.isSuccessful()) {
-                            callback.onUserDpUpdated();
+                            callback.onUserDataUpdated();
                         } else {
-                            callback.onUserDpUpdateFailed();
+                            callback.onUserDataUpdateError();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<UserResponse> call, Throwable t) {
-                        callback.onUserDpUpdateFailed();
+                        callback.onUserDataUpdateError();
                     }
                 });
 

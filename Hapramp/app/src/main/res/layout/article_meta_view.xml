@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/metaView"
+    android:visibility="gone"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <RelativeLayout
+        android:background="#ffffff"
+        android:id="@+id/toolbar_container"
+        android:layout_height="?actionBarSize"
+        android:layout_marginBottom="4dp"
+        android:layout_width="match_parent">
+
+        <TextView
+            android:background="?selectableItemBackgroundBorderless"
+            android:gravity="center"
+            android:id="@+id/backBtnFromArticleMeta"
+            android:layout_height="?actionBarSize"
+            android:layout_width="?actionBarSize"
+            android:text=""
+            android:textSize="24sp" />
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_toRightOf="@+id/backBtnFromArticleMeta"
+            android:layout_width="wrap_content"
+            android:text="Add Meta"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/publishButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/light_btn_bg"
+            android:gravity="center"
+            android:paddingBottom="6dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="6dp"
+            android:text="PUBLISH"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_below="@+id/toolbar_container"
+        android:id="@+id/skills_wrapper"
+        android:background="#ffffff"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:padding="8dp"
+            android:textSize="16sp"
+            android:id="@+id/category_caption"
+            android:text="Select Category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.hapramp.views.PostCategoryView
+            android:padding="8dp"
+            android:layout_below="@+id/category_caption"
+            android:id="@+id/articleCategoryView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:padding="8dp"
+            android:layout_below="@+id/articleCategoryView"
+            android:id="@+id/tagsCaption"
+            android:text="Tags (seperated by space or comma)"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:padding="8dp"
+            android:background="@drawable/post_editor_bg"
+            android:layout_below="@+id/tagsCaption"
+            android:id="@+id/tagsInputBox"
+            android:hint="Add Tags"
+            android:textSize="14sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

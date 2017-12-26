@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.hapramp.models.response.SkillsModel;
+import com.hapramp.models.response.UserModel;
 import com.hapramp.views.SkillsTabView;
 
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
 public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecyclerAdapter.CategoryViewHolder> {
 
     private Context context;
-    private List<SkillsModel> category;
+    private List<UserModel.Skills> category;
     private OnCategoryItemClickListener categoryItemClickListener;
     private int selectedSkillId = 0;
 
@@ -26,7 +27,7 @@ public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecycl
         this.categoryItemClickListener = categoryItemClickListener;
     }
 
-    public void setCategories(List<SkillsModel> category){
+    public void setCategories(List<UserModel.Skills> category){
         this.category = category;
         notifyDataSetChanged();
     }
@@ -55,7 +56,7 @@ public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecycl
             categoryItemView = (SkillsTabView) itemView;
         }
 
-        public void bind(final SkillsModel model, final OnCategoryItemClickListener categoryItemClickListener){
+        public void bind(final UserModel.Skills model, final OnCategoryItemClickListener categoryItemClickListener){
 
             categoryItemView.setSkillsBgImage(model.getId());
             categoryItemView.setSkillTitle(model.getName());

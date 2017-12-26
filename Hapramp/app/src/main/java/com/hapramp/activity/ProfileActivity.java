@@ -38,7 +38,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 // Activity for User Profile
-public class ProfileActivity extends AppCompatActivity implements FullUserDetailsCallback, PostFetchCallback, ProfileSkillsRecyclerAdapter.OnCategoryItemClickListener, FollowUserCallback {
+public class ProfileActivity extends AppCompatActivity implements FullUserDetailsCallback, PostFetchCallback,FollowUserCallback {
 
     @BindView(R.id.profile_progress_bar)
     ProgressBar profileProgressBar;
@@ -129,7 +129,7 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
         closeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         overflowBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
 
-        profileSkillsRecyclerAdapter = new ProfileSkillsRecyclerAdapter(this, this);
+        profileSkillsRecyclerAdapter = new ProfileSkillsRecyclerAdapter(this);
         sectionsRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         sectionsRv.setAdapter(profileSkillsRecyclerAdapter);
         profilePostRv.setLayoutManager(new LinearLayoutManager(this));
@@ -186,11 +186,11 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
         // TODO: 11/16/2017 set user followed
         try {
             //profilePic.setImageURI(userModel.getImage_uri());
-            ImageHandler.loadCircularImage(this,profilePic,userModel.getImage_uri());
-            username.setText(userModel.getUsername());
+            ImageHandler.loadCircularImage(this,profilePic,userModel.image_uri);
+            username.setText(userModel.username);
             hapname.setText("@hapname");
             bio.setText(userModel.bio);
-            String _t = String.format(getResources().getString(R.string.profile_posts_count_caption), userModel.getSkills().size());
+            String _t = String.format(getResources().getString(R.string.profile_posts_count_caption), userModel.skills.size());
             postCounts.setText(_t);
             _t = String.format(getResources().getString(R.string.profile_followers_caption), userModel.followers);
             followersCount.setText(_t);
@@ -198,7 +198,7 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
             followingsCount.setText(_t);
             hapcoinsCount.setText(String.valueOf(userModel.hapcoins));
             trophiesCount.setText("0");
-            bindSkillsCategory(userModel.getSkills());
+            bindSkillsCategory(userModel.skills);
 
         } catch (Exception e) {
 
@@ -216,7 +216,6 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
     private void bindSkillsCategory(List<UserModel.Skills> skills) {
 
         hideCategoryLoadingProgress();
-        skills.add(0, new UserModel.Skills(0, "All", "", ""));
         profileSkillsRecyclerAdapter.setCategories(skills);
 
     }
@@ -250,14 +249,6 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
 
     @Override
     public void onFullUserDetailsFetchError() {
-
-    }
-
-    @Override
-    public void onCategoryClicked(int id) {
-
-        // fetch the selected posts
-        fetchProfilePosts(id);
 
     }
 

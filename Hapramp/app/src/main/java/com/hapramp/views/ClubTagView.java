@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.hapramp.models.response.CompetitionsPostReponse;
 import com.hapramp.R;
-import com.hapramp.utils.SkillsConverter;
+import com.hapramp.utils.SkillsUtils;
 import com.hapramp.models.response.PostResponse;
 
 import java.util.List;
@@ -124,19 +124,19 @@ public class ClubTagView extends FrameLayout {
                 //2
                 if (s > 2) {
                     //3
-                    setClubs(SkillsConverter.getSkillCharacter(skills.get(0).id),
-                            SkillsConverter.getSkillCharacter(skills.get(1).id),
-                            SkillsConverter.getSkillCharacter(skills.get(2).id)
+                    setClubs(SkillsUtils.getSkillCharacter(skills.get(0).id),
+                            SkillsUtils.getSkillCharacter(skills.get(1).id),
+                            SkillsUtils.getSkillCharacter(skills.get(2).id)
                     );
                     return;
                 }
-                setClubs(SkillsConverter.getSkillCharacter(skills.get(0).id),
-                        SkillsConverter.getSkillCharacter(skills.get(1).id),
+                setClubs(SkillsUtils.getSkillCharacter(skills.get(0).id),
+                        SkillsUtils.getSkillCharacter(skills.get(1).id),
                         ""
                 );
                 return;
             }
-            setClubs(SkillsConverter.getSkillCharacter(skills.get(0).id),
+            setClubs(SkillsUtils.getSkillCharacter(skills.get(0).id),
                     "",
                     ""
             );
@@ -153,19 +153,19 @@ public class ClubTagView extends FrameLayout {
                 //2
                 if (s > 2) {
                     //3
-                    setClubs(SkillsConverter.getSkillCharacter(skills.get(0).id),
-                            SkillsConverter.getSkillCharacter(skills.get(1).id),
-                            SkillsConverter.getSkillCharacter(skills.get(2).id)
+                    setClubs(SkillsUtils.getSkillCharacter(skills.get(0).id),
+                            SkillsUtils.getSkillCharacter(skills.get(1).id),
+                            SkillsUtils.getSkillCharacter(skills.get(2).id)
                     );
                     return;
                 }
-                setClubs(SkillsConverter.getSkillCharacter(skills.get(0).id),
-                        SkillsConverter.getSkillCharacter(skills.get(1).id),
+                setClubs(SkillsUtils.getSkillCharacter(skills.get(0).id),
+                        SkillsUtils.getSkillCharacter(skills.get(1).id),
                         ""
                 );
                 return;
             }
-            setClubs(SkillsConverter.getSkillCharacter(skills.get(0).id),
+            setClubs(SkillsUtils.getSkillCharacter(skills.get(0).id),
                     "",
                     ""
             );

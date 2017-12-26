@@ -3,7 +3,9 @@ package com.hapramp.views;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.media.Image;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -12,14 +14,15 @@ import android.widget.TextView;
 
 import com.hapramp.R;
 import com.hapramp.utils.FontManager;
+import com.hapramp.utils.SkillsUtils;
 
-import static com.hapramp.utils.SkillsConverter.ACTION;
-import static com.hapramp.utils.SkillsConverter.ART;
-import static com.hapramp.utils.SkillsConverter.DANCE;
-import static com.hapramp.utils.SkillsConverter.LITERATURE;
-import static com.hapramp.utils.SkillsConverter.MUSIC;
-import static com.hapramp.utils.SkillsConverter.PHOTOGRAPHY;
-import static com.hapramp.utils.SkillsConverter.TRAVEL;
+import static com.hapramp.utils.SkillsUtils.ACTION;
+import static com.hapramp.utils.SkillsUtils.ART;
+import static com.hapramp.utils.SkillsUtils.DANCE;
+import static com.hapramp.utils.SkillsUtils.LITERATURE;
+import static com.hapramp.utils.SkillsUtils.MUSIC;
+import static com.hapramp.utils.SkillsUtils.PHOTOGRAPHY;
+import static com.hapramp.utils.SkillsUtils.TRAVEL;
 
 /**
  * Created by Ankit on 6/22/2017.
@@ -35,6 +38,20 @@ public class SkillsItemView extends FrameLayout {
 
     public SkillsItemView(Context context) {
         super(context);
+        init(context);
+    }
+
+    public SkillsItemView(@NonNull Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
+    }
+
+    public SkillsItemView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init(context);
+    }
+
+    private void init(Context context){
         View view = LayoutInflater.from(context).inflate(R.layout.skills_view, this);
         skillsBgImage = (ImageView) view.findViewById(R.id.skills_bg_image);
         skillSelectionOverlay = (TextView) view.findViewById(R.id.skill_selection_overlay);
@@ -42,7 +59,7 @@ public class SkillsItemView extends FrameLayout {
         skillSelectionOverlay.setTypeface(new FontManager().getTypeFace(FontManager.FONT_MATERIAL));
     }
 
-    public void setSkillsBgImage(int type){
+    private void setSkillsBgImage(int type){
 
         int resId = -1;
         String color = "#795548";
@@ -98,6 +115,11 @@ public class SkillsItemView extends FrameLayout {
 
     public void setSkillTitle(String title){
         skillTitle.setText(title);
+        setSkillsBgImage(SkillsUtils.getSkillIdFromName(title));
+    }
+
+    public String getSkill(){
+        return skillTitle.getText().toString();
     }
 
 }

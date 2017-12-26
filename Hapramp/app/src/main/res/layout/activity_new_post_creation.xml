@@ -65,7 +65,8 @@
                 android:id="@+id/postMediaContainer"
                 android:layout_width="match_parent"
                 android:layout_height="172dp"
-                android:layout_below="@id/content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
                 android:background="#119fdc"
                 android:visibility="gone">
 
