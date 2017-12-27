@@ -23,6 +23,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
+import com.hapramp.activity.CommentEditorActivity;
+import com.hapramp.activity.DetailedPostActivity;
+import com.hapramp.activity.ProfileActivity;
 import com.hapramp.activity.ProfileEditActivity;
 import com.hapramp.adapters.PostsRecyclerAdapter;
 import com.hapramp.adapters.ProfileSkillsRecyclerAdapter;
@@ -45,7 +48,7 @@ import butterknife.Unbinder;
 
 public class ProfileFragment extends Fragment implements
         FullUserDetailsCallback,
-        PostFetchCallback {
+        PostFetchCallback, PostsRecyclerAdapter.postListener {
 
 
     @BindView(R.id.profile_pic)
@@ -132,7 +135,7 @@ public class ProfileFragment extends Fragment implements
         profilePostAdapter = new PostsRecyclerAdapter(mContext, profilePostRv);
         Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
         viewItemDecoration = new ViewItemDecoration(drawable);
-
+        profilePostAdapter.setListener(this);
         profilePostRv.addItemDecoration(viewItemDecoration);
         profilePostRv.setLayoutManager(new LinearLayoutManager(mContext));
         profilePostRv.setAdapter(profilePostAdapter);
@@ -260,5 +263,47 @@ public class ProfileFragment extends Fragment implements
         Toast.makeText(mContext, "Error Fetching Your Posts...", Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void onReadMoreTapped(PostResponse.Results postResponse) {
+
+        Intent intent = new Intent(mContext, DetailedPostActivity.class);
+        intent.putExtra("isVoted", postResponse.is_voted);
+        intent.putExtra("vote", postResponse.current_vote);
+        intent.putExtra("username", postResponse.user.username);
+        intent.putExtra("mediaUri", postResponse.media_uri);
+        intent.putExtra("content", postResponse.content);
+        intent.putExtra("postId", String.valueOf(postResponse.id));
+        intent.putExtra("userDpUrl", postResponse.user.image_uri);
+        intent.putExtra("totalVoteSum", String.valueOf(postResponse.vote_sum));
+        intent.putExtra("totalUserVoted",String.valueOf(postResponse.vote_count));
+        intent.putExtra("hapcoins",String.valueOf(postResponse.hapcoins));
+
+        mContext.startActivity(intent);
+    }
+
+    @Override
+    public void onUserInfoTapped(int userId) {
+        // redirect to profile page
+        Intent intent = new Intent(mContext, ProfileActivity.class);
+        intent.putExtra("userId", String.valueOf(userId));
+        startActivity(intent);
+
+    }
+
+    @Override
+    public void onLoadMore() {
+
+    }
+
+    @Override
+    public void onCommentIconTapped(String author , String contextText, int postId) {
+
+        Intent i = new Intent(mContext, CommentEditorActivity.class);
+        i.putExtra("context", contextText);
+        i.putExtra("postId", String.valueOf(postId));
+        i.putExtra("author",author);
+        startActivity(i);
+
+    }
 
 }

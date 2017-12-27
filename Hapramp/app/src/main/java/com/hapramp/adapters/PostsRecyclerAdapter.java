@@ -273,6 +273,14 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
             hapcoinsCount.setText(String.format("%1.3f",post.hapcoins));
             String _comment_info = post.comment_count > 1 ? String.valueOf(post.comment_count).concat(" comments") : String.valueOf(post.comment_count).concat(" comment");
             commentCount.setText(_comment_info);
+            commentBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(postListener!=null){
+                        postListener.onCommentIconTapped(post.user.username, post.content,post.id);
+                    }
+                }
+            });
             postSnippet.setText(post.content);
 
             // initialize the starview
@@ -348,7 +356,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         void onLoadMore();
 
-        void onOverflowIconTapped(View view, int postId, int position);
+        void onCommentIconTapped(String author , String contextText , int postId);
 
     }
 

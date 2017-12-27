@@ -51,15 +51,44 @@
 
     <ScrollView
         android:id="@+id/scroll_view"
-        android:layout_above="@+id/bottom_options_container"
-        android:layout_below="@+id/toolbar_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/bottom_options_container"
+        android:layout_below="@+id/toolbar_container"
         android:fillViewport="true">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/post_editor_bg"
+                    android:gravity="top"
+                    android:hint="Share photos, videos,music or anything you like..."
+                    android:maxLength="140"
+                    android:minHeight="100dp"
+                    android:padding="24dp"
+                    android:textColor="@color/Black87"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/characterLimit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:padding="4dp"
+                    android:text="0/140"
+                    android:textSize="12sp" />
+
+            </FrameLayout>
 
             <FrameLayout
                 android:id="@+id/postMediaContainer"
@@ -114,53 +143,30 @@
 
             </FrameLayout>
 
-
-            <EditText
-                android:id="@+id/content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/post_editor_bg"
-                android:gravity="top"
-                android:hint="Share photos, videos,music or anything you like..."
-                android:maxLength="140"
-                android:minHeight="100dp"
-                android:padding="24dp"
-                android:textColor="@color/Black87"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/characterLimit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:padding="4dp"
-                android:text="0/140" />
-
-
             <RelativeLayout
-                android:layout_below="@+id/postMediaContainer"
                 android:id="@+id/skills_wrapper"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/postMediaContainer">
 
                 <TextView
-                    android:padding="8dp"
-                    android:textSize="16sp"
                     android:id="@+id/category_caption"
-                    android:text="Select Category"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="Select Category"
+                    android:textSize="16sp" />
 
                 <com.hapramp.views.PostCategoryView
-                    android:padding="8dp"
-                    android:layout_below="@+id/category_caption"
                     android:id="@+id/postCategoryView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/category_caption"
+                    android:padding="8dp" />
 
             </RelativeLayout>
 
-        </RelativeLayout>
+        </LinearLayout>
 
     </ScrollView>
 

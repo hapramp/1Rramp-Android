@@ -1,5 +1,6 @@
 package com.hapramp.activity;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -40,7 +41,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 // Activity for User Profile
-public class ProfileActivity extends AppCompatActivity implements FullUserDetailsCallback, PostFetchCallback, FollowUserCallback {
+public class ProfileActivity extends AppCompatActivity implements FullUserDetailsCallback, PostFetchCallback, FollowUserCallback, PostsRecyclerAdapter.postListener {
 
 
     @BindView(R.id.profile_progress_bar)
@@ -94,7 +95,6 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
     private String userId;
 
     private PostsRecyclerAdapter profilePostAdapter;
-    private ProfileSkillsRecyclerAdapter profileSkillsRecyclerAdapter;
     private boolean followed = false;
     private String TICK_TEXT = "\u2713";
     private ViewItemDecoration viewItemDecoration;
@@ -121,6 +121,8 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
 
         userId = getIntent().getExtras().getString("userId");
         profilePostAdapter = new PostsRecyclerAdapter(this, profilePostRv);
+        profilePostAdapter.setListener(this);
+
         closeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         overflowBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         profilePostRv.setLayoutManager(new LinearLayoutManager(this));
@@ -247,6 +249,47 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
             followed = false;
         }
 
+    }
+
+    @Override
+    public void onReadMoreTapped(PostResponse.Results postResponse) {
+
+        Intent intent = new Intent(this, DetailedPostActivity.class);
+        intent.putExtra("isVoted", postResponse.is_voted);
+        intent.putExtra("vote", postResponse.current_vote);
+        intent.putExtra("username", postResponse.user.username);
+        intent.putExtra("mediaUri", postResponse.media_uri);
+        intent.putExtra("content", postResponse.content);
+        intent.putExtra("postId", String.valueOf(postResponse.id));
+        intent.putExtra("userDpUrl", postResponse.user.image_uri);
+        intent.putExtra("totalVoteSum", String.valueOf(postResponse.vote_sum));
+        intent.putExtra("totalUserVoted",String.valueOf(postResponse.vote_count));
+        intent.putExtra("hapcoins",String.valueOf(postResponse.hapcoins));
+
+        startActivity(intent);
+    }
+
+    @Override
+    public void onUserInfoTapped(int userId) {
+        // redirect to profile page
+        Intent intent = new Intent(this, ProfileActivity.class);
+        intent.putExtra("userId", String.valueOf(userId));
+        startActivity(intent);
+
+    }
+
+    @Override
+    public void onLoadMore() {
+
+    }
+
+    @Override
+    public void onCommentIconTapped(String author , String contextText, int postId) {
+        Intent i = new Intent(this, CommentEditorActivity.class);
+        i.putExtra("context", contextText);
+        i.putExtra("postId", String.valueOf(postId));
+        i.putExtra("author",author);
+        startActivity(i);
     }
 
 }

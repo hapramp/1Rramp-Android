@@ -17,5 +17,13 @@
         Bitcoin allows exciting uses that could not be covered by any previous payment system.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="post_created">%1$d Posts Created</string>
+    <string name="post_rated">%1$d Posts Rated</string>
+    <string name="comment_author">By : %1$s</string>
+    <string name="other_comments_format">Comments[%1$d]</string>
+    <string name="other_comment_format">Comment[%1$d]</string>
+    <string name="no_other_comment_format">No Comment</string>
+
+
 
 </resources>

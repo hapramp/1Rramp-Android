@@ -176,12 +176,24 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
             }
         });
 
+        commentBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(DetailedPostActivity.this, CommentEditorActivity.class);
+                i.putExtra("context", mContent);
+                i.putExtra("postId", postId);
+                i.putExtra("author",mUserName);
+                startActivity(i);
+            }
+        });
+
         commentBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(DetailedPostActivity.this, CommentEditorActivity.class);
                 i.putExtra("context", mContent);
                 i.putExtra("postId", postId);
+                i.putExtra("author",mUserName);
                 startActivity(i);
             }
         });

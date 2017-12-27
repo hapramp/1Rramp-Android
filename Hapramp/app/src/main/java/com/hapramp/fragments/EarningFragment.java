@@ -104,7 +104,10 @@ public class EarningFragment extends Fragment implements UserStatsCallback {
         try {
             postCreatedCount.setText(String.valueOf(stats.posts));
             postRatedCount.setText(String.valueOf(stats.rated));
+            postCreatedText.setText(String.format(getResources().getString(R.string.post_created),stats.posts));
             earnedBadge.setText(String.format(getResources().getString(R.string.earnedHapcoins), stats.hapcoins));
+            postRatedText.setText(String.format(getResources().getString(R.string.post_created),stats.rated));
+
         }catch (NullPointerException e){
             // not handled
         }

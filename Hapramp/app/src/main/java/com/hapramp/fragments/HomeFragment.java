@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.hapramp.activity.CommentEditorActivity;
 import com.hapramp.activity.ProfileActivity;
 import com.hapramp.adapters.CategoryRecyclerAdapter;
 import com.hapramp.adapters.PostsRecyclerAdapter;
@@ -103,7 +104,6 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
         postsRecyclerView.addItemDecoration(viewItemDecoration);
         postsRecyclerView.setAdapter(recyclerAdapter);
         postsRecyclerView.setNestedScrollingEnabled(false);
-        attachListeners();
 
     }
 
@@ -117,29 +117,6 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
         skillsModels.add(0, new UserModel.Skills(0, "All", "", ""));
         categoryRecyclerAdapter.setCategories(skillsModels);
 
-    }
-
-    private void attachListeners() {
-
-//        firstVisibleInListview = layoutManager.findFirstVisibleItemPosition();
-//
-//        postsRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//
-//                int currentFirstVisible = layoutManager.findFirstVisibleItemPosition();
-//
-//                if(currentFirstVisible > firstVisibleInListview) {
-//                    // Scrolling Up: Hide the Category Section
-//                    sectionsRv.animate().translationY(-100).start();
-//                }else {
-//                    // Scrolling Up: Show the Category Section
-//                    sectionsRv.animate().translationY(0).start();
-//                }
-//
-//            }
-//        });
     }
 
     @Override
@@ -294,8 +271,12 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     }
 
     @Override
-    public void onOverflowIconTapped(View view, int postId, int position) {
-        // do nothing...
+    public void onCommentIconTapped(String author , String contextText, int postId) {
+        Intent i = new Intent(mContext, CommentEditorActivity.class);
+        i.putExtra("context", contextText);
+        i.putExtra("postId", String.valueOf(postId));
+        i.putExtra("author",author);
+        startActivity(i);
     }
 
     @Override

@@ -58,6 +58,7 @@
             android:text=""
             android:textSize="24sp" />
 
+
     </RelativeLayout>
 
     <ScrollView
@@ -120,10 +121,13 @@
                     android:layout_below="@+id/shareWithFriendBtn">
 
                     <TextView
+                        android:clickable="true"
+                        android:focusable="true"
                         android:layout_toEndOf="@+id/starView"
                         android:id="@+id/commentBtn"
                         android:layout_width="36dp"
                         android:layout_height="36dp"
+                        android:background="?selectableItemBackgroundBorderless"
                         android:layout_centerVertical="true"
                         android:layout_marginStart="24dp"
                         android:gravity="center"
@@ -240,5 +244,13 @@
         </RelativeLayout>
 
     </ScrollView>
+
+
+    <FrameLayout
+        android:id="@+id/toolbar_drop_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/toolbar_container"
+        android:background="@drawable/toolbar_shadow" />
 
 </RelativeLayout>

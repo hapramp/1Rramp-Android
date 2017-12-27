@@ -129,10 +129,13 @@
             android:layout_below="@+id/readMoreBtn">
 
             <TextView
+                android:clickable="true"
+                android:focusable="true"
                 android:layout_toEndOf="@+id/starView"
                 android:id="@+id/commentBtn"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
+                android:background="?selectableItemBackgroundBorderless"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="24dp"
                 android:gravity="center"
