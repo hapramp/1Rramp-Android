@@ -18,6 +18,7 @@ import com.hapramp.models.response.CommentsResponse;
 import com.hapramp.models.response.CompetitionResponse;
 import com.hapramp.models.response.CreateUserReponse;
 import com.hapramp.models.response.FetchUserResponse;
+import com.hapramp.models.response.NotificationResponse;
 import com.hapramp.models.response.OrgsResponse;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.models.response.SkillsModel;
@@ -126,5 +127,11 @@ public interface HaprampAPI {
 
     @GET("users/{user_id}/stats")
     Call<UserStatsModel> getUserStats(@Path("user_id") String userId);
+
+    @GET("notifications")
+    Call<NotificationResponse> getNotifications(@Query("start") int start,@Query("limit") int limit);
+
+    @POST("notifications/{notification_id}/_mark_as_read")
+    Call<NotificationResponse> markAsRead(@Path("notification_id") int notification_id);
 
 }

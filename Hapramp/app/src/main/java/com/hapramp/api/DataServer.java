@@ -11,6 +11,8 @@ import com.hapramp.interfaces.FetchSkillsResponse;
 import com.hapramp.interfaces.FetchUserCallback;
 import com.hapramp.interfaces.FollowUserCallback;
 import com.hapramp.interfaces.FullUserDetailsCallback;
+import com.hapramp.interfaces.MarkAsReadNotificationCallback;
+import com.hapramp.interfaces.NotificationCallback;
 import com.hapramp.interfaces.OnPostDeleteCallback;
 import com.hapramp.interfaces.OnSkillsUpdateCallback;
 import com.hapramp.interfaces.OrgUpdateCallback;
@@ -41,6 +43,7 @@ import com.hapramp.models.response.CommentsResponse;
 import com.hapramp.models.response.CompetitionResponse;
 import com.hapramp.models.response.CreateUserReponse;
 import com.hapramp.models.response.FetchUserResponse;
+import com.hapramp.models.response.NotificationResponse;
 import com.hapramp.models.response.OrgsResponse;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.models.response.SkillsUpdateResponse;
@@ -406,7 +409,7 @@ public class DataServer {
 
     }
 
-    public static void createPost(final String jobId , PostCreateBody postCreateBody, final PostCreateCallback callback) {
+    public static void createPost(final String jobId, PostCreateBody postCreateBody, final PostCreateCallback callback) {
 
         getService()
                 .createPost(postCreateBody)
@@ -676,4 +679,48 @@ public class DataServer {
                 });
 
     }
+
+    public static void getNotifications(int start, int limit, final NotificationCallback callback) {
+
+        getService()
+                .getNotifications(start, limit)
+                .enqueue(new Callback<NotificationResponse>() {
+                    @Override
+                    public void onResponse(Call<NotificationResponse> call, Response<NotificationResponse> response) {
+                        if (response.isSuccessful()) {
+                            callback.onNotificationsFetched(response.body());
+                        } else {
+                            callback.onNotificationFetchError();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<NotificationResponse> call, Throwable t) {
+                        callback.onNotificationFetchError();
+                    }
+                });
+
+    }
+
+    public static void markNotificationAsRead(int notification_id,final int pos, final MarkAsReadNotificationCallback callback) {
+
+        getService()
+                .markAsRead(notification_id)
+                .enqueue(new Callback<NotificationResponse>() {
+                    @Override
+                    public void onResponse(Call<NotificationResponse> call, Response<NotificationResponse> response) {
+                        if (response.isSuccessful()) {
+                            callback.onNotificationMarkedAsRead(pos);
+                        } else {
+                            callback.onNotificationMarkAsReadFailed();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<NotificationResponse> call, Throwable t) {
+                        callback.onNotificationMarkAsReadFailed();
+                    }
+                });
+    }
+
 }

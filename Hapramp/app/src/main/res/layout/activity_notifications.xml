@@ -26,12 +26,31 @@
         android:layout_width="wrap_content"
         android:layout_height="?actionBarSize" />
 
-
     <TextView
+        android:visibility="gone"
         android:id="@+id/notificationsMsg"
         android:textSize="16sp"
         android:text="No notifications"
         android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_below="@+id/backBtn"
+        android:id="@+id/notificationRV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <FrameLayout
+        android:id="@+id/toolbar_drop_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/backBtn"
+        android:background="@drawable/toolbar_shadow" />
+
+    <ProgressBar
+        android:layout_centerInParent="true"
+        android:id="@+id/notificationProgress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
