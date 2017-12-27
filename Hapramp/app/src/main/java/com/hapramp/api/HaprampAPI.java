@@ -134,4 +134,7 @@ public interface HaprampAPI {
     @POST("notifications/{notification_id}/_mark_as_read")
     Call<NotificationResponse> markAsRead(@Path("notification_id") int notification_id);
 
+    @POST("notifications/_mark_all_read")
+    Call<NotificationResponse> markAsAllRead();
+
 }

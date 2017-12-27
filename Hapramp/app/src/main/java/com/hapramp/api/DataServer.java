@@ -12,6 +12,7 @@ import com.hapramp.interfaces.FetchUserCallback;
 import com.hapramp.interfaces.FollowUserCallback;
 import com.hapramp.interfaces.FullUserDetailsCallback;
 import com.hapramp.interfaces.MarkAsReadNotificationCallback;
+import com.hapramp.interfaces.MarkallAsReadNotificationCallback;
 import com.hapramp.interfaces.NotificationCallback;
 import com.hapramp.interfaces.OnPostDeleteCallback;
 import com.hapramp.interfaces.OnSkillsUpdateCallback;
@@ -723,4 +724,24 @@ public class DataServer {
                 });
     }
 
+    public static void markAllNotificationAsRead(final MarkallAsReadNotificationCallback callback) {
+
+        getService()
+                .markAsAllRead()
+                .enqueue(new Callback<NotificationResponse>() {
+                    @Override
+                    public void onResponse(Call<NotificationResponse> call, Response<NotificationResponse> response) {
+                        if (response.isSuccessful()) {
+                            callback.markedAllRead();
+                        } else {
+                            callback.markAllReadFailed();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<NotificationResponse> call, Throwable t) {
+                        callback.markAllReadFailed();
+                    }
+                });
+    }
 }

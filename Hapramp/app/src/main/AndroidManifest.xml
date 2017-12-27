@@ -75,6 +75,20 @@
 
         <service android:name=".services.PostJobDispatcherService" />
 
+        <service
+            android:name=".services.HaprampFirebaseInstanceId">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".services.HapramapPushService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+
         <receiver android:name=".activity.HomeActivity$PostUploadReceiver" />
 
         <activity android:name=".activity.ProfileEditActivity" android:screenOrientation="portrait"/>

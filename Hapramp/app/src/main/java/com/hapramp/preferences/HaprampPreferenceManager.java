@@ -139,4 +139,16 @@ public class HaprampPreferenceManager {
         editor.apply();
     }
 
+    public void incrementUnreadNotifications() {
+           setUnreadNotification(getUnreadNotifications()+1);
+    }
+
+    public void setUnreadNotification(int unreadNotification){
+        editor.putInt("unread_notif",unreadNotification);
+        editor.apply();
+    }
+
+    public int getUnreadNotifications(){
+        return preferences.getInt("unread_notif",0);
+    }
 }

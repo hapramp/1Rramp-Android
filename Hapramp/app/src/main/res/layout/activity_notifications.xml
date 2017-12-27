@@ -6,7 +6,12 @@
     android:layout_height="match_parent"
     tools:context="com.hapramp.activity.NotificationsActivity">
 
-    <TextView
+    <RelativeLayout
+        android:id="@+id/toolbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize">
+
+        <TextView
         android:background="?selectableItemBackgroundBorderless"
         android:clickable="true"
         android:id="@+id/backBtn"
@@ -28,6 +33,25 @@
 
     <TextView
         android:visibility="gone"
+        android:id="@+id/markallRead"
+        android:text="Mark All Read"
+        android:textColor="@color/colorPrimary"
+        android:textSize="14sp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+
+        android:background="@drawable/light_btn_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:visibility="gone"
         android:id="@+id/notificationsMsg"
         android:textSize="16sp"
         android:text="No notifications"
@@ -36,7 +60,7 @@
         android:layout_height="wrap_content" />
 
     <android.support.v7.widget.RecyclerView
-        android:layout_below="@+id/backBtn"
+        android:layout_below="@+id/toolbar_container"
         android:id="@+id/notificationRV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

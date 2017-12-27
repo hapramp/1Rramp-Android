@@ -64,7 +64,6 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
     @BindView(R.id.action_bar_container)
     RelativeLayout actionBarContainer;
 
-    CategoryRecyclerAdapter categoryRecyclerAdapter;
     @BindView(R.id.contentPlaceHolder)
     FrameLayout contentPlaceHolder;
     @BindView(R.id.bottomBar_home_text)
@@ -107,6 +106,7 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
     private EarningFragment earningFragment;
     private ProgressDialog progressDialog;
     private PostUploadReceiver postUploadReceiver;
+    private NotificationUpdateReceiver notificationUpdateReceiver;
     private boolean isReceiverRegistered;
 
     private final Runnable hideStatus = new Runnable() {
@@ -117,6 +117,14 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
     };
 
     private Handler mHandler = new Handler();
+
+    public class NotificationUpdateReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+           setNotifications();
+        }
+    }
 
     public class PostUploadReceiver extends BroadcastReceiver {
 
@@ -167,6 +175,7 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
         attachListeners();
 
         postUploadReceiver = new PostUploadReceiver();
+        notificationUpdateReceiver = new NotificationUpdateReceiver();
 
         if (!HaprampPreferenceManager.getInstance().isUserInfoAvailable()) {
             fetchCompleteUserInfo();
@@ -182,8 +191,12 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 
         if (!isReceiverRegistered) {
             registerReceiver(postUploadReceiver, new IntentFilter(Constants.ACTION_POST_UPLOAD));
+            registerReceiver(postUploadReceiver,new IntentFilter(Constants.ACTION_NOTIFICATION_UPDATE));
             isReceiverRegistered = true;
         }
+
+        //update notifications
+        setNotifications();
 
     }
 
@@ -193,6 +206,7 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 
         if (isReceiverRegistered) {
             unregisterReceiver(postUploadReceiver);
+            unregisterReceiver(notificationUpdateReceiver);
             isReceiverRegistered = false;
         }
 
@@ -210,6 +224,18 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
         // putting the jobs in right state
         PostCreationController.invalidateJobs();
 
+    }
+
+    private void setNotifications(){
+
+        int count = HaprampPreferenceManager.getInstance().getUnreadNotifications();
+        if(count>0){
+            notificationCount.setVisibility(View.VISIBLE);
+            String _s = count>9?"9+":String.valueOf(count);
+            notificationCount.setText(_s);
+        }else{
+            notificationCount.setVisibility(View.GONE);
+        }
     }
 
     private void setupToolbar() {

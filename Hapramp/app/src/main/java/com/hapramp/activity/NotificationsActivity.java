@@ -10,13 +10,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
 import com.hapramp.adapters.NotificationsAdapter;
 import com.hapramp.api.DataServer;
+import com.hapramp.interfaces.MarkallAsReadNotificationCallback;
 import com.hapramp.interfaces.NotificationCallback;
 import com.hapramp.models.response.NotificationResponse;
+import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ViewItemDecoration;
 
@@ -25,7 +28,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class NotificationsActivity extends AppCompatActivity implements NotificationCallback {
+public class NotificationsActivity extends AppCompatActivity implements NotificationCallback, MarkallAsReadNotificationCallback {
 
     @BindView(R.id.backBtn)
     TextView backBtn;
@@ -37,6 +40,10 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
     FrameLayout toolbarDropShadow;
     @BindView(R.id.notificationProgress)
     ProgressBar notificationProgress;
+    @BindView(R.id.markallRead)
+    TextView markAllReadButton;
+    @BindView(R.id.toolbar_container)
+    RelativeLayout toolbarContainer;
     private Typeface materialTypeface;
 
     private NotificationsAdapter notificationsAdapter;
@@ -72,6 +79,10 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
         viewItemDecoration = new ViewItemDecoration(drawable);
         notificationRV.addItemDecoration(viewItemDecoration);
 
+        // reset notification if any
+        HaprampPreferenceManager.getInstance().setUnreadNotification(0);
+
+
     }
 
     private void bindNotifications(List<NotificationResponse.Notification> list) {
@@ -81,13 +92,37 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
         } else {
             notificationsMsg.setVisibility(View.GONE);
             notificationsAdapter.setNotifications(list);
+
+            int unread_count = 0;
+            for (NotificationResponse.Notification n :list) {
+                unread_count+= n.is_read?0:1;
+            }
+            if(unread_count>0){
+
+                markAllReadButton.setVisibility(View.VISIBLE);
+
+                markAllReadButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        markAllRead();
+                    }
+                });
+
+            }else {
+                markAllReadButton.setVisibility(View.GONE);
+            }
+
         }
 
     }
 
-    private void hideProgress(){
+    private void markAllRead() {
+        DataServer.markAllNotificationAsRead(this);
+    }
 
-        if(notificationProgress!=null){
+    private void hideProgress() {
+
+        if (notificationProgress != null) {
             notificationProgress.setVisibility(View.GONE);
         }
 
@@ -110,4 +145,16 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
         hideProgress();
     }
 
+    @Override
+    public void markedAllRead() {
+
+        notificationsAdapter.markAllRead();
+        markAllReadButton.setVisibility(View.GONE);
+
+    }
+
+    @Override
+    public void markAllReadFailed() {
+
+    }
 }

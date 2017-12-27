@@ -56,6 +56,13 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         return notifications != null ? notifications.size() : 0;
     }
 
+    public void markAllRead() {
+        for (NotificationResponse.Notification n:notifications){
+            n.is_read = true;
+        }
+        notifyDataSetChanged();
+    }
+
     class NotificationViewHolder extends RecyclerView.ViewHolder {
 
 

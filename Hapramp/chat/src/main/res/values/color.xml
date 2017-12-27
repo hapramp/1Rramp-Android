@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <color name="chatColorPrimary">#085c73</color>
-    <color name="chatColorSecondary">#228eac</color>
-    <color name="chatColorAccent">#a10f5a</color>
-
-</resources>
