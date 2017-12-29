@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/backBtn"
-        android:text=""
+        android:text=""
         android:gravity="center"
         android:textSize="24sp"
         android:layout_width="48dp"
@@ -25,6 +25,13 @@
         android:layout_width="wrap_content"
         android:layout_height="?actionBarSize" />
 
+    <FrameLayout
+        android:id="@+id/toolbar_drop_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/actionbar_title"
+        android:background="@drawable/toolbar_shadow" />
+
     <TextView
         android:layout_below="@+id/actionbar_title"
         android:background="@drawable/org_icon_bg"
@@ -34,7 +41,7 @@
         android:gravity="center"
         android:layout_height="108dp"
         android:layout_centerHorizontal="true"
-        android:text=""
+        android:text=""
         android:textColor="@color/colorAccent"
         android:textSize="72sp" />
 

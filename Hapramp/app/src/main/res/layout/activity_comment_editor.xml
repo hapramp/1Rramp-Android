@@ -71,11 +71,19 @@
                 android:text="Comment For:"
                 android:textColor="@color/Black54" />
 
+            <ImageView
+                android:id="@+id/imageMedia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitCenter"
+                android:layout_below="@+id/commentForCaption"
+                android:visibility="gone" />
+
             <TextView
                 android:id="@+id/inContextOf"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/commentForCaption"
+                android:layout_below="@+id/imageMedia"
                 android:ellipsize="end"
                 android:lineSpacingExtra="2dp"
                 android:maxLines="4"

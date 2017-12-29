@@ -12,6 +12,7 @@ import com.hapramp.activity.NotificationsActivity;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.MarkAsReadNotificationCallback;
 import com.hapramp.models.response.NotificationResponse;
+import com.hapramp.utils.MomentsUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +82,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         public void bind(final NotificationResponse.Notification notification , final NotificationsAdapter adapter){
 
             notificationContent.setText(notification.content);
-            moment.setText(notification.created_at);
+            moment.setText(MomentsUtils.getFormattedTime(notification.created_at));
             if(notification.is_read){
                 markAsRead.setVisibility(View.GONE);
             }else{

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.hapramp.R;
 import com.hapramp.models.CommentModel;
 import com.hapramp.utils.ImageHandler;
+import com.hapramp.utils.MomentsUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +76,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
 
             ImageHandler.loadCircularImage(mContext,commentUserDp,comment.getUserDpUrl());
             commentUserName.setText(comment.getUserName());
-            commentTime.setText(comment.getCommentTime());
+            commentTime.setText(MomentsUtils.getFormattedTime(comment.getCommentTime()));
             content.setText(comment.getComment());
 
         }

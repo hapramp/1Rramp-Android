@@ -263,8 +263,8 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
         intent.putExtra("postId", String.valueOf(postResponse.id));
         intent.putExtra("userDpUrl", postResponse.user.image_uri);
         intent.putExtra("totalVoteSum", String.valueOf(postResponse.vote_sum));
-        intent.putExtra("totalUserVoted",String.valueOf(postResponse.vote_count));
-        intent.putExtra("hapcoins",String.valueOf(postResponse.hapcoins));
+        intent.putExtra("totalUserVoted", String.valueOf(postResponse.vote_count));
+        intent.putExtra("hapcoins", String.valueOf(postResponse.hapcoins));
 
         startActivity(intent);
     }
@@ -284,12 +284,15 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
     }
 
     @Override
-    public void onCommentIconTapped(String author , String contextText, int postId) {
+    public void onCommentIconTapped(String mediaUri, String author, String contextText, int postId) {
         Intent i = new Intent(this, CommentEditorActivity.class);
         i.putExtra("context", contextText);
         i.putExtra("postId", String.valueOf(postId));
-        i.putExtra("author",author);
+        i.putExtra("author", author);
+        i.putExtra("media", mediaUri);
+
         startActivity(i);
     }
+
 
 }

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ import com.hapramp.models.UserResponse;
 import com.hapramp.models.requests.CommentBody;
 import com.hapramp.models.response.CommentsResponse;
 import com.hapramp.utils.FontManager;
+import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.ViewItemDecoration;
 
 import java.util.List;
@@ -60,6 +62,8 @@ public class CommentEditorActivity extends AppCompatActivity implements CommentC
     FrameLayout toolbarDropShadow;
     @BindView(R.id.noCommentsCaption)
     TextView noCommentsCaption;
+    @BindView(R.id.imageMedia)
+    ImageView imageMedia;
     private Typeface typeface;
     private String postId = "";
     private ProgressDialog progressDialog;
@@ -70,6 +74,7 @@ public class CommentEditorActivity extends AppCompatActivity implements CommentC
     private List<CommentsResponse.Results> comments;
     private String moreCommentsAt;
     private String author;
+    private String mediaUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +96,13 @@ public class CommentEditorActivity extends AppCompatActivity implements CommentC
         contextText = getIntent().getExtras().getString("context");
         postId = getIntent().getExtras().getString("postId");
         author = getIntent().getExtras().getString("author");
+        mediaUri = getIntent().getExtras().getString("media", "");
+
         inContextOf.setText(contextText);
+        if (mediaUri.length()>0) {
+            imageMedia.setVisibility(View.VISIBLE);
+            ImageHandler.load(this,imageMedia,mediaUri);
+        }
         contentAuthor.setText(String.format(getResources().getString(R.string.comment_author), author));
         commentPublishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,8 +143,8 @@ public class CommentEditorActivity extends AppCompatActivity implements CommentC
         if (cmnt.length() > 2) {
             showProgress("Posting Your Comment..." + postId);
             DataServer.createComment(postId, new CommentBody(cmnt), this);
-        }else{
-            Toast.makeText(this,"Comment Too Short!!",Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Comment Too Short!!", Toast.LENGTH_LONG).show();
         }
 
     }
@@ -145,14 +156,14 @@ public class CommentEditorActivity extends AppCompatActivity implements CommentC
         if (len == 0) {
             noCommentsCaption.setVisibility(View.VISIBLE);
             otherCommentCaption.setText(String.format(getResources().getString(R.string.no_other_comment_format)));
-        }else{
+        } else {
 
             noCommentsCaption.setVisibility(View.GONE);
 
-            if(len>1){
-                otherCommentCaption.setText(String.format(getResources().getString(R.string.other_comments_format),len));
-            }else{
-                otherCommentCaption.setText(String.format(getResources().getString(R.string.other_comment_format),len));
+            if (len > 1) {
+                otherCommentCaption.setText(String.format(getResources().getString(R.string.other_comments_format), len));
+            } else {
+                otherCommentCaption.setText(String.format(getResources().getString(R.string.other_comment_format), len));
             }
 
         }

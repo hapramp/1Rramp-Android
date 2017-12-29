@@ -3,6 +3,7 @@ package com.hapramp.activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -22,7 +24,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hapramp.R;
-import com.hapramp.adapters.CategoryRecyclerAdapter;
 import com.hapramp.api.DataServer;
 import com.hapramp.controller.PostCreationController;
 import com.hapramp.fragments.CompetitionFragment;
@@ -118,11 +119,11 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 
     private Handler mHandler = new Handler();
 
-    public class NotificationUpdateReceiver extends BroadcastReceiver{
+    public class NotificationUpdateReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-           setNotifications();
+            setNotifications();
         }
     }
 
@@ -131,33 +132,33 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
         @Override
         public void onReceive(Context context, Intent intent) {
             int type = intent.getExtras().getInt("type");
-            if(type==Constants.BROADCAST_TYPE_STATUS){
+            if (type == Constants.BROADCAST_TYPE_STATUS) {
 
                 postUploadStatus.setVisibility(View.VISIBLE);
                 String msg = intent.getExtras().getString("msg");
                 postUploadStatus.setText(msg);
 
-            }else if(type == Constants.BROADCAST_TYPE_FINISHED){
+            } else if (type == Constants.BROADCAST_TYPE_FINISHED) {
 
                 // close the msg bar
                 postUploadStatus.setText("Post Uploaded!");
                 postUploadStatus.setTextColor(Color.GREEN);
 
-  //              postUploadStatus.setVisibility(View.GONE);
+                //              postUploadStatus.setVisibility(View.GONE);
                 // load the content again
-                mHandler.postDelayed(hideStatus,2000);
-                if(currentVisibleFragment==homeFragment){
+                mHandler.postDelayed(hideStatus, 2000);
+                if (currentVisibleFragment == homeFragment) {
                     homeFragment.forceReloadData();
                 }
 
-            }else if(type == Constants.BROADCAST_TYPE_ERROR){
+            } else if (type == Constants.BROADCAST_TYPE_ERROR) {
                 // close the msg bar
                 postUploadStatus.setText("Post Failed!");
                 postUploadStatus.setTextColor(Color.RED);
 //                postUploadStatus.setVisibility(View.GONE);
-                mHandler.postDelayed(hideStatus,2000);
+                mHandler.postDelayed(hideStatus, 2000);
 
-            }else{
+            } else {
 
             }
 
@@ -191,12 +192,34 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 
         if (!isReceiverRegistered) {
             registerReceiver(postUploadReceiver, new IntentFilter(Constants.ACTION_POST_UPLOAD));
-            registerReceiver(postUploadReceiver,new IntentFilter(Constants.ACTION_NOTIFICATION_UPDATE));
+            registerReceiver(notificationUpdateReceiver, new IntentFilter(Constants.ACTION_NOTIFICATION_UPDATE));
             isReceiverRegistered = true;
         }
 
         //update notifications
         setNotifications();
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        showExistAlert();
+    }
+
+    private void showExistAlert() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle("Exit")
+                .setMessage("Do you want to Exit")
+                .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .setNegativeButton("No",null);
+
+        builder.show();
 
     }
 
@@ -226,14 +249,14 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 
     }
 
-    private void setNotifications(){
+    private void setNotifications() {
 
         int count = HaprampPreferenceManager.getInstance().getUnreadNotifications();
-        if(count>0){
+        if (count > 0) {
             notificationCount.setVisibility(View.VISIBLE);
-            String _s = count>9?"9+":String.valueOf(count);
+            String _s = count > 9 ? "9+" : String.valueOf(count);
             notificationCount.setText(_s);
-        }else{
+        } else {
             notificationCount.setVisibility(View.GONE);
         }
     }
@@ -352,6 +375,7 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 
                 currentVisibleFragment = earningFragment;
                 fragmentManager.beginTransaction()
+                        .addToBackStack("earning")
                         .replace(R.id.contentPlaceHolder, earningFragment)
                         .commit();
                 break;

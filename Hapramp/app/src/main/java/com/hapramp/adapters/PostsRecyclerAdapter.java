@@ -277,7 +277,8 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
                 @Override
                 public void onClick(View v) {
                     if(postListener!=null){
-                        postListener.onCommentIconTapped(post.user.username, post.content,post.id);
+
+                        postListener.onCommentIconTapped(post.media_uri,post.user.username, post.content,post.id);
                     }
                 }
             });
@@ -356,7 +357,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         void onLoadMore();
 
-        void onCommentIconTapped(String author , String contextText , int postId);
+        void onCommentIconTapped(String mediaUri,String author , String contextText , int postId);
 
     }
 

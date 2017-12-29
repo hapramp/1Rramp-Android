@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.GridView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
@@ -15,11 +15,12 @@ import com.hapramp.interfaces.FetchSkillsResponse;
 import com.hapramp.interfaces.OnSkillsUpdateCallback;
 import com.hapramp.logger.L;
 import com.hapramp.models.requests.SkillsUpdateBody;
+import com.hapramp.models.response.PostResponse;
 import com.hapramp.models.response.UserModel;
-import com.hapramp.models.response.UserModel.Skills;
 import com.hapramp.utils.FontManager;
+import com.hapramp.views.SelectableInterestsView;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -27,19 +28,18 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SkillRegistrationActivity extends AppCompatActivity implements FetchSkillsResponse, OnSkillsUpdateCallback {
+public class SkillRegistrationActivity extends AppCompatActivity implements OnSkillsUpdateCallback {
 
     @BindView(R.id.backBtn)
     TextView backBtn;
     @BindView(R.id.action_bar_title)
     TextView actionBarTitle;
     @BindView(R.id.skillsGridView)
-    GridView skillsGridView;
+    SelectableInterestsView skillsGridView;
+    @BindView(R.id.toolbar_drop_shadow)
+    FrameLayout toolbarDropShadow;
     @BindView(R.id.skills_continueBtn)
     TextView skillsContinueBtn;
-    SkillsGridAdapter skillsGridAdapter;
-    private List<UserModel.Skills> skills;
-
     private ProgressDialog progressDialog;
 
     @Override
@@ -48,44 +48,38 @@ public class SkillRegistrationActivity extends AppCompatActivity implements Fetc
         setContentView(R.layout.skill_registration);
         ButterKnife.bind(this);
         init();
-        fetchSkills();
         attachListeners();
     }
 
     private void attachListeners() {
+
         skillsContinueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 requestSkillsUpdate();
             }
         });
-
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+
     }
 
-    private void fetchSkills() {
-        showProgress("Fetching Skills");
-        DataServer.fetchSkills(this);
-    }
-
-    private void requestSkillsUpdate(){
+    private void requestSkillsUpdate() {
         showProgress("Setting Your Skills...");
         SkillsUpdateBody body = new SkillsUpdateBody(getSelectionIds());
-        DataServer.setSkills(body,this);
+        DataServer.setSkills(body, this);
     }
 
     private void init() {
 
         progressDialog = new ProgressDialog(this);
         backBtn.setTypeface(new FontManager().getTypeFace(FontManager.FONT_MATERIAL));
-        // set Adapter
-        skillsGridAdapter = new SkillsGridAdapter(this);
-        skillsGridView.setAdapter(skillsGridAdapter);
+        List<UserModel.Skills> skills = new ArrayList<>();
+        skillsGridView.setInterests(skills);
 
     }
 
@@ -100,24 +94,11 @@ public class SkillRegistrationActivity extends AppCompatActivity implements Fetc
         }
     }
 
-
-    @Override
-    public void onSkillsFetched(List<UserModel.Skills> skillsModels) {
-        hideProgress();
-        skillsGridAdapter.onDataLoaded(skillsModels);
-    }
-
-    @Override
-    public void onSkillFetchError() {
-        hideProgress();
-        L.D.m("SkillsActivity", "Error While Fetching..");
-    }
-
     @Override
     public void onSkillsUpdated() {
         hideProgress();
         L.D.m("SkillsActivity", "Updated Skills");
-       redirectToHome();
+        redirectToHome();
     }
 
     @Override
@@ -126,15 +107,14 @@ public class SkillRegistrationActivity extends AppCompatActivity implements Fetc
         L.D.m("SkillsActivity", "Error While Updating Skills..");
     }
 
-    public Integer[] getSelectionIds(){
-        // get the iterator
-        int i=0;
-        Integer[] ids = new Integer[10];
-        Iterator it = skillsGridAdapter.getSelectionMap().entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry)it.next();
-            L.D.m("Skills Selection",pair.getKey() + " = " + pair.getValue());
-            ids[i++] = (Integer) pair.getValue();
+    public Integer[] getSelectionIds() {
+
+        List<Integer> selected = skillsGridView.getSelectedSkills();
+        int i = 0;
+        Integer[] ids = new Integer[selected.size()];
+        while (i<selected.size()) {
+            ids[i] = selected.get(i);
+            i++;
         }
         return ids;
     }

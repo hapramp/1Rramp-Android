@@ -22,18 +22,22 @@
         android:layout_width="wrap_content"
         android:layout_height="?actionBarSize" />
 
-    <GridView
+    <com.hapramp.views.SelectableInterestsView
+        android:layout_centerInParent="true"
         android:layout_centerHorizontal="true"
-        android:horizontalSpacing="4dp"
-        android:verticalSpacing="16dp"
-        android:numColumns="3"
-        android:columnWidth="96dp"
         android:layout_above="@+id/skills_continueBtn"
         android:layout_below="@+id/action_bar_title"
         android:id="@+id/skillsGridView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"/>
 
+
+    <FrameLayout
+        android:id="@+id/toolbar_drop_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/action_bar_title"
+        android:background="@drawable/toolbar_shadow" />
 
     <TextView
         android:id="@+id/skills_continueBtn"

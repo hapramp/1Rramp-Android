@@ -1,6 +1,7 @@
 package com.hapramp;
 
 import android.net.Uri;
+import android.text.format.DateUtils;
 import android.util.Log;
 
 import org.junit.Test;
@@ -8,6 +9,7 @@ import org.junit.Test;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -20,7 +22,7 @@ import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.*;
 
 /**
- * Example local unit test, which will execute on the development machine (host).
+ * Example local unit test, which will execute on the development machine (host).1514160723000
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
@@ -30,8 +32,21 @@ public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
 
-        String url = " https://firebasestorage.googleapis.com/v0/b/hapramp-625c8.appspot.com/o/userProfile/40/1510857552637_/IMG_20171029_152706.jpg?alt=media&token=1f560674-8471-4f68-a9da-99552a5a3406";
-        getImageUrl(url);
+        String time = "";
+        String givenDateString = "2017-12-27-04:41:34.925147";
+        givenDateString = givenDateString.replace('T','-');
+        givenDateString = "GMT+06:30 ".concat(givenDateString);
+        SimpleDateFormat sdf = new SimpleDateFormat("z yyyy-MM-dd-HH:mm:ss");
+        try {
+
+            Date mDate = sdf.parse(givenDateString);
+            long timeInMilliseconds = mDate.getTime();
+            System.out.println("Date in milli :: " + timeInMilliseconds);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void getImageUrl(String url) {

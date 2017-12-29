@@ -148,7 +148,7 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     }
 
     private void hideContentLoadingProgress() {
-        if(loadingShimmer!=null)
+        if (loadingShimmer != null)
             loadingShimmer.setVisibility(View.GONE);
     }
 
@@ -253,8 +253,8 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
         intent.putExtra("postId", String.valueOf(postResponse.id));
         intent.putExtra("userDpUrl", postResponse.user.image_uri);
         intent.putExtra("totalVoteSum", String.valueOf(postResponse.vote_sum));
-        intent.putExtra("totalUserVoted",String.valueOf(postResponse.vote_count));
-        intent.putExtra("hapcoins",String.valueOf(postResponse.hapcoins));
+        intent.putExtra("totalUserVoted", String.valueOf(postResponse.vote_count));
+        intent.putExtra("hapcoins", String.valueOf(postResponse.hapcoins));
 
         mContext.startActivity(intent);
     }
@@ -274,11 +274,13 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     }
 
     @Override
-    public void onCommentIconTapped(String author , String contextText, int postId) {
+    public void onCommentIconTapped(String mediaUri, String author, String contextText, int postId) {
         Intent i = new Intent(mContext, CommentEditorActivity.class);
         i.putExtra("context", contextText);
         i.putExtra("postId", String.valueOf(postId));
-        i.putExtra("author",author);
+        i.putExtra("author", author);
+        i.putExtra("media", mediaUri);
+
         startActivity(i);
     }
 

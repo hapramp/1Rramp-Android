@@ -7,7 +7,7 @@
     <string name="profile_followers_caption">%1$d Followers</string>
     <string name="profile_following_count_caption">%1$d Following</string>
     <string name="Rs">\u20B9</string>
-    <string name="earnedHapcoins">\u20B9 %.3f</string>
+    <string name="earnedHapcoins">\u20B9 %.1f</string>
     <string name="post_limit">%1$d/140</string>
     <string name="star_info">%.1f of %2$d</string>
     <string name="commentUrl">"http://hapramp.herokuapp.com/api/posts/%1$d/comments?start=1</string>

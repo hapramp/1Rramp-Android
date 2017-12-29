@@ -202,7 +202,7 @@ public class ProfileFragment extends Fragment implements
             followersCount.setText(_t);
             _t = String.format(getResources().getString(R.string.profile_following_count_caption), userModel.followings);
             followingsCount.setText(_t);
-            Log.d("InterestView","UserData:"+userModel.toString());
+            Log.d("InterestView", "UserData:" + userModel.toString());
             interestsView.setInterests(userModel.skills);
 
         } catch (Exception e) {
@@ -275,8 +275,8 @@ public class ProfileFragment extends Fragment implements
         intent.putExtra("postId", String.valueOf(postResponse.id));
         intent.putExtra("userDpUrl", postResponse.user.image_uri);
         intent.putExtra("totalVoteSum", String.valueOf(postResponse.vote_sum));
-        intent.putExtra("totalUserVoted",String.valueOf(postResponse.vote_count));
-        intent.putExtra("hapcoins",String.valueOf(postResponse.hapcoins));
+        intent.putExtra("totalUserVoted", String.valueOf(postResponse.vote_count));
+        intent.putExtra("hapcoins", String.valueOf(postResponse.hapcoins));
 
         mContext.startActivity(intent);
     }
@@ -296,14 +296,14 @@ public class ProfileFragment extends Fragment implements
     }
 
     @Override
-    public void onCommentIconTapped(String author , String contextText, int postId) {
-
+    public void onCommentIconTapped(String mediaUri, String author, String contextText, int postId) {
         Intent i = new Intent(mContext, CommentEditorActivity.class);
         i.putExtra("context", contextText);
         i.putExtra("postId", String.valueOf(postId));
-        i.putExtra("author",author);
-        startActivity(i);
+        i.putExtra("author", author);
+        i.putExtra("media", mediaUri);
 
+        startActivity(i);
     }
 
 }
