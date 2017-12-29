@@ -11,208 +11,215 @@
         android:background="#ffffff">
 
         <RelativeLayout
-            android:background="#ffffff"
-            android:id="@+id/toolbar_container"
-            android:layout_height="?actionBarSize"
-            android:layout_marginBottom="4dp"
-            android:layout_width="match_parent">
-
-            <TextView
-                android:background="?selectableItemBackgroundBorderless"
-                android:gravity="center"
-                android:id="@+id/backButton"
-                android:layout_height="?actionBarSize"
-                android:layout_width="?actionBarSize"
-                android:text=""
-                android:textSize="24sp" />
-
-            <TextView
-                android:layout_centerVertical="true"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_toRightOf="@+id/backButton"
-                android:layout_width="wrap_content"
-                android:text="Edit Profile"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/saveButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/light_btn_bg"
-                android:gravity="center"
-                android:paddingBottom="6dp"
-                android:paddingEnd="16dp"
-                android:paddingStart="16dp"
-                android:paddingTop="6dp"
-                android:text="SAVE"
-                android:textColor="@color/colorPrimary"
-                android:textSize="14sp" />
-
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_below="@+id/toolbar_container"
-            android:id="@+id/profile_header_container"
-            android:layout_width="match_parent"
-            android:layout_height="196dp">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="196dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/profile_wall" />
-
-            <FrameLayout
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true">
-
-                <ImageView
-                    android:id="@+id/profile_pic"
-                    android:layout_width="108dp"
-                    android:layout_height="108dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/profile_user_dp_circle" />
-
-                <TextView
-                    android:id="@+id/editBtn"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="end|bottom"
-                    android:background="@drawable/filled_btn_bg"
-                    android:gravity="center"
-                    android:text=""
-                    android:textColor="#ffffff"
-                    android:textSize="18sp" />
-
-                <ProgressBar
-                    android:visibility="gone"
-                    android:id="@+id/dpUploadingProgress"
-                    android:layout_gravity="center"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </FrameLayout>
-
-
-        </RelativeLayout>
-
-        <LinearLayout
-            android:padding="16dp"
-            android:layout_below="@+id/profile_header_container"
-            android:orientation="vertical"
+            android:visibility="visible"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:text="NAME"
-                android:layout_marginTop="8dp"
-                android:textColor="@color/Black54"
-                android:textStyle="bold"
+            <RelativeLayout
+                android:id="@+id/toolbar_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="?actionBarSize"
+                android:layout_marginBottom="4dp"
+                android:background="#ffffff">
 
-            <EditText
-                android:hint="your name"
-                android:id="@+id/nameEt"
-                android:textColor="@color/Black54"
-                android:textSize="14sp"
+                <TextView
+                    android:id="@+id/backButton"
+                    android:layout_width="?actionBarSize"
+                    android:layout_height="?actionBarSize"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:gravity="center"
+                    android:text=""
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="16dp"
+                    android:layout_toRightOf="@+id/backButton"
+                    android:text="Edit Profile"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/saveButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/light_btn_bg"
+                    android:gravity="center"
+                    android:paddingBottom="6dp"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingTop="6dp"
+                    android:text="SAVE"
+                    android:enabled="false"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="14sp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/profile_header_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="196dp"
+                android:layout_below="@+id/toolbar_container">
 
-            <TextView
-                android:text="USERNAME"
-                android:textColor="@color/Black54"
-                android:layout_marginTop="8dp"
-                android:textStyle="bold"
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="196dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/profile_wall" />
+
+                <FrameLayout
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true">
+
+                    <ImageView
+                        android:id="@+id/profile_pic"
+                        android:layout_width="108dp"
+                        android:layout_height="108dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/profile_user_dp_circle" />
+
+                    <TextView
+                        android:id="@+id/editBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="end|bottom"
+                        android:background="@drawable/filled_btn_bg"
+                        android:gravity="center"
+                        android:text=""
+                        android:textColor="#ffffff"
+                        android:textSize="18sp" />
+
+                    <ProgressBar
+                        android:id="@+id/dpUploadingProgress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:visibility="gone" />
+
+                </FrameLayout>
+
+
+            </RelativeLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent"
+                android:layout_below="@+id/profile_header_container"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-            <EditText
-                android:hint="username"
-                android:textColor="@color/Black54"
-                android:textSize="14sp"
-                android:id="@+id/usernameEt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="NAME"
+                    android:textColor="@color/Black54"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:text="BIO"
-                android:textStyle="bold"
-                android:layout_marginTop="8dp"
-                android:textColor="@color/Black54"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                <EditText
+                    android:id="@+id/nameEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="your name"
+                    android:textColor="@color/Black54"
+                    android:textSize="14sp" />
 
-            <EditText
-                android:hint="bio"
-                android:id="@+id/bioEt"
-                android:textColor="@color/Black54"
-                android:textSize="14sp"
-                android:lineSpacingExtra="2dp"
-                android:textStyle="italic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="USERNAME"
+                    android:textColor="@color/Black54"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:text="INTERESTS"
-                android:textStyle="bold"
-                android:layout_marginTop="8dp"
-                android:textColor="@color/Black38"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                <EditText
+                    android:id="@+id/usernameEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="username"
+                    android:textColor="@color/Black54"
+                    android:textSize="14sp" />
 
-            <com.hapramp.views.SelectableInterestsView
-                android:background="#909"
-                android:clickable="true"
-                android:layout_marginTop="8dp"
-                android:id="@+id/interestView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="BIO"
+                    android:textColor="@color/Black54"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:text="ORG"
-                android:textStyle="bold"
-                android:layout_marginTop="8dp"
-                android:textColor="@color/Black54"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                <EditText
+                    android:id="@+id/bioEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="bio"
+                    android:lineSpacingExtra="2dp"
+                    android:textColor="@color/Black54"
+                    android:textSize="14sp"
+                    android:textStyle="italic" />
 
-            <Spinner
-                android:layout_marginTop="16dp"
-                android:id="@+id/org_dropdown"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="INTERESTS"
+                    android:textColor="@color/Black38"
+                    android:textStyle="bold" />
+
+                <com.hapramp.views.SelectableInterestsView
+                    android:id="@+id/interestView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="#909"
+                    android:clickable="true" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="ORG"
+                    android:textColor="@color/Black54"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/org_dropdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp" />
 
 
-            <TextView
-                android:text="EMAIL"
-                android:layout_marginTop="16dp"
-                android:textColor="@color/Black54"
-                android:textStyle="bold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="EMAIL"
+                    android:textColor="@color/Black54"
+                    android:textStyle="bold" />
 
 
-            <EditText
-                android:layout_marginTop="8dp"
-                android:hint="email@xyz.com"
-                android:id="@+id/emailEt"
-                android:background="@drawable/email_edit_bg"
-                android:padding="16dp"
-                android:textColor="@color/Black54"
-                android:textSize="14sp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                <EditText
+                    android:id="@+id/emailEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/email_edit_bg"
+                    android:hint="email@xyz.com"
+                    android:padding="16dp"
+                    android:textColor="@color/Black54"
+                    android:textSize="14sp" />
 
 
-        </LinearLayout>
+            </LinearLayout>
+
+        </RelativeLayout>
 
     </RelativeLayout>
 

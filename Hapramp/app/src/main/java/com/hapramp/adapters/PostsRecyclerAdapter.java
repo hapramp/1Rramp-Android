@@ -67,11 +67,11 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
                     totalItemCount = layoutManager.getItemCount();
                     lastVisibleItem = layoutManager.findLastVisibleItemPosition();
 
-                    // Log.d("Adapter"," loading "+loading+" totalItemCount "+totalItemCount+" lastV "+lastVisibleItem+" thres "+visibleThreshold);
+                    Log.d("Adapter"," loading "+loading+" totalItemCount "+totalItemCount+" lastV "+lastVisibleItem+" thres "+visibleThreshold);
                     if (!loading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
 
                         postElementsClickListener.onLoadMore();
-                        //   Log.d("Adapter","load More req");
+                        Log.d("Adapter","load More req");
                         loading = true;
 
                     }

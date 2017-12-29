@@ -104,6 +104,8 @@ public class ProfileEditActivity extends AppCompatActivity implements UserDpUpda
         storage = FirebaseStorage.getInstance();
         fetchOrgs();
         fetchUserDetailsFull();
+
+        editBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         //back button
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         backBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
@@ -276,14 +278,13 @@ public class ProfileEditActivity extends AppCompatActivity implements UserDpUpda
         dpUrl = userModel.image_uri;
         ImageHandler.loadCircularImage(this, profilePic, userModel.image_uri);
         //edit Btn
-        editBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         editBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openGallery();
             }
         });
-
+        saveButton.setEnabled(true);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

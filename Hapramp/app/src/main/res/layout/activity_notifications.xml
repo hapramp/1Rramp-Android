@@ -69,7 +69,7 @@
         android:id="@+id/toolbar_drop_shadow"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@+id/backBtn"
+        android:layout_below="@+id/toolbar_container"
         android:background="@drawable/toolbar_shadow" />
 
     <ProgressBar

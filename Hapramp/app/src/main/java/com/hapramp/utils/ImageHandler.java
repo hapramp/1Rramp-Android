@@ -9,6 +9,7 @@ import android.util.DisplayMetrics;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.hapramp.R;
 
@@ -22,6 +23,7 @@ public class ImageHandler {
 
         Glide.with(context)
                 .load(_uri)
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .into(target);
 
     }

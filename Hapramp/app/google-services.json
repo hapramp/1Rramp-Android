@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "574002232827-0tcq9trh3qk9b8ph6mmug4fmh31l7o59.apps.googleusercontent.com",
+          "client_id": "574002232827-5uerglr4nfbneb5aljoih591893o6f19.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.hapramp",
-            "certificate_hash": "18ff7d4760c41d9a30dada97d60ebb4751e9157c"
+            "certificate_hash": "7e1a29ecd7b6db91e67e44dbfe6ecec04a6de15c"
           }
         },
         {

@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -22,6 +23,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.api.DataServer;
@@ -119,7 +122,7 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 
     private Handler mHandler = new Handler();
 
-    public class NotificationUpdateReceiver extends BroadcastReceiver {
+    private class NotificationUpdateReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -127,7 +130,7 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
         }
     }
 
-    public class PostUploadReceiver extends BroadcastReceiver {
+    private class PostUploadReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -198,6 +201,9 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 
         //update notifications
         setNotifications();
+//        String deviceName = android.os.Build.MODEL;
+//        String deviceMan = android.os.Build.MANUFACTURER;
+//        Log.d("Firebase", "Device "+deviceName+" Man: "+deviceMan);
 
     }
 
@@ -210,7 +216,7 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setTitle("Exit")
-                .setMessage("Do you want to Exit")
+                .setMessage("Do you want to Exit ?")
                 .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

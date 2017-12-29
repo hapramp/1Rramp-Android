@@ -10,24 +10,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.hapramp.activity.CommentEditorActivity;
 import com.hapramp.activity.ProfileActivity;
 import com.hapramp.adapters.CategoryRecyclerAdapter;
 import com.hapramp.adapters.PostsRecyclerAdapter;
 import com.hapramp.R;
-import com.hapramp.activity.DetailedPostActivity;
+import com.hapramp.activity.DetailedActivity;
 import com.hapramp.api.DataServer;
 import com.hapramp.api.URLS;
 import com.hapramp.interfaces.FetchSkillsResponse;
@@ -35,7 +30,6 @@ import com.hapramp.interfaces.LikePostCallback;
 import com.hapramp.interfaces.PostFetchCallback;
 import com.hapramp.logger.L;
 import com.hapramp.models.response.PostResponse;
-import com.hapramp.models.response.SkillsModel;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.ViewItemDecoration;
@@ -244,7 +238,7 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     @Override
     public void onReadMoreTapped(PostResponse.Results postResponse) {
 
-        Intent intent = new Intent(mContext, DetailedPostActivity.class);
+        Intent intent = new Intent(mContext, DetailedActivity.class);
         intent.putExtra("isVoted", postResponse.is_voted);
         intent.putExtra("vote", postResponse.current_vote);
         intent.putExtra("username", postResponse.user.username);

@@ -1,6 +1,13 @@
 apply plugin: 'com.android.application'
 
+def getDate() {
+    def date = new Date()
+    def formattedDate = date.format('yyyyMMddHHmmss')
+    return formattedDate
+}
+
 android {
+
     signingConfigs {
         release {
             keyAlias 'hapramp-and'
@@ -9,22 +16,30 @@ android {
             storePassword 'hapramp'
         }
     }
-    compileSdkVersion 25
+
+    compileSdkVersion 27
     buildToolsVersion '26.0.2'
-    defaultConfig {
-        applicationId "com.hapramp"
-        minSdkVersion 17
-        targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
+
     }
+
+
+    defaultConfig {
+        applicationId "com.hapramp"
+        minSdkVersion 17
+        targetSdkVersion 27
+        versionCode 1
+        versionName "0.1"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        setProperty("archivesBaseName", "Hapramp-${getDate()}-$versionName")
+    }
+
 }
 
 dependencies {
@@ -39,45 +54,22 @@ dependencies {
         exclude group: 'com.android.support'
     }
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:appcompat-v7:27.0.2'
     compile 'com.jakewharton:butterknife:8.6.0'
-    compile 'com.android.support:support-v4:25.3.1'
-    compile 'com.google.firebase:firebase-messaging:10.0.1'
-    compile 'com.google.code.gson:gson:2.7'
+    compile 'com.android.support:support-v4:27.0.2'
+    compile 'com.google.firebase:firebase-messaging:11.8.0'
+    compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.squareup.okhttp3:logging-interceptor:3.4.0'
-    compile 'com.google.firebase:firebase-auth:10.0.1'
-    compile 'com.google.android.gms:play-services-auth:10.0.1'
-    compile 'com.squareup.retrofit2:retrofit:2.1.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-    compile 'com.google.firebase:firebase-storage:10.0.1'
-    compile 'com.android.support:design:25.3.1'
+    compile 'com.google.firebase:firebase-auth:11.8.0'
+    compile 'com.google.android.gms:play-services-auth:11.8.0'
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    compile 'com.google.firebase:firebase-storage:11.8.0'
+    compile 'com.android.support:design:27.0.2'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.facebook.shimmer:shimmer:0.1.0@aar'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 apply plugin: 'com.google.gms.google-services'

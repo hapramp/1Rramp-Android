@@ -6,6 +6,7 @@ package com.hapramp.utils;
 
 public class SkillsUtils {
 
+    public static final int ALL = 0;
     public static final int ART = 1;
     public static final int DANCE = 2;
     public static final int TRAVEL = 3;
@@ -62,7 +63,11 @@ public class SkillsUtils {
     }
 
     public static String getSkillTitleFromId(int id) {
+
         switch (id) {
+            case ALL:
+                return "All";
+
             case ART:
                 return "Art";
 
@@ -76,7 +81,7 @@ public class SkillsUtils {
                 return "Literature";
 
             case ACTION:
-                return "Action";
+                return "Dramatics";
 
             case PHOTOGRAPHY:
                 return "Photography";

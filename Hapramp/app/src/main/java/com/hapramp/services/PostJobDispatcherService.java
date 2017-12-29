@@ -38,7 +38,7 @@ import java.io.InputStream;
  * Created by Ankit on 12/23/2017.
  */
 
-public class PostJobDispatcherService extends Service implements PostCreateCallback {
+public class PostJobDispatcherService extends IntentService implements PostCreateCallback {
 
     private static final String TAG = PostJobDispatcherService.class.getSimpleName();
     private FirebaseStorage storage;
@@ -46,8 +46,8 @@ public class PostJobDispatcherService extends Service implements PostCreateCallb
     private final String rootFolder = "images";
     private UploadJobDatabaseHelper databaseHelper;
 
-
     public PostJobDispatcherService() {
+        super(PostJobDispatcherService.class.getSimpleName());
     }
 
 
@@ -63,17 +63,8 @@ public class PostJobDispatcherService extends Service implements PostCreateCallb
 
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
-
-        l("received job");
-        postJob = intent.getParcelableExtra("job");
-        l("working on job...");
-        if (postJob.media_uri.length() > 0) {
-            uploadMedia(postJob.jobId, postJob.media_uri);
-        } else {
-            uploadPost(postJob.jobId, "");
-        }
-
-        return START_STICKY;
+        Log.d("PostService","received job");
+        return super.onStartCommand(intent,flags,startId);
     }
 
 
@@ -179,6 +170,20 @@ public class PostJobDispatcherService extends Service implements PostCreateCallb
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    protected void onHandleIntent(@Nullable Intent intent) {
+
+        l("received job");
+        postJob = intent.getParcelableExtra("job");
+        l("working on job...");
+        if (postJob.media_uri.length() > 0) {
+            uploadMedia(postJob.jobId, postJob.media_uri);
+        } else {
+            uploadPost(postJob.jobId, "");
+        }
+
     }
 
     @Override

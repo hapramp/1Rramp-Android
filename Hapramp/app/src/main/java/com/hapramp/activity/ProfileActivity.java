@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,7 +19,6 @@ import android.widget.Toast;
 
 import com.hapramp.R;
 import com.hapramp.adapters.PostsRecyclerAdapter;
-import com.hapramp.adapters.ProfileSkillsRecyclerAdapter;
 import com.hapramp.api.DataServer;
 import com.hapramp.api.URLS;
 import com.hapramp.interfaces.FollowUserCallback;
@@ -33,7 +31,6 @@ import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.ViewItemDecoration;
 import com.hapramp.views.InterestsView;
-import com.hapramp.views.SelectableInterestsView;
 
 import java.util.List;
 
@@ -254,7 +251,7 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
     @Override
     public void onReadMoreTapped(PostResponse.Results postResponse) {
 
-        Intent intent = new Intent(this, DetailedPostActivity.class);
+        Intent intent = new Intent(this, DetailedActivity.class);
         intent.putExtra("isVoted", postResponse.is_voted);
         intent.putExtra("vote", postResponse.current_vote);
         intent.putExtra("username", postResponse.user.username);

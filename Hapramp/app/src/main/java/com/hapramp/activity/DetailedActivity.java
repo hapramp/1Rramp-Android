@@ -43,7 +43,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DetailedPostActivity extends AppCompatActivity implements CommentFetchCallback, UserFetchCallback, OnPostDeleteCallback, VoteDeleteCallback, VotePostCallback {
+public class DetailedActivity extends AppCompatActivity implements CommentFetchCallback, UserFetchCallback, OnPostDeleteCallback, VoteDeleteCallback, VotePostCallback {
 
 
     @BindView(R.id.closeBtn)
@@ -179,7 +179,7 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
         commentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(DetailedPostActivity.this, CommentEditorActivity.class);
+                Intent i = new Intent(DetailedActivity.this, CommentEditorActivity.class);
                 i.putExtra("context", mContent);
                 i.putExtra("postId", postId);
                 i.putExtra("author",mUserName);
@@ -190,7 +190,7 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
         commentBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(DetailedPostActivity.this, CommentEditorActivity.class);
+                Intent i = new Intent(DetailedActivity.this, CommentEditorActivity.class);
                 i.putExtra("context", mContent);
                 i.putExtra("postId", postId);
                 i.putExtra("author",mUserName);
@@ -201,7 +201,7 @@ public class DetailedPostActivity extends AppCompatActivity implements CommentFe
         shareWithFriendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(DetailedPostActivity.this, "Hey Dear! Excited about sharing this :). We are Working for You ", Toast.LENGTH_LONG).show();
+                Toast.makeText(DetailedActivity.this, "Hey Dear! Excited about sharing this :). We are Working for You ", Toast.LENGTH_LONG).show();
             }
         });
 

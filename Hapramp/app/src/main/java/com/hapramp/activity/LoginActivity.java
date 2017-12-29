@@ -217,7 +217,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         } else {
             Log.d(TAG, result.getStatus().getStatus() + "");
-            t("Something Went Wrong! :(");
+            t(result.getStatus().getStatusMessage());
         }
     }
 

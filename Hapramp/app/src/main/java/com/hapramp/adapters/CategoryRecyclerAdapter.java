@@ -58,8 +58,7 @@ public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecycl
 
         public void bind(final UserModel.Skills model, final OnCategoryItemClickListener categoryItemClickListener){
 
-            categoryItemView.setSkillsBgImage(model.getId());
-            categoryItemView.setSkillTitle(model.getName());
+            categoryItemView.setSkillId(model.id);
 
             if(selectedSkillId==model.getId()){
                 categoryItemView.setSelected(true);

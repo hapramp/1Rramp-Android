@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.hapramp.main.HapRampMain;
@@ -18,15 +19,15 @@ import java.util.Map;
  * Created by Ankit on 12/27/2017.
  */
 
-public class NotificationManager {
+public class NotificationHandler {
 
     private static Map<String, String> map;
 
-    public static void handleNotification(RemoteMessage remoteMessage){
+    public static void handleNotification(RemoteMessage remoteMessage,Context context) {
         //this is called when app is backgrounded
 
         map = remoteMessage.getData();
-        NotificationResponse.Notification notificationObject = new NotificationResponse.Notification(
+        final NotificationResponse.Notification notificationObject = new NotificationResponse.Notification(
                 Integer.valueOf(map.get("id")),
                 map.get("content"),
                 map.get("created_at"),
@@ -36,9 +37,10 @@ public class NotificationManager {
                 map.get("arg1"),
                 Boolean.valueOf(map.get("is_read")));
 
-        if (!ForegroundCheck.isAppIsInBackground()) {
+        if (new ForegroundCheck().isForeground(context)) {
             // if foreground
             // update the notification in shared pref
+            Log.d("Firebase", "app is in foreground");
             HaprampPreferenceManager.getInstance().incrementUnreadNotifications();
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
@@ -46,9 +48,13 @@ public class NotificationManager {
                     sendBroadcast();
                 }
             });
-        }else{
+        } else {
             // generate a notification and add it to system tray
-            NotificationUtils.showNotification(HapRampMain.getContext(),notificationObject);
+
+            Log.d("Firebase", "app is in background");
+
+            NotificationUtils.showNotification(context, notificationObject);
+
         }
 
     }

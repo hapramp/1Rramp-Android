@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hapramp.R;
+import com.hapramp.utils.SkillsUtils;
 
 /**
  * Created by Ankit on 10/25/2017.
@@ -43,6 +44,13 @@ public class SkillsTabView extends FrameLayout {
 
     }
 
+    public void setSkillId(int id){
+        //set image
+        setSkillsBgImage(id);
+        // set title
+        setSkillTitle(SkillsUtils.getSkillTitleFromId(id));
+    }
+
     public boolean getIsSelected() {
         return isSelected;
     }
@@ -52,28 +60,15 @@ public class SkillsTabView extends FrameLayout {
         setSelection(isSelected);
     }
 
-//    public void setOnClickListener(final CategoryRecyclerAdapter.OnCategoryItemClickListener clickListener){
-//        selectorOverlay.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v){
-//                setSelected(!isSelected);
-//                clickListener.onCategoryClicked(id);
-//            }
-//        });
-//    }
-//
-
     public void enableTabIndicator(boolean enable) {
         if (enable) {
             selectionTabIndicator.setVisibility(VISIBLE);
         }else{
             selectionTabIndicator.setVisibility(GONE);
         }
-
-
     }
 
-    public void setSkillsBgImage(int type) {
+    private void setSkillsBgImage(int type) {
 
         int resId = -1;
         this.id = type;
@@ -136,7 +131,7 @@ public class SkillsTabView extends FrameLayout {
         }
     }
 
-    public void setSkillTitle(String title) {
+    private void setSkillTitle(String title) {
         skillTitle.setText(title);
     }
 

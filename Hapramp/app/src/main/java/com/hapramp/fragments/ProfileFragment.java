@@ -24,11 +24,10 @@ import android.widget.Toast;
 
 import com.hapramp.R;
 import com.hapramp.activity.CommentEditorActivity;
-import com.hapramp.activity.DetailedPostActivity;
+import com.hapramp.activity.DetailedActivity;
 import com.hapramp.activity.ProfileActivity;
 import com.hapramp.activity.ProfileEditActivity;
 import com.hapramp.adapters.PostsRecyclerAdapter;
-import com.hapramp.adapters.ProfileSkillsRecyclerAdapter;
 import com.hapramp.api.DataServer;
 import com.hapramp.api.URLS;
 import com.hapramp.interfaces.FullUserDetailsCallback;
@@ -266,7 +265,7 @@ public class ProfileFragment extends Fragment implements
     @Override
     public void onReadMoreTapped(PostResponse.Results postResponse) {
 
-        Intent intent = new Intent(mContext, DetailedPostActivity.class);
+        Intent intent = new Intent(mContext, DetailedActivity.class);
         intent.putExtra("isVoted", postResponse.is_voted);
         intent.putExtra("vote", postResponse.current_vote);
         intent.putExtra("username", postResponse.user.username);

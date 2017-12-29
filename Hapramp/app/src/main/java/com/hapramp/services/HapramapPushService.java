@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.hapramp.push.NotificationManager;
+import com.hapramp.push.NotificationHandler;
 
 /**
  * Created by Ankit on 12/27/2017.
@@ -17,8 +17,6 @@ public class HapramapPushService extends FirebaseMessagingService {
 
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d("Firebase", "From: " + remoteMessage.getFrom());
-        NotificationManager.handleNotification(remoteMessage);
-        // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d("Firebase", "Message data payload: " + remoteMessage.getData());
 
@@ -28,6 +26,9 @@ public class HapramapPushService extends FirebaseMessagingService {
         if (remoteMessage.getNotification() != null) {
             Log.d("Firebase", "Message Notification Body: " + remoteMessage.getNotification().getBody());
         }
+
+        NotificationHandler.handleNotification(remoteMessage,this);
+        // Check if message contains a data payload.
 
     }
 
