@@ -1,6 +1,7 @@
 package com.hapramp.views;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -13,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
+import com.hapramp.activity.ProfileEditActivity;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.FollowUserCallback;
 import com.hapramp.models.ProfileHeaderModel;
@@ -111,7 +113,7 @@ public class ProfileHeaderView extends FrameLayout implements FollowUserCallback
             editBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    navigateToProfileEditActivity();
                 }
             });
 
@@ -126,6 +128,14 @@ public class ProfileHeaderView extends FrameLayout implements FollowUserCallback
                 }
             });
         }
+
+    }
+
+    private void navigateToProfileEditActivity() {
+
+        Intent intent = new Intent(mContext, ProfileEditActivity.class);
+        mContext.startActivity(intent);
+
     }
 
     private void setUserFollow(boolean follow) {

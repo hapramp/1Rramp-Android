@@ -33,6 +33,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     private final int VIEW_TYPE_PROFILE_HEADER = 1;
 
     public Context mContext;
+    private boolean hasMoreToLoad = true;
     public List<PostResponse.Results> postResponses;
     public ProfileHeaderModel profileHeaderModel;
 
@@ -46,13 +47,17 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         notifyDataSetChanged();
     }
 
+    public void setHasMoreToLoad(boolean hasMoreToLoad) {
+        this.hasMoreToLoad = hasMoreToLoad;
+    }
+
     public boolean itIsForProfile() {
         return profileHeaderModel != null;
     }
 
     public void appendResult(List<PostResponse.Results> newPosts) {
         postResponses.addAll(newPosts);
-       notifyItemInserted(postResponses.size() - newPosts.size());
+        notifyItemInserted(postResponses.size() - (newPosts.size() - 1));
 
     }
 
@@ -106,14 +111,18 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int pos) {
 
-        Log.d("Adapter","Binding at "+pos);
+        Log.d("Adapter", "Binding at " + pos);
         if (viewHolder instanceof LoadMoreViewHolder) {
-
-            ((LoadMoreViewHolder) viewHolder).startSimmer();
+            if(hasMoreToLoad) {
+                ((LoadMoreViewHolder) viewHolder).startSimmer();
+            }else{
+                ((LoadMoreViewHolder) viewHolder).hideView();
+            }
 
         } else if (viewHolder instanceof PostViewHolder) {
 
-            ((PostViewHolder) viewHolder).bind(postResponses.get(pos-1));
+            // pos-1 : since we have one blank view at the top
+            ((PostViewHolder) viewHolder).bind(postResponses.get(pos - 1));
 
         } else if (viewHolder instanceof ProfileHeaderViewHolder) {
 
@@ -122,6 +131,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         } else if (viewHolder instanceof BlankTopViewHolder) {
             // do
             ((BlankTopViewHolder) viewHolder).blank.setVisibility(View.VISIBLE);
+
         }
     }
 
@@ -129,7 +139,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     public int getItemCount() {
 
         // since we have additional item at the top + one at the bottom
-        return postResponses.size()+2;
+        return postResponses.size() + 2;
 
     }
 
@@ -155,14 +165,19 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         public LoadMoreViewHolder(View itemView) {
             super(itemView);
 
-            shimmerFrameLayout = (ShimmerFrameLayout) itemView.findViewById(R.id.shimmer_view_container);
+            shimmerFrameLayout = itemView.findViewById(R.id.shimmer_view_container);
 
         }
 
         public void startSimmer() {
 
+            shimmerFrameLayout.setVisibility(View.VISIBLE);
             shimmerFrameLayout.startShimmerAnimation();
 
+        }
+
+        public void hideView(){
+            shimmerFrameLayout.setVisibility(View.GONE);
         }
     }
 
@@ -187,9 +202,10 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         @BindView(R.id.blank)
         FrameLayout blank;
+
         public BlankTopViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
         }
 
     }

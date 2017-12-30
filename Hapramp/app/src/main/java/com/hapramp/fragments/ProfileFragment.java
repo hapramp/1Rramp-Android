@@ -195,7 +195,7 @@ public class ProfileFragment extends Fragment implements
                 userModel.image_uri,
                 userModel.username,
                 "",
-                false,
+                true,
                 userModel.bio,
                 0,
                 userModel.followers,
@@ -209,8 +209,12 @@ public class ProfileFragment extends Fragment implements
     }
 
     private void showContent(boolean show) {
-
-
+        if(show){
+            //hide progress bar
+            if(contentLoadingProgress!=null){
+                contentLoadingProgress.setVisibility(View.GONE);
+            }
+        }
     }
 
     private void bindPosts(List<PostResponse.Results> posts) {
@@ -234,6 +238,7 @@ public class ProfileFragment extends Fragment implements
         }
 
         currentPostReponse = postResponses;
+        profilePostAdapter.setHasMoreToLoad(postResponses.next.length()>0);
         bindPosts(postResponses.results);
 
     }

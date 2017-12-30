@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +43,8 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
     RelativeLayout toolbarContainer;
     @BindView(R.id.profilePostRv)
     RecyclerView profilePostRv;
+    @BindView(R.id.contentLoadingProgress)
+    ProgressBar contentLoadingProgress;
     private String userId;
     private PostsRecyclerAdapter profilePostAdapter;
     private ViewItemDecoration viewItemDecoration;
@@ -169,9 +172,18 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
                 userModel.skills);
 
         profilePostAdapter.setProfileHeaderModel(profileHeaderModel);
+        showContent(true);
 
     }
 
+    private void showContent(boolean show) {
+        if(show){
+            //hide progress bar
+            if(contentLoadingProgress!=null){
+                contentLoadingProgress.setVisibility(View.GONE);
+            }
+        }
+    }
 
     @Override
     public void onFullUserDetailsFetchError() {
@@ -182,7 +194,7 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
     public void onPostFetched(PostResponse postResponses) {
 
         currentPostResponse = postResponses;
-       // profilePostAdapter.setHasMoreToLoad(currentPostResponse.next.length()>0);
+        profilePostAdapter.setHasMoreToLoad(currentPostResponse.next.length() > 0);
         bindPosts(postResponses.results);
 
     }

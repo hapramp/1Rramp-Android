@@ -36,7 +36,6 @@
 
     </RelativeLayout>
 
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/profilePostRv"
         android:layout_width="match_parent"
@@ -44,5 +43,11 @@
         android:layout_below="@+id/toolbar_container"
         android:layout_marginTop="4dp" />
 
+    <ProgressBar
+        android:id="@+id/contentLoadingProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        />
 
 </RelativeLayout>

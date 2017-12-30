@@ -118,9 +118,6 @@ public class ProfileEditActivity extends AppCompatActivity implements UserDpUpda
 
     }
 
-    private void attachListeners() {
-
-    }
 
     private void setSpinnerAdapter(String[] spinnerList) {
 

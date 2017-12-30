@@ -243,7 +243,10 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
         if (postResponses.results.size() > 0) {
             hideErrorMessage();
             showContent();
+
+            recyclerAdapter.setHasMoreToLoad(postResponses.next.length()>0);
             recyclerAdapter.appendResult(postResponses.results);
+
         } else {
             showErrorMessage();
             hideContent();
@@ -276,8 +279,7 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
 
     @Override
     public void onPostFetchError() {
-        hideContentLoadingProgress();
-        Toast.makeText(mContext, "Error Loading Content. Inconvienience is regreted :(", Toast.LENGTH_LONG).show();
+        fetchPosts(currentSelectedSkillId);
         L.D.m("HomeFragment", "Fetch Error: Post");
     }
 
