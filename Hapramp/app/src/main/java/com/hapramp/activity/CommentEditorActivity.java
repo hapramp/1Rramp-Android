@@ -27,6 +27,7 @@ import com.hapramp.models.CommentModel;
 import com.hapramp.models.UserResponse;
 import com.hapramp.models.requests.CommentBody;
 import com.hapramp.models.response.CommentsResponse;
+import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.ViewItemDecoration;
@@ -93,10 +94,10 @@ public class CommentEditorActivity extends AppCompatActivity implements CommentC
         progressDialog = new ProgressDialog(this);
         typeface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
         closeBtn.setTypeface(typeface);
-        contextText = getIntent().getExtras().getString("context");
-        postId = getIntent().getExtras().getString("postId");
-        author = getIntent().getExtras().getString("author");
-        mediaUri = getIntent().getExtras().getString("media", "");
+        contextText = getIntent().getExtras().getString(Constants.EXTRAA_KEY_CONTEXT_TEXT);
+        postId = getIntent().getExtras().getString(Constants.EXTRAA_KEY_POST_ID);
+        author = getIntent().getExtras().getString(Constants.EXTRAA_KEY_AUTHOR);
+        mediaUri = getIntent().getExtras().getString(Constants.EXTRAA_KEY_MEDIA_URL, "");
 
         inContextOf.setText(contextText);
         if (mediaUri.length()>0) {

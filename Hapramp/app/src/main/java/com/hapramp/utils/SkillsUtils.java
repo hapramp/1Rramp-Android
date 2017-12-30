@@ -11,11 +11,11 @@ public class SkillsUtils {
     public static final int DANCE = 2;
     public static final int TRAVEL = 3;
     public static final int LITERATURE = 4;
-    public static final int ACTION = 5;
+    public static final int DRAMATICS = 5;
     public static final int PHOTOGRAPHY = 6;
     public static final int MUSIC = 8;
 
-    final static String[] skills = {"Art", "Dance", "Music","Travel", "Literature", "Action", "Photography"};
+    final static String[] skills = {"Art", "Dance", "Music","Travel", "Literature", "Dramatics", "Photography"};
 
     public static String getSkillCharacter(int id) {
 
@@ -28,8 +28,8 @@ public class SkillsUtils {
                 return "T";
             case LITERATURE:
                 return "L";
-            case ACTION:
-                return "A";
+            case DRAMATICS:
+                return "D";
             case PHOTOGRAPHY:
                 return "P";
             case MUSIC:
@@ -51,8 +51,8 @@ public class SkillsUtils {
                 return TRAVEL;
             case "literature":
                 return LITERATURE;
-            case "action":
-                return ACTION;
+            case "dramatics":
+                return DRAMATICS;
             case "photography":
                 return PHOTOGRAPHY;
             case "music":
@@ -80,7 +80,7 @@ public class SkillsUtils {
             case LITERATURE:
                 return "Literature";
 
-            case ACTION:
+            case DRAMATICS:
                 return "Dramatics";
 
             case PHOTOGRAPHY:

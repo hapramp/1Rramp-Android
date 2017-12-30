@@ -33,6 +33,7 @@ import com.hapramp.models.requests.VoteRequestBody;
 import com.hapramp.models.response.CommentsResponse;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.ViewItemDecoration;
@@ -145,17 +146,17 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
 
     private void collectExtras() {
 
-        isVoted = getIntent().getExtras().getBoolean("isVoted");
-        mVote = getIntent().getExtras().getInt("vote");
-        mContent = getIntent().getExtras().getString("content");
-        mMediaUri = getIntent().getExtras().getString("mediaUri");
-        mUserName = getIntent().getExtras().getString("username");
-        postId = getIntent().getExtras().getString("postId");
-        dpUrl = getIntent().getExtras().getString("userDpUrl");
-        totalVoteSum = getIntent().getExtras().getString("totalVoteSum");
-        totalUserVoted = getIntent().getExtras().getString("totalUserVoted");
+        isVoted = getIntent().getExtras().getBoolean(Constants.EXTRAA_KEY_IS_VOTED);
+        mVote = getIntent().getExtras().getInt(Constants.EXTRAA_KEY_VOTE);
+        mContent = getIntent().getExtras().getString(Constants.EXTRAA_KEY_CONTENT);
+        mMediaUri = getIntent().getExtras().getString(Constants.EXTRAA_KEY_MEDIA_URL);
+        mUserName = getIntent().getExtras().getString(Constants.EXTRAA_KEY_USERNAME);
+        postId = getIntent().getExtras().getString(Constants.EXTRAA_KEY_POST_ID);
+        dpUrl = getIntent().getExtras().getString(Constants.EXTRAA_KEY_USER_DP_URL);
+        totalVoteSum = getIntent().getExtras().getString(Constants.EXTRAA_KEY_TOTAL_VOTE_SUM);
+        totalUserVoted = getIntent().getExtras().getString(Constants.EXTRAA_KEY_TOTAL_USER_VOTED);
         currentCommentUrl = String.format(getResources().getString(R.string.commentUrl), Integer.valueOf(postId));
-        mHapcoins = getIntent().getExtras().getString("hapcoins");
+        mHapcoins = getIntent().getExtras().getString(Constants.EXTRAA_KEY_HAPCOINS);
 
     }
 

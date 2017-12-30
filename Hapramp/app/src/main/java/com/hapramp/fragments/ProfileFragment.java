@@ -13,12 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,12 +27,12 @@ import com.hapramp.api.DataServer;
 import com.hapramp.api.URLS;
 import com.hapramp.interfaces.FullUserDetailsCallback;
 import com.hapramp.interfaces.PostFetchCallback;
+import com.hapramp.logger.L;
+import com.hapramp.models.ProfileHeaderModel;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.ViewItemDecoration;
-import com.hapramp.views.InterestsView;
 
 import java.util.List;
 
@@ -47,47 +42,13 @@ import butterknife.Unbinder;
 
 public class ProfileFragment extends Fragment implements
         FullUserDetailsCallback,
-        PostFetchCallback, PostsRecyclerAdapter.postListener {
+        PostFetchCallback {
 
 
-    @BindView(R.id.profile_pic)
-    ImageView profilePic;
-    @BindView(R.id.profile_header_container)
-    RelativeLayout profileHeaderContainer;
-    @BindView(R.id.username)
-    TextView username;
-    @BindView(R.id.hapname)
-    TextView hapname;
-    @BindView(R.id.profile_user_name_container)
-    RelativeLayout profileUserNameContainer;
-    @BindView(R.id.edit_btn)
-    TextView editBtn;
-    @BindView(R.id.bio)
-    TextView bio;
-    @BindView(R.id.divider_top)
-    FrameLayout dividerTop;
-    @BindView(R.id.post_counts)
-    TextView postCounts;
-    @BindView(R.id.followers_count)
-    TextView followersCount;
-    @BindView(R.id.followings_count)
-    TextView followingsCount;
-    @BindView(R.id.post_stats)
-    LinearLayout postStats;
-    @BindView(R.id.divider_bottom)
-    FrameLayout dividerBottom;
-    @BindView(R.id.interestCaption)
-    TextView interestCaption;
-    @BindView(R.id.interestsView)
-    InterestsView interestsView;
-    @BindView(R.id.postsCaption)
-    TextView postsCaption;
     @BindView(R.id.profilePostRv)
     RecyclerView profilePostRv;
     @BindView(R.id.emptyMessage)
     TextView emptyMessage;
-    @BindView(R.id.scroller)
-    ScrollView scroller;
     @BindView(R.id.contentLoadingProgress)
     ProgressBar contentLoadingProgress;
     private Context mContext;
@@ -98,6 +59,8 @@ public class ProfileFragment extends Fragment implements
     private ViewItemDecoration viewItemDecoration;
     private Unbinder unbinder;
     private String _t;
+    private LinearLayoutManager llm;
+    private PostResponse currentPostReponse;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -117,6 +80,8 @@ public class ProfileFragment extends Fragment implements
         unbinder = ButterKnife.bind(this, view);
         init();
         fetchUserDetails();
+        // start loading with given default limits
+        fetchUserProfilePosts(URLS.POST_FETCH_START_URL);
         return view;
 
     }
@@ -125,28 +90,70 @@ public class ProfileFragment extends Fragment implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        fetchUserProfilePosts(0);
+
+    }
+
+
+    public abstract class EndlessOnScrollListener extends RecyclerView.OnScrollListener {
+
+        // use your LayoutManager instead
+        private LinearLayoutManager lm;
+
+        EndlessOnScrollListener(LinearLayoutManager llm) {
+            this.lm = llm;
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+
+            if (!recyclerView.canScrollVertically(1)) {
+                onScrolledToEnd();
+            }
+        }
+
+        public abstract void onScrolledToEnd();
+
+    }
+
+    private void setScrollListener() {
+
+        profilePostRv.addOnScrollListener(new EndlessOnScrollListener(llm) {
+            @Override
+            public void onScrolledToEnd() {
+                loadMore();
+            }
+        });
+    }
+
+    private void loadMore() {
+
+        try {
+            if (currentPostReponse.next.length() == 0) {
+                return;
+            }
+
+            fetchUserProfilePosts(currentPostReponse.next);
+
+        }catch (Exception e){
+
+            Log.d("ProfileFragment",e.toString());
+
+        }
 
     }
 
     private void init() {
 
-        profilePostAdapter = new PostsRecyclerAdapter(mContext, profilePostRv);
+        profilePostAdapter = new PostsRecyclerAdapter(mContext);
         Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
         viewItemDecoration = new ViewItemDecoration(drawable);
-        profilePostAdapter.setListener(this);
-        profilePostRv.addItemDecoration(viewItemDecoration);
-        profilePostRv.setLayoutManager(new LinearLayoutManager(mContext));
-        profilePostRv.setAdapter(profilePostAdapter);
-        profilePostRv.setNestedScrollingEnabled(false);
 
-        editBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(mContext, ProfileEditActivity.class);
-                mContext.startActivity(i);
-            }
-        });
+        profilePostRv.addItemDecoration(viewItemDecoration);
+        llm = new LinearLayoutManager(mContext);
+        profilePostRv.setLayoutManager(llm);
+        profilePostRv.setAdapter(profilePostAdapter);
+        setScrollListener();
 
     }
 
@@ -156,16 +163,10 @@ public class ProfileFragment extends Fragment implements
 
     }
 
-    private void fetchUserProfilePosts(int skill_id) {
+    private void fetchUserProfilePosts(String url) {
 
-        if (skill_id == -1) {
-            // get all post of this user
-            DataServer.getPostsByUserId(URLS.POST_FETCH_START_URL, Integer.valueOf(HaprampPreferenceManager.getInstance().getUserId()), this);
-        } else {
-            // get post by user and skills
-            DataServer.getPosts(URLS.POST_FETCH_START_URL, skill_id, Integer.valueOf(HaprampPreferenceManager.getInstance().getUserId()), this);
-
-        }
+        // get all post of this user
+        DataServer.getPostsByUserId(url, Integer.valueOf(HaprampPreferenceManager.getInstance().getUserId()), this);
 
     }
 
@@ -189,24 +190,19 @@ public class ProfileFragment extends Fragment implements
     @Override
     public void onFullUserDetailsFetched(UserModel userModel) {
 
-        try {
+        ProfileHeaderModel profileHeaderModel = new ProfileHeaderModel(
+                userModel.id,
+                userModel.image_uri,
+                userModel.username,
+                "",
+                false,
+                userModel.bio,
+                0,
+                userModel.followers,
+                userModel.followings,
+                userModel.skills);
 
-            dpUrl = userModel.image_uri;
-            ImageHandler.loadCircularImage(mContext, profilePic, dpUrl);
-            mBio = userModel.bio != null ? userModel.bio : "";
-            username.setText(userModel.username);
-            hapname.setText("@hapname");
-            bio.setText(mBio);
-            _t = String.format(getResources().getString(R.string.profile_followers_caption), userModel.followers);
-            followersCount.setText(_t);
-            _t = String.format(getResources().getString(R.string.profile_following_count_caption), userModel.followings);
-            followingsCount.setText(_t);
-            Log.d("InterestView", "UserData:" + userModel.toString());
-            interestsView.setInterests(userModel.skills);
-
-        } catch (Exception e) {
-
-        }
+        profilePostAdapter.setProfileHeaderModel(profileHeaderModel);
 
         showContent(true);
 
@@ -214,17 +210,6 @@ public class ProfileFragment extends Fragment implements
 
     private void showContent(boolean show) {
 
-        try {
-            if (show) {
-                scroller.setVisibility(View.VISIBLE);
-                contentLoadingProgress.setVisibility(View.GONE);
-            } else {
-                scroller.setVisibility(View.GONE);
-                contentLoadingProgress.setVisibility(View.VISIBLE);
-            }
-        } catch (Exception e) {
-
-        }
 
     }
 
@@ -247,7 +232,10 @@ public class ProfileFragment extends Fragment implements
         } else {
             showEmptyMessage(true);
         }
+
+        currentPostReponse = postResponses;
         bindPosts(postResponses.results);
+
     }
 
     private void showEmptyMessage(boolean show) {
@@ -262,47 +250,5 @@ public class ProfileFragment extends Fragment implements
         Toast.makeText(mContext, "Error Fetching Your Posts...", Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void onReadMoreTapped(PostResponse.Results postResponse) {
-
-        Intent intent = new Intent(mContext, DetailedActivity.class);
-        intent.putExtra("isVoted", postResponse.is_voted);
-        intent.putExtra("vote", postResponse.current_vote);
-        intent.putExtra("username", postResponse.user.username);
-        intent.putExtra("mediaUri", postResponse.media_uri);
-        intent.putExtra("content", postResponse.content);
-        intent.putExtra("postId", String.valueOf(postResponse.id));
-        intent.putExtra("userDpUrl", postResponse.user.image_uri);
-        intent.putExtra("totalVoteSum", String.valueOf(postResponse.vote_sum));
-        intent.putExtra("totalUserVoted", String.valueOf(postResponse.vote_count));
-        intent.putExtra("hapcoins", String.valueOf(postResponse.hapcoins));
-
-        mContext.startActivity(intent);
-    }
-
-    @Override
-    public void onUserInfoTapped(int userId) {
-        // redirect to profile page
-        Intent intent = new Intent(mContext, ProfileActivity.class);
-        intent.putExtra("userId", String.valueOf(userId));
-        startActivity(intent);
-
-    }
-
-    @Override
-    public void onLoadMore() {
-
-    }
-
-    @Override
-    public void onCommentIconTapped(String mediaUri, String author, String contextText, int postId) {
-        Intent i = new Intent(mContext, CommentEditorActivity.class);
-        i.putExtra("context", contextText);
-        i.putExtra("postId", String.valueOf(postId));
-        i.putExtra("author", author);
-        i.putExtra("media", mediaUri);
-
-        startActivity(i);
-    }
 
 }

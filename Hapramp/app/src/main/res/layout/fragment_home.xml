@@ -1,67 +1,37 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
-        android:background="#ffffff"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:layout_width="match_parent"
-            android:layout_height="84dp"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlways"
-            app:titleEnabled="false">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/sectionsRv"
-                android:layout_width="match_parent"
-                android:layout_height="84dp"
-                android:background="#ffffff"
-                />
-
-        </android.support.design.widget.CollapsingToolbarLayout>
-
-        <!--<ImageView-->
-            <!--android:src="@drawable/toolbar_shadow"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="2dp" />-->
-
-    </android.support.design.widget.AppBarLayout>
-
-
-    <android.support.v4.widget.NestedScrollView
+    <TextView
+        android:id="@+id/emptyMessage"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="No Content Available!"
+        android:textColor="@color/Black54"
+        android:textSize="16sp"
+        android:visibility="gone" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/emptyMessage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="No Content Available!"
-                android:textColor="@color/Black54"
-                android:textSize="16sp"
-                android:visibility="gone" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/homeRv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-            <include android:id="@+id/loadingShimmer" layout="@layout/load_more_progress_view"/>
+    <include
+        android:id="@+id/loadingShimmer"
+        layout="@layout/load_more_progress_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sectionsRv" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/homeRv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="4dp"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/sectionsRv"
+        android:layout_width="match_parent"
+        android:layout_height="84dp"
+        android:background="#ffffff" />
 
-        </RelativeLayout>
-
-    </android.support.v4.widget.NestedScrollView>
-
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>

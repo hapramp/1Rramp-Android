@@ -10,9 +10,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +44,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public class HomeFragment extends Fragment implements PostFetchCallback, FetchSkillsResponse, CategoryRecyclerAdapter.OnCategoryItemClickListener, PostsRecyclerAdapter.postListener, LikePostCallback {
+public class HomeFragment extends Fragment implements PostFetchCallback, FetchSkillsResponse, CategoryRecyclerAdapter.OnCategoryItemClickListener,LikePostCallback {
 
     @BindView(R.id.homeRv)
     RecyclerView postsRecyclerView;
@@ -64,6 +66,7 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     private CategoryRecyclerAdapter categoryRecyclerAdapter;
     private LinearLayoutManager layoutManager;
     private ViewItemDecoration viewItemDecoration;
+    private int y;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -86,6 +89,61 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
 
     }
 
+        public abstract class EndlessOnScrollListener extends RecyclerView.OnScrollListener {
+
+        // use your LayoutManager instead
+        private LinearLayoutManager lm;
+
+        EndlessOnScrollListener(LinearLayoutManager llm) {
+            this.lm = llm;
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            //super.onScrolled(recyclerView, dx, dy);
+
+            if (!recyclerView.canScrollVertically(1)) {
+                onScrolledToEnd();
+            }
+
+            y=dy;
+
+        }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL || newState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
+                    if(y>0){
+                        hideCategorySection();
+                    } else {
+                        bringBackCategorySection();
+                    }
+                }
+            }
+
+            public abstract void onScrolledToEnd();
+
+    }
+
+    private void bringBackCategorySection() {
+        sectionsRv.animate().translationY(0);
+    }
+
+    private void hideCategorySection() {
+        sectionsRv.animate().translationY(-sectionsRv.getMeasuredHeight());
+    }
+
+    private void setScrollListener(){
+        postsRecyclerView.addOnScrollListener(new EndlessOnScrollListener(layoutManager) {
+            @Override
+            public void onScrolledToEnd() {
+                loadMore(currentSelectedSkillId);
+            }
+        });
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
@@ -96,12 +154,12 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
         Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
         viewItemDecoration = new ViewItemDecoration(drawable);
 
-        recyclerAdapter = new PostsRecyclerAdapter(mContext, postsRecyclerView);
-        recyclerAdapter.setListener(this);
+        recyclerAdapter = new PostsRecyclerAdapter(mContext);
         postsRecyclerView.addItemDecoration(viewItemDecoration);
         postsRecyclerView.setAdapter(recyclerAdapter);
         postsRecyclerView.setNestedScrollingEnabled(false);
 
+        setScrollListener();
     }
 
     private void initCategoryView() {
@@ -163,8 +221,9 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
 
     private void loadMore(int id) {
 
-        if (currentPostReponse.next.length() == 0)
+        if (currentPostReponse.next.length() == 0){
             return;
+        }
 
         if (id == 0) {
             DataServer.getPosts(currentPostReponse.next, this);
@@ -232,50 +291,6 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-    }
-
-
-    @Override
-    public void onReadMoreTapped(PostResponse.Results postResponse) {
-
-        Intent intent = new Intent(mContext, DetailedActivity.class);
-        intent.putExtra("isVoted", postResponse.is_voted);
-        intent.putExtra("vote", postResponse.current_vote);
-        intent.putExtra("username", postResponse.user.username);
-        intent.putExtra("mediaUri", postResponse.media_uri);
-        intent.putExtra("content", postResponse.content);
-        intent.putExtra("postId", String.valueOf(postResponse.id));
-        intent.putExtra("userDpUrl", postResponse.user.image_uri);
-        intent.putExtra("totalVoteSum", String.valueOf(postResponse.vote_sum));
-        intent.putExtra("totalUserVoted", String.valueOf(postResponse.vote_count));
-        intent.putExtra("hapcoins", String.valueOf(postResponse.hapcoins));
-
-        mContext.startActivity(intent);
-    }
-
-    @Override
-    public void onUserInfoTapped(int userId) {
-        // redirect to profile page
-        Intent intent = new Intent(mContext, ProfileActivity.class);
-        intent.putExtra("userId", String.valueOf(userId));
-        startActivity(intent);
-
-    }
-
-    @Override
-    public void onLoadMore() {
-        loadMore(currentSelectedSkillId);
-    }
-
-    @Override
-    public void onCommentIconTapped(String mediaUri, String author, String contextText, int postId) {
-        Intent i = new Intent(mContext, CommentEditorActivity.class);
-        i.putExtra("context", contextText);
-        i.putExtra("postId", String.valueOf(postId));
-        i.putExtra("author", author);
-        i.putExtra("media", mediaUri);
-
-        startActivity(i);
     }
 
     @Override

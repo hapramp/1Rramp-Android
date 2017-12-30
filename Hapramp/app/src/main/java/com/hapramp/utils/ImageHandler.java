@@ -23,7 +23,7 @@ public class ImageHandler {
 
         Glide.with(context)
                 .load(_uri)
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(target);
 
     }

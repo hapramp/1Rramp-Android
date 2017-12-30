@@ -16,7 +16,7 @@ import com.hapramp.R;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.SkillsUtils;
 
-import static com.hapramp.utils.SkillsUtils.ACTION;
+import static com.hapramp.utils.SkillsUtils.DRAMATICS;
 import static com.hapramp.utils.SkillsUtils.ART;
 import static com.hapramp.utils.SkillsUtils.DANCE;
 import static com.hapramp.utils.SkillsUtils.LITERATURE;
@@ -69,35 +69,42 @@ public class SkillsItemView extends FrameLayout {
         switch (type){
             case PHOTOGRAPHY:
                 resId = R.drawable.photography_icon;
+                skillsBgImage.setImageResource(resId);
                 color = "#f44336";
                 break;
             case DANCE:
                 resId = R.drawable.dance_icon;
+                skillsBgImage.setImageResource(resId);
                 color = "#e91e63";
                 break;
-            case ACTION:
+            case DRAMATICS:
                 resId = R.drawable.act_icon;
+                skillsBgImage.setImageResource(resId);
                 color = "#9c27b0";
                 break;
             case ART:
                 resId = R.drawable.art_icon;
+                skillsBgImage.setImageResource(resId);
                 color = "#3949ab";
                 break;
             case MUSIC:
                 resId = R.drawable.music_icon;
+                skillsBgImage.setImageResource(resId);
                 color = "#009688";
                 break;
             case TRAVEL:
                 resId = R.drawable.travel_icon;
+                skillsBgImage.setImageResource(resId);
                 color = "#607d8b";
                 break;
             case LITERATURE:
                 resId = R.drawable.literature_icon;
+                skillsBgImage.setImageResource(resId);
                 color = "#ff5722";
                 break;
         }
 
-        skillsBgImage.setImageResource(resId);
+
         setOverlayColor(color);
 
     }

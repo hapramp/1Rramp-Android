@@ -21,7 +21,8 @@ import java.util.List;
  */
 
 public class InterestsView extends FrameLayout{
-    
+
+    private boolean interestsSet = false;
     private Context mContext;
     private ViewGroup parentView;
     private List<UserModel.Skills> interests;
@@ -56,6 +57,7 @@ public class InterestsView extends FrameLayout{
         for (int i = 0; i < interests.size(); i++) {
 
             final SkillsItemView view = new SkillsItemView(mContext);
+            Log.d("InterestView",interests.get(i).toString());
             view.setSkillTitle(SkillsUtils.getSkillTitleFromId(interests.get(i).id));
             view.setSelection(false);
 
@@ -65,11 +67,16 @@ public class InterestsView extends FrameLayout{
                             ViewGroup.LayoutParams.WRAP_CONTENT));
         }
 
+        this.interestsSet = true;
+
     }
 
     public void setInterests(List<UserModel.Skills> skills) {
-       this.interests = skills;
-        addViews();
+
+        this.interests = skills;
+
+        if(!interestsSet)
+            addViews();
     }
 
 }
