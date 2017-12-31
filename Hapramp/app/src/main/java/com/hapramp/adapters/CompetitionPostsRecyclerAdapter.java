@@ -9,13 +9,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.hapramp.R;
 import com.hapramp.models.response.CompetitionsPostReponse;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
-import com.hapramp.views.ClubTagView;
-import com.hapramp.views.RatingView;
+
 import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -65,8 +66,6 @@ public class CompetitionPostsRecyclerAdapter extends RecyclerView.Adapter<Compet
         TextView feedOwnerTitle;
         @BindView(R.id.feed_owner_subtitle)
         TextView feedOwnerSubtitle;
-        @BindView(R.id.clubsContainer)
-        ClubTagView clubsContainer;
         @BindView(R.id.post_header_container)
         RelativeLayout postHeaderContainer;
         @BindView(R.id.featured_image_post)
@@ -93,8 +92,7 @@ public class CompetitionPostsRecyclerAdapter extends RecyclerView.Adapter<Compet
         RelativeLayout postMetaContainer;
         @BindView(R.id.starBtn)
         TextView starBtn;
-        @BindView(R.id.ratingView)
-        RatingView ratingView;
+
 
         public CompetitionPostViewHolder(View itemView) {
             super(itemView);
@@ -119,22 +117,7 @@ public class CompetitionPostsRecyclerAdapter extends RecyclerView.Adapter<Compet
             likeCount.setText(String.valueOf(post.vote_count));
             commentCount.setText(String.valueOf(post.comment_count));
             hapcoinsCount.setText("H");
-            ratingView.setIntials(String.valueOf(post.id),post.is_voted,post.current_vote);
-            clubsContainer.setCompetitionSkills(post.skills);
-
-            starBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ratingView.addRating();
-                }
-            });
-
-            featuredImagePost.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ratingView.addRating();
-                }
-            });
+           // clubsContainer.setCompetitionSkills(post.skills);
 
         }
 

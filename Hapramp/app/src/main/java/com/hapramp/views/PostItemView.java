@@ -2,6 +2,7 @@ package com.hapramp.views;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.Space;
@@ -25,7 +26,9 @@ import com.hapramp.models.response.PostResponse;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
+import com.hapramp.utils.SkillsUtils;
 
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -46,8 +49,6 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
     TextView feedOwnerTitle;
     @BindView(R.id.feed_owner_subtitle)
     TextView feedOwnerSubtitle;
-    @BindView(R.id.clubsContainer)
-    ClubTagView clubsContainer;
     @BindView(R.id.post_header_container)
     RelativeLayout postHeaderContainer;
     @BindView(R.id.featured_image_post)
@@ -74,6 +75,12 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
     StarView starView;
     @BindView(R.id.post_meta_container)
     RelativeLayout postMetaContainer;
+    @BindView(R.id.club1)
+    TextView club1;
+    @BindView(R.id.club2)
+    TextView club2;
+    @BindView(R.id.club3)
+    TextView club3;
     private Context mContext;
     private PostResponse.Results postData;
 
@@ -116,7 +123,7 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
 
             readMoreBtn.setVisibility(View.VISIBLE);
 
-            readMoreBtn.setOnClickListener(new View.OnClickListener() {
+            readMoreBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     navigateToDetailedPage(post);
@@ -140,15 +147,15 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
             featuredImagePost.setVisibility(View.VISIBLE);
         }
 
-        hapcoinsCount.setText(String.format(Locale.US,"%1.3f", post.hapcoins));
+        hapcoinsCount.setText(String.format(Locale.US, "%1.3f", post.hapcoins));
         String _comment_info = post.comment_count > 1 ? String.valueOf(post.comment_count).concat(" comments") : String.valueOf(post.comment_count).concat(" comment");
         commentCount.setText(_comment_info);
 
-        commentBtn.setOnClickListener(new View.OnClickListener() {
+        commentBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                navigateToCommentCreateActivity(post.content,post.id,post.user.username,post.media_uri);
+                navigateToCommentCreateActivity(post.content, post.id, post.user.username, post.media_uri);
 
             }
         });
@@ -175,16 +182,16 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
                     }
                 });
 
-        clubsContainer.setPostSkills(post.skills);
+        setSkills(post.skills);
 
-        postHeaderContainer.setOnClickListener(new View.OnClickListener() {
+        postHeaderContainer.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 navigateToUserProfile(post.user.id);
             }
         });
 
-        starView.setOnClickListener(new View.OnClickListener() {
+        starView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 starView.onStarIndicatorTapped();
@@ -193,8 +200,41 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
 
     }
 
+    private void setSkills(List<PostResponse.Skills> skills) {
+
+        int size = skills.size();
+        resetVisibility();
+        if(size>0){
+            //first skill
+            club1.setVisibility(VISIBLE);
+            club1.setText(SkillsUtils.getSkillCharacter(skills.get(0).id));
+            club1.getBackground().setColorFilter(SkillsUtils.getSkillTagColorFromId(skills.get(0).id), PorterDuff.Mode.SRC_ATOP);
+            if(size>1){
+                // second skills
+                club2.setVisibility(VISIBLE);
+                club2.setText(SkillsUtils.getSkillCharacter(skills.get(1).id));
+                club2.getBackground().setColorFilter(SkillsUtils.getSkillTagColorFromId(skills.get(1).id), PorterDuff.Mode.SRC_ATOP);
+                if(size>2){
+                    // third skills
+                    club3.setVisibility(VISIBLE);
+                    club3.setText(SkillsUtils.getSkillCharacter(skills.get(2).id));
+                    club3.getBackground().setColorFilter(SkillsUtils.getSkillTagColorFromId(skills.get(2).id), PorterDuff.Mode.SRC_ATOP);
+                }
+            }
+        }
+
+    }
+
+    private void resetVisibility() {
+
+        club1.setVisibility(GONE);
+        club2.setVisibility(GONE);
+        club3.setVisibility(GONE);
+
+    }
+
     private void navigateToDetailedPage(PostResponse.Results post) {
-        
+
         Intent intent = new Intent(mContext, DetailedActivity.class);
         intent.putExtra(Constants.EXTRAA_KEY_IS_VOTED, post.is_voted);
         intent.putExtra(Constants.EXTRAA_KEY_VOTE, post.current_vote);
@@ -211,14 +251,14 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
 
     }
 
-    private void navigateToCommentCreateActivity(String contextText,int postId,String author, String mediaUri) {
+    private void navigateToCommentCreateActivity(String contextText, int postId, String author, String mediaUri) {
 
         Intent i = new Intent(mContext, CommentEditorActivity.class);
         i.putExtra(Constants.EXTRAA_KEY_CONTEXT_TEXT, contextText);
         i.putExtra(Constants.EXTRAA_KEY_POST_ID, String.valueOf(postId));
         i.putExtra(Constants.EXTRAA_KEY_AUTHOR, author);
         i.putExtra(Constants.EXTRAA_KEY_MEDIA_URL, mediaUri);
-        
+
         mContext.startActivity(i);
 
     }
@@ -247,7 +287,7 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
     @Override
     public void onVoteDeleted(PostResponse.Results updatedPost) {
         // update the hapcoins
-        hapcoinsCount.setText(String.format(Locale.US,"%1.3f", updatedPost.hapcoins));
+        hapcoinsCount.setText(String.format(Locale.US, "%1.3f", updatedPost.hapcoins));
     }
 
     @Override
@@ -258,7 +298,7 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
     @Override
     public void onPostVoted(PostResponse.Results updatedPost) {
         // update the hapcoins
-        hapcoinsCount.setText(String.format(Locale.US,"%1.3f", updatedPost.hapcoins));
+        hapcoinsCount.setText(String.format(Locale.US, "%1.3f", updatedPost.hapcoins));
     }
 
     @Override

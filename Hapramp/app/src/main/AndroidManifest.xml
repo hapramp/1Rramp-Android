@@ -47,9 +47,6 @@
             android:name=".activity.ProfileActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.LeaderboardActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.TestActivity"
             android:screenOrientation="portrait"></activity>
         <activity

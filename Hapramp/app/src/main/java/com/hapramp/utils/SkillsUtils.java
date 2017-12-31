@@ -1,5 +1,7 @@
 package com.hapramp.utils;
 
+import android.graphics.Color;
+
 /**
  * Created by Ankit on 11/13/2017.
  */
@@ -14,6 +16,14 @@ public class SkillsUtils {
     public static final int DRAMATICS = 5;
     public static final int PHOTOGRAPHY = 6;
     public static final int MUSIC = 8;
+
+    // colors
+    private static final String L = "#c75475";
+    private static final String T = "#8Bc34a";
+    private static final String P = "#2196f3";
+    private static final String D = "#607d8b";
+    private static final String A = "#9c27b0";
+    private static final String M = "#FFEB3B";
 
     final static String[] skills = {"Art", "Dance", "Music","Travel", "Literature", "Dramatics", "Photography"};
 
@@ -92,6 +102,41 @@ public class SkillsUtils {
         }
 
         return "None";
+
+    }
+
+    public static int getSkillTagColorFromId(int skillId) {
+
+        String c = getSkillCharacter(skillId);
+        int color = 0;
+        switch (c) {
+
+            case "L":
+                color = Color.parseColor(L);
+                break;
+
+            case "T":
+                color = Color.parseColor(T);
+                break;
+
+            case "P":
+                color = Color.parseColor(P);
+                break;
+            case "D":
+                color = Color.parseColor(D);
+                break;
+            case "A":
+                color = Color.parseColor(A);
+                break;
+            case "M":
+                color = Color.parseColor(M);
+                break;
+            default:
+                color = Color.parseColor(P);
+                break;
+
+        }
+        return color;
 
     }
 

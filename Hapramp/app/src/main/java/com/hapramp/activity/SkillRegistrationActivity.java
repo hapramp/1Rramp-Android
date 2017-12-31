@@ -9,21 +9,16 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
-import com.hapramp.adapters.SkillsGridAdapter;
 import com.hapramp.api.DataServer;
-import com.hapramp.interfaces.FetchSkillsResponse;
 import com.hapramp.interfaces.OnSkillsUpdateCallback;
 import com.hapramp.logger.L;
 import com.hapramp.models.requests.SkillsUpdateBody;
-import com.hapramp.models.response.PostResponse;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.utils.FontManager;
 import com.hapramp.views.SelectableInterestsView;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

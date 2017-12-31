@@ -44,13 +44,12 @@
             android:layout_toEndOf="@+id/feed_owner_pic"
             android:text="iiit | 2 days ago" />
 
-        <com.hapramp.views.ClubTagView
-            android:id="@+id/clubsContainer"
+        <include layout="@layout/club_tag_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:paddingEnd="8dp" />
+            android:layout_marginEnd="8dp" />
 
     </RelativeLayout>
 
