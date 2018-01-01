@@ -20,11 +20,7 @@
         <activity
             android:name=".activity.LoginActivity"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activity.SkillRegistrationActivity"
@@ -48,7 +44,15 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.TestActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
         <activity
             android:name=".activity.RegistrationPage2"
             android:screenOrientation="portrait" />
@@ -96,6 +100,7 @@
         </service>
 
         <activity android:name=".activity.ProfileEditActivity" android:screenOrientation="portrait"/>
+
     </application>
 
 </manifest>
