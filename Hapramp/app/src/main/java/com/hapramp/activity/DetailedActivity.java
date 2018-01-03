@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,7 +38,7 @@ import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.ViewItemDecoration;
-import com.hapramp.views.StarView;
+import com.hapramp.views.extraa.StarView;
 
 import java.util.List;
 
@@ -225,7 +226,8 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
 
     private void bindValues() {
 
-        postSnippet.setText(mContent);
+        postSnippet.setText(Html.fromHtml(mContent));
+
         feedOwnerTitle.setText(mUserName);
         if (mMediaUri.length() > 0) {
             ImageHandler.load(this, featuredImagePost, mMediaUri);

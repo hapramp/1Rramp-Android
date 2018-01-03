@@ -12,8 +12,8 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.hapramp.R;
 import com.hapramp.models.ProfileHeaderModel;
 import com.hapramp.models.response.PostResponse;
-import com.hapramp.views.PostItemView;
-import com.hapramp.views.ProfileHeaderView;
+import com.hapramp.views.post.PostItemView;
+import com.hapramp.views.profile.ProfileHeaderView;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -5,9 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.hapramp.models.response.SkillsModel;
 import com.hapramp.models.response.UserModel;
-import com.hapramp.views.SkillsTabView;
+import com.hapramp.views.skills.SkillsTabView;
 
 import java.util.List;
 

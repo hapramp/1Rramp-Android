@@ -1,198 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    tools:context="com.hapramp.activity.NewPostCreationActivity">
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:fitsSystemWindows="true">
 
-    <RelativeLayout
-        android:background="#ffffff"
-        android:id="@+id/toolbar_container"
-        android:layout_height="?actionBarSize"
-        android:layout_marginBottom="4dp"
-        android:layout_width="match_parent">
-
-        <TextView
-            android:background="?selectableItemBackgroundBorderless"
-            android:gravity="center"
-            android:id="@+id/closeBtn"
-            android:layout_height="?actionBarSize"
-            android:layout_width="?actionBarSize"
-            android:text=""
-            android:textSize="24sp" />
-
-        <TextView
-            android:layout_centerVertical="true"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_toRightOf="@+id/closeBtn"
-            android:layout_width="wrap_content"
-            android:text="Article"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/nextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/light_btn_bg"
-            android:gravity="center"
-            android:paddingBottom="6dp"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp"
-            android:paddingTop="6dp"
-            android:text="NEXT"
-            android:textColor="@color/colorPrimary"
-            android:textSize="14sp" />
-
-
-    </RelativeLayout>
-
-    <ScrollView
-        android:layout_below="@+id/toolbar_container"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="wrap_content"
+        tools:context="com.hapramp.activity.NewPostCreationActivity">
 
         <RelativeLayout
+            android:id="@+id/toolbar_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <FrameLayout
-                android:id="@+id/postMediaContainer"
-                android:layout_below="@+id/content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone">
-
-                <ImageView
-                    android:id="@+id/postMedia"
-                    android:layout_width="match_parent"
-                    android:layout_height="172dp"
-                    android:background="#3c819b"
-                    android:scaleType="centerCrop" />
-
-                <TextView
-                    android:textSize="36sp"
-                    android:textColor="#ffffff"
-                    android:id="@+id/removeImageBtn"
-                    android:text=""
-                    android:gravity="center"
-                    android:layout_gravity="end"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp" />
-
-                <ProgressBar
-                    android:id="@+id/postMediaUploadProgress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:visibility="gone" />
-
-            </FrameLayout>
-
-            <EditText
-                android:id="@+id/title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="48dp"
-                android:background="@drawable/post_editor_bg"
-                android:gravity="top"
-                android:maxLines="1"
-                android:textColor="@color/Black87"
-                android:hint="Title"
-                android:textStyle="bold"
-                android:padding="16dp"
-                android:textSize="16sp" />
-
-            <EditText
-                android:layout_below="@+id/title"
-                android:id="@+id/content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="100dp"
-                android:background="@drawable/post_editor_bg"
-                android:gravity="top"
-                android:textColor="@color/Black54"
-                android:hint="Write article..."
-                android:padding="16dp"
-                android:textSize="14sp" />
+            android:layout_height="?actionBarSize"
+            android:layout_marginBottom="4dp"
+            android:background="#ffffff">
 
             <TextView
-                android:layout_alignParentEnd="true"
-                android:padding="4dp"
-                android:text="0"
-                android:layout_below="@+id/title"
-                android:id="@+id/characterLimit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:id="@+id/closeBtn"
+                android:layout_width="?actionBarSize"
+                android:layout_height="?actionBarSize"
+                android:background="?selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:text=""
+                android:textSize="24sp" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
+                android:layout_toRightOf="@+id/closeBtn"
+                android:text="Article"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/nextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/light_btn_bg"
+                android:gravity="center"
+                android:paddingBottom="6dp"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp"
+                android:paddingTop="6dp"
+                android:text="NEXT"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp" />
 
         </RelativeLayout>
 
-    </ScrollView>
+        <FrameLayout
+            android:id="@+id/postMediaContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title"
+            android:visibility="gone">
 
-    <RelativeLayout
-        android:background="#ffffff"
-        android:id="@+id/bottom_options_container"
-        android:layout_alignParentBottom="true"
-        android:layout_height="?actionBarSize"
-        android:layout_width="match_parent">
+            <ImageView
+                android:id="@+id/postMedia"
+                android:layout_width="match_parent"
+                android:layout_height="172dp"
+                android:background="#3c819b"
+                android:scaleType="centerCrop" />
 
+            <TextView
+                android:id="@+id/removeImageBtn"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="end"
+                android:gravity="center"
+                android:text=""
+                android:textColor="#ffffff"
+                android:textSize="36sp" />
 
-        <TextView
-            android:clickable="true"
-            android:background="?selectableItemBackgroundBorderless"
-            android:gravity="center"
-            android:id="@+id/textSizeBtn"
-            android:layout_height="?actionBarSize"
-            android:layout_width="?actionBarSize"
-            android:text=""
-            android:textSize="24sp" />
+            <ProgressBar
+                android:id="@+id/postMediaUploadProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone" />
 
-        <TextView
-            android:clickable="true"
-            android:background="?selectableItemBackgroundBorderless"
-            android:gravity="center"
-            android:id="@+id/quoteBtn"
-            android:layout_height="?actionBarSize"
-            android:layout_toEndOf="@+id/textSizeBtn"
-            android:layout_width="?actionBarSize"
-            android:text=""
-            android:textSize="24sp" />
+        </FrameLayout>
 
-        <TextView
-            android:clickable="true"
-            android:background="?selectableItemBackgroundBorderless"
-            android:gravity="center"
-            android:id="@+id/bulletBtn"
-            android:layout_height="?actionBarSize"
-            android:layout_toEndOf="@id/quoteBtn"
-            android:layout_width="?actionBarSize"
-            android:text=""
-            android:textSize="24sp" />
+        <EditText
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/toolbar_container"
+            android:background="@drawable/post_editor_bg"
+            android:gravity="top"
+            android:hint="Title"
+            android:maxLines="1"
+            android:minHeight="48dp"
+            android:padding="16dp"
+            android:textColor="@color/Black87"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
+        <com.hapramp.views.editor.EditorView
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/postMediaContainer"
+            android:gravity="top"
+            android:layout_marginTop="4dp"
+            android:minHeight="100dp"
+            android:textColor="@color/Black54"
+            android:textSize="14sp" />
 
-        <TextView
-            android:clickable="true"
-            android:background="?selectableItemBackgroundBorderless"
-            android:gravity="center"
-            android:id="@+id/linkBtn"
-            android:layout_height="?actionBarSize"
-            android:layout_toEndOf="@id/bulletBtn"
-            android:layout_width="?actionBarSize"
-            android:text=""
-            android:textSize="24sp" />
+        <include
+            android:id="@+id/metaView"
+            layout="@layout/article_meta_view"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"/>
 
     </RelativeLayout>
 
-    <include
-        android:id="@+id/metaView"
-        layout="@layout/article_meta_view"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"/>
 
-</RelativeLayout>
+</ScrollView>

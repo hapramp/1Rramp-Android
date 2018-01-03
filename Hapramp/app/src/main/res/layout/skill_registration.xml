@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="?actionBarSize" />
 
-    <com.hapramp.views.SelectableInterestsView
+    <com.hapramp.views.skills.SelectableInterestsView
         android:layout_centerInParent="true"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/skills_continueBtn"

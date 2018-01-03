@@ -67,10 +67,10 @@
                 android:layout_below="@+id/toolbar_container">
 
                 <ImageView
+                    android:id="@+id/profile_wall_pic"
                     android:layout_width="match_parent"
                     android:layout_height="196dp"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/profile_wall" />
+                    android:scaleType="fitXY" />
 
                 <FrameLayout
                     android:layout_width="120dp"
@@ -173,7 +173,7 @@
                     android:textColor="@color/Black38"
                     android:textStyle="bold" />
 
-                <com.hapramp.views.SelectableInterestsView
+                <com.hapramp.views.skills.SelectableInterestsView
                     android:id="@+id/interestView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

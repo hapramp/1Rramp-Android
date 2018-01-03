@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.hapramp.views.PostCategoryViewGroup
+    <com.hapramp.views.post.PostCategoryViewGroup
         android:id="@+id/viewWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

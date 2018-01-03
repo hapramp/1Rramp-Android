@@ -36,7 +36,7 @@ import com.hapramp.utils.Constants;
 import com.hapramp.utils.FileUtils;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.SkillsUtils;
-import com.hapramp.views.PostCategoryView;
+import com.hapramp.views.post.PostCategoryView;
 
 import java.io.File;
 import java.util.ArrayList;

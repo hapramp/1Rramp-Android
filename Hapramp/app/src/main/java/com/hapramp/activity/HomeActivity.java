@@ -14,7 +14,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -23,8 +22,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.api.DataServer;
@@ -39,7 +36,7 @@ import com.hapramp.models.response.FetchUserResponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
-import com.hapramp.views.CreateButtonView;
+import com.hapramp.views.extraa.CreateButtonView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

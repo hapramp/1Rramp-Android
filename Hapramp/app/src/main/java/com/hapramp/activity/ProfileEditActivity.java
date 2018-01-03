@@ -41,7 +41,7 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
-import com.hapramp.views.SelectableInterestsView;
+import com.hapramp.views.skills.SelectableInterestsView;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -81,6 +81,8 @@ public class ProfileEditActivity extends AppCompatActivity implements UserDpUpda
     RelativeLayout toolbarContainer;
     @BindView(R.id.dpUploadingProgress)
     ProgressBar dpUploadingProgress;
+    @BindView(R.id.profile_wall_pic)
+    ImageView profileWallPic;
 
     private String dpUrl;
     private FirebaseStorage storage;
@@ -183,6 +185,7 @@ public class ProfileEditActivity extends AppCompatActivity implements UserDpUpda
         showDpProgress();
         // show image
         ImageHandler.loadCircularImage(this, profilePic, uri);
+        ImageHandler.load(this,profileWallPic,getResources().getString(R.string.default_wall_pic));
 
         StorageReference storageRef = storage.getReference();
         StorageReference dpRef = storageRef
@@ -221,7 +224,7 @@ public class ProfileEditActivity extends AppCompatActivity implements UserDpUpda
 
     private void updateAppServerForDpUpdate() {
 
-        UserDataUpdateBody body =  new UserDataUpdateBody(emailEt.getText().toString(),
+        UserDataUpdateBody body = new UserDataUpdateBody(emailEt.getText().toString(),
                 usernameEt.getText().toString(),
                 nameEt.getText().toString(),
                 dpUrl,
@@ -230,8 +233,8 @@ public class ProfileEditActivity extends AppCompatActivity implements UserDpUpda
 
         DataServer.updataUserDpUrl(
                 HaprampPreferenceManager.getInstance().getUserId(),
-               body
-               ,this);
+                body
+                , this);
 
     }
 
@@ -253,7 +256,7 @@ public class ProfileEditActivity extends AppCompatActivity implements UserDpUpda
 
     @Override
     public void onUserDataUpdated() {
-        Toast.makeText(this,"Updated!",Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Updated!", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -271,7 +274,7 @@ public class ProfileEditActivity extends AppCompatActivity implements UserDpUpda
     private void bindValues(UserModel userModel) {
 
         userData = userModel;
-       //dp
+        //dp
         dpUrl = userModel.image_uri;
         ImageHandler.loadCircularImage(this, profilePic, userModel.image_uri);
         //edit Btn
@@ -317,7 +320,6 @@ public class ProfileEditActivity extends AppCompatActivity implements UserDpUpda
         });
 
 
-
     }
 
     @Override
@@ -343,14 +345,14 @@ public class ProfileEditActivity extends AppCompatActivity implements UserDpUpda
         // TODO: 12/26/2017 do nothing for now :)
     }
 
-    private void showDpProgress(){
-        if(dpUploadingProgress!=null){
+    private void showDpProgress() {
+        if (dpUploadingProgress != null) {
             dpUploadingProgress.setVisibility(View.VISIBLE);
         }
     }
 
-    private void hideDpProgress(){
-        if(dpUploadingProgress!=null){
+    private void hideDpProgress() {
+        if (dpUploadingProgress != null) {
             dpUploadingProgress.setVisibility(View.GONE);
         }
     }

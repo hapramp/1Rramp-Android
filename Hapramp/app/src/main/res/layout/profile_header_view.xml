@@ -10,10 +10,10 @@
         android:layout_height="196dp">
 
         <ImageView
+            android:id="@+id/profile_wall_pic"
             android:layout_width="match_parent"
             android:layout_height="196dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/profile_wall" />
+            android:scaleType="fitXY" />
 
         <FrameLayout
             android:layout_width="120dp"
@@ -25,8 +25,7 @@
                 android:id="@+id/profile_pic"
                 android:layout_width="108dp"
                 android:layout_height="108dp"
-                android:layout_gravity="center"
-                android:src="@drawable/profile_user_dp_circle" />
+                android:layout_gravity="center"/>
 
 
         </FrameLayout>
@@ -186,7 +185,7 @@
         android:textColor="@color/colorPrimary"
         android:textSize="16sp" />
 
-    <com.hapramp.views.InterestsView
+    <com.hapramp.views.skills.InterestsView
         android:id="@+id/interestsView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

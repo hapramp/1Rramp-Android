@@ -10,7 +10,9 @@
     <string name="earnedHapcoins">\u20B9 %.1f</string>
     <string name="post_limit">%1$d/140</string>
     <string name="star_info">%.1f of %2$d</string>
-    <string name="commentUrl">"http://hapramp.herokuapp.com/api/posts/%1$d/comments?start=1</string>
+    <string name="commentUrl">http://hapramp.herokuapp.com/api/posts/%1$d/comments?start=1</string>
+    <string name="default_wall_pic">https://user-images.githubusercontent.com/10809719/34511255-2d3d8592-f080-11e7-9540-43d153a96c33.png</string>
+
 
     <string name="sample">Bitcoin uses peer-to-peer technology to operate with no central authority or banks
         managing transactions and the issuing of bitcoins is carried out collectively by the network. Bitcoin is open-source; its design is public, nobody owns or controls Bitcoin and everyone can take part. Through many of its unique properties,
@@ -23,7 +25,7 @@
     <string name="other_comments_format">Comments[%1$d]</string>
     <string name="other_comment_format">Comment[%1$d]</string>
     <string name="no_other_comment_format">No Comment</string>
-
+    <string name="type_here">Type Here...</string>
 
 
 </resources>

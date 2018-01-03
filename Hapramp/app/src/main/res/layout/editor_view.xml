@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fitsSystemWindows="true">
+
+
+    <EditText
+        android:id="@+id/editor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottomeControlsContainer"
+        android:background="@drawable/post_editor_bg"
+        android:gravity="start"
+        android:hint="@string/type_here"
+        android:padding="4dp" />
+
+    <LinearLayout
+        android:id="@+id/bottomeControlsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:padding="4dp">
+
+        <com.hapramp.views.editor.TextSizeView
+            android:id="@+id/textSizeBtn"
+            android:layout_width="48dp"
+            android:layout_height="match_parent" />
+
+        <com.hapramp.views.editor.BoldButtonView
+            android:visibility="invisible"
+            android:id="@+id/boldButton"
+            android:layout_width="48dp"
+            android:layout_height="match_parent" />
+
+        <!--<com.hapramp.views.editor.BlockQuoteView-->
+        <!--android:id="@+id/blockquote"-->
+        <!--android:layout_width="48dp"-->
+        <!--android:layout_height="match_parent"/>-->
+
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:gravity="center"
+        android:id="@+id/characterLimit"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="4dp"
+        android:text="0" />
+
+</RelativeLayout>

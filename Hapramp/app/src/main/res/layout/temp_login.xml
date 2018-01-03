@@ -28,7 +28,7 @@
             android:layout_height="match_parent" />
 
 
-        <com.hapramp.views.NotificationView
+        <com.hapramp.views.extraa.NotificationView
             android:layout_alignParentEnd="true"
             android:id="@+id/notification"
             android:layout_width="?actionBarSize"

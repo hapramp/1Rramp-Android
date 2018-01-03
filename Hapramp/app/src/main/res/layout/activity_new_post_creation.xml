@@ -157,7 +157,7 @@
                     android:text="Select Category"
                     android:textSize="16sp" />
 
-                <com.hapramp.views.PostCategoryView
+                <com.hapramp.views.post.PostCategoryView
                     android:id="@+id/postCategoryView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

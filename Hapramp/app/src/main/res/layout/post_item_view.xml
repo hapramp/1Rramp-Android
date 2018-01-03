@@ -12,7 +12,6 @@
         android:focusable="true">
 
         <ImageView
-            android:src="@drawable/dance_icon"
             android:id="@+id/feed_owner_pic"
             android:layout_width="64dp"
             android:layout_height="match_parent"
@@ -187,7 +186,7 @@
                 android:textSize="24sp"
                 android:visibility="gone" />
 
-            <com.hapramp.views.StarView
+            <com.hapramp.views.extraa.StarView
                android:layout_centerVertical="true"
                 android:id="@+id/starView"
                 android:layout_width="wrap_content"

@@ -4,41 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffffff"
     tools:context="com.hapramp.activity.TestActivity">
 
-    <com.hapramp.views.EditorView
-        android:id="@+id/et"
-        android:tag="+91 "
-        android:layout_width="match_parent"
-        android:layout_height="200dp" />
-
-    <CheckBox
-        android:id="@+id/bold"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Bold" />
-
-    <CheckBox
-        android:id="@+id/bigger"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Bigger" />
-
-    <CheckBox
-        android:id="@+id/color"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Color" />
-
-    <Button
-        android:onClick="getHtml"
-        android:text="Get Html"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/panel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+   <com.hapramp.views.editor.EditorView
+       android:id="@+id/et"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"/>
 
 </LinearLayout>

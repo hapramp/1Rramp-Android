@@ -15,7 +15,7 @@ import com.hapramp.logger.L;
 import com.hapramp.models.requests.SkillsUpdateBody;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.utils.FontManager;
-import com.hapramp.views.SelectableInterestsView;
+import com.hapramp.views.skills.SelectableInterestsView;
 
 import java.util.ArrayList;
 import java.util.List;
