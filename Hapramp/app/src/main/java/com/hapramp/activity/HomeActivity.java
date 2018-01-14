@@ -419,7 +419,6 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 
     private void showFragment(Fragment fragment) {
 
-        getSupportFragmentManager().beginTransaction().show(fragment).commitAllowingStateLoss();
         //hide other fragment
         if(fragment!=homeFragment){
             getSupportFragmentManager().beginTransaction().hide(homeFragment).commitAllowingStateLoss();
@@ -435,11 +434,8 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
         if(fragment!=settingsFragment){
             getSupportFragmentManager().beginTransaction().hide(settingsFragment).commitAllowingStateLoss();
         }
-//        if(fragment!=earningFragment){
-//            getSupportFragmentManager().beginTransaction().hide(earningFragment).commitAllowingStateLoss();
-//        }
-//
 
+        getSupportFragmentManager().beginTransaction().show(fragment).commitAllowingStateLoss();
 
     }
 

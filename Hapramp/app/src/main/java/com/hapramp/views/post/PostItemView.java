@@ -149,6 +149,7 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
         if (post.media_uri.length() == 0) {
             featuredImagePost.setVisibility(GONE);
         } else {
+            featuredImagePost.layout(0,0,0,0);
             ImageHandler.load(mContext, featuredImagePost, post.media_uri);
             featuredImagePost.setVisibility(View.VISIBLE);
         }

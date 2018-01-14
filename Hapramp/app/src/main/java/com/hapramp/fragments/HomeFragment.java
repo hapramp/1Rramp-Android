@@ -34,6 +34,7 @@ import com.hapramp.logger.L;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.utils.SpaceDecorator;
 import com.hapramp.utils.ViewItemDecoration;
 
 import java.util.Collections;
@@ -174,7 +175,8 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
 
         Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
         viewItemDecoration = new ViewItemDecoration(drawable);
-
+        SpaceDecorator spaceDecorator = new SpaceDecorator();
+        postsRecyclerView.addItemDecoration(spaceDecorator);
         recyclerAdapter = new PostsRecyclerAdapter(mContext);
         postsRecyclerView.addItemDecoration(viewItemDecoration);
         postsRecyclerView.setAdapter(recyclerAdapter);

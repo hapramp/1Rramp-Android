@@ -32,6 +32,7 @@ import com.hapramp.models.ProfileHeaderModel;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.utils.SpaceDecorator;
 import com.hapramp.utils.ViewItemDecoration;
 
 import java.util.List;
@@ -146,7 +147,8 @@ public class ProfileFragment extends Fragment implements
         profilePostAdapter = new PostsRecyclerAdapter(mContext);
         Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
         viewItemDecoration = new ViewItemDecoration(drawable);
-
+        SpaceDecorator spaceDecorator = new SpaceDecorator();
+        profilePostRv.addItemDecoration(spaceDecorator);
         profilePostRv.addItemDecoration(viewItemDecoration);
         llm = new LinearLayoutManager(mContext);
         profilePostRv.setLayoutManager(llm);
