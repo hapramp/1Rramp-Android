@@ -20,10 +20,13 @@ import com.hapramp.activity.CommentEditorActivity;
 import com.hapramp.activity.DetailedActivity;
 import com.hapramp.activity.ProfileActivity;
 import com.hapramp.api.DataServer;
+import com.hapramp.interfaces.OnPostDeleteCallback;
 import com.hapramp.interfaces.VoteDeleteCallback;
 import com.hapramp.interfaces.VotePostCallback;
+import com.hapramp.main.HapRampMain;
 import com.hapramp.models.requests.VoteRequestBody;
 import com.hapramp.models.response.PostResponse;
+import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
@@ -40,7 +43,7 @@ import butterknife.ButterKnife;
  * Created by Ankit on 12/30/2017.
  */
 
-public class PostItemView extends FrameLayout implements VoteDeleteCallback, VotePostCallback {
+public class PostItemView extends FrameLayout implements VoteDeleteCallback, VotePostCallback, OnPostDeleteCallback {
 
 
     @BindView(R.id.feed_owner_pic)
@@ -114,6 +117,7 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
         ImageHandler.loadCircularImage(mContext, feedOwnerPic, post.user.image_uri);
         feedOwnerTitle.setText(post.user.full_name);
         feedOwnerSubtitle.setText(post.user.username);
+
 
         // classify the type of content
         if (post.post_type == Constants.CONTENT_TYPE_ARTICLE) {
@@ -281,6 +285,7 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
 
     }
 
+
     public void setPostData(PostResponse.Results postData) {
         this.postData = postData;
         bind(postData);
@@ -306,6 +311,17 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
     @Override
     public void onPostVoteError() {
         // do nothing for now :)
+    }
+
+    @Override
+    public void onPostDeleted(int position) {
+
+
+    }
+
+    @Override
+    public void onPostDeleteFailed() {
+
     }
 }
 

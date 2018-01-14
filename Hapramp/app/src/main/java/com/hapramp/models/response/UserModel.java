@@ -30,7 +30,7 @@ public class UserModel {
     @SerializedName("bio")
     public String bio;
     @SerializedName("hapcoins")
-    public int hapcoins;
+    public double hapcoins;
     @SerializedName("clubs")
     public List<Clubs> clubs;
     @SerializedName("followers")
@@ -130,7 +130,9 @@ public class UserModel {
         }
     }
 
-    public UserModel(int id, String email, String username, Organization organization, String full_name, List<Skills> skills, int karma, String image_uri, String bio, int hapcoins, List<Clubs> clubs, int followers, int followings) {
+    public UserModel(int id, String email, String username, Organization organization,
+                     String full_name, List<Skills> skills, int karma, String image_uri, String bio, double hapcoins, List<Clubs> clubs,
+                     int followers, int followings) {
         this.id = id;
         this.email = email;
         this.username = username;

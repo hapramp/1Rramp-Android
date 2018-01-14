@@ -45,6 +45,8 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
     RecyclerView profilePostRv;
     @BindView(R.id.contentLoadingProgress)
     ProgressBar contentLoadingProgress;
+    @BindView(R.id.profile_user_name)
+    TextView profileUserName;
     private String userId;
     private PostsRecyclerAdapter profilePostAdapter;
     private ViewItemDecoration viewItemDecoration;
@@ -171,15 +173,16 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
                 userModel.followings,
                 userModel.skills);
 
+        profileUserName.setText(userModel.username);
         profilePostAdapter.setProfileHeaderModel(profileHeaderModel);
         showContent(true);
 
     }
 
     private void showContent(boolean show) {
-        if(show){
+        if (show) {
             //hide progress bar
-            if(contentLoadingProgress!=null){
+            if (contentLoadingProgress != null) {
                 contentLoadingProgress.setVisibility(View.GONE);
             }
         }

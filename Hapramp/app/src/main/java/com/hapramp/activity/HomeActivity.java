@@ -344,32 +344,56 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
             case FRAGMENT_HOME:
 
                 currentVisibleFragment = homeFragment;
+
+                if(homeFragment.isAdded()){
+                    showFragment(homeFragment);
+                    return;
+                }
+
                 fragmentManager.beginTransaction()
-                        .replace(R.id.contentPlaceHolder, homeFragment)
+                        .add(R.id.contentPlaceHolder, homeFragment)
                         .commit();
 
                 break;
             case FRAGMENT_COMPETITION:
 
                 currentVisibleFragment = competitionFragment;
+
+                if(competitionFragment.isAdded()){
+                    showFragment(competitionFragment);
+                    return;
+                }
+
                 fragmentManager.beginTransaction()
-                        .replace(R.id.contentPlaceHolder, competitionFragment)
+                        .add(R.id.contentPlaceHolder, competitionFragment)
                         .commit();
 
                 break;
             case FRAGMENT_PROFILE:
 
                 currentVisibleFragment = profileFragment;
+
+                if(profileFragment.isAdded()){
+                    showFragment(profileFragment);
+                    return;
+                }
+
                 fragmentManager.beginTransaction()
-                        .replace(R.id.contentPlaceHolder, profileFragment)
+                        .add(R.id.contentPlaceHolder, profileFragment)
                         .commit();
 
                 break;
             case FRAGMENT_SETTINGS:
 
                 currentVisibleFragment = settingsFragment;
+
+                if(settingsFragment.isAdded()){
+                    showFragment(settingsFragment);
+                    return;
+                }
+
                 fragmentManager.beginTransaction()
-                        .replace(R.id.contentPlaceHolder, settingsFragment)
+                        .add(R.id.contentPlaceHolder, settingsFragment)
                         .commit();
 
                 break;
@@ -377,14 +401,46 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
             case FRAGMENT_EARNINGS:
 
                 currentVisibleFragment = earningFragment;
+
+                if(earningFragment.isAdded()){
+                    showFragment(earningFragment);
+                    return;
+                }
+
                 fragmentManager.beginTransaction()
                         .addToBackStack("earning")
-                        .replace(R.id.contentPlaceHolder, earningFragment)
+                        .add(R.id.contentPlaceHolder, earningFragment)
                         .commit();
                 break;
             default:
                 break;
         }
+    }
+
+    private void showFragment(Fragment fragment) {
+
+        getSupportFragmentManager().beginTransaction().show(fragment).commitAllowingStateLoss();
+        //hide other fragment
+        if(fragment!=homeFragment){
+            getSupportFragmentManager().beginTransaction().hide(homeFragment).commitAllowingStateLoss();
+        }
+        if(fragment!=earningFragment){
+            getSupportFragmentManager().beginTransaction().hide(earningFragment).commitAllowingStateLoss();
+        }
+
+        if(fragment!=profileFragment){
+            getSupportFragmentManager().beginTransaction().hide(profileFragment).commitAllowingStateLoss();
+        }
+
+        if(fragment!=settingsFragment){
+            getSupportFragmentManager().beginTransaction().hide(settingsFragment).commitAllowingStateLoss();
+        }
+//        if(fragment!=earningFragment){
+//            getSupportFragmentManager().beginTransaction().hide(earningFragment).commitAllowingStateLoss();
+//        }
+//
+
+
     }
 
     private void swapSelection(int newSelectedMenu) {

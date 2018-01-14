@@ -78,7 +78,6 @@
             android:text="Travel Photography"
             android:visibility="gone" />
 
-
         <TextView
             android:id="@+id/tags"
             android:layout_width="wrap_content"
@@ -86,7 +85,7 @@
             android:layout_below="@+id/post_title"
             android:padding="8dp"
             android:textSize="12sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/post_snippet"
@@ -97,10 +96,9 @@
             android:paddingEnd="8dp"
             android:text="@string/sample"
             android:maxLines="4"
-            android:minHeight="36dp"
+            android:maxHeight="36dp"
             android:ellipsize="end"
             android:textColor="@color/lightGrey" />
-
 
         <TextView
             android:clickable="true"
@@ -124,6 +122,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
+            android:layout_marginBottom="8dp"
             android:layout_below="@+id/readMoreBtn">
 
             <TextView

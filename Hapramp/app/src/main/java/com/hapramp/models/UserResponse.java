@@ -30,7 +30,7 @@ public class UserResponse {
     @SerializedName("bio")
     public String bio;
     @SerializedName("hapcoins")
-    public int hapcoins;
+    public double hapcoins;
 
     public static class Organization {
         @SerializedName("id")
@@ -46,7 +46,8 @@ public class UserResponse {
     }
 
 
-    public UserResponse(int id, String email, String username, Organization organization, String full_name, List<UserModel.Skills> skills, int karma, String image_uri, String bio, int hapcoins) {
+    public UserResponse(int id, String email, String username, Organization organization, String full_name,
+                        List<UserModel.Skills> skills, int karma, String image_uri, String bio, double hapcoins) {
         this.id = id;
         this.email = email;
         this.username = username;
@@ -58,4 +59,5 @@ public class UserResponse {
         this.bio = bio;
         this.hapcoins = hapcoins;
     }
+
 }

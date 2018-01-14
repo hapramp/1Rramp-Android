@@ -47,8 +47,6 @@ public class ProfileFragment extends Fragment implements
 
     @BindView(R.id.profilePostRv)
     RecyclerView profilePostRv;
-    @BindView(R.id.emptyMessage)
-    TextView emptyMessage;
     @BindView(R.id.contentLoadingProgress)
     ProgressBar contentLoadingProgress;
     private Context mContext;
@@ -202,6 +200,7 @@ public class ProfileFragment extends Fragment implements
                 userModel.followings,
                 userModel.skills);
 
+
         profilePostAdapter.setProfileHeaderModel(profileHeaderModel);
 
         showContent(true);
@@ -231,24 +230,12 @@ public class ProfileFragment extends Fragment implements
     @Override
     public void onPostFetched(PostResponse postResponses) {
 
-        if (postResponses.results.size() > 0) {
-            showEmptyMessage(false);
-        } else {
-            showEmptyMessage(true);
-        }
-
         currentPostReponse = postResponses;
         profilePostAdapter.setHasMoreToLoad(postResponses.next.length()>0);
         bindPosts(postResponses.results);
 
     }
 
-    private void showEmptyMessage(boolean show) {
-        int vis = show ? View.VISIBLE : View.GONE;
-        if (emptyMessage != null) {
-            emptyMessage.setVisibility(vis);
-        }
-    }
 
     @Override
     public void onPostFetchError() {

@@ -25,6 +25,17 @@
             android:text=""
             android:textSize="24sp" />
 
+
+        <TextView
+            android:layout_toRightOf="@+id/closeBtn"
+            android:id="@+id/profile_user_name"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textColor="@color/Black87"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+
+
         <TextView
             android:id="@+id/overflowBtn"
             android:layout_width="?actionBarSize"

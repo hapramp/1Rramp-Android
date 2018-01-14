@@ -75,6 +75,27 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+        Log.d("HomeFragment","onCreate "+savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("HomeFragment","onResume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("HomeFragment","onPause");
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("HomeFragment","onDestroy");
     }
 
     @Override
@@ -194,9 +215,10 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     }
 
     private void showContentLoadingProgress() {
-        loadingShimmer.setVisibility(View.VISIBLE);
-        shimmerFrameLayout.startShimmerAnimation();
-
+        if(loadingShimmer!=null) {
+            loadingShimmer.setVisibility(View.VISIBLE);
+            shimmerFrameLayout.startShimmerAnimation();
+        }
     }
 
     private void hideContentLoadingProgress() {
