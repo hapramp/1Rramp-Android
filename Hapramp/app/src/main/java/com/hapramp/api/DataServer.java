@@ -51,6 +51,7 @@ import com.hapramp.models.response.SkillsUpdateResponse;
 import com.hapramp.models.response.UpdateUserResponse;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.models.response.UserStatsModel;
+import com.hapramp.utils.Constants;
 
 import java.util.List;
 
@@ -257,7 +258,7 @@ public class DataServer {
 
         L.D.m(TAG, "Fetching posts...");
 
-        getService().getAlltPosts(url)
+        getService().getAlltPosts(url,Constants.POST_ORDER_DES)
                 .enqueue(new Callback<PostResponse>() {
                     @Override
                     public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
@@ -309,7 +310,7 @@ public class DataServer {
             return;
         }
 
-        getService().getPostsBySkillsAndUserId(url, skill_id, user_id)
+        getService().getPostsBySkillsAndUserId(url, skill_id, user_id, Constants.POST_ORDER_DES)
                 .enqueue(new Callback<PostResponse>() {
                     @Override
                     public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {

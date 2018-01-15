@@ -30,6 +30,7 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
+import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.SkillsUtils;
 import com.hapramp.views.extraa.StarView;
 
@@ -116,7 +117,10 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
         // set basic meta-info
         ImageHandler.loadCircularImage(mContext, feedOwnerPic, post.user.image_uri);
         feedOwnerTitle.setText(post.user.full_name);
-        feedOwnerSubtitle.setText(post.user.username);
+        feedOwnerSubtitle.setText(
+                String.format(mContext.getResources().getString(R.string.post_subtitle_format),
+                post.user.username,
+                MomentsUtils.getFormattedTime(post.created_at)));
 
 
         // classify the type of content

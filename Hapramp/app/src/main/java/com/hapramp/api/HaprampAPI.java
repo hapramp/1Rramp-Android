@@ -69,7 +69,7 @@ public interface HaprampAPI {
     Call<SkillsUpdateResponse> setSkills(@Body SkillsUpdateBody skillsUpdateBody);
 
     @GET
-    Call<PostResponse> getAlltPosts(@Url String url);
+    Call<PostResponse> getAlltPosts(@Url String url,@Query("order_by") String order_by);
 
     @GET
     Call<PostResponse> getPostsBySkills(@Url String url, @Query("skills_or") int skills_id);
@@ -105,7 +105,8 @@ public interface HaprampAPI {
     Call<CommentsResponse> getComments(@Url String url);
 
     @GET
-    Call<PostResponse> getPostsBySkillsAndUserId(@Url String url, @Query("skills_or") int skills_id,@Query("user_id") int userId);
+    Call<PostResponse> getPostsBySkillsAndUserId(@Url String url, @Query("skills_or") int skills_id,@Query("user_id") int userId,@Query("order_by") String order_by);
+
 
     @GET("contests/{contest_id}/posts")
     Call<CompetitionsPostReponse> getCompetitionsPosts(@Path("contest_id") String compId);

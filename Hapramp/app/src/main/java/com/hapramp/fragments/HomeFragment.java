@@ -262,7 +262,6 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
 
         //todo: Don`t reverse the list. It should be modified by server end
         currentPostReponse = postResponses;
-        Collections.reverse(postResponses.results);
         // append Result
         if (postResponses.results.size() > 0) {
             hideErrorMessage();

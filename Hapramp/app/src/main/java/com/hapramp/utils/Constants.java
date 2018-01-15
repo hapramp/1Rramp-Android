@@ -34,4 +34,7 @@ public class Constants {
     public static final int BROADCAST_TYPE_FINISHED = 2;
     public static final int BROADCAST_TYPE_ERROR = 3;
 
+    public static final String POST_ORDER_DES = "id.desc";
+    public static final String POST_ORDER_ASC = "created_at.asc";
+
 }
