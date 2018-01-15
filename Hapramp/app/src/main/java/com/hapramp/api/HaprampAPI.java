@@ -75,7 +75,7 @@ public interface HaprampAPI {
     Call<PostResponse> getPostsBySkills(@Url String url, @Query("skills_or") int skills_id);
 
     @GET
-    Call<PostResponse> getPostsByUserId(@Url String url, @Query("user_id") int user_id);
+    Call<PostResponse> getPostsByUserId(@Url String url, @Query("user_id") int user_id, @Query("order_by") String order_by);
 
     @GET
     Call<PostResponse> getPostsByContest(@Url String url, @Query("contest_id") String contest_id);

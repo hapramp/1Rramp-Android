@@ -68,7 +68,6 @@ public class ProfileFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -85,6 +84,9 @@ public class ProfileFragment extends Fragment implements
 
     }
 
+    public void reloadPosts(){
+        fetchUserProfilePosts(URLS.POST_FETCH_START_URL);
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -182,6 +184,11 @@ public class ProfileFragment extends Fragment implements
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
@@ -237,7 +244,6 @@ public class ProfileFragment extends Fragment implements
         bindPosts(postResponses.results);
 
     }
-
 
     @Override
     public void onPostFetchError() {

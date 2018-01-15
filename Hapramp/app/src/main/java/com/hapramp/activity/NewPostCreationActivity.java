@@ -120,9 +120,7 @@ public class NewPostCreationActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-
         super.onResume();
-
         loadDraft();
     }
 

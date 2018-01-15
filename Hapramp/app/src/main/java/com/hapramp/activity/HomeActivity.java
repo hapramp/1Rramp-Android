@@ -147,9 +147,10 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
                 //              postUploadStatus.setVisibility(View.GONE);
                 // load the content again
                 mHandler.postDelayed(hideStatus, 2000);
-                if (currentVisibleFragment == homeFragment) {
+               // if (currentVisibleFragment == homeFragment) {
                     homeFragment.forceReloadData();
-                }
+                    profileFragment.reloadPosts();
+             //   }
 
             } else if (type == Constants.BROADCAST_TYPE_ERROR) {
                 // close the msg bar

@@ -282,7 +282,7 @@ public class DataServer {
     public static void getPostsByUserId(final String url, int userId, final PostFetchCallback callback) {
 
         getService()
-                .getPostsByUserId(url, userId)
+                .getPostsByUserId(url, userId,Constants.POST_ORDER_DES)
                 .enqueue(new Callback<PostResponse>() {
                     @Override
                     public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {

@@ -104,8 +104,8 @@ public class ProfileHeaderView extends FrameLayout implements FollowUserCallback
         ImageHandler.loadCircularImage(mContext, profilePic, profileHeaderModel.getDpUrl());
         ImageHandler.load(mContext,profileWallPic,mContext.getResources().getString(R.string.default_wall_pic));
 
-        username.setText(profileHeaderModel.getUserName());
-        hapname.setText("@hapname");
+        //username.setText(profileHeaderModel.getUserName());
+        hapname.setText("@"+profileHeaderModel.getUserName());
         bio.setText(profileHeaderModel.getBio() != null ? profileHeaderModel.getBio() : "");
         followersCount.setText(String.format(mContext.getResources().getString(R.string.profile_followers_caption), profileHeaderModel.getFollowers()));
         followingsCount.setText(String.format(mContext.getResources().getString(R.string.profile_following_count_caption), profileHeaderModel.getFollowing()));

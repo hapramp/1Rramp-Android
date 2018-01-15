@@ -103,6 +103,25 @@ public class HaprampPreferenceManager {
         return new Gson().fromJson(preferences.getString("userJson",""),UserResponse.class);
     }
 
+    public void setProfileHardRefreshRequired(boolean isRequired){
+        editor.putBoolean("profile_ref",isRequired);
+        editor.apply();
+    }
+
+    public boolean isProfileHardRefreshRequired(){
+        return preferences.getBoolean("profile_ref",false);
+    }
+
+    public void setPostHardRefreshRequired(boolean isRequired){
+        editor.putBoolean("post_ref",isRequired);
+        editor.apply();
+    }
+
+    public boolean isPostHardRefreshRequired(){
+        return preferences.getBoolean("post_ref",false);
+    }
+
+
     public void savePostDraft(String s) {
         editor.putString("post_draft",s);
         editor.apply();

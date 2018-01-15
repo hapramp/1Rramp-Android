@@ -45,7 +45,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public class HomeFragment extends Fragment implements PostFetchCallback, FetchSkillsResponse, CategoryRecyclerAdapter.OnCategoryItemClickListener,LikePostCallback {
+public class HomeFragment extends Fragment implements PostFetchCallback, FetchSkillsResponse, CategoryRecyclerAdapter.OnCategoryItemClickListener, LikePostCallback {
 
     @BindView(R.id.homeRv)
     RecyclerView postsRecyclerView;
@@ -77,26 +77,25 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        Log.d("HomeFragment","onCreate "+savedInstanceState);
+        Log.d("HomeFragment", "onCreate " + savedInstanceState);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("HomeFragment","onResume");
+        Log.d("HomeFragment", "onResume");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.d("HomeFragment","onPause");
+        Log.d("HomeFragment", "onPause");
 
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d("HomeFragment","onDestroy");
     }
 
     @Override
@@ -111,7 +110,7 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
 
     }
 
-        public abstract class EndlessOnScrollListener extends RecyclerView.OnScrollListener {
+    public abstract class EndlessOnScrollListener extends RecyclerView.OnScrollListener {
 
         // use your LayoutManager instead
         private LinearLayoutManager lm;
@@ -128,24 +127,24 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
                 onScrolledToEnd();
             }
 
-            y=dy;
+            y = dy;
 
         }
 
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
 
-                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL || newState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
-                    if(y>0){
-                        hideCategorySection();
-                    } else {
-                        bringBackCategorySection();
-                    }
+            if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL || newState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
+                if (y > 0) {
+                    hideCategorySection();
+                } else {
+                    bringBackCategorySection();
                 }
             }
+        }
 
-            public abstract void onScrolledToEnd();
+        public abstract void onScrolledToEnd();
 
     }
 
@@ -157,7 +156,11 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
         sectionsRv.animate().translationY(-sectionsRv.getMeasuredHeight());
     }
 
-    private void setScrollListener(){
+    public void reloadData() {
+        fetchPosts(0);
+    }
+
+    private void setScrollListener() {
         postsRecyclerView.addOnScrollListener(new EndlessOnScrollListener(layoutManager) {
             @Override
             public void onScrolledToEnd() {
@@ -217,7 +220,7 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     }
 
     private void showContentLoadingProgress() {
-        if(loadingShimmer!=null) {
+        if (loadingShimmer != null) {
             loadingShimmer.setVisibility(View.VISIBLE);
             shimmerFrameLayout.startShimmerAnimation();
         }
@@ -245,7 +248,7 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
 
     private void loadMore(int id) {
 
-        if (currentPostReponse.next.length() == 0){
+        if (currentPostReponse.next.length() == 0) {
             return;
         }
 
@@ -267,7 +270,7 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
             hideErrorMessage();
             showContent();
 
-            recyclerAdapter.setHasMoreToLoad(postResponses.next.length()>0);
+            recyclerAdapter.setHasMoreToLoad(postResponses.next.length() > 0);
             recyclerAdapter.appendResult(postResponses.results);
 
         } else {
