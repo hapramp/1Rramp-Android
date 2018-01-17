@@ -7,8 +7,8 @@
     <ImageView
         android:layout_centerHorizontal="true"
         android:id="@+id/skills_bg_image"
-        android:layout_width="64dp"
-        android:layout_height="64dp" />
+        android:layout_width="48dp"
+        android:layout_height="48dp" />
 
     <TextView
         android:visibility="gone"
@@ -19,13 +19,14 @@
         android:textSize="36sp"
         android:textColor="#ffffff"
         android:id="@+id/skill_selection_overlay"
-        android:layout_width="64dp"
-        android:layout_height="64dp" />
+        android:layout_width="48dp"
+        android:layout_height="48dp" />
 
     <TextView
         android:id="@+id/skill_title"
-        android:padding="4dp"
-        android:textSize="12sp"
+        android:padding="8dp"
+        android:textSize="10sp"
+        android:textColor="@color/Black87"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/skills_bg_image"
         android:layout_width="wrap_content"
