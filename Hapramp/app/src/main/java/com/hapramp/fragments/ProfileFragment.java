@@ -1,7 +1,6 @@
 package com.hapramp.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,20 +13,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
-import com.hapramp.activity.CommentEditorActivity;
-import com.hapramp.activity.DetailedActivity;
-import com.hapramp.activity.ProfileActivity;
-import com.hapramp.activity.ProfileEditActivity;
 import com.hapramp.adapters.PostsRecyclerAdapter;
 import com.hapramp.api.DataServer;
 import com.hapramp.api.URLS;
 import com.hapramp.interfaces.FullUserDetailsCallback;
 import com.hapramp.interfaces.PostFetchCallback;
-import com.hapramp.logger.L;
 import com.hapramp.models.ProfileHeaderModel;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.models.response.UserModel;
@@ -43,7 +36,7 @@ import butterknife.Unbinder;
 
 public class ProfileFragment extends Fragment implements
         FullUserDetailsCallback,
-        PostFetchCallback {
+        PostFetchCallback{
 
 
     @BindView(R.id.profilePostRv)

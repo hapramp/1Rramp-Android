@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="84dp"
-    android:layout_height="84dp">
+    android:layout_width="68dp"
+    android:layout_height="88dp">
 
     <ImageView
         android:layout_centerHorizontal="true"
         android:id="@+id/skills_bg_image"
-        android:padding="12dp"
+        android:padding="10dp"
         android:layout_width="72dp"
         android:layout_height="72dp" />
 
     <TextView
         android:id="@+id/skill_title"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
+        android:paddingTop="8dp"
+        android:textSize="10sp"
+        android:paddingBottom="8dp"
         android:textColor="@color/Black87"
         android:gravity="center_horizontal"
         android:layout_centerHorizontal="true"
@@ -35,6 +36,6 @@
         android:background="@color/colorPrimary"
         android:id="@+id/selection_tab_indicator"
         android:layout_width="match_parent"
-        android:layout_height="1dp"/>
+        android:layout_height="1.5dp"/>
 
 </RelativeLayout>

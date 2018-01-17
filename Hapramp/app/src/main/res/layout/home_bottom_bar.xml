@@ -17,13 +17,13 @@
         android:layout_alignParentBottom="true"
         android:background="#ffffff"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="54dp"
         android:orientation="horizontal"
         android:weightSum="5">
 
         <FrameLayout
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="54dp"
             android:layout_gravity="bottom"
             android:layout_weight="1"
             android:background="#ffffff">
@@ -34,10 +34,10 @@
                 android:layout_height="match_parent"
                 android:background="?selectableItemBackgroundBorderless"
                 android:gravity="center_horizontal"
-                android:paddingTop="4dp"
+                android:paddingTop="8dp"
                 android:text=""
                 android:textColor="@color/colorPrimary"
-                android:textSize="20sp" />
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/bottomBar_home_text"
@@ -45,16 +45,16 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:gravity="center_horizontal"
-                android:paddingBottom="4dp"
+                android:paddingBottom="8dp"
                 android:text="Home"
                 android:textColor="@color/colorPrimary"
-                android:textSize="12sp" />
+                android:textSize="10sp" />
 
         </FrameLayout>
 
         <FrameLayout
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="54dp"
             android:layout_gravity="bottom"
             android:layout_weight="1"
             android:background="#ffffff">
@@ -65,10 +65,10 @@
                 android:layout_height="match_parent"
                 android:background="?selectableItemBackgroundBorderless"
                 android:gravity="center_horizontal"
-                android:paddingTop="4dp"
+                android:paddingTop="8dp"
                 android:text=""
                 android:textColor="#818080"
-                android:textSize="20sp" />
+                android:textSize="24sp" />
 
 
             <TextView
@@ -77,9 +77,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:gravity="center_horizontal"
-                android:paddingBottom="4dp"
+                android:paddingBottom="8dp"
                 android:text="Earning"
-                android:textSize="12sp" />
+                android:textSize="10sp" />
 
         </FrameLayout>
 
@@ -94,7 +94,7 @@
         <FrameLayout
             android:background="#ffffff"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="54dp"
             android:layout_gravity="bottom"
             android:layout_weight="1">
 
@@ -104,10 +104,10 @@
                 android:layout_height="match_parent"
                 android:background="?selectableItemBackgroundBorderless"
                 android:gravity="center_horizontal"
-                android:paddingTop="4dp"
+                android:paddingTop="8dp"
                 android:text=""
                 android:textColor="#818080"
-                android:textSize="20sp" />
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/bottomBar_profile_text"
@@ -115,9 +115,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:gravity="center_horizontal"
-                android:paddingBottom="4dp"
+                android:paddingBottom="8dp"
                 android:text="Profile"
-                android:textSize="12sp" />
+                android:textSize="10sp" />
 
         </FrameLayout>
 
@@ -125,7 +125,7 @@
         <FrameLayout
             android:background="#ffffff"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="54dp"
             android:layout_gravity="bottom"
             android:layout_weight="1">
 
@@ -135,10 +135,10 @@
                 android:layout_height="match_parent"
                 android:background="?selectableItemBackgroundBorderless"
                 android:gravity="center_horizontal"
-                android:paddingTop="4dp"
+                android:paddingTop="8dp"
                 android:text=""
                 android:textColor="#818080"
-                android:textSize="20sp" />
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/bottomBar_settings_text"
@@ -146,9 +146,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:gravity="center_horizontal"
-                android:paddingBottom="4dp"
+                android:paddingBottom="8dp"
                 android:text="Settings"
-                android:textSize="12sp" />
+                android:textSize="10sp" />
 
         </FrameLayout>
 

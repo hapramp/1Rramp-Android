@@ -89,6 +89,8 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
     ImageView shadow;
     @BindView(R.id.bottombar_container)
     LinearLayout bottombarContainer;
+    @BindView(R.id.haprampIcon)
+    ImageView haprampIcon;
     private int lastMenuSelection = BOTTOM_MENU_HOME;
 
     private final int FRAGMENT_HOME = 12;
@@ -147,10 +149,10 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
                 //              postUploadStatus.setVisibility(View.GONE);
                 // load the content again
                 mHandler.postDelayed(hideStatus, 2000);
-               // if (currentVisibleFragment == homeFragment) {
-                    homeFragment.forceReloadData();
-                    profileFragment.reloadPosts();
-             //   }
+                // if (currentVisibleFragment == homeFragment) {
+                homeFragment.forceReloadData();
+                profileFragment.reloadPosts();
+                //   }
 
             } else if (type == Constants.BROADCAST_TYPE_ERROR) {
                 // close the msg bar
@@ -221,7 +223,7 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
                         finish();
                     }
                 })
-                .setNegativeButton("No",null);
+                .setNegativeButton("No", null);
 
         builder.show();
 
@@ -278,6 +280,17 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
     }
 
     private void attachListeners() {
+
+        haprampIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // check for the current selection
+                if (lastMenuSelection == BOTTOM_MENU_HOME)
+                    return;
+                swapSelection(BOTTOM_MENU_HOME);
+                transactFragment(FRAGMENT_HOME);
+            }
+        });
 
         bottomBarHome.setOnClickListener(new View.OnClickListener() {
 
@@ -346,7 +359,7 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 
                 currentVisibleFragment = homeFragment;
 
-                if(!homeFragment.isAdded()){
+                if (!homeFragment.isAdded()) {
                     fragmentManager.beginTransaction()
                             .addToBackStack("home")
                             .add(R.id.contentPlaceHolder, homeFragment)
@@ -360,7 +373,7 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 
                 currentVisibleFragment = competitionFragment;
 
-                if(!competitionFragment.isAdded()){
+                if (!competitionFragment.isAdded()) {
                     fragmentManager.beginTransaction()
                             .addToBackStack("competition")
                             .add(R.id.contentPlaceHolder, competitionFragment)
@@ -374,7 +387,7 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 
                 currentVisibleFragment = profileFragment;
 
-                if(!profileFragment.isAdded()){
+                if (!profileFragment.isAdded()) {
                     fragmentManager.beginTransaction()
                             .addToBackStack("profile")
                             .add(R.id.contentPlaceHolder, profileFragment)
@@ -388,7 +401,7 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 
                 currentVisibleFragment = settingsFragment;
 
-                if(!settingsFragment.isAdded()){
+                if (!settingsFragment.isAdded()) {
                     fragmentManager.beginTransaction()
                             .addToBackStack("setting")
                             .add(R.id.contentPlaceHolder, settingsFragment)
@@ -403,7 +416,7 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 
                 currentVisibleFragment = earningFragment;
 
-                if(!earningFragment.isAdded()){
+                if (!earningFragment.isAdded()) {
                     fragmentManager.beginTransaction()
                             .addToBackStack("earning")
                             .add(R.id.contentPlaceHolder, earningFragment)
@@ -423,18 +436,18 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
         getSupportFragmentManager().beginTransaction().show(fragment).commitAllowingStateLoss();
 
         //hide other fragment
-        if(fragment!=homeFragment){
+        if (fragment != homeFragment) {
             getSupportFragmentManager().beginTransaction().hide(homeFragment).commitAllowingStateLoss();
         }
-        if(fragment!=earningFragment){
+        if (fragment != earningFragment) {
             getSupportFragmentManager().beginTransaction().hide(earningFragment).commitAllowingStateLoss();
         }
 
-        if(fragment!=profileFragment){
+        if (fragment != profileFragment) {
             getSupportFragmentManager().beginTransaction().hide(profileFragment).commitAllowingStateLoss();
         }
 
-        if(fragment!=settingsFragment){
+        if (fragment != settingsFragment) {
             getSupportFragmentManager().beginTransaction().hide(settingsFragment).commitAllowingStateLoss();
         }
 

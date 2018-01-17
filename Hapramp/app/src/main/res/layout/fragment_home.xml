@@ -31,7 +31,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/sectionsRv"
         android:layout_width="match_parent"
-        android:layout_height="84dp"
+        android:layout_height="88dp"
         android:background="#ffffff" />
 
 </RelativeLayout>
