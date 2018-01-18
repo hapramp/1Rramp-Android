@@ -122,6 +122,7 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
 
         userId = getIntent().getExtras().getString(Constants.EXTRAA_KEY_USER_ID);
         profilePostAdapter = new PostsRecyclerAdapter(this);
+        profilePostAdapter.setIsAdapterForProfile(true);
         closeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         overflowBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         llm = new LinearLayoutManager(this);

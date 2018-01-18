@@ -7,7 +7,7 @@
     <ImageView
         android:layout_centerHorizontal="true"
         android:id="@+id/skills_bg_image"
-        android:layout_width="48dp"
+        android:layout_width="54dp"
         android:layout_height="48dp" />
 
     <TextView
@@ -19,7 +19,7 @@
         android:textSize="36sp"
         android:textColor="#ffffff"
         android:id="@+id/skill_selection_overlay"
-        android:layout_width="48dp"
+        android:layout_width="54dp"
         android:layout_height="48dp" />
 
     <TextView

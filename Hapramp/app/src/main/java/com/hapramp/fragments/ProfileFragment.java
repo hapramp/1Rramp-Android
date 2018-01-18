@@ -140,6 +140,7 @@ public class ProfileFragment extends Fragment implements
     private void init() {
 
         profilePostAdapter = new PostsRecyclerAdapter(mContext);
+        profilePostAdapter.setIsAdapterForProfile(true);
         Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
         viewItemDecoration = new ViewItemDecoration(drawable);
         SpaceDecorator spaceDecorator = new SpaceDecorator();
@@ -210,12 +211,14 @@ public class ProfileFragment extends Fragment implements
     }
 
     private void showContent(boolean show) {
+
         if(show){
             //hide progress bar
             if(contentLoadingProgress!=null){
                 contentLoadingProgress.setVisibility(View.GONE);
             }
         }
+
     }
 
     private void bindPosts(List<PostResponse.Results> posts) {

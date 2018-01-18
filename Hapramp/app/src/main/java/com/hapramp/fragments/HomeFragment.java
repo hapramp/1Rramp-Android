@@ -175,12 +175,12 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
         super.onViewCreated(view, savedInstanceState);
         layoutManager = new LinearLayoutManager(mContext);
         postsRecyclerView.setLayoutManager(layoutManager);
-
         Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
         viewItemDecoration = new ViewItemDecoration(drawable);
         SpaceDecorator spaceDecorator = new SpaceDecorator();
         postsRecyclerView.addItemDecoration(spaceDecorator);
         recyclerAdapter = new PostsRecyclerAdapter(mContext);
+        recyclerAdapter.setIsAdapterForProfile(false);
         postsRecyclerView.addItemDecoration(viewItemDecoration);
         postsRecyclerView.setAdapter(recyclerAdapter);
         postsRecyclerView.setNestedScrollingEnabled(false);

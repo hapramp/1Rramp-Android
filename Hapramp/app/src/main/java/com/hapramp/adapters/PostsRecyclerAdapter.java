@@ -36,6 +36,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     private boolean hasMoreToLoad = true;
     public List<PostResponse.Results> postResponses;
     public ProfileHeaderModel profileHeaderModel;
+    private boolean isAdapterForProfile;
     private int s;
 
     public PostsRecyclerAdapter(Context mContext) {
@@ -45,7 +46,6 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     public void setProfileHeaderModel(ProfileHeaderModel profileHeaderModel) {
         this.profileHeaderModel = profileHeaderModel;
-        Log.d("Adapter","Profile Model "+profileHeaderModel.toString());
         notifyDataSetChanged();
     }
 
@@ -53,8 +53,12 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         this.hasMoreToLoad = hasMoreToLoad;
     }
 
+    public void setIsAdapterForProfile(boolean forProfile){
+        this.isAdapterForProfile = forProfile;
+    }
+
     public boolean itIsForProfile() {
-        return profileHeaderModel != null;
+        return isAdapterForProfile;
     }
 
     public void appendResult(List<PostResponse.Results> newPosts) {
@@ -144,7 +148,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         // since we have additional item at the top + one at the bottom
         s = postResponses.size();
-        return s==0 ? 1 : s + 1;
+        return s==0 ? 0 : s + 1;
 
     }
 

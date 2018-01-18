@@ -433,22 +433,27 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 
     private void showFragment(Fragment fragment) {
 
-        getSupportFragmentManager().beginTransaction().show(fragment).commitAllowingStateLoss();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().show(fragment).commitAllowingStateLoss();
 
         //hide other fragment
         if (fragment != homeFragment) {
-            getSupportFragmentManager().beginTransaction().hide(homeFragment).commitAllowingStateLoss();
+            fragmentManager.beginTransaction().hide(homeFragment).commitAllowingStateLoss();
+            fragmentManager.executePendingTransactions();
         }
         if (fragment != earningFragment) {
-            getSupportFragmentManager().beginTransaction().hide(earningFragment).commitAllowingStateLoss();
+            fragmentManager.beginTransaction().hide(earningFragment).commitAllowingStateLoss();
+            fragmentManager.executePendingTransactions();
         }
 
         if (fragment != profileFragment) {
-            getSupportFragmentManager().beginTransaction().hide(profileFragment).commitAllowingStateLoss();
+            fragmentManager.beginTransaction().hide(profileFragment).commitAllowingStateLoss();
+            fragmentManager.executePendingTransactions();
         }
 
         if (fragment != settingsFragment) {
-            getSupportFragmentManager().beginTransaction().hide(settingsFragment).commitAllowingStateLoss();
+            fragmentManager.beginTransaction().hide(settingsFragment).commitAllowingStateLoss();
+            fragmentManager.executePendingTransactions();
         }
 
 

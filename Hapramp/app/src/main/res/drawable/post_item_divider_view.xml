@@ -9,8 +9,8 @@
                 android:height="0.5dp" />
             <gradient
                 android:angle="90"
-                android:endColor="@color/Black12"
-                android:startColor="#00ffffff" />
+                android:endColor="@color/LightBlack"
+                android:startColor="#00e2e2e2" />
         </shape>
 
     </item>
@@ -20,7 +20,7 @@
             <size
                 android:width="10dp"
                 android:height="12dp" />
-            <solid android:color="#8eececec" />
+            <solid android:color="@color/LightBlack" />
         </shape>
     </item>
 

@@ -14,53 +14,16 @@ public class ViewItemDecoration extends RecyclerView.ItemDecoration {
 
 
     private Drawable mDivider;
+
     public ViewItemDecoration(Drawable drawable) {
         this.mDivider = drawable;
     }
 
-//    public void setWantBottom(boolean wantBottom) {
-//        this.wantBottom = wantBottom;
-//    }
-//
-//    public void setWantLeft(boolean wantLeft) {
-//        this.wantLeft = wantLeft;
-//    }
-//
-//    public void setWantRight(boolean wantRight) {
-//        this.wantRight = wantRight;
-//    }
-//
-//    public void setMoreBottomSpace(int bottomSpace, boolean moreBottomSpace) {
-//
-//        this.moreBottomSpace = moreBottomSpace;
-//        this.bottomSpace = bottomSpace;
-//
-//    }
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
 
-//        // we can assign space according to requirement
-//
-//        if (wantLeft)
-//            outRect.left = space;
-//        if (wantRight)
-//            outRect.right = space;
-//        if (wantBottom)
-//            outRect.bottom = space;
-//
-//        // Add top margin only for the first item to avoid double space between items
-//        if (parent.getChildAdapterPosition(view) == 0) {
-//            outRect.top = space;
-//        }
-//
-//        if (moreBottomSpace && isLastChild(view, parent)) {
-//            outRect.bottom = bottomSpace;
-//        } else {
-//            outRect.bottom = space;
-//        }
-
-        if (parent.getChildAdapterPosition(view) == 0) {
+        if (parent.getChildAdapterPosition(view) == 0 || parent.getChildAdapterPosition(view) ==1) {
             return;
         }
 

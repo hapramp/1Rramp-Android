@@ -181,7 +181,7 @@
         android:layout_below="@+id/divider_bottom"
         android:gravity="center_vertical"
         android:paddingTop="18sp"
-        android:paddingStart="18sp"
+        android:paddingStart="24sp"
         android:paddingEnd="18sp"
         android:paddingBottom="12sp"
         android:text="Interests"
@@ -199,14 +199,15 @@
 
     <TextView
         android:id="@+id/postsCaption"
+        android:textColor="@color/Black54"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/interestsView"
-        android:background="@color/Black12"
-        android:paddingBottom="14dp"
+        android:background="@color/LightBlack"
+        android:paddingBottom="18dp"
         android:paddingEnd="16dp"
         android:paddingStart="16dp"
-        android:paddingTop="14dp"
+        android:paddingTop="28dp"
         android:text="POSTS"
         android:textStyle="bold" />
 
