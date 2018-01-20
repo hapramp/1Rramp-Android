@@ -4,15 +4,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-
-import retrofit2.http.PUT;
 
 /**
  * Created by Ankit on 12/23/2017.
@@ -21,9 +17,9 @@ import retrofit2.http.PUT;
 public class PostJobModel implements Parcelable {
 
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({JOB_UNDER_PROCESS,JOB_PENDING})
+    @IntDef({JOB_SUCCEEDED,JOB_PENDING})
     public @interface JobStatus{}
-    public static final int JOB_UNDER_PROCESS = 1;
+    public static final int JOB_SUCCEEDED = 1;
     public static final int JOB_PENDING = 2;
 
     public int jobStatus;

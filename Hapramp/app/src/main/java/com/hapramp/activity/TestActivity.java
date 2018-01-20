@@ -3,7 +3,11 @@ package com.hapramp.activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
 import com.hapramp.R;
+import com.hapramp.services.PostService;
 import com.hapramp.views.editor.EditorView;
 
 import org.json.JSONArray;
@@ -50,7 +54,6 @@ public class TestActivity extends AppCompatActivity {
 //            }
 //        });
 
-    }
 
 //    private void handleSelectionChange(int start, int end) {
 //
@@ -63,5 +66,5 @@ public class TestActivity extends AppCompatActivity {
 //
 //    }
 
-
+    }
 }

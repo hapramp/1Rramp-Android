@@ -72,13 +72,13 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         if (itIsForProfile()) {
             if (position == 0) {
-                Log.d("Adapter","profile header");
+//                Log.d("Adapter","profile header");
                 return VIEW_TYPE_PROFILE_HEADER;
             }
         } else {
             // for non-profile we have blank views at top
             if (position == 0) {
-                Log.d("Adapter","blank");
+  //              Log.d("Adapter","blank");
                 return VIEW_TYPE_BLANK_TOP;
             }
         }
@@ -119,7 +119,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int pos) {
 
-        Log.d("Adapter", "Binding at " + pos);
+      //  Log.d("Adapter", "Binding at " + pos);
         if (viewHolder instanceof LoadMoreViewHolder) {
             if(hasMoreToLoad) {
                 ((LoadMoreViewHolder) viewHolder).startSimmer();

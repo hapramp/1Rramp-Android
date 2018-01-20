@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.hapramp.controller.PostCreationController;
 import com.hapramp.models.PostJobModel;
+import com.hapramp.preferences.HaprampPreferenceManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +76,8 @@ public class UploadJobDatabaseHelper extends SQLiteOpenHelper {
         long id = database.insert(TABLE_NAME, null, values);
         if (id > -1) {
             Log.d("Job", " inserted!");
+            // set new jobs added
+            HaprampPreferenceManager.getInstance().setJobAvailable(true);
         }
     }
 

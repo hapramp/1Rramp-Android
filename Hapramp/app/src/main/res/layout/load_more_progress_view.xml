@@ -1,159 +1,342 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="240dp"
-    xmlns:shimmer="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content">
 
-<com.facebook.shimmer.ShimmerFrameLayout
-    android:id="@+id/shimmer_view_container"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:layout_width="wrap_content">
+    <FrameLayout
+        android:id="@+id/mock1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#ffffff">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <RelativeLayout
-            android:id="@+id/post_header_container"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:background="#ffffff"
-            android:clickable="true"
-            android:focusable="true">
-
-            <ImageView
-                android:id="@+id/feed_owner_pic"
-                android:layout_width="64dp"
-                android:layout_height="match_parent"
-                android:padding="12dp"
-                android:src="@drawable/rs_coin_bg" />
-
-            <android.support.v4.widget.Space
-                android:id="@+id/reference_line"
-                android:layout_width="match_parent"
-                android:layout_height="4dp"
-                android:layout_centerVertical="true" />
-
-            <TextView
-                android:id="@+id/feed_owner_title"
-                android:layout_width="144dp"
-                android:layout_height="16dp"
-                android:layout_above="@+id/reference_line"
-                android:layout_toEndOf="@+id/feed_owner_pic"
-                android:background="@color/Black12"
-                android:text=""
-                android:textStyle="bold" />
-
-
-            <TextView
-                android:id="@+id/feed_owner_subtitle"
-                android:layout_width="84dp"
-                android:layout_height="12dp"
-                android:layout_below="@+id/reference_line"
-                android:layout_toEndOf="@+id/feed_owner_pic"
-                android:background="@color/Black12"
-                android:text="" />
-
-            <ImageView
-                android:id="@+id/img1"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="16dp"
-                android:src="@drawable/rs_coin_bg" />
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="8dp"
-                android:layout_toStartOf="@id/img1"
-                android:src="@drawable/rs_coin_bg" />
-
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/post_meta_container"
-            android:layout_width="match_parent"
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_view_container"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/post_header_container"
-            android:background="#ffffff"
-            android:padding="16dp">
+            android:layout_gravity="center">
 
-            <TextView
-                android:id="@+id/post_title"
-                android:layout_width="144dp"
-                android:layout_height="16dp"
-                android:background="@color/Black12"
-                android:paddingStart="8dp"
-                android:paddingTop="8dp"
-                android:text=""
-                android:textSize="16sp" />
-
-
-            <TextView
-                android:id="@+id/tags"
-                android:layout_width="84dp"
-                android:layout_height="8dp"
-                android:layout_below="@+id/post_title"
-                android:layout_marginTop="8dp"
-                android:background="@color/Black12"
-                android:padding="8dp"
-                android:text=""
-                android:textSize="12sp"
-                android:visibility="visible" />
-
-
-            <TextView
-                android:id="@+id/line1"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="8dp"
-                android:layout_below="@+id/tags"
-                android:layout_marginTop="16dp"
-                android:background="@color/Black12"
-                android:text=""
-                android:textSize="16sp" />
+                android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/line2"
+                <RelativeLayout
+                    android:id="@+id/post_header_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:background="#ffffff"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:id="@+id/feed_owner_pic"
+                        android:layout_width="64dp"
+                        android:layout_height="match_parent"
+                        android:padding="12dp"
+                        android:src="@drawable/rs_coin_bg" />
+
+                    <android.support.v4.widget.Space
+                        android:id="@+id/reference_line"
+                        android:layout_width="match_parent"
+                        android:layout_height="4dp"
+                        android:layout_centerVertical="true" />
+
+                    <TextView
+                        android:id="@+id/feed_owner_title"
+                        android:layout_width="144dp"
+                        android:layout_height="16dp"
+                        android:layout_above="@+id/reference_line"
+                        android:layout_toEndOf="@+id/feed_owner_pic"
+                        android:background="@color/Black12"
+                        android:text=""
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:id="@+id/feed_owner_subtitle"
+                        android:layout_width="84dp"
+                        android:layout_height="12dp"
+                        android:layout_below="@+id/reference_line"
+                        android:layout_toEndOf="@+id/feed_owner_pic"
+                        android:background="@color/Black12"
+                        android:text="" />
+
+                    <ImageView
+                        android:id="@+id/img1"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:src="@drawable/rs_coin_bg" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="8dp"
+                        android:layout_toStartOf="@id/img1"
+                        android:src="@drawable/rs_coin_bg" />
+
+
+                </RelativeLayout>
+
+                <FrameLayout
+                    android:id="@+id/image_mock"
+                    android:layout_width="match_parent"
+                    android:layout_height="144dp"
+                    android:layout_below="@+id/post_header_container"
+                    android:background="@color/LightBlack" />
+
+                <RelativeLayout
+                    android:id="@+id/post_meta_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/image_mock"
+                    android:background="#ffffff"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/post_title"
+                        android:layout_width="144dp"
+                        android:layout_height="16dp"
+                        android:background="@color/Black12"
+                        android:paddingStart="8dp"
+                        android:paddingTop="8dp"
+                        android:text=""
+                        android:textSize="16sp" />
+
+
+                    <TextView
+                        android:id="@+id/tags"
+                        android:layout_width="84dp"
+                        android:layout_height="8dp"
+                        android:layout_below="@+id/post_title"
+                        android:layout_marginTop="8dp"
+                        android:background="@color/Black12"
+                        android:padding="8dp"
+                        android:text=""
+                        android:textSize="12sp"
+                        android:visibility="visible" />
+
+
+                    <TextView
+                        android:id="@+id/line1"
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:layout_below="@+id/tags"
+                        android:layout_marginTop="16dp"
+                        android:background="@color/Black12"
+                        android:text=""
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/line2"
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:layout_below="@+id/line1"
+                        android:layout_marginTop="4dp"
+                        android:background="@color/Black12"
+                        android:text=""
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/line3"
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:layout_below="@+id/line2"
+                        android:layout_marginTop="4dp"
+                        android:background="@color/Black12"
+                        android:text=""
+                        android:textSize="16sp" />
+
+
+                    <TextView
+                        android:id="@+id/line4"
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:layout_below="@+id/line3"
+                        android:layout_marginTop="4dp"
+                        android:background="@color/Black12"
+                        android:text=""
+                        android:textSize="16sp" />
+
+                </RelativeLayout>
+
+
+            </RelativeLayout>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:id="@+id/mock2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mock1"
+        android:layout_marginTop="16dp"
+        android:background="#ffffff">
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_view_container1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="8dp"
-                android:layout_below="@+id/line1"
-                android:layout_marginTop="4dp"
-                android:background="@color/Black12"
-                android:text=""
-                android:textSize="16sp" />
+                android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/line3"
-                android:layout_width="match_parent"
-                android:layout_height="8dp"
-                android:layout_below="@+id/line2"
-                android:layout_marginTop="4dp"
-                android:background="@color/Black12"
-                android:text=""
-                android:textSize="16sp" />
+                <RelativeLayout
+                    android:id="@+id/post_header_container1"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:background="#ffffff"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:id="@+id/feed_owner_pic1"
+                        android:layout_width="64dp"
+                        android:layout_height="match_parent"
+                        android:padding="12dp"
+                        android:src="@drawable/rs_coin_bg" />
+
+                    <android.support.v4.widget.Space
+                        android:id="@+id/reference_line1"
+                        android:layout_width="match_parent"
+                        android:layout_height="4dp"
+                        android:layout_centerVertical="true" />
+
+                    <TextView
+                        android:id="@+id/feed_owner_title1"
+                        android:layout_width="144dp"
+                        android:layout_height="16dp"
+                        android:layout_above="@+id/reference_line1"
+                        android:layout_toEndOf="@+id/feed_owner_pic1"
+                        android:background="@color/Black12"
+                        android:text=""
+                        android:textStyle="bold" />
 
 
-            <TextView
-                android:id="@+id/line4"
-                android:layout_width="match_parent"
-                android:layout_height="8dp"
-                android:layout_below="@+id/line3"
-                android:layout_marginTop="4dp"
-                android:background="@color/Black12"
-                android:text=""
-                android:textSize="16sp" />
+                    <TextView
+                        android:id="@+id/feed_owner_subtitle1"
+                        android:layout_width="84dp"
+                        android:layout_height="12dp"
+                        android:layout_below="@+id/reference_line1"
+                        android:layout_toEndOf="@+id/feed_owner_pic1"
+                        android:background="@color/Black12"
+                        android:text="" />
 
-        </RelativeLayout>
+                    <ImageView
+                        android:id="@+id/img11"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:src="@drawable/rs_coin_bg" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="8dp"
+                        android:layout_toStartOf="@id/img11"
+                        android:src="@drawable/rs_coin_bg" />
 
 
-    </RelativeLayout>
+                </RelativeLayout>
 
-</com.facebook.shimmer.ShimmerFrameLayout>
+                <FrameLayout
+                    android:id="@+id/image_mock1"
+                    android:layout_width="match_parent"
+                    android:layout_height="144dp"
+                    android:layout_below="@+id/post_header_container1"
+                    android:background="@color/LightBlack" />
 
-</FrameLayout>
+                <RelativeLayout
+                    android:id="@+id/post_meta_container1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/image_mock1"
+                    android:background="#ffffff"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/post_title1"
+                        android:layout_width="144dp"
+                        android:layout_height="16dp"
+                        android:background="@color/Black12"
+                        android:paddingStart="8dp"
+                        android:paddingTop="8dp"
+                        android:text=""
+                        android:textSize="16sp" />
+
+
+                    <TextView
+                        android:id="@+id/tags1"
+                        android:layout_width="84dp"
+                        android:layout_height="8dp"
+                        android:layout_below="@+id/post_title1"
+                        android:layout_marginTop="8dp"
+                        android:background="@color/Black12"
+                        android:padding="8dp"
+                        android:text=""
+                        android:textSize="12sp"
+                        android:visibility="visible" />
+
+
+                    <TextView
+                        android:id="@+id/line11"
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:layout_below="@+id/tags1"
+                        android:layout_marginTop="16dp"
+                        android:background="@color/Black12"
+                        android:text=""
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/line21"
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:layout_below="@+id/line11"
+                        android:layout_marginTop="4dp"
+                        android:background="@color/Black12"
+                        android:text=""
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/line31"
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:layout_below="@+id/line21"
+                        android:layout_marginTop="4dp"
+                        android:background="@color/Black12"
+                        android:text=""
+                        android:textSize="16sp" />
+
+
+                    <TextView
+                        android:id="@+id/line41"
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:layout_below="@+id/line31"
+                        android:layout_marginTop="4dp"
+                        android:background="@color/Black12"
+                        android:text=""
+                        android:textSize="16sp" />
+
+                </RelativeLayout>
+
+
+            </RelativeLayout>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+    </FrameLayout>
+
+
+</RelativeLayout>

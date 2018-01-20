@@ -36,5 +36,9 @@ public class Constants {
 
     public static final String POST_ORDER_DES = "id.desc";
     public static final String POST_ORDER_ASC = "created_at.asc";
+    public static final String ACTION_USER_DETAILS_CHANGE = "com.hapramp.user.item_change";
+    public static final String DISPATCHER_UNIQUE_ID = "hapramp_dispatcher";
+
+    public static int PROFILE_DATA = 1011;
 
 }

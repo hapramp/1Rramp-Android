@@ -250,8 +250,6 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
         settingsFragment = new SettingsFragment();
         earningFragment = new EarningFragment();
         progressDialog = new ProgressDialog(this);
-        // putting the jobs in right state
-        PostCreationController.invalidateJobs();
 
     }
 

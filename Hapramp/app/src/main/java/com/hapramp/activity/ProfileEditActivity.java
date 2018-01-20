@@ -257,6 +257,11 @@ public class ProfileEditActivity extends AppCompatActivity implements UserDpUpda
     @Override
     public void onUserDataUpdated() {
         Toast.makeText(this, "Updated!", Toast.LENGTH_LONG).show();
+        //broadcast the change
+        Intent intent = new Intent(Constants.ACTION_USER_DETAILS_CHANGE);
+        intent.putExtra("type",Constants.PROFILE_DATA);
+        sendBroadcast(intent);
+
     }
 
     @Override

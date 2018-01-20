@@ -195,7 +195,7 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
 
         setSkills(post.skills);
 
-        postHeaderContainer.setOnClickListener(new OnClickListener() {
+        feedOwnerPic.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 navigateToUserProfile(post.user.id);

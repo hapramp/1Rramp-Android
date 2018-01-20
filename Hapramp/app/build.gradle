@@ -78,6 +78,7 @@ dependencies {
     compile 'com.facebook.shimmer:shimmer:0.1.0@aar'
     testCompile 'junit:junit:4.12'
     compile 'org.jsoup:jsoup:1.11.2'
+    compile 'com.firebase:firebase-jobdispatcher:0.8.5'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 
 }

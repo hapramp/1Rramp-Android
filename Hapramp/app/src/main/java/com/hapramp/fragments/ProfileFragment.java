@@ -1,6 +1,9 @@
 package com.hapramp.fragments;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,6 +28,7 @@ import com.hapramp.models.ProfileHeaderModel;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.utils.Constants;
 import com.hapramp.utils.SpaceDecorator;
 import com.hapramp.utils.ViewItemDecoration;
 
@@ -53,14 +57,44 @@ public class ProfileFragment extends Fragment implements
     private String _t;
     private LinearLayoutManager llm;
     private PostResponse currentPostReponse;
+    private boolean isReceiverRegistered;
+    private ItemChangeBroadcastReceiver itemChangeBroadcastReceiver;
+
 
     public ProfileFragment() {
         // Required empty public constructor
     }
 
+    private class ItemChangeBroadcastReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getExtras().getInt("type")== Constants.PROFILE_DATA){
+                fetchUserDetails();
+            }
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        itemChangeBroadcastReceiver = new ItemChangeBroadcastReceiver();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(!isReceiverRegistered){
+            mContext.registerReceiver(itemChangeBroadcastReceiver,new IntentFilter(Constants.ACTION_USER_DETAILS_CHANGE));
+            isReceiverRegistered = true;
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
     }
 
     @Override
@@ -180,6 +214,12 @@ public class ProfileFragment extends Fragment implements
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        if (isReceiverRegistered) {
+            mContext.unregisterReceiver(itemChangeBroadcastReceiver);
+            isReceiverRegistered = false;
+        }
+
     }
 
     @Override

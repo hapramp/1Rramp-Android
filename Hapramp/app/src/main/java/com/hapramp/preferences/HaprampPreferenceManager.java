@@ -153,6 +153,15 @@ public class HaprampPreferenceManager {
         return preferences.getBoolean("runningService",false);
     }
 
+    public void setJobAvailable(boolean jobAvailable){
+        editor.putBoolean("newJob",jobAvailable);
+        editor.apply();
+    }
+
+    public boolean isNewJobAvailble(){
+        return preferences.getBoolean("newJob",false);
+    }
+
     public void setPostingServiceRunning(boolean running){
         editor.putBoolean("runningService",running);
         editor.apply();
