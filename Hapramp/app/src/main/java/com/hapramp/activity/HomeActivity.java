@@ -133,37 +133,12 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            int type = intent.getExtras().getInt("type");
-            if (type == Constants.BROADCAST_TYPE_STATUS) {
 
-                postUploadStatus.setVisibility(View.VISIBLE);
-                String msg = intent.getExtras().getString("msg");
-                postUploadStatus.setText(msg);
-
-            } else if (type == Constants.BROADCAST_TYPE_FINISHED) {
-
-                // close the msg bar
-                postUploadStatus.setText("Post Uploaded!");
-                postUploadStatus.setTextColor(Color.GREEN);
-
-                //              postUploadStatus.setVisibility(View.GONE);
-                // load the content again
-                mHandler.postDelayed(hideStatus, 2000);
-                // if (currentVisibleFragment == homeFragment) {
+            if(homeFragment.isAdded())
                 homeFragment.forceReloadData();
+
+            if(profileFragment.isAdded())
                 profileFragment.reloadPosts();
-                //   }
-
-            } else if (type == Constants.BROADCAST_TYPE_ERROR) {
-                // close the msg bar
-                postUploadStatus.setText("Post Failed!");
-                postUploadStatus.setTextColor(Color.RED);
-//                postUploadStatus.setVisibility(View.GONE);
-                mHandler.postDelayed(hideStatus, 2000);
-
-            } else {
-
-            }
 
         }
 
@@ -263,6 +238,7 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
         } else {
             notificationCount.setVisibility(View.GONE);
         }
+
     }
 
     private void setupToolbar() {

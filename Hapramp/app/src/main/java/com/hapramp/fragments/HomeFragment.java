@@ -34,15 +34,18 @@ import com.hapramp.logger.L;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.utils.Constants;
 import com.hapramp.utils.SpaceDecorator;
 import com.hapramp.utils.ViewItemDecoration;
 
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import retrofit2.http.Url;
 
 
 public class HomeFragment extends Fragment implements PostFetchCallback, FetchSkillsResponse, CategoryRecyclerAdapter.OnCategoryItemClickListener, LikePostCallback {
@@ -105,7 +108,7 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         unbinder = ButterKnife.bind(this, view);
         initCategoryView();
-        fetchPosts(0);
+        loadData();
         return view;
 
     }
@@ -156,7 +159,11 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
         sectionsRv.animate().translationY(-sectionsRv.getMeasuredHeight());
     }
 
-    public void reloadData() {
+    public void loadData() {
+
+        hideErrorMessage();
+        hideContent();
+        showContentLoadingProgress();
         fetchPosts(0);
     }
 
@@ -233,10 +240,6 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
 
 
     private void fetchPosts(int id) {
-
-        hideErrorMessage();
-        hideContent();
-        showContentLoadingProgress();
 
         if (id == 0) {
             DataServer.getPosts(URLS.POST_FETCH_START_URL, this);
@@ -332,6 +335,23 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     }
 
     public void forceReloadData() {
-        fetchPosts(0);
+
+        DataServer.getPosts(URLS.POST_FETCH_START_URL, new PostFetchCallback() {
+            @Override
+            public void onPostFetched(PostResponse postResponses) {
+
+                recyclerAdapter.setHasMoreToLoad(postResponses.next.length() > 0);
+                recyclerAdapter.setPosts(postResponses.results);
+                currentSelectedSkillId = 0;
+
+            }
+
+            @Override
+            public void onPostFetchError() {
+
+            }
+        });
+
     }
+
 }

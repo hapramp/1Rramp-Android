@@ -4,10 +4,15 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
 
+import com.hapramp.preferences.HaprampPreferenceManager;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.StringTokenizer;
 
 /**
@@ -15,6 +20,8 @@ import java.util.StringTokenizer;
  */
 
 public class PostJobModel implements Parcelable {
+
+    private static final int MAX_LENGTH = 64;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({JOB_SUCCEEDED,JOB_PENDING})
@@ -139,6 +146,47 @@ public class PostJobModel implements Parcelable {
                 ", skills=" + skills +
                 ", contest_id=" + contest_id +
                 '}';
+
+    }
+
+    public static String random() {
+        Random generator = new Random();
+        StringBuilder randomStringBuilder = new StringBuilder();
+        int randomLength = generator.nextInt(MAX_LENGTH);
+        char tempChar;
+        for (int i = 0; i < randomLength; i++){
+            tempChar = (char) (generator.nextInt(96) + 32);
+            randomStringBuilder.append(tempChar);
+        }
+        return randomStringBuilder.toString();
+    }
+
+    public static String getCurrentTimeStamp(){
+        try {
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+            String currentDateTime = dateFormat.format(new Date()); // Find todays date
+
+            return currentDateTime;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return null;
+        }
+    }
+
+    public static String getMediaLocation(){
+
+        String user_id = HaprampPreferenceManager.getInstance().getUserId();
+
+        StringBuilder builder = new StringBuilder()
+                .append(user_id)
+                .append("_")
+                .append(getCurrentTimeStamp())
+                .append("_")
+                .append(random());
+
+        return builder.toString();
 
     }
 

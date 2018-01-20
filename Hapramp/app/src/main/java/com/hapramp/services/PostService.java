@@ -1,5 +1,6 @@
 package com.hapramp.services;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -18,6 +19,7 @@ import com.hapramp.interfaces.PostCreateCallback;
 import com.hapramp.models.PostJobModel;
 import com.hapramp.models.requests.PostCreateBody;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.utils.Constants;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,6 +27,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Ankit on 1/20/2018.
@@ -33,6 +36,7 @@ import java.util.List;
 public class PostService extends JobService implements PostCreateCallback {
 
     private static final String TAG = PostService.class.getSimpleName();
+    private static final int MAX_LENGTH = 64;
     private PostJobModel currentJob;
     List<PostJobModel> postJobModels;
     private UploadJobDatabaseHelper databaseHelper;
@@ -80,11 +84,17 @@ public class PostService extends JobService implements PostCreateCallback {
 
     }
 
+
+
     private void uploadMedia(final String jobId, String uri) {
 
         l("Uploading Media");
         StorageReference storageRef = storage.getReference();
-        StorageReference ref = storageRef.child(rootFolder).child(String.valueOf(HaprampPreferenceManager.getInstance().getUserId()));
+        StorageReference ref =
+                storageRef
+                .child(rootFolder)
+                .child(PostJobModel.getMediaLocation());
+
         InputStream stream = null;
         try {
             stream = new FileInputStream(new File(uri));
@@ -135,6 +145,7 @@ public class PostService extends JobService implements PostCreateCallback {
     @Override
     public void onPostCreated(String jobId) {
 
+        sendBroadcast();
         l("Removing job " + jobId + " From DB");
         databaseHelper.removeJob(String.valueOf(jobId));
         l("Removing job " + jobId + " From local list");
@@ -184,5 +195,10 @@ public class PostService extends JobService implements PostCreateCallback {
 
     private static void l(String msg) {
         Log.d(TAG, msg);
+    }
+
+    private void sendBroadcast(){
+        Intent intent = new Intent(Constants.ACTION_POST_UPLOAD);
+        sendBroadcast(intent);
     }
 }

@@ -22,10 +22,6 @@ public class JobManager {
 
     public static void init() {
 
-        // schedule if not runnning
-        if(HaprampPreferenceManager.getInstance().isPostingServiceRunning())
-            return;
-
         Log.d("JobManager","Scheduling Job");
 
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(HapRampMain.getContext()));
@@ -41,7 +37,7 @@ public class JobManager {
                 // start between 0 and 60 seconds from now
                 .setTrigger(Trigger.executionWindow(0, 5))
                 // don't overwrite an existing job with the same tag
-                .setReplaceCurrent(false)
+                .setReplaceCurrent(true)
                 // retry with exponential backoff
                 .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
                 // constraints that need to be satisfied for the job to run
