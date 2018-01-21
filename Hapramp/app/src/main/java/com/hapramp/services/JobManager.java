@@ -33,11 +33,11 @@ public class JobManager {
                 // one-off job
                 .setRecurring(false)
                 // don't persist past a device reboot
-                .setLifetime(Lifetime.UNTIL_NEXT_BOOT)
+                .setLifetime(Lifetime.FOREVER)
                 // start between 0 and 60 seconds from now
-                .setTrigger(Trigger.executionWindow(0, 5))
+                .setTrigger(Trigger.executionWindow(0, 0))
                 // don't overwrite an existing job with the same tag
-                .setReplaceCurrent(true)
+                .setReplaceCurrent(false)
                 // retry with exponential backoff
                 .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
                 // constraints that need to be satisfied for the job to run

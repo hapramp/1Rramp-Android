@@ -1,6 +1,6 @@
 package com.hapramp.controller;
 
-import com.hapramp.db.UploadJobDatabaseHelper;
+import com.hapramp.db.DatabaseHelper;
 import com.hapramp.main.HapRampMain;
 import com.hapramp.models.PostJobModel;
 import com.hapramp.services.JobManager;
@@ -11,12 +11,12 @@ import com.hapramp.services.JobManager;
 
 public class PostCreationController{
 
-    private static UploadJobDatabaseHelper databaseHelper;
+    private static DatabaseHelper databaseHelper;
 
     private static void initDBObject(){
 
         if(databaseHelper==null){
-            databaseHelper = new UploadJobDatabaseHelper(HapRampMain.getContext());
+            databaseHelper = new DatabaseHelper(HapRampMain.getContext());
         }
     }
 

@@ -14,7 +14,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.hapramp.api.DataServer;
-import com.hapramp.db.UploadJobDatabaseHelper;
+import com.hapramp.db.DatabaseHelper;
 import com.hapramp.interfaces.PostCreateCallback;
 import com.hapramp.models.PostJobModel;
 import com.hapramp.models.requests.PostCreateBody;
@@ -27,7 +27,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by Ankit on 1/20/2018.
@@ -39,7 +38,7 @@ public class PostService extends JobService implements PostCreateCallback {
     private static final int MAX_LENGTH = 64;
     private PostJobModel currentJob;
     List<PostJobModel> postJobModels;
-    private UploadJobDatabaseHelper databaseHelper;
+    private DatabaseHelper databaseHelper;
     private FirebaseStorage storage;
     private JobParameters jobParameters;
     private final String rootFolder = "images";
@@ -50,7 +49,7 @@ public class PostService extends JobService implements PostCreateCallback {
         super.onCreate();
         postJobModels = new ArrayList<>();
         storage = FirebaseStorage.getInstance();
-        databaseHelper = new UploadJobDatabaseHelper(this);
+        databaseHelper = new DatabaseHelper(this);
 
     }
 
@@ -201,4 +200,5 @@ public class PostService extends JobService implements PostCreateCallback {
         Intent intent = new Intent(Constants.ACTION_POST_UPLOAD);
         sendBroadcast(intent);
     }
+
 }

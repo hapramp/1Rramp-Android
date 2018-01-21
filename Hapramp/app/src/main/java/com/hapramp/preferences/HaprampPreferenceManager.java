@@ -153,6 +153,15 @@ public class HaprampPreferenceManager {
         return preferences.getBoolean("runningService",false);
     }
 
+    public void setPostCachedStatus(boolean cachedStatus){
+        editor.putBoolean("postCached",cachedStatus);
+        editor.apply();
+    }
+
+    public boolean isPostsCached(){
+        return preferences.getBoolean("postCached",false);
+    }
+
     public void setJobAvailable(boolean jobAvailable){
         editor.putBoolean("newJob",jobAvailable);
         editor.apply();

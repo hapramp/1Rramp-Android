@@ -20,6 +20,7 @@ public class HapRampMain extends Application {
     }
 
     public static Context getContext() {
-        return HapRampMain.context;
+        return context;
     }
+
 }

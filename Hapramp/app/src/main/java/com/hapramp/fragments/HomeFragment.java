@@ -27,6 +27,7 @@ import com.hapramp.R;
 import com.hapramp.activity.DetailedActivity;
 import com.hapramp.api.DataServer;
 import com.hapramp.api.URLS;
+import com.hapramp.datastore.DataManager;
 import com.hapramp.interfaces.FetchSkillsResponse;
 import com.hapramp.interfaces.LikePostCallback;
 import com.hapramp.interfaces.PostFetchCallback;
@@ -48,7 +49,7 @@ import butterknife.Unbinder;
 import retrofit2.http.Url;
 
 
-public class HomeFragment extends Fragment implements PostFetchCallback, FetchSkillsResponse, CategoryRecyclerAdapter.OnCategoryItemClickListener, LikePostCallback {
+public class HomeFragment extends Fragment implements FetchSkillsResponse, CategoryRecyclerAdapter.OnCategoryItemClickListener, LikePostCallback, DataManager.PostLoadListener {
 
     @BindView(R.id.homeRv)
     RecyclerView postsRecyclerView;
@@ -71,6 +72,7 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     private LinearLayoutManager layoutManager;
     private ViewItemDecoration viewItemDecoration;
     private int y;
+    DataManager dataManager;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -80,6 +82,8 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        dataManager = new DataManager(getActivity());
+        dataManager.registerPostListeners(this);
         Log.d("HomeFragment", "onCreate " + savedInstanceState);
     }
 
@@ -108,10 +112,68 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         unbinder = ButterKnife.bind(this, view);
         initCategoryView();
-        loadData();
         return view;
 
     }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+
+        super.onViewCreated(view, savedInstanceState);
+        layoutManager = new LinearLayoutManager(mContext);
+        postsRecyclerView.setLayoutManager(layoutManager);
+        Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
+        viewItemDecoration = new ViewItemDecoration(drawable);
+        SpaceDecorator spaceDecorator = new SpaceDecorator();
+        postsRecyclerView.addItemDecoration(spaceDecorator);
+        recyclerAdapter = new PostsRecyclerAdapter(mContext);
+        recyclerAdapter.setIsAdapterForProfile(false);
+        postsRecyclerView.addItemDecoration(viewItemDecoration);
+        postsRecyclerView.setAdapter(recyclerAdapter);
+        postsRecyclerView.setNestedScrollingEnabled(false);
+        setScrollListener();
+
+    }
+
+    @Override
+    public void onPostLoaded(PostResponse postResponses) {
+
+        hideContentLoadingProgress();
+        currentPostReponse = postResponses;
+        // append Result
+        if (postResponses.results.size() > 0) {
+            hideErrorMessage();
+            showContent();
+
+            recyclerAdapter.setHasMoreToLoad(postResponses.next.length() > 0);
+            recyclerAdapter.appendResult(postResponses.results);
+
+        } else {
+            showErrorMessage();
+            hideContent();
+        }
+
+    }
+
+    @Override
+    public void onPostLoadError(String errorMsg) {
+
+    }
+
+    @Override
+    public void onLoading() {
+        showContentLoadingProgress();
+        hideContent();
+        hideErrorMessage();
+    }
+
+    @Override
+    public void onPostRefreshed(PostResponse refreshedResponse) {
+        showContent();
+        hideContentLoadingProgress();
+        recyclerAdapter.setPosts(refreshedResponse.results);
+    }
+
 
     public abstract class EndlessOnScrollListener extends RecyclerView.OnScrollListener {
 
@@ -159,14 +221,6 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
         sectionsRv.animate().translationY(-sectionsRv.getMeasuredHeight());
     }
 
-    public void loadData() {
-
-        hideErrorMessage();
-        hideContent();
-        showContentLoadingProgress();
-        fetchPosts(0);
-    }
-
     private void setScrollListener() {
         postsRecyclerView.addOnScrollListener(new EndlessOnScrollListener(layoutManager) {
             @Override
@@ -174,25 +228,6 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
                 loadMore(currentSelectedSkillId);
             }
         });
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-
-        super.onViewCreated(view, savedInstanceState);
-        layoutManager = new LinearLayoutManager(mContext);
-        postsRecyclerView.setLayoutManager(layoutManager);
-        Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
-        viewItemDecoration = new ViewItemDecoration(drawable);
-        SpaceDecorator spaceDecorator = new SpaceDecorator();
-        postsRecyclerView.addItemDecoration(spaceDecorator);
-        recyclerAdapter = new PostsRecyclerAdapter(mContext);
-        recyclerAdapter.setIsAdapterForProfile(false);
-        postsRecyclerView.addItemDecoration(viewItemDecoration);
-        postsRecyclerView.setAdapter(recyclerAdapter);
-        postsRecyclerView.setNestedScrollingEnabled(false);
-
-        setScrollListener();
     }
 
     private void initCategoryView() {
@@ -238,14 +273,28 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
             loadingShimmer.setVisibility(View.GONE);
     }
 
-
     private void fetchPosts(int id) {
 
-        if (id == 0) {
-            DataServer.getPosts(URLS.POST_FETCH_START_URL, this);
-        } else {
-            DataServer.getPosts(URLS.POST_FETCH_START_URL, id, this);
-        }
+        dataManager.getPosts(URLS.POST_FETCH_START_URL,id);
+
+    }
+
+    public void forceReloadData() {
+
+        DataServer.getPosts(URLS.POST_FETCH_START_URL, new PostFetchCallback() {
+            @Override
+            public void onPostFetched(PostResponse postResponses) {
+
+                recyclerAdapter.setHasMoreToLoad(postResponses.next.length() > 0);
+                recyclerAdapter.setPosts(postResponses.results);
+                currentSelectedSkillId = 0;
+            }
+
+            @Override
+            public void onPostFetchError() {
+
+            }
+        });
 
     }
 
@@ -255,35 +304,10 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
             return;
         }
 
-        if (id == 0) {
-            DataServer.getPosts(currentPostReponse.next, this);
-        } else {
-            DataServer.getPosts(currentPostReponse.next, id, this);
-        }
+        dataManager.getPosts(currentPostReponse.next,id);
 
     }
 
-    @Override
-    public void onPostFetched(PostResponse postResponses) {
-
-        //todo: Don`t reverse the list. It should be modified by server end
-        currentPostReponse = postResponses;
-        // append Result
-        if (postResponses.results.size() > 0) {
-            hideErrorMessage();
-            showContent();
-
-            recyclerAdapter.setHasMoreToLoad(postResponses.next.length() > 0);
-            recyclerAdapter.appendResult(postResponses.results);
-
-        } else {
-            showErrorMessage();
-            hideContent();
-        }
-
-        hideContentLoadingProgress();
-
-    }
 
     private void showContent() {
         if (postsRecyclerView != null)
@@ -307,12 +331,6 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     }
 
     @Override
-    public void onPostFetchError() {
-        fetchPosts(currentSelectedSkillId);
-        L.D.m("HomeFragment", "Fetch Error: Post");
-    }
-
-    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         this.mContext = context;
@@ -332,26 +350,6 @@ public class HomeFragment extends Fragment implements PostFetchCallback, FetchSk
     @Override
     public void onPostLikeError() {
         L.D.m("Home Fragment", "unable to like the post");
-    }
-
-    public void forceReloadData() {
-
-        DataServer.getPosts(URLS.POST_FETCH_START_URL, new PostFetchCallback() {
-            @Override
-            public void onPostFetched(PostResponse postResponses) {
-
-                recyclerAdapter.setHasMoreToLoad(postResponses.next.length() > 0);
-                recyclerAdapter.setPosts(postResponses.results);
-                currentSelectedSkillId = 0;
-
-            }
-
-            @Override
-            public void onPostFetchError() {
-
-            }
-        });
-
     }
 
 }
