@@ -3,13 +3,13 @@ package com.hapramp.datastore;
 import android.content.Context;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.hapramp.api.DataServer;
 import com.hapramp.db.DatabaseHelper;
 import com.hapramp.interfaces.PostFetchCallback;
 import com.hapramp.models.response.PostResponse;
-import com.hapramp.preferences.CachePrefernce;
-import com.hapramp.utils.MomentsUtils;
+import com.hapramp.preferences.CachePreference;
 
 /**
  * Created by Ankit on 1/21/2018.
@@ -21,12 +21,13 @@ public class DataManager {
     private DatabaseHelper databaseHelper;
     private Context context;
     private PostLoadListener postLoadListener;
-    CachePrefernce cachePrefernce;
+    private CachePreference cachePreference;
     private Handler mHandler;
 
     public DataManager(Context context) {
         this.context = context;
-        cachePrefernce = CachePrefernce.getInstance();
+        cachePreference = CachePreference.getInstance();
+        databaseHelper = new DatabaseHelper(context);
         mHandler = new Handler();
     }
 
@@ -34,16 +35,18 @@ public class DataManager {
         this.postLoadListener = loadListener;
     }
 
-    public void getPosts(final String uri, final int communityId) {
+    public void getPosts(final String uri, final int communityId, final boolean isLoadMore) {
 
-        if (postLoadListener != null) {
+        if (postLoadListener != null && !isLoadMore) {
             postLoadListener.onLoading();
         }
 
+        l("Get Post Req");
         //perform a check for Cache
-        if (cachePrefernce.getLastPostSyncTime() != null) {
+        if (cachePreference.getLastPostSyncTime() != null && !isLoadMore) {
             // there are existing posts in the cache
             // load them on worker thread and return back
+            l("There is existing cache");
 
             new Thread() {
                 @Override
@@ -54,8 +57,22 @@ public class DataManager {
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            if (postLoadListener != null) {
-                                postLoadListener.onPostLoaded(cachedItem);
+                            if (cachedItem != null) {
+
+                                l("Retrieved from cache");
+                                if (postLoadListener != null) {
+                                    l("Returned from cache");
+
+                                    if (isLoadMore) {
+                                        postLoadListener.onPostRefreshed(cachedItem);
+                                    } else {
+                                        postLoadListener.onPostLoaded(cachedItem);
+                                    }
+
+                                }
+
+                            } else {
+                                l("No Cache for :" + uri + "#" + communityId);
                             }
                         }
 
@@ -63,38 +80,50 @@ public class DataManager {
                 }
             }.start();
 
+            l("Starting sync");
             //start syncing of posts and refresh the cache
-            startPostSync(uri, communityId);
+            startPostSync(uri, communityId, false);
 
         } else {
             // there is no cache!!
             // start loading from server
             // return the results and cache them
-            startPostSync(uri, communityId);
+            l("Start Sync From Server");
+            startPostSync(uri, communityId, isLoadMore);
 
         }
     }
 
-    private void startPostSync(final String uri, final int communityId) {
+    private void startPostSync(final String uri, final int communityId, final boolean isLoadMore) {
 
         if (communityId == 0) {
 
             DataServer.getPosts(uri, new PostFetchCallback() {
                 @Override
                 public void onPostFetched(PostResponse postResponses) {
-                    //cache items
-                    cachePrefernce.setLastPostSyncTime(String.valueOf(SystemClock.currentThreadTimeMillis()));
-                    databaseHelper.insertSegment(postResponses, uri, communityId);
+
+                    if (!isLoadMore) {
+                        l("Caching Post Segment");
+                        //cache items
+                        databaseHelper.insertSegment(postResponses, uri, communityId);
+                        cachePreference.setLastPostSyncTime(String.valueOf(SystemClock.currentThreadTimeMillis()));
+                    }
+
                     //return result
                     if (postLoadListener != null) {
-                        postLoadListener.onPostRefreshed(postResponses);
+                        l("Synced Post Returned");
+                        if (isLoadMore) {
+                            postLoadListener.onPostLoaded(postResponses);
+                        } else {
+                            postLoadListener.onPostRefreshed(postResponses);
+                        }
                     }
                 }
 
                 @Override
                 public void onPostFetchError() {
                     // report error
-                    if (cachePrefernce.getLastPostSyncTime() != null) {
+                    if (cachePreference.getLastPostSyncTime() != null) {
                         if (postLoadListener != null) {
                             postLoadListener.onPostLoadError("Something went wrong while Syncing...");
                         }
@@ -111,19 +140,29 @@ public class DataManager {
             DataServer.getPosts(uri, communityId, new PostFetchCallback() {
                 @Override
                 public void onPostFetched(PostResponse postResponses) {
-                    //cache items
-                    cachePrefernce.setLastPostSyncTime(String.valueOf(SystemClock.currentThreadTimeMillis()));
-                    databaseHelper.insertSegment(postResponses, uri, communityId);
+
+                    if (!isLoadMore) {
+                        l("Caching Post Segment");
+                        //cache items
+                        cachePreference.setLastPostSyncTime(String.valueOf(SystemClock.currentThreadTimeMillis()));
+                        databaseHelper.insertSegment(postResponses, uri, communityId);
+                    }
+
                     //return result
                     if (postLoadListener != null) {
-                        postLoadListener.onPostRefreshed(postResponses);
+                        l("Synced Post Returned");
+                        if (isLoadMore) {
+                            postLoadListener.onPostLoaded(postResponses);
+                        } else {
+                            postLoadListener.onPostRefreshed(postResponses);
+                        }
                     }
                 }
 
                 @Override
                 public void onPostFetchError() {
                     // report error
-                    if (cachePrefernce.getLastPostSyncTime() != null) {
+                    if (cachePreference.getLastPostSyncTime() != null) {
                         if (postLoadListener != null) {
                             postLoadListener.onPostLoadError("Something went wrong while Syncing...");
                         }
@@ -151,4 +190,7 @@ public class DataManager {
 
     }
 
+    private void l(String msg) {
+        Log.i(TAG, msg);
+    }
 }

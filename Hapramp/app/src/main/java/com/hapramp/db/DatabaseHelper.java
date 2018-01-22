@@ -79,16 +79,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public void insertSegment(PostResponse post,String uri,int communityId) {
+    public void insertSegment(PostResponse post, String uri, int communityId) {
+
+        if(getCachedSegment(uri,communityId)!=null){
+            // update
+            updateSegment(post,uri,communityId);
+            return;
+        }
 
         SQLiteDatabase database = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(KEY_SEGMENT_URI, String.valueOf(uri+"#"+communityId));
+        values.put(KEY_SEGMENT_URI, String.valueOf(uri + "#" + communityId));
         values.put(KEY_JSON, new Gson().toJson(post));
 
         long id = database.insert(TABLE_CACHE, null, values);
         if (id > -1) {
             Log.d(TAG, "Post Cached!");
+
+        }
+
+    }
+
+    public void updateSegment(PostResponse postResponse, String uri, int communityId) {
+
+        SQLiteDatabase database = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_SEGMENT_URI, String.valueOf(uri + "#" + communityId));
+        values.put(KEY_JSON, new Gson().toJson(postResponse));
+
+        long id = database.update(TABLE_CACHE, values, KEY_SEGMENT_URI + "=?", new String[]{String.valueOf(uri + "#" + communityId)});
+        if (id > -1) {
+            Log.d(TAG, "Post Cache Updated!!");
 
         }
 
@@ -117,9 +138,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 KEY_SEGMENT_URI,
                 KEY_JSON};
 
-        Cursor cursor = database.query(TABLE_CACHE, cols, KEY_SEGMENT_URI+"=?", new String[]{String.valueOf(uri+"#"+communityId)}, null, null, null);
+        Cursor cursor = database.query(TABLE_CACHE, cols, KEY_SEGMENT_URI + "=?", new String[]{String.valueOf(uri + "#" + communityId)}, null, null, null);
         cursor.moveToFirst();
-        if(cursor.getCount()>0) {
+        if (cursor.getCount() > 0) {
             cached = new Gson().fromJson(cursor.getString(cursor.getColumnIndex(KEY_JSON)), PostResponse.class);
         }
         cursor.close();
@@ -204,16 +225,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public void updatePost(PostResponse.Results post) {
-
-        SQLiteDatabase database = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_SEGMENT_URI, post.id);
-        values.put(KEY_JSON, new Gson().toJson(post));
-        database.update(TABLE_CACHE, values, KEY_SEGMENT_URI + "=?", new String[]{String.valueOf(post.id)});
-
-    }
-
     //DELETE
     public void removeJob(String jobId) {
         SQLiteDatabase database = getWritableDatabase();
@@ -232,9 +243,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void deleteAllPosts(){
+    public void deleteAllPosts() {
         SQLiteDatabase database = getWritableDatabase();
-        database.delete(TABLE_CACHE,null,null);
+        database.delete(TABLE_CACHE, null, null);
     }
 
     @Override

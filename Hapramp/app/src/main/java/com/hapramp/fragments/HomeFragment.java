@@ -81,16 +81,16 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse, Categ
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setRetainInstance(true);
         dataManager = new DataManager(getActivity());
         dataManager.registerPostListeners(this);
-        Log.d("HomeFragment", "onCreate " + savedInstanceState);
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("HomeFragment", "onResume");
     }
 
     @Override
@@ -131,6 +131,7 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse, Categ
         postsRecyclerView.addItemDecoration(viewItemDecoration);
         postsRecyclerView.setAdapter(recyclerAdapter);
         postsRecyclerView.setNestedScrollingEnabled(false);
+        fetchPosts(0);
         setScrollListener();
 
     }
@@ -171,7 +172,10 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse, Categ
     public void onPostRefreshed(PostResponse refreshedResponse) {
         showContent();
         hideContentLoadingProgress();
+
+        currentPostReponse = refreshedResponse;
         recyclerAdapter.setPosts(refreshedResponse.results);
+
     }
 
 
@@ -275,27 +279,12 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse, Categ
 
     private void fetchPosts(int id) {
 
-        dataManager.getPosts(URLS.POST_FETCH_START_URL,id);
+        dataManager.getPosts(URLS.POST_FETCH_START_URL,id,false);
 
     }
 
     public void forceReloadData() {
-
-        DataServer.getPosts(URLS.POST_FETCH_START_URL, new PostFetchCallback() {
-            @Override
-            public void onPostFetched(PostResponse postResponses) {
-
-                recyclerAdapter.setHasMoreToLoad(postResponses.next.length() > 0);
-                recyclerAdapter.setPosts(postResponses.results);
-                currentSelectedSkillId = 0;
-            }
-
-            @Override
-            public void onPostFetchError() {
-
-            }
-        });
-
+        dataManager.getPosts(URLS.POST_FETCH_START_URL,currentSelectedSkillId,false);
     }
 
     private void loadMore(int id) {
@@ -304,7 +293,7 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse, Categ
             return;
         }
 
-        dataManager.getPosts(currentPostReponse.next,id);
+        dataManager.getPosts(currentPostReponse.next,id,true);
 
     }
 
