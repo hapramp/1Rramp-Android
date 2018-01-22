@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.AbsListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -126,6 +128,11 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse, Categ
         viewItemDecoration = new ViewItemDecoration(drawable);
         SpaceDecorator spaceDecorator = new SpaceDecorator();
         postsRecyclerView.addItemDecoration(spaceDecorator);
+
+        int resId = R.anim.layout_animation_fall_down;
+        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(mContext, resId);
+        postsRecyclerView.setLayoutAnimation(animation);
+
         recyclerAdapter = new PostsRecyclerAdapter(mContext);
         recyclerAdapter.setIsAdapterForProfile(false);
         postsRecyclerView.addItemDecoration(viewItemDecoration);
@@ -133,6 +140,18 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse, Categ
         postsRecyclerView.setNestedScrollingEnabled(false);
         fetchPosts(0);
         setScrollListener();
+
+    }
+
+    private void runLayoutAnimation(final RecyclerView recyclerView) {
+
+        final Context context = recyclerView.getContext();
+        final LayoutAnimationController controller =
+                AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down);
+
+        recyclerView.setLayoutAnimation(controller);
+        recyclerView.getAdapter().notifyDataSetChanged();
+        recyclerView.scheduleLayoutAnimation();
 
     }
 
@@ -163,9 +182,11 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse, Categ
 
     @Override
     public void onLoading() {
+
         showContentLoadingProgress();
         hideContent();
         hideErrorMessage();
+
     }
 
     @Override
@@ -175,6 +196,7 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse, Categ
 
         currentPostReponse = refreshedResponse;
         recyclerAdapter.setPosts(refreshedResponse.results);
+        runLayoutAnimation(postsRecyclerView);
 
     }
 
