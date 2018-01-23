@@ -154,6 +154,11 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     public void setPosts(List<PostResponse.Results> results) {
         this.postResponses = results;
+        notifyItemRangeInserted(0,results.size());
+    }
+
+    public void clearList() {
+        postResponses.clear();
         notifyDataSetChanged();
     }
 

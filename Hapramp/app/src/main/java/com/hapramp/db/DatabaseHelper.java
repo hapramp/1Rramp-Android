@@ -144,6 +144,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             cached = new Gson().fromJson(cursor.getString(cursor.getColumnIndex(KEY_JSON)), PostResponse.class);
         }
         cursor.close();
+
         return cached;
 
     }

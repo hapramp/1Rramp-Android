@@ -23,6 +23,7 @@ public class DataManager {
     private PostLoadListener postLoadListener;
     private CachePreference cachePreference;
     private Handler mHandler;
+    private String currentRequestId;
 
     public DataManager(Context context) {
         this.context = context;
@@ -37,13 +38,15 @@ public class DataManager {
 
     public void getPosts(final String uri, final int communityId, final boolean isLoadMore) {
 
+        currentRequestId = getRequestId(uri,communityId);
+
         if (postLoadListener != null && !isLoadMore) {
             postLoadListener.onLoading();
         }
-
+        l("=========================");
         l("Get Post Req");
         //perform a check for Cache
-        if (cachePreference.getLastPostSyncTime() != null && !isLoadMore) {
+        if (cachePreference.isPostSynced(getSegmentId(uri,communityId)) && !isLoadMore) {
             // there are existing posts in the cache
             // load them on worker thread and return back
             l("There is existing cache");
@@ -57,9 +60,10 @@ public class DataManager {
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            if (cachedItem != null) {
 
-                                l("Retrieved from cache");
+                            if (cachedItem != null && isRequestLive(getRequestId(uri,communityId))) {
+
+                                l("Retrieved from cache:" + uri + "#" + communityId);
                                 if (postLoadListener != null) {
                                     l("Returned from cache");
 
@@ -106,11 +110,11 @@ public class DataManager {
                         l("Caching Post Segment");
                         //cache items
                         databaseHelper.insertSegment(postResponses, uri, communityId);
-                        cachePreference.setLastPostSyncTime(String.valueOf(SystemClock.currentThreadTimeMillis()));
+                        cachePreference.setPostSynced(getSegmentId(uri,communityId));
                     }
 
                     //return result
-                    if (postLoadListener != null) {
+                    if (postLoadListener != null && isRequestLive(getRequestId(uri,communityId))) {
                         l("Synced Post Returned");
                         if (isLoadMore) {
                             postLoadListener.onPostLoaded(postResponses);
@@ -123,7 +127,7 @@ public class DataManager {
                 @Override
                 public void onPostFetchError() {
                     // report error
-                    if (cachePreference.getLastPostSyncTime() != null) {
+                    if (cachePreference.isPostSynced(getSegmentId(uri, communityId))) {
                         if (postLoadListener != null) {
                             postLoadListener.onPostLoadError("Something went wrong while Syncing...");
                         }
@@ -144,12 +148,12 @@ public class DataManager {
                     if (!isLoadMore) {
                         l("Caching Post Segment");
                         //cache items
-                        cachePreference.setLastPostSyncTime(String.valueOf(SystemClock.currentThreadTimeMillis()));
+                        cachePreference.setPostSynced(getSegmentId(uri,communityId));
                         databaseHelper.insertSegment(postResponses, uri, communityId);
                     }
 
                     //return result
-                    if (postLoadListener != null) {
+                    if (postLoadListener != null && isRequestLive(getRequestId(uri,communityId))) {
                         l("Synced Post Returned");
                         if (isLoadMore) {
                             postLoadListener.onPostLoaded(postResponses);
@@ -162,7 +166,7 @@ public class DataManager {
                 @Override
                 public void onPostFetchError() {
                     // report error
-                    if (cachePreference.getLastPostSyncTime() != null) {
+                    if (cachePreference.isPostSynced(getSegmentId(uri, communityId))) {
                         if (postLoadListener != null) {
                             postLoadListener.onPostLoadError("Something went wrong while Syncing...");
                         }
@@ -188,6 +192,18 @@ public class DataManager {
 
         void onPostRefreshed(PostResponse refreshedResponse);
 
+    }
+
+    public boolean isRequestLive(String requestId){
+        return requestId.equals(currentRequestId);
+    }
+
+    public String getRequestId(String uri,int communityId){
+        return String.valueOf("requestId_"+uri+"#"+communityId);
+    }
+
+    public String getSegmentId(String uri, int communityId){
+        return String.valueOf(uri+"#"+communityId);
     }
 
     private void l(String msg) {

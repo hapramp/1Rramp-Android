@@ -33,13 +33,13 @@ public class CachePreference {
         return mInstance;
     }
 
-    public void setLastPostSyncTime(String time){
-        editor.putString("lastPostFetchTime",time);
+    public void setPostSynced(String segment){
+        editor.putBoolean("segment_"+segment,true);
         editor.apply();
     }
 
-    public String getLastPostSyncTime(){
-        return preferences.getString("lastPostFetchTime",null);
+    public Boolean isPostSynced(String segmentId){
+        return preferences.getBoolean("segment_"+segmentId,false);
     }
 
 

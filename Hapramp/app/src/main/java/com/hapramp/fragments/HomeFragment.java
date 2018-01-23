@@ -177,7 +177,6 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse, Categ
 
     @Override
     public void onPostLoadError(String errorMsg) {
-
     }
 
     @Override
@@ -191,13 +190,13 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse, Categ
 
     @Override
     public void onPostRefreshed(PostResponse refreshedResponse) {
-        showContent();
-        hideContentLoadingProgress();
 
         currentPostReponse = refreshedResponse;
         recyclerAdapter.setPosts(refreshedResponse.results);
         runLayoutAnimation(postsRecyclerView);
-
+        showContent();
+        hideContentLoadingProgress();
+        Toast.makeText(mContext,"Reloaded",Toast.LENGTH_SHORT).show();
     }
 
 
@@ -272,6 +271,7 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse, Categ
     public void onCategoryClicked(int id) {
 
         currentSelectedSkillId = id;
+        recyclerAdapter.clearList();
         fetchPosts(id);
 
     }
@@ -329,6 +329,7 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse, Categ
 
         if (postsRecyclerView != null)
             postsRecyclerView.setVisibility(View.GONE);
+
     }
 
     private void showErrorMessage() {
