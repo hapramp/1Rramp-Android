@@ -68,60 +68,32 @@ public class BoldButtonView extends FrameLayout {
             public void onClick(View view) {
                 isEnabled = !isEnabled;
                 invalidateButton();
-                invalidateTarget();
             }
         });
 
     }
 
     private void invalidateButton() {
-        if (isEnabled) {
-            bold.setTextColor(colorActive);
-        } else {
-            bold.setTextColor(colorInactive);
-        }
-    }
+//        if (isEnabled) {
+//            bold.setTextColor(colorActive);
+//        } else {
+//            bold.setTextColor(colorInactive);
+//        }
 
-    private void invalidateTarget() {
-
-        try {
-            // remove previous span
-            StyleSpan[] spans = target.getText().getSpans(spanStart, spanEnd, StyleSpan.class);
-            for (StyleSpan sp : spans) {
-                target.getText().removeSpan(sp);
-            }
-            if(isBoldActive()) {
-                target.getText().setSpan(getSpan(), spanStart, spanEnd, 0);
-            }
-
-        } catch (Exception e) {
-
+        if(boldTextListener!=null){
+            boldTextListener.onBoldText(isEnabled);
         }
 
     }
 
-    public StyleSpan getBoldSpan() {
-        return getSpan();
+    private BoldTextListener boldTextListener;
+
+    public void setBoldTextListener(BoldTextListener boldTextListener) {
+        this.boldTextListener = boldTextListener;
     }
 
-    private StyleSpan getSpan() {
-
-        if (isEnabled)
-            return new StyleSpan(Typeface.BOLD);
-        else
-            return new StyleSpan(Typeface.NORMAL);
-
+    public interface BoldTextListener {
+        void onBoldText(boolean isBoldActive);
     }
-
-    public void setTarget(EditText et, int start, int end) {
-        this.spanStart = start;
-        this.spanEnd = end;
-        this.target = et;
-    }
-
-    public boolean isBoldActive() {
-        return isEnabled;
-    }
-
 
 }

@@ -1,50 +1,53 @@
 package com.hapramp.views.editor;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.text.style.AbsoluteSizeSpan;
-import android.text.style.StyleSpan;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
 
+import com.github.irshulx.Editor;
+import com.github.irshulx.models.EditorTextStyle;
 import com.hapramp.R;
-import com.hapramp.utils.EditorUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
 
 /**
  * Created by Ankit on 12/31/2017.
  */
 
-public class EditorView extends FrameLayout {
+public class EditorView extends FrameLayout implements TextHeaderView.HeadingChangeListener, BoldButtonView.BoldTextListener, ItalicView.ItalicTextListener, BulletsView.BulletListener, LinkView.LinkInsertListener, DividerView.DividerListener, ImageInsertView.ImageInsertListener {
 
 
     @BindView(R.id.editor)
-    EditText editor;
-    @BindView(R.id.textSizeBtn)
-    TextSizeView textSizeBtn;
-    @BindView(R.id.bottomeControlsContainer)
-    LinearLayout bottomeControlsContainer;
-    @BindView(R.id.boldButton)
-    BoldButtonView boldButton;
-    @BindView(R.id.characterLimit)
-    TextView characterLimit;
-
-    private String actualContent;
-    private String formattedContent;
-
-    private int startIndex;
-    private int endIndex;
+    Editor editor;
+    @BindView(R.id.editorControlHolder)
+    RelativeLayout editorControlHolder;
+    @BindView(R.id.textHeaderView)
+    TextHeaderView textHeaderView;
+    @BindView(R.id.bold_text_control)
+    BoldButtonView boldTextControl;
+    @BindView(R.id.italic_text_control)
+    ItalicView italicTextControl;
+    @BindView(R.id.bullets_control)
+    BulletsView bulletsControl;
+    @BindView(R.id.link_view)
+    LinkView linkView;
+    @BindView(R.id.paragraph_divider_view)
+    DividerView paragraphDividerView;
+    @BindView(R.id.image_insertBtn)
+    ImageInsertView imageInsertBtn;
+    private Context mContext;
+    private View view;
 
     public EditorView(@NonNull Context context) {
         super(context);
@@ -62,90 +65,72 @@ public class EditorView extends FrameLayout {
     }
 
     private void init(Context context) {
-
-        View view = LayoutInflater.from(context).inflate(R.layout.editor_view, this);
+        this.mContext = context;
+        view = LayoutInflater.from(context).inflate(R.layout.editor_view, this);
         ButterKnife.bind(this, view);
-
-        editor.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-
-                if (before < count) {
-                    if (charSequence.charAt(start + count - 1) == '\n') {
-                        startIndex = start + count - 1;
-                    }
-                    endIndex = charSequence.length();
-
-                    if (startIndex < endIndex)
-                        getSpanned(editor, startIndex, endIndex);
-
-                }
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                Log.d("TWW", getFormattedContent());
-            }
-        });
-    }
-
-    private void getSpanned(EditText et, int start, int end) {
-
-        textSizeBtn.setTarget(et, start, end);
-        boldButton.setTarget(et, start, end);
-
-        if (textSizeBtn.isActive()) {
-            // remove previous span
-            AbsoluteSizeSpan[] spanToRemove = et.getText().getSpans(start, end, AbsoluteSizeSpan.class);
-
-            for (AbsoluteSizeSpan aSpanToRemove : spanToRemove)
-                et.getText().removeSpan(aSpanToRemove);
-
-            et.getText().setSpan(textSizeBtn.getSizeSpan(), start, end, 0);
-
-        }
-
-        if (boldButton.isBoldActive()) {
-            // remove previous span
-            StyleSpan[] spanToRemove = et.getText().getSpans(start, end, StyleSpan.class);
-//
-//            for (StyleSpan aSpanToRemove : spanToRemove)
-//                et.getText().removeSpan(aSpanToRemove);
-
-            et.getText().setSpan(boldButton.getBoldSpan(), start, end, 0);
-        }
-//
-//        if (blockquote.isQuoteActive()) {
-//            try {
-//                // remove previous span
-//                BlockQuoteView.CustomQuoteSpan[] spanToRemove = et.getText().getSpans(start, end, BlockQuoteView.CustomQuoteSpan.class);
-//
-//                for (BlockQuoteView.CustomQuoteSpan aSpanToRemove : spanToRemove)
-//                    et.getText().removeSpan(aSpanToRemove);
-//
-//                et.getText().setSpan(blockquote.getQuoteSpan(), start, end,0);
-//
-//            } catch (Exception e) {
-//
-//            }
-//        }
-
+        attachListeners();
+        editor.render();
 
     }
 
-    public String getFormattedContent() {
-        return EditorUtils.getHtml(editor);
+    private void attachListeners() {
+        textHeaderView.setHeadingChangeListener(this);
+        boldTextControl.setBoldTextListener(this);
+        italicTextControl.setItalicTextListener(this);
+        bulletsControl.setBulletListener(this);
+        linkView.setLinkInsertListener(this);
+        paragraphDividerView.setDividerListener(this);
+        imageInsertBtn.setInsertListener(this);
     }
 
-    public String getActualContent() {
-        return actualContent;
+    @Override
+    public void onHeading1Active() {
+        editor.updateTextStyle(EditorTextStyle.H1);
+    }
+
+    @Override
+    public void onHeading2Active() {
+        editor.updateTextStyle(EditorTextStyle.H2);
+    }
+
+    @Override
+    public void onHeadingClear() {
+
+        editor.updateTextStyle(EditorTextStyle.H1);
+    }
+
+    @Override
+    public void onBoldText(boolean isBoldActive) {
+        editor.updateTextStyle(EditorTextStyle.BOLD);
+    }
+
+    @Override
+    public void onItalicText(boolean isActive) {
+        editor.updateTextStyle(EditorTextStyle.ITALIC);
+    }
+
+    @Override
+    public void onList(boolean isOrdered) {
+        editor.insertList(isOrdered);
+    }
+
+    @Override
+    public void onInsertLink() {
+        editor.insertLink();
+    }
+
+    @Override
+    public void onInsertDivider() {
+        editor.insertDivider();
     }
 
 
+    @Override
+    public void onInsertImage() {
+        editor.openImagePicker();
+    }
+
+    public Editor getEditor() {
+        return editor;
+    }
 }

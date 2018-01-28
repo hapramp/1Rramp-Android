@@ -2,54 +2,89 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true">
 
-
-    <EditText
-        android:id="@+id/editor"
+    <ScrollView
+        android:layout_above="@+id/editorControlHolder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/bottomeControlsContainer"
-        android:background="@drawable/post_editor_bg"
-        android:gravity="start"
-        android:hint="@string/type_here"
-        android:padding="4dp" />
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/bottomeControlsContainer"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
+        <com.github.irshulx.Editor
+            android:id="@+id/editor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            app:render_type="Editor" />
+
+    </ScrollView>
+
+    <RelativeLayout
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:padding="4dp">
+        android:id="@+id/editorControlHolder"
+        android:layout_width="match_parent"
+        android:layout_height="48dp">
 
-        <com.hapramp.views.editor.TextSizeView
-            android:id="@+id/textSizeBtn"
+        <FrameLayout
+            android:background="@drawable/article_editor_control_bar_shadow"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+        <com.hapramp.views.editor.TextHeaderView
+            android:id="@+id/textHeaderView"
+            android:layout_centerVertical="true"
             android:layout_width="48dp"
-            android:layout_height="match_parent" />
+            android:layout_height="48dp"/>
 
         <com.hapramp.views.editor.BoldButtonView
-            android:visibility="invisible"
-            android:id="@+id/boldButton"
+            android:layout_toRightOf="@+id/textHeaderView"
+            android:id="@+id/bold_text_control"
             android:layout_width="48dp"
-            android:layout_height="match_parent" />
+            android:layout_height="48dp"/>
 
-        <!--<com.hapramp.views.editor.BlockQuoteView-->
-        <!--android:id="@+id/blockquote"-->
-        <!--android:layout_width="48dp"-->
-        <!--android:layout_height="match_parent"/>-->
+        <com.hapramp.views.editor.ItalicView
+            android:layout_toRightOf="@+id/bold_text_control"
+            android:layout_centerVertical="true"
+            android:id="@+id/italic_text_control"
+            android:layout_width="48dp"
+            android:layout_height="48dp"/>
+
+        <com.hapramp.views.editor.BulletsView
+            android:layout_toRightOf="@+id/italic_text_control"
+            android:layout_centerVertical="true"
+            android:id="@+id/bullets_control"
+            android:layout_width="48dp"
+            android:layout_height="48dp"/>
 
 
-    </LinearLayout>
+        <com.hapramp.views.editor.LinkView
+            android:layout_toRightOf="@+id/bullets_control"
+            android:layout_centerVertical="true"
+            android:id="@+id/link_view"
+            android:layout_width="48dp"
+            android:layout_height="48dp"/>
 
-    <TextView
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:gravity="center"
-        android:id="@+id/characterLimit"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:padding="4dp"
-        android:text="0" />
+        <com.hapramp.views.editor.DividerView
+            android:layout_toRightOf="@+id/link_view"
+            android:layout_centerVertical="true"
+            android:contentDescription="Line Divider"
+            android:id="@+id/paragraph_divider_view"
+            android:layout_width="48dp"
+            android:layout_height="48dp"/>
+
+        <com.hapramp.views.editor.ImageInsertView
+            android:layout_toRightOf="@+id/paragraph_divider_view"
+            android:layout_centerVertical="true"
+            android:id="@+id/image_insertBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"/>
+
+
+
+    </RelativeLayout>
+
 
 </RelativeLayout>

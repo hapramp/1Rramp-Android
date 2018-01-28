@@ -76,117 +76,117 @@ public class CreateArticleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_article);
         ButterKnife.bind(this);
-        init();
-        attachListeners();
+       // init();
+       // attachListeners();
 
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-
-    private void init() {
-
-        typeface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
-        backBtnFromArticleMeta.setTypeface(typeface);
-        closeBtn.setTypeface(typeface);
-        selectedSkills = new ArrayList<>();
-        articleCategoryView.setCategoryItems(SkillsUtils.getSkillsSet());
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
-    }
-
-    private void attachListeners() {
-
-
-        closeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                metaView.setVisibility(View.VISIBLE);
-                // avoid touch input pass to underneath views
-                metaView.setClickable(true);
-
-            }
-        });
-
-        backBtnFromArticleMeta.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //hide meta view
-                metaView.setVisibility(View.GONE);
-                metaView.setClickable(false);
-            }
-        });
-
-        publishButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                prepareAndPublishArticle();
-            }
-        });
-
-    }
-
-    private void prepareAndPublishArticle() {
-
-        if (!validatePostContent())
-            return;
-
-        if (!isSkillSelected()) {
-            toast("You Should Select Skills Regarding Your Post");
-            return;
-        }
-
-
-        PostJobModel postJob = new PostJobModel(
-                String.valueOf(SystemClock.currentThreadTimeMillis()),
-                editor.getFormattedContent(),
-                mediaUri,
-                Constants.CONTENT_TYPE_ARTICLE,
-                articleCategoryView.getSelectedSkills(),
-                1,
-                PostJobModel.JOB_PENDING);
-
-        PostCreationController.addJob(postJob);
-
-        finish();
-
-    }
-
-    private boolean isSkillSelected() {
-        return articleCategoryView.getSelectedSkills().size() > 0;
-    }
-
-
-    private boolean validatePostContent() {
-
-        if (editor.getActualContent().length() < 140) {
-            Toast.makeText(this, "Your Content is Small. Minimum Article Size is 140", Toast.LENGTH_LONG).show();
-            return false;
-        } else {
-            return true;
-        }
-
-    }
-
-    private void toast(String s) {
-        Toast.makeText(this, s, Toast.LENGTH_LONG).show();
-    }
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//    }
+//
+//
+//    private void init() {
+//
+//        typeface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
+//        backBtnFromArticleMeta.setTypeface(typeface);
+//        closeBtn.setTypeface(typeface);
+//        selectedSkills = new ArrayList<>();
+//        articleCategoryView.setCategoryItems(SkillsUtils.getSkillsSet());
+//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+//
+//    }
+//
+//    private void attachListeners() {
+//
+//
+//        closeBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                finish();
+//            }
+//        });
+//
+//        nextButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                metaView.setVisibility(View.VISIBLE);
+//                // avoid touch input pass to underneath views
+//                metaView.setClickable(true);
+//
+//            }
+//        });
+//
+//        backBtnFromArticleMeta.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //hide meta view
+//                metaView.setVisibility(View.GONE);
+//                metaView.setClickable(false);
+//            }
+//        });
+//
+//        publishButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                prepareAndPublishArticle();
+//            }
+//        });
+//
+//    }
+//
+//    private void prepareAndPublishArticle() {
+//
+//        if (!validatePostContent())
+//            return;
+//
+//        if (!isSkillSelected()) {
+//            toast("You Should Select Skills Regarding Your Post");
+//            return;
+//        }
+//
+//
+//        PostJobModel postJob = new PostJobModel(
+//                String.valueOf(SystemClock.currentThreadTimeMillis()),
+//                editor.getFormattedContent(),
+//                mediaUri,
+//                Constants.CONTENT_TYPE_ARTICLE,
+//                articleCategoryView.getSelectedSkills(),
+//                1,
+//                PostJobModel.JOB_PENDING);
+//
+//        PostCreationController.addJob(postJob);
+//
+//        finish();
+//
+//    }
+//
+//    private boolean isSkillSelected() {
+//        return articleCategoryView.getSelectedSkills().size() > 0;
+//    }
+//
+//
+//    private boolean validatePostContent() {
+//
+//        if (editor.getActualContent().length() < 140) {
+//            Toast.makeText(this, "Your Content is Small. Minimum Article Size is 140", Toast.LENGTH_LONG).show();
+//            return false;
+//        } else {
+//            return true;
+//        }
+//
+//    }
+//
+//    private void toast(String s) {
+//        Toast.makeText(this, s, Toast.LENGTH_LONG).show();
+//    }
 
 
 }

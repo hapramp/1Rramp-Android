@@ -6,13 +6,12 @@
     android:layout_height="48dp">
 
     <TextView
-        android:id="@+id/bold"
-        android:text="B"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:layout_centerInParent="true"
-        android:padding="6dp"
         android:background="?selectableItemBackgroundBorderless"
+        android:id="@+id/link_btn"
+        android:text=""
+       android:layout_centerInParent="true"
+        android:textSize="18sp"
+        android:padding="6dp"
         android:textColor="@color/Black54"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

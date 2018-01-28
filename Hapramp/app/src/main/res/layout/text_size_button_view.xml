@@ -1,28 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="48dp"
-    android:gravity="center"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/container"
-    android:background="?selectableItemBackgroundBorderless"
+    android:layout_width="48dp"
     android:layout_height="48dp">
 
     <TextView
         android:id="@+id/biggerT"
-        android:text="T"
-        android:textSize="18sp"
-        android:textColor="@color/Black54"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="?selectableItemBackgroundBorderless"
+        android:padding="6dp"
+        android:text=""
+        android:textColor="@color/Black54"
+        android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/smallerT"
-        android:text="T"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:textSize="14sp"
-        android:textColor="@color/Black54"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 
 </RelativeLayout>

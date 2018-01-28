@@ -1,28 +1,32 @@
 package com.hapramp.activity;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.widget.EditText;
 
-import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.GooglePlayDriver;
-import com.firebase.jobdispatcher.Job;
+import com.github.irshulx.Editor;
+import com.github.irshulx.EditorListener;
 import com.hapramp.R;
-import com.hapramp.services.PostService;
 import com.hapramp.views.editor.EditorView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+
 public class TestActivity extends AppCompatActivity {
 
-    @BindView(R.id.et)
-    EditorView et;
+    @BindView(R.id.editorView)
+    EditorView editorView;
+
+    Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,41 +34,41 @@ public class TestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_test);
         ButterKnife.bind(this);
 
-//        et.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-//                Log.d("TWW","Text:"+charSequence.toString()+" Start:"+start+" Before:"+before+" Count:"+count);
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//
-//            }
-//        });
+        editor = editorView.getEditor();
 
-//        et.setOnSelectionChangeLister(new EditorView.OnSelectionChangeLister() {
-//            @Override
-//            public void onSelectionChanged(int start, int end) {
-//                handleSelectionChange(start,end);
-//            }
-//        });
+        editor.setEditorListener(new EditorListener() {
+            @Override
+            public void onTextChanged(EditText editText, Editable text) {
+                // Toast.makeText(EditorTestActivity.this, text, Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onUpload(Bitmap image, String uuid) {
 
-
-//    private void handleSelectionChange(int start, int end) {
-//
-//        // get all spans in this range
-//        AbsoluteSizeSpan[] sizeSpan = et.getText().getSpans(start,end,AbsoluteSizeSpan.class);
-//        // consider first span
-//        int startOfFirstSpan = et.getText().getSpanStart(sizeSpan[0]);
-//        int endOfFirstSpan = et.getText().getSpanEnd(sizeSpan[0]);
-//        textSizeView.setSpan(sizeSpan[0],et,startOfFirstSpan,endOfFirstSpan);
-//
-//    }
+                //do your upload image operations here, once done, call onImageUploadComplete and pass the url and uuid as reference.
+                editor.onImageUploadComplete("http://www.videogamesblogger.com/wp-content/uploads/2015/08/metal-gear-solid-5-the-phantom-pain-cheats-640x325.jpg",uuid);
+                // editor.onImageUploadFailed(uuid);
+            }
+        });
 
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == editor.PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+            Uri uri = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                editor.insertImage(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            // editor.RestoreState();
+        } else if (requestCode == editor.MAP_MARKER_REQUEST) {
+            editor.insertMap(data.getStringExtra("cords"));
+        }
+    }
+
+
 }
