@@ -5,6 +5,6 @@ package com.hapramp.interfaces;
  */
 
 public interface PostCreateCallback {
-    void onPostCreated(String jobId);
-    void onPostCreateError(String jobId);
+    void onPostCreated(String... jobId);
+    void onPostCreateError(String... jobId);
 }

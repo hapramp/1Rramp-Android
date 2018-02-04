@@ -28,6 +28,17 @@ public class ImageHandler {
 
     }
 
+    public static void loadSmaller(Context context,ImageView imageView, String _uri){
+
+        Glide.with(context)
+                .load(_uri)
+                .override(PixelUtils.dpToPx(72),PixelUtils.dpToPx(72))
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imageView);
+
+    }
+
     public static void loadCircularImage(final Context context, final ImageView imageView, String url) {
 
         Glide.with(context)

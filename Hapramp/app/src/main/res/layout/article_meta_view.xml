@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/metaView"
     android:visibility="gone"
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
 
     <RelativeLayout
-        android:background="#ffffff"
-        android:id="@+id/toolbar_container"
+        android:id="@+id/meta_toolbar_container"
+        android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:layout_marginBottom="4dp"
-        android:layout_width="match_parent">
+        android:background="#ffffff">
 
         <TextView
+            android:id="@+id/backBtnFromArticleMeta"
+            android:layout_width="?actionBarSize"
+            android:layout_height="?actionBarSize"
             android:background="?selectableItemBackgroundBorderless"
             android:gravity="center"
-            android:id="@+id/backBtnFromArticleMeta"
-            android:layout_height="?actionBarSize"
-            android:layout_width="?actionBarSize"
             android:text=""
             android:textSize="24sp" />
 
         <TextView
-            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
             android:layout_toRightOf="@+id/backBtnFromArticleMeta"
-            android:layout_width="wrap_content"
             android:text="Add Meta"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/publishButton"
@@ -46,51 +46,90 @@
             android:paddingTop="6dp"
             android:text="PUBLISH"
             android:textColor="@color/colorPrimary"
-            android:textSize="14sp" />
+            android:textSize="12sp" />
 
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_below="@+id/toolbar_container"
-        android:id="@+id/skills_wrapper"
-        android:background="#ffffff"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/meta_toolbar_container"
+        android:fillViewport="true">
 
-        <TextView
-            android:padding="8dp"
-            android:textSize="16sp"
-            android:id="@+id/category_caption"
-            android:text="Select Category"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <com.hapramp.views.post.PostCategoryView
-            android:padding="8dp"
-            android:layout_below="@+id/category_caption"
-            android:id="@+id/articleCategoryView"
+        <RelativeLayout
+            android:id="@+id/skills_wrapper"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:background="#ffffff">
 
-        <TextView
-            android:padding="8dp"
-            android:layout_below="@+id/articleCategoryView"
-            android:id="@+id/tagsCaption"
-            android:text="Tags (seperated by space or comma)"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/featured_image_caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:padding="8dp"
+                android:text="Select Featured Image"
+                android:textColor="@color/Black38"
+                android:textSize="14sp" />
 
-        <EditText
-            android:padding="8dp"
-            android:background="@drawable/post_editor_bg"
-            android:layout_below="@+id/tagsCaption"
-            android:id="@+id/tagsInputBox"
-            android:hint="Add Tags"
-            android:textSize="14sp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/featured_image_selectorRV"
+                android:layout_width="match_parent"
+                android:layout_height="84dp"
+                android:layout_below="@+id/featured_image_caption"
+                android:layout_marginStart="8dp" />
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/community_caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/featured_image_selectorRV"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Community"
+                android:textColor="@color/Black38"
+                android:textSize="14sp" />
+
+            <com.hapramp.views.post.PostCategoryView
+                android:id="@+id/articleCategoryView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/community_caption"
+                android:padding="8dp" />
+
+            <TextView
+                android:id="@+id/tagsCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/articleCategoryView"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Tags (seperated by space or comma)"
+                android:textColor="@color/Black38" />
+
+            <EditText
+                android:id="@+id/tagsInputBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tagsCaption"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/add_tag_editor_bg"
+                android:hint="Add Tags"
+                android:padding="8dp"
+                android:layout_marginTop="8dp"
+                android:textSize="14sp" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/meta_toolbar_container"
+        android:background="@drawable/toolbar_shadow" />
 
 </RelativeLayout>

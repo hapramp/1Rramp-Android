@@ -1,5 +1,6 @@
 package com.hapramp.services;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
@@ -138,11 +139,12 @@ public class PostService extends JobService implements PostCreateCallback {
                 1);
 
         DataServer.createPost(jobId, body, this);
+
     }
 
 
     @Override
-    public void onPostCreated(String jobId) {
+    public void onPostCreated(String... jobId) {
 
         sendBroadcast();
         l("Removing job " + jobId + " From DB");
@@ -165,7 +167,7 @@ public class PostService extends JobService implements PostCreateCallback {
     }
 
     @Override
-    public void onPostCreateError(String jobId) {
+    public void onPostCreateError(String... jobId) {
         //retry the jobs
         l("Something went wrong, we will try again");
         jobFinished(jobParameters, true);
@@ -200,5 +202,7 @@ public class PostService extends JobService implements PostCreateCallback {
         Intent intent = new Intent(Constants.ACTION_POST_UPLOAD);
         sendBroadcast(intent);
     }
+
+
 
 }

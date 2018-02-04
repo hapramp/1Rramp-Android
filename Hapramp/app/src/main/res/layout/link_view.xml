@@ -8,11 +8,11 @@
     <TextView
         android:background="?selectableItemBackgroundBorderless"
         android:id="@+id/link_btn"
-        android:text=""
+        android:text=""
        android:layout_centerInParent="true"
         android:textSize="18sp"
         android:padding="6dp"
-        android:textColor="@color/Black54"
+        android:textColor="@color/Black87"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

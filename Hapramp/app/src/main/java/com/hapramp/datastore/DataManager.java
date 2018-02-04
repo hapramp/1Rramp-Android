@@ -10,6 +10,7 @@ import com.hapramp.db.DatabaseHelper;
 import com.hapramp.interfaces.PostFetchCallback;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.preferences.CachePreference;
+import com.hapramp.utils.ConnectionUtils;
 
 /**
  * Created by Ankit on 1/21/2018.
@@ -84,16 +85,22 @@ public class DataManager {
                 }
             }.start();
 
-            l("Starting sync");
-            //start syncing of posts and refresh the cache
-            startPostSync(uri, communityId, false);
+            if(ConnectionUtils.isConnected(context)) {
+                l("Starting sync");
+                //start syncing of posts and refresh the cache
+                postLoadListener.onRefreshing();
+                startPostSync(uri, communityId, false);
+            }
 
         } else {
             // there is no cache!!
             // start loading from server
             // return the results and cache them
-            l("Start Sync From Server");
-            startPostSync(uri, communityId, isLoadMore);
+            if(ConnectionUtils.isConnected(context)) {
+                l("Start Sync From Server");
+                postLoadListener.onRefreshing();
+                startPostSync(uri, communityId, isLoadMore);
+            }
 
         }
     }
@@ -189,6 +196,8 @@ public class DataManager {
         void onPostLoadError(String errorMsg);
 
         void onLoading();
+
+        void onRefreshing();
 
         void onPostRefreshed(PostResponse refreshedResponse);
 

@@ -34,7 +34,9 @@ public class BulletsView extends FrameLayout {
 
     public static final String ORDERED_LIST_ICON_TEXT = "\uF27B";
     public static final String UNORDERED_LIST_ICON_TEXT = "\uF279";
-
+    private boolean states[] = {false,true,true};
+    private String iconTexts[] = {UNORDERED_LIST_ICON_TEXT,ORDERED_LIST_ICON_TEXT,UNORDERED_LIST_ICON_TEXT};
+    int currentStateIndex = -1;
 
     public BulletsView(@NonNull Context context) {
         super(context);
@@ -60,7 +62,7 @@ public class BulletsView extends FrameLayout {
         container.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                orderOfList = (orderOfList == ORDERED) ? UNORDERED : ORDERED;
+                currentStateIndex++;
                 invalidateButton();
             }
         });
@@ -69,17 +71,12 @@ public class BulletsView extends FrameLayout {
 
     private void invalidateButton() {
 
-        if (orderOfList == ORDERED) {
-            bullet.setText(ORDERED_LIST_ICON_TEXT);
-            if (bulletListener != null) {
-                bulletListener.onList(true);
-            }
-        } else {
-            bullet.setText(UNORDERED_LIST_ICON_TEXT);
-            if (bulletListener != null) {
-                bulletListener.onList(false);
-            }
+        int ind = currentStateIndex%3;
+        boolean isOrdered = states[ind];
+        if (bulletListener != null) {
+            bulletListener.onList(isOrdered);
         }
+        bullet.setText(iconTexts[ind]);
 
 
     }

@@ -58,7 +58,7 @@ public class CategoryTextView extends FrameLayout {
         if(selected){
             content.setTextColor(Color.WHITE);
         }else{
-            content.setTextColor(Color.parseColor("#61000000"));
+            content.setTextColor(Color.parseColor("#8a000000"));
         }
 
     }

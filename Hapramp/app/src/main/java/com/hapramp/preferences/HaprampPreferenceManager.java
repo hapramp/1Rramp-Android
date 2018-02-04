@@ -25,6 +25,7 @@ public class HaprampPreferenceManager {
 
     private static final String PREF_NAME = "hapramp_pref";
     private static final int PREF_MODE_PRIVATE = 1;
+    private String articleAsDraft;
 
     public HaprampPreferenceManager(int i) {
 
@@ -187,5 +188,14 @@ public class HaprampPreferenceManager {
 
     public int getUnreadNotifications(){
         return preferences.getInt("unread_notif",0);
+    }
+
+    public void setArticleAsDraft(String articleAsDraft) {
+        editor.putString("articleDraft",articleAsDraft);
+        editor.apply();
+    }
+
+    public String getArticleAsDraft(){
+        return preferences.getString("articleDraft","");
     }
 }

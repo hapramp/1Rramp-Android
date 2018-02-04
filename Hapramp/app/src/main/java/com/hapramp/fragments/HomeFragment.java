@@ -2,12 +2,13 @@ package com.hapramp.fragments;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.Space;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,41 +18,38 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.AbsListView;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.hapramp.activity.CommentEditorActivity;
-import com.hapramp.activity.ProfileActivity;
+import com.hapramp.R;
 import com.hapramp.adapters.CategoryRecyclerAdapter;
 import com.hapramp.adapters.PostsRecyclerAdapter;
-import com.hapramp.R;
-import com.hapramp.activity.DetailedActivity;
-import com.hapramp.api.DataServer;
 import com.hapramp.api.URLS;
 import com.hapramp.datastore.DataManager;
 import com.hapramp.interfaces.FetchSkillsResponse;
 import com.hapramp.interfaces.LikePostCallback;
-import com.hapramp.interfaces.PostFetchCallback;
 import com.hapramp.logger.L;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.utils.Constants;
+import com.hapramp.utils.PixelUtils;
 import com.hapramp.utils.SpaceDecorator;
 import com.hapramp.utils.ViewItemDecoration;
 
-import java.net.URL;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import retrofit2.http.Url;
 
 
-public class HomeFragment extends Fragment implements FetchSkillsResponse, CategoryRecyclerAdapter.OnCategoryItemClickListener, LikePostCallback, DataManager.PostLoadListener {
+public class HomeFragment extends Fragment implements FetchSkillsResponse,
+        CategoryRecyclerAdapter.OnCategoryItemClickListener, LikePostCallback,
+        DataManager.PostLoadListener {
 
     @BindView(R.id.homeRv)
     RecyclerView postsRecyclerView;
@@ -64,6 +62,9 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse, Categ
     TextView emptyMessage;
     @BindView(R.id.sectionsRv)
     RecyclerView sectionsRv;
+    @BindView(R.id.homeRefressLayout)
+    SwipeRefreshLayout homeRefressLayout;
+
 
     private PostsRecyclerAdapter recyclerAdapter;
     private Context mContext;
@@ -140,6 +141,16 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse, Categ
         postsRecyclerView.setNestedScrollingEnabled(false);
         fetchPosts(0);
         setScrollListener();
+        homeRefressLayout.setProgressViewOffset(false, PixelUtils.dpToPx(72),PixelUtils.dpToPx(120));
+        homeRefressLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+//                homeRefressLayout.setEnabled(true);
+//                homeRefressLayout.setRefreshing(true);
+
+                forceReloadData();
+            }
+        });
 
     }
 
@@ -189,14 +200,33 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse, Categ
     }
 
     @Override
+    public void onRefreshing() {
+        if(!homeRefressLayout.isRefreshing()) {
+            homeRefressLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("HomeFragment","refressing");
+                    homeRefressLayout.setEnabled(false);
+                    homeRefressLayout.setRefreshing(true);
+                }
+            });
+        }
+    }
+
+
+    @Override
     public void onPostRefreshed(PostResponse refreshedResponse) {
+        Log.d("HomeFragment","refreshed!!");
+        homeRefressLayout.setRefreshing(false);
+        homeRefressLayout.setEnabled(true);
 
         currentPostReponse = refreshedResponse;
         recyclerAdapter.setPosts(refreshedResponse.results);
         runLayoutAnimation(postsRecyclerView);
         showContent();
         hideContentLoadingProgress();
-        Toast.makeText(mContext,"Reloaded",Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, "Reloaded", Toast.LENGTH_SHORT).show();
+
     }
 
 
@@ -301,12 +331,12 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse, Categ
 
     private void fetchPosts(int id) {
 
-        dataManager.getPosts(URLS.POST_FETCH_START_URL,id,false);
+        dataManager.getPosts(URLS.POST_FETCH_START_URL, id, false);
 
     }
 
     public void forceReloadData() {
-        dataManager.getPosts(URLS.POST_FETCH_START_URL,currentSelectedSkillId,false);
+        dataManager.getPosts(URLS.POST_FETCH_START_URL, currentSelectedSkillId, false);
     }
 
     private void loadMore(int id) {
@@ -315,7 +345,7 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse, Categ
             return;
         }
 
-        dataManager.getPosts(currentPostReponse.next,id,true);
+        dataManager.getPosts(currentPostReponse.next, id, true);
 
     }
 

@@ -12,7 +12,7 @@
         android:background="?selectableItemBackgroundBorderless"
         android:padding="6dp"
         android:text=""
-        android:textColor="@color/Black54"
+        android:textColor="@color/Black87"
         android:textSize="18sp" />
 
 

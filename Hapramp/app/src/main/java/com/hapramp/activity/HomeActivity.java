@@ -25,7 +25,6 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.api.DataServer;
-import com.hapramp.controller.PostCreationController;
 import com.hapramp.fragments.CompetitionFragment;
 import com.hapramp.fragments.EarningFragment;
 import com.hapramp.fragments.HomeFragment;
@@ -581,7 +580,7 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 
     @Override
     public void onCreatePostButtonClicked() {
-        Intent intent = new Intent(this, NewPostCreationActivity.class);
+        Intent intent = new Intent(this, PostCreateActivity.class);
         startActivity(intent);
     }
 }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:background="@color/Black12"
+        android:id="@+id/image"
+        android:scaleType="centerCrop"
+        android:layout_width="84dp"
+        android:layout_height="84dp" />
+
+    <TextView
+        android:visibility="gone"
+        android:textColor="@color/colorPrimary"
+        android:text=""
+        android:background="#53ffffff"
+        android:textSize="36sp"
+        android:gravity="center"
+        android:id="@+id/selection_tick"
+        android:layout_width="84dp"
+        android:layout_height="84dp" />
+
+</RelativeLayout>

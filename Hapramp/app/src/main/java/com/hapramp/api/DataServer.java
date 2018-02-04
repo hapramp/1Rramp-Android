@@ -434,6 +434,29 @@ public class DataServer {
 
     }
 
+    public static void createPost(PostCreateBody postCreateBody, final PostCreateCallback callback){
+
+        getService()
+                .createPost(postCreateBody)
+                .enqueue(new Callback<PostResponse>() {
+                    @Override
+                    public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+                        if (response.isSuccessful()) {
+                            callback.onPostCreated();
+                        } else {
+                            L.D.m(TAG, ErrorUtils.parseError(response).toString());
+                            callback.onPostCreateError();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<PostResponse> call, Throwable t) {
+                        callback.onPostCreateError();
+                    }
+                });
+
+    }
+
     public static void createComment(String postId, CommentBody body, final CommentCreateCallback callback) {
 
         Log.d(TAG, "Creating comment..");

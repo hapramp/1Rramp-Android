@@ -12,7 +12,7 @@
         android:padding="6dp"
         android:background="?selectableItemBackgroundBorderless"
         android:textSize="18sp"
-        android:textColor="@color/Black54"
+        android:textColor="@color/Black87"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

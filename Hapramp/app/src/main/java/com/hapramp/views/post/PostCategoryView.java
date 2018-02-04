@@ -85,8 +85,8 @@ public class PostCategoryView extends FrameLayout {
 
             rootView.addView(view, i,
                     new ViewGroup.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.MATCH_PARENT));
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT));
         }
 
     }

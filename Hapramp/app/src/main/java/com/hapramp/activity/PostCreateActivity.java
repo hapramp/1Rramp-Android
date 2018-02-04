@@ -44,7 +44,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class NewPostCreationActivity extends AppCompatActivity {
+public class PostCreateActivity extends AppCompatActivity {
 
     private static final int REQUEST_IMAGE_SELECTOR = 101;
     @BindView(R.id.closeBtn)
@@ -268,8 +268,8 @@ public class NewPostCreationActivity extends AppCompatActivity {
     private void openGallery() {
 
         try {
-            if (ActivityCompat.checkSelfPermission(NewPostCreationActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(NewPostCreationActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_SELECTOR);
+            if (ActivityCompat.checkSelfPermission(PostCreateActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(PostCreateActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_SELECTOR);
             } else {
                 Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 galleryIntent.setType(galleryType);

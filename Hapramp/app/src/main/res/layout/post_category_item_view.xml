@@ -9,7 +9,7 @@
         android:paddingEnd="12dp"
         android:paddingTop="6dp"
         android:paddingBottom="6dp"
-        android:textColor="@color/Black38"
+        android:textColor="@color/Black54"
         android:background="@drawable/post_category_item_view_bg"
         android:id="@+id/category_item_text"
         android:text="Art Craft"
