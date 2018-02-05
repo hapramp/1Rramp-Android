@@ -9,7 +9,6 @@
         android:id="@+id/toolbar_container"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:layout_marginBottom="4dp"
         android:background="#ffffff">
 
         <TextView
@@ -63,7 +62,7 @@
             android:orientation="vertical">
 
             <FrameLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
@@ -75,9 +74,9 @@
                     android:hint="Share photos, videos,music or anything you like..."
                     android:maxLength="140"
                     android:minHeight="100dp"
-                    android:padding="24dp"
+                    android:padding="16dp"
                     android:textColor="@color/Black87"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/characterLimit"
@@ -90,72 +89,21 @@
 
             </FrameLayout>
 
-            <FrameLayout
-                android:id="@+id/postMediaContainer"
-                android:layout_width="match_parent"
-                android:layout_height="172dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:background="#119fdc"
-                android:visibility="gone">
-
-                <ImageView
-                    android:id="@+id/postMedia"
-                    android:layout_width="match_parent"
-                    android:layout_height="172dp"
-                    android:scaleType="centerCrop"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/audioIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text=""
-                    android:textColor="#ffffff"
-                    android:textSize="48sp"
-                    android:visibility="visible" />
-
-                <TextView
-                    android:id="@+id/audioFileName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|center"
-                    android:textSize="18sp"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/removeImageBtn"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_gravity="end"
-                    android:gravity="center"
-                    android:text=""
-                    android:textColor="#ffffff"
-                    android:textSize="36sp" />
-
-                <ProgressBar
-                    android:id="@+id/postMediaUploadProgress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:visibility="gone" />
-
-            </FrameLayout>
-
-            <RelativeLayout
-                android:id="@+id/skills_wrapper"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/postMediaContainer">
+          <com.hapramp.views.post.PostImageView
+              android:visibility="gone"
+              android:id="@+id/postImageView"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"/>
 
                 <TextView
                     android:id="@+id/category_caption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="8dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:textColor="@color/Black38"
                     android:text="Select Category"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <com.hapramp.views.post.PostCategoryView
                     android:id="@+id/postCategoryView"
@@ -163,13 +111,15 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/category_caption"
                     android:padding="8dp" />
-
-            </RelativeLayout>
-
         </LinearLayout>
 
     </ScrollView>
 
+    <FrameLayout
+        android:layout_below="@+id/toolbar_container"
+        android:background="@drawable/toolbar_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
 
     <RelativeLayout
         android:id="@+id/bottom_options_container"
@@ -177,7 +127,6 @@
         android:layout_height="?actionBarSize"
         android:layout_alignParentBottom="true"
         android:background="#ffffff">
-
 
         <TextView
             android:id="@+id/photosBtn"
@@ -207,7 +156,6 @@
             android:gravity="center"
             android:text=""
             android:textSize="24sp" />
-
 
     </RelativeLayout>
 

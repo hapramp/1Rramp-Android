@@ -6,11 +6,13 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -18,9 +20,6 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -28,23 +27,29 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.hapramp.R;
+import com.hapramp.api.DataServer;
 import com.hapramp.controller.PostCreationController;
+import com.hapramp.interfaces.PostCreateCallback;
 import com.hapramp.logger.L;
 import com.hapramp.models.PostJobModel;
+import com.hapramp.models.requests.PostCreateBody;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FileUtils;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.SkillsUtils;
 import com.hapramp.views.post.PostCategoryView;
+import com.hapramp.views.post.PostImageView;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PostCreateActivity extends AppCompatActivity {
+public class PostCreateActivity extends AppCompatActivity implements PostCreateCallback {
 
     private static final int REQUEST_IMAGE_SELECTOR = 101;
     @BindView(R.id.closeBtn)
@@ -53,30 +58,18 @@ public class PostCreateActivity extends AppCompatActivity {
     TextView postButton;
     @BindView(R.id.toolbar_container)
     RelativeLayout toolbarContainer;
-    @BindView(R.id.postMedia)
-    ImageView postMedia;
-    @BindView(R.id.audioIcon)
-    TextView audioIcon;
-    @BindView(R.id.audioFileName)
-    TextView audioFileName;
-    @BindView(R.id.removeImageBtn)
-    TextView removeImageBtn;
-    @BindView(R.id.postMediaUploadProgress)
-    ProgressBar postMediaUploadProgress;
-    @BindView(R.id.postMediaContainer)
-    FrameLayout postMediaContainer;
     @BindView(R.id.content)
     EditText content;
     @BindView(R.id.characterLimit)
     TextView characterLimit;
-    @BindView(R.id.scroll_view)
-    ScrollView scrollView;
+    @BindView(R.id.postImageView)
+    PostImageView postImageView;
     @BindView(R.id.category_caption)
     TextView categoryCaption;
     @BindView(R.id.postCategoryView)
     PostCategoryView postCategoryView;
-    @BindView(R.id.skills_wrapper)
-    RelativeLayout skillsWrapper;
+    @BindView(R.id.scroll_view)
+    ScrollView scrollView;
     @BindView(R.id.photosBtn)
     TextView photosBtn;
     @BindView(R.id.audioBtn)
@@ -85,20 +78,7 @@ public class PostCreateActivity extends AppCompatActivity {
     TextView videoBtn;
     @BindView(R.id.bottom_options_container)
     RelativeLayout bottomOptionsContainer;
-
-    private String uploadedMediaUri;
     private ProgressDialog progressDialog;
-    private boolean isSkillSelected = false;
-    private boolean isMediaUploaded = false;
-    private final static int POST_TYPE_PHOTO = 12;
-    private final static int POST_TYPE_AUDIO = 13;
-    private final static int POST_TYPE_VIDEO = 14;
-    int mediaType = -1;
-    String galleryType = "";
-    private String rootFolder;
-    private ArrayList<Integer> selectedSkills;
-    private boolean isMediaSelected = false;
-    private String mediaUri = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,35 +101,34 @@ public class PostCreateActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadDraft();
+    //    loadDraft();
     }
-
-    private void loadDraft() {
-
-//        //load content
-//        content.setText(HaprampPreferenceManager.getInstance().getPostDraft());
-//        //load image
-//        if (HaprampPreferenceManager.getInstance().getPostMediaDraft().length() > 0) {
-//            loadImageIntoView(HaprampPreferenceManager.getInstance().getPostMediaDraft());
-//        }
-
-    }
-
-    private void clearDraft() {
-        // clear post content
-        HaprampPreferenceManager.getInstance().savePostDraft("");
-        // clear image draft
-        HaprampPreferenceManager.getInstance().savePostMediaDraft("");
-
-    }
+//
+//    private void loadDraft() {
+//
+////        //load content
+////        content.setText(HaprampPreferenceManager.getInstance().getPostDraft());
+////        //load image
+////        if (HaprampPreferenceManager.getInstance().getPostMediaDraft().length() > 0) {
+////            loadImageIntoView(HaprampPreferenceManager.getInstance().getPostMediaDraft());
+////        }
+//
+//    }
+//
+//    private void clearDraft() {
+//        // clear post content
+//        HaprampPreferenceManager.getInstance().savePostDraft("");
+//        // clear image draft
+//        HaprampPreferenceManager.getInstance().savePostMediaDraft("");
+//
+//    }
 
     private void init() {
+
         closeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         photosBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         audioBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         videoBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-        removeImageBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-        selectedSkills = new ArrayList<>();
         postCategoryView.setCategoryItems(SkillsUtils.getSkillsSet());
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -185,7 +164,7 @@ public class PostCreateActivity extends AppCompatActivity {
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendJobToController();
+                publishPost();
             }
         });
 
@@ -203,7 +182,6 @@ public class PostCreateActivity extends AppCompatActivity {
         photosBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                galleryType = "image/*";
                 openGallery();
             }
         });
@@ -218,42 +196,44 @@ public class PostCreateActivity extends AppCompatActivity {
             }
         });
 
-        removeImageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                removeImageFromView();
-            }
-        });
-
     }
 
-    private void sendJobToController() {
+    private void publishPost() {
 
-        if(postCategoryView.getSelectedSkills().size()==0){
+        // check connection
+        if (!ConnectionUtils.isConnected(this)) {
+            showConnectivityError();
+            return;
+        }
+
+        if (postCategoryView.getSelectedSkills().size() == 0) {
             toast("Select Atleast One Category");
             return;
         }
 
-        PostJobModel postJob = new PostJobModel(
-                String.valueOf(SystemClock.currentThreadTimeMillis()),
-                content.getText().toString(),
-                mediaUri,
-                Constants.CONTENT_TYPE_POST,
-                postCategoryView.getSelectedSkills(),
-                1,
-                PostJobModel.JOB_PENDING);
+        String mediaUri = postImageView.getDownloadUrl();
 
-        PostCreationController.addJob(postJob);
-        finish();
+        if (mediaUri != null) {
 
+            showPublishingProgressDialog(true);
+
+            PostCreateBody postCreateBody = new PostCreateBody(
+                    content.getText().toString(),
+                    postImageView.getDownloadUrl(),
+                    Constants.CONTENT_TYPE_ARTICLE,
+                    postCategoryView.getSelectedSkills(),
+                    -1);
+
+            showPublishingProgressDialog(true);
+            //gather the data
+            DataServer.createPost(postCreateBody, this);
+        } else {
+            toast("Your media has not been uploaded yet");
+        }
     }
 
     private void toast(String s) {
         Toast.makeText(this, s, Toast.LENGTH_LONG).show();
-    }
-
-    private boolean isSkillsSelected() {
-        return selectedSkills.size() > 0;
     }
 
     private void initProgressDialog() {
@@ -261,7 +241,26 @@ public class PostCreateActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Post Upload");
         progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
         progressDialog.setMessage("Uploading Your Post...");
+
+    }
+
+    private void showConnectivityError() {
+        Snackbar.make(toolbarContainer, "No Internet!", Snackbar.LENGTH_SHORT).show();
+    }
+
+    private void showPublishingProgressDialog(boolean show) {
+
+        if (progressDialog != null) {
+            if (show) {
+                progressDialog.setMessage("Publishing Your Post");
+                progressDialog.setIndeterminate(true);
+                progressDialog.show();
+            }
+        } else {
+            progressDialog.hide();
+        }
 
     }
 
@@ -271,9 +270,10 @@ public class PostCreateActivity extends AppCompatActivity {
             if (ActivityCompat.checkSelfPermission(PostCreateActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(PostCreateActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_SELECTOR);
             } else {
-                Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                galleryIntent.setType(galleryType);
-                startActivityForResult(galleryIntent, REQUEST_IMAGE_SELECTOR);
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, REQUEST_IMAGE_SELECTOR);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -290,90 +290,33 @@ public class PostCreateActivity extends AppCompatActivity {
                     openGallery();
                 } else {
                     //do something like displaying a message that he didn`t allow the app to access gallery and you wont be able to let him select from gallery
+                    toast("Permission not granted to access images.");
                 }
                 break;
         }
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
-
-            String[] filePathColumn = {MediaStore.Images.Media.DATA};
-            Cursor cursor = getContentResolver().query(data.getData(), filePathColumn, null, null, null);
-            if (cursor != null) {
-                cursor.moveToFirst();
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                if (columnIndex < 0) {
-                    L.D.m("PostCreate", "Photo Url error!");
-                } else {
-                    handleMediaSelection(cursor.getString(columnIndex));
-                }
-                cursor.close();
+        if (requestCode == REQUEST_IMAGE_SELECTOR && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+            try {
+                postImageView.setImageSource(MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData()));
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
 
-    private void handleMediaSelection(String filePath) {
-
-        isMediaSelected = true;
-        // check type
-        String mimeType = FileUtils.getMimeType(filePath);
-        postMediaContainer.setVisibility(View.VISIBLE);
-
-        if (FileUtils.isImage(mimeType)) {
-            // image
-            mediaUri = filePath;
-            loadImageIntoView(filePath);
-            rootFolder = "images";
-
-        } else if (FileUtils.isVideo(mimeType)) {
-            // video
-            //todo: populate Media Uri
-            audioIcon.setVisibility(View.GONE);
-            audioFileName.setVisibility(View.GONE);
-            postMedia.setVisibility(View.VISIBLE);
-            rootFolder = "videos";
-
-        } else {
-            // audio
-            postMedia.setVisibility(View.GONE);
-            audioIcon.setVisibility(View.VISIBLE);
-            audioFileName.setVisibility(View.VISIBLE);
-            audioIcon.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-            audioFileName.setText(new File(filePath).getName());
-            //todo: populate Media Uri
-            rootFolder = "audios";
-
-        }
+    @Override
+    public void onPostCreated(String... jobId) {
+        showPublishingProgressDialog(false);
+        finish();
     }
 
-    private void loadImageIntoView(String filePath) {
-
-        audioIcon.setVisibility(View.GONE);
-        audioFileName.setVisibility(View.GONE);
-        postMedia.setVisibility(View.VISIBLE);
-
-        Glide.with(this)
-                .load(Uri.fromFile(new File(filePath)))
-                .into(postMedia);
-
-        //save as draft
-        HaprampPreferenceManager.getInstance().savePostMediaDraft(filePath);
-
+    @Override
+    public void onPostCreateError(String... jobId) {
+        showPublishingProgressDialog(false);
+        toast("Failed to create post");
     }
-
-    private void removeImageFromView() {
-
-        isMediaSelected = false;
-        mediaUri = "";
-        postMediaContainer.setVisibility(View.GONE);
-        // remove from draft
-        HaprampPreferenceManager.getInstance().savePostMediaDraft("");
-
-    }
-
 }

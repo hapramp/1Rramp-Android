@@ -158,7 +158,7 @@ public class EditorView extends FrameLayout implements TextHeaderView.HeadingCha
         StorageReference storageRef = storage.getReference();
         StorageReference ref =
                 storageRef
-                        .child("test_images")
+                        .child("article_images")
                         .child(PostJobModel.getMediaLocation());
 
         final UploadTask uploadTask = ref.putBytes(bytes);

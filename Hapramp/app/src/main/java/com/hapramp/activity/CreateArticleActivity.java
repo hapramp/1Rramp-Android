@@ -154,6 +154,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
 
         if (progressDialog != null) {
             if (show) {
+                progressDialog.setTitle("Article Upload");
                 progressDialog.setMessage("Publishing Your Article");
                 progressDialog.setIndeterminate(true);
                 progressDialog.show();
