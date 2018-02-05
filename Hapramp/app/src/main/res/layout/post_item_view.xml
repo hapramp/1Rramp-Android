@@ -33,22 +33,32 @@
             android:text="Ankit Kumar"
             android:textStyle="bold" />
 
-
         <TextView
             android:id="@+id/feed_owner_subtitle"
             android:textColor="@color/Black54"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/reference_line"
-            android:layout_toEndOf="@+id/feed_owner_pic"
-            android:text="iiit | 2 days ago" />
+            android:paddingStart="4sp"
+            android:layout_toEndOf="@+id/feed_owner_title"
+            android:layout_above="@+id/reference_line"
+            android:text="| 2 days ago" />
 
         <include layout="@layout/club_tag_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/feed_owner_pic"
+            android:layout_below="@+id/reference_line" />
+
+        <TextView
+            android:id="@+id/popupMenuDots"
+            android:background="?selectableItemBackgroundBorderless"
+            android:textSize="24sp"
+            android:gravity="center"
+            android:textColor="@color/Black38"
+            android:text=""
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="8dp" />
+            android:layout_width="48dp"
+            android:layout_height="match_parent" />
 
     </RelativeLayout>
 
@@ -92,8 +102,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tags"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
+            android:padding="8dp"
             android:text="@string/sample"
             android:maxLines="4"
             android:maxHeight="36dp"

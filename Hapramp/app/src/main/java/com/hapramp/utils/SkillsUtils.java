@@ -18,12 +18,12 @@ public class SkillsUtils {
     public static final int MUSIC = 8;
 
     // colors
-    private static final String L = "#c75475";
+    private static final String L = "#607d8b";
     private static final String T = "#8Bc34a";
     private static final String P = "#2196f3";
     private static final String D = "#607d8b";
-    private static final String A = "#9c27b0";
-    private static final String M = "#FFEB3B";
+    private static final String A = "#FFEB3B";
+    private static final String M = "#eF5350";
 
     final static String[] skills = {"Art", "Dance", "Music","Travel", "Literature", "Dramatics", "Photography"};
 
@@ -79,25 +79,25 @@ public class SkillsUtils {
                 return "All";
 
             case ART:
-                return "Art";
+                return "ART";
 
             case DANCE:
-                return "Dance";
+                return "DANCE";
 
             case TRAVEL:
-                return "Travel";
+                return "TRAVEL";
 
             case LITERATURE:
-                return "Literature";
+                return "LITERATURE";
 
             case DRAMATICS:
-                return "Dramatics";
+                return "DRAMATICS";
 
             case PHOTOGRAPHY:
-                return "Photography";
+                return "PHOTOGRAPHY";
 
             case MUSIC:
-                return "Music";
+                return "MUSIC";
 
         }
 

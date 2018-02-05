@@ -23,10 +23,8 @@ import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.OnPostDeleteCallback;
 import com.hapramp.interfaces.VoteDeleteCallback;
 import com.hapramp.interfaces.VotePostCallback;
-import com.hapramp.main.HapRampMain;
 import com.hapramp.models.requests.VoteRequestBody;
 import com.hapramp.models.response.PostResponse;
-import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
@@ -55,6 +53,12 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
     TextView feedOwnerTitle;
     @BindView(R.id.feed_owner_subtitle)
     TextView feedOwnerSubtitle;
+    @BindView(R.id.club3)
+    TextView club3;
+    @BindView(R.id.club2)
+    TextView club2;
+    @BindView(R.id.club1)
+    TextView club1;
     @BindView(R.id.post_header_container)
     RelativeLayout postHeaderContainer;
     @BindView(R.id.featured_image_post)
@@ -81,14 +85,9 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
     StarView starView;
     @BindView(R.id.post_meta_container)
     RelativeLayout postMetaContainer;
-    @BindView(R.id.club1)
-    TextView club1;
-    @BindView(R.id.club2)
-    TextView club2;
-    @BindView(R.id.club3)
-    TextView club3;
+    @BindView(R.id.popupMenuDots)
+    TextView popupMenuDots;
     private Context mContext;
-    private PostResponse.Results postData;
 
     public PostItemView(@NonNull Context context) {
         super(context);
@@ -106,11 +105,14 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
     }
 
     private void init(Context context) {
+
         this.mContext = context;
         View view = LayoutInflater.from(mContext).inflate(R.layout.post_item_view, this);
         ButterKnife.bind(this, view);
         hapcoinBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         commentBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+        popupMenuDots.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+
     }
 
     private void bind(final PostResponse.Results post) {
@@ -119,8 +121,7 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
         feedOwnerTitle.setText(post.user.full_name);
         feedOwnerSubtitle.setText(
                 String.format(mContext.getResources().getString(R.string.post_subtitle_format),
-                post.user.username,
-                MomentsUtils.getFormattedTime(post.created_at)));
+                        MomentsUtils.getFormattedTime(post.created_at)));
 
 
         // classify the type of content
@@ -153,7 +154,7 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
         if (post.media_uri.length() == 0) {
             featuredImagePost.setVisibility(GONE);
         } else {
-            featuredImagePost.layout(0,0,0,0);
+            featuredImagePost.layout(0, 0, 0, 0);
             ImageHandler.load(mContext, featuredImagePost, post.media_uri);
             featuredImagePost.setVisibility(View.VISIBLE);
         }
@@ -215,20 +216,20 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
 
         int size = skills.size();
         resetVisibility();
-        if(size>0){
+        if (size > 0) {
             //first skill
             club1.setVisibility(VISIBLE);
-            club1.setText(SkillsUtils.getSkillCharacter(skills.get(0).id));
+            club1.setText(SkillsUtils.getSkillTitleFromId(skills.get(0).id));
             club1.getBackground().setColorFilter(SkillsUtils.getSkillTagColorFromId(skills.get(0).id), PorterDuff.Mode.SRC_ATOP);
-            if(size>1){
+            if (size > 1) {
                 // second skills
                 club2.setVisibility(VISIBLE);
-                club2.setText(SkillsUtils.getSkillCharacter(skills.get(1).id));
+                club2.setText(SkillsUtils.getSkillTitleFromId(skills.get(1).id));
                 club2.getBackground().setColorFilter(SkillsUtils.getSkillTagColorFromId(skills.get(1).id), PorterDuff.Mode.SRC_ATOP);
-                if(size>2){
+                if (size > 2) {
                     // third skills
                     club3.setVisibility(VISIBLE);
-                    club3.setText(SkillsUtils.getSkillCharacter(skills.get(2).id));
+                    club3.setText(SkillsUtils.getSkillTitleFromId(skills.get(2).id));
                     club3.getBackground().setColorFilter(SkillsUtils.getSkillTagColorFromId(skills.get(2).id), PorterDuff.Mode.SRC_ATOP);
                 }
             }
@@ -292,7 +293,6 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
 
 
     public void setPostData(PostResponse.Results postData) {
-        this.postData = postData;
         bind(postData);
     }
 

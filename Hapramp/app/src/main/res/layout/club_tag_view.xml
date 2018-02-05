@@ -2,6 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
+    android:paddingTop="2dp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
@@ -11,12 +12,17 @@
         android:textColor="#ffffff"
         android:gravity="center"
         android:id="@+id/club3"
-        android:textSize="16sp"
-        android:text="A"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:text="ART"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
-        android:layout_width="24sp"
-        android:layout_height="24sp" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 
     <TextView
@@ -25,12 +31,17 @@
         android:textColor="#ffffff"
         android:gravity="center"
         android:id="@+id/club2"
-        android:textSize="16sp"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
         android:text="T"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
-        android:layout_width="24sp"
-        android:layout_height="24sp" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 
     <TextView
@@ -39,11 +50,16 @@
         android:textColor="#ffffff"
         android:gravity="center"
         android:id="@+id/club1"
-        android:textSize="16sp"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
         android:text="T"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
-        android:layout_width="24sp"
-        android:layout_height="24sp" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
