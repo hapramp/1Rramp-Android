@@ -38,6 +38,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     public ProfileHeaderModel profileHeaderModel;
     private boolean isAdapterForProfile;
     private int s;
+    private int defaultListSize;
 
     public PostsRecyclerAdapter(Context mContext) {
         this.mContext = mContext;
@@ -46,6 +47,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     public void setProfileHeaderModel(ProfileHeaderModel profileHeaderModel) {
         this.profileHeaderModel = profileHeaderModel;
+        defaultListSize = 1; // for header
         notifyDataSetChanged();
     }
 
@@ -53,8 +55,9 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         this.hasMoreToLoad = hasMoreToLoad;
     }
 
-    public void setIsAdapterForProfile(boolean forProfile){
+    public void setIsAdapterForProfile(boolean forProfile) {
         this.isAdapterForProfile = forProfile;
+        defaultListSize = forProfile ? 0 : 1;
     }
 
     public boolean itIsForProfile() {
@@ -72,13 +75,13 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         if (itIsForProfile()) {
             if (position == 0) {
-//                Log.d("Adapter","profile header");
+                //Log.d("Adapter", "profile header");
                 return VIEW_TYPE_PROFILE_HEADER;
             }
         } else {
             // for non-profile we have blank views at top
             if (position == 0) {
-  //              Log.d("Adapter","blank");
+                //Log.d("Adapter", "blank");
                 return VIEW_TYPE_BLANK_TOP;
             }
         }
@@ -119,11 +122,11 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int pos) {
 
-      //  Log.d("Adapter", "Binding at " + pos);
+        //  Log.d("Adapter", "Binding at " + pos);
         if (viewHolder instanceof LoadMoreViewHolder) {
-            if(hasMoreToLoad) {
+            if (hasMoreToLoad) {
                 ((LoadMoreViewHolder) viewHolder).startSimmer();
-            }else{
+            } else {
                 ((LoadMoreViewHolder) viewHolder).hideView();
             }
 
@@ -148,13 +151,20 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         // since we have additional item at the top + one at the bottom
         s = postResponses.size();
-        return s==0 ? 0 : s + 1;
 
+        return s == 0 ? defaultListSize : s + 1;
+
+    }
+
+    private int getListSizeDefault() {
+        // for home fragment  - 1 space band so : 1
+        // for profile - initially it will be 0, after it loads header, it will be 1
+        return defaultListSize;
     }
 
     public void setPosts(List<PostResponse.Results> results) {
         this.postResponses = results;
-        notifyItemRangeInserted(0,results.size());
+        notifyItemRangeInserted(0, results.size());
     }
 
     public void clearList() {
@@ -195,7 +205,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         }
 
-        public void hideView(){
+        public void hideView() {
             shimmerFrameLayout.setVisibility(View.GONE);
         }
     }

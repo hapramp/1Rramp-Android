@@ -26,7 +26,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.OrganisationActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+        </activity>
         <activity
             android:name=".activity.RegisterActivity"
             android:screenOrientation="portrait" />

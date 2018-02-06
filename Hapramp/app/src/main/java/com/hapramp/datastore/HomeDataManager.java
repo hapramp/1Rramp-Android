@@ -2,7 +2,6 @@ package com.hapramp.datastore;
 
 import android.content.Context;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.util.Log;
 
 import com.hapramp.api.DataServer;
@@ -16,9 +15,9 @@ import com.hapramp.utils.ConnectionUtils;
  * Created by Ankit on 1/21/2018.
  */
 
-public class DataManager {
+public class HomeDataManager {
 
-    private static final String TAG = DataManager.class.getSimpleName();
+    private static final String TAG = HomeDataManager.class.getSimpleName();
     private DatabaseHelper databaseHelper;
     private Context context;
     private PostLoadListener postLoadListener;
@@ -26,7 +25,7 @@ public class DataManager {
     private Handler mHandler;
     private String currentRequestId;
 
-    public DataManager(Context context) {
+    public HomeDataManager(Context context) {
         this.context = context;
         cachePreference = CachePreference.getInstance();
         databaseHelper = new DatabaseHelper(context);
@@ -45,7 +44,7 @@ public class DataManager {
             postLoadListener.onLoading();
         }
         l("=========================");
-        l("Get Post Req");
+        l("Get Post Req [Uri :"+uri+" communityId :"+communityId+" isLoadMore :"+isLoadMore);
         //perform a check for Cache
         if (cachePreference.isPostSynced(getSegmentId(uri,communityId)) && !isLoadMore) {
             // there are existing posts in the cache
@@ -188,6 +187,13 @@ public class DataManager {
         }
     }
 
+    public void getFreshPosts(String postFetchStartUrl, int currentSelectedSkillId) {
+        //send refreshing event
+        postLoadListener.onRefreshing();
+        //start syncing
+        startPostSync(postFetchStartUrl,currentSelectedSkillId,false);
+        //send back the result in onPostRefreshed()
+    }
 
     public interface PostLoadListener {
 
@@ -218,4 +224,5 @@ public class DataManager {
     private void l(String msg) {
         Log.i(TAG, msg);
     }
+
 }

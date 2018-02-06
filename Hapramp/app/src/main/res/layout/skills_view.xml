@@ -11,7 +11,7 @@
         android:layout_height="48dp" />
 
     <TextView
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_centerHorizontal="true"
         android:background="@drawable/skill_selection_overlat"
         android:text=""
@@ -19,7 +19,7 @@
         android:textSize="36sp"
         android:textColor="#ffffff"
         android:id="@+id/skill_selection_overlay"
-        android:layout_width="54dp"
+        android:layout_width="48dp"
         android:layout_height="48dp" />
 
     <TextView

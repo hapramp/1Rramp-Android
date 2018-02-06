@@ -245,7 +245,7 @@ public class ProfileFragment extends Fragment implements
 
 
         profilePostAdapter.setProfileHeaderModel(profileHeaderModel);
-
+        Log.d("ProfileFragment","user details "+userModel.toString());
         showContent(true);
 
     }
@@ -277,6 +277,7 @@ public class ProfileFragment extends Fragment implements
 
         currentPostReponse = postResponses;
         profilePostAdapter.setHasMoreToLoad(postResponses.next.length()>0);
+        Log.d("ProfileFragment","Binding posts "+postResponses.results.size());
         bindPosts(postResponses.results);
 
     }

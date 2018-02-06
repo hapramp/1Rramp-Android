@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:drawable="@color/LightBlack"/>
+
+    <item android:top="240dp" android:left="360dp" android:right="360dp" android:bottom="240dp">
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/hapramp_logo_trans"/>
+    </item>
+
+</layer-list>

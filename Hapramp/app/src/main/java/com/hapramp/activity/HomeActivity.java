@@ -332,56 +332,56 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 
                 currentVisibleFragment = homeFragment;
 
-                if (!homeFragment.isAdded()) {
+               // if (!homeFragment.isAdded()) {
                     fragmentManager.beginTransaction()
                             .addToBackStack("home")
-                            .add(R.id.contentPlaceHolder, homeFragment)
+                            .replace(R.id.contentPlaceHolder, homeFragment)
                             .commit();
-                }
+            //    }
 
-                showFragment(homeFragment);
+             //   showFragment(homeFragment);
 
                 break;
             case FRAGMENT_COMPETITION:
 
                 currentVisibleFragment = competitionFragment;
 
-                if (!competitionFragment.isAdded()) {
+            //    if (!competitionFragment.isAdded()) {
                     fragmentManager.beginTransaction()
                             .addToBackStack("competition")
-                            .add(R.id.contentPlaceHolder, competitionFragment)
+                            .replace(R.id.contentPlaceHolder, competitionFragment)
                             .commit();
-                }
+            //    }
 
-                showFragment(competitionFragment);
+            //    showFragment(competitionFragment);
 
                 break;
             case FRAGMENT_PROFILE:
 
                 currentVisibleFragment = profileFragment;
 
-                if (!profileFragment.isAdded()) {
+              //  if (!profileFragment.isAdded()) {
                     fragmentManager.beginTransaction()
                             .addToBackStack("profile")
-                            .add(R.id.contentPlaceHolder, profileFragment)
+                            .replace(R.id.contentPlaceHolder, profileFragment)
                             .commit();
-                }
+              //  }
 
-                showFragment(profileFragment);
+             //   showFragment(profileFragment);
 
                 break;
             case FRAGMENT_SETTINGS:
 
                 currentVisibleFragment = settingsFragment;
 
-                if (!settingsFragment.isAdded()) {
+              //  if (!settingsFragment.isAdded()) {
                     fragmentManager.beginTransaction()
                             .addToBackStack("setting")
-                            .add(R.id.contentPlaceHolder, settingsFragment)
+                            .replace(R.id.contentPlaceHolder, settingsFragment)
                             .commit();
-                }
+             //   }
 
-                showFragment(settingsFragment);
+             //   showFragment(settingsFragment);
 
                 break;
 
@@ -389,18 +389,18 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 
                 currentVisibleFragment = earningFragment;
 
-                if (!earningFragment.isAdded()) {
+            //    if (!earningFragment.isAdded()) {
                     fragmentManager.beginTransaction()
                             .addToBackStack("earning")
-                            .add(R.id.contentPlaceHolder, earningFragment)
+                            .replace(R.id.contentPlaceHolder, earningFragment)
                             .commit();
-                }
-
-                showFragment(earningFragment);
-
+             //   }
+             //   showFragment(earningFragment);
                 break;
+
             default:
                 break;
+
         }
     }
 

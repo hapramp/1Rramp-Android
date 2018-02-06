@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.Space;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,9 +17,6 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.AbsListView;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +25,7 @@ import com.hapramp.R;
 import com.hapramp.adapters.CategoryRecyclerAdapter;
 import com.hapramp.adapters.PostsRecyclerAdapter;
 import com.hapramp.api.URLS;
-import com.hapramp.datastore.DataManager;
+import com.hapramp.datastore.HomeDataManager;
 import com.hapramp.interfaces.FetchSkillsResponse;
 import com.hapramp.interfaces.LikePostCallback;
 import com.hapramp.logger.L;
@@ -49,7 +45,7 @@ import butterknife.Unbinder;
 
 public class HomeFragment extends Fragment implements FetchSkillsResponse,
         CategoryRecyclerAdapter.OnCategoryItemClickListener, LikePostCallback,
-        DataManager.PostLoadListener {
+        HomeDataManager.PostLoadListener {
 
     @BindView(R.id.homeRv)
     RecyclerView postsRecyclerView;
@@ -75,7 +71,7 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
     private LinearLayoutManager layoutManager;
     private ViewItemDecoration viewItemDecoration;
     private int y;
-    DataManager dataManager;
+    HomeDataManager dataManager;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -84,9 +80,8 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setRetainInstance(true);
-        dataManager = new DataManager(getActivity());
+        Log.d("HomeFragment","onCreate()");
+        dataManager = new HomeDataManager(getActivity());
         dataManager.registerPostListeners(this);
 
     }
@@ -94,11 +89,13 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
     @Override
     public void onResume() {
         super.onResume();
+        Log.d("HomeFragment","onResume()");
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        currentPostReponse = null;
         Log.d("HomeFragment", "onPause");
 
     }
@@ -106,6 +103,7 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d("HomeFragment","onDestroy()");
     }
 
     @Override
@@ -147,7 +145,6 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
             public void onRefresh() {
 //                homeRefressLayout.setEnabled(true);
 //                homeRefressLayout.setRefreshing(true);
-
                 forceReloadData();
             }
         });
@@ -169,6 +166,8 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
     @Override
     public void onPostLoaded(PostResponse postResponses) {
 
+        homeRefressLayout.setRefreshing(false);
+        homeRefressLayout.setEnabled(true);
         hideContentLoadingProgress();
         currentPostReponse = postResponses;
         // append Result
@@ -188,6 +187,14 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
 
     @Override
     public void onPostLoadError(String errorMsg) {
+
+        if(homeRefressLayout.isRefreshing()){
+            homeRefressLayout.setRefreshing(false);
+            homeRefressLayout.setEnabled(true);
+        }
+
+        Toast.makeText(mContext,errorMsg,Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -336,10 +343,15 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
     }
 
     public void forceReloadData() {
-        dataManager.getPosts(URLS.POST_FETCH_START_URL, currentSelectedSkillId, false);
+       // dataManager.getPosts(URLS.POST_FETCH_START_URL, currentSelectedSkillId, false);
+        dataManager.getFreshPosts(URLS.POST_FETCH_START_URL, currentSelectedSkillId);
+
     }
 
     private void loadMore(int id) {
+
+        if(currentPostReponse==null)
+            return;
 
         if (currentPostReponse.next.length() == 0) {
             return;

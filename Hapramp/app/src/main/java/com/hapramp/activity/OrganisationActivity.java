@@ -6,23 +6,29 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.hapramp.models.UserResponse;
-import com.hapramp.utils.FontManager;
 import com.hapramp.R;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.OrgUpdateCallback;
 import com.hapramp.interfaces.OrgsFetchCallback;
 import com.hapramp.logger.L;
-import com.hapramp.models.UserAccountModel;
+import com.hapramp.models.UserResponse;
 import com.hapramp.models.requests.UserUpdateModel;
 import com.hapramp.models.response.OrgsResponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.utils.FontManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +49,17 @@ public class OrganisationActivity extends AppCompatActivity implements OrgsFetch
     @BindView(R.id.organisation_continueBtn)
     TextView organisationContinueBtn;
     Typeface materialTypeface;
+    @BindView(R.id.toolbar_drop_shadow)
+    FrameLayout toolbarDropShadow;
+    @BindView(R.id.orgsCaption)
+    TextView orgsCaption;
+    @BindView(R.id.orgsLoadingProgress)
+    ProgressBar orgsLoadingProgress;
+    @BindView(R.id.skipButton)
+    TextView skipButton;
     private List<OrgsResponse> mOrgs;
     private ProgressDialog progressDialog;
+    private int selectedPos = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,44 +71,72 @@ public class OrganisationActivity extends AppCompatActivity implements OrgsFetch
     }
 
     private void fetchOrgs() {
+        orgsLoadingProgress.setVisibility(View.VISIBLE);
         DataServer.getOrgs(this);
     }
 
-    private void init(){
+    private void init() {
+
         progressDialog = new ProgressDialog(this);
         materialTypeface = new FontManager().getTypeFace(FontManager.FONT_MATERIAL);
         organisationPeopleIcon.setTypeface(materialTypeface);
         backBtn.setTypeface(materialTypeface);
+        orgsListView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+
+        skipButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                redirect();
+            }
+        });
+
+        organisationContinueBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestSetOrg();
+            }
+        });
+
     }
 
     @Override
     public void onOrgsFetched(List<OrgsResponse> orgs) {
+
+        orgsLoadingProgress.setVisibility(View.GONE);
+
         mOrgs = orgs;
         ArrayList<String> _o = new ArrayList<>();
-        for (OrgsResponse org :orgs) {
+        for (OrgsResponse org : orgs) {
             _o.add(org.getName());
         }
-        orgsListView.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,_o.toArray(new String[0])));
+        orgsListView.setAdapter(new ArrayAdapter<String>(this, R.layout.org_list_item, _o.toArray(new String[0])));
+
         orgsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                requestSetOrg(position);
+                selectedPos = position;
             }
         });
+
     }
 
-    private void requestSetOrg(int position) {
+    private void requestSetOrg() {
+
+        if(selectedPos==-1){
+            Toast.makeText(this,"Select Organisation to update",Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         UserResponse userAccountModel = HaprampPreferenceManager.getInstance().getUser();
         UserUpdateModel userUpdateModel = new UserUpdateModel(
                 userAccountModel.email,
                 userAccountModel.username,
                 userAccountModel.full_name,
-                mOrgs.get(position).id);
+                mOrgs.get(selectedPos).id);
 
-        L.D.m("Org","UserUpdateModel "+userAccountModel.toString());
+        L.D.m("Org", "UserUpdateModel " + userAccountModel.toString());
         showProgress("Setting Your Organisation...");
-        DataServer.updateOrg(String.valueOf(userAccountModel.id),userUpdateModel,this);
+        DataServer.updateOrg(String.valueOf(userAccountModel.id), userUpdateModel, this);
 
     }
 
@@ -112,25 +155,25 @@ public class OrganisationActivity extends AppCompatActivity implements OrgsFetch
     @Override
     public void onOrgFetchedError() {
         hideProgress();
-        Log.d("Org","Updated Org");
+        Log.d("Org", "Updated Org");
     }
 
     @Override
     public void onOrgUpdated() {
         hideProgress();
         redirect();
-        Log.d("Org","Updated Org");
+        Log.d("Org", "Updated Org");
     }
 
     private void redirect() {
-        Intent intent = new Intent(this,SkillRegistrationActivity.class);
+        Intent intent = new Intent(this, SkillRegistrationActivity.class);
         startActivity(intent);
-        finish();
     }
 
     @Override
     public void onOrgUpdateFailed() {
         hideProgress();
-        Log.d("Org","Updated Failed!!");
+        Log.d("Org", "Updated Failed!!");
     }
+
 }

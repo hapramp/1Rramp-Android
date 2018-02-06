@@ -44,6 +44,7 @@ public class SkillRegistrationActivity extends AppCompatActivity implements OnSk
         ButterKnife.bind(this);
         init();
         attachListeners();
+
     }
 
     private void attachListeners() {
@@ -57,7 +58,7 @@ public class SkillRegistrationActivity extends AppCompatActivity implements OnSk
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+               backToOrgsPage();
             }
         });
 
@@ -118,6 +119,10 @@ public class SkillRegistrationActivity extends AppCompatActivity implements OnSk
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
         hideProgress();
+        finish();
+    }
+
+    private void backToOrgsPage(){
         finish();
     }
 
