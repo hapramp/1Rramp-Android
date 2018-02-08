@@ -2,42 +2,47 @@ package com.hapramp.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.Space;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.ScaleAnimation;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
-import com.hapramp.adapters.CommentsAdapter;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.CommentFetchCallback;
 import com.hapramp.interfaces.OnPostDeleteCallback;
 import com.hapramp.interfaces.UserFetchCallback;
 import com.hapramp.interfaces.VoteDeleteCallback;
 import com.hapramp.interfaces.VotePostCallback;
-import com.hapramp.models.CommentModel;
 import com.hapramp.models.UserResponse;
 import com.hapramp.models.requests.VoteRequestBody;
 import com.hapramp.models.response.CommentsResponse;
 import com.hapramp.models.response.PostResponse;
-import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
-import com.hapramp.utils.ViewItemDecoration;
+import com.hapramp.utils.MomentsUtils;
+import com.hapramp.utils.PixelUtils;
+import com.hapramp.utils.SkillsUtils;
+import com.hapramp.views.comments.CommentView;
 import com.hapramp.views.extraa.StarView;
 
 import java.util.List;
@@ -50,22 +55,52 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
 
     @BindView(R.id.closeBtn)
     TextView closeBtn;
-    @BindView(R.id.feed_owner_pic)
-    ImageView feedOwnerPic;
-    @BindView(R.id.feed_owner_title)
-    TextView feedOwnerTitle;
-    @BindView(R.id.feed_owner_subtitle)
-    TextView feedOwnerSubtitle;
     @BindView(R.id.overflowBtn)
     TextView overflowBtn;
     @BindView(R.id.toolbar_container)
     RelativeLayout toolbarContainer;
-    @BindView(R.id.featured_image_post)
-    ImageView featuredImagePost;
-    @BindView(R.id.post_snippet)
-    TextView postSnippet;
-    @BindView(R.id.shareWithFriendBtn)
-    TextView shareWithFriendBtn;
+    @BindView(R.id.feed_owner_pic)
+    ImageView feedOwnerPic;
+    @BindView(R.id.reference_line)
+    Space referenceLine;
+    @BindView(R.id.feed_owner_title)
+    TextView feedOwnerTitle;
+    @BindView(R.id.feed_owner_subtitle)
+    TextView feedOwnerSubtitle;
+    @BindView(R.id.club3)
+    TextView club3;
+    @BindView(R.id.club2)
+    TextView club2;
+    @BindView(R.id.club1)
+    TextView club1;
+    @BindView(R.id.post_header_container)
+    RelativeLayout postHeaderContainer;
+    @BindView(R.id.featureImage)
+    ImageView featureImage;
+    @BindView(R.id.title)
+    TextView title;
+    @BindView(R.id.content)
+    TextView content;
+    @BindView(R.id.tags)
+    TextView tags;
+    @BindView(R.id.shareBtn)
+    TextView shareBtn;
+    @BindView(R.id.commentsViewContainer)
+    LinearLayout commentsViewContainer;
+    @BindView(R.id.moreCommentsCaption)
+    TextView moreCommentsCaption;
+    @BindView(R.id.commentCreaterAvatarMock)
+    ImageView commentCreaterAvatarMock;
+    @BindView(R.id.commentInputBoxMock)
+    EditText commentInputBoxMock;
+    @BindView(R.id.sendButtonMock)
+    TextView sendButtonMock;
+    @BindView(R.id.mockCommentParentView)
+    RelativeLayout mockCommentParentView;
+    @BindView(R.id.scroller)
+    ScrollView scroller;
+    @BindView(R.id.shadow)
+    ImageView shadow;
     @BindView(R.id.commentBtn)
     TextView commentBtn;
     @BindView(R.id.commentCount)
@@ -74,38 +109,27 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
     TextView hapcoinBtn;
     @BindView(R.id.hapcoins_count)
     TextView hapcoinsCount;
-    @BindView(R.id.post_overflow_icon)
-    TextView postOverflowIcon;
     @BindView(R.id.starView)
     StarView starView;
-    @BindView(R.id.post_meta_container)
+    @BindView(R.id.postMetaContainer)
     RelativeLayout postMetaContainer;
-    @BindView(R.id.commentsCaption)
-    TextView commentsCaption;
-    @BindView(R.id.writeCommentUserAvatar)
-    ImageView writeCommentUserAvatar;
-    @BindView(R.id.commentBox)
-    TextView commentBox;
-    @BindView(R.id.writeCommentComment)
-    RelativeLayout writeCommentComment;
-    @BindView(R.id.commentsRecyclerView)
-    RecyclerView commentsRecyclerView;
-    private String mContent;
-    private String mMediaUri;
-    private String mUserName;
-    private String postId;
-    private CommentsAdapter commentsAdapter;
-    private boolean isVoted;
-    private int mVote;
-    private String dpUrl;
-    private String totalVoteSum;
+    @BindView(R.id.commentCreaterAvatar)
+    ImageView commentCreaterAvatar;
+    @BindView(R.id.commentInputBox)
+    EditText commentInputBox;
+    @BindView(R.id.sendButton)
+    TextView sendButton;
+    @BindView(R.id.commentInputContainer)
+    RelativeLayout commentInputContainer;
+    @BindView(R.id.commentLoadingProgressBar)
+    ProgressBar commentLoadingProgressBar;
+    @BindView(R.id.emptyCommentsCaption)
+    TextView emptyCommentsCaption;
     private List<CommentsResponse.Results> comments;
-    private int ITEM_DECORATION_SPACE = 12;
-    private ViewItemDecoration viewItemDecoration;
-    private String totalUserVoted;
     private String currentCommentUrl;
-    private String moreCommentsAt;
-    private String mHapcoins;
+
+    private PostResponse.Results post;
+    private boolean commentBarVisible;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +138,7 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
         setContentView(R.layout.activity_details_post);
         ButterKnife.bind(this);
         collectExtras();
-        init();
+        fetchComments();
         setTypefaces();
         bindValues();
         attachListener();
@@ -128,44 +152,42 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        fetchComments();
+    public void onBackPressed() {
+
+        if (commentBarVisible) {
+            showCommentBar(false);
+        } else {
+            super.onBackPressed();
+        }
+
     }
 
-    private void init() {
-
-        commentsAdapter = new CommentsAdapter(this);
-        commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.comment_item_divider_view);
-        viewItemDecoration = new ViewItemDecoration(drawable);
-        commentsRecyclerView.addItemDecoration(viewItemDecoration);
-        commentsRecyclerView.setAdapter(commentsAdapter);
-
+    @Override
+    protected void onResume() {
+        super.onResume();
 
     }
 
     private void collectExtras() {
+        post = getIntent().getExtras().getParcelable("postData");
 
-        isVoted = getIntent().getExtras().getBoolean(Constants.EXTRAA_KEY_IS_VOTED);
-        mVote = getIntent().getExtras().getInt(Constants.EXTRAA_KEY_VOTE);
-        mContent = getIntent().getExtras().getString(Constants.EXTRAA_KEY_CONTENT);
-        mMediaUri = getIntent().getExtras().getString(Constants.EXTRAA_KEY_MEDIA_URL);
-        mUserName = getIntent().getExtras().getString(Constants.EXTRAA_KEY_USERNAME);
-        postId = getIntent().getExtras().getString(Constants.EXTRAA_KEY_POST_ID);
-        dpUrl = getIntent().getExtras().getString(Constants.EXTRAA_KEY_USER_DP_URL);
-        totalVoteSum = getIntent().getExtras().getString(Constants.EXTRAA_KEY_TOTAL_VOTE_SUM);
-        totalUserVoted = getIntent().getExtras().getString(Constants.EXTRAA_KEY_TOTAL_USER_VOTED);
-        currentCommentUrl = String.format(getResources().getString(R.string.commentUrl), Integer.valueOf(postId));
-        mHapcoins = getIntent().getExtras().getString(Constants.EXTRAA_KEY_HAPCOINS);
+//        isVoted = getIntent().getExtras().getBoolean(Constants.EXTRAA_KEY_IS_VOTED);
+//        mVote = getIntent().getExtras().getInt(Constants.EXTRAA_KEY_VOTE);
+//        mContent = getIntent().getExtras().getString(Constants.EXTRAA_KEY_CONTENT);
+//        mMediaUri = getIntent().getExtras().getString(Constants.EXTRAA_KEY_MEDIA_URL);
+//        mUserName = getIntent().getExtras().getString(Constants.EXTRAA_KEY_USERNAME);
+//        postId = getIntent().getExtras().getString(Constants.EXTRAA_KEY_POST_ID);
+//        dpUrl = getIntent().getExtras().getString(Constants.EXTRAA_KEY_USER_DP_URL);
+//        totalVoteSum = getIntent().getExtras().getString(Constants.EXTRAA_KEY_TOTAL_VOTE_SUM);
+//        totalUserVoted = getIntent().getExtras().getString(Constants.EXTRAA_KEY_TOTAL_USER_VOTED);
+        currentCommentUrl = String.format(getResources().getString(R.string.commentUrl), Integer.valueOf(post.id));
+//        mHapcoins = getIntent().getExtras().getString(Constants.EXTRAA_KEY_HAPCOINS);
 
     }
 
     private void fetchComments() {
 
         DataServer.getComments(currentCommentUrl, this);
-        // reset comments
-        commentsAdapter.resetList();
 
     }
 
@@ -178,35 +200,6 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
             }
         });
 
-        commentBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(DetailedActivity.this, CommentEditorActivity.class);
-                i.putExtra("context", mContent);
-                i.putExtra("postId", postId);
-                i.putExtra("author",mUserName);
-                startActivity(i);
-            }
-        });
-
-        commentBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(DetailedActivity.this, CommentEditorActivity.class);
-                i.putExtra("context", mContent);
-                i.putExtra("postId", postId);
-                i.putExtra("author",mUserName);
-                startActivity(i);
-            }
-        });
-
-        shareWithFriendBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(DetailedActivity.this, "Hey Dear! Excited about sharing this :). We are Working for You ", Toast.LENGTH_LONG).show();
-            }
-        });
-
         starView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -214,40 +207,54 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
             }
         });
 
+        commentInputBoxMock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCommentBar(true);
+            }
+        });
+
     }
 
     private void setTypefaces() {
+
         Typeface t = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
         closeBtn.setTypeface(t);
         overflowBtn.setTypeface(t);
         commentBtn.setTypeface(t);
         hapcoinBtn.setTypeface(t);
+        sendButton.setTypeface(t);
+        sendButtonMock.setTypeface(t);
+
     }
 
     private void bindValues() {
 
-        postSnippet.setText(Html.fromHtml(mContent));
+        // set basic meta-info
+        ImageHandler.loadCircularImage(this, feedOwnerPic, post.user.image_uri);
+        feedOwnerTitle.setText(post.user.full_name);
+        feedOwnerSubtitle.setText(
+                String.format(getResources().getString(R.string.post_subtitle_format),
+                        MomentsUtils.getFormattedTime(post.created_at)));
 
-        feedOwnerTitle.setText(mUserName);
-        if (mMediaUri.length() > 0) {
-            ImageHandler.load(this, featuredImagePost, mMediaUri);
+        setSkills(post.skills);
+
+        if (post.media_uri.length() > 0) {
+            ImageHandler.load(this, featureImage, post.media_uri);
         } else {
-            featuredImagePost.setVisibility(View.GONE);
+            featureImage.setVisibility(View.GONE);
         }
 
-        ImageHandler.loadCircularImage(this, feedOwnerPic, dpUrl);
-        feedOwnerSubtitle.setText(mUserName);
-        hapcoinsCount.setText(mHapcoins);
-        ImageHandler.load(this, writeCommentUserAvatar, HaprampPreferenceManager.getInstance().getUser().image_uri);
+        content.setText(Html.fromHtml(post.content));
 
         // initialize the starview
         starView.setVoteState(
                 new StarView.Vote(
-                        isVoted,
-                        Integer.valueOf(postId),
-                        mVote,
-                        Float.valueOf(totalVoteSum),
-                        Float.valueOf(totalUserVoted)
+                        post.is_voted,
+                        post.id,
+                        post.current_vote,
+                        post.vote_sum,
+                        post.vote_count
                 )).setOnVoteUpdateCallback(new StarView.onVoteUpdateCallback() {
             @Override
             public void onVoted(int postId, int vote) {
@@ -260,16 +267,121 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
             }
         });
 
+        String _comment_info = post.comment_count > 1 ? String.valueOf(post.comment_count).concat(" comments") : String.valueOf(post.comment_count).concat(" comment");
+        commentCount.setText(_comment_info);
+
+        hapcoinsCount.setText(String.valueOf(post.hapcoins));
 
     }
 
-    private void loadMoreComments() {
+    private void setSkills(List<PostResponse.Skills> skills) {
 
-        if (moreCommentsAt.length() > 0)
-            DataServer.getComments(moreCommentsAt, this);
+        int size = skills.size();
+        if (size > 0) {
+            //first skill
+            club1.setVisibility(View.VISIBLE);
+            club1.setText(SkillsUtils.getSkillTitleFromId(skills.get(0).id));
+            club1.getBackground().setColorFilter(SkillsUtils.getSkillTagColorFromId(skills.get(0).id), PorterDuff.Mode.SRC_ATOP);
+            if (size > 1) {
+                // second skills
+                club2.setVisibility(View.VISIBLE);
+                club2.setText(SkillsUtils.getSkillTitleFromId(skills.get(1).id));
+                club2.getBackground().setColorFilter(SkillsUtils.getSkillTagColorFromId(skills.get(1).id), PorterDuff.Mode.SRC_ATOP);
+                if (size > 2) {
+                    // third skills
+                    club3.setVisibility(View.VISIBLE);
+                    club3.setText(SkillsUtils.getSkillTitleFromId(skills.get(2).id));
+                    club3.getBackground().setColorFilter(SkillsUtils.getSkillTagColorFromId(skills.get(2).id), PorterDuff.Mode.SRC_ATOP);
+                }
+            }
+        }
 
     }
 
+    private void addComment(List<CommentsResponse.Results> results) {
+
+        commentLoadingProgressBar.setVisibility(View.GONE);
+        if (results.size() == 0) {
+            emptyCommentsCaption.setVisibility(View.VISIBLE);
+        }
+
+        int range = results.size() > 3 ? 3 : results.size();
+
+        for (int i = 0; i < range; i++) {
+
+            CommentView view = new CommentView(this);
+            view.setComment(results.get(i));
+            commentsViewContainer.addView(view, i,
+                    new ViewGroup.LayoutParams(
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        }
+
+        if (range > 3) {
+            moreCommentsCaption.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    private void showCommentBar(boolean show) {
+
+        if (show) {
+            commentBarVisible = true;
+            // hide mock bar and show real input box
+            scaleAndHideMainView(mockCommentParentView);
+//            commentInputContainer.animate()
+//                    .translationY(0)
+//                    .translationYBy(PixelUtils.dpToPx(64))
+//                    .setDuration(1000)
+//                    .start();
+            commentInputContainer.setVisibility(View.VISIBLE);
+
+        } else {
+
+            commentBarVisible = false;
+            //show mock bar and hide real input box
+            mockCommentParentView.setVisibility(View.VISIBLE);
+//            commentInputContainer.animate()
+//                    .translationY(PixelUtils.dpToPx(64))
+//                    .setDuration(1000)
+//                    .start();
+            commentInputContainer.setVisibility(View.GONE);
+
+        }
+
+    }
+
+    public void scaleAndHideMainView(final View view) {
+
+        Animation anim = new ScaleAnimation(
+                1f, 1f, // Start and end values for the X axis scaling
+                1f, 0f, // Start and end values for the Y axis scaling
+                Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
+                Animation.RELATIVE_TO_SELF, 1f); // Pivot point of Y scaling
+        anim.setFillAfter(false); // Needed to keep the result of the animation
+        anim.setDuration(200);
+        anim.setInterpolator(new DecelerateInterpolator(1f));
+        view.startAnimation(anim);
+        anim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                view.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+
+    }
 
     private void showPopUp(View v, final int post_id, final int position) {
 
@@ -315,23 +427,11 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
     @Override
     public void onCommentFetched(CommentsResponse response) {
 
-        prepareComments(response.results);
+        addComment(response.results);
         commentCount.setText(String.valueOf(response.results.size()));
-        moreCommentsAt = response.next;
 
     }
 
-    private void prepareComments(List<CommentsResponse.Results> comments) {
-
-        // fetch all commetns
-        // for each comment - request user and merge the infos
-        // at the end set the result to recyclerView
-        this.comments = comments;
-        for (int i = 0; i < comments.size(); i++) {
-            // request user
-            DataServer.requestUser(i, comments.get(i).user.id, this);
-        }
-    }
 
     @Override
     public void onCommentFetchError() {
@@ -340,17 +440,6 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
 
     @Override
     public void onUserFetched(int commentPosition, UserResponse response) {
-
-        // get the comments and response to create new CommentModel and add to recycler view
-
-        commentsAdapter.addComment(new CommentModel(
-                String.valueOf(comments.get(commentPosition).id),
-                String.valueOf(comments.get(commentPosition).user.id),
-                response.image_uri,
-                response.full_name,
-                comments.get(commentPosition).content,
-                comments.get(commentPosition).created_at
-        ));
 
     }
 

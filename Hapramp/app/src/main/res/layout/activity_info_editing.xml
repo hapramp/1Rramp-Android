@@ -28,7 +28,7 @@
         android:layout_margin="8dp"
         android:hint="Type Here..."
         android:padding="8dp"
-        android:background="@drawable/bio_editor_bg"
+        android:background="@drawable/blank_input_bg"
         android:gravity="top"
         android:layout_below="@+id/toolbar_container"
         android:id="@+id/bioEt"

@@ -3,6 +3,7 @@ package com.hapramp.views.post;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.Space;
@@ -248,16 +249,17 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
     private void navigateToDetailedPage(PostResponse.Results post) {
 
         Intent intent = new Intent(mContext, DetailedActivity.class);
-        intent.putExtra(Constants.EXTRAA_KEY_IS_VOTED, post.is_voted);
-        intent.putExtra(Constants.EXTRAA_KEY_VOTE, post.current_vote);
-        intent.putExtra(Constants.EXTRAA_KEY_USERNAME, post.user.username);
-        intent.putExtra(Constants.EXTRAA_KEY_MEDIA_URL, post.media_uri);
-        intent.putExtra(Constants.EXTRAA_KEY_CONTENT, post.content);
-        intent.putExtra(Constants.EXTRAA_KEY_POST_ID, String.valueOf(post.id));
-        intent.putExtra(Constants.EXTRAA_KEY_USER_DP_URL, post.user.image_uri);
-        intent.putExtra(Constants.EXTRAA_KEY_TOTAL_VOTE_SUM, String.valueOf(post.vote_sum));
-        intent.putExtra(Constants.EXTRAA_KEY_TOTAL_USER_VOTED, String.valueOf(post.vote_count));
-        intent.putExtra(Constants.EXTRAA_KEY_HAPCOINS, String.valueOf(post.hapcoins));
+        intent.putExtra("postData",post);
+//        intent.putExtra(Constants.EXTRAA_KEY_IS_VOTED, post.is_voted);
+//        intent.putExtra(Constants.EXTRAA_KEY_VOTE, post.current_vote);
+//        intent.putExtra(Constants.EXTRAA_KEY_USERNAME, post.user.username);
+//        intent.putExtra(Constants.EXTRAA_KEY_MEDIA_URL, post.media_uri);
+//        intent.putExtra(Constants.EXTRAA_KEY_CONTENT, post.content);
+//        intent.putExtra(Constants.EXTRAA_KEY_POST_ID, String.valueOf(post.id));
+//        intent.putExtra(Constants.EXTRAA_KEY_USER_DP_URL, post.user.image_uri);
+//        intent.putExtra(Constants.EXTRAA_KEY_TOTAL_VOTE_SUM, String.valueOf(post.vote_sum));
+//        intent.putExtra(Constants.EXTRAA_KEY_TOTAL_USER_VOTED, String.valueOf(post.vote_count));
+//        intent.putExtra(Constants.EXTRAA_KEY_HAPCOINS, String.valueOf(post.hapcoins));
 
         mContext.startActivity(intent);
 
@@ -293,13 +295,16 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
 
 
     public void setPostData(PostResponse.Results postData) {
+
         bind(postData);
+
     }
 
     @Override
     public void onVoteDeleted(PostResponse.Results updatedPost) {
         // update the hapcoins
         hapcoinsCount.setText(String.format(Locale.US, "%1.3f", updatedPost.hapcoins));
+
     }
 
     @Override
@@ -311,6 +316,7 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
     public void onPostVoted(PostResponse.Results updatedPost) {
         // update the hapcoins
         hapcoinsCount.setText(String.format(Locale.US, "%1.3f", updatedPost.hapcoins));
+
     }
 
     @Override
@@ -328,5 +334,6 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
     public void onPostDeleteFailed() {
 
     }
+
 }
 
