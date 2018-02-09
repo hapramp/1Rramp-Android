@@ -20,6 +20,9 @@ before_script:
   - export PATH=$PATH:$PWD/android-sdk-linux/platform-tools/
   - chmod +x ./gradlew
 
+before_install:
+  - yes | sdkmanager "platforms;android-27"
+
 stages:
   - build
   - test

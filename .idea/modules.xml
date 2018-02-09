@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Hapramp.iml" filepath="$PROJECT_DIR$/Hapramp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HapRamp.iml" filepath="$PROJECT_DIR$/HapRamp.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
