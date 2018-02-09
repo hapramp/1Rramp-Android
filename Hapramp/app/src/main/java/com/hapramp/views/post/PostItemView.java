@@ -3,7 +3,6 @@ package com.hapramp.views.post;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.Space;
@@ -17,7 +16,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
-import com.hapramp.activity.CommentEditorActivity;
 import com.hapramp.activity.DetailedActivity;
 import com.hapramp.activity.ProfileActivity;
 import com.hapramp.api.DataServer;
@@ -34,7 +32,6 @@ import com.hapramp.utils.SkillsUtils;
 import com.hapramp.views.extraa.StarView;
 
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -80,8 +77,6 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
     TextView hapcoinBtn;
     @BindView(R.id.hapcoins_count)
     TextView hapcoinsCount;
-    @BindView(R.id.post_overflow_icon)
-    TextView postOverflowIcon;
     @BindView(R.id.starView)
     StarView starView;
     @BindView(R.id.post_meta_container)
@@ -159,10 +154,8 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
             ImageHandler.load(mContext, featuredImagePost, post.media_uri);
             featuredImagePost.setVisibility(View.VISIBLE);
         }
-
-        hapcoinsCount.setText(String.format(Locale.US, "%1.3f", post.hapcoins));
-        String _comment_info = post.comment_count > 1 ? String.valueOf(post.comment_count).concat(" comments") : String.valueOf(post.comment_count).concat(" comment");
-        commentCount.setText(_comment_info);
+        setHapcoins(post.hapcoins);
+        setCommentCount(post.comment_count);
 
         commentBtn.setOnClickListener(new OnClickListener() {
             @Override
@@ -213,6 +206,14 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
 
     }
 
+    private void setHapcoins(float hapcoins){
+        hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), hapcoins));
+    }
+
+    private void setCommentCount(int count){
+        commentCount.setText(String.format(getResources().getString(R.string.comment_format), count));
+    }
+
     private void setSkills(List<PostResponse.Skills> skills) {
 
         int size = skills.size();
@@ -250,30 +251,19 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
 
         Intent intent = new Intent(mContext, DetailedActivity.class);
         intent.putExtra("postData",post);
-//        intent.putExtra(Constants.EXTRAA_KEY_IS_VOTED, post.is_voted);
-//        intent.putExtra(Constants.EXTRAA_KEY_VOTE, post.current_vote);
-//        intent.putExtra(Constants.EXTRAA_KEY_USERNAME, post.user.username);
-//        intent.putExtra(Constants.EXTRAA_KEY_MEDIA_URL, post.media_uri);
-//        intent.putExtra(Constants.EXTRAA_KEY_CONTENT, post.content);
-//        intent.putExtra(Constants.EXTRAA_KEY_POST_ID, String.valueOf(post.id));
-//        intent.putExtra(Constants.EXTRAA_KEY_USER_DP_URL, post.user.image_uri);
-//        intent.putExtra(Constants.EXTRAA_KEY_TOTAL_VOTE_SUM, String.valueOf(post.vote_sum));
-//        intent.putExtra(Constants.EXTRAA_KEY_TOTAL_USER_VOTED, String.valueOf(post.vote_count));
-//        intent.putExtra(Constants.EXTRAA_KEY_HAPCOINS, String.valueOf(post.hapcoins));
-
         mContext.startActivity(intent);
 
     }
 
     private void navigateToCommentCreateActivity(String contextText, int postId, String author, String mediaUri) {
-
-        Intent i = new Intent(mContext, CommentEditorActivity.class);
-        i.putExtra(Constants.EXTRAA_KEY_CONTEXT_TEXT, contextText);
-        i.putExtra(Constants.EXTRAA_KEY_POST_ID, String.valueOf(postId));
-        i.putExtra(Constants.EXTRAA_KEY_AUTHOR, author);
-        i.putExtra(Constants.EXTRAA_KEY_MEDIA_URL, mediaUri);
-
-        mContext.startActivity(i);
+//
+//        Intent i = new Intent(mContext, CommentEditorActivity.class);
+//        i.putExtra(Constants.EXTRAA_KEY_CONTEXT_TEXT, contextText);
+//        i.putExtra(Constants.EXTRAA_KEY_POST_ID, String.valueOf(postId));
+//        i.putExtra(Constants.EXTRAA_KEY_AUTHOR, author);
+//        i.putExtra(Constants.EXTRAA_KEY_MEDIA_URL, mediaUri);
+//
+//        mContext.startActivity(i);
 
     }
 
@@ -303,7 +293,7 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
     @Override
     public void onVoteDeleted(PostResponse.Results updatedPost) {
         // update the hapcoins
-        hapcoinsCount.setText(String.format(Locale.US, "%1.3f", updatedPost.hapcoins));
+        setHapcoins(updatedPost.hapcoins);
 
     }
 
@@ -315,8 +305,7 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
     @Override
     public void onPostVoted(PostResponse.Results updatedPost) {
         // update the hapcoins
-        hapcoinsCount.setText(String.format(Locale.US, "%1.3f", updatedPost.hapcoins));
-
+        setHapcoins(updatedPost.hapcoins);
     }
 
     @Override

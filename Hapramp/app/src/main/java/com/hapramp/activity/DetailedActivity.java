@@ -37,6 +37,7 @@ import com.hapramp.models.UserResponse;
 import com.hapramp.models.requests.VoteRequestBody;
 import com.hapramp.models.response.CommentsResponse;
 import com.hapramp.models.response.PostResponse;
+import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
@@ -214,6 +215,17 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
             }
         });
 
+        moreCommentsCaption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(DetailedActivity.this,CommentsActivity.class);
+                intent.putExtra(Constants.EXTRAA_KEY_POST_ID,String.valueOf(post.id));
+                startActivity(intent);
+
+            }
+        });
+
     }
 
     private void setTypefaces() {
@@ -267,11 +279,18 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
             }
         });
 
-        String _comment_info = post.comment_count > 1 ? String.valueOf(post.comment_count).concat(" comments") : String.valueOf(post.comment_count).concat(" comment");
-        commentCount.setText(_comment_info);
+        //String _comment_info = post.comment_count > 1 ? String.valueOf(post.comment_count).concat(" comments") : String.valueOf(post.comment_count).concat(" comment");
+        setCommentCount(post.comment_count);
+        setHapcoins(post.hapcoins);
 
-        hapcoinsCount.setText(String.valueOf(post.hapcoins));
+    }
 
+    private void setHapcoins(float hapcoins){
+        hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), hapcoins));
+    }
+
+    private void setCommentCount(int count){
+        commentCount.setText(String.format(getResources().getString(R.string.comment_format), count));
     }
 
     private void setSkills(List<PostResponse.Skills> skills) {
@@ -300,12 +319,13 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
 
     private void addComment(List<CommentsResponse.Results> results) {
 
+        int commentCount = results.size();
         commentLoadingProgressBar.setVisibility(View.GONE);
-        if (results.size() == 0) {
+        if (commentCount == 0) {
             emptyCommentsCaption.setVisibility(View.VISIBLE);
         }
 
-        int range = results.size() > 3 ? 3 : results.size();
+        int range = commentCount > 3 ? 3 : results.size();
 
         for (int i = 0; i < range; i++) {
 
@@ -318,7 +338,7 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
 
         }
 
-        if (range > 3) {
+        if (commentCount > 3) {
             moreCommentsCaption.setVisibility(View.VISIBLE);
         }
 
@@ -428,7 +448,6 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
     public void onCommentFetched(CommentsResponse response) {
 
         addComment(response.results);
-        commentCount.setText(String.valueOf(response.results.size()));
 
     }
 
@@ -469,7 +488,7 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
     @Override
     public void onVoteDeleted(PostResponse.Results updatedPost) {
         //update mHapcoins
-        hapcoinsCount.setText(String.valueOf(updatedPost.hapcoins));
+        setHapcoins(updatedPost.hapcoins);
     }
 
     @Override
@@ -480,7 +499,7 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
     @Override
     public void onPostVoted(PostResponse.Results updatedPost) {
         //update mHapcoins
-        hapcoinsCount.setText(String.valueOf(updatedPost.hapcoins));
+        setHapcoins(updatedPost.hapcoins);
     }
 
     @Override

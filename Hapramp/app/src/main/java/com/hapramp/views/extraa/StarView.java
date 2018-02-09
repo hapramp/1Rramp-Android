@@ -132,7 +132,7 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
             starInfo.setText(getCalculatedInfo());
 
         } else {
-            starIndicator.setTextColor(Color.parseColor("#61000000"));
+            starIndicator.setTextColor(Color.parseColor("#8a000000"));
             //cancel my rate
             starInfo.setText(getCalculatedInfo());
         }

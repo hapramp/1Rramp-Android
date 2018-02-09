@@ -69,9 +69,6 @@
             android:name=".activity.NotificationsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.CommentEditorActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.CompetitionsDetailedActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -104,6 +101,10 @@
         <activity
             android:name=".activity.ProfileEditActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.CommentsActivity"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".activity.Splash"
             android:theme="@style/SplashTheme">

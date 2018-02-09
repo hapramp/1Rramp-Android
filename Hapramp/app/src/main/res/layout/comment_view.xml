@@ -1,47 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    android:padding="2dp"
-    android:background="@drawable/comment_bg"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:layout_height="wrap_content">
 
+    <LinearLayout
+        android:layout_toStartOf="@+id/popupMenuDots"
+        android:id="@+id/commentMetaHolder"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="36dp">
 
-    <ImageView
-        android:padding="8dp"
-        android:id="@+id/comment_user_dp"
-        android:layout_width="48dp"
-        android:layout_height="48dp" />
+        <ImageView
+            android:id="@+id/commentAvatar"
+            android:layout_width="36dp"
+            android:layout_height="36dp"/>
+
+        <TextView
+            android:id="@+id/commentOwnerName"
+            android:textSize="16sp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:gravity="center_vertical"
+            android:textColor="@color/Black54"
+            android:text="Ankit Kumar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
 
     <TextView
-        android:padding="8dp"
-        android:textColor="@color/Black87"
-        android:textSize="16sp"
-        android:layout_toEndOf="@+id/comment_user_dp"
-        android:id="@+id/comment_user_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:gravity="end"
-        android:layout_alignParentEnd="true"
-        android:textSize="14sp"
-        android:padding="8dp"
-        android:layout_toEndOf="@+id/comment_user_name"
+        android:id="@+id/commentTv"
+        android:layout_marginStart="46dp"
+        android:layout_marginEnd="36dp"
+        android:textSize="12sp"
+        android:lineSpacingExtra="3dp"
+        android:layout_below="@+id/commentMetaHolder"
+        android:textStyle="italic"
         android:textColor="@color/Black38"
-        android:id="@+id/comment_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:layout_below="@+id/comment_user_name"
-        android:layout_toEndOf="@+id/comment_user_dp"
-        android:padding="8dp"
-        android:textSize="14sp"
-        android:textColor="@color/Black87"
-        android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+
+    <TextView
+        android:id="@+id/created_time"
+        android:background="?selectableItemBackgroundBorderless"
+        android:textSize="24sp"
+        android:gravity="end"
+        android:textColor="@color/Black54"
+        android:text=""
+        android:layout_alignParentEnd="true"
+        android:layout_width="36dp"
+        android:layout_height="36dp" />
 
 </RelativeLayout>

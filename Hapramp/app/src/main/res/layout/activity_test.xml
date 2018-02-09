@@ -187,36 +187,43 @@
             android:layout_below="@+id/shadow"
             android:id="@+id/postMetaContainer"
             android:background="#ffffff"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             android:layout_width="match_parent"
             android:layout_height="64dp">
+
+            <LinearLayout
+                android:layout_centerHorizontal="true"
+                android:orientation="horizontal"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
             <TextView
                 android:clickable="true"
                 android:focusable="true"
-                android:layout_toEndOf="@+id/starView"
                 android:id="@+id/commentBtn"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:background="?selectableItemBackgroundBorderless"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="24dp"
-                android:gravity="center"
                 android:text=""
+                android:gravity="center"
                 android:textSize="24sp" />
 
             <TextView
-                android:layout_toEndOf="@+id/commentBtn"
                 android:id="@+id/commentCount"
                 android:layout_width="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_centerVertical="true"
-                android:gravity="center"
                 android:lines="1"
-                android:text="0"
-                android:layout_height="36dp" />
+                android:textSize="12sp"
+                android:layout_gravity="center_vertical"
+                android:text="0 Comments"
+                android:layout_height="wrap_content" />
+
+            </LinearLayout>
 
             <TextView
-                android:layout_toEndOf="@+id/commentCount"
+                android:layout_toStartOf="@+id/hapcoins_count"
                 android:id="@+id/hapcoinBtn"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
@@ -225,8 +232,9 @@
                 android:gravity="center"
                 android:textColor="#ffffff"
                 android:background="@drawable/rs_coin_bg"
-                android:text="@string/Rs"
-                android:textSize="16sp" />
+                android:text="H"
+                android:textStyle="bold"
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/hapcoins_count"
@@ -234,10 +242,10 @@
                 android:layout_height="48dp"
                 android:layout_marginStart="8dp"
                 android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/hapcoinBtn"
+               android:layout_alignParentEnd="true"
                 android:gravity="center_vertical"
-                android:text="0.0"
-                android:textSize="16sp" />
+                android:text="120 Hapcoins"
+                android:textSize="12sp" />
 
             <com.hapramp.views.extraa.StarView
                 android:layout_centerVertical="true"

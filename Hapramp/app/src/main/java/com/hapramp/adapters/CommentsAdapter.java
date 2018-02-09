@@ -6,10 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
 import com.hapramp.models.CommentModel;
+import com.hapramp.models.response.CommentsResponse;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
 
@@ -25,7 +27,8 @@ import butterknife.ButterKnife;
 
 public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.CommentViewHolder> {
 
-    private List<CommentModel> commentsList;
+
+    private List<CommentsResponse.Results> commentsList;
     private Context mContext;
 
     public CommentsAdapter(Context mContext) {
@@ -41,12 +44,12 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
 
     @Override
     public int getItemCount() {
-        return commentsList!=null?commentsList.size():0;
+        return commentsList != null ? commentsList.size() : 0;
     }
 
     @Override
     public void onBindViewHolder(CommentViewHolder holder, int position) {
-            holder.bind(commentsList.get(position));
+        holder.bind(commentsList.get(position));
     }
 
     public void resetList() {
@@ -57,34 +60,52 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
     class CommentViewHolder extends RecyclerView.ViewHolder {
 
 
-        @BindView(R.id.comment_user_dp)
-        ImageView commentUserDp;
-        @BindView(R.id.comment_user_name)
-        TextView commentUserName;
-        @BindView(R.id.comment_time)
-        TextView commentTime;
-        @BindView(R.id.content)
-        TextView content;
+        @BindView(R.id.commentAvatar)
+        ImageView commentAvatar;
+        @BindView(R.id.commentOwnerName)
+        TextView commentOwnerName;
+        @BindView(R.id.commentMetaHolder)
+        LinearLayout commentMetaHolder;
+        @BindView(R.id.commentTv)
+        TextView commentTv;
+        @BindView(R.id.created_time)
+        TextView createdTime;
 
         public CommentViewHolder(View itemView) {
+
             super(itemView);
             ButterKnife.bind(this, itemView);
 
         }
 
-        public void bind(CommentModel comment){
+        public void bind(CommentsResponse.Results comment) {
 
-            ImageHandler.loadCircularImage(mContext,commentUserDp,comment.getUserDpUrl());
-            commentUserName.setText(comment.getUserName());
-            commentTime.setText(MomentsUtils.getFormattedTime(comment.getCommentTime()));
-            content.setText(comment.getComment());
+            ImageHandler.loadCircularImage(mContext, commentAvatar, comment.user.image_uri);
+            commentOwnerName.setText(comment.user.full_name);
+
+            if(comment.created_at.length()!=0){
+                createdTime.setText(MomentsUtils.getFormattedTime(comment.created_at));
+            }else{
+                createdTime.setText("Now");
+            }
+
+            commentTv.setText(comment.content);
 
         }
     }
 
-    public void addComment(CommentModel comment) {
-        commentsList.add(comment);
-        notifyDataSetChanged();
+    public void addComment(CommentsResponse.Results comment){
+
+        commentsList.add(0,comment);
+        notifyItemInserted(0);
+
+    }
+
+    public void addComment(List<CommentsResponse.Results> comments) {
+
+        commentsList.addAll(comments);
+        notifyItemInserted(commentsList.size() - comments.size() - 1);
+
     }
 
 
