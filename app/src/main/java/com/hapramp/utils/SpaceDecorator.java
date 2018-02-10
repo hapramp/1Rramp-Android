@@ -32,13 +32,14 @@ public class SpaceDecorator  extends RecyclerView.ItemDecoration  {
 //        } else {
 //            outRect.bottom = space;
 //        }
-        if(isLastChild(view,parent)){
+        if(isLastChild(view,parent) && parent.getAdapter().getItemCount()>1){
             outRect.bottom = PixelUtils.dpToPx(56);
         }
 
     }
 
     private boolean isLastChild(View v, RecyclerView parent) {
+
 
         return (parent.getAdapter().getItemCount() - 1) == parent.getChildAdapterPosition(v);
 

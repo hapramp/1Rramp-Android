@@ -65,17 +65,29 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public void appendResult(List<PostResponse.Results> newPosts) {
+        Log.d("PostAdapter", "Appended " + newPosts.size());
         postResponses.addAll(newPosts);
         notifyItemInserted(postResponses.size() - (newPosts.size() - 1));
-
     }
+
+
+    public void setPosts(List<PostResponse.Results> results) {
+//        this.postResponses = results;
+//        notifyItemRangeInserted(0, results.size());
+    }
+
+    public void clearList() {
+        postResponses.clear();
+        notifyDataSetChanged();
+    }
+
 
     @Override
     public int getItemViewType(int position) {
 
         if (itIsForProfile()) {
             if (position == 0) {
-                //Log.d("Adapter", "profile header");
+                //   Log.d("Adapter", "profile header");
                 return VIEW_TYPE_PROFILE_HEADER;
             }
         } else {
@@ -124,6 +136,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         //  Log.d("Adapter", "Binding at " + pos);
         if (viewHolder instanceof LoadMoreViewHolder) {
+            ///Log.d("Adapter", "Binding LoadMore at " + pos);
             if (hasMoreToLoad) {
                 ((LoadMoreViewHolder) viewHolder).startSimmer();
             } else {
@@ -132,7 +145,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         } else if (viewHolder instanceof PostViewHolder) {
 
-            // pos-1 : since we have one blank view at the top
+            // Log.d("Adapter", "Binding Post at " + pos);
             ((PostViewHolder) viewHolder).bind(postResponses.get(pos - 1));
 
         } else if (viewHolder instanceof ProfileHeaderViewHolder) {
@@ -141,6 +154,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         } else if (viewHolder instanceof BlankTopViewHolder) {
             // do
+            //Log.d("Adapter", "Binding Blank at " + pos);
             ((BlankTopViewHolder) viewHolder).blank.setVisibility(View.VISIBLE);
 
         }
@@ -160,16 +174,6 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         // for home fragment  - 1 space band so : 1
         // for profile - initially it will be 0, after it loads header, it will be 1
         return defaultListSize;
-    }
-
-    public void setPosts(List<PostResponse.Results> results) {
-        this.postResponses = results;
-        notifyItemRangeInserted(0, results.size());
-    }
-
-    public void clearList() {
-        postResponses.clear();
-        notifyDataSetChanged();
     }
 
     class PostViewHolder extends RecyclerView.ViewHolder {

@@ -33,7 +33,7 @@
     <ScrollView
         android:id="@+id/scroller"
         android:fillViewport="true"
-        android:paddingBottom="72dp"
+        android:paddingBottom="56dp"
         android:layout_below="@+id/toolbar_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -155,8 +155,8 @@
                 android:layout_width="match_parent"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"
                 android:layout_height="wrap_content"/>

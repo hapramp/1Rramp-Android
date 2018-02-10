@@ -10,7 +10,7 @@
         android:id="@+id/commentCreaterAvatar"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:padding="12dp"
+        android:padding="10dp"
         android:src="@drawable/logo_square" />
 
     <RelativeLayout

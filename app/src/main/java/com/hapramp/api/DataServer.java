@@ -466,7 +466,7 @@ public class DataServer {
                     @Override
                     public void onResponse(Call<CommentCreateResponse> call, Response<CommentCreateResponse> response) {
                         if (response.isSuccessful()) {
-                            callback.onCommentCreated();
+                            callback.onCommentCreated(response.body());
                         } else {
                             Log.d(TAG, ErrorUtils.parseError(response).toString());
                         }

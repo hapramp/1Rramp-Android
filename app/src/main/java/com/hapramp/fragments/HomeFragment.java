@@ -72,6 +72,7 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
     private ViewItemDecoration viewItemDecoration;
     private int y;
     HomeDataManager dataManager;
+    private SpaceDecorator spaceDecorator;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -125,9 +126,8 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
         postsRecyclerView.setLayoutManager(layoutManager);
         Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
         viewItemDecoration = new ViewItemDecoration(drawable);
-        SpaceDecorator spaceDecorator = new SpaceDecorator();
+        spaceDecorator = new SpaceDecorator();
         postsRecyclerView.addItemDecoration(spaceDecorator);
-
         int resId = R.anim.layout_animation_fall_down;
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(mContext, resId);
         postsRecyclerView.setLayoutAnimation(animation);

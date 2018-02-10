@@ -11,7 +11,10 @@ import android.widget.TextView;
 
 import com.hapramp.R;
 import com.hapramp.models.CommentModel;
+import com.hapramp.models.UserResponse;
+import com.hapramp.models.response.CommentCreateResponse;
 import com.hapramp.models.response.CommentsResponse;
+import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
 
@@ -83,9 +86,9 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
             ImageHandler.loadCircularImage(mContext, commentAvatar, comment.user.image_uri);
             commentOwnerName.setText(comment.user.full_name);
 
-            if(comment.created_at.length()!=0){
+            if (comment.created_at.length() != 0) {
                 createdTime.setText(MomentsUtils.getFormattedTime(comment.created_at));
-            }else{
+            } else {
                 createdTime.setText("Now");
             }
 
@@ -94,14 +97,22 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
         }
     }
 
-    public void addComment(CommentsResponse.Results comment){
+    public void addComment(CommentCreateResponse comment) {
 
-        commentsList.add(0,comment);
+        UserResponse user = HaprampPreferenceManager.getInstance().getUser();
+
+        commentsList.add(0,
+                new CommentsResponse.Results(
+                        comment.id,
+                        comment.created_at,
+                        comment.content, false, 0
+                        , new CommentsResponse.User(user.id, user.username, user.full_name, user.image_uri)));
+
         notifyItemInserted(0);
 
     }
 
-    public void addComment(List<CommentsResponse.Results> comments) {
+    public void addComments(List<CommentsResponse.Results> comments) {
 
         commentsList.addAll(comments);
         notifyItemInserted(commentsList.size() - comments.size() - 1);

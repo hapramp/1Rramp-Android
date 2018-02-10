@@ -335,13 +335,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         L.D.m(TAG, "User fetched : " + userResponse.toString());
         HaprampPreferenceManager.getInstance().setUser(new Gson().toJson(userResponse));
         HaprampPreferenceManager.getInstance().setLoggedIn(true);
-        HaprampPreferenceManager.getInstance().setUserId(String.valueOf(userResponse.id));
-        HaprampPreferenceManager.getInstance().setUserEmail(userResponse.email);
+        HaprampPreferenceManager.getInstance().setUserId(String.valueOf(userResponse.getId()));
+        HaprampPreferenceManager.getInstance().setUserEmail(userResponse.getEmail());
 
-        if (userResponse.organization == null) {
+        if (userResponse.getOrganization() == null) {
             redirectToOrgsPage();
         } else {
-            if (userResponse.skills.size() == 0) {
+            if (userResponse.getSkills().size() == 0) {
                 redirectToSkillsPage();
             } else {
                 redirectToHome();

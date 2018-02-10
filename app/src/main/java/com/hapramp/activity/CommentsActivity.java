@@ -9,9 +9,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,10 +24,15 @@ import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.CommentCreateCallback;
 import com.hapramp.interfaces.CommentFetchCallback;
 import com.hapramp.models.requests.CommentBody;
+import com.hapramp.models.response.CommentCreateResponse;
 import com.hapramp.models.response.CommentsResponse;
+import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
+import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.ViewItemDecoration;
+
+import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,6 +61,8 @@ public class CommentsActivity extends AppCompatActivity implements CommentFetchC
     RelativeLayout commentInputContainer;
     @BindView(R.id.shadow)
     ImageView shadow;
+    @BindView(R.id.commentLoadingProgressBar)
+    ProgressBar commentLoadingProgressBar;
     private String initialCommentUrl;
     private String postId;
     private CommentsAdapter commentsAdapter;
@@ -81,10 +90,13 @@ public class CommentsActivity extends AppCompatActivity implements CommentFetchC
         backBtn.setTypeface(typeface);
         sendButton.setTypeface(typeface);
 
+        //load self image to created
+        ImageHandler.loadCircularImage(this,commentCreaterAvatar,HaprampPreferenceManager.getInstance().getUser().getImage_uri());
         postId = getIntent().getExtras().getString(Constants.EXTRAA_KEY_POST_ID);
         initialCommentUrl = String.format(getResources().getString(R.string.commentUrl), Integer.valueOf(postId));
         commentsAdapter = new CommentsAdapter(this);
         commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         Drawable drawable = ContextCompat.getDrawable(this, R.drawable.comment_item_divider_view);
         viewItemDecoration = new ViewItemDecoration(drawable);
         commentsRecyclerView.addItemDecoration(viewItemDecoration);
@@ -100,19 +112,25 @@ public class CommentsActivity extends AppCompatActivity implements CommentFetchC
                 postComment();
             }
         });
-
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void fetchComments(String url) {
 
+        showCommentLoadingProgress();
         DataServer.getComments(url, this);
 
     }
 
-
     private void postComment() {
 
         String cmnt = commentInputBox.getText().toString().trim();
+        commentInputBox.setText("");
         if (cmnt.length() > 2) {
             showProgress("Posting Your Comment..." + postId);
             DataServer.createComment(postId, new CommentBody(cmnt), this);
@@ -122,8 +140,22 @@ public class CommentsActivity extends AppCompatActivity implements CommentFetchC
 
     }
 
+    private void showCommentLoadingProgress(){
+        if(commentLoadingProgressBar!=null){
+            commentLoadingProgressBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideCommentLoadingProgress(){
+        if(commentLoadingProgressBar!=null){
+            commentLoadingProgressBar.setVisibility(View.GONE);
+        }
+    }
+
     @Override
     public void onCommentFetched(CommentsResponse response) {
+
+        hideCommentLoadingProgress();
 
         int len = response.results.size();
         if (len == 0) {
@@ -134,8 +166,8 @@ public class CommentsActivity extends AppCompatActivity implements CommentFetchC
 
         }
         moreCommentsAt = response.next;
-
-        commentsAdapter.addComment(response.results);
+        Collections.reverse(response.results);
+        commentsAdapter.addComments(response.results);
 
         if (moreCommentsAt.length() > 0) {
             fetchComments(moreCommentsAt);
@@ -149,13 +181,13 @@ public class CommentsActivity extends AppCompatActivity implements CommentFetchC
     }
 
     @Override
-    public void onCommentCreated() {
+    public void onCommentCreated(CommentCreateResponse response) {
 
         hideProgress();
         Toast.makeText(this, "Create Comment", Toast.LENGTH_SHORT).show();
-        commentsAdapter.resetList();
-        fetchComments(initialCommentUrl);
-        // TODO: 2/9/2018 load only 1 comment not entire re-fetch
+        commentsAdapter.addComment(response);
+        commentsRecyclerView.getLayoutManager().scrollToPosition(0);
+        noCommentsCaption.setVisibility(View.GONE);
 
     }
 

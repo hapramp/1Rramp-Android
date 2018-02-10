@@ -11,6 +11,8 @@
 
         <TextView
             android:id="@+id/backBtn"
+            android:clickable="true"
+            android:focusable="true"
             android:layout_width="?actionBarSize"
             android:layout_height="?actionBarSize"
             android:background="?selectableItemBackgroundBorderless"
@@ -43,7 +45,15 @@
         android:layout_below="@+id/toolbar_container"
         android:id="@+id/commentsRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:paddingBottom="56dp"
+        />
+
+    <ProgressBar
+        android:id="@+id/commentLoadingProgressBar"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <include
         layout="@layout/comment_editor_view"

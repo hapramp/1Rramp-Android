@@ -164,9 +164,12 @@
                     android:lines="1"
                     android:textColor="@color/Black54"
                     android:textSize="12sp"
-                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?selectableItemBackground"
                     android:text="0 Comments"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="match_parent" />
 
             </LinearLayout>
 

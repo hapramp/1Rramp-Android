@@ -1,5 +1,6 @@
 package com.hapramp.activity;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -28,15 +29,19 @@ import android.widget.Toast;
 
 import com.hapramp.R;
 import com.hapramp.api.DataServer;
+import com.hapramp.interfaces.CommentCreateCallback;
 import com.hapramp.interfaces.CommentFetchCallback;
 import com.hapramp.interfaces.OnPostDeleteCallback;
 import com.hapramp.interfaces.UserFetchCallback;
 import com.hapramp.interfaces.VoteDeleteCallback;
 import com.hapramp.interfaces.VotePostCallback;
 import com.hapramp.models.UserResponse;
+import com.hapramp.models.requests.CommentBody;
 import com.hapramp.models.requests.VoteRequestBody;
+import com.hapramp.models.response.CommentCreateResponse;
 import com.hapramp.models.response.CommentsResponse;
 import com.hapramp.models.response.PostResponse;
+import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
@@ -51,7 +56,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DetailedActivity extends AppCompatActivity implements CommentFetchCallback, UserFetchCallback, OnPostDeleteCallback, VoteDeleteCallback, VotePostCallback {
+public class DetailedActivity extends AppCompatActivity implements CommentFetchCallback, UserFetchCallback, OnPostDeleteCallback, VoteDeleteCallback, VotePostCallback, CommentCreateCallback {
 
 
     @BindView(R.id.closeBtn)
@@ -131,6 +136,7 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
 
     private PostResponse.Results post;
     private boolean commentBarVisible;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,19 +176,10 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
     }
 
     private void collectExtras() {
-        post = getIntent().getExtras().getParcelable("postData");
 
-//        isVoted = getIntent().getExtras().getBoolean(Constants.EXTRAA_KEY_IS_VOTED);
-//        mVote = getIntent().getExtras().getInt(Constants.EXTRAA_KEY_VOTE);
-//        mContent = getIntent().getExtras().getString(Constants.EXTRAA_KEY_CONTENT);
-//        mMediaUri = getIntent().getExtras().getString(Constants.EXTRAA_KEY_MEDIA_URL);
-//        mUserName = getIntent().getExtras().getString(Constants.EXTRAA_KEY_USERNAME);
-//        postId = getIntent().getExtras().getString(Constants.EXTRAA_KEY_POST_ID);
-//        dpUrl = getIntent().getExtras().getString(Constants.EXTRAA_KEY_USER_DP_URL);
-//        totalVoteSum = getIntent().getExtras().getString(Constants.EXTRAA_KEY_TOTAL_VOTE_SUM);
-//        totalUserVoted = getIntent().getExtras().getString(Constants.EXTRAA_KEY_TOTAL_USER_VOTED);
+        post = getIntent().getExtras().getParcelable("postData");
         currentCommentUrl = String.format(getResources().getString(R.string.commentUrl), Integer.valueOf(post.id));
-//        mHapcoins = getIntent().getExtras().getString(Constants.EXTRAA_KEY_HAPCOINS);
+        progressDialog = new ProgressDialog(this);
 
     }
 
@@ -219,12 +216,46 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(DetailedActivity.this,CommentsActivity.class);
-                intent.putExtra(Constants.EXTRAA_KEY_POST_ID,String.valueOf(post.id));
+                Intent intent = new Intent(DetailedActivity.this, CommentsActivity.class);
+                intent.putExtra(Constants.EXTRAA_KEY_POST_ID, String.valueOf(post.id));
                 startActivity(intent);
 
             }
         });
+
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                postComment();
+            }
+        });
+
+    }
+
+
+    private void postComment() {
+
+        String cmnt = commentInputBox.getText().toString().trim();
+        commentInputBox.setText("");
+        if (cmnt.length() > 2) {
+            showProgress("Posting Your Comment...");
+            DataServer.createComment(String.valueOf(post.id), new CommentBody(cmnt), this);
+        } else {
+            Toast.makeText(this, "Comment Too Short!!", Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    private void showProgress(String msg) {
+        progressDialog.setMessage(msg);
+        progressDialog.show();
+    }
+
+    private void hideProgress() {
+
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
 
     }
 
@@ -283,13 +314,16 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
         setCommentCount(post.comment_count);
         setHapcoins(post.hapcoins);
 
+        ImageHandler.loadCircularImage(this, commentCreaterAvatar, HaprampPreferenceManager.getInstance().getUser().getImage_uri());
+        ImageHandler.loadCircularImage(this, commentCreaterAvatarMock, HaprampPreferenceManager.getInstance().getUser().getImage_uri());
+
     }
 
-    private void setHapcoins(float hapcoins){
+    private void setHapcoins(float hapcoins) {
         hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), hapcoins));
     }
 
-    private void setCommentCount(int count){
+    private void setCommentCount(int count) {
         commentCount.setText(String.format(getResources().getString(R.string.comment_format), count));
     }
 
@@ -505,5 +539,30 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
     @Override
     public void onPostVoteError() {
 
+    }
+
+    @Override
+    public void onCommentCreated(CommentCreateResponse comment) {
+
+        hideProgress();
+
+        CommentView view = new CommentView(this);
+        UserResponse user = HaprampPreferenceManager.getInstance().getUser();
+        view.setComment(new CommentsResponse.Results(
+                comment.id,
+                comment.created_at,
+                comment.content, false, 0
+                , new CommentsResponse.User(user.id, user.username, user.full_name, user.image_uri)));
+
+        commentsViewContainer.addView(view, 0,
+                new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT));
+
+    }
+
+    @Override
+    public void onCommentCreateError() {
+        hideProgress();
     }
 }

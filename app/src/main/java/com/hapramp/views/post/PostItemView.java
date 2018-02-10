@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
+import com.hapramp.activity.CommentsActivity;
 import com.hapramp.activity.DetailedActivity;
 import com.hapramp.activity.ProfileActivity;
 import com.hapramp.api.DataServer;
@@ -161,8 +162,15 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
             @Override
             public void onClick(View v) {
 
-                navigateToCommentCreateActivity(post.content, post.id, post.user.username, post.media_uri);
+                navigateToCommentCreateActivity(post.id);
 
+            }
+        });
+
+        commentCount.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateToCommentCreateActivity(post.id);
             }
         });
 
@@ -255,15 +263,11 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
 
     }
 
-    private void navigateToCommentCreateActivity(String contextText, int postId, String author, String mediaUri) {
-//
-//        Intent i = new Intent(mContext, CommentEditorActivity.class);
-//        i.putExtra(Constants.EXTRAA_KEY_CONTEXT_TEXT, contextText);
-//        i.putExtra(Constants.EXTRAA_KEY_POST_ID, String.valueOf(postId));
-//        i.putExtra(Constants.EXTRAA_KEY_AUTHOR, author);
-//        i.putExtra(Constants.EXTRAA_KEY_MEDIA_URL, mediaUri);
-//
-//        mContext.startActivity(i);
+    private void navigateToCommentCreateActivity(int postId) {
+
+        Intent intent = new Intent(mContext,CommentsActivity.class);
+        intent.putExtra(Constants.EXTRAA_KEY_POST_ID,String.valueOf(postId));
+        mContext.startActivity(intent);
 
     }
 
