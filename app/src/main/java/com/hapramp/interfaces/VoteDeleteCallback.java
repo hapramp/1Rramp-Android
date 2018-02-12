@@ -1,5 +1,6 @@
 package com.hapramp.interfaces;
 
+import com.hapramp.models.Feed;
 import com.hapramp.models.response.PostResponse;
 
 /**
@@ -7,6 +8,6 @@ import com.hapramp.models.response.PostResponse;
  */
 
 public interface VoteDeleteCallback {
-    void onVoteDeleted(PostResponse.Results updatedPost);
+    void onVoteDeleted(Feed updatedPost);
     void onVoteDeleteError();
 }

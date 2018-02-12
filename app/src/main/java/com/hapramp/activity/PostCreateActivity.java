@@ -220,9 +220,9 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
             PostCreateBody postCreateBody = new PostCreateBody(
                     content.getText().toString(),
                     postImageView.getDownloadUrl(),
-                    Constants.CONTENT_TYPE_ARTICLE,
+                    Constants.CONTENT_TYPE_POST,
                     postCategoryView.getSelectedSkills(),
-                    -1);
+                    null);
 
             showPublishingProgressDialog(true);
             //gather the data

@@ -23,6 +23,7 @@ import com.hapramp.adapters.CommentsAdapter;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.CommentCreateCallback;
 import com.hapramp.interfaces.CommentFetchCallback;
+import com.hapramp.models.Feed;
 import com.hapramp.models.requests.CommentBody;
 import com.hapramp.models.response.CommentCreateResponse;
 import com.hapramp.models.response.CommentsResponse;
@@ -177,6 +178,11 @@ public class CommentsActivity extends AppCompatActivity implements CommentFetchC
 
     @Override
     public void onCommentFetchError() {
+
+    }
+
+    @Override
+    public void onVoteDeleted(Feed updatedPost) {
 
     }
 

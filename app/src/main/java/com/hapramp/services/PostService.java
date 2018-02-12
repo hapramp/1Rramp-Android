@@ -136,7 +136,7 @@ public class PostService extends JobService implements PostCreateCallback {
                 media_url,
                 currentJob.post_type,
                 currentJob.skills,
-                1);
+                null);
 
         DataServer.createPost(jobId, body, this);
 

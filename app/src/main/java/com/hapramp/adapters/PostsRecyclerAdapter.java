@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.hapramp.R;
+import com.hapramp.models.Feed;
 import com.hapramp.models.ProfileHeaderModel;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.views.post.PostItemView;
@@ -34,7 +35,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     public Context mContext;
     private boolean hasMoreToLoad = true;
-    public List<PostResponse.Results> postResponses;
+    public List<Feed> postResponses;
     public ProfileHeaderModel profileHeaderModel;
     private boolean isAdapterForProfile;
     private int s;
@@ -64,14 +65,14 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         return isAdapterForProfile;
     }
 
-    public void appendResult(List<PostResponse.Results> newPosts) {
+    public void appendResult(List<Feed> newPosts) {
         Log.d("PostAdapter", "Appended " + newPosts.size());
         postResponses.addAll(newPosts);
         notifyItemInserted(postResponses.size() - (newPosts.size() - 1));
     }
 
 
-    public void setPosts(List<PostResponse.Results> results) {
+    public void setPosts(List<Feed> results) {
 //        this.postResponses = results;
 //        notifyItemRangeInserted(0, results.size());
     }
@@ -185,7 +186,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
             postItemView = (PostItemView) itemView;
         }
 
-        public void bind(final PostResponse.Results postData) {
+        public void bind(final Feed postData) {
             postItemView.setPostData(postData);
         }
 
@@ -212,6 +213,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         public void hideView() {
             shimmerFrameLayout.setVisibility(View.GONE);
         }
+
     }
 
     class ProfileHeaderViewHolder extends RecyclerView.ViewHolder {

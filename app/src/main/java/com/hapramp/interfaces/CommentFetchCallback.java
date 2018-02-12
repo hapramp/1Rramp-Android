@@ -1,5 +1,6 @@
 package com.hapramp.interfaces;
 
+import com.hapramp.models.Feed;
 import com.hapramp.models.response.CommentsResponse;
 
 import retrofit2.Response;
@@ -11,4 +12,6 @@ import retrofit2.Response;
 public interface CommentFetchCallback {
     void onCommentFetched(CommentsResponse response);
     void onCommentFetchError();
+
+    void onVoteDeleted(Feed updatedPost);
 }

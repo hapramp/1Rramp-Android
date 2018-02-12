@@ -4,8 +4,10 @@ import android.text.format.DateUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by Ankit on 12/15/2017.
@@ -14,9 +16,14 @@ import java.util.Locale;
 public class MomentsUtils {
 
     public static String getFormattedTime(String timeStamp){
+        Calendar cal = Calendar.getInstance();
+        TimeZone tz = cal.getTimeZone();
+
         String formattedTime  = "";
         timeStamp = timeStamp.replace('T','-');
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss", Locale.US);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
+        sdf.setTimeZone(tz);
+
         try {
 
             Date mDate = sdf.parse(timeStamp);

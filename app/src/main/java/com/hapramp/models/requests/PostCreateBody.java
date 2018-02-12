@@ -1,5 +1,7 @@
 package com.hapramp.models.requests;
 
+import android.support.annotation.Nullable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -18,10 +20,11 @@ public class PostCreateBody {
     public int post_type;
     @SerializedName("skills")
     public List<Integer> skills;
+    @Nullable
     @SerializedName("contest_id")
-    public int contest_id;
+    public String contest_id;
 
-    public PostCreateBody(String content, String media_uri, int post_type, List<Integer> skills, int contest_id) {
+    public PostCreateBody(String content, String media_uri, int post_type, List<Integer> skills, String contest_id) {
         this.content = content;
         this.media_uri = media_uri;
         this.post_type = post_type;
@@ -61,11 +64,11 @@ public class PostCreateBody {
         this.skills = skills;
     }
 
-    public int getContest_id() {
+    public String getContest_id() {
         return contest_id;
     }
 
-    public void setContest_id(int contest_id) {
+    public void setContest_id(String contest_id) {
         this.contest_id = contest_id;
     }
 

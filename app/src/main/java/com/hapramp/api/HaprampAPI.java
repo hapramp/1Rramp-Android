@@ -1,5 +1,6 @@
 package com.hapramp.api;
 
+import com.hapramp.models.Feed;
 import com.hapramp.models.UserDataUpdateBody;
 import com.hapramp.models.UserResponse;
 import com.hapramp.models.requests.FollowRequestBody;
@@ -121,10 +122,10 @@ public interface HaprampAPI {
     Call<UserResponse> updateUserBio(@Path("user_id") String userId,@Body UserBioUpdateRequestBody body);
 
     @POST("posts/{post_id}/votes")
-    Call<PostResponse.Results> votePost(@Path("post_id") String postId , @Body VoteRequestBody body);
+    Call<Feed> votePost(@Path("post_id") String postId , @Body VoteRequestBody body);
 
     @DELETE("posts/{post_id}/votes")
-    Call<PostResponse.Results> deleteVote(@Path("post_id") int postId);
+    Call<Feed> deleteVote(@Path("post_id") int postId);
 
     @GET("users/{user_id}/stats")
     Call<UserStatsModel> getUserStats(@Path("user_id") String userId);

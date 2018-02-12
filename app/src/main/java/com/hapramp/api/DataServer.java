@@ -27,6 +27,7 @@ import com.hapramp.interfaces.UserStatsCallback;
 import com.hapramp.interfaces.VoteDeleteCallback;
 import com.hapramp.interfaces.VotePostCallback;
 import com.hapramp.logger.L;
+import com.hapramp.models.Feed;
 import com.hapramp.models.UserDataUpdateBody;
 import com.hapramp.models.UserResponse;
 import com.hapramp.models.requests.FollowRequestBody;
@@ -596,9 +597,9 @@ public class DataServer {
 
         getService()
                 .votePost(postId, body)
-                .enqueue(new Callback<PostResponse.Results>() {
+                .enqueue(new Callback<Feed>() {
                     @Override
-                    public void onResponse(Call<PostResponse.Results> call, Response<PostResponse.Results> response) {
+                    public void onResponse(Call<Feed> call, Response<Feed> response) {
                         if (response.isSuccessful()) {
                             callback.onPostVoted(response.body());
                         } else {
@@ -607,7 +608,7 @@ public class DataServer {
                     }
 
                     @Override
-                    public void onFailure(Call<PostResponse.Results> call, Throwable t) {
+                    public void onFailure(Call<Feed> call, Throwable t) {
                         callback.onPostVoteError();
                     }
                 });
@@ -664,9 +665,9 @@ public class DataServer {
     public static void deleteVote(int postId, final VoteDeleteCallback callback) {
 
         getService().deleteVote(postId)
-                .enqueue(new Callback<PostResponse.Results>() {
+                .enqueue(new Callback<Feed>() {
                     @Override
-                    public void onResponse(Call<PostResponse.Results> call, Response<PostResponse.Results> response) {
+                    public void onResponse(Call<Feed> call, Response<Feed> response) {
                         if (response.isSuccessful()) {
                             callback.onVoteDeleted(response.body());
                         } else {
@@ -676,7 +677,7 @@ public class DataServer {
                     }
 
                     @Override
-                    public void onFailure(Call<PostResponse.Results> call, Throwable t) {
+                    public void onFailure(Call<Feed> call, Throwable t) {
                         Log.d(TAG, t.toString());
                         callback.onVoteDeleteError();
                     }

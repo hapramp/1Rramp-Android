@@ -1,6 +1,7 @@
 package com.hapramp;
 
 import android.net.Uri;
+import android.os.SystemClock;
 import android.text.format.DateUtils;
 import android.util.Log;
 
@@ -32,20 +33,6 @@ public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
 
-        String time = "";
-        String givenDateString = "2017-12-27-04:41:34.925147";
-        givenDateString = givenDateString.replace('T','-');
-        givenDateString = "GMT+06:30 ".concat(givenDateString);
-        SimpleDateFormat sdf = new SimpleDateFormat("z yyyy-MM-dd-HH:mm:ss");
-        try {
-
-            Date mDate = sdf.parse(givenDateString);
-            long timeInMilliseconds = mDate.getTime();
-            System.out.println("Date in milli :: " + timeInMilliseconds);
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
 
     }
 

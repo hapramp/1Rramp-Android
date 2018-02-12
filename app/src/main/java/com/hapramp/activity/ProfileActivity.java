@@ -18,6 +18,7 @@ import com.hapramp.api.DataServer;
 import com.hapramp.api.URLS;
 import com.hapramp.interfaces.FullUserDetailsCallback;
 import com.hapramp.interfaces.PostFetchCallback;
+import com.hapramp.models.Feed;
 import com.hapramp.models.ProfileHeaderModel;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.models.response.UserModel;
@@ -203,7 +204,7 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
 
     }
 
-    private void bindPosts(List<PostResponse.Results> results) {
+    private void bindPosts(List<Feed> results) {
         profilePostAdapter.appendResult(results);
     }
 

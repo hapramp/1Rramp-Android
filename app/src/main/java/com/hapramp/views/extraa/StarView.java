@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.interfaces.VoteDeleteCallback;
 import com.hapramp.interfaces.VotePostCallback;
+import com.hapramp.models.Feed;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.utils.FontManager;
 
@@ -336,7 +337,7 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
     }
 
     @Override
-    public void onPostVoted(final PostResponse.Results updatedResult) {
+    public void onPostVoted(final Feed updatedResult) {
         // set new state as the legacy state
         this.legacyState = currentState;
     }
@@ -353,7 +354,7 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
 
 
     @Override
-    public void onVoteDeleted(PostResponse.Results updatedPost) {
+    public void onVoteDeleted(Feed updatedPost) {
 
     }
 

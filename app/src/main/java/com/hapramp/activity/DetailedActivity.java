@@ -35,6 +35,7 @@ import com.hapramp.interfaces.OnPostDeleteCallback;
 import com.hapramp.interfaces.UserFetchCallback;
 import com.hapramp.interfaces.VoteDeleteCallback;
 import com.hapramp.interfaces.VotePostCallback;
+import com.hapramp.models.Feed;
 import com.hapramp.models.UserResponse;
 import com.hapramp.models.requests.CommentBody;
 import com.hapramp.models.requests.VoteRequestBody;
@@ -134,7 +135,7 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
     private List<CommentsResponse.Results> comments;
     private String currentCommentUrl;
 
-    private PostResponse.Results post;
+    private Feed post;
     private boolean commentBarVisible;
     private ProgressDialog progressDialog;
 
@@ -520,7 +521,7 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
     }
 
     @Override
-    public void onVoteDeleted(PostResponse.Results updatedPost) {
+    public void onVoteDeleted(Feed updatedPost) {
         //update mHapcoins
         setHapcoins(updatedPost.hapcoins);
     }
@@ -531,7 +532,7 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
     }
 
     @Override
-    public void onPostVoted(PostResponse.Results updatedPost) {
+    public void onPostVoted(Feed updatedPost) {
         //update mHapcoins
         setHapcoins(updatedPost.hapcoins);
     }

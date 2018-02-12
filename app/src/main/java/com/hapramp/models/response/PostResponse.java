@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
+import com.hapramp.models.Feed;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class PostResponse {
     @SerializedName("previous")
     public String previous;
     @SerializedName("results")
-    public List<Results> results;
+    public List<Feed> results;
 
     public static class User implements Parcelable {
         @SerializedName("id")
@@ -344,100 +345,6 @@ public class PostResponse {
             @Override
             public Contest_post[] newArray(int size) {
                 return new Contest_post[size];
-            }
-        };
-    }
-
-    public static class Results implements Parcelable {
-        @SerializedName("id")
-        public int id;
-        @SerializedName("created_at")
-        public String created_at;
-        @SerializedName("content")
-        public String content;
-        @SerializedName("media_uri")
-        public String media_uri;
-        @SerializedName("post_type")
-        public int post_type;
-        @SerializedName("user")
-        public User user;
-        @SerializedName("skills")
-        public List<Skills> skills;
-        @SerializedName("vote_count")
-        public int vote_count;
-        @SerializedName("vote_sum")
-        public int vote_sum;
-        @SerializedName("is_voted")
-        public boolean is_voted;
-        @SerializedName("hapcoins")
-        public float hapcoins;
-        @SerializedName("current_vote")
-        public int current_vote;
-        @SerializedName("comment_count")
-        public int comment_count;
-        @SerializedName("contest_post")
-        public Contest_post contest_post;
-
-        protected Results(Parcel in) {
-            id = in.readInt();
-            created_at = in.readString();
-            content = in.readString();
-            media_uri = in.readString();
-            post_type = in.readInt();
-            user = (User) in.readValue(User.class.getClassLoader());
-            if (in.readByte() == 0x01) {
-                skills = new ArrayList<Skills>();
-                in.readList(skills, Skills.class.getClassLoader());
-            } else {
-                skills = null;
-            }
-            vote_count = in.readInt();
-            vote_sum = in.readInt();
-            is_voted = in.readByte() != 0x00;
-            hapcoins = in.readFloat();
-            current_vote = in.readInt();
-            comment_count = in.readInt();
-            contest_post = (Contest_post) in.readValue(Contest_post.class.getClassLoader());
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(id);
-            dest.writeString(created_at);
-            dest.writeString(content);
-            dest.writeString(media_uri);
-            dest.writeInt(post_type);
-            dest.writeValue(user);
-            if (skills == null) {
-                dest.writeByte((byte) (0x00));
-            } else {
-                dest.writeByte((byte) (0x01));
-                dest.writeList(skills);
-            }
-            dest.writeInt(vote_count);
-            dest.writeInt(vote_sum);
-            dest.writeByte((byte) (is_voted ? 0x01 : 0x00));
-            dest.writeFloat(hapcoins);
-            dest.writeInt(current_vote);
-            dest.writeInt(comment_count);
-            dest.writeValue(contest_post);
-        }
-
-        @SuppressWarnings("unused")
-        public static final Parcelable.Creator<Results> CREATOR = new Parcelable.Creator<Results>() {
-            @Override
-            public Results createFromParcel(Parcel in) {
-                return new Results(in);
-            }
-
-            @Override
-            public Results[] newArray(int size) {
-                return new Results[size];
             }
         };
     }

@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.hapramp.R;
 import com.hapramp.adapters.CategoryRecyclerAdapter;
+import com.hapramp.adapters.HomeFeedsAdapter;
 import com.hapramp.adapters.PostsRecyclerAdapter;
 import com.hapramp.api.URLS;
 import com.hapramp.datastore.HomeDataManager;
@@ -62,7 +63,7 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
     SwipeRefreshLayout homeRefressLayout;
 
 
-    private PostsRecyclerAdapter recyclerAdapter;
+    private HomeFeedsAdapter recyclerAdapter;
     private Context mContext;
     private PostResponse currentPostReponse;
     private int currentSelectedSkillId;
@@ -131,9 +132,7 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
         int resId = R.anim.layout_animation_fall_down;
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(mContext, resId);
         postsRecyclerView.setLayoutAnimation(animation);
-
-        recyclerAdapter = new PostsRecyclerAdapter(mContext);
-        recyclerAdapter.setIsAdapterForProfile(false);
+        recyclerAdapter = new HomeFeedsAdapter(mContext);
         postsRecyclerView.addItemDecoration(viewItemDecoration);
         postsRecyclerView.setAdapter(recyclerAdapter);
         postsRecyclerView.setNestedScrollingEnabled(false);
@@ -176,7 +175,7 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
             showContent();
 
             recyclerAdapter.setHasMoreToLoad(postResponses.next.length() > 0);
-            recyclerAdapter.appendResult(postResponses.results);
+            recyclerAdapter.appendFeeds(postResponses.results);
 
         } else {
             showErrorMessage();
@@ -228,7 +227,7 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
         homeRefressLayout.setEnabled(true);
 
         currentPostReponse = refreshedResponse;
-        recyclerAdapter.setPosts(refreshedResponse.results);
+        recyclerAdapter.setFeeds(refreshedResponse.results);
         runLayoutAnimation(postsRecyclerView);
         showContent();
         hideContentLoadingProgress();
@@ -284,12 +283,15 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
     }
 
     private void setScrollListener() {
+
         postsRecyclerView.addOnScrollListener(new EndlessOnScrollListener(layoutManager) {
             @Override
             public void onScrolledToEnd() {
-                loadMore(currentSelectedSkillId);
+                Log.d("HomeFragment","We Came to End of Feeds");
+                //loadMore(currentSelectedSkillId);
             }
         });
+
     }
 
     private void initCategoryView() {

@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.VotePostCallback;
+import com.hapramp.models.Feed;
 import com.hapramp.models.requests.VoteRequestBody;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.utils.FontManager;
@@ -282,7 +283,7 @@ public class RatingView extends FrameLayout implements VotePostCallback {
     }
 
     @Override
-    public void onPostVoted(PostResponse.Results results) {
+    public void onPostVoted(Feed results) {
         Toast.makeText(mContext, "You Voted : " + mRate, Toast.LENGTH_LONG).show();
         isVoted = true;
     }

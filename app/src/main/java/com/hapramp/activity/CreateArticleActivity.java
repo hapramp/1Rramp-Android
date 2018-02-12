@@ -105,13 +105,13 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     @Override
     protected void onPause() {
         super.onPause();
-        saveDraft();
+   //     saveDraft();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-         restoreDraft();
+        // restoreDraft();
     }
 
 
@@ -219,7 +219,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
                 getMediaUri(),
                 Constants.CONTENT_TYPE_ARTICLE,
                 getSelectedSkills(),
-                -1);
+                null);
 
         showPublishingProgressDialog(true);
         //gather the data

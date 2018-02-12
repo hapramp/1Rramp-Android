@@ -1,5 +1,6 @@
 package com.hapramp.interfaces;
 
+import com.hapramp.models.Feed;
 import com.hapramp.models.response.PostResponse;
 
 /**
@@ -7,6 +8,8 @@ import com.hapramp.models.response.PostResponse;
  */
 
 public interface VotePostCallback {
-    void onPostVoted(PostResponse.Results result);
+
+    void onPostVoted(Feed result);
     void onPostVoteError();
+
 }

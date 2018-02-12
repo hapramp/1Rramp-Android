@@ -23,6 +23,7 @@ import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.OnPostDeleteCallback;
 import com.hapramp.interfaces.VoteDeleteCallback;
 import com.hapramp.interfaces.VotePostCallback;
+import com.hapramp.models.Feed;
 import com.hapramp.models.requests.VoteRequestBody;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.utils.Constants;
@@ -112,7 +113,7 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
 
     }
 
-    private void bind(final PostResponse.Results post) {
+    private void bind(final Feed post) {
         // set basic meta-info
         ImageHandler.loadCircularImage(mContext, feedOwnerPic, post.user.image_uri);
         feedOwnerTitle.setText(post.user.full_name);
@@ -148,13 +149,22 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
         }
 
         // check for image
-        if (post.media_uri.length() == 0) {
+        if(post.media_uri!=null) {
+
+            if (post.media_uri.length() == 0) {
+                featuredImagePost.setVisibility(GONE);
+            } else {
+
+                featuredImagePost.layout(0, 0, 0, 0);
+                ImageHandler.load(mContext, featuredImagePost, post.media_uri);
+                featuredImagePost.setVisibility(View.VISIBLE);
+
+            }
+        }else{
             featuredImagePost.setVisibility(GONE);
-        } else {
-            featuredImagePost.layout(0, 0, 0, 0);
-            ImageHandler.load(mContext, featuredImagePost, post.media_uri);
-            featuredImagePost.setVisibility(View.VISIBLE);
         }
+
+
         setHapcoins(post.hapcoins);
         setCommentCount(post.comment_count);
 
@@ -255,7 +265,7 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
 
     }
 
-    private void navigateToDetailedPage(PostResponse.Results post) {
+    private void navigateToDetailedPage(Feed post) {
 
         Intent intent = new Intent(mContext, DetailedActivity.class);
         intent.putExtra("postData",post);
@@ -288,14 +298,14 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
     }
 
 
-    public void setPostData(PostResponse.Results postData) {
+    public void setPostData(Feed postData) {
 
         bind(postData);
 
     }
 
     @Override
-    public void onVoteDeleted(PostResponse.Results updatedPost) {
+    public void onVoteDeleted(Feed updatedPost) {
         // update the hapcoins
         setHapcoins(updatedPost.hapcoins);
 
@@ -307,7 +317,7 @@ public class PostItemView extends FrameLayout implements VoteDeleteCallback, Vot
     }
 
     @Override
-    public void onPostVoted(PostResponse.Results updatedPost) {
+    public void onPostVoted(Feed updatedPost) {
         // update the hapcoins
         setHapcoins(updatedPost.hapcoins);
     }
