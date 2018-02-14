@@ -1,6 +1,7 @@
 package com.hapramp.adapters;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,39 +29,79 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private boolean hasMoreToLoad = false;
     private List<Feed> feeds;
+    private int totalItemCount;
+    private int lastVisibleItem;
+    private boolean isLoading;
+    private int visibleThreshold = 2;
+    private OnLoadMoreListener mOnLoadMoreListener;
 
-    public HomeFeedsAdapter(Context mContext) {
+    public HomeFeedsAdapter(Context mContext, RecyclerView mRecyclerView) {
 
         this.mContext = mContext;
         feeds = new ArrayList<>();
 
+        final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                totalItemCount = linearLayoutManager.getItemCount();
+                lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+
+                if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold) && hasMoreToLoad) {
+
+                    if (mOnLoadMoreListener != null) {
+
+                        mOnLoadMoreListener.onLoadMore();
+
+                    }
+
+                    isLoading = true;
+
+                }
+
+            }
+        });
+
     }
 
-    public void setFeeds(List<Feed> feeds){
+
+    public void setOnLoadMoreListener(OnLoadMoreListener mOnLoadMoreListener) {
+        this.mOnLoadMoreListener = mOnLoadMoreListener;
+    }
+
+
+    public void setFeeds(List<Feed> feeds) {
 
         this.feeds = feeds;
+        Log.d("Adapter", "Feed Size " + feeds.size());
         notifyDataSetChanged();
 
     }
 
-    public void appendFeeds(List<Feed> additionalFeeds){
+    public void appendFeeds(List<Feed> additionalFeeds) {
 
-        for(int i=0;i<additionalFeeds.size();i++){
+        for (int i = 0; i < additionalFeeds.size(); i++) {
             feeds.add(additionalFeeds.get(i));
-            notifyItemInserted(feeds.size()+i);
+            notifyItemInserted(feeds.size() + i);
         }
+
+        isLoading = false;
 
     }
 
     @Override
     public int getItemViewType(int position) {
 
-        if (feeds.get(position) == null) {
+        Log.d("Adapter", "ViewType at " + position);
 
+        if (position >= feeds.size()) {
+            Log.d("Adapter", "Loading View");
             return VIEW_TYPE_LOADING;
 
         } else {
-
+            Log.d("Adapter", "Feed View");
             return VIEW_TYPE_FEED;
 
         }
@@ -94,7 +135,7 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             ((FeedViewHolder) holder).bind(feeds.get(position));
 
         } else if (holder instanceof LoadMoreViewHolder) {
-            Log.d("Adapter","Binding Loading View");
+            Log.d("Adapter", "Binding Loading View");
             ((LoadMoreViewHolder) holder).startSimmer();
 
         }
@@ -104,12 +145,12 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public int getItemCount() {
 
-        return feeds.size();
+        return feeds.size() + (hasMoreToLoad ? 1 : 0);
 
     }
 
     public void setHasMoreToLoad(boolean hasMoreToLoad) {
-
+        this.hasMoreToLoad = hasMoreToLoad;
     }
 
     public void clearList() {
@@ -153,6 +194,10 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             shimmerFrameLayout.setVisibility(View.GONE);
         }
 
+    }
+
+    public interface OnLoadMoreListener {
+        void onLoadMore();
     }
 
 }

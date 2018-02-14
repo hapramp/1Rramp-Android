@@ -5,30 +5,27 @@
     android:layout_height="match_parent">
 
     <include
-        android:visibility="gone"
-        android:id="@+id/loadingShimmer"
+        android:visibility="visible"
         layout="@layout/load_more_progress_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <include
-        android:visibility="gone"
-        android:id="@+id/failed_to_load_view"
+        android:visibility="visible"
         layout="@layout/failed_load_view"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         />
 
     <include
-        android:visibility="gone"
-        android:id="@+id/no_post_loaded_view"
+        android:visibility="visible"
         layout="@layout/no_post_available_message_view"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         />
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:visibility="gone"
+        android:visibility="visible"
         android:id="@+id/feedRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -41,7 +38,7 @@
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <TextView
-        android:visibility="gone"
+        android:visibility="visible"
         android:background="@drawable/move_to_top_button_bg"
         android:textSize="24sp"
         android:layout_alignParentBottom="true"

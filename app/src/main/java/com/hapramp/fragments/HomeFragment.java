@@ -2,29 +2,20 @@ package com.hapramp.fragments;
 
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LayoutAnimationController;
 import android.widget.AbsListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.hapramp.R;
 import com.hapramp.adapters.CategoryRecyclerAdapter;
 import com.hapramp.adapters.HomeFeedsAdapter;
-import com.hapramp.adapters.PostsRecyclerAdapter;
 import com.hapramp.api.URLS;
 import com.hapramp.datastore.HomeDataManager;
 import com.hapramp.interfaces.FetchSkillsResponse;
@@ -33,9 +24,9 @@ import com.hapramp.logger.L;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.utils.PixelUtils;
 import com.hapramp.utils.SpaceDecorator;
 import com.hapramp.utils.ViewItemDecoration;
+import com.hapramp.views.feedlist.FeedListView;
 
 import java.util.List;
 
@@ -46,34 +37,19 @@ import butterknife.Unbinder;
 
 public class HomeFragment extends Fragment implements FetchSkillsResponse,
         CategoryRecyclerAdapter.OnCategoryItemClickListener, LikePostCallback,
-        HomeDataManager.PostLoadListener {
+        HomeDataManager.PostLoadListener, FeedListView.FeedListViewListener {
 
-    @BindView(R.id.homeRv)
-    RecyclerView postsRecyclerView;
-    Unbinder unbinder;
-    @BindView(R.id.shimmer_view_container)
-    ShimmerFrameLayout shimmerFrameLayout;
-    @BindView(R.id.loadingShimmer)
-    View loadingShimmer;
-    @BindView(R.id.emptyMessage)
-    TextView emptyMessage;
+    @BindView(R.id.feedListView)
+    FeedListView feedListView;
     @BindView(R.id.sectionsRv)
     RecyclerView sectionsRv;
-    @BindView(R.id.homeRefressLayout)
-    SwipeRefreshLayout homeRefressLayout;
 
-
-    private HomeFeedsAdapter recyclerAdapter;
     private Context mContext;
     private PostResponse currentPostReponse;
     private int currentSelectedSkillId;
-
     private CategoryRecyclerAdapter categoryRecyclerAdapter;
-    private LinearLayoutManager layoutManager;
-    private ViewItemDecoration viewItemDecoration;
-    private int y;
     HomeDataManager dataManager;
-    private SpaceDecorator spaceDecorator;
+    private Unbinder unbinder;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -82,30 +58,15 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("HomeFragment","onCreate()");
         dataManager = new HomeDataManager(getActivity());
         dataManager.registerPostListeners(this);
 
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        Log.d("HomeFragment","onResume()");
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
         currentPostReponse = null;
-        Log.d("HomeFragment", "onPause");
-
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d("HomeFragment","onDestroy()");
     }
 
     @Override
@@ -121,158 +82,14 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-
         super.onViewCreated(view, savedInstanceState);
-        layoutManager = new LinearLayoutManager(mContext);
-        postsRecyclerView.setLayoutManager(layoutManager);
-        Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
-        viewItemDecoration = new ViewItemDecoration(drawable);
-        spaceDecorator = new SpaceDecorator();
-        postsRecyclerView.addItemDecoration(spaceDecorator);
-        int resId = R.anim.layout_animation_fall_down;
-        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(mContext, resId);
-        postsRecyclerView.setLayoutAnimation(animation);
-        recyclerAdapter = new HomeFeedsAdapter(mContext);
-        postsRecyclerView.addItemDecoration(viewItemDecoration);
-        postsRecyclerView.setAdapter(recyclerAdapter);
-        postsRecyclerView.setNestedScrollingEnabled(false);
+
+        feedListView.setFeedListViewListener(this);
+        feedListView.initialLoading();
         fetchPosts(0);
-        setScrollListener();
-        homeRefressLayout.setProgressViewOffset(false, PixelUtils.dpToPx(72),PixelUtils.dpToPx(120));
-        homeRefressLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-//                homeRefressLayout.setEnabled(true);
-//                homeRefressLayout.setRefreshing(true);
-                forceReloadData();
-            }
-        });
 
     }
 
-    private void runLayoutAnimation(final RecyclerView recyclerView) {
-
-        final Context context = recyclerView.getContext();
-        final LayoutAnimationController controller =
-                AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down);
-
-        recyclerView.setLayoutAnimation(controller);
-        recyclerView.getAdapter().notifyDataSetChanged();
-        recyclerView.scheduleLayoutAnimation();
-
-    }
-
-    @Override
-    public void onPostLoaded(PostResponse postResponses) {
-
-        homeRefressLayout.setRefreshing(false);
-        homeRefressLayout.setEnabled(true);
-        hideContentLoadingProgress();
-        currentPostReponse = postResponses;
-        // append Result
-        if (postResponses.results.size() > 0) {
-            hideErrorMessage();
-            showContent();
-
-            recyclerAdapter.setHasMoreToLoad(postResponses.next.length() > 0);
-            recyclerAdapter.appendFeeds(postResponses.results);
-
-        } else {
-            showErrorMessage();
-            hideContent();
-        }
-
-    }
-
-    @Override
-    public void onPostLoadError(String errorMsg) {
-
-        if(homeRefressLayout.isRefreshing()){
-            homeRefressLayout.setRefreshing(false);
-            homeRefressLayout.setEnabled(true);
-        }
-
-        Toast.makeText(mContext,errorMsg,Toast.LENGTH_SHORT).show();
-
-    }
-
-    @Override
-    public void onLoading() {
-
-        showContentLoadingProgress();
-        hideContent();
-        hideErrorMessage();
-
-    }
-
-    @Override
-    public void onRefreshing() {
-        if(!homeRefressLayout.isRefreshing()) {
-            homeRefressLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    Log.d("HomeFragment","refressing");
-                    homeRefressLayout.setEnabled(false);
-                    homeRefressLayout.setRefreshing(true);
-                }
-            });
-        }
-    }
-
-
-    @Override
-    public void onPostRefreshed(PostResponse refreshedResponse) {
-        Log.d("HomeFragment","refreshed!!");
-        homeRefressLayout.setRefreshing(false);
-        homeRefressLayout.setEnabled(true);
-
-        currentPostReponse = refreshedResponse;
-        recyclerAdapter.setFeeds(refreshedResponse.results);
-        runLayoutAnimation(postsRecyclerView);
-        showContent();
-        hideContentLoadingProgress();
-        Toast.makeText(mContext, "Reloaded", Toast.LENGTH_SHORT).show();
-
-    }
-
-
-    public abstract class EndlessOnScrollListener extends RecyclerView.OnScrollListener {
-
-        // use your LayoutManager instead
-        private LinearLayoutManager lm;
-
-        EndlessOnScrollListener(LinearLayoutManager llm) {
-            this.lm = llm;
-        }
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            //super.onScrolled(recyclerView, dx, dy);
-
-            if (!recyclerView.canScrollVertically(1)) {
-                onScrolledToEnd();
-            }
-
-            y = dy;
-
-        }
-
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-
-            if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL || newState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
-                if (y > 0) {
-                    hideCategorySection();
-                } else {
-                    bringBackCategorySection();
-                }
-            }
-        }
-
-        public abstract void onScrolledToEnd();
-
-    }
 
     private void bringBackCategorySection() {
         sectionsRv.animate().translationY(0);
@@ -282,17 +99,6 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
         sectionsRv.animate().translationY(-sectionsRv.getMeasuredHeight());
     }
 
-    private void setScrollListener() {
-
-        postsRecyclerView.addOnScrollListener(new EndlessOnScrollListener(layoutManager) {
-            @Override
-            public void onScrolledToEnd() {
-                Log.d("HomeFragment","We Came to End of Feeds");
-                //loadMore(currentSelectedSkillId);
-            }
-        });
-
-    }
 
     private void initCategoryView() {
 
@@ -309,8 +115,8 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
     @Override
     public void onCategoryClicked(int id) {
 
+        feedListView.initialLoading();
         currentSelectedSkillId = id;
-        recyclerAdapter.clearList();
         fetchPosts(id);
 
     }
@@ -326,18 +132,6 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
 
     }
 
-    private void showContentLoadingProgress() {
-        if (loadingShimmer != null) {
-            loadingShimmer.setVisibility(View.VISIBLE);
-            shimmerFrameLayout.startShimmerAnimation();
-        }
-    }
-
-    private void hideContentLoadingProgress() {
-        if (loadingShimmer != null)
-            loadingShimmer.setVisibility(View.GONE);
-    }
-
     private void fetchPosts(int id) {
 
         dataManager.getPosts(URLS.POST_FETCH_START_URL, id, false);
@@ -345,14 +139,14 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
     }
 
     public void forceReloadData() {
-       // dataManager.getPosts(URLS.POST_FETCH_START_URL, currentSelectedSkillId, false);
+        // dataManager.getPosts(URLS.POST_FETCH_START_URL, currentSelectedSkillId, false);
         dataManager.getFreshPosts(URLS.POST_FETCH_START_URL, currentSelectedSkillId);
 
     }
 
     private void loadMore(int id) {
 
-        if(currentPostReponse==null)
+        if (currentPostReponse == null)
             return;
 
         if (currentPostReponse.next.length() == 0) {
@@ -361,29 +155,6 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
 
         dataManager.getPosts(currentPostReponse.next, id, true);
 
-    }
-
-
-    private void showContent() {
-        if (postsRecyclerView != null)
-            postsRecyclerView.setVisibility(View.VISIBLE);
-    }
-
-    private void hideContent() {
-
-        if (postsRecyclerView != null)
-            postsRecyclerView.setVisibility(View.GONE);
-
-    }
-
-    private void showErrorMessage() {
-        if (emptyMessage != null)
-            emptyMessage.setVisibility(View.VISIBLE);
-    }
-
-    private void hideErrorMessage() {
-        if (emptyMessage != null)
-            emptyMessage.setVisibility(View.GONE);
     }
 
     @Override
@@ -406,6 +177,83 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
     @Override
     public void onPostLikeError() {
         L.D.m("Home Fragment", "unable to like the post");
+    }
+
+    //CALLBACKS FROM DATA MANAGER
+    @Override
+    public void onLoadingFromCache() {
+        feedListView.initialLoading();
+    }
+
+    @Override
+    public void onFeedLoadedFromCache(PostResponse response) {
+        feedListView.cachedFeedFetched(response.results);
+    }
+
+    @Override
+    public void onNoFeedFoundInCache() {
+        feedListView.noCachedFeeds();
+    }
+
+    @Override
+    public void onRefreshingPostFromServer() {
+        feedListView.feedRefreshing();
+    }
+
+    @Override
+    public void onFreshFeedsFechted(PostResponse postResponse) {
+
+        currentPostReponse = postResponse;
+        feedListView.setHasMoreToLoad(currentPostReponse.next.length() > 0);
+        feedListView.feedsRefreshed(postResponse.results);
+
+    }
+
+    @Override
+    public void onFreshFeedFetchError() {
+        feedListView.failedToRefresh();
+    }
+
+    @Override
+    public void onLoadingPostForAppending() {
+
+    }
+
+    @Override
+    public void onFeedLoadedForAppending(PostResponse response) {
+        feedListView.loadedMoreFeeds(response.results);
+    }
+
+    @Override
+    public void onNoFeedForAppending() {
+
+    }
+
+    //  CALLBACKS FROM FEED LIST VIEW
+
+    @Override
+    public void onRetryFeedLoading() {
+        forceReloadData();
+    }
+
+    @Override
+    public void onRefreshFeeds() {
+        fetchPosts(currentSelectedSkillId);
+    }
+
+    @Override
+    public void onLoadMoreFeeds() {
+        loadMore(currentSelectedSkillId);
+    }
+
+    @Override
+    public void onHideCommunityList() {
+        hideCategorySection();
+    }
+
+    @Override
+    public void onShowCommunityList() {
+        bringBackCategorySection();
     }
 
 }

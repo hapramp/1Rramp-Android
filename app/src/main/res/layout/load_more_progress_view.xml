@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
+    android:id="@+id/mockContainer"
     android:layout_height="wrap_content">
 
     <FrameLayout
@@ -59,24 +60,6 @@
                         android:layout_toEndOf="@+id/feed_owner_pic"
                         android:background="@color/Black12"
                         android:text="" />
-
-                    <ImageView
-                        android:id="@+id/img1"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="16dp"
-                        android:src="@drawable/rs_coin_bg" />
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="8dp"
-                        android:layout_toStartOf="@id/img1"
-                        android:src="@drawable/rs_coin_bg" />
-
 
                 </RelativeLayout>
 
@@ -170,6 +153,7 @@
     </FrameLayout>
 
 
+
     <FrameLayout
         android:id="@+id/mock2"
         android:layout_width="wrap_content"
@@ -228,24 +212,6 @@
                         android:layout_toEndOf="@+id/feed_owner_pic1"
                         android:background="@color/Black12"
                         android:text="" />
-
-                    <ImageView
-                        android:id="@+id/img11"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="16dp"
-                        android:src="@drawable/rs_coin_bg" />
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="8dp"
-                        android:layout_toStartOf="@id/img11"
-                        android:src="@drawable/rs_coin_bg" />
-
 
                 </RelativeLayout>
 

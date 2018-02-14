@@ -55,23 +55,6 @@
                     android:background="@color/Black12"
                     android:text="" />
 
-                <ImageView
-                    android:id="@+id/img1"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="16dp"
-                    android:src="@drawable/rs_coin_bg" />
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="8dp"
-                    android:layout_toStartOf="@id/img1"
-                    android:src="@drawable/rs_coin_bg" />
-
 
             </RelativeLayout>
 
