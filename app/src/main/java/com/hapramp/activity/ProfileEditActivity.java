@@ -299,7 +299,7 @@ public class ProfileEditActivity extends AppCompatActivity implements UserDpUpda
 
         //name
         nameEt.setText(userModel.full_name);
-        //username
+        //usernameEt
         usernameEt.setText(userModel.username);
         //bio
         bioEt.setText(userModel.bio);

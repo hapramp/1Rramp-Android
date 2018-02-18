@@ -36,25 +36,25 @@ public class HomeDataManager {
         this.postLoadListener = loadListener;
     }
 
-    public void getPosts(final String uri, final int communityId, final boolean isLoadMore) {
+    // this method is called for first laod from cache or fresh load only
+    public void getPosts(final String uri, final int communityId) {
 
+        // prepare request id
         currentRequestId = getRequestId(uri, communityId);
 
-
         //perform a check for Cache
-        if (cachePreference.isPostSynced(getSegmentId(uri, communityId)) && !isLoadMore) {
+        if (cachePreference.isPostSynced(getSegmentId(uri, communityId))) {
             // there are existing posts in the cache
             // load them on worker thread and return back
-            l("There is existing cache");
-
-            if (postLoadListener != null && !isLoadMore) {
+           if (postLoadListener != null) {
+                l("onLoadingFromCache()");
                 postLoadListener.onLoadingFromCache();
             }
 
             new Thread() {
                 @Override
                 public void run() {
-
+                    // try loading from cache
                     final PostResponse cachedItem = databaseHelper.getCachedSegment(uri, communityId);
 
                     mHandler.post(new Runnable() {
@@ -64,35 +64,56 @@ public class HomeDataManager {
                             if (cachedItem != null && isRequestLive(getRequestId(uri, communityId))) {
 
                                 if (postLoadListener != null) {
+                                    l("onFeedLoaddFromCache()");
                                     postLoadListener.onFeedLoadedFromCache(cachedItem);
                                 }
+
                             }
                         }
                     });
                 }
             }.start();
 
+           // check for connectivity
             if (ConnectionUtils.isConnected(context)) {
-                l("Starting sync");
                 //start syncing of posts and refresh the cache
+                l("onRefreshingPostFromServer");
                 postLoadListener.onRefreshingPostFromServer();
                 startPostSync(uri, communityId, false);
+
+            }else{
+
+                postLoadListener.onFreshFeedFetchError("No Internet Connectivity!");
+
             }
 
         } else {
-
+            l("onNoFeedFoundInCache()");
             postLoadListener.onNoFeedFoundInCache();
             // there is no cache!!
             // start loading from server
             // return the results and cache them
             if (ConnectionUtils.isConnected(context)) {
-                l("Start Sync From Server");
+                l("onRefreshingPostFromServer()");
                 postLoadListener.onRefreshingPostFromServer();
-                startPostSync(uri, communityId, isLoadMore);
+                startPostSync(uri, communityId , false);
 
             }
 
         }
+    }
+
+    public void getPostForLoadMoreRequest(final String uri, final int communityId){
+
+        currentRequestId = getRequestId(uri, communityId);
+
+        if (ConnectionUtils.isConnected(context)) {
+            l("getPostForLoadMoreRequest");
+            startPostSync(uri, communityId, true);
+        }else{
+            postLoadListener.onAppendingFeedLoadError("No Internet Connectivity!");
+        }
+
     }
 
     private void startPostSync(final String uri, final int communityId, final boolean isLoadMore) {
@@ -103,6 +124,10 @@ public class HomeDataManager {
                 @Override
                 public void onPostFetched(PostResponse postResponses) {
 
+                    l("PostSyncResponse "+postResponses.toString());
+
+
+
                     if (!isLoadMore) {
                         l("Caching Post Segment");
                         //cache items
@@ -110,29 +135,34 @@ public class HomeDataManager {
                         cachePreference.setPostSynced(getSegmentId(uri, communityId));
                     }
 
+                    l("Current Request Live:"+isRequestLive(getRequestId(uri, communityId)));
                     //return result
                     if (postLoadListener != null && isRequestLive(getRequestId(uri, communityId))) {
-                        l("Synced Post Returned");
+
                         if (isLoadMore) {
+                            l("onFeedLoadedForAppending()");
                             postLoadListener.onFeedLoadedForAppending(postResponses);
                         } else {
+                            l("onFreshFeedsFetched()");
                             postLoadListener.onFreshFeedsFechted(postResponses);
                         }
+
                     }
                 }
 
                 @Override
                 public void onPostFetchError() {
                     // report error
-                    if (cachePreference.isPostSynced(getSegmentId(uri, communityId))) {
-                        if (postLoadListener != null) {
-                            postLoadListener.onFreshFeedFetchError();
-                        }
-                    } else {
-                        if (postLoadListener != null) {
-                            postLoadListener.onFreshFeedFetchError();
-                        }
-                    }
+                   if(postLoadListener!=null){
+                       if(isLoadMore){
+                           l("onLoadMoreFetchError()");
+                           postLoadListener.onAppendingFeedLoadError("Something Went Wrong!");
+                       }else{
+                           l("onFreshFeedFetchError()");
+                           postLoadListener.onFreshFeedFetchError("Something Went Wrong");
+                       }
+
+                   }
                 }
             });
 
@@ -143,7 +173,7 @@ public class HomeDataManager {
                 public void onPostFetched(PostResponse postResponses) {
 
                     if (!isLoadMore) {
-                        l("Caching Post Segment");
+
                         //cache items
                         cachePreference.setPostSynced(getSegmentId(uri, communityId));
                         databaseHelper.insertSegment(postResponses, uri, communityId);
@@ -151,10 +181,11 @@ public class HomeDataManager {
 
                     //return result
                     if (postLoadListener != null && isRequestLive(getRequestId(uri, communityId))) {
-                        l("Synced Post Returned");
                         if (isLoadMore) {
+                            l("onFeedLoadedForAppending()");
                             postLoadListener.onFeedLoadedForAppending(postResponses);
                         } else {
+                            l("onFreshFeedsFetched()");
                             postLoadListener.onFreshFeedsFechted(postResponses);
                         }
                     }
@@ -163,14 +194,15 @@ public class HomeDataManager {
                 @Override
                 public void onPostFetchError() {
                     // report error
-                    if (cachePreference.isPostSynced(getSegmentId(uri, communityId))) {
-                        if (postLoadListener != null) {
-                            postLoadListener.onFreshFeedFetchError();
+                    if(postLoadListener!=null){
+                        if(isLoadMore){
+                            l("onLoadMoreFetchError()");
+                            postLoadListener.onAppendingFeedLoadError("Something Went Wrong!");
+                        }else{
+                            l("onFreshFeedFetchError()");
+                            postLoadListener.onFreshFeedFetchError("Something Went Wrong!");
                         }
-                    } else {
-                        if (postLoadListener != null) {
-                            postLoadListener.onFreshFeedFetchError();
-                        }
+
                     }
                 }
 
@@ -180,6 +212,7 @@ public class HomeDataManager {
 
     public void getFreshPosts(String postFetchStartUrl, int currentSelectedSkillId) {
         //send refreshing event
+        l("getFreshPost()");
         postLoadListener.onRefreshingPostFromServer();
         //start syncing
         startPostSync(postFetchStartUrl, currentSelectedSkillId, false);
@@ -199,9 +232,8 @@ public class HomeDataManager {
     }
 
     private void l(String msg) {
-        Log.i(TAG, msg);
+        Log.i("HomeFeedTest"," > ["+TAG+"]  "+ msg);
     }
-
 
     public interface PostLoadListener {
 
@@ -217,7 +249,7 @@ public class HomeDataManager {
 
         void onFreshFeedsFechted(PostResponse postResponse);
 
-        void onFreshFeedFetchError();
+        void onFreshFeedFetchError(String msg);
 
         // load more
         void onLoadingPostForAppending();
@@ -225,6 +257,8 @@ public class HomeDataManager {
         void onFeedLoadedForAppending(PostResponse response);
 
         void onNoFeedForAppending();
+
+        void onAppendingFeedLoadError(String msg);
 
     }
 

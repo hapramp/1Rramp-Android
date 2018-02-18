@@ -11,6 +11,7 @@
         android:id="@+id/failed_message_card_container"
         android:background="@drawable/feed_list_view_asset_card_bg"
         android:layout_margin="8dp"
+        android:padding="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -56,10 +57,10 @@
         android:layout_below="@+id/failed_message_card_container"
         android:textColor="@color/white"
         android:textSize="12sp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
         android:background="@drawable/filled_btn_bg"
         android:text="RETRY"
         android:layout_marginTop="16dp"

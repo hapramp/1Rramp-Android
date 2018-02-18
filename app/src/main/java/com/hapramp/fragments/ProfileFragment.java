@@ -19,7 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.hapramp.R;
-import com.hapramp.adapters.PostsRecyclerAdapter;
+import com.hapramp.adapters.ProfileRecyclerAdapter;
 import com.hapramp.api.DataServer;
 import com.hapramp.api.URLS;
 import com.hapramp.interfaces.FullUserDetailsCallback;
@@ -50,7 +50,7 @@ public class ProfileFragment extends Fragment implements
     ProgressBar contentLoadingProgress;
     private Context mContext;
 
-    private PostsRecyclerAdapter profilePostAdapter;
+    private ProfileRecyclerAdapter profilePostAdapter;
     private String dpUrl;
     private String mBio = "";
     private ViewItemDecoration viewItemDecoration;
@@ -106,8 +106,6 @@ public class ProfileFragment extends Fragment implements
         unbinder = ButterKnife.bind(this, view);
         init();
         fetchUserDetails();
-        // start loading with given default limits
-        fetchUserProfilePosts(URLS.POST_FETCH_START_URL);
         return view;
 
     }
@@ -153,6 +151,7 @@ public class ProfileFragment extends Fragment implements
                 loadMore();
             }
         });
+
     }
 
     private void loadMore() {
@@ -174,12 +173,10 @@ public class ProfileFragment extends Fragment implements
 
     private void init() {
 
-        profilePostAdapter = new PostsRecyclerAdapter(mContext);
-        profilePostAdapter.setIsAdapterForProfile(true);
+        profilePostAdapter = new ProfileRecyclerAdapter(mContext);
         Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
         viewItemDecoration = new ViewItemDecoration(drawable);
-        SpaceDecorator spaceDecorator = new SpaceDecorator();
-        profilePostRv.addItemDecoration(spaceDecorator);
+        viewItemDecoration.setWantTopOffset(false);
         profilePostRv.addItemDecoration(viewItemDecoration);
         llm = new LinearLayoutManager(mContext);
         profilePostRv.setLayoutManager(llm);
@@ -247,6 +244,8 @@ public class ProfileFragment extends Fragment implements
 
         profilePostAdapter.setProfileHeaderModel(profileHeaderModel);
         Log.d("ProfileFragment","user details "+userModel.toString());
+        // start loading with given default limits
+        fetchUserProfilePosts(URLS.POST_FETCH_START_URL);
         showContent(true);
 
     }

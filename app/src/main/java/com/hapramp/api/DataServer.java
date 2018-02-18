@@ -105,6 +105,7 @@ public class DataServer {
 
             @Override
             public void onFailure(Call<FetchUserResponse> call, Throwable t) {
+                L.D.m(TAG,"Error "+t.toString());
                 callback.onUserFetchedError();
             }
         });

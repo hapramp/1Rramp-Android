@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
-import com.hapramp.adapters.PostsRecyclerAdapter;
+import com.hapramp.adapters.ProfileRecyclerAdapter;
 import com.hapramp.api.DataServer;
 import com.hapramp.api.URLS;
 import com.hapramp.interfaces.FullUserDetailsCallback;
@@ -49,7 +49,7 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
     @BindView(R.id.profile_user_name)
     TextView profileUserName;
     private String userId;
-    private PostsRecyclerAdapter profilePostAdapter;
+    private ProfileRecyclerAdapter profilePostAdapter;
     private ViewItemDecoration viewItemDecoration;
     private PostResponse currentPostResponse;
     private LinearLayoutManager llm;
@@ -65,11 +65,7 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
     }
 
     private void requestData() {
-
         fetchProfileData();
-        // start loading with given default limits
-        fetchProfilePosts(URLS.POST_FETCH_START_URL);
-
     }
 
 
@@ -122,14 +118,14 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
     private void init() {
 
         userId = getIntent().getExtras().getString(Constants.EXTRAA_KEY_USER_ID);
-        profilePostAdapter = new PostsRecyclerAdapter(this);
-        profilePostAdapter.setIsAdapterForProfile(true);
+        profilePostAdapter = new ProfileRecyclerAdapter(this);
         closeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         overflowBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         llm = new LinearLayoutManager(this);
         profilePostRv.setLayoutManager(llm);
         Drawable drawable = ContextCompat.getDrawable(this, R.drawable.post_item_divider_view);
         viewItemDecoration = new ViewItemDecoration(drawable);
+        viewItemDecoration.setWantTopOffset(false);
         profilePostRv.addItemDecoration(viewItemDecoration);
         profilePostRv.setAdapter(profilePostAdapter);
         setScrollListener();
@@ -177,6 +173,9 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
 
         profileUserName.setText(userModel.username);
         profilePostAdapter.setProfileHeaderModel(profileHeaderModel);
+        // start loading with given default limits
+        fetchProfilePosts(URLS.POST_FETCH_START_URL);
+
         showContent(true);
 
     }

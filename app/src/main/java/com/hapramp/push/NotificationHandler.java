@@ -23,7 +23,7 @@ public class NotificationHandler {
 
     private static Map<String, String> map;
 
-    public static void handleNotification(RemoteMessage remoteMessage,Context context) {
+    public static void handleNotification(RemoteMessage remoteMessage, Context context) {
         //this is called when app is backgrounded
 
         map = remoteMessage.getData();

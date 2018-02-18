@@ -72,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cheap Romantic Vaccations"
-            android:textColor="@color/gradientEndPink"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="18sp" />
 
 
@@ -96,7 +96,7 @@
             android:maxLines="4"
             android:textStyle="italic"
             android:textSize="16sp"
-            android:textColor="@color/lightGrey" />
+            android:textColor="@color/Black38" />
 
         <TextView
             android:id="@+id/likeBtn"
@@ -177,7 +177,6 @@
         android:layout_below="@+id/featured_image_post"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="-24dp"
-        android:background="@drawable/star_post_bg"
         android:gravity="center"
         android:padding="8dp"
         android:text=""

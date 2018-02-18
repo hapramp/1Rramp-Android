@@ -6,6 +6,18 @@ def getDate() {
     return formattedDate
 }
 
+def getUsername() {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    return properties.getProperty("username");
+}
+
+def getPpk() {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    return properties.getProperty("ppk");
+}
+
 android {
 
     signingConfigs {
@@ -28,7 +40,7 @@ android {
             signingConfig signingConfigs.release
         }
 
-        debug{
+        debug {
 
         }
 
@@ -43,12 +55,20 @@ android {
         versionName "0.0.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         setProperty("archivesBaseName", "Hapramp-${getDate()}-$versionName")
+
+        buildConfigField "String", "TEST_USERNAME", "\"" + getUsername() + "\""
+        buildConfigField "String", "TEST_PPK", "\"" + getPpk() + "\""
+
+        multiDexEnabled true
     }
 
 }
 
 dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.google.firebase:firebase-messaging:11.8.0'
+    implementation 'com.google.firebase:firebase-storage:11.8.0'
+    implementation 'com.google.firebase:firebase-auth:11.8.0'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2') {
         exclude group: 'com.android.support'
     }
@@ -59,24 +79,22 @@ dependencies {
         exclude group: 'com.android.support'
     }
     compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:multidex:1.0.2'
     compile 'com.android.support:appcompat-v7:27.0.2'
     compile 'com.jakewharton:butterknife:8.6.0'
     compile 'com.android.support:support-v4:27.0.2'
-    compile 'com.google.firebase:firebase-messaging:11.8.0'
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.squareup.okhttp3:logging-interceptor:3.4.0'
-    compile 'com.google.firebase:firebase-auth:11.8.0'
-    compile 'com.google.android.gms:play-services-auth:11.8.0'
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
-    compile 'com.google.firebase:firebase-storage:11.8.0'
     compile 'com.android.support:design:27.0.2'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.facebook.shimmer:shimmer:0.1.0@aar'
     testCompile 'junit:junit:4.12'
     compile 'com.github.irshulx:laser-native-editor:2.1.0'
-    compile 'com.facebook.rebound:rebound:0.3.8'
-    compile 'com.firebase:firebase-jobdispatcher:0.8.5'
+    compile 'eu.bittrade.libs:steemj-core:0.4.3'
+    compile 'com.google.android.gms:play-services-vision:11.8.0'
+    compile 'info.androidhive:barcode-reader:1.1.5'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 
 }

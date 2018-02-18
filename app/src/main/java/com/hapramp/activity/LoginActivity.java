@@ -1,424 +1,380 @@
 package com.hapramp.activity;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GetTokenResult;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.gson.Gson;
+import com.hapramp.BuildConfig;
 import com.hapramp.R;
 import com.hapramp.api.DataServer;
-import com.hapramp.interfaces.CreateUserCallback;
-import com.hapramp.interfaces.FetchUserCallback;
-import com.hapramp.logger.L;
-import com.hapramp.models.UserAccountModel;
-import com.hapramp.models.requests.CreateUserRequest;
-import com.hapramp.models.response.CreateUserReponse;
-import com.hapramp.models.response.FetchUserResponse;
-import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.models.requests.SteemLoginResponseModel;
+import com.hapramp.models.requests.SteemSignupRequestModel;
+import com.hapramp.models.response.SteemLoginRequestModel;
+import com.hapramp.models.response.SteemSignUpResponseModel;
+import com.hapramp.steem.SteemHelper;
+import com.hapramp.utils.ErrorCodes;
 import com.hapramp.utils.FontManager;
-import com.hapramp.utils.Validator;
+import com.hapramp.utils.HashGenerator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import eu.bittrade.libs.steemj.base.models.AccountName;
+import eu.bittrade.libs.steemj.base.models.Permlink;
+import eu.bittrade.libs.steemj.base.models.operations.CommentOperation;
+import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
+import eu.bittrade.libs.steemj.exceptions.SteemInvalidTransactionException;
+import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, FetchUserCallback, CreateUserCallback {
+public class LoginActivity extends AppCompatActivity {
 
-    @BindView(R.id.withGoogleBtn)
-    TextView signInWithGoogle;
-    @BindView(R.id.loginButton)
-    TextView loginButton;
-    @BindView(R.id.forgotPassButton)
-    TextView forgotPassButton;
-    @BindView(R.id.signUpButton)
-    TextView signUpButton;
-    @BindView(R.id.email)
-    EditText email;
-    @BindView(R.id.password)
-    EditText password;
+
+    public static final String TAG = LoginActivity.class.getSimpleName();
+    private static final long COMMENT_DELAY = 6000;
+    private static final int QR_CODE_REQUEST_CODE = 109;
+    @BindView(R.id.logo)
+    ImageView logo;
     @BindView(R.id.user_icon)
     TextView userIcon;
+    @BindView(R.id.username)
+    EditText usernameEt;
+    @BindView(R.id.usernameHolder)
+    LinearLayout usernameHolder;
     @BindView(R.id.lock_icon)
     TextView lockIcon;
+    @BindView(R.id.private_posting_key)
+    EditText privatePostingKeyEt;
+    @BindView(R.id.privateKeyHolder)
+    RelativeLayout privateKeyHolder;
+    @BindView(R.id.loginButton)
+    TextView loginButton;
+    @BindView(R.id.createSteemAccountBtn)
+    TextView createSteemAccountBtn;
+    ProgressDialog progressDialog;
+    @BindView(R.id.scanBtn)
+    TextView scanBtn;
 
-    private FirebaseAuth mAuth;
-    private ProgressDialog progressDialog;
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
-    private String TAG = LoginActivity.class.getSimpleName();
-    private Typeface materialTypeface;
-    private GoogleApiClient mGoogleApiClient;
-    private int RC_GC_SIGNIN = 101;
-    private FirebaseUser user;
-    private String token;
+    private String mUsername;
+    private String mPPk;
+
+    private Handler mHandler;
+    private Permlink mCommentParentLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_login);
-
         ButterKnife.bind(this);
-        checkLastStatus();
-        attachListeners();
-        initialize();
-    }
-
-    private void attachListeners() {
-
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                authenticateWithEmailPassword();
+                attemptLogin();
             }
         });
-
-        signInWithGoogle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                requestGoogleAccounts();
-            }
-        });
-
-        signUpButton.setOnClickListener(new View.OnClickListener() {
+        scanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigateToRegisterPage();
+                Intent i = new Intent(LoginActivity.this,QrScanningActivity.class);
+                startActivityForResult(i,QR_CODE_REQUEST_CODE);
             }
         });
-
-        forgotPassButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                redirectToForgetPassword();
-            }
-        });
-
+        init();
     }
 
-    private void authenticateWithEmailPassword() {
-        if (validFields()) {
-            signInWithFirebase(email.getText().toString(), password.getText().toString());
-        }
-    }
+    private void init() {
 
-    private boolean validFields() {
-
-        String _e = email.getText().toString().trim();
-        String _p = password.getText().toString().trim();
-        //check email
-        if (Validator.validateEmail(_e)) {
-            // check password
-            if (_p.length() > 6) {
-                return true;
-            } else {
-                Toast.makeText(this, "Short Password", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(this, "Invalid Email!", Toast.LENGTH_SHORT).show();
-        }
-        return false;
-    }
-
-    private void failedToSignIn() {
-        Toast.makeText(this, "Invalid Credentials! Please check and re-try", Toast.LENGTH_SHORT).show();
-    }
-
-    private void notifyUserForEmailSent() {
-        Toast.makeText(this, "We have sent you a Confirmation Link to Your Email!", Toast.LENGTH_LONG).show();
-    }
-
-    private void checkLastStatus() {
-        if (HaprampPreferenceManager.getInstance().isLoggedIn()) {
-            redirectToHome();
-        }
-    }
-
-    private void initialize() {
-
+        Typeface typeface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
+        lockIcon.setTypeface(typeface);
+        userIcon.setTypeface(typeface);
+        scanBtn.setTypeface(typeface);
         progressDialog = new ProgressDialog(this);
-        mAuth = FirebaseAuth.getInstance();
-        materialTypeface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
-        lockIcon.setTypeface(materialTypeface);
-        userIcon.setTypeface(materialTypeface);
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .requestProfile()
-                .build();
+        progressDialog.setCancelable(false);
+        mHandler = new Handler();
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-
-        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                hideProgress();
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    Log.d(TAG, "user is signed In.");
-                } else {
-                    Log.d(TAG, "user is signed out");
-                }
-            }
-        };
-    }
-
-    private void requestGoogleAccounts() {
-
-        if (mGoogleApiClient.hasConnectedApi(Auth.GOOGLE_SIGN_IN_API)) {
-            mGoogleApiClient.clearDefaultAccountAndReconnect();
+        if (BuildConfig.DEBUG) {
+            privatePostingKeyEt.setText(BuildConfig.TEST_PPK);
+            usernameEt.setText(BuildConfig.TEST_USERNAME);
         }
-
-        Intent intent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        intent.setFlags(0);
-        startActivityForResult(intent, RC_GC_SIGNIN);
 
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_GC_SIGNIN) {
-            L.D.m(TAG, "received result from google");
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleSignInResult(result);
+
+        if (requestCode == QR_CODE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+
+                mPPk = data.getStringExtra("ppk");
+                privatePostingKeyEt.setText(mPPk);
+
+            }else{
+                showToast("Cannot Read QR");
+            }
+        }else{
+            showToast("Cannot Read QR");
         }
+
     }
 
-    private void handleSignInResult(GoogleSignInResult result) {
-        if (result.isSuccess()) {
-            L.D.m(TAG, "handle signin...");
+    private boolean validateFields() {
 
-            GoogleSignInAccount account = result.getSignInAccount();
-            L.D.m(TAG, "account received :" + account.getEmail());
-            showProgress("Logging in as : " + account.getEmail());
-            signInWithFirebase(account);
-
-        } else {
-            Log.d(TAG, result.getStatus().getStatus() + "");
-            t(result.getStatus().getStatusMessage());
+        if (mUsername.length() == 0) {
+            showToast("Username Cannot Be Blank!");
+            usernameEt.requestFocus();
+            return false;
         }
+
+        if (mPPk.length() < 50) {
+            showToast("Invalid Posting Key");
+            privatePostingKeyEt.requestFocus();
+            return false;
+        }
+
+        return true;
     }
 
-    private void signInWithFirebase(String email, String password) {
+    // attempt to log into our server
+    private void attemptLogin() {
 
-        showProgress("Signing In...");
+        mUsername = usernameEt.getText().toString();
+        mPPk = privatePostingKeyEt.getText().toString();
 
-        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+        if (!validateFields())
+            return;
+
+        showProgressWithMessage("Logging You In...");
+        final SteemLoginRequestModel requestModel = new SteemLoginRequestModel();
+        requestModel.setPpkHash(HashGenerator.getSHA2(mPPk));
+        requestModel.setUsername(mUsername);
+
+        DataServer.getService().login(requestModel).enqueue(new Callback<SteemLoginResponseModel>() {
             @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                hideProgress();
-                if (task.isSuccessful()) {
-                    L.D.m(TAG, "signed in with firebase");
-                    user = task.getResult().getUser();
-                    if (user.isEmailVerified()) {
-                        hideProgress();
-                        fetchUserFromAppServer(user);
-                    } else {
-                        // send verification email
-                        user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    hideProgress();
-                                    notifyUserForEmailSent();
-                                }
-                            }
-                        });
-                    }
+            public void onResponse(Call<SteemLoginResponseModel> call, Response<SteemLoginResponseModel> response) {
+
+                if (response.isSuccessful()) {
+
+                    onLoginSuccess();
+
+                } else if (response.code() == ErrorCodes.NOT_FOUND) {
+
+                    attemptSignup();
+
+                } else if (response.code() == ErrorCodes.INTERNAL_SERVER_ERROR) {
+
+                    onLoginFailed("Internal Server");
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SteemLoginResponseModel> call, Throwable t) {
+                onLoginFailed(t.toString());
+            }
+        });
+
+    }
+
+    // confirming from server if it exists there or not
+    private void attemptSignup() {
+
+        showProgressWithMessage("Attempting Signup...");
+
+        SteemSignupRequestModel signupRequestModel = new SteemSignupRequestModel(mUsername);
+
+        DataServer.getService().signup(signupRequestModel).enqueue(new Callback<SteemSignUpResponseModel>() {
+            @Override
+            public void onResponse(Call<SteemSignUpResponseModel> call, Response<SteemSignUpResponseModel> response) {
+
+                if (response.isSuccessful()) {
+
+                    attemptComment(response.body().getToken());
+
                 } else {
-                    hideProgress();
-                    failedToSignIn();
+
+                    onSignUpFailed();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SteemSignUpResponseModel> call, Throwable t) {
+                onSignUpFailed();
+            }
+        });
+
+    }
+
+    // user is not confirmed from server
+    private void onSignUpFailed() {
+
+        hideProgress();
+        showToast("Something Went Wrong While Signing Up");
+    }
+
+    // commenting on a test post on blockchain to veryfy user
+    private void attemptComment(final String token) {
+
+        showProgressWithMessage("Contacting with Blockchain....");
+
+        new Thread() {
+
+            @Override
+            public void run() {
+                try {
+
+                    final CommentOperation commentOperation = SteemHelper.getSteemInstance(mUsername, mPPk)
+                            .createComment(
+                                    new AccountName("the-dragon"),
+                                    new Permlink("say-hello-to-hapramp"),
+                                    token,
+                                    new String[]{""}
+                            );
+
+                    mCommentParentLink = commentOperation.getParentPermlink();
+
+                } catch (SteemCommunicationException e) {
+                    e.printStackTrace();
+                } catch (SteemResponseException e) {
+                    e.printStackTrace();
+                } catch (SteemInvalidTransactionException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
+        // issue confirm request via handler
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showProgressWithMessage("Veryfying Blockchain info...");
+                confirmCommentToServer();
+
+                if (mCommentParentLink != null) {
+                    deleteComment(mCommentParentLink);
                 }
 
             }
-        });
+        }, COMMENT_DELAY);
 
     }
 
-    private void signInWithFirebase(final GoogleSignInAccount account) {
+    // send confirmation of comment to our server
+    private void confirmCommentToServer() {
 
-        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
+        final SteemLoginRequestModel requestModel = new SteemLoginRequestModel();
+        requestModel.setPpkHash(HashGenerator.getSHA2(mPPk));
+        requestModel.setUsername(mUsername);
 
-                        if (task.isSuccessful()) {
-                            L.D.m(TAG, "signed in with firebase");
-                            user = task.getResult().getUser();
-                            fetchUserFromAppServer(user);
-                        } else {
-                            L.D.m(TAG, "Error:" + task.getException());
-                        }
-                    }
-                });
-
-    }
-
-    private void fetchUserFromAppServer(final FirebaseUser user) {
-
-        showProgress("Preparing Your Account...");
-        user.getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+        DataServer.getService().signupDone(requestModel).enqueue(new Callback<SteemLoginResponseModel>() {
             @Override
-            public void onComplete(@NonNull Task<GetTokenResult> task) {
-                token = task.getResult().getToken();
-                HaprampPreferenceManager.getInstance().saveToken(token);
-                DataServer.fetchUser(LoginActivity.this);
+            public void onResponse(Call<SteemLoginResponseModel> call, Response<SteemLoginResponseModel> response) {
+
+                if (response.isSuccessful()) {
+
+                    attemptLogin();
+
+                } else if (response.code() == ErrorCodes.NOT_AUTHORIZED) {
+
+                    onInvalidCredentials();
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<SteemLoginResponseModel> call, Throwable t) {
+
+                onCommentConfirmationFailed(t.toString());
+
             }
         });
 
     }
 
-    private void showProgress(String msg) {
-        progressDialog.setMessage(msg);
-        progressDialog.show();
+    //delete the dummy-comment
+    private void deleteComment(final Permlink parentPermlink) {
+
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    SteemHelper.getSteemInstance(mUsername, mPPk).deletePostOrComment(parentPermlink);
+                } catch (SteemCommunicationException e) {
+                    e.printStackTrace();
+                } catch (SteemResponseException e) {
+                    e.printStackTrace();
+                } catch (SteemInvalidTransactionException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
+    }
+
+    // Events
+
+    private void onCommentConfirmationFailed(String e) {
+
+        hideProgress();
+        showToast("Connection Failed To Server +" + e);
+
+    }
+
+    private void onInvalidCredentials() {
+
+        hideProgress();
+        showToast("Invalid Credentials");
+
+    }
+
+    private void onLoginFailed(String status) {
+
+        hideProgress();
+        showToast(status);
+
+    }
+
+    private void onLoginSuccess() {
+
+        hideProgress();
+        showToast("Success With Login");
+
+    }
+
+    // User Feedback Methods
+
+    private void showProgressWithMessage(String msg) {
+
+        if (progressDialog != null) {
+            progressDialog.setMessage(msg);
+            progressDialog.show();
+        }
+
     }
 
     private void hideProgress() {
+
         if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
-    }
-
-    private void t(String s) {
-        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthStateListener);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (mAuthStateListener != null) {
-            mAuth.removeAuthStateListener(mAuthStateListener);
-        }
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        t("No Connection");
-        hideProgress();
-    }
-
-    @Override
-    public void onUserFetched(FetchUserResponse userResponse) {
-
-        L.D.m(TAG, "User fetched : " + userResponse.toString());
-        HaprampPreferenceManager.getInstance().setUser(new Gson().toJson(userResponse));
-        HaprampPreferenceManager.getInstance().setLoggedIn(true);
-        HaprampPreferenceManager.getInstance().setUserId(String.valueOf(userResponse.getId()));
-        HaprampPreferenceManager.getInstance().setUserEmail(userResponse.getEmail());
-
-        if (userResponse.getOrganization() == null) {
-            redirectToOrgsPage();
-        } else {
-            if (userResponse.getSkills().size() == 0) {
-                redirectToSkillsPage();
-            } else {
-                redirectToHome();
-            }
+            progressDialog.hide();
         }
 
-
     }
 
-    @Override
-    public void onUserFetchedError() {
-        Toast.makeText(this, "User Fetched Error!", Toast.LENGTH_LONG).show();
-        hideProgress();
-    }
-
-    @Override
-    public void onUserNotExists() {
-        L.D.m(TAG, "User doesn`t exists, Creating new :)");
-        hideProgress();
-        createUser();
-    }
-
-    private void createUser() {
-        showProgress("Creating User New...");
-        DataServer.createUser(new CreateUserRequest(user.getEmail(), user.getDisplayName(), user.getDisplayName(), token, 1), this);
-    }
-
-    @Override
-    public void onUserCreated(CreateUserReponse body) {
-
-        L.D.m(TAG, "User Created! :)");
-
-        UserAccountModel accountModel = new UserAccountModel(body.id, body.username, body.full_name, body.karma);
-        HaprampPreferenceManager.getInstance().setUser(new Gson().toJson(accountModel));
-        HaprampPreferenceManager.getInstance().setLoggedIn(true);
-        HaprampPreferenceManager.getInstance().setUserEmail(body.email);
-        redirectToOrgsPage();
-        hideProgress();
-
-    }
-
-    @Override
-    public void onFailedToCreateUser(String message) {
-        L.D.m(TAG, "Failed To Create User :(");
-        hideProgress();
-    }
-
-    private void redirectToOrgsPage() {
-        Intent intent = new Intent(this, OrganisationActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    private void redirectToSkillsPage() {
-        Intent intent = new Intent(this, SkillRegistrationActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    private void redirectToForgetPassword() {
-        Intent intent = new Intent(this, ForgetPasswordActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    private void navigateToRegisterPage() {
-
-        Intent intent = new Intent(this, RegisterActivity.class);
-        startActivity(intent);
-
-    }
-
-    private void redirectToHome() {
-        Intent intent = new Intent(this, HomeActivity.class);
-        startActivity(intent);
-        hideProgress();
-        finish();
+    private void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 
 }

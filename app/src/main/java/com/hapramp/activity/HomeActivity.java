@@ -438,35 +438,35 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
         resetLastSelection(lastMenuSelection);
         switch (newSelectedMenu) {
             case BOTTOM_MENU_HOME:
-                bottomBarHome.setTextColor(Color.parseColor("#FF6B95"));
-                bottomBarHomeText.setTextColor(Color.parseColor("#FF6B95"));
+                bottomBarHome.setTextColor(getResources().getColor(R.color.colorPrimary));
+                bottomBarHomeText.setTextColor(getResources().getColor(R.color.colorPrimary));
                 lastMenuSelection = BOTTOM_MENU_HOME;
 
                 break;
             case BOTTOM_MENU_COMP:
-                bottomBarCompetition.setTextColor(Color.parseColor("#FF6B95"));
-                bottomBarCompetitionText.setTextColor(Color.parseColor("#FF6B95"));
+                bottomBarCompetition.setTextColor(getResources().getColor(R.color.colorPrimary));
+                bottomBarCompetitionText.setTextColor(getResources().getColor(R.color.colorPrimary));
                 lastMenuSelection = BOTTOM_MENU_COMP;
 
                 break;
             case BOTTOM_MENU_PROFILE:
-                bottomBarProfile.setTextColor(Color.parseColor("#FF6B95"));
-                bottomBarProfileText.setTextColor(Color.parseColor("#FF6B95"));
+                bottomBarProfile.setTextColor(getResources().getColor(R.color.colorPrimary));
+                bottomBarProfileText.setTextColor(getResources().getColor(R.color.colorPrimary));
                 lastMenuSelection = BOTTOM_MENU_PROFILE;
 
                 break;
 
             case BOTTOM_MENU_SETTINGS:
-                bottomBarSettings.setTextColor(Color.parseColor("#FF6B95"));
-                bottomBarSettingsText.setTextColor(Color.parseColor("#FF6B95"));
+                bottomBarSettings.setTextColor(getResources().getColor(R.color.colorPrimary));
+                bottomBarSettingsText.setTextColor(getResources().getColor(R.color.colorPrimary));
                 lastMenuSelection = BOTTOM_MENU_SETTINGS;
 
                 break;
 
             case BOTTOM_MENU_EARNINGS:
 
-                bottomBarCompetition.setTextColor(Color.parseColor("#FF6B95"));
-                bottomBarCompetitionText.setTextColor(Color.parseColor("#FF6B95"));
+                bottomBarCompetition.setTextColor(getResources().getColor(R.color.colorPrimary));
+                bottomBarCompetitionText.setTextColor(getResources().getColor(R.color.colorPrimary));
                 lastMenuSelection = BOTTOM_MENU_EARNINGS;
 
                 break;

@@ -81,11 +81,10 @@
             android:id="@+id/post_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/gradientEndPink"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="16sp"
             android:paddingTop="8dp"
             android:paddingStart="8dp"
-            android:text="Travel Photography"
             android:visibility="gone" />
 
         <TextView
@@ -107,7 +106,7 @@
             android:maxLines="4"
             android:maxHeight="36dp"
             android:ellipsize="end"
-            android:textColor="@color/lightGrey" />
+            android:textColor="@color/Black38" />
 
         <TextView
             android:clickable="true"
@@ -124,7 +123,7 @@
             android:paddingStart="20dp"
             android:paddingTop="8dp"
             android:text="Read More"
-            android:textColor="@color/darkGrey"
+            android:textColor="@color/Black38"
             android:textSize="14sp" />
 
 

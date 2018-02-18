@@ -10,6 +10,7 @@ import android.support.v4.widget.Space;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.ScaleAnimation;
+import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -27,6 +29,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.irshulx.Editor;
+import com.github.irshulx.models.EditorContent;
 import com.hapramp.R;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.CommentCreateCallback;
@@ -47,9 +51,9 @@ import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
-import com.hapramp.utils.PixelUtils;
 import com.hapramp.utils.SkillsUtils;
 import com.hapramp.views.comments.CommentView;
+import com.hapramp.views.editor.URLImageParser;
 import com.hapramp.views.extraa.StarView;
 
 import java.util.List;
@@ -58,7 +62,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DetailedActivity extends AppCompatActivity implements CommentFetchCallback, UserFetchCallback, OnPostDeleteCallback, VoteDeleteCallback, VotePostCallback, CommentCreateCallback {
-
 
     @BindView(R.id.closeBtn)
     TextView closeBtn;
@@ -82,18 +85,18 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
     TextView club1;
     @BindView(R.id.post_header_container)
     RelativeLayout postHeaderContainer;
-    @BindView(R.id.featureImage)
-    ImageView featureImage;
-    @BindView(R.id.title)
-    TextView title;
     @BindView(R.id.content)
-    TextView content;
+    WebView content;
     @BindView(R.id.tags)
     TextView tags;
     @BindView(R.id.shareBtn)
     TextView shareBtn;
     @BindView(R.id.commentsViewContainer)
     LinearLayout commentsViewContainer;
+    @BindView(R.id.commentLoadingProgressBar)
+    ProgressBar commentLoadingProgressBar;
+    @BindView(R.id.emptyCommentsCaption)
+    TextView emptyCommentsCaption;
     @BindView(R.id.moreCommentsCaption)
     TextView moreCommentsCaption;
     @BindView(R.id.commentCreaterAvatarMock)
@@ -128,10 +131,6 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
     TextView sendButton;
     @BindView(R.id.commentInputContainer)
     RelativeLayout commentInputContainer;
-    @BindView(R.id.commentLoadingProgressBar)
-    ProgressBar commentLoadingProgressBar;
-    @BindView(R.id.emptyCommentsCaption)
-    TextView emptyCommentsCaption;
     private List<CommentsResponse.Results> comments;
     private String currentCommentUrl;
 
@@ -282,15 +281,8 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
                         MomentsUtils.getFormattedTime(post.created_at)));
 
         setSkills(post.skills);
-
-        if (post.media_uri.length() > 0) {
-            ImageHandler.load(this, featureImage, post.media_uri);
-        } else {
-            featureImage.setVisibility(View.GONE);
-        }
-
-        content.setText(Html.fromHtml(post.content));
-
+        content.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+        content.loadDataWithBaseURL(null, "<style>img{display: inline;height: auto;max-width: 100%;}</style>" + post.content, "text/html", "UTF-8", null);
         // initialize the starview
         starView.setVoteState(
                 new StarView.Vote(

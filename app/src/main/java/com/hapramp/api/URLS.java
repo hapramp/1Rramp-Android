@@ -6,9 +6,9 @@ package com.hapramp.api;
 
 public class URLS {
 
-    public static final String BASE_URL = "http://hapramp.herokuapp.com/api/";
-    public static final String POST_FETCH_START_URL = "http://hapramp.herokuapp.com/api/posts?start=1&limit=20";
+    public static final String BASE_URL = "http://hapramp2.herokuapp.com/api/v2/";
 
+    public static final String POST_FETCH_START_URL = "http://hapramp.herokuapp.com/api/posts?start=1&limit=20";
     public static final String URL_ACTION = "https://user-images.githubusercontent.com/10809719/34512600-8a3d4792-f089-11e7-9709-4628abffb29d.png";
     public static final String URL_ART = "https://user-images.githubusercontent.com/10809719/34512616-a3528602-f089-11e7-8b7e-4953c469ad42.png";;
     public static final String URL_DANCE = "https://user-images.githubusercontent.com/10809719/34512652-c0e37fd2-f089-11e7-81ae-70b238964e2f.png";

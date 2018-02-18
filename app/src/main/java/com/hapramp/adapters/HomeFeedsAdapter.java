@@ -75,18 +75,14 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public void setFeeds(List<Feed> feeds) {
 
         this.feeds = feeds;
-        Log.d("Adapter", "Feed Size " + feeds.size());
         notifyDataSetChanged();
 
     }
 
     public void appendFeeds(List<Feed> additionalFeeds) {
 
-        for (int i = 0; i < additionalFeeds.size(); i++) {
-            feeds.add(additionalFeeds.get(i));
-            notifyItemInserted(feeds.size() + i);
-        }
-
+        feeds.addAll(additionalFeeds);
+        notifyItemInserted(feeds.size() - (additionalFeeds.size() - 1));
         isLoading = false;
 
     }
@@ -94,14 +90,10 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public int getItemViewType(int position) {
 
-        Log.d("Adapter", "ViewType at " + position);
-
         if (position >= feeds.size()) {
-            Log.d("Adapter", "Loading View");
             return VIEW_TYPE_LOADING;
 
         } else {
-            Log.d("Adapter", "Feed View");
             return VIEW_TYPE_FEED;
 
         }
@@ -135,7 +127,6 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             ((FeedViewHolder) holder).bind(feeds.get(position));
 
         } else if (holder instanceof LoadMoreViewHolder) {
-            Log.d("Adapter", "Binding Loading View");
             ((LoadMoreViewHolder) holder).startSimmer();
 
         }
@@ -147,6 +138,10 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         return feeds.size() + (hasMoreToLoad ? 1 : 0);
 
+    }
+
+    public int getFeedsCount(){
+        return feeds.size();
     }
 
     public void setHasMoreToLoad(boolean hasMoreToLoad) {

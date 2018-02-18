@@ -53,7 +53,7 @@
     <TextView
         android:id="@+id/orgsCaption"
         android:textSize="16sp"
-        android:textColor="@color/darkGrey"
+        android:textColor="@color/Black54"
         android:layout_marginLeft="24dp"
         android:layout_marginBottom="8dp"
         android:layout_below="@+id/organisation_people_icon"

@@ -134,7 +134,7 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
 
     private void fetchPosts(int id) {
 
-        dataManager.getPosts(URLS.POST_FETCH_START_URL, id, false);
+        dataManager.getPosts(URLS.POST_FETCH_START_URL, id);
 
     }
 
@@ -153,7 +153,7 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
             return;
         }
 
-        dataManager.getPosts(currentPostReponse.next, id, true);
+        dataManager.getPostForLoadMoreRequest(currentPostReponse.next, id);
 
     }
 
@@ -182,36 +182,55 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
     //CALLBACKS FROM DATA MANAGER
     @Override
     public void onLoadingFromCache() {
-        feedListView.initialLoading();
     }
 
     @Override
     public void onFeedLoadedFromCache(PostResponse response) {
-        feedListView.cachedFeedFetched(response.results);
+
+        if(feedListView!=null) {
+            currentPostReponse = response;
+            feedListView.cachedFeedFetched(response.results);
+        }
+
+
     }
 
     @Override
     public void onNoFeedFoundInCache() {
-        feedListView.noCachedFeeds();
+
+        if(feedListView!=null) {
+            feedListView.noCachedFeeds();
+        }
+
     }
 
     @Override
     public void onRefreshingPostFromServer() {
-        feedListView.feedRefreshing();
+
+        if(feedListView!=null) {
+            feedListView.feedRefreshing();
+        }
+
     }
 
     @Override
     public void onFreshFeedsFechted(PostResponse postResponse) {
 
-        currentPostReponse = postResponse;
-        feedListView.setHasMoreToLoad(currentPostReponse.next.length() > 0);
-        feedListView.feedsRefreshed(postResponse.results);
+        if(feedListView!=null) {
+            currentPostReponse = postResponse;
+            feedListView.setHasMoreToLoad(currentPostReponse.next.length() > 0);
+            feedListView.feedsRefreshed(postResponse.results);
+        }
 
     }
 
     @Override
-    public void onFreshFeedFetchError() {
-        feedListView.failedToRefresh();
+    public void onFreshFeedFetchError(String msg) {
+
+        if(feedListView!=null) {
+            feedListView.failedToRefresh(msg);
+        }
+
     }
 
     @Override
@@ -221,11 +240,27 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
 
     @Override
     public void onFeedLoadedForAppending(PostResponse response) {
-        feedListView.loadedMoreFeeds(response.results);
+
+        if(feedListView!=null) {
+            currentPostReponse = response;
+            feedListView.loadedMoreFeeds(response.results);
+        }
+
     }
 
     @Override
     public void onNoFeedForAppending() {
+
+    }
+
+    @Override
+    public void onAppendingFeedLoadError(String msg) {
+
+        try {
+            Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+
+        }
 
     }
 
@@ -238,7 +273,7 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
 
     @Override
     public void onRefreshFeeds() {
-        fetchPosts(currentSelectedSkillId);
+        forceReloadData();
     }
 
     @Override

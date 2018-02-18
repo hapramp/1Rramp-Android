@@ -28,7 +28,7 @@
 
         <TextView
             android:layout_gravity="center_vertical"
-            android:textColor="@color/lightGrey"
+            android:textColor="@color/Black38"
             android:id="@+id/user_icon"
             android:text=""
             android:textSize="24sp"
@@ -85,7 +85,7 @@
         android:gravity="center_horizontal"
         android:padding="12dp"
         android:text="SIGN UP WITH GOOGLE"
-        android:textColor="@color/gradientEndPink"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="16sp"/>
 
     <LinearLayout
@@ -101,7 +101,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:text="Already Registered ? "
-            android:textColor="@color/lightGrey" />
+            android:textColor="@color/Black38" />
 
         <TextView
             android:id="@+id/loginButton"
@@ -111,7 +111,7 @@
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
             android:text="Login"
-            android:textColor="@color/darkGrey"
+            android:textColor="@color/Black54"
             android:textStyle="bold" />
 
 

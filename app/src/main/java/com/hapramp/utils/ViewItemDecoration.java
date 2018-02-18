@@ -14,30 +14,46 @@ public class ViewItemDecoration extends RecyclerView.ItemDecoration {
 
 
     private Drawable mDivider;
-
+    private boolean wantTopOffset = true;
     public ViewItemDecoration(Drawable drawable) {
         this.mDivider = drawable;
     }
 
+    public void setWantTopOffset(boolean want){
+        this.wantTopOffset = want;
+    }
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
 
-        if (parent.getChildAdapterPosition(view) == 0 || parent.getChildAdapterPosition(view) ==1) {
-            return;
+        if (parent.getChildAdapterPosition(view) == 0 && wantTopOffset) {
+
+            outRect.top = PixelUtils.dpToPx(84);
+            outRect.bottom = mDivider.getIntrinsicHeight();
+
+        }else{
+            outRect.bottom = mDivider.getIntrinsicHeight();
         }
 
-        outRect.top = mDivider.getIntrinsicHeight();
+
+        if(isLastChild(view,parent) && parent.getAdapter().getItemCount()>1){
+            outRect.bottom = PixelUtils.dpToPx(56);
+        }
+
+       // outRect.top = mDivider.getIntrinsicHeight();
 
     }
 
     @Override
     public void onDraw(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
+
         int dividerLeft = parent.getPaddingLeft();
         int dividerRight = parent.getWidth() - parent.getPaddingRight();
 
         int childCount = parent.getChildCount();
+
         for (int i = 0; i < childCount - 1; i++) {
+
             View child = parent.getChildAt(i);
 
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
@@ -47,10 +63,13 @@ public class ViewItemDecoration extends RecyclerView.ItemDecoration {
 
             mDivider.setBounds(dividerLeft, dividerTop, dividerRight, dividerBottom);
             mDivider.draw(canvas);
+
         }
+
     }
 
     private boolean isLastChild(View v, RecyclerView parent) {
+
 
         return (parent.getAdapter().getItemCount() - 1) == parent.getChildAdapterPosition(v);
 

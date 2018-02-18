@@ -23,7 +23,7 @@
 
     <TextView
         android:padding="8dp"
-        android:textColor="@color/lightGrey"
+        android:textColor="@color/Black38"
         android:textSize="18sp"
         android:gravity="center"
         android:layout_centerHorizontal="true"

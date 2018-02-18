@@ -4,8 +4,9 @@ import com.hapramp.models.Feed;
 import com.hapramp.models.UserDataUpdateBody;
 import com.hapramp.models.UserResponse;
 import com.hapramp.models.requests.FollowRequestBody;
+import com.hapramp.models.requests.SteemLoginResponseModel;
+import com.hapramp.models.requests.SteemSignupRequestModel;
 import com.hapramp.models.requests.UserBioUpdateRequestBody;
-import com.hapramp.models.requests.UserDpUpdateRequestBody;
 import com.hapramp.models.requests.VoteRequestBody;
 import com.hapramp.models.response.CompetitionsPostReponse;
 import com.hapramp.models.requests.LikeBody;
@@ -22,16 +23,15 @@ import com.hapramp.models.response.FetchUserResponse;
 import com.hapramp.models.response.NotificationResponse;
 import com.hapramp.models.response.OrgsResponse;
 import com.hapramp.models.response.PostResponse;
-import com.hapramp.models.response.SkillsModel;
 import com.hapramp.models.response.SkillsUpdateResponse;
+import com.hapramp.models.response.SteemLoginRequestModel;
+import com.hapramp.models.response.SteemSignUpResponseModel;
 import com.hapramp.models.response.UpdateUserResponse;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.models.response.UserStatsModel;
-import com.hapramp.models.response.VotePostResponse;
 
 import java.util.List;
 
-import okhttp3.Response;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -47,6 +47,38 @@ import retrofit2.http.Url;
  */
 
 public interface HaprampAPI {
+
+    @POST("login")
+    Call<SteemLoginResponseModel> login(@Body SteemLoginRequestModel requestModel);
+
+    @POST("signup")
+    Call<SteemSignUpResponseModel> signup(@Body SteemSignupRequestModel requestModel);
+
+    @POST("signup/done")
+    Call<SteemLoginResponseModel> signupDone(@Body SteemLoginRequestModel requestModel);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @POST("users")
     Call<CreateUserReponse> createUser(@Body CreateUserRequest userRequestModel);

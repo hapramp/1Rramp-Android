@@ -41,7 +41,7 @@ public class FetchUserResponse {
     private String bio;
     @SerializedName("hapcoins")
     @Expose
-    private Integer hapcoins;
+    private Double hapcoins;
     @SerializedName("clubs")
     @Expose
     private List<Object> clubs = null;
@@ -130,11 +130,11 @@ public class FetchUserResponse {
         this.bio = bio;
     }
 
-    public Integer getHapcoins() {
+    public Double getHapcoins() {
         return hapcoins;
     }
 
-    public void setHapcoins(Integer hapcoins) {
+    public void setHapcoins(Double hapcoins) {
         this.hapcoins = hapcoins;
     }
 

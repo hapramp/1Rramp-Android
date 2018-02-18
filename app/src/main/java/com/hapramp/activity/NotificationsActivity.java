@@ -77,6 +77,7 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
         notificationRV.setAdapter(notificationsAdapter);
         Drawable drawable = ContextCompat.getDrawable(this, R.drawable.comment_item_divider_view);
         viewItemDecoration = new ViewItemDecoration(drawable);
+        viewItemDecoration.setWantTopOffset(false);
         notificationRV.addItemDecoration(viewItemDecoration);
 
         // reset notification if any

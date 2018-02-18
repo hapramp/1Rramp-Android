@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.hapramp.api.DataServer;
 import com.hapramp.main.HapRampMain;
@@ -42,7 +40,6 @@ public class HaprampPreferenceManager {
     }
 
     public void clearPreferences(){
-        FirebaseAuth.getInstance().signOut();
         DataServer.resetAPI();
         editor.clear();
         editor.apply();

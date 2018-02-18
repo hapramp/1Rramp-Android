@@ -18,11 +18,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.hapramp.R;
 import com.hapramp.adapters.HomeFeedsAdapter;
 import com.hapramp.models.Feed;
+import com.hapramp.utils.FontManager;
 import com.hapramp.utils.PixelUtils;
 import com.hapramp.utils.SpaceDecorator;
 import com.hapramp.utils.ViewItemDecoration;
@@ -137,7 +139,7 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
     private ViewItemDecoration viewItemDecoration;
     private SpaceDecorator spaceDecorator;
     private int y;
-
+    public static final String TAG = FeedListView.class.getSimpleName();
     // TODO: 2/12/2018  add view setters and attach adapter
 
     public FeedListView(@NonNull Context context) {
@@ -159,7 +161,7 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
 
         this.mContext = context;
         rootView = LayoutInflater.from(context).inflate(R.layout.feed_list_view, this);
-        ButterKnife.bind(this,rootView);
+        ButterKnife.bind(this, rootView);
         attachListeners();
 
         Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
@@ -168,7 +170,7 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
 
         layoutManager = new LinearLayoutManager(mContext);
         feedRecyclerView.setLayoutManager(layoutManager);
-        homeFeedsAdapter = new HomeFeedsAdapter(context,feedRecyclerView);
+        homeFeedsAdapter = new HomeFeedsAdapter(context, feedRecyclerView);
 
         homeFeedsAdapter.setOnLoadMoreListener(this);
 
@@ -179,6 +181,9 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
         feedRecyclerView.setNestedScrollingEnabled(false);
 
         feedRefreshLayout.setProgressViewOffset(false, PixelUtils.dpToPx(72), PixelUtils.dpToPx(120));
+        feedRefreshLayout.setColorSchemeColors(mContext.getResources().getColor(R.color.colorPrimary));
+        sadIcon.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+        noPostSadIcon.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
 
     }
 
@@ -226,7 +231,7 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
 
     // State Methods
     public void initialLoading() {
-
+        l("initialLoading");
         //hide recycler view
         setFeedRecyclerViewVisibility(false);
         //hide failed view
@@ -239,7 +244,7 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
     }
 
     public void cachedFeedFetched(List<Feed> cachedFeeds) {
-
+        l("CachedFeedFetched");
         // TODO: 2/12/2018 set list items to adapter | show recyclerView  | hide other views
         //show recycler view
         setFeedRecyclerViewVisibility(true);
@@ -255,7 +260,7 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
     }
 
     public void noCachedFeeds() {
-
+        l("NoCachedFeeds");
         // TODO: 2/12/2018 show no posts view  | hide other views
         //hide recycler view
         setFeedRecyclerViewVisibility(false);
@@ -274,15 +279,16 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
     }
 
     public void feedRefreshing() {
-
+        l("feedRefreshing");
         showRefreshingLayout(true);
 
     }
 
     public void feedsRefreshed(List<Feed> refreshedFeeds) {
         // TODO: 2/12/2018 set items to adapter | hide other views | disable swiperefreshing views
+        l("FeedRefreshed {posts - " + refreshedFeeds.size());
+        if (refreshedFeeds.size() > 0) {
 
-        if(refreshedFeeds.size()>0) {
             //hide recycler view
             setFeedRecyclerViewVisibility(true);
             //hide failed view
@@ -295,7 +301,7 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
             homeFeedsAdapter.setFeeds(refreshedFeeds);
             showRefreshingLayout(false);
 
-        }else{
+        } else {
             //hide recycler view
             setFeedRecyclerViewVisibility(false);
             //hide failed view
@@ -313,36 +319,41 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
 
     }
 
-    public void failedToRefresh() {
+    public void failedToRefresh(String msg) {
+
+        l("failedToRefresh");
         // TODO: 2/12/2018 show error toast | if adapter has no posts already, then call failedToLoadInitial | diable swiperefresing views
+        Toast.makeText(mContext,msg,Toast.LENGTH_SHORT).show();
 
-        //hide recycler view
-        setFeedRecyclerViewVisibility(false);
-        //hide failed view
-        setFailedToLoadViewVisibility(true);
-        //show no feed loaded
-        setNoFeedLoadedViewVisibility(false);
-        //hide shimmer
-        setLoadingShimmerVisibility(false);
+        if(homeFeedsAdapter.getFeedsCount() == 0) {
+            //hide recycler view
+            setFeedRecyclerViewVisibility(false);
+            //hide failed view
+            setFailedToLoadViewVisibility(true);
+            //show no feed loaded
+            setNoFeedLoadedViewVisibility(false);
+            //hide shimmer
+            setLoadingShimmerVisibility(false);
 
-        showRefreshingLayout(false);
+            showRefreshingLayout(false);
 
-        failedMessageTitle.setText("Failed To Load Feeds");
-        failedMessageDetails.setText("We are having issue loading feeds");
+            failedMessageTitle.setText("Failed To Load Feeds");
+            failedMessageDetails.setText("We are having issue loading feeds");
+
+        }else{
+            // hide the progress bar
+            showRefreshingLayout(false);
+
+        }
 
     }
 
     public void loadedMoreFeeds(List<Feed> moreFeeds) {
 
+        l("loadMoreFeeds");
         // TODO: 2/12/2018 append items to adapter
-        //hide recycler view
+       if(feedRecyclerView.getVisibility()!=VISIBLE)
         setFeedRecyclerViewVisibility(true);
-        //hide failed view
-        setFailedToLoadViewVisibility(false);
-        //show no feed loaded
-        setNoFeedLoadedViewVisibility(false);
-        //hide shimmer
-        setLoadingShimmerVisibility(false);
 
         homeFeedsAdapter.appendFeeds(moreFeeds);
 
@@ -375,6 +386,8 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
 
     private void showRefreshingLayout(boolean show) {
 
+        l("showRefreshingLayout " + show);
+
         if (show) {
 
             if (!feedRefreshLayout.isRefreshing()) {
@@ -382,18 +395,19 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
                 feedRefreshLayout.post(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d("HomeFragment", "refressing");
                         feedRefreshLayout.setEnabled(false);
                         feedRefreshLayout.setRefreshing(true);
                     }
                 });
 
-            } else {
-
-                feedRefreshLayout.setRefreshing(false);
-                feedRefreshLayout.setEnabled(true);
-
             }
+
+
+        } else {
+
+            feedRefreshLayout.setRefreshing(false);
+            feedRefreshLayout.setEnabled(true);
+
         }
     }
 
@@ -415,11 +429,15 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
 
     @Override
     public void onLoadMore() {
-
-        if(feedListViewListener!=null){
+        l("onLoadMore()");
+        if (feedListViewListener != null) {
             feedListViewListener.onLoadMoreFeeds();
         }
 
+    }
+
+    private void l(String msg) {
+        Log.i("HomeFeedTest"," > ["+TAG+"]  "+ msg);
     }
 
     public void setHasMoreToLoad(boolean hasMoreToLoad) {

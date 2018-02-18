@@ -22,7 +22,7 @@
 
     <TextView
         android:padding="8dp"
-        android:textColor="@color/lightGrey"
+        android:textColor="@color/Black38"
         android:textSize="18sp"
         android:gravity="center"
         android:layout_centerHorizontal="true"
@@ -41,7 +41,7 @@
 
         <TextView
             android:layout_gravity="center_vertical"
-            android:textColor="@color/lightGrey"
+            android:textColor="@color/Black38"
             android:id="@+id/user_icon"
             android:text=""
             android:textSize="24sp"
@@ -70,7 +70,7 @@
 
         <TextView
             android:layout_gravity="center_vertical"
-            android:textColor="@color/lightGrey"
+            android:textColor="@color/Black38"
             android:id="@+id/lock_icon"
             android:text=""
             android:textSize="24sp"
@@ -99,7 +99,7 @@
 
         <TextView
             android:layout_gravity="center_vertical"
-            android:textColor="@color/lightGrey"
+            android:textColor="@color/Black38"
             android:id="@+id/cnf_lock_icon"
             android:text=""
             android:textSize="24sp"
