@@ -1,5 +1,7 @@
 package com.hapramp.steem;
 
+import com.hapramp.preferences.HaprampPreferenceManager;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.ArrayList;
@@ -39,6 +41,33 @@ public class SteemHelper {
         }
         return steemJ;
 
+    }
+
+    public static SteemJ getSteemInstance(){
+
+        SteemJ steemJ = null;
+        String username = HaprampPreferenceManager.getInstance().getUsername();
+        String ppk = HaprampPreferenceManager.getInstance().getPPK();
+        if(ppk.length()==0)
+            return steemJ;
+
+        // Change the default settings if needed:
+        SteemJConfig myConfig = SteemJConfig.getInstance();
+        myConfig.setResponseTimeout(100000);
+        myConfig.setDefaultAccount(new AccountName(username));
+        // Add and manage private keys:
+        List<ImmutablePair<PrivateKeyType, String>> privateKeys = new ArrayList<>();
+        privateKeys.add(new ImmutablePair<>(PrivateKeyType.POSTING, ppk));
+        myConfig.getPrivateKeyStorage().addAccount(myConfig.getDefaultAccount(), privateKeys);
+        try {
+            steemJ = new SteemJ();
+        } catch (SteemCommunicationException e) {
+            e.printStackTrace();
+        } catch (SteemResponseException e) {
+            e.printStackTrace();
+        }
+
+        return steemJ;
     }
 
 }

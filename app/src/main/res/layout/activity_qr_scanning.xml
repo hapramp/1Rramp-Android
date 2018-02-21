@@ -18,10 +18,10 @@
     <info.androidhive.barcode.ScannerOverlay
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#35939393"
+        android:background="#7c585858"
         app:line_color="@color/colorPrimary"
-        app:line_speed="4"
-        app:line_width="2"
+        app:line_speed="6"
+        app:line_width="4"
         app:square_height="200"
         app:square_width="200" />
 
@@ -66,6 +66,6 @@
         android:layout_alignParentEnd="true"
         android:text="Blazing Fast Scan of Posting Key"
         android:textColor="@color/white"
-        android:textSize="18sp" />
+        android:textSize="14sp" />
 
 </RelativeLayout>

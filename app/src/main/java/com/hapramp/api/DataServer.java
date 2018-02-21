@@ -75,8 +75,7 @@ public class DataServer {
     public static HaprampAPI getService() {
 
         if (haprampAPI == null) {
-            haprampAPI = HaprampApiClient.getClient()
-                    .create(HaprampAPI.class);
+            haprampAPI = HaprampApiClient.getClient().create(HaprampAPI.class);
         }
         return haprampAPI;
 

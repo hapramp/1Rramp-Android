@@ -69,32 +69,34 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:11.8.0'
     implementation 'com.google.firebase:firebase-storage:11.8.0'
     implementation 'com.google.firebase:firebase-auth:11.8.0'
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2') {
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2') {
         exclude group: 'com.android.support'
     }
-    androidTestCompile('com.android.support.test:runner:0.3') {
+    androidTestImplementation('com.android.support.test:runner:0.3') {
         exclude group: 'com.android.support'
     }
-    androidTestCompile('com.android.support.test:rules:0.3') {
+    androidTestImplementation('com.android.support.test:rules:0.3') {
         exclude group: 'com.android.support'
     }
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:multidex:1.0.2'
-    compile 'com.android.support:appcompat-v7:27.0.2'
-    compile 'com.jakewharton:butterknife:8.6.0'
-    compile 'com.android.support:support-v4:27.0.2'
-    compile 'com.google.code.gson:gson:2.8.0'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.4.0'
-    compile 'com.squareup.retrofit2:retrofit:2.3.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
-    compile 'com.android.support:design:27.0.2'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile 'com.facebook.shimmer:shimmer:0.1.0@aar'
-    testCompile 'junit:junit:4.12'
-    compile 'com.github.irshulx:laser-native-editor:2.1.0'
-    compile 'eu.bittrade.libs:steemj-core:0.4.3'
-    compile 'com.google.android.gms:play-services-vision:11.8.0'
-    compile 'info.androidhive:barcode-reader:1.1.5'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:multidex:1.0.2'
+    implementation 'com.android.support:appcompat-v7:27.0.2'
+    implementation 'com.jakewharton:butterknife:8.6.0'
+    implementation 'com.android.support:support-v4:27.0.2'
+    implementation 'com.google.code.gson:gson:2.8.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.4.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.android.support:design:27.0.2'
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation 'com.facebook.shimmer:shimmer:0.1.0@aar'
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.github.irshulx:laser-native-editor:2.1.0'
+    implementation 'eu.bittrade.libs:steemj-core:0.4.3'
+    implementation 'com.google.android.gms:play-services-vision:11.8.0'
+    implementation 'info.androidhive:barcode-reader:1.1.5'
+    implementation 'com.google.dagger:dagger:2.13'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.13'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 
 }

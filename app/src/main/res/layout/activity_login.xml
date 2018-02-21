@@ -10,6 +10,16 @@
         android:layout_height="wrap_content"
         android:background="#ffffff">
 
+        <TextView
+            android:id="@+id/connectivityText"
+            android:padding="2dp"
+            android:visibility="gone"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <ImageView
             android:layout_gravity="center_horizontal"
             android:id="@+id/logo"
@@ -39,10 +49,11 @@
             <EditText
                 android:id="@+id/username"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_marginStart="8dp"
                 android:hint="Username"
                 android:textSize="14sp"
+                android:lines="1"
                 android:inputType="textEmailAddress" />
 
         </LinearLayout>
@@ -73,6 +84,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:textSize="14sp"
+                android:maxLines="1"
+                android:lines="1"
+                android:inputType="textPassword"
                 android:hint="Posting Key"/>
 
             <TextView
@@ -84,7 +98,6 @@
                 android:layout_centerVertical="true"
                 android:text=""
                 android:paddingStart="4dp"
-                android:paddingEnd="4dp"
                 android:textColor="@color/colorPrimary"
                 android:textSize="28sp"
                 android:layout_width="wrap_content"
@@ -97,7 +110,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="36dp"
             android:paddingStart="96dp"
             android:paddingEnd="96dp"
             android:background="@drawable/filled_btn_bg"
@@ -129,12 +142,26 @@
             android:background="@drawable/light_btn_bg"
             android:clickable="true"
             android:focusable="true"
-            android:elevation="2dp"
             android:gravity="center_horizontal"
             android:padding="12dp"
             android:text="CREATE STEEM ACCOUNT"
             android:textColor="@color/colorPrimary"
             android:textSize="14sp" />
+
+        <TextView
+            android:text="Help ?"
+            android:textSize="12sp"
+            android:padding="4dp"
+            android:layout_marginTop="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:id="@+id/helpBtn"
+            android:background="?selectableItemBackgroundBorderless"
+            android:layout_gravity="bottom|center_horizontal"
+            android:textColor="@color/colorPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
 
     </LinearLayout>
 

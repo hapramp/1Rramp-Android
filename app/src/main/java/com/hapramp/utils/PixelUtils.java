@@ -3,6 +3,7 @@ package com.hapramp.utils;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
+import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
 
@@ -31,4 +32,11 @@ public class PixelUtils {
         return size.x/2;
 
     }
+
+    public static DisplayMetrics getDimension(Context context){
+
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        return metrics;
+    }
+
 }

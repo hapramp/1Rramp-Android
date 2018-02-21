@@ -14,8 +14,7 @@
         android:layout_width="144dp"
         android:layout_height="144dp"
         android:layout_centerHorizontal="true"
-        android:layout_margin="48dp"
-        android:src="@drawable/logo_square" />
+        android:layout_margin="48dp" />
 
     <LinearLayout
         android:layout_marginStart="48dp"

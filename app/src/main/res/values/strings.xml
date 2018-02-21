@@ -29,6 +29,18 @@
     <string name="other_comment_format">Comment[%1$d]</string>
     <string name="no_other_comment_format">No Comment</string>
     <string name="type_here">Type Here...</string>
-
+    <string name="help_info"><p><strong>How To Login</strong></p>
+<p>You must have a <a title="Steemit" href="https://signup.steemit.com/">Steemit</a> Account To Log in.</p>
+<p><strong>Posting Key</strong></p>
+<p>To get Posting key:</p>
+<ol>
+<li>Login into your Steemit account.</li>
+<li>Click on Profile Icon(top right corner)</li>
+<li>Click on Wallet Menu</li>
+<li>Click on Permissions</li>
+<li>Click on QR Code below "Posting"</li>
+<li>Click on QR Code to Expand(else scan will fail)</li>
+<li>Open Hapramp and tap scan button to scan.</li>
+</ol></string>
 
 </resources>

@@ -55,12 +55,21 @@ public class HaprampPreferenceManager {
         return preferences.getBoolean("isLoggedIn",false);
     }
 
-    public void saveToken(String token){
-        L.D.m("Pref","Saving user token "+token);
-        editor.putString("userToken",token);
+    public void saveUserNameAndPpk(String username,String ppk){
+
+        editor.putString("username",username);
+        editor.putString("ppk",ppk);
         editor.apply();
+
     }
 
+    public String getUsername(){
+        return preferences.getString("username","");
+    }
+
+    public String getPPK(){
+        return preferences.getString("ppk","");
+    }
 
     public String getUserToken(){
         return preferences.getString("userToken","--no--token--");

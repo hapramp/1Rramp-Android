@@ -1,12 +1,21 @@
 package com.hapramp.activity;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,10 +30,13 @@ import com.hapramp.models.requests.SteemLoginResponseModel;
 import com.hapramp.models.requests.SteemSignupRequestModel;
 import com.hapramp.models.response.SteemLoginRequestModel;
 import com.hapramp.models.response.SteemSignUpResponseModel;
+import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.SteemHelper;
+import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.ErrorCodes;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.HashGenerator;
+import com.hapramp.utils.PixelUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,36 +77,63 @@ public class LoginActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     @BindView(R.id.scanBtn)
     TextView scanBtn;
+    @BindView(R.id.helpBtn)
+    TextView helpBtn;
+    @BindView(R.id.connectivityText)
+    TextView connectivityText;
 
     private String mUsername;
     private String mPPk;
 
     private Handler mHandler;
     private Permlink mCommentParentLink;
+    private boolean networkChangeReceiverRegistered;
+    private NetworkChangeReceiver networkChangeReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                attemptLogin();
-            }
-        });
-        scanBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(LoginActivity.this,QrScanningActivity.class);
-                startActivityForResult(i,QR_CODE_REQUEST_CODE);
-            }
-        });
         init();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (!networkChangeReceiverRegistered) {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+            }
+
+            networkChangeReceiverRegistered = true;
+
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (networkChangeReceiverRegistered) {
+            unregisterReceiver(networkChangeReceiver);
+            networkChangeReceiverRegistered = false;
+        }
+
     }
 
     private void init() {
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        networkChangeReceiver = new NetworkChangeReceiver();
 
         Typeface typeface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
         lockIcon.setTypeface(typeface);
@@ -109,6 +148,33 @@ public class LoginActivity extends AppCompatActivity {
             usernameEt.setText(BuildConfig.TEST_USERNAME);
         }
 
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                attemptLogin();
+            }
+        });
+        scanBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(LoginActivity.this, QrScanningActivity.class);
+                startActivityForResult(i, QR_CODE_REQUEST_CODE);
+            }
+        });
+
+        createSteemAccountBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSteemitSignUp();
+            }
+        });
+
+        helpBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLoginHelpDailog();
+            }
+        });
     }
 
     @Override
@@ -117,13 +183,18 @@ public class LoginActivity extends AppCompatActivity {
         if (requestCode == QR_CODE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
 
+                if (data.getStringExtra("ppk").length() < 50) {
+                    showToast("Invalid Posting Key");
+                    return;
+                }
+
                 mPPk = data.getStringExtra("ppk");
                 privatePostingKeyEt.setText(mPPk);
 
-            }else{
+            } else {
                 showToast("Cannot Read QR");
             }
-        }else{
+        } else {
             showToast("Cannot Read QR");
         }
 
@@ -351,6 +422,16 @@ public class LoginActivity extends AppCompatActivity {
 
         hideProgress();
         showToast("Success With Login");
+        saveUserAndPpkToPreference();
+
+    }
+
+    private void saveUserAndPpkToPreference() {
+
+        HaprampPreferenceManager.getInstance().saveUserNameAndPpk(mUsername,mPPk);
+
+        Intent i = new Intent(this,TestActivity.class);
+        startActivity(i);
 
     }
 
@@ -375,6 +456,94 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    }
+
+    private void showLoginHelpDailog() {
+
+        final Dialog dialog = new Dialog(this);
+        View v = LayoutInflater.from(this).inflate(R.layout.login_info_dialog_view, null);
+        TextView cancel = v.findViewById(R.id.cancelHelpDialog);
+        TextView gotoSteemIt = v.findViewById(R.id.gotoSteemit);
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        gotoSteemIt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSteemitInNativeBrowser();
+            }
+        });
+
+        dialog.setContentView(v);
+        dialog.setCancelable(false);
+        dialog.show();
+        dialog.getWindow().setLayout((PixelUtils.getDimension(this).widthPixels), LinearLayout.LayoutParams.WRAP_CONTENT);
+
+    }
+
+    private void openSteemitInNativeBrowser() {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://steemit.com/login.html"));
+        startActivity(browserIntent);
+    }
+
+    private void openSteemitSignUp() {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://signup.steemit.com/"));
+        startActivity(browserIntent);
+    }
+
+    public class NetworkChangeReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+
+                if (ConnectionUtils.isConnected(LoginActivity.this)) {
+                    enableSigninButton();
+                    showConnectivityBar();
+                } else {
+                    disableSigninButton();
+                    showConnectivityErrorBar();
+                }
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    private void showConnectivityErrorBar() {
+
+        connectivityText.setVisibility(View.VISIBLE);
+        connectivityText.setText("Connectivity Lost!");
+        connectivityText.setBackgroundColor(getResources().getColor(R.color.ConnectivityRed));
+
+    }
+
+    private void showConnectivityBar() {
+
+        connectivityText.setVisibility(View.VISIBLE);
+        connectivityText.setText("Connection established !");
+        connectivityText.setBackgroundColor(getResources().getColor(R.color.ConnectivityGreen));
+        // hide after 4 sec
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                connectivityText.setVisibility(View.GONE);
+            }
+        }, 4000);
+
+    }
+
+    private void disableSigninButton() {
+        loginButton.setEnabled(false);
+    }
+
+    private void enableSigninButton() {
+        loginButton.setEnabled(true);
     }
 
 }

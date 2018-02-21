@@ -33,7 +33,9 @@ import com.hapramp.interfaces.PostCreateCallback;
 import com.hapramp.logger.L;
 import com.hapramp.models.PostJobModel;
 import com.hapramp.models.requests.PostCreateBody;
+import com.hapramp.models.requests.PostForProcessingModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.SteemHelper;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FileUtils;
@@ -95,13 +97,13 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
     @Override
     protected void onPause() {
         super.onPause();
-        HaprampPreferenceManager.getInstance().savePostDraft(content.getText().toString());
+        //HaprampPreferenceManager.getInstance().savePostDraft(content.getText().toString());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-    //    loadDraft();
+        //    loadDraft();
     }
 //
 //    private void loadDraft() {
@@ -278,6 +280,19 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+    }
+
+    //PUBLISHING SECTION
+    private void sendPostToServerForProcessing(){
+
+    }
+
+    private void sendPostToSteemBlockChain(){
+
+    }
+
+    private void confirmServerForPostCreation(){
 
     }
 
