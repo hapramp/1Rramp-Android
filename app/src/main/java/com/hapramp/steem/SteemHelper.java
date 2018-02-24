@@ -46,7 +46,7 @@ public class SteemHelper {
     public static SteemJ getSteemInstance(){
 
         SteemJ steemJ = null;
-        String username = HaprampPreferenceManager.getInstance().getUsername();
+        String username = HaprampPreferenceManager.getInstance().getSteemUsername();
         String ppk = HaprampPreferenceManager.getInstance().getPPK();
         if(ppk.length()==0)
             return steemJ;
@@ -68,6 +68,12 @@ public class SteemHelper {
         }
 
         return steemJ;
+    }
+
+    public static String getFollowingsRequestString(String username){
+
+       return "{\"id\":2,\"jsonrpc\":\"2.0\",\"method\":\"call\",\"params\":[\"follow_api\",\"get_following\",[\""+username+"\",\"\",\"blog\",100]]}";
+
     }
 
 }

@@ -3,7 +3,6 @@ package com.hapramp.steem;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
 
-import com.google.api.client.json.Json;
 import com.hapramp.preferences.HaprampPreferenceManager;
 
 import java.util.ArrayList;
@@ -33,14 +32,13 @@ import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 public class SteemPostCreator {
 
     @WorkerThread
-    public static void createPost(String body , String title , List<String> tags , PostStructureModel postStructure){
+    public static void createPost(String body , String title , List<String> tags , PostStructureModel postStructure,String __permlink){
 
         SteemJ steemJ = SteemHelper.getSteemInstance();
 
         try {
             //author account of post
-            String username = HaprampPreferenceManager.getInstance().getUsername();
-            String __permlink = PermlinkGenerator.getPermlink();
+            String username = HaprampPreferenceManager.getInstance().getSteemUsername();
             Log.d("TEST","Username "+username);
             Log.d("TEST","permalink "+__permlink);
 

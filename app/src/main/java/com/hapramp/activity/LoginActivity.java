@@ -423,7 +423,8 @@ public class LoginActivity extends AppCompatActivity {
         hideProgress();
         showToast("Success With Login");
         saveUserAndPpkToPreference();
-        navigateToPostCreatePage();
+        //navigateToPostCreatePage();
+        navigateToCommunityPage();
 
     }
 
@@ -431,7 +432,15 @@ public class LoginActivity extends AppCompatActivity {
 
         Intent i = new Intent(this,PostCreateActivity.class);
         startActivity(i);
+        finish();
 
+    }
+
+    private void navigateToCommunityPage(){
+
+        Intent i = new Intent(this,CommunitySelectionActivity.class);
+        startActivity(i);
+        finish();
     }
 
     private void saveUserAndPpkToPreference() {

@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
@@ -28,12 +29,20 @@ import com.github.irshulx.models.EditorContent;
 import com.hapramp.R;
 import com.hapramp.adapters.FeaturedImageAdapter;
 import com.hapramp.api.DataServer;
+import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.interfaces.PostCreateCallback;
 import com.hapramp.logger.L;
 import com.hapramp.models.FeaturedImageSelectionModel;
 import com.hapramp.models.PostJobModel;
 import com.hapramp.models.requests.PostCreateBody;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.ContentTypes;
+import com.hapramp.steem.PermlinkGenerator;
+import com.hapramp.steem.PostConfirmationModel;
+import com.hapramp.steem.PostStructureModel;
+import com.hapramp.steem.PreProcessingModel;
+import com.hapramp.steem.ProcessedBodyResponse;
+import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FeaturedImageItemDecorator;
@@ -49,6 +58,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CreateArticleActivity extends AppCompatActivity implements EditorView.OnImageUploadListener, PostCreateCallback {
 
@@ -90,6 +102,10 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     private Dialog dialog;
 
     FeaturedImageAdapter featuredImageAdapter;
+    private String title;
+    private ArrayList<String> tags;
+    private PostStructureModel postStructureModel;
+    private String generated_permalink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +121,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     @Override
     protected void onPause() {
         super.onPause();
-   //     saveDraft();
+        //     saveDraft();
     }
 
     @Override
@@ -150,12 +166,12 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
 
     }
 
-    private void showPublishingProgressDialog(boolean show) {
+    private void showPublishingProgressDialog(boolean show,String msg) {
 
         if (progressDialog != null) {
             if (show) {
                 progressDialog.setTitle("Article Upload");
-                progressDialog.setMessage("Publishing Your Article");
+                progressDialog.setMessage(msg);
                 progressDialog.setIndeterminate(true);
                 progressDialog.show();
             }
@@ -165,8 +181,8 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
 
     }
 
-    private void showConnectivityError(){
-        Snackbar.make(toolbarContainer,"No Internet!  Article Saved To Draft ",Snackbar.LENGTH_SHORT).show();
+    private void showConnectivityError() {
+        Snackbar.make(toolbarContainer, "No Internet!  Article Saved To Draft ", Snackbar.LENGTH_SHORT).show();
     }
 
     private void feedFeaturedImageData() {
@@ -204,9 +220,9 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
         publishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(ConnectionUtils.isConnected(CreateArticleActivity.this)) {
+                if (ConnectionUtils.isConnected(CreateArticleActivity.this)) {
                     publishArticle();
-                }else{
+                } else {
                     showConnectivityError();
                     saveDraft();
                 }
@@ -215,16 +231,96 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     }
 
     private void publishArticle() {
-        PostCreateBody postCreateBody = new PostCreateBody(editor.getContentAsHTML(),
-                getMediaUri(),
-                Constants.CONTENT_TYPE_ARTICLE,
-                getSelectedSkills(),
-                null);
 
-        showPublishingProgressDialog(true);
-        //gather the data
-        DataServer.createPost(postCreateBody, this);
+        //prepare title
+        title = "";
+        //prepare tags
+        tags = new ArrayList<>();
+        //prepare post structure
+        List<PostStructureModel.Data> datas = new ArrayList<>();
+        datas.add(new PostStructureModel.Data(featuredImageAdapter.getSelectedFeaturedImageUrl(), ContentTypes.DataType.IMAGE));
+        datas.add(new PostStructureModel.Data(editor.getContentAsHTML(), ContentTypes.DataType.TEXT));
+        postStructureModel = new PostStructureModel(datas, ContentTypes.CONTENT_TYPE_POST);
 
+    }
+
+    //PUBLISHING SECTION
+    private void sendPostToServerForProcessing(PostStructureModel content) {
+
+        generated_permalink = PermlinkGenerator.getPermlink();
+        PreProcessingModel preProcessingModel = new PreProcessingModel(generated_permalink, content);
+
+        RetrofitServiceGenerator.getService().sendForPreProcessing(preProcessingModel).enqueue(new Callback<ProcessedBodyResponse>() {
+            @Override
+            public void onResponse(Call<ProcessedBodyResponse> call, Response<ProcessedBodyResponse> response) {
+                if (response.isSuccessful()) {
+                    // send to blockchain
+                    sendPostToSteemBlockChain(response.body().getmBody());
+                } else {
+                    toast("Something went wrong while pre-processing...");
+                    showPublishingProgressDialog(false, "");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ProcessedBodyResponse> call, Throwable t) {
+                toast("Something went wrong with network(" + t.toString() + ")");
+                showPublishingProgressDialog(false, "");
+            }
+        });
+    }
+
+    private void sendPostToSteemBlockChain(final String body) {
+
+        showPublishingProgressDialog(true, "Adding to Blockchain...");
+
+        new Thread() {
+            @Override
+            public void run() {
+                SteemPostCreator.createPost(body, title, tags, postStructureModel,generated_permalink);
+            }
+        }.start();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                toast("Post Created on Blockchain");
+                showPublishingProgressDialog(false, "");
+                Log.d("TEST", "Post Created!");
+                // send confirmation to server
+                confirmServerForPostCreation();
+
+            }
+        }, 5000);
+
+    }
+
+    private void confirmServerForPostCreation() {
+
+        showPublishingProgressDialog(true, "Sending Confirmation to Server...");
+
+        String full_permlink = HaprampPreferenceManager.getInstance().getSteemUsername() + "/" + generated_permalink;
+
+        RetrofitServiceGenerator.getService()
+                .sendPostCreationConfirmation(new PostConfirmationModel(full_permlink))
+                .enqueue(new Callback<ProcessedBodyResponse>() {
+                    @Override
+                    public void onResponse(Call<ProcessedBodyResponse> call, Response<ProcessedBodyResponse> response) {
+                        if (response.isSuccessful()) {
+                            toast("Server Confirmed!");
+                            showPublishingProgressDialog(false, "");
+                        } else {
+                            toast("Failed to Confirm Server!");
+                            showPublishingProgressDialog(false, "");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ProcessedBodyResponse> call, Throwable t) {
+                        toast("Something went wrong (" + t.toString() + ")");
+                        showPublishingProgressDialog(false, "");
+                    }
+                });
 
     }
 
@@ -279,13 +375,13 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
 
     @Override
     public void onPostCreated(String... jobId) {
-        showPublishingProgressDialog(true);
+        showPublishingProgressDialog(true,"");
         finish();
     }
 
     @Override
     public void onPostCreateError(String... jobId) {
-        showPublishingProgressDialog(false);
+        showPublishingProgressDialog(false,"");
         toast("Error while creating post");
     }
 }

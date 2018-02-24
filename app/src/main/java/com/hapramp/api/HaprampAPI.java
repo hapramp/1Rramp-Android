@@ -29,11 +29,15 @@ import com.hapramp.models.response.SteemSignUpResponseModel;
 import com.hapramp.models.response.UpdateUserResponse;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.models.response.UserStatsModel;
+import com.hapramp.steem.SteemFollowingRequestBody;
+import com.hapramp.steem.FollowingsResponse;
+import com.hapramp.steem.PostConfirmationModel;
 import com.hapramp.steem.PreProcessingModel;
 import com.hapramp.steem.ProcessedBodyResponse;
 
 import java.util.List;
 
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -63,8 +67,10 @@ public interface HaprampAPI {
     Call<ProcessedBodyResponse> sendForPreProcessing(@Body PreProcessingModel preProcessingModel);
 
     @POST("posts/_confirm")
-    Call<ProcessedBodyResponse> sendConfirmation();
+    Call<ProcessedBodyResponse> sendPostCreationConfirmation(@Body PostConfirmationModel postConfirmationModel);
 
+    @POST
+    Call<FollowingsResponse> getFollowings(@Url String url, @Body RequestBody requestBody);
 
 
 

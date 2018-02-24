@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.hapramp.R;
 import com.hapramp.api.DataServer;
+import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.controller.PostCreationController;
 import com.hapramp.interfaces.PostCreateCallback;
 import com.hapramp.logger.L;
@@ -39,6 +40,7 @@ import com.hapramp.models.requests.PostForProcessingModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.ContentTypes;
 import com.hapramp.steem.PermlinkGenerator;
+import com.hapramp.steem.PostConfirmationModel;
 import com.hapramp.steem.PostStructureModel;
 import com.hapramp.steem.PreProcessingModel;
 import com.hapramp.steem.ProcessedBodyResponse;
@@ -59,6 +61,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import eu.bittrade.libs.steemj.base.models.operations.CommentOperation;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -67,37 +70,26 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
 
     private static final int REQUEST_IMAGE_SELECTOR = 101;
 
-    @BindView(R.id.closeBtn)
-    TextView closeBtn;
-    @BindView(R.id.postButton)
-    TextView postButton;
-    @BindView(R.id.toolbar_container)
-    RelativeLayout toolbarContainer;
-    @BindView(R.id.content)
-    EditText content;
-    @BindView(R.id.characterLimit)
-    TextView characterLimit;
-    @BindView(R.id.postImageView)
-    PostImageView postImageView;
-    @BindView(R.id.category_caption)
-    TextView categoryCaption;
-    @BindView(R.id.postCategoryView)
-    PostCategoryView postCategoryView;
-    @BindView(R.id.scroll_view)
-    ScrollView scrollView;
-    @BindView(R.id.photosBtn)
-    TextView photosBtn;
-    @BindView(R.id.audioBtn)
-    TextView audioBtn;
-    @BindView(R.id.videoBtn)
-    TextView videoBtn;
-    @BindView(R.id.bottom_options_container)
-    RelativeLayout bottomOptionsContainer;
+    @BindView(R.id.closeBtn) TextView closeBtn;
+    @BindView(R.id.postButton) TextView postButton;
+    @BindView(R.id.toolbar_container) RelativeLayout toolbarContainer;
+    @BindView(R.id.content) EditText content;
+    @BindView(R.id.characterLimit) TextView characterLimit;
+    @BindView(R.id.postImageView) PostImageView postImageView;
+    @BindView(R.id.category_caption) TextView categoryCaption;
+    @BindView(R.id.postCategoryView) PostCategoryView postCategoryView;
+    @BindView(R.id.scroll_view) ScrollView scrollView;
+    @BindView(R.id.photosBtn) TextView photosBtn;
+    @BindView(R.id.audioBtn) TextView audioBtn;
+    @BindView(R.id.videoBtn) TextView videoBtn;
+    @BindView(R.id.bottom_options_container) RelativeLayout bottomOptionsContainer;
 
     private ProgressDialog progressDialog;
     private PostStructureModel postStructureModel;
     private List<String> tags;
     private String title;
+    private String generated_permalink;
+    private String full_permlink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -217,6 +209,23 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
 
     }
 
+    private void openGallery() {
+
+        try {
+            if (ActivityCompat.checkSelfPermission(PostCreateActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(PostCreateActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_SELECTOR);
+            } else {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, REQUEST_IMAGE_SELECTOR);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     private void publishPost() {
 
         // check connection
@@ -254,42 +263,11 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
         }
     }
 
-
-    private void showPublishingProgressDialog(boolean show, String msg) {
-
-        if (progressDialog != null) {
-            if (show) {
-                progressDialog.setMessage(msg);
-                progressDialog.setIndeterminate(true);
-                progressDialog.show();
-            }else{
-                progressDialog.hide();
-            }
-        } else {
-            progressDialog.hide();
-        }
-
-    }
-
-    private void openGallery() {
-
-        try {
-            if (ActivityCompat.checkSelfPermission(PostCreateActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(PostCreateActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_SELECTOR);
-            } else {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, REQUEST_IMAGE_SELECTOR);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
     private void preparePost() {
 
+        generated_permalink = PermlinkGenerator.getPermlink();
+        full_permlink = HaprampPreferenceManager.getInstance().getSteemUsername()+"/"+generated_permalink;
+        Log.d("TEST","Full Permlink "+full_permlink);
         //prepare title
         title = "";
         //prepare tags
@@ -305,10 +283,9 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
     //PUBLISHING SECTION
     private void sendPostToServerForProcessing(PostStructureModel content) {
 
-        String permalink = PermlinkGenerator.getPermlink();
-        PreProcessingModel preProcessingModel = new PreProcessingModel(permalink, content);
+        PreProcessingModel preProcessingModel = new PreProcessingModel(full_permlink, content);
 
-        DataServer.getService().sendForPreProcessing(preProcessingModel).enqueue(new Callback<ProcessedBodyResponse>() {
+        RetrofitServiceGenerator.getService().sendForPreProcessing(preProcessingModel).enqueue(new Callback<ProcessedBodyResponse>() {
             @Override
             public void onResponse(Call<ProcessedBodyResponse> call, Response<ProcessedBodyResponse> response) {
                 if (response.isSuccessful()) {
@@ -335,26 +312,49 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
         new Thread(){
             @Override
             public void run() {
-                SteemPostCreator.createPost(body, title, tags, postStructureModel);
+                SteemPostCreator.createPost(body, title, tags, postStructureModel,generated_permalink);
             }
         }.start();
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                toast("Post Created!");
+                toast("Post Created on Blockchain");
                 showPublishingProgressDialog(false,"");
                 Log.d("TEST","Post Created!");
                 // send confirmation to server
+                confirmServerForPostCreation();
             }
-        }, 5000);
+        }, 10000);
 
     }
 
     private void confirmServerForPostCreation() {
 
-    }
+        showPublishingProgressDialog(true,"Sending Confirmation to Server...");
 
+        RetrofitServiceGenerator.getService()
+                .sendPostCreationConfirmation(new PostConfirmationModel(full_permlink))
+                .enqueue(new Callback<ProcessedBodyResponse>() {
+                    @Override
+                    public void onResponse(Call<ProcessedBodyResponse> call, Response<ProcessedBodyResponse> response) {
+                        if(response.isSuccessful()){
+                            toast("Server Confirmed!");
+                            showPublishingProgressDialog(false,"");
+                        }else{
+                            toast("Failed to Confirm Server!");
+                            showPublishingProgressDialog(false,"");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ProcessedBodyResponse> call, Throwable t) {
+                        toast("Something went wrong ("+t.toString()+")");
+                        showPublishingProgressDialog(false,"");
+                    }
+                });
+
+    }
 
     private void toast(String s) {
         Toast.makeText(this, s, Toast.LENGTH_LONG).show();
@@ -367,6 +367,22 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Uploading Your Post...");
+
+    }
+
+    private void showPublishingProgressDialog(boolean show, String msg) {
+
+        if (progressDialog != null) {
+            if (show) {
+                progressDialog.setMessage(msg);
+                progressDialog.setIndeterminate(true);
+                progressDialog.show();
+            }else{
+                progressDialog.hide();
+            }
+        } else {
+            progressDialog.hide();
+        }
 
     }
 
