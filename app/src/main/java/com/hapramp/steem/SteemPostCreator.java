@@ -1,5 +1,6 @@
 package com.hapramp.steem;
 
+import android.support.annotation.WorkerThread;
 import android.util.Log;
 
 import com.google.api.client.json.Json;
@@ -31,7 +32,8 @@ import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 
 public class SteemPostCreator {
 
-    public static void createPost(String body , String title , List<String> tags){
+    @WorkerThread
+    public static void createPost(String body , String title , List<String> tags , PostStructureModel postStructure){
 
         SteemJ steemJ = SteemHelper.getSteemInstance();
 
@@ -39,6 +41,8 @@ public class SteemPostCreator {
             //author account of post
             String username = HaprampPreferenceManager.getInstance().getUsername();
             String __permlink = PermlinkGenerator.getPermlink();
+            Log.d("TEST","Username "+username);
+            Log.d("TEST","permalink "+__permlink);
 
             AccountName author = new AccountName(username);
             Permlink permlink = new Permlink(__permlink);
@@ -46,7 +50,7 @@ public class SteemPostCreator {
             boolean allowVotes = LocalConfig.ALLOW_VOTES;
             boolean allowCurationRewards = LocalConfig.ALLOW_CURATION_REWARDS;
             short percentSteemDollars = LocalConfig.PERCENT_STEEM_DOLLARS;
-            String jsonMetadata = new JsonMetaDataModel(tags).getJson();
+            String jsonMetadata = new JsonMetaDataModel(tags,postStructure).getJson();
 
             AccountName parentAuthor = null;  // new post
             Permlink parentPermlink = new Permlink(LocalConfig.PARENT_PERMALINK);
@@ -81,13 +85,13 @@ public class SteemPostCreator {
 
         } catch (SteemCommunicationException e) {
             e.printStackTrace();
-            Log.v("ZZZ", e.toString());
+            Log.v("TEST", e.toString());
         } catch (SteemResponseException e) {
             e.printStackTrace();
-            Log.v("ZZZ", e.toString());
+            Log.v("TEST", e.toString());
         } catch (SteemInvalidTransactionException e){
             e.printStackTrace();
-            Log.v("ZZZ", e.toString());
+            Log.v("TEST", e.toString());
         }
     }
 

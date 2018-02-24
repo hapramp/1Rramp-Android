@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -17,6 +18,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -35,7 +37,13 @@ import com.hapramp.models.PostJobModel;
 import com.hapramp.models.requests.PostCreateBody;
 import com.hapramp.models.requests.PostForProcessingModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.ContentTypes;
+import com.hapramp.steem.PermlinkGenerator;
+import com.hapramp.steem.PostStructureModel;
+import com.hapramp.steem.PreProcessingModel;
+import com.hapramp.steem.ProcessedBodyResponse;
 import com.hapramp.steem.SteemHelper;
+import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FileUtils;
@@ -47,13 +55,18 @@ import com.hapramp.views.post.PostImageView;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PostCreateActivity extends AppCompatActivity implements PostCreateCallback {
 
     private static final int REQUEST_IMAGE_SELECTOR = 101;
+
     @BindView(R.id.closeBtn)
     TextView closeBtn;
     @BindView(R.id.postButton)
@@ -80,7 +93,11 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
     TextView videoBtn;
     @BindView(R.id.bottom_options_container)
     RelativeLayout bottomOptionsContainer;
+
     private ProgressDialog progressDialog;
+    private PostStructureModel postStructureModel;
+    private List<String> tags;
+    private String title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -216,49 +233,37 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
         String mediaUri = postImageView.getDownloadUrl();
 
         if (mediaUri != null) {
+            showPublishingProgressDialog(true, "Preparing Your Post...");
+            preparePost();
+            showPublishingProgressDialog(true, "Pre-processing...");
+            sendPostToServerForProcessing(postStructureModel);
 
-            showPublishingProgressDialog(true);
-
-            PostCreateBody postCreateBody = new PostCreateBody(
-                    content.getText().toString(),
-                    postImageView.getDownloadUrl(),
-                    Constants.CONTENT_TYPE_POST,
-                    postCategoryView.getSelectedSkills(),
-                    null);
-
-            showPublishingProgressDialog(true);
-            //gather the data
-            DataServer.createPost(postCreateBody, this);
+//
+//            PostCreateBody postCreateBody = new PostCreateBody(
+//                    content.getText().toString(),
+//                    postImageView.getDownloadUrl(),
+//                    Constants.CONTENT_TYPE_POST,
+//                    postCategoryView.getSelectedSkills(),
+//                    null);
+//
+//            showPublishingProgressDialog(true);
+//            //gather the data
+//            DataServer.createPost(postCreateBody, this);
         } else {
             toast("Your media has not been uploaded yet");
         }
     }
 
-    private void toast(String s) {
-        Toast.makeText(this, s, Toast.LENGTH_LONG).show();
-    }
 
-    private void initProgressDialog() {
-
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Post Upload");
-        progressDialog.setIndeterminate(true);
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Uploading Your Post...");
-
-    }
-
-    private void showConnectivityError() {
-        Snackbar.make(toolbarContainer, "No Internet!", Snackbar.LENGTH_SHORT).show();
-    }
-
-    private void showPublishingProgressDialog(boolean show) {
+    private void showPublishingProgressDialog(boolean show, String msg) {
 
         if (progressDialog != null) {
             if (show) {
-                progressDialog.setMessage("Publishing Your Post");
+                progressDialog.setMessage(msg);
                 progressDialog.setIndeterminate(true);
                 progressDialog.show();
+            }else{
+                progressDialog.hide();
             }
         } else {
             progressDialog.hide();
@@ -283,17 +288,90 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
 
     }
 
+    private void preparePost() {
+
+        //prepare title
+        title = "";
+        //prepare tags
+        tags = postCategoryView.getSelectedSkillsTitle();
+        //prepare post structure
+        List<PostStructureModel.Data> datas = new ArrayList<>();
+        datas.add(new PostStructureModel.Data(postImageView.getDownloadUrl(), ContentTypes.DataType.IMAGE));
+        datas.add(new PostStructureModel.Data(content.getText().toString(), ContentTypes.DataType.TEXT));
+        postStructureModel = new PostStructureModel(datas, ContentTypes.CONTENT_TYPE_POST);
+
+    }
+
     //PUBLISHING SECTION
-    private void sendPostToServerForProcessing(){
+    private void sendPostToServerForProcessing(PostStructureModel content) {
+
+        String permalink = PermlinkGenerator.getPermlink();
+        PreProcessingModel preProcessingModel = new PreProcessingModel(permalink, content);
+
+        DataServer.getService().sendForPreProcessing(preProcessingModel).enqueue(new Callback<ProcessedBodyResponse>() {
+            @Override
+            public void onResponse(Call<ProcessedBodyResponse> call, Response<ProcessedBodyResponse> response) {
+                if (response.isSuccessful()) {
+                    // send to blockchain
+                    sendPostToSteemBlockChain(response.body().getmBody());
+                }else{
+                    toast("Something went wrong while pre-processing...");
+                    showPublishingProgressDialog(false,"");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ProcessedBodyResponse> call, Throwable t) {
+                toast("Something went wrong with network("+t.toString()+")");
+                showPublishingProgressDialog(false,"");
+            }
+        });
+    }
+
+    private void sendPostToSteemBlockChain(final String body) {
+
+        showPublishingProgressDialog(true,"Adding to Blockchain...");
+
+        new Thread(){
+            @Override
+            public void run() {
+                SteemPostCreator.createPost(body, title, tags, postStructureModel);
+            }
+        }.start();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                toast("Post Created!");
+                showPublishingProgressDialog(false,"");
+                Log.d("TEST","Post Created!");
+                // send confirmation to server
+            }
+        }, 5000);
 
     }
 
-    private void sendPostToSteemBlockChain(){
+    private void confirmServerForPostCreation() {
 
     }
 
-    private void confirmServerForPostCreation(){
 
+    private void toast(String s) {
+        Toast.makeText(this, s, Toast.LENGTH_LONG).show();
+    }
+
+    private void initProgressDialog() {
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Post Upload");
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Uploading Your Post...");
+
+    }
+
+    private void showConnectivityError() {
+        Snackbar.make(toolbarContainer, "No Internet!", Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
@@ -325,13 +403,14 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
 
     @Override
     public void onPostCreated(String... jobId) {
-        showPublishingProgressDialog(false);
+        showPublishingProgressDialog(false,"");
         finish();
     }
 
     @Override
     public void onPostCreateError(String... jobId) {
-        showPublishingProgressDialog(false);
+        showPublishingProgressDialog(false,"");
         toast("Failed to create post");
     }
+
 }

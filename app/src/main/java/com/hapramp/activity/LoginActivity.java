@@ -423,6 +423,14 @@ public class LoginActivity extends AppCompatActivity {
         hideProgress();
         showToast("Success With Login");
         saveUserAndPpkToPreference();
+        navigateToPostCreatePage();
+
+    }
+
+    private void navigateToPostCreatePage(){
+
+        Intent i = new Intent(this,PostCreateActivity.class);
+        startActivity(i);
 
     }
 
@@ -430,8 +438,6 @@ public class LoginActivity extends AppCompatActivity {
 
         HaprampPreferenceManager.getInstance().saveUserNameAndPpk(mUsername,mPPk);
 
-        Intent i = new Intent(this,TestActivity.class);
-        startActivity(i);
 
     }
 

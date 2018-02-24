@@ -95,6 +95,16 @@ public class PostCategoryView extends FrameLayout {
         return selectedSkills;
     }
 
+    public List<String> getSelectedSkillsTitle(){
+
+        List<String> selectedTitles = new ArrayList<>();
+        for (Integer id :selectedSkills) {
+            selectedTitles.add(SkillsUtils.getSkillTitleFromId(id));
+        }
+        return selectedTitles;
+
+    }
+
     public void setCategoryItems(String[] skills) {
         this.skills = skills;
         addViews();

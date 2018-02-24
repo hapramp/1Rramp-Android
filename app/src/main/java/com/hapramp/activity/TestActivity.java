@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.hapramp.R;
 import com.hapramp.steem.JsonMetaDataModel;
+import com.hapramp.steem.PostStructureModel;
 import com.hapramp.utils.FontManager;
 import com.hapramp.views.comments.CommentView;
 import com.hapramp.views.extraa.StarView;
@@ -58,7 +59,14 @@ public class TestActivity extends AppCompatActivity {
         List<String> strings = new ArrayList<>();
         strings.add("ankit");
         strings.add("tag");
-        Log.d("TEST",new JsonMetaDataModel(strings).getJson());
+
+        List<PostStructureModel.Data> datas = new ArrayList<>();
+        datas.add(new PostStructureModel.Data("src","h1"));
+        datas.add(new PostStructureModel.Data("src","youtube"));
+        datas.add(new PostStructureModel.Data("src","image"));
+        PostStructureModel postStructureModel = new PostStructureModel(datas,"article");
+
+        Log.d("TEST",new JsonMetaDataModel(strings,postStructureModel).getJson());
 
     }
 

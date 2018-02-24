@@ -1,5 +1,7 @@
 package com.hapramp.steem;
 
+import android.util.Log;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
@@ -11,19 +13,19 @@ import java.util.Random;
 public class PermlinkGenerator {
 
     private static final int MAX_LENGTH = 64;
-
+    private final static String ALPHA_NUMERIC_STRING = "q0w1e2r3t4y5u6i7o8p9l0kjhgfdsazxcvbnm";
     public static String getPermlink() {
 
         StringBuilder builder = new StringBuilder()
                 .append(random())
-                .append("_")
                 .append(getCurrentTimeStamp());
+        Log.d("TEST", "Permalink " + builder.toString());
 
         return builder.toString();
 
     }
 
-    public static String getCurrentTimeStamp() {
+    private static String getCurrentTimeStamp() {
         try {
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -37,15 +39,14 @@ public class PermlinkGenerator {
         }
     }
 
-    public static String random() {
-        Random generator = new Random();
-        StringBuilder randomStringBuilder = new StringBuilder();
-        int randomLength = generator.nextInt(MAX_LENGTH);
-        char tempChar;
-        for (int i = 0; i < randomLength; i++) {
-            tempChar = (char) (generator.nextInt(96) + 32);
-            randomStringBuilder.append(tempChar);
+    private static String random() {
+
+        int count = MAX_LENGTH;
+        StringBuilder builder = new StringBuilder();
+        while (count-- != 0) {
+            int character = (int) (Math.random() * ALPHA_NUMERIC_STRING.length());
+            builder.append(ALPHA_NUMERIC_STRING.charAt(character));
         }
-        return randomStringBuilder.toString();
+        return builder.toString();
     }
 }

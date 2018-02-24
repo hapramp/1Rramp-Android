@@ -29,6 +29,8 @@ import com.hapramp.models.response.SteemSignUpResponseModel;
 import com.hapramp.models.response.UpdateUserResponse;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.models.response.UserStatsModel;
+import com.hapramp.steem.PreProcessingModel;
+import com.hapramp.steem.ProcessedBodyResponse;
 
 import java.util.List;
 
@@ -57,7 +59,11 @@ public interface HaprampAPI {
     @POST("signup/done")
     Call<SteemLoginResponseModel> signupDone(@Body SteemLoginRequestModel requestModel);
 
+    @POST("posts")
+    Call<ProcessedBodyResponse> sendForPreProcessing(@Body PreProcessingModel preProcessingModel);
 
+    @POST("posts/_confirm")
+    Call<ProcessedBodyResponse> sendConfirmation();
 
 
 
