@@ -42,6 +42,7 @@ public class PostCategoryViewGroup extends ViewGroup {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         final int count = getChildCount();
+        //Log.d("ViewG","Childs "+count);
         int curWidth, curHeight, curLeft, curTop, maxHeight;
 
         //get the available size of child view
@@ -57,6 +58,7 @@ public class PostCategoryViewGroup extends ViewGroup {
         curTop = childTop;
 
         for (int i = 0; i < count; i++) {
+          //  Log.d("ViewG","At Child "+i);
             View child = getChildAt(i);
 
             if (child.getVisibility() == GONE)
@@ -67,22 +69,30 @@ public class PostCategoryViewGroup extends ViewGroup {
             curWidth = child.getMeasuredWidth();
             curHeight = child.getMeasuredHeight();
             //wrap is reach to the end
-            if (curLeft + curWidth >= childRight) {
+          // Log.d("ViewG","Checking for ending reached "+i);
+            if ((curLeft + curWidth) >= childRight) {
+              //  Log.d("ViewG","Changed Line for ind:"+i);
                 curLeft = childLeft;
                 curTop += maxHeight;
                 maxHeight = 0;
             }
             //do the layout
+          //  Log.d("ViewG","Laying child "+i+" with["+curLeft+","+ curTop+","+(curLeft + curWidth)+","+ (curTop + curHeight));
             child.layout(curLeft, curTop, curLeft + curWidth, curTop + curHeight);
             //store the max height
-            if (maxHeight < curHeight)
+            if (maxHeight < curHeight) {
+            //    Log.d("ViewG","Storing max height for "+i);
                 maxHeight = curHeight;
+            }
+
             curLeft += curWidth;
+
         }
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
         int count = getChildCount();
         // Measurement will ultimately be computing these values.
         int maxHeight = 0;
@@ -119,5 +129,6 @@ public class PostCategoryViewGroup extends ViewGroup {
         // Report our final dimensions.
         setMeasuredDimension(resolveSizeAndState(maxWidth, widthMeasureSpec, childState),
                 resolveSizeAndState(maxHeight, heightMeasureSpec, childState << MEASURED_HEIGHT_STATE_SHIFT));
+
     }
 }

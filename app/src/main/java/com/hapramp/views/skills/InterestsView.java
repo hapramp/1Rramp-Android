@@ -56,9 +56,9 @@ public class InterestsView extends FrameLayout{
 
         for (int i = 0; i < interests.size(); i++) {
 
-            final SkillsItemView view = new SkillsItemView(mContext);
+            final CommunityItemView view = new CommunityItemView(mContext);
             Log.d("InterestView",interests.get(i).toString());
-            view.setSkillTitle(SkillsUtils.getSkillTitleFromId(interests.get(i).id));
+            view.setCommunityItemTitle(SkillsUtils.getSkillTitleFromId(interests.get(i).id));
             view.setSelection(false);
 
             parentView.addView(view, i,

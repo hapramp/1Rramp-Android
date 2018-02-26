@@ -4,17 +4,6 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:clickable="true"
-        android:focusable="true"
-        android:background="?selectableItemBackgroundBorderless"
-        android:id="@+id/backBtn"
-        android:text=""
-        android:gravity="center"
-        android:textSize="24sp"
-        android:layout_width="48dp"
-        android:layout_height="?actionBarSize" />
-
-    <TextView
         android:id="@+id/action_bar_title"
         android:padding="8dp"
         android:textColor="@color/Black54"
@@ -26,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="?actionBarSize" />
 
-    <com.hapramp.views.skills.SelectableInterestsView
+    <com.hapramp.views.CommunitySelectionView
         android:layout_marginTop="16dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
@@ -34,8 +23,8 @@
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/communityContinueButton"
         android:layout_below="@+id/action_bar_title"
-        android:id="@+id/skillsGridView"
-        android:layout_width="wrap_content"
+        android:id="@+id/communitySelectionView"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
 
@@ -47,7 +36,7 @@
         android:background="@drawable/toolbar_shadow" />
 
     <TextView
-        android:id="@+id/skills_continueBtn"
+        android:id="@+id/communityContinueButton"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="16dp"
@@ -55,7 +44,7 @@
         android:focusable="true"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/filled_btn_bg"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/white"
         android:text="CONTINUE"
         android:layout_margin="16dp"
         android:paddingTop="8dp"

@@ -33,13 +33,14 @@ public class SkillRegistrationActivity extends AppCompatActivity implements OnSk
     SelectableInterestsView skillsGridView;
     @BindView(R.id.toolbar_drop_shadow)
     FrameLayout toolbarDropShadow;
-    @BindView(R.id.skills_continueBtn)
+    @BindView(R.id.communityContinueButton)
     TextView skillsContinueBtn;
     private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.skill_registration);
         ButterKnife.bind(this);
         init();
@@ -53,12 +54,6 @@ public class SkillRegistrationActivity extends AppCompatActivity implements OnSk
             @Override
             public void onClick(View v) {
                 requestSkillsUpdate();
-            }
-        });
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               backToOrgsPage();
             }
         });
 
@@ -119,10 +114,6 @@ public class SkillRegistrationActivity extends AppCompatActivity implements OnSk
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
         hideProgress();
-        finish();
-    }
-
-    private void backToOrgsPage(){
         finish();
     }
 

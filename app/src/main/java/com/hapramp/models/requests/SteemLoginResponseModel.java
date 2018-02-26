@@ -1,8 +1,10 @@
 package com.hapramp.models.requests;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.hapramp.models.error.GeneralErrorModel;
+import com.hapramp.models.CommentModel;
+import com.hapramp.models.CommunityModel;
+
+import java.util.List;
 
 /**
  * Created by Ankit on 2/17/2018.
@@ -10,52 +12,63 @@ import com.hapramp.models.error.GeneralErrorModel;
 
 public class SteemLoginResponseModel {
 
-    @SerializedName("code")
-    public int code;
-    @SerializedName("message")
-    public String message;
-    @SerializedName("field")
-    public String field;
-    @SerializedName("status")
-    @Expose
-    private String status;
 
-    public SteemLoginResponseModel(int code, String message, String field, String status) {
-        this.code = code;
-        this.message = message;
-        this.field = field;
-        this.status = status;
+    @SerializedName("communities")
+    private List<CommunityModel> mCommunities;
+    @SerializedName("username")
+    private String mUsername;
+    @SerializedName("email")
+    private String mEmail;
+    @SerializedName("id")
+    private int mId;
+    @SerializedName("deviceID")
+    private String deviceId;
+
+    public SteemLoginResponseModel(List<CommunityModel> mCommunities, String mUsername, String mEmail, int mId , String deviceId) {
+        this.mCommunities = mCommunities;
+        this.mUsername = mUsername;
+        this.mEmail = mEmail;
+        this.mId = mId;
+        this.deviceId = deviceId;
     }
 
-    public int getCode() {
-        return code;
+    public List<CommunityModel> getmCommunities() {
+        return mCommunities;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public void setmCommunities(List<CommunityModel> mCommunities) {
+        this.mCommunities = mCommunities;
     }
 
-    public String getMessage() {
-        return message;
+    public String getDeviceId() {
+        return deviceId;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
-    public String getField() {
-        return field;
+    public String getmUsername() {
+        return mUsername;
     }
 
-    public void setField(String field) {
-        this.field = field;
+    public void setmUsername(String mUsername) {
+        this.mUsername = mUsername;
     }
 
-    public String getStatus() {
-        return status;
+    public String getmEmail() {
+        return mEmail;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setmEmail(String mEmail) {
+        this.mEmail = mEmail;
+    }
+
+    public int getmId() {
+        return mId;
+    }
+
+    public void setmId(int mId) {
+        this.mId = mId;
     }
 }

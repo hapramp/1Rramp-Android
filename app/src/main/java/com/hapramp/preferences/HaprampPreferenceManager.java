@@ -10,6 +10,7 @@ import com.hapramp.main.HapRampMain;
 import com.hapramp.logger.L;
 import com.hapramp.models.UserAccountModel;
 import com.hapramp.models.UserResponse;
+import com.hapramp.utils.HashGenerator;
 
 /**
  * Created by Ankit on 5/15/2017.
@@ -71,9 +72,46 @@ public class HaprampPreferenceManager {
         return preferences.getString("ppk","");
     }
 
-    public String getUserToken(){
-        return preferences.getString("userToken","--no--token--");
+    public void saveAllCommunityListAsJson(String json){
+        Log.d("Pref","saving "+json);
+        editor.putString("allCommunity",json);
+        editor.apply();
+
     }
+
+    public String getAllCommunityAsJson(){
+
+        return preferences.getString("allCommunity","[]");
+
+    }
+
+    public void saveUserSelectedCommunitiesAsJson(String json){
+        Log.d("Pref","saving "+json);
+        editor.putString("userSelectedCommunity",json);
+        editor.apply();
+
+    }
+
+    public String getUserSelectedCommunity(){
+
+        return preferences.getString("userSelectedCommunity","[]");
+
+    }
+
+    public String getUserToken(){
+        return HashGenerator.getSHA2(preferences.getString("ppk","--no--token--"));
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     public void setUserInfoAvailable(boolean available){
         editor.putBoolean("userInfoAvailable",available);

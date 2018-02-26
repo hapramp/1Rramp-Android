@@ -31,7 +31,8 @@ public class ExampleUnitTest {
 
     @Test
     public void addition_isCorrect() throws Exception {
-
+        String s = "#12345";
+        p(s.substring(1));
     }
 
     private void getImageUrl(String url) {

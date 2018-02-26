@@ -59,8 +59,8 @@ public class SelectableInterestsView extends FrameLayout {
 
         for (int i = 0; i < skills.length; i++) {
 
-            final SkillsItemView view = new SkillsItemView(mContext);
-            view.setSkillTitle(skills[i]);
+            final CommunityItemView view = new CommunityItemView(mContext);
+            view.setCommunityItemTitle(skills[i]);
             // set selection
             //
             view.setSelection((selectedSkills.indexOf(SkillsUtils.getSkillIdFromName(skills[i])) > -1));
@@ -70,12 +70,12 @@ public class SelectableInterestsView extends FrameLayout {
                 @Override
                 public void onClick(View v) {
 
-                    int index = selectedSkills.indexOf(SkillsUtils.getSkillIdFromName(view.getSkill()));
+                    int index = selectedSkills.indexOf(SkillsUtils.getSkillIdFromName(view.getCommunityTitle()));
                     if (index == -1) {
                         // select it
                         view.setSelection(true);
 
-                        selectedSkills.add(SkillsUtils.getSkillIdFromName(view.getSkill()));
+                        selectedSkills.add(SkillsUtils.getSkillIdFromName(view.getCommunityTitle()));
 
                     } else {
                         // de-select it

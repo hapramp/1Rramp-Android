@@ -1,5 +1,7 @@
 package com.hapramp.api;
 
+import com.hapramp.models.CommunityModel;
+import com.hapramp.models.CommunitySelectionServerUpdateBody;
 import com.hapramp.models.Feed;
 import com.hapramp.models.UserDataUpdateBody;
 import com.hapramp.models.UserResponse;
@@ -72,10 +74,11 @@ public interface HaprampAPI {
     @POST
     Call<FollowingsResponse> getFollowings(@Url String url, @Body RequestBody requestBody);
 
+    @GET("communities")
+    Call<List<CommunityModel>> getCommunities();
 
-
-
-
+    @PUT("users/communities")
+    Call<Object> updateCommunitySelections(@Body CommunitySelectionServerUpdateBody body);
 
 
 

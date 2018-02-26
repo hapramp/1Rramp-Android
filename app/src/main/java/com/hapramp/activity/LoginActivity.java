@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.hapramp.BuildConfig;
 import com.hapramp.R;
 import com.hapramp.api.DataServer;
@@ -37,6 +38,8 @@ import com.hapramp.utils.ErrorCodes;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.HashGenerator;
 import com.hapramp.utils.PixelUtils;
+
+import java.net.SocketTimeoutException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -237,7 +240,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (response.isSuccessful()) {
 
-                    onLoginSuccess();
+                    onLoginSuccess(response.body());
 
                 } else if (response.code() == ErrorCodes.NOT_FOUND) {
 
@@ -252,7 +255,11 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<SteemLoginResponseModel> call, Throwable t) {
-                onLoginFailed(t.toString());
+                if(t instanceof SocketTimeoutException) {
+                    onLoginFailed("Server Timeout, Try again");
+                }else{
+                    onLoginFailed(t.toString());
+                }
             }
         });
 
@@ -418,13 +425,20 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void onLoginSuccess() {
+    private void onLoginSuccess(SteemLoginResponseModel body) {
 
         hideProgress();
-        showToast("Success With Login");
         saveUserAndPpkToPreference();
-        //navigateToPostCreatePage();
-        navigateToCommunityPage();
+        if(body.getmCommunities().size()==0){
+            navigateToCommunityPage();
+        }else{
+            HaprampPreferenceManager.getInstance().saveUserSelectedCommunitiesAsJson(new Gson().toJson(body.getmCommunities()));
+            navigateToHomePage();
+        }
+
+    }
+
+    private void navigateToHomePage() {
 
     }
 
@@ -444,10 +458,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void saveUserAndPpkToPreference() {
-
         HaprampPreferenceManager.getInstance().saveUserNameAndPpk(mUsername,mPPk);
-
-
     }
 
     // User Feedback Methods
