@@ -105,16 +105,3 @@ package_develop:
     expire_in: 3 days
     paths:
     - deliverables
-
-package_release:
-  <<: *package_template_def
-  stage: package
-  environment: Release
-  only:
-    - steem
-  script:
-    - mv app/build/outputs/apk/app-release.apk ./deliverables/NameOfTheApp-v$VERSION_NAME-$VERSION_CODE-release.apk
-  artifacts:
-    expire_in: 4 weeks
-    paths:
-    - deliverables
