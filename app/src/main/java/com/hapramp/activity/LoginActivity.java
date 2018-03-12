@@ -146,10 +146,10 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
         mHandler = new Handler();
 
-        if (BuildConfig.DEBUG) {
-            privatePostingKeyEt.setText(BuildConfig.TEST_PPK);
-            usernameEt.setText(BuildConfig.TEST_USERNAME);
-        }
+//        if (BuildConfig.DEBUG) {
+//            privatePostingKeyEt.setText(BuildConfig.TEST_PPK);
+//            usernameEt.setText(BuildConfig.TEST_USERNAME);
+//        }
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
