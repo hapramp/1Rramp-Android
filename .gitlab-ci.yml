@@ -55,8 +55,6 @@ build_debug:
 unit_test:
   stage: test
   only:
-    - master
-    - develop
     - steem
 
   before_script:
@@ -64,7 +62,7 @@ unit_test:
     - export PATH=$PATH:$PWD/.android/platform-tools/
 
   script:
-    - ./gradlew test
+    - chmod +x ./gradlew test
 
 
 ####################################################################################################
