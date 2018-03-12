@@ -47,12 +47,6 @@ build_debug:
   script:
     - ./gradlew assembleDebug
 
-build_release:
-  <<: *build_template_def
-  only:
-    - steem
-  script:
-    - ./gradlew assembleRelease
 
 ####################################################################################################
 # UNIT TESTING
