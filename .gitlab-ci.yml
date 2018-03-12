@@ -42,6 +42,7 @@ build_debug:
   <<: *build_template_def
   only:
     - develop
+    - steem
 
   script:
     - ./gradlew assembleDebug
@@ -49,7 +50,7 @@ build_debug:
 build_release:
   <<: *build_template_def
   only:
-    - master
+    - steem
   script:
     - ./gradlew assembleRelease
 
@@ -62,6 +63,7 @@ unit_test:
   only:
     - master
     - develop
+    - steem
 
   before_script:
     - export ANDROID_HOME=$PWD/.android
@@ -96,7 +98,7 @@ package_develop:
   stage: package
   environment: Development
   only:
-    - develop
+    - steem
   script:
     - mv app/build/outputs/apk/app-debug.apk ./deliverables/Hapramp-v$VERSION_NAME-$VERSION_CODE-debug.apk
   artifacts:
@@ -109,7 +111,7 @@ package_release:
   stage: package
   environment: Release
   only:
-    - master
+    - steem
   script:
     - mv app/build/outputs/apk/app-release.apk ./deliverables/NameOfTheApp-v$VERSION_NAME-$VERSION_CODE-release.apk
   artifacts:
