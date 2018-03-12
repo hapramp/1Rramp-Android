@@ -95,7 +95,7 @@ package_develop:
   only:
     - steem
   script:
-    - mv app/build/outputs/apk/app-debug.apk ./deliverables/Hapramp-v$VERSION_NAME-$VERSION_CODE-debug.apk
+    - mv app/build/outputs/apk/debug/app-debug.apk ./deliverables/Hapramp-v$VERSION_NAME-$VERSION_CODE-debug.apk
   artifacts:
     expire_in: 3 days
     paths:
