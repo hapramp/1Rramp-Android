@@ -41,7 +41,6 @@ stages:
 build_debug:
   <<: *build_template_def
   only:
-    - develop
     - steem
 
   script:
@@ -60,9 +59,13 @@ unit_test:
   before_script:
     - export ANDROID_HOME=$PWD/.android
     - export PATH=$PATH:$PWD/.android/platform-tools/
+     # Install platform tools and Android SDK for the compile target
+    - echo y | .android/tools/bin/sdkmanager "platforms;android-27"
+
+    - chmod +x ./gradlew
 
   script:
-    - chmod +x ./gradlew test
+    - ./gradlew test
 
 
 ####################################################################################################
