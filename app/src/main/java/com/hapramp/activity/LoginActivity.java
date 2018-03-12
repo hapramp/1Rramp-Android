@@ -433,7 +433,8 @@ public class LoginActivity extends AppCompatActivity {
             navigateToCommunityPage();
         }else{
             HaprampPreferenceManager.getInstance().saveUserSelectedCommunitiesAsJson(new Gson().toJson(body.getmCommunities()));
-            navigateToHomePage();
+            //navigateToHomePage();
+            navigateToPostCreatePage();
         }
 
     }

@@ -24,7 +24,7 @@ public class PostCreationController{
 
         // add job to database
          initDBObject();
-         databaseHelper.insertJob(postJob);
+         //databaseHelper.insertJob(postJob);
         // startDispatch
         JobManager.init();
 

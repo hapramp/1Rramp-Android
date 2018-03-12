@@ -36,6 +36,7 @@ import com.hapramp.steem.FollowingsResponse;
 import com.hapramp.steem.PostConfirmationModel;
 import com.hapramp.steem.PreProcessingModel;
 import com.hapramp.steem.ProcessedBodyResponse;
+import com.hapramp.steem.models.SteemFeedModel;
 
 import java.util.List;
 
@@ -80,6 +81,8 @@ public interface HaprampAPI {
     @PUT("users/communities")
     Call<Object> updateCommunitySelections(@Body CommunitySelectionServerUpdateBody body);
 
+    @GET("feeds/user/{username}")
+    Call<List<SteemFeedModel>> getUserFeeds(@Path("username") String username,@Query("limit") int limit);
 
 
 

@@ -55,7 +55,7 @@ public class HomeDataManager {
                 @Override
                 public void run() {
                     // try loading from cache
-                    final PostResponse cachedItem = databaseHelper.getCachedSegment(uri, communityId);
+                    final PostResponse cachedItem = null;//databaseHelper.getCachedSegment(uri, communityId);
 
                     mHandler.post(new Runnable() {
                         @Override
@@ -131,7 +131,7 @@ public class HomeDataManager {
                     if (!isLoadMore) {
                         l("Caching Post Segment");
                         //cache items
-                        databaseHelper.insertSegment(postResponses, uri, communityId);
+                        //databaseHelper.insertSegment(postResponses, uri, communityId);
                         cachePreference.setPostSynced(getSegmentId(uri, communityId));
                     }
 
@@ -176,7 +176,7 @@ public class HomeDataManager {
 
                         //cache items
                         cachePreference.setPostSynced(getSegmentId(uri, communityId));
-                        databaseHelper.insertSegment(postResponses, uri, communityId);
+                        //databaseHelper.insertSegment(postResponses, uri, communityId);
                     }
 
                     //return result

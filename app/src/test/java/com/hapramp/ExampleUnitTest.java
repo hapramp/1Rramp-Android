@@ -31,21 +31,8 @@ public class ExampleUnitTest {
 
     @Test
     public void addition_isCorrect() throws Exception {
-        String s = "#12345";
-        p(s.substring(1));
-    }
-
-    private void getImageUrl(String url) {
-
-        String s1 = url.substring(0,url.lastIndexOf('/')+1);
-        String s2 = url.substring(url.lastIndexOf('/')+1);
-        p("First Part "+s1);
-        p("Second Part "+s2);
 
     }
 
-    private void p(String s) {
-        System.out.println(s);
-    }
 
 }

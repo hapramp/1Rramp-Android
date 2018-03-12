@@ -1,53 +1,118 @@
 image: openjdk:8-jdk
 
-variables:
-  ANDROID_COMPILE_SDK: "27"
-  ANDROID_BUILD_TOOLS: "27.0.3"
-  ANDROID_SDK_TOOLS: "24.4.1"
-
-before_script:
-  - apt-get --quiet update --yes
-  - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
-  - wget --quiet --output-document=android-sdk.tgz https://dl.google.com/android/android-sdk_r${ANDROID_SDK_TOOLS}-linux.tgz
-  - tar --extract --gzip --file=android-sdk.tgz
-  - echo y | android-sdk-linux/tools/android --silent update sdk --no-ui --all --filter android-${ANDROID_COMPILE_SDK}
-  - echo y | android-sdk-linux/tools/android --silent update sdk --no-ui --all --filter platform-tools
-  - echo y | android-sdk-linux/tools/android --silent update sdk --no-ui --all --filter build-tools-${ANDROID_BUILD_TOOLS}
-  - echo y | android-sdk-linux/tools/android --silent update sdk --no-ui --all --filter extra-android-m2repository
-  - echo y | android-sdk-linux/tools/android --silent update sdk --no-ui --all --filter extra-google-google_play_services
-  - echo y | android-sdk-linux/tools/android --silent update sdk --no-ui --all --filter extra-google-m2repository
-  - export ANDROID_HOME=$PWD/android-sdk-linux
-  - export PATH=$PATH:$PWD/android-sdk-linux/platform-tools/
-  - chmod +x ./gradlew
-
-override:
-- echo y | android update sdk --no-ui --all --filter build-tools-27.0.3
-
 stages:
   - build
   - test
+  - package
 
-build:
+
+####################################################################################################
+# BUILD
+#
+.build_template: &build_template_def
   stage: build
-  script:
-    - ./gradlew assembleDebug
   artifacts:
+    expire_in: 4 hours
     paths:
     - app/build/outputs/
+    - .android/
 
-unitTests:
+  before_script:
+    # Extract the SDK version that we're building against
+    - export ANDROID_COMPILE_SDK=`egrep '^[[:blank:]]+compileSdkVersion'  app/build.gradle | awk '{print $2}'`
+
+    # Explict output for logging purpose only
+    - echo $ANDROID_SDK_TOOLS
+    - echo $ANDROID_COMPILE_SDK
+
+    # Fetch the specified SDK tools version to build with
+    - wget --quiet --output-document=/tmp/sdk-tools-linux.zip https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS}.zip
+    - unzip /tmp/sdk-tools-linux.zip -d .android
+
+    # Set up environment variables
+    - export ANDROID_HOME=$PWD/.android
+    - export PATH=$PATH:$PWD/.android/platform-tools/
+
+    # Install platform tools and Android SDK for the compile target
+    - echo y | .android/tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}"
+
+    - chmod +x ./gradlew
+
+build_debug:
+  <<: *build_template_def
+  only:
+    - develop
+
+  script:
+    - ./gradlew assembleDebug
+
+build_release:
+  <<: *build_template_def
+  only:
+    - master
+  script:
+    - ./gradlew assembleRelease
+
+####################################################################################################
+# UNIT TESTING
+#
+
+unit_test:
   stage: test
+  only:
+    - master
+    - develop
+
+  before_script:
+    - export ANDROID_HOME=$PWD/.android
+    - export PATH=$PATH:$PWD/.android/platform-tools/
+
   script:
     - ./gradlew test
 
-functionalTests:
-  stage: test
+
+####################################################################################################
+# PACKAGE APK FOR DOWNLOADING
+#
+
+.package_template: &package_template_def
+  before_script:
+    - export VERSION_NAME=`egrep '^[[:blank:]]+versionName[[:blank:]]'  app/build.gradle | awk '{print $2}' | sed s/\"//g`
+    - export VERSION_CODE=`egrep '^[[:blank:]]+versionCode[[:blank:]]'  app/build.gradle | awk '{print $2}'`
+    - mkdir -p deliverables
+
+    # Store some information about the build
+    - touch ./deliverables/info.txt
+    - echo "Build date          $(date)"                >> ./deliverables/info.txt
+    - echo "App version name    ${VERSION_NAME}"        >> ./deliverables/info.txt
+    - echo "App version code    ${VERSION_CODE}"        >> ./deliverables/info.txt
+    - echo "Git branch          ${CI_COMMIT_REF_NAME}"  >> ./deliverables/info.txt
+    - echo "Git commit          ${CI_COMMIT_SHA}"       >> ./deliverables/info.txt
+    - echo "Gitlab pipeline     ${CI_PIPELINE_ID}"      >> ./deliverables/info.txt
+
+
+package_develop:
+  <<: *package_template_def
+  stage: package
+  environment: Development
+  only:
+    - develop
   script:
-    - wget --quiet --output-document=android-wait-for-emulator https://raw.githubusercontent.com/travis-ci/travis-cookbooks/0f497eb71291b52a703143c5cd63a217c8766dc9/community-cookbooks/android-sdk/files/default/android-wait-for-emulator
-    - chmod +x android-wait-for-emulator
-    - echo y | android-sdk-linux/tools/android --silent update sdk --no-ui --all --filter sys-img-x86-google_apis-${ANDROID_COMPILE_SDK}
-    - echo no | android-sdk-linux/tools/android create avd -n test -t android-${ANDROID_COMPILE_SDK} --abi google_apis/x86
-    - android-sdk-linux/tools/emulator64-x86 -avd test -no-window -no-audio &
-    - ./android-wait-for-emulator
-    - adb shell input keyevent 82
-    - ./gradlew cAT
+    - mv app/build/outputs/apk/app-debug.apk ./deliverables/Hapramp-v$VERSION_NAME-$VERSION_CODE-debug.apk
+  artifacts:
+    expire_in: 3 days
+    paths:
+    - deliverables
+
+package_release:
+  <<: *package_template_def
+  stage: package
+  environment: Release
+  only:
+    - master
+  script:
+    - mv app/build/outputs/apk/app-release.apk ./deliverables/NameOfTheApp-v$VERSION_NAME-$VERSION_CODE-release.apk
+  artifacts:
+    expire_in: 4 weeks
+    paths:
+    - deliverables

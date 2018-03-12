@@ -43,4 +43,13 @@ public class CachePreference {
     }
 
 
+    public boolean wasFeedCached() {
+        return preferences.getBoolean("feedCached",false);
+    }
+
+    public void setFeedCached(boolean fetched){
+        editor.putBoolean("feedCached",fetched);
+        editor.apply();
+    }
+
 }
