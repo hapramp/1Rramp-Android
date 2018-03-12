@@ -28,11 +28,14 @@ android {
     buildToolsVersion '27.0.3'
 
     buildTypes {
+
         release {
+
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+
         }
 
         debug {
@@ -43,18 +46,15 @@ android {
 
 
     defaultConfig {
+
         applicationId "com.hapramp"
         minSdkVersion 17
         targetSdkVersion 27
         versionCode 5
         versionName "0.0.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        setProperty("archivesBaseName", "Hapramp-${getDate()}-$versionName")
-
-//        buildConfigField "String", "TEST_USERNAME", "\"" + getUsername() + "\""
-//        buildConfigField "String", "TEST_PPK", "\"" + getPpk() + "\""
-
         multiDexEnabled true
+
     }
 
 }
