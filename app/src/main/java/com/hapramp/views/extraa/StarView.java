@@ -17,8 +17,7 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.interfaces.VoteDeleteCallback;
 import com.hapramp.interfaces.VotePostCallback;
-import com.hapramp.models.Feed;
-import com.hapramp.models.response.PostResponse;
+import com.hapramp.steem.models.Feed;
 import com.hapramp.utils.FontManager;
 
 /**

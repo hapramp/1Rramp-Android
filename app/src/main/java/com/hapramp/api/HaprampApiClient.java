@@ -22,9 +22,8 @@ public class HaprampApiClient {
     private static Retrofit retrofit = null;
     private static final String TAG = HaprampApiClient.class.getSimpleName();
 
-    public static Retrofit getClient() {
+    public static Retrofit getClient(final String token) {
 
-        final String token = HaprampPreferenceManager.getInstance().getUserToken();
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 

@@ -2,7 +2,6 @@ package com.hapramp.api;
 
 import com.hapramp.models.CommunityModel;
 import com.hapramp.models.CommunitySelectionServerUpdateBody;
-import com.hapramp.models.Feed;
 import com.hapramp.models.UserDataUpdateBody;
 import com.hapramp.models.UserResponse;
 import com.hapramp.models.requests.FollowRequestBody;
@@ -31,12 +30,12 @@ import com.hapramp.models.response.SteemSignUpResponseModel;
 import com.hapramp.models.response.UpdateUserResponse;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.models.response.UserStatsModel;
-import com.hapramp.steem.SteemFollowingRequestBody;
+import com.hapramp.steem.CommunitySelectionResponse;
 import com.hapramp.steem.FollowingsResponse;
 import com.hapramp.steem.PostConfirmationModel;
 import com.hapramp.steem.PreProcessingModel;
 import com.hapramp.steem.ProcessedBodyResponse;
-import com.hapramp.steem.models.SteemFeedModel;
+import com.hapramp.steem.models.Feed;
 
 import java.util.List;
 
@@ -79,10 +78,10 @@ public interface HaprampAPI {
     Call<List<CommunityModel>> getCommunities();
 
     @PUT("users/communities")
-    Call<Object> updateCommunitySelections(@Body CommunitySelectionServerUpdateBody body);
+    Call<CommunitySelectionResponse> updateCommunitySelections(@Body CommunitySelectionServerUpdateBody body);
 
     @GET("feeds/user/{username}")
-    Call<List<SteemFeedModel>> getUserFeeds(@Path("username") String username,@Query("limit") int limit);
+    Call<List<Feed>> getUserFeeds(@Path("username") String username, @Query("limit") int limit);
 
 
 

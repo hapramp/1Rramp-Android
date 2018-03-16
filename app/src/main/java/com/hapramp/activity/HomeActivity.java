@@ -155,11 +155,11 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
         postUploadReceiver = new PostUploadReceiver();
         notificationUpdateReceiver = new NotificationUpdateReceiver();
 
-        if (!HaprampPreferenceManager.getInstance().isUserInfoAvailable()) {
-            fetchCompleteUserInfo();
-        } else {
+//        if (!HaprampPreferenceManager.getInstance().isUserInfoAvailable()) {
+//            fetchCompleteUserInfo();
+//        } else {
             transactFragment(FRAGMENT_HOME);
-        }
+       // }
 
     }
 

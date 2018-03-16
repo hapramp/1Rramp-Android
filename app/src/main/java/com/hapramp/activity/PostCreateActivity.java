@@ -5,12 +5,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -27,16 +23,9 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.hapramp.R;
-import com.hapramp.api.DataServer;
 import com.hapramp.api.RetrofitServiceGenerator;
-import com.hapramp.controller.PostCreationController;
 import com.hapramp.interfaces.PostCreateCallback;
-import com.hapramp.logger.L;
-import com.hapramp.models.PostJobModel;
-import com.hapramp.models.requests.PostCreateBody;
-import com.hapramp.models.requests.PostForProcessingModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.ContentTypes;
 import com.hapramp.steem.PermlinkGenerator;
@@ -44,24 +33,19 @@ import com.hapramp.steem.PostConfirmationModel;
 import com.hapramp.steem.PostStructureModel;
 import com.hapramp.steem.PreProcessingModel;
 import com.hapramp.steem.ProcessedBodyResponse;
-import com.hapramp.steem.SteemHelper;
 import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.utils.ConnectionUtils;
-import com.hapramp.utils.Constants;
-import com.hapramp.utils.FileUtils;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.SkillsUtils;
 import com.hapramp.views.post.PostCategoryView;
 import com.hapramp.views.post.PostImageView;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import eu.bittrade.libs.steemj.base.models.operations.CommentOperation;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -140,7 +124,6 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
         photosBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         audioBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         videoBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-        postCategoryView.setCategoryItems(SkillsUtils.getSkillsSet());
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
@@ -234,7 +217,7 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
             return;
         }
 
-        if (postCategoryView.getSelectedSkills().size() == 0) {
+        if (postCategoryView.getSelectedTags().size() == 0) {
             toast("Select Atleast One Category");
             return;
         }
@@ -252,7 +235,7 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
 //                    content.getText().toString(),
 //                    postImageView.getDownloadUrl(),
 //                    Constants.CONTENT_TYPE_POST,
-//                    postCategoryView.getSelectedSkills(),
+//                    postCategoryView.getSelectedTags(),
 //                    null);
 //
 //            showPublishingProgressDialog(true);
@@ -271,7 +254,7 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
         //prepare title
         title = "";
         //prepare tags
-        tags = postCategoryView.getSelectedSkillsTitle();
+        tags = postCategoryView.getSelectedTags();
         //prepare post structure
         List<PostStructureModel.Data> datas = new ArrayList<>();
         datas.add(new PostStructureModel.Data(postImageView.getDownloadUrl(), ContentTypes.DataType.IMAGE));

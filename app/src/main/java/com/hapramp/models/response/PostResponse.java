@@ -4,9 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
-import com.hapramp.models.Feed;
+import com.hapramp.steem.models.Feed;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

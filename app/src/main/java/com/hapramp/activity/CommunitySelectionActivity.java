@@ -1,5 +1,6 @@
 package com.hapramp.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -14,6 +15,8 @@ import com.hapramp.api.HaprampAPI;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.models.CommunitySelectionServerUpdateBody;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.CommunityListWrapper;
+import com.hapramp.steem.CommunitySelectionResponse;
 import com.hapramp.views.CommunitySelectionView;
 import com.hapramp.views.skills.SelectableInterestsView;
 
@@ -46,6 +49,7 @@ public class CommunitySelectionActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_community_selection);
         ButterKnife.bind(this);
@@ -71,18 +75,18 @@ public class CommunitySelectionActivity extends BaseActivity {
 
         CommunitySelectionServerUpdateBody body = new CommunitySelectionServerUpdateBody(communitySelectionView.getSelectionList());
 
-        DataServer.getService().updateCommunitySelections(body).enqueue(new Callback<Object>() {
+        DataServer.getService().updateCommunitySelections(body).enqueue(new Callback<CommunitySelectionResponse>() {
             @Override
-            public void onResponse(Call<Object> call, Response<Object> response) {
+            public void onResponse(Call<CommunitySelectionResponse> call, Response<CommunitySelectionResponse> response) {
                 if(response.isSuccessful()){
-                    onCommunityUpdated();
+                    onCommunityUpdated(response.body());
                 }else{
                     onCommunityUpdateFailed(response.code()+"");
                 }
             }
 
             @Override
-            public void onFailure(Call<Object> call, Throwable t) {
+            public void onFailure(Call<CommunitySelectionResponse> call, Throwable t) {
                 onCommunityUpdateFailed(t.toString());
             }
         });
@@ -92,8 +96,17 @@ public class CommunitySelectionActivity extends BaseActivity {
         toast("ERROR : "+errorMsg);
     }
 
-    private void onCommunityUpdated() {
+    private void onCommunityUpdated(CommunitySelectionResponse body) {
         toast("Community Updated!");
+        HaprampPreferenceManager.getInstance().saveUserSelectedCommunitiesAsJson(new Gson().toJson(new CommunityListWrapper(body.getCommunities())));
+        navigateToHome();
+    }
+
+    private void navigateToHome() {
+        Intent i = new Intent(this,HomeActivity.class);
+        startActivity(i);
+        finish();
+
     }
 
     private void fetchCommunities() {
@@ -124,7 +137,7 @@ public class CommunitySelectionActivity extends BaseActivity {
     private void onCommunitiesFetched(List<CommunityModel> body) {
 
         communitySelectionView.setCommunityList(body);
-        HaprampPreferenceManager.getInstance().saveAllCommunityListAsJson(new Gson().toJson(body));
+        HaprampPreferenceManager.getInstance().saveAllCommunityListAsJson(new Gson().toJson(new CommunityListWrapper(body)));
 
     }
 

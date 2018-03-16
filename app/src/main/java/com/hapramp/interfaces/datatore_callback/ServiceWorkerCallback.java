@@ -1,11 +1,14 @@
 package com.hapramp.interfaces.datatore_callback;
 
+import com.hapramp.steem.models.Feed;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public interface ServiceWorkerCallback {
 
     //loading process, It shows the request to the service worker first time.
-    void onLoading();
+    void onFetchingFromServer();
 
     //fetching fresh data from server.
     void onRefreshing();
@@ -17,7 +20,7 @@ public interface ServiceWorkerCallback {
     void onNoDataInCache();
 
     //cache data loaded
-    void onLoadedFromCache(List<Object> cachedList);
+    void onLoadedFromCache(ArrayList<Feed> cachedList);
 
     // data refreshed from server
     void onRefreshed(List<Object> refreshedList);
@@ -31,5 +34,8 @@ public interface ServiceWorkerCallback {
     //failed to load appendable data
     void onAppendableDataLoadingFailed();
 
+    void onFeedsFetched(ArrayList<Feed> body);
+
+    void onFetchingFromServerFailed();
 
 }

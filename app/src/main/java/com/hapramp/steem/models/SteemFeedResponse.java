@@ -16,7 +16,7 @@ public class SteemFeedResponse {
     private Integer id;
     @SerializedName("result")
     @Expose
-    private List<SteemFeedModel> result = null;
+    private List<Feed> result = null;
 
     public Integer getId() {
         return id;
@@ -26,11 +26,11 @@ public class SteemFeedResponse {
         this.id = id;
     }
 
-    public List<SteemFeedModel> getResult() {
+    public List<Feed> getResult() {
         return result;
     }
 
-    public void setResult(List<SteemFeedModel> result) {
+    public void setResult(List<Feed> result) {
         this.result = result;
     }
 

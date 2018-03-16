@@ -15,6 +15,7 @@ import java.util.TimeZone;
 // ref: https://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html
 public class MomentsUtils {
 
+    //2018-03-08T11:38:48
     public static String getFormattedTime(String timeStamp){
         Calendar cal = Calendar.getInstance();
         TimeZone tz = cal.getTimeZone();

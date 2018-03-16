@@ -73,6 +73,7 @@ public class HaprampPreferenceManager {
     }
 
     public void saveAllCommunityListAsJson(String json){
+
         Log.d("Pref","saving "+json);
         editor.putString("allCommunity",json);
         editor.apply();
@@ -81,7 +82,7 @@ public class HaprampPreferenceManager {
 
     public String getAllCommunityAsJson(){
 
-        return preferences.getString("allCommunity","[]");
+        return preferences.getString("allCommunity","{}");
 
     }
 
@@ -92,14 +93,14 @@ public class HaprampPreferenceManager {
 
     }
 
-    public String getUserSelectedCommunity(){
+    public String getUserSelectedCommunityAsJson(){
 
         return preferences.getString("userSelectedCommunity","[]");
 
     }
 
     public String getUserToken(){
-        return HashGenerator.getSHA2(preferences.getString("ppk","--no--token--"));
+        return HashGenerator.getSHA2(getPPK());
     }
 
 

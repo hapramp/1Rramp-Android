@@ -10,24 +10,27 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.adapters.CategoryRecyclerAdapter;
-import com.hapramp.adapters.HomeFeedsAdapter;
 import com.hapramp.api.URLS;
-import com.hapramp.datastore.HomeDataManager;
+import com.hapramp.datastore.ServiceWorker;
 import com.hapramp.interfaces.FetchSkillsResponse;
 import com.hapramp.interfaces.LikePostCallback;
+import com.hapramp.interfaces.datatore_callback.ServiceWorkerCallback;
 import com.hapramp.logger.L;
+import com.hapramp.models.CommunityModel;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.utils.SpaceDecorator;
-import com.hapramp.utils.ViewItemDecoration;
+import com.hapramp.steem.CommunityListWrapper;
+import com.hapramp.steem.ServiceWorkerRequestBuilder;
+import com.hapramp.steem.ServiceWorkerRequestParams;
+import com.hapramp.steem.models.Feed;
 import com.hapramp.views.feedlist.FeedListView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -35,9 +38,8 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public class HomeFragment extends Fragment implements FetchSkillsResponse,
-        CategoryRecyclerAdapter.OnCategoryItemClickListener, LikePostCallback,
-        HomeDataManager.PostLoadListener, FeedListView.FeedListViewListener {
+public class HomeFragment extends Fragment implements
+        CategoryRecyclerAdapter.OnCategoryItemClickListener, LikePostCallback, FeedListView.FeedListViewListener, ServiceWorkerCallback {
 
     @BindView(R.id.feedListView)
     FeedListView feedListView;
@@ -48,7 +50,7 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
     private PostResponse currentPostReponse;
     private int currentSelectedSkillId;
     private CategoryRecyclerAdapter categoryRecyclerAdapter;
-    HomeDataManager dataManager;
+    ServiceWorker serviceWorker;
     private Unbinder unbinder;
 
     public HomeFragment() {
@@ -58,8 +60,17 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dataManager = new HomeDataManager(getActivity());
-        dataManager.registerPostListeners(this);
+        serviceWorker = new ServiceWorker();
+        serviceWorker.init(getActivity());
+        serviceWorker.setServiceWorkerCallback(this);
+        ServiceWorkerRequestParams serviceWorkerRequestParams =
+                new ServiceWorkerRequestBuilder()
+                        .serCommunityId("0")
+                        .setUserName("unittestaccount")
+                        .setLimit(10)
+                        .createRequestParam();
+
+        serviceWorker.requestFeeds(serviceWorkerRequestParams);
 
     }
 
@@ -99,16 +110,17 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
         sectionsRv.animate().translationY(-sectionsRv.getMeasuredHeight());
     }
 
-
     private void initCategoryView() {
 
         categoryRecyclerAdapter = new CategoryRecyclerAdapter(mContext, this);
         sectionsRv.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         sectionsRv.setAdapter(categoryRecyclerAdapter);
 
-        List<UserModel.Skills> skillsModels = HaprampPreferenceManager.getInstance().getUser().skills;
-        skillsModels.add(0, new UserModel.Skills(0, "All", "", ""));
-        categoryRecyclerAdapter.setCategories(skillsModels);
+        CommunityListWrapper cwr = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
+        ArrayList<CommunityModel> communityModels = new ArrayList<>();
+        communityModels.add(0, new CommunityModel("", "", "", "", "All", 0));
+        communityModels.addAll(cwr.getCommunityModels());
+        categoryRecyclerAdapter.setCommunities(communityModels);
 
     }
 
@@ -121,27 +133,12 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
 
     }
 
-    @Override
-    public void onSkillsFetched(List<UserModel.Skills> skillsModels) {
-        skillsModels.add(0, new UserModel.Skills(0, "All", "", ""));
-        categoryRecyclerAdapter.setCategories(skillsModels);
-    }
-
-    @Override
-    public void onSkillFetchError() {
-
-    }
 
     private void fetchPosts(int id) {
-
-        dataManager.getPosts(URLS.POST_FETCH_START_URL, id);
 
     }
 
     public void forceReloadData() {
-        // dataManager.getPosts(URLS.POST_FETCH_START_URL, currentSelectedSkillId, false);
-        dataManager.getFreshPosts(URLS.POST_FETCH_START_URL, currentSelectedSkillId);
-
     }
 
     private void loadMore(int id) {
@@ -153,7 +150,6 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
             return;
         }
 
-        dataManager.getPostForLoadMoreRequest(currentPostReponse.next, id);
 
     }
 
@@ -177,91 +173,6 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
     @Override
     public void onPostLikeError() {
         L.D.m("Home Fragment", "unable to like the post");
-    }
-
-    //CALLBACKS FROM DATA MANAGER
-    @Override
-    public void onLoadingFromCache() {
-    }
-
-    @Override
-    public void onFeedLoadedFromCache(PostResponse response) {
-
-        if(feedListView!=null) {
-            currentPostReponse = response;
-            feedListView.cachedFeedFetched(response.results);
-        }
-
-
-    }
-
-    @Override
-    public void onNoFeedFoundInCache() {
-
-        if(feedListView!=null) {
-            feedListView.noCachedFeeds();
-        }
-
-    }
-
-    @Override
-    public void onRefreshingPostFromServer() {
-
-        if(feedListView!=null) {
-            feedListView.feedRefreshing();
-        }
-
-    }
-
-    @Override
-    public void onFreshFeedsFechted(PostResponse postResponse) {
-
-        if(feedListView!=null) {
-            currentPostReponse = postResponse;
-            feedListView.setHasMoreToLoad(currentPostReponse.next.length() > 0);
-            feedListView.feedsRefreshed(postResponse.results);
-        }
-
-    }
-
-    @Override
-    public void onFreshFeedFetchError(String msg) {
-
-        if(feedListView!=null) {
-            feedListView.failedToRefresh(msg);
-        }
-
-    }
-
-    @Override
-    public void onLoadingPostForAppending() {
-
-    }
-
-    @Override
-    public void onFeedLoadedForAppending(PostResponse response) {
-
-        if(feedListView!=null) {
-            currentPostReponse = response;
-            feedListView.loadedMoreFeeds(response.results);
-        }
-
-    }
-
-    @Override
-    public void onNoFeedForAppending() {
-
-    }
-
-    @Override
-    public void onAppendingFeedLoadError(String msg) {
-
-        try {
-            Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
-        }catch (Exception e){
-
-        }
-
     }
 
     //  CALLBACKS FROM FEED LIST VIEW
@@ -289,6 +200,64 @@ public class HomeFragment extends Fragment implements FetchSkillsResponse,
     @Override
     public void onShowCommunityList() {
         bringBackCategorySection();
+    }
+
+
+    //CALLBACKS FROM SERVICE WORKER
+
+    @Override
+    public void onFetchingFromServer() {
+
+    }
+
+    @Override
+    public void onRefreshing() {
+
+    }
+
+    @Override
+    public void onCacheLoadFailed() {
+
+    }
+
+    @Override
+    public void onNoDataInCache() {
+
+    }
+
+    @Override
+    public void onLoadedFromCache(ArrayList<Feed> cachedList) {
+
+    }
+
+    @Override
+    public void onRefreshed(List<Object> refreshedList) {
+
+    }
+
+    @Override
+    public void onRefreshFailed() {
+
+    }
+
+    @Override
+    public void onAppendableDataLoaded(List<Object> appendableList) {
+
+    }
+
+    @Override
+    public void onAppendableDataLoadingFailed() {
+
+    }
+
+    @Override
+    public void onFeedsFetched(ArrayList<Feed> feeds) {
+        feedListView.feedsRefreshed(feeds);
+    }
+
+    @Override
+    public void onFetchingFromServerFailed() {
+
     }
 
 }

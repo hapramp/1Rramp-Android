@@ -32,6 +32,7 @@ import com.hapramp.models.requests.SteemSignupRequestModel;
 import com.hapramp.models.response.SteemLoginRequestModel;
 import com.hapramp.models.response.SteemSignUpResponseModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.SteemHelper;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.ErrorCodes;
@@ -98,8 +99,15 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        checkLastLoginAndMoveAhead();
         init();
 
+    }
+
+    private void checkLastLoginAndMoveAhead() {
+        if(HaprampPreferenceManager.getInstance().isLoggedIn()){
+            navigateToHomePage();
+        }
     }
 
     @Override
@@ -146,10 +154,8 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
         mHandler = new Handler();
 
-//        if (BuildConfig.DEBUG) {
-//            privatePostingKeyEt.setText(BuildConfig.TEST_PPK);
-//            usernameEt.setText(BuildConfig.TEST_USERNAME);
-//        }
+        usernameEt.setText("unittestaccount");
+        //}
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -255,9 +261,9 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<SteemLoginResponseModel> call, Throwable t) {
-                if(t instanceof SocketTimeoutException) {
+                if (t instanceof SocketTimeoutException) {
                     onLoginFailed("Server Timeout, Try again");
-                }else{
+                } else {
                     onLoginFailed(t.toString());
                 }
             }
@@ -429,37 +435,44 @@ public class LoginActivity extends AppCompatActivity {
 
         hideProgress();
         saveUserAndPpkToPreference();
-        if(body.getmCommunities().size()==0){
+        //if (body.getmCommunities().size() == 0) {
             navigateToCommunityPage();
-        }else{
-            HaprampPreferenceManager.getInstance().saveUserSelectedCommunitiesAsJson(new Gson().toJson(body.getmCommunities()));
-            //navigateToHomePage();
-            navigateToPostCreatePage();
-        }
+//        } else {
+//            HaprampPreferenceManager.getInstance().saveUserSelectedCommunitiesAsJson(new Gson().toJson(new CommunityListWrapper(body.getmCommunities())));
+//            navigateToHomePage();
+//            //navigateToPostCreatePage();
+//        }
 
     }
 
     private void navigateToHomePage() {
 
-    }
-
-    private void navigateToPostCreatePage(){
-
-        Intent i = new Intent(this,PostCreateActivity.class);
+        Intent i = new Intent(this, HomeActivity.class);
         startActivity(i);
         finish();
 
     }
 
-    private void navigateToCommunityPage(){
+    private void navigateToPostCreatePage() {
 
-        Intent i = new Intent(this,CommunitySelectionActivity.class);
+        Intent i = new Intent(this, PostCreateActivity.class);
+        startActivity(i);
+        finish();
+
+    }
+
+    private void navigateToCommunityPage() {
+
+        Intent i = new Intent(this, CommunitySelectionActivity.class);
         startActivity(i);
         finish();
     }
 
     private void saveUserAndPpkToPreference() {
-        HaprampPreferenceManager.getInstance().saveUserNameAndPpk(mUsername,mPPk);
+
+        HaprampPreferenceManager.getInstance().saveUserNameAndPpk(mUsername, mPPk);
+        HaprampPreferenceManager.getInstance().setLoggedIn(true);
+
     }
 
     // User Feedback Methods

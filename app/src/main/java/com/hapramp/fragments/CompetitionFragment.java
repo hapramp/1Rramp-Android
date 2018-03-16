@@ -93,7 +93,7 @@ public class CompetitionFragment extends Fragment implements CompetitionFetchCal
         sectionsRv.setAdapter(categoryRecyclerAdapter);
         List<UserModel.Skills> skillsModels = HaprampPreferenceManager.getInstance().getUser().skills;
         skillsModels.add(0,new UserModel.Skills(0,"All","",""));
-        categoryRecyclerAdapter.setCategories(skillsModels);
+        //categoryRecyclerAdapter.setCategories(skillsModels);
         hideCategoryLoadingProgress();
 
     }
@@ -113,7 +113,7 @@ public class CompetitionFragment extends Fragment implements CompetitionFetchCal
     public void onSkillsFetched(List<UserModel.Skills> skillsModels) {
         hideCategoryLoadingProgress();
         skillsModels.add(0,new UserModel.Skills(0,"All","",""));
-        categoryRecyclerAdapter.setCategories(skillsModels);
+      //  categoryRecyclerAdapter.setCategories(skillsModels);
     }
 
     @Override

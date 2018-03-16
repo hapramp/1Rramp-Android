@@ -1,17 +1,13 @@
 package com.hapramp.activity;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -25,16 +21,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.irshulx.Editor;
-import com.github.irshulx.models.EditorContent;
 import com.hapramp.R;
 import com.hapramp.adapters.FeaturedImageAdapter;
-import com.hapramp.api.DataServer;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.interfaces.PostCreateCallback;
-import com.hapramp.logger.L;
 import com.hapramp.models.FeaturedImageSelectionModel;
-import com.hapramp.models.PostJobModel;
-import com.hapramp.models.requests.PostCreateBody;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.ContentTypes;
 import com.hapramp.steem.PermlinkGenerator;
@@ -44,12 +35,10 @@ import com.hapramp.steem.PreProcessingModel;
 import com.hapramp.steem.ProcessedBodyResponse;
 import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.utils.ConnectionUtils;
-import com.hapramp.utils.Constants;
 import com.hapramp.utils.FeaturedImageItemDecorator;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.SkillsUtils;
 import com.hapramp.views.editor.EditorView;
-import com.hapramp.views.editor.FeaturedImageView;
 import com.hapramp.views.post.PostCategoryView;
 
 import java.io.IOException;
@@ -157,7 +146,6 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
         editor = editorView.getEditor();
         progressDialog = new ProgressDialog(this);
         editorView.setOnImageUploadListener(this);
-        articleCategoryView.setCategoryItems(SkillsUtils.getSkillsSet());
         insertedImages = new ArrayList<>();
         featuredImageAdapter = new FeaturedImageAdapter(this);
         featuredImageSelectorRV.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -324,9 +312,6 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
 
     }
 
-    private List<Integer> getSelectedSkills() {
-        return articleCategoryView.getSelectedSkills();
-    }
 
     private String getMediaUri() {
         String mediaUri = featuredImageAdapter.getSelectedFeaturedImageUrl();

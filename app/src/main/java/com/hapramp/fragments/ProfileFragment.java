@@ -24,13 +24,12 @@ import com.hapramp.api.DataServer;
 import com.hapramp.api.URLS;
 import com.hapramp.interfaces.FullUserDetailsCallback;
 import com.hapramp.interfaces.PostFetchCallback;
-import com.hapramp.models.Feed;
 import com.hapramp.models.ProfileHeaderModel;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.models.Feed;
 import com.hapramp.utils.Constants;
-import com.hapramp.utils.SpaceDecorator;
 import com.hapramp.utils.ViewItemDecoration;
 
 import java.util.List;
@@ -263,7 +262,7 @@ public class ProfileFragment extends Fragment implements
 
     private void bindPosts(List<Feed> posts) {
 
-        profilePostAdapter.appendResult(posts);
+        //profilePostAdapter.appendResult(posts);
 
     }
 

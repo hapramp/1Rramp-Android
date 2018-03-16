@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 
-public class SteemFeedModel {
+public class Feed {
 
     @Expose
     @SerializedName("hapramp_votes")

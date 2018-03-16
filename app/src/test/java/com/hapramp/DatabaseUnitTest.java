@@ -2,10 +2,8 @@ package com.hapramp;
 
 import com.google.gson.Gson;
 import com.hapramp.db.DatabaseHelper;
-import com.hapramp.main.HapRampMain;
-import com.hapramp.steem.models.SteemFeedModel;
+import com.hapramp.steem.models.Feed;
 
-import org.apache.commons.lang3.builder.ToStringExclude;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -106,8 +104,8 @@ public class DatabaseUnitTest {
     @Test
     public void testFeedInsertion() {
         // Make mock feeds
-        ArrayList<SteemFeedModel> steemFeedModels = new ArrayList<>();
-        steemFeedModels.add(new Gson().fromJson(feedJson, SteemFeedModel.class));
+        ArrayList<Feed> steemFeedModels = new ArrayList<>();
+        steemFeedModels.add(new Gson().fromJson(feedJson, Feed.class));
 
         long id = databaseHelper.insertFeed(steemFeedModels, "0");
         // Then
@@ -121,10 +119,10 @@ public class DatabaseUnitTest {
         testFeedInsertion();
 
         // Make mock feeds
-        ArrayList<SteemFeedModel> steemFeedModels = new ArrayList<>();
-        steemFeedModels.add(new Gson().fromJson(feedJson, SteemFeedModel.class));
+        ArrayList<Feed> steemFeedModels = new ArrayList<>();
+        steemFeedModels.add(new Gson().fromJson(feedJson, Feed.class));
 
-        ArrayList<SteemFeedModel> models = databaseHelper.getFeed("0");
+        ArrayList<Feed> models = databaseHelper.getFeed("0");
 
 
         p("Read: " + new Gson().toJson(models.get(0)));
@@ -150,8 +148,8 @@ public class DatabaseUnitTest {
         testFeedInsertion();
 
         // Make mock feeds
-        ArrayList<SteemFeedModel> steemFeedModels = new ArrayList<>();
-        steemFeedModels.add(new Gson().fromJson(feedJson, SteemFeedModel.class));
+        ArrayList<Feed> steemFeedModels = new ArrayList<>();
+        steemFeedModels.add(new Gson().fromJson(feedJson, Feed.class));
 
         long id = databaseHelper.updateFeed(steemFeedModels, "0");
         // Then

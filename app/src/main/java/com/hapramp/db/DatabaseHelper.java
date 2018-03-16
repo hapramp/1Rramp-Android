@@ -10,14 +10,9 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.hapramp.models.Feed;
-import com.hapramp.models.PostJobModel;
-import com.hapramp.models.response.PostResponse;
-import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.models.SteemFeedModel;
+import com.hapramp.steem.models.Feed;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Ankit on 12/23/2017.
@@ -57,7 +52,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public long insertFeed(ArrayList<SteemFeedModel> steemFeeds, String communityId) {
+    public long insertFeed(ArrayList<Feed> steemFeeds, String communityId) {
 
         if(wasFeedCached(communityId)){
             return updateFeed(steemFeeds,communityId);
@@ -75,9 +70,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return id;
     }
 
-    public ArrayList<SteemFeedModel> getFeed(String comId) {
+    public ArrayList<Feed> getFeed(String comId) {
 
-        ArrayList<SteemFeedModel> feeds = new ArrayList<>();
+        ArrayList<Feed> feeds = new ArrayList<>();
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         String[] cols = {KEY_COMMUNITY_ID, KEY_JSON};
         String[] selection = {comId};
@@ -106,7 +101,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public long updateFeed(ArrayList<SteemFeedModel> steemFeeds, String communityId){
+    public long updateFeed(ArrayList<Feed> steemFeeds, String communityId){
 
         SQLiteDatabase database = getWritableDatabase();
         FeedCacheWrapper feedCacheWrapper = new FeedCacheWrapper(steemFeeds);
@@ -135,17 +130,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         @Expose
         @SerializedName("feeds")
-        ArrayList<SteemFeedModel> steemFeedModels;
+        ArrayList<Feed> steemFeedModels;
 
-        public FeedCacheWrapper(ArrayList<SteemFeedModel> steemFeedModels) {
+        public FeedCacheWrapper(ArrayList<Feed> steemFeedModels) {
             this.steemFeedModels = steemFeedModels;
         }
 
-        public ArrayList<SteemFeedModel> getSteemFeedModels() {
+        public ArrayList<Feed> getSteemFeedModels() {
             return steemFeedModels;
         }
 
-        public void setSteemFeedModels(ArrayList<SteemFeedModel> steemFeedModels) {
+        public void setSteemFeedModels(ArrayList<Feed> steemFeedModels) {
             this.steemFeedModels = steemFeedModels;
         }
     }

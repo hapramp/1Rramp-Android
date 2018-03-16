@@ -9,8 +9,6 @@ import android.os.Bundle;
 import android.support.v4.widget.Space;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,8 +27,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.irshulx.Editor;
-import com.github.irshulx.models.EditorContent;
 import com.hapramp.R;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.CommentCreateCallback;
@@ -39,7 +35,6 @@ import com.hapramp.interfaces.OnPostDeleteCallback;
 import com.hapramp.interfaces.UserFetchCallback;
 import com.hapramp.interfaces.VoteDeleteCallback;
 import com.hapramp.interfaces.VotePostCallback;
-import com.hapramp.models.Feed;
 import com.hapramp.models.UserResponse;
 import com.hapramp.models.requests.CommentBody;
 import com.hapramp.models.requests.VoteRequestBody;
@@ -47,13 +42,13 @@ import com.hapramp.models.response.CommentCreateResponse;
 import com.hapramp.models.response.CommentsResponse;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.models.Feed;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.SkillsUtils;
 import com.hapramp.views.comments.CommentView;
-import com.hapramp.views.editor.URLImageParser;
 import com.hapramp.views.extraa.StarView;
 
 import java.util.List;
@@ -61,7 +56,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DetailedActivity extends AppCompatActivity implements CommentFetchCallback, UserFetchCallback, OnPostDeleteCallback, VoteDeleteCallback, VotePostCallback, CommentCreateCallback {
+public class DetailedActivity extends AppCompatActivity{
 
     @BindView(R.id.closeBtn)
     TextView closeBtn;
@@ -147,7 +142,7 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
         collectExtras();
         fetchComments();
         setTypefaces();
-        bindValues();
+        //bindValues();
         attachListener();
 
     }
@@ -185,7 +180,7 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
 
     private void fetchComments() {
 
-        DataServer.getComments(currentCommentUrl, this);
+     //   DataServer.getComments(currentCommentUrl, this);
 
     }
 
@@ -239,7 +234,7 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
         commentInputBox.setText("");
         if (cmnt.length() > 2) {
             showProgress("Posting Your Comment...");
-            DataServer.createComment(String.valueOf(post.id), new CommentBody(cmnt), this);
+           // DataServer.createComment(String.valueOf(post.id), new CommentBody(cmnt), this);
         } else {
             Toast.makeText(this, "Comment Too Short!!", Toast.LENGTH_LONG).show();
         }
@@ -270,47 +265,47 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
         sendButtonMock.setTypeface(t);
 
     }
-
-    private void bindValues() {
-
-        // set basic meta-info
-        ImageHandler.loadCircularImage(this, feedOwnerPic, post.user.image_uri);
-        feedOwnerTitle.setText(post.user.full_name);
-        feedOwnerSubtitle.setText(
-                String.format(getResources().getString(R.string.post_subtitle_format),
-                        MomentsUtils.getFormattedTime(post.created_at)));
-
-        setSkills(post.skills);
-        content.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-        content.loadDataWithBaseURL(null, "<style>img{display: inline;height: auto;max-width: 100%;}</style>" + post.content, "text/html", "UTF-8", null);
-        // initialize the starview
-        starView.setVoteState(
-                new StarView.Vote(
-                        post.is_voted,
-                        post.id,
-                        post.current_vote,
-                        post.vote_sum,
-                        post.vote_count
-                )).setOnVoteUpdateCallback(new StarView.onVoteUpdateCallback() {
-            @Override
-            public void onVoted(int postId, int vote) {
-                vote(postId, vote);
-            }
-
-            @Override
-            public void onVoteDeleted(int postId) {
-                deleteVote(postId);
-            }
-        });
-
-        //String _comment_info = post.comment_count > 1 ? String.valueOf(post.comment_count).concat(" comments") : String.valueOf(post.comment_count).concat(" comment");
-        setCommentCount(post.comment_count);
-        setHapcoins(post.hapcoins);
-
-        ImageHandler.loadCircularImage(this, commentCreaterAvatar, HaprampPreferenceManager.getInstance().getUser().getImage_uri());
-        ImageHandler.loadCircularImage(this, commentCreaterAvatarMock, HaprampPreferenceManager.getInstance().getUser().getImage_uri());
-
-    }
+//
+//    private void bindValues() {
+//
+//        // set basic meta-info
+//        ImageHandler.loadCircularImage(this, feedOwnerPic, post.user.image_uri);
+//        feedOwnerTitle.setText(post.user.full_name);
+//        feedOwnerSubtitle.setText(
+//                String.format(getResources().getString(R.string.post_subtitle_format),
+//                        MomentsUtils.getFormattedTime(post.created_at)));
+//
+//        setSkills(post.skills);
+//        content.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+//        content.loadDataWithBaseURL(null, "<style>img{display: inline;height: auto;max-width: 100%;}</style>" + post.content, "text/html", "UTF-8", null);
+//        // initialize the starview
+//        starView.setVoteState(
+//                new StarView.Vote(
+//                        post.is_voted,
+//                        post.id,
+//                        post.current_vote,
+//                        post.vote_sum,
+//                        post.vote_count
+//                )).setOnVoteUpdateCallback(new StarView.onVoteUpdateCallback() {
+//            @Override
+//            public void onVoted(int postId, int vote) {
+//                vote(postId, vote);
+//            }
+//
+//            @Override
+//            public void onVoteDeleted(int postId) {
+//                deleteVote(postId);
+//            }
+//        });
+//
+//        //String _comment_info = post.comment_count > 1 ? String.valueOf(post.comment_count).concat(" comments") : String.valueOf(post.comment_count).concat(" comment");
+//        setCommentCount(post.comment_count);
+//        setHapcoins(post.hapcoins);
+//
+//        ImageHandler.loadCircularImage(this, commentCreaterAvatar, HaprampPreferenceManager.getInstance().getUser().getImage_uri());
+//        ImageHandler.loadCircularImage(this, commentCreaterAvatarMock, HaprampPreferenceManager.getInstance().getUser().getImage_uri());
+//
+//    }
 
     private void setHapcoins(float hapcoins) {
         hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), hapcoins));
@@ -468,94 +463,94 @@ public class DetailedActivity extends AppCompatActivity implements CommentFetchC
     }
 
     private void requestPostDelete(int post_id, int pos) {
-        DataServer.deletePost(String.valueOf(post_id), pos, this);
+       // DataServer.deletePost(String.valueOf(post_id), pos, this);
     }
 
-    @Override
-    public void onCommentFetched(CommentsResponse response) {
+//    @Override
+//    public void onCommentFetched(CommentsResponse response) {
+//
+//        addComment(response.results);
+//
+//    }
+//
+//
+//    @Override
+//    public void onCommentFetchError() {
+//
+//    }
+//
+//    @Override
+//    public void onUserFetched(int commentPosition, UserResponse response) {
+//
+//    }
+//
+//    @Override
+//    public void onUserFetchError() {
+//        Toast.makeText(this, "Error While Fetching Comments!", Toast.LENGTH_SHORT).show();
+//    }
+//
+//    @Override
+//    public void onPostDeleted(int position) {
+//
+//    }
+//
+//    @Override
+//    public void onPostDeleteFailed() {
+//
+//    }
+//
+//    private void deleteVote(int postId) {
+//        DataServer.deleteVote(postId, this);
+//    }
+//
+//    private void vote(int postId, int vote) {
+//        DataServer.votePost(String.valueOf(postId), new VoteRequestBody((int) vote), this);
+//    }
 
-        addComment(response.results);
-
-    }
-
-
-    @Override
-    public void onCommentFetchError() {
-
-    }
-
-    @Override
-    public void onUserFetched(int commentPosition, UserResponse response) {
-
-    }
-
-    @Override
-    public void onUserFetchError() {
-        Toast.makeText(this, "Error While Fetching Comments!", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onPostDeleted(int position) {
-
-    }
-
-    @Override
-    public void onPostDeleteFailed() {
-
-    }
-
-    private void deleteVote(int postId) {
-        DataServer.deleteVote(postId, this);
-    }
-
-    private void vote(int postId, int vote) {
-        DataServer.votePost(String.valueOf(postId), new VoteRequestBody((int) vote), this);
-    }
-
-    @Override
-    public void onVoteDeleted(Feed updatedPost) {
-        //update mHapcoins
-        setHapcoins(updatedPost.hapcoins);
-    }
-
-    @Override
-    public void onVoteDeleteError() {
-
-    }
-
-    @Override
-    public void onPostVoted(Feed updatedPost) {
-        //update mHapcoins
-        setHapcoins(updatedPost.hapcoins);
-    }
-
-    @Override
-    public void onPostVoteError() {
-
-    }
-
-    @Override
-    public void onCommentCreated(CommentCreateResponse comment) {
-
-        hideProgress();
-
-        CommentView view = new CommentView(this);
-        UserResponse user = HaprampPreferenceManager.getInstance().getUser();
-        view.setComment(new CommentsResponse.Results(
-                comment.id,
-                comment.created_at,
-                comment.content, false, 0
-                , new CommentsResponse.User(user.id, user.username, user.full_name, user.image_uri)));
-
-        commentsViewContainer.addView(view, 0,
-                new ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT));
-
-    }
-
-    @Override
-    public void onCommentCreateError() {
-        hideProgress();
-    }
+//    @Override
+//    public void onVoteDeleted(Feed updatedPost) {
+//        //update mHapcoins
+//        setHapcoins(updatedPost.hapcoins);
+//    }
+//
+//    @Override
+//    public void onVoteDeleteError() {
+//
+//    }
+//
+//    @Override
+//    public void onPostVoted(Feed updatedPost) {
+//        //update mHapcoins
+//        setHapcoins(updatedPost.hapcoins);
+//    }
+//
+//    @Override
+//    public void onPostVoteError() {
+//
+//    }
+//
+//    @Override
+//    public void onCommentCreated(CommentCreateResponse comment) {
+//
+//        hideProgress();
+//
+//        CommentView view = new CommentView(this);
+//        UserResponse user = HaprampPreferenceManager.getInstance().getUser();
+//        view.setComment(new CommentsResponse.Results(
+//                comment.id,
+//                comment.created_at,
+//                comment.content, false, 0
+//                , new CommentsResponse.User(user.id, user.username, user.full_name, user.image_uri)));
+//
+//        commentsViewContainer.addView(view, 0,
+//                new ViewGroup.LayoutParams(
+//                        ViewGroup.LayoutParams.WRAP_CONTENT,
+//                        ViewGroup.LayoutParams.WRAP_CONTENT));
+//
+//    }
+//
+//    @Override
+//    public void onCommentCreateError() {
+//        hideProgress();
+//    }
 }

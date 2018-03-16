@@ -23,7 +23,7 @@ import android.widget.Toast;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.hapramp.R;
 import com.hapramp.adapters.HomeFeedsAdapter;
-import com.hapramp.models.Feed;
+import com.hapramp.steem.models.Feed;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.PixelUtils;
 import com.hapramp.utils.SpaceDecorator;

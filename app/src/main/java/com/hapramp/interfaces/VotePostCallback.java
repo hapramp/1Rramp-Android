@@ -1,7 +1,6 @@
 package com.hapramp.interfaces;
 
-import com.hapramp.models.Feed;
-import com.hapramp.models.response.PostResponse;
+import com.hapramp.steem.models.Feed;
 
 /**
  * Created by Ankit on 11/18/2017.

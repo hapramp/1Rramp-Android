@@ -17,7 +17,7 @@ public class ErrorUtils {
 
     public static GeneralErrorModel parseError(Response<?> response) {
         Converter<ResponseBody, GeneralErrorModel> converter = HaprampApiClient
-                .getClient()
+                .getClient("")
                 .responseBodyConverter(GeneralErrorModel.class, new Annotation[0]);
 
         GeneralErrorModel error = null;

@@ -10,7 +10,11 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.hapramp.R;
+import com.hapramp.models.CommunityModel;
+import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.utils.SkillsUtils;
 import com.hapramp.views.extraa.CategoryTextView;
 
@@ -25,8 +29,8 @@ public class PostCategoryView extends FrameLayout {
 
     private ViewGroup rootView;
     private Context mContext;
-    private String[] skills;
-    private ArrayList<Integer> selectedSkills;
+    private List<CommunityModel> communities;
+    private ArrayList<String> selectedTags;
 
     public PostCategoryView(@NonNull Context context) {
         super(context);
@@ -50,34 +54,35 @@ public class PostCategoryView extends FrameLayout {
 
         View view = LayoutInflater.from(mContext).inflate(R.layout.category_view_container, this);
         rootView = (ViewGroup) view.findViewById(R.id.viewWrapper);
-        selectedSkills = new ArrayList<>();
+        selectedTags = new ArrayList<>();
 
     }
 
     private void addViews() {
 
-        for (int i = 0; i < skills.length; i++) {
+        for (int i = 0; i < communities.size(); i++) {
 
             final CategoryTextView view = new CategoryTextView(mContext);
-            view.setText(skills[i]);
+            view.setText(communities.get(i).getmName());
+            view.setTag(communities.get(i).getmTag());
 
             view.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    int index = selectedSkills.indexOf(SkillsUtils.getSkillIdFromName(view.getSkill()));
+                    int index = selectedTags.indexOf(view.getTag());
                     if(index==-1){
                         // select it
-                        if (selectedSkills.size() > 2) {
+                        if (selectedTags.size() > 2) {
                             Toast.makeText(mContext,"Maximum 3 Skills",Toast.LENGTH_LONG).show();
                         } else {
                             view.setSelected(true);
-                            selectedSkills.add(SkillsUtils.getSkillIdFromName(view.getSkill()));
+                            selectedTags.add((String) view.getTag());
                         }
                     }else{
                         // de-select it
                         view.setSelected(false);
-                        selectedSkills.remove(index);
+                        selectedTags.remove(index);
                     }
 
                 }
@@ -91,27 +96,17 @@ public class PostCategoryView extends FrameLayout {
 
     }
 
-    public List<Integer> getSelectedSkills(){
-        return selectedSkills;
+    public List<String> getSelectedTags(){
+        return selectedTags;
     }
 
-    public List<String> getSelectedSkillsTitle(){
 
-        List<String> selectedTitles = new ArrayList<>();
-        for (Integer id :selectedSkills) {
-            selectedTitles.add(SkillsUtils.getSkillTitleFromId(id));
-        }
-        return selectedTitles;
+    public void setCategoryItems() {
 
-    }
+        CommunityListWrapper cr = new Gson().fromJson(HaprampPreferenceManager.getInstance().getAllCommunityAsJson(),CommunityListWrapper.class);
+        communities = cr.getCommunityModels();
 
-    public void setCategoryItems(String[] skills) {
-        this.skills = skills;
         addViews();
-    }
-
-    private void click(String skill){
-
     }
 
 }

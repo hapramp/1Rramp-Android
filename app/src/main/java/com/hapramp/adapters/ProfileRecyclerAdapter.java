@@ -2,25 +2,16 @@ package com.hapramp.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
-import com.hapramp.R;
-import com.hapramp.models.Feed;
 import com.hapramp.models.ProfileHeaderModel;
-import com.hapramp.models.response.PostResponse;
+import com.hapramp.steem.models.Feed;
 import com.hapramp.views.post.PostItemView;
 import com.hapramp.views.profile.ProfileHeaderView;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Ankit on 10/25/2017.

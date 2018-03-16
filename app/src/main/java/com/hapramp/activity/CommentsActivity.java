@@ -9,7 +9,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,11 +22,11 @@ import com.hapramp.adapters.CommentsAdapter;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.CommentCreateCallback;
 import com.hapramp.interfaces.CommentFetchCallback;
-import com.hapramp.models.Feed;
 import com.hapramp.models.requests.CommentBody;
 import com.hapramp.models.response.CommentCreateResponse;
 import com.hapramp.models.response.CommentsResponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.models.Feed;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
@@ -42,7 +41,7 @@ import butterknife.ButterKnife;
  * Created by Ankit on 2/9/2018.
  */
 
-public class CommentsActivity extends AppCompatActivity implements CommentFetchCallback, CommentCreateCallback {
+public class CommentsActivity extends AppCompatActivity{
 
     @BindView(R.id.backBtn)
     TextView backBtn;
@@ -125,7 +124,6 @@ public class CommentsActivity extends AppCompatActivity implements CommentFetchC
     private void fetchComments(String url) {
 
         showCommentLoadingProgress();
-        DataServer.getComments(url, this);
 
     }
 
@@ -135,7 +133,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentFetchC
         commentInputBox.setText("");
         if (cmnt.length() > 2) {
             showProgress("Posting Your Comment..." + postId);
-            DataServer.createComment(postId, new CommentBody(cmnt), this);
+           // DataServer.createComment(postId, new CommentBody(cmnt), this);
         } else {
             Toast.makeText(this, "Comment Too Short!!", Toast.LENGTH_LONG).show();
         }
@@ -154,58 +152,48 @@ public class CommentsActivity extends AppCompatActivity implements CommentFetchC
         }
     }
 
-    @Override
-    public void onCommentFetched(CommentsResponse response) {
+//    @Override
+//    public void onCommentFetched(CommentsResponse response) {
+//
+//        hideCommentLoadingProgress();
+//
+//        int len = response.results.size();
+//        if (len == 0) {
+//            noCommentsCaption.setVisibility(View.VISIBLE);
+//        } else {
+//
+//            noCommentsCaption.setVisibility(View.GONE);
+//
+//        }
+//        moreCommentsAt = response.next;
+//        Collections.reverse(response.results);
+//        commentsAdapter.addComments(response.results);
+//
+//        if (moreCommentsAt.length() > 0) {
+//            fetchComments(moreCommentsAt);
+//        }
+//
+//    }
 
-        hideCommentLoadingProgress();
-
-        int len = response.results.size();
-        if (len == 0) {
-            noCommentsCaption.setVisibility(View.VISIBLE);
-        } else {
-
-            noCommentsCaption.setVisibility(View.GONE);
-
-        }
-        moreCommentsAt = response.next;
-        Collections.reverse(response.results);
-        commentsAdapter.addComments(response.results);
-
-        if (moreCommentsAt.length() > 0) {
-            fetchComments(moreCommentsAt);
-        }
-
-    }
-
-    @Override
-    public void onCommentFetchError() {
-
-    }
-
-    @Override
-    public void onVoteDeleted(Feed updatedPost) {
-
-    }
-
-    @Override
-    public void onCommentCreated(CommentCreateResponse response) {
-
-        hideProgress();
-        Toast.makeText(this, "Create Comment", Toast.LENGTH_SHORT).show();
-        commentsAdapter.addComment(response);
-        commentsRecyclerView.getLayoutManager().scrollToPosition(0);
-        noCommentsCaption.setVisibility(View.GONE);
-
-    }
-
-    @Override
-    public void onCommentCreateError() {
-
-        hideProgress();
-        finish();
-        Toast.makeText(this, "Cannot Create Comment!", Toast.LENGTH_SHORT).show();
-
-    }
+//    @Override
+//    public void onCommentCreated(CommentCreateResponse response) {
+//
+//        hideProgress();
+//        Toast.makeText(this, "Create Comment", Toast.LENGTH_SHORT).show();
+//        commentsAdapter.addComment(response);
+//        commentsRecyclerView.getLayoutManager().scrollToPosition(0);
+//        noCommentsCaption.setVisibility(View.GONE);
+//
+//    }
+//
+//    @Override
+//    public void onCommentCreateError() {
+//
+//        hideProgress();
+//        finish();
+//        Toast.makeText(this, "Cannot Create Comment!", Toast.LENGTH_SHORT).show();
+//
+//    }
 
     private void showProgress(String msg) {
         progressDialog.setMessage(msg);

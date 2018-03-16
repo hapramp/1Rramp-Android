@@ -27,7 +27,6 @@ import com.hapramp.interfaces.UserStatsCallback;
 import com.hapramp.interfaces.VoteDeleteCallback;
 import com.hapramp.interfaces.VotePostCallback;
 import com.hapramp.logger.L;
-import com.hapramp.models.Feed;
 import com.hapramp.models.UserDataUpdateBody;
 import com.hapramp.models.UserResponse;
 import com.hapramp.models.requests.FollowRequestBody;
@@ -52,6 +51,8 @@ import com.hapramp.models.response.SkillsUpdateResponse;
 import com.hapramp.models.response.UpdateUserResponse;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.models.response.UserStatsModel;
+import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.models.Feed;
 import com.hapramp.utils.Constants;
 
 import java.util.List;
@@ -73,12 +74,8 @@ public class DataServer {
     private static HaprampAPI haprampAPI = null;
 
     public static HaprampAPI getService() {
-
-        if (haprampAPI == null) {
-            haprampAPI = HaprampApiClient.getClient().create(HaprampAPI.class);
-        }
-        return haprampAPI;
-
+        String token = HaprampPreferenceManager.getInstance().getUserToken();
+        return HaprampApiClient.getClient(token).create(HaprampAPI.class);
     }
 
     public static void resetAPI() {
@@ -104,7 +101,7 @@ public class DataServer {
 
             @Override
             public void onFailure(Call<FetchUserResponse> call, Throwable t) {
-                L.D.m(TAG,"Error "+t.toString());
+                L.D.m(TAG, "Error " + t.toString());
                 callback.onUserFetchedError();
             }
         });
@@ -259,7 +256,7 @@ public class DataServer {
 
         L.D.m(TAG, "Fetching posts...");
 
-        getService().getAlltPosts(url,Constants.POST_ORDER_DES)
+        getService().getAlltPosts(url, Constants.POST_ORDER_DES)
                 .enqueue(new Callback<PostResponse>() {
                     @Override
                     public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
@@ -283,7 +280,7 @@ public class DataServer {
     public static void getPostsByUserId(final String url, int userId, final PostFetchCallback callback) {
 
         getService()
-                .getPostsByUserId(url, userId,Constants.POST_ORDER_DES)
+                .getPostsByUserId(url, userId, Constants.POST_ORDER_DES)
                 .enqueue(new Callback<PostResponse>() {
                     @Override
                     public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
@@ -435,7 +432,7 @@ public class DataServer {
 
     }
 
-    public static void createPost(PostCreateBody postCreateBody, final PostCreateCallback callback){
+    public static void createPost(PostCreateBody postCreateBody, final PostCreateCallback callback) {
 
         getService()
                 .createPost(postCreateBody)
@@ -728,7 +725,7 @@ public class DataServer {
 
     }
 
-    public static void markNotificationAsRead(int notification_id,final int pos, final MarkAsReadNotificationCallback callback) {
+    public static void markNotificationAsRead(int notification_id, final int pos, final MarkAsReadNotificationCallback callback) {
 
         getService()
                 .markAsRead(notification_id)

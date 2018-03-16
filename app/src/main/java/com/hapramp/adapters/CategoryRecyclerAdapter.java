@@ -5,10 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.hapramp.models.response.UserModel;
-import com.hapramp.views.skills.SkillsTabView;
+import com.hapramp.models.CommunityModel;
+import com.hapramp.views.skills.CommunityTabItemView;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by Ankit on 10/25/2017.
@@ -17,60 +17,62 @@ import java.util.List;
 public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecyclerAdapter.CategoryViewHolder> {
 
     private Context context;
-    private List<UserModel.Skills> category;
     private OnCategoryItemClickListener categoryItemClickListener;
-    private int selectedSkillId = 0;
+    private int selectedCommunityId = 0;
+    private ArrayList<CommunityModel> communities;
 
     public CategoryRecyclerAdapter(Context context, OnCategoryItemClickListener categoryItemClickListener) {
         this.context = context;
         this.categoryItemClickListener = categoryItemClickListener;
     }
 
-    public void setCategories(List<UserModel.Skills> category){
-        this.category = category;
+
+    public void setCommunities(ArrayList<CommunityModel> communityModels) {
+        this.communities = communityModels;
         notifyDataSetChanged();
     }
 
     @Override
     public CategoryViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        return new CategoryViewHolder(new SkillsTabView(context));
+        return new CategoryViewHolder(new CommunityTabItemView(context));
     }
 
     @Override
     public void onBindViewHolder(CategoryViewHolder categoryViewHolder, int pos) {
-        categoryViewHolder.bind(category.get(pos),categoryItemClickListener);
+        categoryViewHolder.bind(communities.get(pos), categoryItemClickListener);
     }
 
     @Override
     public int getItemCount() {
-        return category!=null?category.size():0;
+        return communities != null ? communities.size() : 0;
     }
 
-    class CategoryViewHolder extends RecyclerView.ViewHolder{
 
-        SkillsTabView categoryItemView;
+    class CategoryViewHolder extends RecyclerView.ViewHolder {
+
+        CommunityTabItemView categoryItemView;
 
         public CategoryViewHolder(View itemView) {
             super(itemView);
-            categoryItemView = (SkillsTabView) itemView;
+            categoryItemView = (CommunityTabItemView) itemView;
         }
 
-        public void bind(final UserModel.Skills model, final OnCategoryItemClickListener categoryItemClickListener){
+        public void bind(final CommunityModel model, final OnCategoryItemClickListener categoryItemClickListener) {
 
-            categoryItemView.setSkillId(model.id);
+            categoryItemView.setCommunity(model);
 
-            if(selectedSkillId==model.getId()){
+            if (selectedCommunityId == model.getmId()) {
                 categoryItemView.setSelected(true);
-            }else{
+            } else {
                 categoryItemView.setSelected(false);
             }
 
             categoryItemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    selectedSkillId = model.getId();
+                    selectedCommunityId = model.getmId();
                     notifyDataSetChanged();
-                    categoryItemClickListener.onCategoryClicked(selectedSkillId);
+                    categoryItemClickListener.onCategoryClicked(selectedCommunityId);
                 }
             });
 
@@ -78,7 +80,7 @@ public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecycl
 
     }
 
-    public interface OnCategoryItemClickListener{
+    public interface OnCategoryItemClickListener {
         void onCategoryClicked(int id);
     }
 }

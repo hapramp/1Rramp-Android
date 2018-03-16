@@ -1,15 +1,14 @@
 package com.hapramp.api;
 
-public class RetrofitServiceGenerator {
+import com.hapramp.preferences.HaprampPreferenceManager;
 
-    private static HaprampAPI haprampAPI = null;
+public class RetrofitServiceGenerator {
 
     public static HaprampAPI getService() {
 
-        if (haprampAPI == null) {
-            haprampAPI = HaprampApiClient.getClient().create(HaprampAPI.class);
-        }
-        return haprampAPI;
+        String token = HaprampPreferenceManager.getInstance().getUserToken();
+        return HaprampApiClient.getClient(token).create(HaprampAPI.class);
+
     }
 
 }
