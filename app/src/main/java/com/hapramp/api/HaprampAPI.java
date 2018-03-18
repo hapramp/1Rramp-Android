@@ -83,12 +83,17 @@ public interface HaprampAPI {
     @GET("feeds/user/{username}")
     Call<List<Feed>> getUserFeeds(@Path("username") String username, @Query("limit") int limit);
 
+    @GET("feeds/blog/{blog}")
+    Call<List<Feed>> getPostsOfBlog(@Path("blog") String blog, @Query("limit") int limit);
 
+    @GET("feeds/created/{tag}")
+    Call<List<Feed>> getLatestFeed(@Path("tag") String tag, @Query("limit") int limit);
 
+    @GET("feeds/hot/{tag}")
+    Call<List<Feed>> getHotFeedInTag(@Path("tag") String tag, @Query("limit") int limit);
 
-
-
-
+    @GET("feeds/trending/{tag}")
+    Call<List<Feed>> getTrendingFeed(@Path("tag") String tag, @Query("limit") int limit);
 
 
 
@@ -119,7 +124,7 @@ public interface HaprampAPI {
     Call<SkillsUpdateResponse> setSkills(@Body SkillsUpdateBody skillsUpdateBody);
 
     @GET
-    Call<PostResponse> getAlltPosts(@Url String url,@Query("order_by") String order_by);
+    Call<PostResponse> getAlltPosts(@Url String url, @Query("order_by") String order_by);
 
     @GET
     Call<PostResponse> getPostsBySkills(@Url String url, @Query("skills_or") int skills_id);
@@ -140,7 +145,7 @@ public interface HaprampAPI {
     Call<UserModel> getFullUserDetails(@Path("user_id") String user_id);
 
     @POST("posts/{post_id}/votes")
-    Call<PostResponse> likePost(@Path("post_id") String post_id,@Body LikeBody body);
+    Call<PostResponse> likePost(@Path("post_id") String post_id, @Body LikeBody body);
 
     @POST("posts")
     Call<PostResponse> createPost(@Body PostCreateBody body);
@@ -149,29 +154,29 @@ public interface HaprampAPI {
     Call<PostResponse> deletePost(@Path("post_id") String post_id);
 
     @POST("posts/{post_id}/comments")
-    Call<CommentCreateResponse> createComment(@Path("post_id") String postId , @Body CommentBody body);
+    Call<CommentCreateResponse> createComment(@Path("post_id") String postId, @Body CommentBody body);
 
     @GET
     Call<CommentsResponse> getComments(@Url String url);
 
     @GET
-    Call<PostResponse> getPostsBySkillsAndUserId(@Url String url, @Query("skills_or") int skills_id,@Query("user_id") int userId,@Query("order_by") String order_by);
+    Call<PostResponse> getPostsBySkillsAndUserId(@Url String url, @Query("skills_or") int skills_id, @Query("user_id") int userId, @Query("order_by") String order_by);
 
 
     @GET("contests/{contest_id}/posts")
     Call<CompetitionsPostReponse> getCompetitionsPosts(@Path("contest_id") String compId);
 
     @POST("users/{user_id}/_follow")
-    Call<UserResponse> followUser(@Path("user_id") String userId , @Body FollowRequestBody body);
+    Call<UserResponse> followUser(@Path("user_id") String userId, @Body FollowRequestBody body);
 
     @PUT("users/{user_id}")
-    Call<UserResponse> updateUserDp(@Path("user_id") String userId,@Body UserDataUpdateBody body);
+    Call<UserResponse> updateUserDp(@Path("user_id") String userId, @Body UserDataUpdateBody body);
 
     @PUT("users/{user_id}")
-    Call<UserResponse> updateUserBio(@Path("user_id") String userId,@Body UserBioUpdateRequestBody body);
+    Call<UserResponse> updateUserBio(@Path("user_id") String userId, @Body UserBioUpdateRequestBody body);
 
     @POST("posts/{post_id}/votes")
-    Call<Feed> votePost(@Path("post_id") String postId , @Body VoteRequestBody body);
+    Call<Feed> votePost(@Path("post_id") String postId, @Body VoteRequestBody body);
 
     @DELETE("posts/{post_id}/votes")
     Call<Feed> deleteVote(@Path("post_id") int postId);
@@ -180,7 +185,7 @@ public interface HaprampAPI {
     Call<UserStatsModel> getUserStats(@Path("user_id") String userId);
 
     @GET("notifications")
-    Call<NotificationResponse> getNotifications(@Query("start") int start,@Query("limit") int limit);
+    Call<NotificationResponse> getNotifications(@Query("start") int start, @Query("limit") int limit);
 
     @POST("notifications/{notification_id}/_mark_as_read")
     Call<NotificationResponse> markAsRead(@Path("notification_id") int notification_id);
