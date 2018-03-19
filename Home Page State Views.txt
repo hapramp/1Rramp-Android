@@ -1,0 +1,14 @@
+S1 - Shimmers
+S2 - Feeds Shown
+S3 - Feeds + Refreshing
+S4 - Empty Response View
+S5 - Error message + retry Button
+
+----------------
+Uses of states:
+
+S1 - OnInitialLoading() , onRetrying()
+S2 - onLoadedFromCache() , onRefreshed() , onAppendableItemLoaded() , if(cache) -> onDataLoadFailed()
+S3 - onRefreshing()
+S4 - onNoDataAvailable[Successful Request]
+S5 - if(no_cache) -> onDataLoadFailed()

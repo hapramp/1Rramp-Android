@@ -46,19 +46,20 @@ public class ServiceWorker {
     }
 
     //method to get feeds(cached or fresh)
-    public void requestFeeds(final ServiceWorkerRequestParams requestParams) {
+    public void requestAllFeeds(final ServiceWorkerRequestParams requestParams) {
+
         l("requestFeed()");
         this.currentRequestParams = requestParams;
         // TODO: 2/28/2018
         // 1 - check for the cache, if found return else report its absence
         // TODO: 3/13/2018 cache should be update when data is cached
-        if (mCachePreference.wasFeedCached()) {
+        if (mCachePreference.wasFeedCached(requestParams.getCommunityTag())) {
             l("Feed was cached");
             // read from databse and return
             new Thread() {
                 @Override
                 public void run() {
-                    final ArrayList<Feed> steemFeedModelArrayList = mDatabaseHelper.getFeed(requestParams.getCommunityId());
+                    final ArrayList<Feed> steemFeedModelArrayList = mDatabaseHelper.getFeed(requestParams.getCommunityTag());
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -73,15 +74,96 @@ public class ServiceWorker {
 
             l("Fetching from server");
             // and start refreshing...
-            fetchFeeds(requestParams);
+            fetchAllFeeds(requestParams);
 
         } else {
             l("Feed Was not cached");
             // no cache
             // start refreshing
             l("Fetching from server");
-            fetchFeeds(requestParams);
+            fetchAllFeeds(requestParams);
         }
+
+    }
+
+    public void requestCommunityFeeds(final ServiceWorkerRequestParams requestParams){
+
+        l("requesting community feeds");
+        this.currentRequestParams = requestParams;
+        // TODO: 2/28/2018
+        // 1 - check for the cache, if found return else report its absence
+        // TODO: 3/13/2018 cache should be update when data is cached
+        if (mCachePreference.wasFeedCached(currentRequestParams.getCommunityTag())) {
+            l("Feed was cached");
+            // read from databse and return
+            new Thread() {
+                @Override
+                public void run() {
+                    final ArrayList<Feed> steemFeedModelArrayList = mDatabaseHelper.getFeed(requestParams.getCommunityTag());
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (serviceWorkerCallback != null) {
+                                l("loaded from cache");
+                                serviceWorkerCallback.onLoadedFromCache(steemFeedModelArrayList);
+                            }
+                        }
+                    });
+                }
+            }.start();
+
+            l("Fetching from server");
+            // and start refreshing...
+            fetchCommunityFeeds(requestParams);
+
+        } else {
+            l("Feed Was not cached");
+            // no cache
+            // start refreshing
+            l("Fetching from server");
+            fetchCommunityFeeds(requestParams);
+        }
+
+    }
+
+    private void fetchCommunityFeeds(final ServiceWorkerRequestParams feedRequestParams) {
+
+        if (serviceWorkerCallback != null) {
+            serviceWorkerCallback.onFetchingFromServer();
+        }
+
+        // TODO: 2/28/2018
+        // 1 - call api for feeds
+        RetrofitServiceGenerator.getService().getUserFeeds(feedRequestParams.getUsername(), feedRequestParams.getLimit()).enqueue(new Callback<List<Feed>>() {
+            @Override
+            public void onResponse(Call<List<Feed>> call, Response<List<Feed>> response) {
+
+                if (isRequestLive(feedRequestParams)) {
+                    if (serviceWorkerCallback != null) {
+                        if (response.isSuccessful()) {
+                            l("Feed Response :"+response.body().toString());
+                            serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body());
+                            //cache it
+                            mDatabaseHelper.insertFeed((ArrayList<Feed>) response.body(), feedRequestParams.getCommunityTag());
+                            CachePreference.getInstance().setFeedCached(feedRequestParams.getCommunityTag(),true);
+
+                        } else {
+                            // report error
+                            l("Error :(");
+                            serviceWorkerCallback.onFetchingFromServerFailed();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Feed>> call, Throwable t) {
+                l("Error : "+t.toString());
+                if (serviceWorkerCallback != null) {
+                    serviceWorkerCallback.onFetchingFromServerFailed();
+                }
+            }
+        });
 
     }
 
@@ -119,7 +201,7 @@ public class ServiceWorker {
      * This method generally request the feed and cache them.
      * INPUT: take #communityId for type of feed to refresh (in future)
      * */
-    private void fetchFeeds(final ServiceWorkerRequestParams feedRequestParams) {
+    private void fetchAllFeeds(final ServiceWorkerRequestParams feedRequestParams) {
 
         if (serviceWorkerCallback != null) {
             serviceWorkerCallback.onFetchingFromServer();
@@ -137,8 +219,8 @@ public class ServiceWorker {
                             l("Feed Response :"+response.body().toString());
                             serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body());
                             //cache it
-                            mDatabaseHelper.insertFeed((ArrayList<Feed>) response.body(), feedRequestParams.getCommunityId());
-                            CachePreference.getInstance().setFeedCached(true);
+                            mDatabaseHelper.insertFeed((ArrayList<Feed>) response.body(), feedRequestParams.getCommunityTag());
+                            CachePreference.getInstance().setFeedCached(feedRequestParams.getCommunityTag(),true);
 
                         } else {
                             // report error
@@ -157,6 +239,23 @@ public class ServiceWorker {
                 }
             }
         });
+
+    }
+
+    private void fetchHotFeeds(final ServiceWorkerRequestParams feedRequestParams){
+        // hot , trending , created are for
+
+    }
+
+    private void fetchCreatedFeeds(final ServiceWorkerRequestParams feedRequestParams){
+
+    }
+
+    private void fetchTrendingFeeds(final ServiceWorkerRequestParams feedRequestParams){
+
+    }
+
+    private void fetchBlogFeeds(final ServiceWorkerRequestParams feedRequestParams){
 
     }
 

@@ -23,13 +23,13 @@ public interface ServiceWorkerCallback {
     void onLoadedFromCache(ArrayList<Feed> cachedList);
 
     // data refreshed from server
-    void onRefreshed(List<Object> refreshedList);
+    void onRefreshed(List<Feed> refreshedList);
 
     //failed to refresh from server
     void onRefreshFailed();
 
     //loaded appendable data ( data on request for lazy loading)
-    void onAppendableDataLoaded(List<Object> appendableList);
+    void onAppendableDataLoaded(List<Feed> appendableList);
 
     //failed to load appendable data
     void onAppendableDataLoadingFailed();

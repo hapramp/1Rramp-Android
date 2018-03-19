@@ -48,10 +48,13 @@ public class HomeFragment extends Fragment implements
 
     private Context mContext;
     private PostResponse currentPostReponse;
-    private int currentSelectedSkillId;
+    private String currentSelectedTag = ALL;
     private CategoryRecyclerAdapter categoryRecyclerAdapter;
     ServiceWorker serviceWorker;
     private Unbinder unbinder;
+    private ServiceWorkerRequestParams serviceWorkerRequestParams;
+    public static final String ALL = "all";
+    private ServiceWorkerRequestBuilder serviceWorkerRequestParamsBuilder;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -60,17 +63,20 @@ public class HomeFragment extends Fragment implements
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        prepareServiceWorker();
+      //  serviceWorker.requestFeeds(serviceWorkerRequestParams);
+
+    }
+
+    private void prepareServiceWorker(){
+
         serviceWorker = new ServiceWorker();
         serviceWorker.init(getActivity());
         serviceWorker.setServiceWorkerCallback(this);
-        ServiceWorkerRequestParams serviceWorkerRequestParams =
-                new ServiceWorkerRequestBuilder()
-                        .serCommunityId("0")
-                        .setUserName("unittestaccount")
-                        .setLimit(10)
-                        .createRequestParam();
-
-        serviceWorker.requestFeeds(serviceWorkerRequestParams);
+        serviceWorkerRequestParamsBuilder =  new ServiceWorkerRequestBuilder()
+                .setUserName("unittestaccount") //todo: make username dynamic
+                .setLimit(10);
 
     }
 
@@ -97,7 +103,7 @@ public class HomeFragment extends Fragment implements
 
         feedListView.setFeedListViewListener(this);
         feedListView.initialLoading();
-        fetchPosts(0);
+        fetchPosts(ALL);
 
     }
 
@@ -125,30 +131,32 @@ public class HomeFragment extends Fragment implements
     }
 
     @Override
-    public void onCategoryClicked(int id) {
+    public void onCategoryClicked(String tag) {
 
         feedListView.initialLoading();
-        currentSelectedSkillId = id;
-        fetchPosts(id);
+        currentSelectedTag = tag;
+        fetchPosts(tag);
 
     }
 
 
-    private void fetchPosts(int id) {
+    private void fetchPosts(String tag) {
 
     }
 
     public void forceReloadData() {
     }
 
-    private void loadMore(int id) {
+    private void loadMore(String tag) {
 
-        if (currentPostReponse == null)
-            return;
+        //todo: implement after lazy loading is enabled
 
-        if (currentPostReponse.next.length() == 0) {
-            return;
-        }
+//        if (currentPostReponse == null)
+//            return;
+//
+//        if (currentPostReponse.next.length() == 0) {
+//            return;
+//        }
 
 
     }
@@ -189,7 +197,7 @@ public class HomeFragment extends Fragment implements
 
     @Override
     public void onLoadMoreFeeds() {
-        loadMore(currentSelectedSkillId);
+        loadMore(currentSelectedTag);
     }
 
     @Override
@@ -207,47 +215,47 @@ public class HomeFragment extends Fragment implements
 
     @Override
     public void onFetchingFromServer() {
-
+        feedListView.feedRefreshing();
     }
 
     @Override
     public void onRefreshing() {
-
+        feedListView.feedRefreshing();
     }
 
     @Override
     public void onCacheLoadFailed() {
-
+        feedListView.noCachedFeeds();
     }
 
     @Override
     public void onNoDataInCache() {
-
+        feedListView.noCachedFeeds();
     }
 
     @Override
     public void onLoadedFromCache(ArrayList<Feed> cachedList) {
-
+        feedListView.cachedFeedFetched(cachedList);
     }
 
     @Override
-    public void onRefreshed(List<Object> refreshedList) {
-
+    public void onRefreshed(List<Feed> refreshedList) {
+        feedListView.feedsRefreshed(refreshedList);
     }
 
     @Override
     public void onRefreshFailed() {
-
+        feedListView.failedToRefresh("");
     }
 
     @Override
-    public void onAppendableDataLoaded(List<Object> appendableList) {
-
+    public void onAppendableDataLoaded(List<Feed> appendableList) {
+        //todo: needs to be implemented
     }
 
     @Override
     public void onAppendableDataLoadingFailed() {
-
+        // TODO: 3/19/2018 needs to be implemented
     }
 
     @Override
@@ -257,7 +265,7 @@ public class HomeFragment extends Fragment implements
 
     @Override
     public void onFetchingFromServerFailed() {
-
+        feedListView.failedToRefresh("");
     }
 
 }

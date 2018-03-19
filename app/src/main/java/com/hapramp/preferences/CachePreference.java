@@ -43,12 +43,12 @@ public class CachePreference {
     }
 
 
-    public boolean wasFeedCached() {
-        return preferences.getBoolean("feedCached",false);
+    public boolean wasFeedCached(String tag) {
+        return preferences.getBoolean("feedCached_"+tag,false);
     }
 
-    public void setFeedCached(boolean fetched){
-        editor.putBoolean("feedCached",fetched);
+    public void setFeedCached(String tag , boolean fetched){
+        editor.putBoolean("feedCached_"+tag , fetched);
         editor.apply();
     }
 

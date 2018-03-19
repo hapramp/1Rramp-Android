@@ -82,7 +82,7 @@ public class CompetitionFragment extends Fragment implements CompetitionFetchCal
         super.onViewCreated(view, savedInstanceState);
         comptetionRv.setLayoutManager(new LinearLayoutManager(mContext));
         comptetionRv.setAdapter(recyclerAdapter);
-        fetchCompetitions(0);
+        fetchCompetitions("0");
 
     }
 
@@ -99,7 +99,7 @@ public class CompetitionFragment extends Fragment implements CompetitionFetchCal
     }
 
     @Override
-    public void onCategoryClicked(int id) {
+    public void onCategoryClicked(String id) {
         L.D.m("Category", " clicked");
         fetchCompetitions(id);
     }
@@ -141,17 +141,17 @@ public class CompetitionFragment extends Fragment implements CompetitionFetchCal
             categoryLoadingProgress.setVisibility(View.GONE);
     }
 
-    private void fetchCompetitions(int id) {
+    private void fetchCompetitions(String id) {
 
-        hideErrorMessage();
-        hideContent();
-        showContentLoadingProgress();
-
-        if (id == 0) {
-            DataServer.getCompetitions(this);
-        } else {
-            DataServer.getCompetitionsBySkills(id, this);
-        }
+//        hideErrorMessage();
+//        hideContent();
+//        showContentLoadingProgress();
+//
+//        if (id == 0) {
+//            DataServer.getCompetitions(this);
+//        } else {
+//            DataServer.getCompetitionsBySkills(id, this);
+//        }
 
     }
 

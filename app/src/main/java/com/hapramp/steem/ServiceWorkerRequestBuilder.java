@@ -7,6 +7,7 @@ public class ServiceWorkerRequestBuilder {
 
     private int requestId;
     private String communityId;
+    private String subCategory;
     private String username;
     private int limit;
 
@@ -19,6 +20,8 @@ public class ServiceWorkerRequestBuilder {
         return this;
     }
 
+
+
     public ServiceWorkerRequestBuilder setUserName(String username){
         this.username = username;
         return this;
@@ -30,7 +33,7 @@ public class ServiceWorkerRequestBuilder {
     }
 
     public ServiceWorkerRequestParams createRequestParam(){
-        return new ServiceWorkerRequestParams(requestId,communityId,username,limit);
+        return new ServiceWorkerRequestParams(requestId,communityId,"",username,limit);
     }
 
 }

@@ -72,7 +72,7 @@ public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecycl
                 public void onClick(View v) {
                     selectedCommunityId = model.getmId();
                     notifyDataSetChanged();
-                    categoryItemClickListener.onCategoryClicked(selectedCommunityId);
+                    categoryItemClickListener.onCategoryClicked(model.getmTag());
                 }
             });
 
@@ -81,6 +81,6 @@ public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecycl
     }
 
     public interface OnCategoryItemClickListener {
-        void onCategoryClicked(int id);
+        void onCategoryClicked(String tag);
     }
 }

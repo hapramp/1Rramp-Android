@@ -3,13 +3,15 @@ package com.hapramp.steem;
 public class ServiceWorkerRequestParams {
 
     private int requestId;
-    private String communityId;
+    private String communityTag;
+    private String subCategory;
     private String username;
     private int limit;
 
-    public ServiceWorkerRequestParams(int requestId, String communityId, String username, int limit) {
+    public ServiceWorkerRequestParams(int requestId, String communityTag,String subCategory, String username, int limit) {
         this.requestId = requestId;
-        this.communityId = communityId;
+        this.communityTag = communityTag;
+        this.subCategory = subCategory;
         this.username = username;
         this.limit = limit;
     }
@@ -22,8 +24,12 @@ public class ServiceWorkerRequestParams {
         return requestId;
     }
 
-    public String getCommunityId() {
-        return communityId;
+    public String getCommunityTag() {
+        return communityTag;
+    }
+
+    public String getSubCategory() {
+        return subCategory;
     }
 
     public String getUsername() {

@@ -369,6 +369,7 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
     private void setLoadingShimmerVisibility(boolean show) {
 
         setViewVisibility(show, mockContainer);
+        shimmerViewContainer.startShimmerAnimation();
 
     }
 
