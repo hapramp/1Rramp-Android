@@ -12,3 +12,6 @@ S2 - onLoadedFromCache() , onRefreshed() , onAppendableItemLoaded() , if(cache) 
 S3 - onRefreshing()
 S4 - onNoDataAvailable[Successful Request]
 S5 - if(no_cache) -> onDataLoadFailed()
+
+
+
