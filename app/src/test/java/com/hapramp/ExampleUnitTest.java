@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
@@ -31,6 +32,14 @@ public class ExampleUnitTest {
 
     @Test
     public void addition_isCorrect() throws Exception {
+
+    }
+
+    public void testHashMap() {
+
+        HashMap<String, ArrayList<String>> filterMap = new HashMap<>();
+        ArrayList<String> strings = filterMap.get("all") != null ? filterMap.get("all") : new ArrayList<String>();
+        filterMap.put("all", strings);
 
     }
 

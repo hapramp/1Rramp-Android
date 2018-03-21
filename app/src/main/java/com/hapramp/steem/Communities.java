@@ -14,6 +14,7 @@ public class Communities {
     public static final String DRAMATICS = "hapramp-dramatics";
     public static final String TRAVEL = "hapramp-travel";
     public static final String LITERATURE = "hapramp-literature";
+    public static final String ALL = "all";
 
     public static boolean doesCommunityExists(String commmunity) {
 

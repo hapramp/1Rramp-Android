@@ -52,4 +52,13 @@ public class CachePreference {
         editor.apply();
     }
 
+    public boolean isCommunityFeedCached(String communityTag) {
+        return preferences.getBoolean("community_"+communityTag,false);
+    }
+
+    public void setCommunityFeedCached(String communityTag , boolean isCached){
+        editor.putBoolean("community_"+communityTag,isCached);
+        editor.apply();
+    }
+
 }

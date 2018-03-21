@@ -7,11 +7,13 @@ import java.util.List;
 
 public interface ServiceWorkerCallback {
 
-    //loading process, It shows the request to the service worker first time.
-    void onFetchingFromServer();
 
-    //fetching fresh data from server.
-    void onRefreshing();
+    //=========================================
+    // CACHE CALLBACK
+    //=========================================
+
+    //process of loading from cache
+    void onLoadingFromCache();
 
     //failure in loading from cache
     void onCacheLoadFailed();
@@ -22,20 +24,49 @@ public interface ServiceWorkerCallback {
     //cache data loaded
     void onLoadedFromCache(ArrayList<Feed> cachedList);
 
+
+    //=========================================
+    // SERVER FETCH CALLBACK
+    //=========================================
+
+    //loading process, It shows the request to the service worker first time.
+    void onFetchingFromServer();
+
+    // fetched from server
+    void onFeedsFetched(ArrayList<Feed> body);
+
+    //something went wrong while fetching from server
+    void onFetchingFromServerFailed();
+
+
+    //=========================================
+    // REFRESHING CALLBACK
+    //=========================================
+
+
+    //fetching fresh data from server.
+    void onRefreshing();
+
     // data refreshed from server
     void onRefreshed(List<Feed> refreshedList);
 
     //failed to refresh from server
     void onRefreshFailed();
 
+
+    //=========================================
+    // LAZY LOADING CALLBACK
+    //=========================================
+    // Note: Here appendable data means the feeds which are going to be appended
+    // to last of list as user is scrolling through.
+
+    // process of loading appendable data
+    void onLoadingAppendableData();
+
     //loaded appendable data ( data on request for lazy loading)
     void onAppendableDataLoaded(List<Feed> appendableList);
 
     //failed to load appendable data
     void onAppendableDataLoadingFailed();
-
-    void onFeedsFetched(ArrayList<Feed> body);
-
-    void onFetchingFromServerFailed();
 
 }

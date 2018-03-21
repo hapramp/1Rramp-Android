@@ -13,6 +13,9 @@ import com.google.gson.annotations.SerializedName;
 import com.hapramp.steem.models.Feed;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by Ankit on 12/23/2017.
@@ -54,8 +57,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public long insertFeed(ArrayList<Feed> steemFeeds, String communityId) {
 
-        if(wasFeedCached(communityId)){
-            return updateFeed(steemFeeds,communityId);
+        if (wasFeedCached(communityId)) {
+            return updateFeed(steemFeeds, communityId);
         }
 
         SQLiteDatabase database = getWritableDatabase();
@@ -70,6 +73,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return id;
     }
 
+    public void insertFeeds(ArrayList<Feed> feeds) {
+        // filter the feeds and insert them accordingly
+        HashMap<String, ArrayList<Feed>> filterMap = new HashMap<>();
+        ArrayList<Feed> tempFeedList;
+
+        for (int i = 0; i < feeds.size(); i++) {
+            // get feedlist from map
+            tempFeedList = filterMap.get(feeds.get(i).getCategory()) != null ? filterMap.get(feeds.get(i).getCategory()) : new ArrayList<Feed>();
+            //add feed
+            tempFeedList.add(feeds.get(i));
+            // put back to map
+            filterMap.put(feeds.get(i).getCategory(), tempFeedList);
+        }
+
+        // TODO: 3/21/2018 loop through each category and insert to database
+        Iterator iterator = filterMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            insertFeed((ArrayList<Feed>) entry.getKey(), (String) entry.getValue());
+        }
+
+    }
+
     public ArrayList<Feed> getFeed(String comId) {
 
         ArrayList<Feed> feeds = new ArrayList<>();
@@ -80,16 +106,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int count = cursor.getCount();
         cursor.moveToFirst();
         if (count > 0) {
-            FeedCacheWrapper wrapper = new Gson().fromJson(cursor.getString(cursor.getColumnIndex(KEY_JSON)),FeedCacheWrapper.class);
+            FeedCacheWrapper wrapper = new Gson().fromJson(cursor.getString(cursor.getColumnIndex(KEY_JSON)), FeedCacheWrapper.class);
             feeds = wrapper.getSteemFeedModels();
         }
-        Log.d(TAG,"Returning ["+feeds.size()+"] feeds of type :"+comId);
+        Log.d(TAG, "Returning [" + feeds.size() + "] feeds of type :" + comId);
 
         return feeds;
 
     }
 
-    public boolean wasFeedCached(String comId){
+    public boolean wasFeedCached(String comId) {
 
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         String[] cols = {KEY_COMMUNITY_ID, KEY_JSON};
@@ -97,15 +123,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.query(TABLE_CACHE, cols, KEY_COMMUNITY_ID + " = ? ", selection, null, null, null);
         int count = cursor.getCount();
 
-        return count>0;
+        return count > 0;
 
     }
 
-    public long updateFeed(ArrayList<Feed> steemFeeds, String communityId){
+    public long updateFeed(ArrayList<Feed> steemFeeds, String communityId) {
 
         SQLiteDatabase database = getWritableDatabase();
         FeedCacheWrapper feedCacheWrapper = new FeedCacheWrapper(steemFeeds);
-        long id = database.update(TABLE_CACHE, getFeedCVObject(feedCacheWrapper, communityId),KEY_COMMUNITY_ID+"= ? ", new String[]{communityId});
+        long id = database.update(TABLE_CACHE, getFeedCVObject(feedCacheWrapper, communityId), KEY_COMMUNITY_ID + "= ? ", new String[]{communityId});
         if (id > -1) {
             Log.d(TAG, "Updated! " + communityId);
         } else {
@@ -114,10 +140,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return id;
     }
 
-    public void deleteFeedsCache(){
+    public void deleteFeedsCache() {
 
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-        sqLiteDatabase.execSQL("DELETE FROM "+TABLE_CACHE);
+        sqLiteDatabase.execSQL("DELETE FROM " + TABLE_CACHE);
 
     }
 
@@ -126,7 +152,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    class FeedCacheWrapper{
+    class FeedCacheWrapper {
 
         @Expose
         @SerializedName("feeds")

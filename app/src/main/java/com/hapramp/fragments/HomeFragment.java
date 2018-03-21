@@ -224,6 +224,11 @@ public class HomeFragment extends Fragment implements
     }
 
     @Override
+    public void onLoadingFromCache() {
+
+    }
+
+    @Override
     public void onCacheLoadFailed() {
         feedListView.noCachedFeeds();
     }
@@ -246,6 +251,11 @@ public class HomeFragment extends Fragment implements
     @Override
     public void onRefreshFailed() {
         feedListView.failedToRefresh("");
+    }
+
+    @Override
+    public void onLoadingAppendableData() {
+
     }
 
     @Override
