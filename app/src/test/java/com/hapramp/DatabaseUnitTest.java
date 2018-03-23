@@ -45,7 +45,9 @@ public class DatabaseUnitTest {
             "        \"type\": \"post\"\n" +
             "      },\n" +
             "      \"tags\": [\n" +
-            "        \"ART\"\n" +
+            "        \"hapramp-art\"\n," +
+            "        \"hapramp-dance\"\n," +
+            "        \"hapramp-test\"\n" +
             "      ]\n" +
             "    },\n" +
             "    \"last_update\": \"2018-03-08T11:38:48\",\n" +
@@ -107,10 +109,11 @@ public class DatabaseUnitTest {
         ArrayList<Feed> steemFeedModels = new ArrayList<>();
         steemFeedModels.add(new Gson().fromJson(feedJson, Feed.class));
 
-        long id = databaseHelper.insertFeed(steemFeedModels, "0");
+        long id = databaseHelper.insertFeeds(steemFeedModels);
         // Then
         p("inserted " + id);
-        assert (id > -1);
+        assert (id == 2);
+
     }
 
     @Test

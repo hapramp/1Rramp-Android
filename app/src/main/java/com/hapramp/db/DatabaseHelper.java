@@ -77,12 +77,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return id;
     }
 
-    public void insertFeeds(ArrayList<Feed> feeds) {
+    public long insertFeeds(ArrayList<Feed> feeds) {
         // filter the feeds and insert them accordingly
         HashMap<String, ArrayList<Feed>> filterMap = new HashMap<>();
         ArrayList<Feed> tempFeedList;
         List<String> tempTagList;
         String tag;
+        long insertedCount = 0;
+
         // iterate through feeds
         for (int feedIndex = 0; feedIndex < feeds.size(); feedIndex++) {
 
@@ -109,10 +111,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Iterator iterator = filterMap.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
-            insertFeed((ArrayList<Feed>) entry.getValue(), (String) entry.getKey());
+            insertedCount += insertFeed((ArrayList<Feed>) entry.getValue(), (String) entry.getKey()) > -1 ? 1 : 0;
         }
 
         CachePreference.getInstance().setAllFeedCached(true);
+
+        return insertedCount;
 
     }
 
