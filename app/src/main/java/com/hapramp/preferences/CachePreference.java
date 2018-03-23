@@ -42,17 +42,16 @@ public class CachePreference {
         return preferences.getBoolean("segment_"+segmentId,false);
     }
 
-
-    public boolean wasFeedCached(String tag) {
-        return preferences.getBoolean("feedCached_"+tag,false);
+    public boolean wasAllFeedCached() {
+        return preferences.getBoolean("feedCached",false);
     }
 
-    public void setFeedCached(String tag , boolean fetched){
-        editor.putBoolean("feedCached_"+tag , fetched);
+    public void setAllFeedCached(boolean cached){
+        editor.putBoolean("feedCached" , cached);
         editor.apply();
     }
 
-    public boolean isCommunityFeedCached(String communityTag) {
+    public boolean wasCommunityFeedCached(String communityTag) {
         return preferences.getBoolean("community_"+communityTag,false);
     }
 

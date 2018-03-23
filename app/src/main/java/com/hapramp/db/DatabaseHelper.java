@@ -10,6 +10,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.hapramp.preferences.CachePreference;
 import com.hapramp.steem.models.Feed;
 
 import java.util.ArrayList;
@@ -55,19 +56,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public long insertFeed(ArrayList<Feed> steemFeeds, String communityId) {
+    private long insertFeed(ArrayList<Feed> steemFeeds, String communityTag) {
 
-        if (wasFeedCached(communityId)) {
-            return updateFeed(steemFeeds, communityId);
+        if (wasFeedCached(communityTag)) {
+            return updateFeed(steemFeeds, communityTag);
         }
 
         SQLiteDatabase database = getWritableDatabase();
         FeedCacheWrapper feedCacheWrapper = new FeedCacheWrapper(steemFeeds);
-        long id = database.insert(TABLE_CACHE, null, getFeedCVObject(feedCacheWrapper, communityId));
+        long id = database.insert(TABLE_CACHE, null, getFeedCVObject(feedCacheWrapper, communityTag));
         if (id > -1) {
-            Log.d(TAG, "Inserted! " + communityId);
+            Log.d(TAG, "Inserted! " + communityTag);
+            CachePreference.getInstance().setCommunityFeedCached(communityTag, true);
         } else {
-            Log.d(TAG, "Error While Inserting! " + communityId);
+            Log.d(TAG, "Error While Inserting! " + communityTag);
         }
 
         return id;
@@ -94,14 +96,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             insertFeed((ArrayList<Feed>) entry.getKey(), (String) entry.getValue());
         }
 
+        CachePreference.getInstance().setAllFeedCached(true);
+
     }
 
-    public ArrayList<Feed> getFeed(String comId) {
+    public ArrayList<Feed> getFeedsByCommunity(String communityTag) {
 
         ArrayList<Feed> feeds = new ArrayList<>();
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         String[] cols = {KEY_COMMUNITY_ID, KEY_JSON};
-        String[] selection = {comId};
+        String[] selection = {communityTag};
         Cursor cursor = sqLiteDatabase.query(TABLE_CACHE, cols, KEY_COMMUNITY_ID + " = ? ", selection, null, null, null);
         int count = cursor.getCount();
         cursor.moveToFirst();
@@ -109,8 +113,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             FeedCacheWrapper wrapper = new Gson().fromJson(cursor.getString(cursor.getColumnIndex(KEY_JSON)), FeedCacheWrapper.class);
             feeds = wrapper.getSteemFeedModels();
         }
-        Log.d(TAG, "Returning [" + feeds.size() + "] feeds of type :" + comId);
+        Log.d(TAG, "Returning [" + feeds.size() + "] feeds of type :" + communityTag);
 
+        return feeds;
+
+    }
+
+    public ArrayList<Feed> getAllFeeds(){
+
+        ArrayList<Feed> feeds = new ArrayList<>();
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+
+        String[] cols = {KEY_COMMUNITY_ID, KEY_JSON};
+        Cursor cursor = sqLiteDatabase.query(TABLE_CACHE, cols, null, null, null, null, null);
+        int count = cursor.getCount();
+        cursor.moveToFirst();
+
+        if (count > 0) {
+            FeedCacheWrapper wrapper = new Gson().fromJson(cursor.getString(cursor.getColumnIndex(KEY_JSON)), FeedCacheWrapper.class);
+            feeds = wrapper.getSteemFeedModels();
+        }
+
+        Log.d(TAG, " Returning [" + feeds.size() + "] feeds of all type ");
         return feeds;
 
     }

@@ -54,13 +54,13 @@ public class ServiceWorker {
         // TODO: 2/28/2018
         // 1 - check for the cache, if found return else report its absence
         // TODO: 3/13/2018 cache should be update when data is cached
-        if (mCachePreference.wasFeedCached(requestParams.getCommunityTag())) {
+        if (mCachePreference.wasAllFeedCached()) {
             l("Feed was cached");
             // read from databse and return
             new Thread() {
                 @Override
                 public void run() {
-                    final ArrayList<Feed> steemFeedModelArrayList = mDatabaseHelper.getFeed(requestParams.getCommunityTag());
+                    final ArrayList<Feed> steemFeedModelArrayList = mDatabaseHelper.getAllFeeds();
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -96,7 +96,7 @@ public class ServiceWorker {
 
         this.currentRequestParams = requestParams;
         //check for cache
-        if (CachePreference.getInstance().isCommunityFeedCached(requestParams.getCommunityTag())) {
+        if (CachePreference.getInstance().wasCommunityFeedCached(requestParams.getCommunityTag())) {
 
             // read from database and return with callback
             // Read on Worker Thread
@@ -104,7 +104,7 @@ public class ServiceWorker {
             new Thread() {
                 @Override
                 public void run() {
-                    final ArrayList<Feed> communityFeedList = mDatabaseHelper.getFeed(requestParams.getCommunityTag());
+                    final ArrayList<Feed> communityFeedList = mDatabaseHelper.getFeedsByCommunity(requestParams.getCommunityTag());
                     //check for live request
                     if (isRequestLive(requestParams)) {
                         //call on main thread
@@ -179,24 +179,37 @@ public class ServiceWorker {
                     @Override
                     public void onResponse(Call<List<Feed>> call, final Response<List<Feed>> response) {
 
-                        //cache the results
-                        new Thread(){
-                            @Override
-                            public void run() {
-                                mDatabaseHelper.insertFeeds((ArrayList<Feed>) response.body());
-                            }
-                        }.start();
-
+                        // check for life of request(whether other request has came and over-written on this)
                         if (isRequestLive(feedRequestParams)) {
 
                             if (serviceWorkerCallback != null) {
 
                                 if (response.isSuccessful()) {
-                                    l("Feed Response :" + response.body().toString());
-                                    serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body());
-                                    //cache it
-                                    mDatabaseHelper.insertFeed((ArrayList<Feed>) response.body(), feedRequestParams.getCommunityTag());
-                                    CachePreference.getInstance().setFeedCached(feedRequestParams.getCommunityTag(), true);
+
+                                    //cache the results after filtering them on basis of category
+                                    new Thread(){
+                                        @Override
+                                        public void run() {
+                                            mDatabaseHelper.insertFeeds((ArrayList<Feed>) response.body());
+                                        }
+                                    }.start();
+
+                                    // check for the request: is it for filtered feeds(community)
+                                    if(isRequestForCommunityFeed(feedRequestParams)){
+
+                                        // return all feeds
+                                        serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body());
+
+                                    }else{
+                                        // return community feeds
+                                        // read on worker thread and return
+                                        new Thread(){
+                                            @Override
+                                            public void run() {
+                                                serviceWorkerCallback.onFeedsFetched(mDatabaseHelper.getFeedsByCommunity(feedRequestParams.getCommunityTag()));
+                                            }
+                                        }.start();
+                                    }
 
                                 } else {
                                     // report error
@@ -214,6 +227,7 @@ public class ServiceWorker {
                             serviceWorkerCallback.onFetchingFromServerFailed();
                         }
                     }
+
                 });
 
     }

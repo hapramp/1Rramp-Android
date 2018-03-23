@@ -122,7 +122,7 @@ public class DatabaseUnitTest {
         ArrayList<Feed> steemFeedModels = new ArrayList<>();
         steemFeedModels.add(new Gson().fromJson(feedJson, Feed.class));
 
-        ArrayList<Feed> models = databaseHelper.getFeed("0");
+        ArrayList<Feed> models = databaseHelper.getFeedsByCommunity("0");
 
 
         p("Read: " + new Gson().toJson(models.get(0)));
