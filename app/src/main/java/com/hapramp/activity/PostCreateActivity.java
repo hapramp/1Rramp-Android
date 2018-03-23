@@ -36,7 +36,6 @@ import com.hapramp.steem.ProcessedBodyResponse;
 import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FontManager;
-import com.hapramp.utils.SkillsUtils;
 import com.hapramp.views.post.PostCategoryView;
 import com.hapramp.views.post.PostImageView;
 
@@ -126,6 +125,7 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
         videoBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        postCategoryView.initCategory();
 
     }
 
@@ -308,7 +308,7 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
                 // send confirmation to server
                 confirmServerForPostCreation();
             }
-        }, 10000);
+        }, 20000);
 
     }
 

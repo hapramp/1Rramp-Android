@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -28,6 +29,7 @@ import java.util.List;
 public class PostCategoryView extends FrameLayout {
 
     private ViewGroup rootView;
+    private ProgressBar communityLoadingProgressBar;
     private Context mContext;
     private List<CommunityModel> communities;
     private ArrayList<String> selectedTags;
@@ -53,7 +55,8 @@ public class PostCategoryView extends FrameLayout {
     private void init() {
 
         View view = LayoutInflater.from(mContext).inflate(R.layout.category_view_container, this);
-        rootView = (ViewGroup) view.findViewById(R.id.viewWrapper);
+        rootView = view.findViewById(R.id.viewWrapper);
+        communityLoadingProgressBar = view.findViewById(R.id.communityLoadingProgressBar);
         selectedTags = new ArrayList<>();
 
     }
@@ -94,6 +97,8 @@ public class PostCategoryView extends FrameLayout {
                             ViewGroup.LayoutParams.WRAP_CONTENT));
         }
 
+        communityLoadingProgressBar.setVisibility(GONE);
+
     }
 
     public List<String> getSelectedTags(){
@@ -101,12 +106,12 @@ public class PostCategoryView extends FrameLayout {
     }
 
 
-    public void setCategoryItems() {
+    public void initCategory() {
 
         CommunityListWrapper cr = new Gson().fromJson(HaprampPreferenceManager.getInstance().getAllCommunityAsJson(),CommunityListWrapper.class);
         communities = cr.getCommunityModels();
-
         addViews();
+
     }
 
 }
