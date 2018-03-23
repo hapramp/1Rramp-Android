@@ -11,11 +11,13 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.hapramp.preferences.CachePreference;
+import com.hapramp.steem.Communities;
 import com.hapramp.steem.models.Feed;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -66,7 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         FeedCacheWrapper feedCacheWrapper = new FeedCacheWrapper(steemFeeds);
         long id = database.insert(TABLE_CACHE, null, getFeedCVObject(feedCacheWrapper, communityTag));
         if (id > -1) {
-            Log.d(TAG, "Inserted! " + communityTag);
+            Log.d(TAG, "Inserted Feed for :" + communityTag);
             CachePreference.getInstance().setCommunityFeedCached(communityTag, true);
         } else {
             Log.d(TAG, "Error While Inserting! " + communityTag);
@@ -79,25 +81,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // filter the feeds and insert them accordingly
         HashMap<String, ArrayList<Feed>> filterMap = new HashMap<>();
         ArrayList<Feed> tempFeedList;
+        List<String> tempTagList;
+        String tag;
+        // iterate through feeds
+        for (int feedIndex = 0; feedIndex < feeds.size(); feedIndex++) {
 
-        for (int i = 0; i < feeds.size(); i++) {
-            // get feedlist from map
-            tempFeedList = filterMap.get(feeds.get(i).getCategory()) != null ? filterMap.get(feeds.get(i).getCategory()) : new ArrayList<Feed>();
-            //add feed
-            tempFeedList.add(feeds.get(i));
-            // put back to map
-            filterMap.put(feeds.get(i).getCategory(), tempFeedList);
+            tempTagList = feeds.get(feedIndex).jsonMetadata.getTags();
+            //iterate through tags
+            for (int tagIndex = 0; tagIndex < tempTagList.size(); tagIndex++) {
+
+                tag = tempTagList.get(tagIndex);
+
+                if (tagBelongsToHaprampCommunity(tag)) {
+                    // got the tag
+                    // retrieve the list of feeds related to the tag -> add this feed
+                    // get feedlist from map
+                    tempFeedList = filterMap.get(tag) != null ? filterMap.get(tag) : new ArrayList<Feed>();
+                    //add feed
+                    tempFeedList.add(feeds.get(feedIndex));
+                    // put back to map
+                    filterMap.put(tag, tempFeedList);
+
+                }
+            }
         }
 
-        // TODO: 3/21/2018 loop through each category and insert to database
         Iterator iterator = filterMap.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
-            insertFeed((ArrayList<Feed>) entry.getKey(), (String) entry.getValue());
+            insertFeed((ArrayList<Feed>) entry.getValue(), (String) entry.getKey());
         }
 
         CachePreference.getInstance().setAllFeedCached(true);
 
+    }
+
+    private boolean tagBelongsToHaprampCommunity(String tag) {
+        return Communities.doesCommunityExists(tag);
     }
 
     public ArrayList<Feed> getFeedsByCommunity(String communityTag) {
@@ -115,11 +135,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         Log.d(TAG, "Returning [" + feeds.size() + "] feeds of type :" + communityTag);
 
+        if (cursor != null) {
+            cursor.close();
+        }
+
         return feeds;
 
     }
 
-    public ArrayList<Feed> getAllFeeds(){
+    public ArrayList<Feed> getAllFeeds() {
 
         ArrayList<Feed> feeds = new ArrayList<>();
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();

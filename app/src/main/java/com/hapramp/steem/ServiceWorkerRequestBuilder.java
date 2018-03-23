@@ -6,7 +6,7 @@ import android.os.SystemClock;
 public class ServiceWorkerRequestBuilder {
 
     private int requestId;
-    private String communityId;
+    private String communityTag;
     private String subCategory;
     private String username;
     private int limit;
@@ -15,8 +15,8 @@ public class ServiceWorkerRequestBuilder {
         this.requestId = (int) SystemClock.currentThreadTimeMillis();
     }
 
-    public ServiceWorkerRequestBuilder serCommunityId(String id){
-        this.communityId = id;
+    public ServiceWorkerRequestBuilder serCommunityTag(String tag){
+        this.communityTag = tag;
         return this;
     }
 
@@ -33,7 +33,7 @@ public class ServiceWorkerRequestBuilder {
     }
 
     public ServiceWorkerRequestParams createRequestParam(){
-        return new ServiceWorkerRequestParams(requestId,communityId,"",username,limit);
+        return new ServiceWorkerRequestParams(requestId,communityTag,"",username,limit);
     }
 
 }

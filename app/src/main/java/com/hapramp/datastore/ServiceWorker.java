@@ -49,7 +49,7 @@ public class ServiceWorker {
     //method to get all feeds(cached or fresh)
     public void requestAllFeeds(final ServiceWorkerRequestParams requestParams) {
 
-        l("requestFeed()");
+        l("Requesting All Feeds : "+requestParams.getCommunityTag());
         this.currentRequestParams = requestParams;
         // TODO: 2/28/2018
         // 1 - check for the cache, if found return else report its absence
@@ -65,7 +65,7 @@ public class ServiceWorker {
                         @Override
                         public void run() {
                             if (serviceWorkerCallback != null) {
-                                l("loaded from cache");
+                                l("Returning from cache");
                                 serviceWorkerCallback.onLoadedFromCache(steemFeedModelArrayList);
                             }
                         }
@@ -90,7 +90,9 @@ public class ServiceWorker {
     //method to get community feeds from cache or api server
     public void requestCommunityFeeds(final ServiceWorkerRequestParams requestParams) {
 
-        if(serviceWorkerCallback!=null){
+        l("Requesting Community Feeds "+requestParams.getCommunityTag());
+
+        if (serviceWorkerCallback != null) {
             serviceWorkerCallback.onLoadingFromCache();
         }
 
@@ -187,26 +189,34 @@ public class ServiceWorker {
                                 if (response.isSuccessful()) {
 
                                     //cache the results after filtering them on basis of category
-                                    new Thread(){
+                                    new Thread() {
                                         @Override
                                         public void run() {
+                                            l("Caching Feeds!");
                                             mDatabaseHelper.insertFeeds((ArrayList<Feed>) response.body());
                                         }
                                     }.start();
 
                                     // check for the request: is it for filtered feeds(community)
-                                    if(isRequestForCommunityFeed(feedRequestParams)){
+                                    if (!isRequestForCommunityFeed(feedRequestParams)) {
 
+                                        l("Returning All Feeds");
                                         // return all feeds
                                         serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body());
 
-                                    }else{
+                                    } else {
                                         // return community feeds
                                         // read on worker thread and return
-                                        new Thread(){
+                                        new Thread() {
                                             @Override
                                             public void run() {
-                                                serviceWorkerCallback.onFeedsFetched(mDatabaseHelper.getFeedsByCommunity(feedRequestParams.getCommunityTag()));
+                                                l("Returning Community Feeds");
+                                                mHandler.post(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        serviceWorkerCallback.onFeedsFetched(mDatabaseHelper.getFeedsByCommunity(feedRequestParams.getCommunityTag()));
+                                                    }
+                                                });
                                             }
                                         }.start();
                                     }
@@ -256,7 +266,7 @@ public class ServiceWorker {
         return serviceWorkerRequestParams.equals(currentRequestParams);
     }
 
-    private boolean isRequestForCommunityFeed(ServiceWorkerRequestParams serviceWorkerRequestParams){
+    private boolean isRequestForCommunityFeed(ServiceWorkerRequestParams serviceWorkerRequestParams) {
         return !serviceWorkerRequestParams.getCommunityTag().equals(Communities.ALL);
     }
 

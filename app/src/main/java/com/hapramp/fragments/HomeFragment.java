@@ -14,16 +14,14 @@ import android.view.ViewGroup;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.adapters.CategoryRecyclerAdapter;
-import com.hapramp.api.URLS;
 import com.hapramp.datastore.ServiceWorker;
-import com.hapramp.interfaces.FetchSkillsResponse;
 import com.hapramp.interfaces.LikePostCallback;
 import com.hapramp.interfaces.datatore_callback.ServiceWorkerCallback;
 import com.hapramp.logger.L;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.models.response.PostResponse;
-import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.Communities;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.ServiceWorkerRequestBuilder;
 import com.hapramp.steem.ServiceWorkerRequestParams;
@@ -103,7 +101,7 @@ public class HomeFragment extends Fragment implements
 
         feedListView.setFeedListViewListener(this);
         feedListView.initialLoading();
-        fetchPosts(ALL);
+        fetchAllPosts();
 
     }
 
@@ -124,7 +122,7 @@ public class HomeFragment extends Fragment implements
 
         CommunityListWrapper cwr = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
         ArrayList<CommunityModel> communityModels = new ArrayList<>();
-        communityModels.add(0, new CommunityModel("", "", "", "", "All", 0));
+        communityModels.add(0, new CommunityModel("", "", Communities.ALL, "", "All", 0));
         communityModels.addAll(cwr.getCommunityModels());
         categoryRecyclerAdapter.setCommunities(communityModels);
 
@@ -135,12 +133,38 @@ public class HomeFragment extends Fragment implements
 
         feedListView.initialLoading();
         currentSelectedTag = tag;
-        fetchPosts(tag);
+        if(tag.equals(Communities.ALL)){
+            fetchAllPosts();
+        }else{
+            fetchCommunityPosts(tag);
+        }
 
     }
 
 
-    private void fetchPosts(String tag) {
+    private void fetchAllPosts() {
+
+        serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
+
+        serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(Communities.ALL)
+                .setLimit(100)
+                .setUserName(HaprampPreferenceManager.getInstance().getSteemUsername())
+                .createRequestParam();
+
+        serviceWorker.requestAllFeeds(serviceWorkerRequestParams);
+
+    }
+
+    private void fetchCommunityPosts(String tag){
+
+        serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
+
+        serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(tag)
+                .setLimit(100)
+                .setUserName(HaprampPreferenceManager.getInstance().getSteemUsername())
+                .createRequestParam();
+
+        serviceWorker.requestCommunityFeeds(serviceWorkerRequestParams);
 
     }
 
