@@ -112,6 +112,7 @@ public class DatabaseUnitTest {
         long id = databaseHelper.insertFeeds(steemFeedModels);
         // Then
         p("inserted " + id);
+        // Note: here the count of id depends upon the number of valid hapramp related tags in the feeds
         assert (id == 2);
 
     }
@@ -125,7 +126,7 @@ public class DatabaseUnitTest {
         ArrayList<Feed> steemFeedModels = new ArrayList<>();
         steemFeedModels.add(new Gson().fromJson(feedJson, Feed.class));
 
-        ArrayList<Feed> models = databaseHelper.getFeedsByCommunity("0");
+        ArrayList<Feed> models = databaseHelper.getFeedsByCommunity("hapramp-art");
 
 
         p("Read: " + new Gson().toJson(models.get(0)));
@@ -139,7 +140,7 @@ public class DatabaseUnitTest {
 
         testFeedInsertion();
 
-        boolean cached = databaseHelper.wasFeedCached("0");
+        boolean cached = databaseHelper.wasFeedCached("hapramp-art");
         p("Cacheed "+cached);
         assert (cached);
 
@@ -154,7 +155,7 @@ public class DatabaseUnitTest {
         ArrayList<Feed> steemFeedModels = new ArrayList<>();
         steemFeedModels.add(new Gson().fromJson(feedJson, Feed.class));
 
-        long id = databaseHelper.updateFeed(steemFeedModels, "0");
+        long id = databaseHelper.updateFeed(steemFeedModels, "hapramp-art");
         // Then
         p("updated " + id);
         assert (id > -1);

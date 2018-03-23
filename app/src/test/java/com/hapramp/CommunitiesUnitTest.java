@@ -1,5 +1,7 @@
 package com.hapramp;
 
+import com.hapramp.steem.Communities;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,7 +13,7 @@ import java.util.ArrayList;
 
 public class CommunitiesUnitTest {
 
-    ArrayList<String> communities;
+    public ArrayList<String> communities;
     public static final String PHOTOGRAPHY = "hapramp-photography";
     public static final String ART = "hapramp-art";
     public static final String MUSIC = "hapramp-music";
@@ -20,6 +22,7 @@ public class CommunitiesUnitTest {
     public static final String DRAMATICS = "hapramp-dramatics";
     public static final String TRAVEL = "hapramp-travel";
     public static final String LITERATURE = "hapramp-literature";
+
 
     @Before
     public void populateCommunityList(){
@@ -37,14 +40,14 @@ public class CommunitiesUnitTest {
     }
 
     @Test
-    public void testCommunitiesList(){
+    public void testMethod_doesCommunityExists(){
 
         //true test
-        assert (communities.contains("hapramp-art"));
-        assert (communities.contains("hapramp-dance"));
+        assert (Communities.doesCommunityExists("hapramp-art"));
+        assert (Communities.doesCommunityExists("hapramp-dance"));
         //false test
-        assert (!communities.contains("hapramp"));
-        assert (!communities.contains("hapramp-test"));
+        assert (!Communities.doesCommunityExists("hapramp"));
+        assert (!Communities.doesCommunityExists("hapramp-test"));
     }
 
 }
