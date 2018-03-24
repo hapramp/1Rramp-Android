@@ -6,7 +6,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -49,7 +48,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PostCreateActivity extends AppCompatActivity implements PostCreateCallback {
+public class PostCreateActivity extends AppCompatActivity implements PostCreateCallback, SteemPostCreator.SteemPostCreatorCallback {
 
     private static final int REQUEST_IMAGE_SELECTOR = 101;
 
@@ -73,6 +72,7 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
     private String title;
     private String generated_permalink;
     private String full_permlink;
+    private SteemPostCreator steemPostCreator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +126,8 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         postCategoryView.initCategory();
+        steemPostCreator = new SteemPostCreator();
+        steemPostCreator.setSteemPostCreatorCallback(this);
 
     }
 
@@ -292,23 +294,7 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
 
         showPublishingProgressDialog(true,"Adding to Blockchain...");
 
-        new Thread(){
-            @Override
-            public void run() {
-                SteemPostCreator.createPost(body, title, tags, postStructureModel,generated_permalink);
-            }
-        }.start();
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                toast("Post Created on Blockchain");
-                showPublishingProgressDialog(false,"");
-                Log.d("TEST","Post Created!");
-                // send confirmation to server
-                confirmServerForPostCreation();
-            }
-        }, 20000);
+        steemPostCreator.createPost(body, title, tags, postStructureModel,generated_permalink);
 
     }
 
@@ -412,4 +398,22 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
         toast("Failed to create post");
     }
 
+    //==================
+    // STEEM POST CREATOR CALLBACK
+    //==================
+
+    @Override
+    public void onPostCreatedOnSteem() {
+        toast("Post Created on Blockchain");
+        showPublishingProgressDialog(false,"");
+        // send confirmation to server
+        confirmServerForPostCreation();
+    }
+
+    @Override
+    public void onPostCreationFailedOnSteem(String msg) {
+        toast(msg);
+        showPublishingProgressDialog(false,"");
+        Log.d(PostCreateActivity.class.getSimpleName(),msg);
+    }
 }

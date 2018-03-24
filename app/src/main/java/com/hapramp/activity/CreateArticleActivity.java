@@ -51,7 +51,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CreateArticleActivity extends AppCompatActivity implements EditorView.OnImageUploadListener, PostCreateCallback {
+public class CreateArticleActivity extends AppCompatActivity implements EditorView.OnImageUploadListener, PostCreateCallback, SteemPostCreator.SteemPostCreatorCallback {
 
     @BindView(R.id.closeBtn)
     TextView closeBtn;
@@ -261,25 +261,9 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     private void sendPostToSteemBlockChain(final String body) {
 
         showPublishingProgressDialog(true, "Adding to Blockchain...");
-
-        new Thread() {
-            @Override
-            public void run() {
-                SteemPostCreator.createPost(body, title, tags, postStructureModel,generated_permalink);
-            }
-        }.start();
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                toast("Post Created on Blockchain");
-                showPublishingProgressDialog(false, "");
-                Log.d("TEST", "Post Created!");
-                // send confirmation to server
-                confirmServerForPostCreation();
-
-            }
-        }, 5000);
+        SteemPostCreator steemPostCreator = new SteemPostCreator();
+        steemPostCreator.setSteemPostCreatorCallback(this);
+        steemPostCreator.createPost(body, title, tags, postStructureModel,generated_permalink);
 
     }
 
@@ -325,10 +309,6 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
 
         int vis = show ? View.VISIBLE : View.GONE;
         metaView.setVisibility(vis);
-//
-//        if (show) {
-//            feedFeaturedImageData();
-//        }
 
     }
 
@@ -369,4 +349,19 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
         showPublishingProgressDialog(false,"");
         toast("Error while creating post");
     }
+
+    @Override
+    public void onPostCreatedOnSteem() {
+        toast("Post Created on Blockchain");
+        showPublishingProgressDialog(false,"");
+        // send confirmation to server
+        confirmServerForPostCreation();
+    }
+
+    @Override
+    public void onPostCreationFailedOnSteem(String msg) {
+        toast(msg);
+        Log.d(CreateArticleActivity.class.getSimpleName(),msg);
+    }
+
 }

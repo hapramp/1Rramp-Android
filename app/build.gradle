@@ -78,7 +78,10 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:3.7.0'
     implementation 'com.facebook.shimmer:shimmer:0.1.0@aar'
     implementation 'com.github.irshulx:laser-native-editor:2.1.0'
+
+
     implementation 'eu.bittrade.libs:steemj-core:0.4.3'
+
     implementation 'com.google.android.gms:play-services-vision:11.8.0'
     implementation 'info.androidhive:barcode-reader:1.1.5'
     implementation 'com.google.dagger:dagger:2.13'

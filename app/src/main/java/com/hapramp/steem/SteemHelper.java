@@ -1,5 +1,7 @@
 package com.hapramp.steem;
 
+import android.util.Log;
+
 import com.hapramp.preferences.HaprampPreferenceManager;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -36,9 +38,12 @@ public class SteemHelper {
             steemJ = new SteemJ();
         } catch (SteemCommunicationException e) {
             e.printStackTrace();
+            Log.d("SteemHelper","Communication Error : "+e.toString());
         } catch (SteemResponseException e) {
+            Log.d("SteemHelper", "Response Error : " + e.toString());
             e.printStackTrace();
         }
+        Log.d("SteemHelper",steemJ.toString());
         return steemJ;
 
     }
@@ -48,6 +53,7 @@ public class SteemHelper {
         SteemJ steemJ = null;
         String username = HaprampPreferenceManager.getInstance().getSteemUsername();
         String ppk = HaprampPreferenceManager.getInstance().getPPK();
+        Log.d("SteemHelper","getSteemInstance() Username:"+username+" ppk:"+ppk);
         if(ppk.length()==0)
             return steemJ;
 
@@ -62,11 +68,14 @@ public class SteemHelper {
         try {
             steemJ = new SteemJ();
         } catch (SteemCommunicationException e) {
+            Log.d("SteemHelper","Communication Error : "+e.toString());
             e.printStackTrace();
         } catch (SteemResponseException e) {
+            Log.d("SteemHelper", "Response Error : " + e.toString());
             e.printStackTrace();
         }
 
+        Log.d("SteemHelper",steemJ+"");
         return steemJ;
     }
 
