@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -33,12 +34,14 @@ import com.hapramp.fragments.SettingsFragment;
 import com.hapramp.interfaces.FetchUserCallback;
 import com.hapramp.models.response.FetchUserResponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.SteemHelper;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.views.extraa.CreateButtonView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import eu.bittrade.libs.steemj.SteemJ;
 
 public class HomeActivity extends AppCompatActivity implements FetchUserCallback, CreateButtonView.ItemClickListener {
 
@@ -151,7 +154,7 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
         setupToolbar();
         initObjects();
         attachListeners();
-
+        testSteemInit();
         postUploadReceiver = new PostUploadReceiver();
         notificationUpdateReceiver = new NotificationUpdateReceiver();
 
@@ -160,6 +163,17 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 //        } else {
             transactFragment(FRAGMENT_HOME);
        // }
+
+    }
+
+    private void testSteemInit(){
+        new Thread(){
+            @Override
+            public void run() {
+                SteemJ steemJ =  SteemHelper.getSteemInstance();
+                Log.d("HomeActivity",""+steemJ);
+            }
+        }.start();
 
     }
 
