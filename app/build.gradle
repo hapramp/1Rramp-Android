@@ -11,7 +11,7 @@ ext.loggingInterceptorVersion = '3.4.0'
 ext.glideVersion = '3.7.0'
 ext.steemVersion = '0.4.3'
 ext.junitVersion = '4.12'
-ext.roboelectricVersion = '3.3.2'
+ext.roboelectricVersion = '3.0'
 ext.barcodeReaderVersion = '1.1.5'
 
 android {
