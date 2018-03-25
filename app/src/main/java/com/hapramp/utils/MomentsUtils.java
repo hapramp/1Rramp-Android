@@ -22,7 +22,7 @@ public class MomentsUtils {
 
         String formattedTime  = "";
         timeStamp = timeStamp.replace('T','-');
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss",Locale.US);
         sdf.setTimeZone(tz);
 
         try {

@@ -22,8 +22,8 @@ public class NotificationView extends FrameLayout {
     public NotificationView(@NonNull Context context) {
         super(context);
         View view = LayoutInflater.from(context).inflate(R.layout.action_bar_notification_view,this);
-        iconTv = (TextView) view.findViewById(R.id.notification_icon);
-        countTv = (TextView) view.findViewById(R.id.notification_count);
+        iconTv = view.findViewById(R.id.notification_icon);
+        countTv = view.findViewById(R.id.notification_count);
         iconTv.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     }
 

@@ -55,7 +55,7 @@ public class SkillsTagView extends FrameLayout{
         selectionArray = new int[8];
 
         View view = LayoutInflater.from(context).inflate(R.layout.skills_tag_view, null);
-        skillsTagRV = (RecyclerView) view.findViewById(R.id.skillsTagsRV);
+        skillsTagRV = view.findViewById(R.id.skillsTagsRV);
         skillsAdapter = new SkillsRVAdapter();
         skillsTagRV.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.HORIZONTAL));
         skillsTagRV.setAdapter(skillsAdapter);

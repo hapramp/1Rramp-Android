@@ -187,7 +187,7 @@ public class HaprampPreferenceManager {
     }
 
     public void saveArticleDraft(String s){
-        editor.putString("articleDraft",s);;
+        editor.putString("articleDraft",s);
         editor.apply();
     }
 

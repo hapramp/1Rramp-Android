@@ -535,16 +535,12 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 
     private void redirectToOrgsPage() {
         hideProgress();
-        Intent intent = new Intent(this, OrganisationActivity.class);
-        startActivity(intent);
-        finish();
+
     }
 
     private void redirectToSkillsPage() {
         hideProgress();
-        Intent intent = new Intent(this, SkillRegistrationActivity.class);
-        startActivity(intent);
-        finish();
+
     }
 
     private void showProgress(String msg) {

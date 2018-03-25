@@ -69,11 +69,11 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
 
         this.mContext = context;
         View v = LayoutInflater.from(mContext).inflate(R.layout.star_view, this);
-        starIndicator = (TextView) v.findViewById(R.id.starIndicator);
-        starInfo = (TextView) v.findViewById(R.id.starInfo);
-        ratingBar = (RatingBar) v.findViewById(R.id.ratingBar);
-        ratingBarContainer = (LinearLayout) v.findViewById(R.id.ratingBarContainer);
-        cancelRateBtn = (TextView) v.findViewById(R.id.cancelBtn);
+        starIndicator = v.findViewById(R.id.starIndicator);
+        starInfo = v.findViewById(R.id.starInfo);
+        ratingBar = v.findViewById(R.id.ratingBar);
+        ratingBarContainer = v.findViewById(R.id.ratingBarContainer);
+        cancelRateBtn = v.findViewById(R.id.cancelBtn);
         starIndicator.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         cancelRateBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         setRatingBarListener();

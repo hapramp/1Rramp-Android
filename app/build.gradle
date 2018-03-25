@@ -1,21 +1,32 @@
 apply plugin: 'com.android.application'
 
-def getDate() {
-    def date = new Date()
-    def formattedDate = date.format('yyyyMMddHHmmss')
-    return formattedDate
-}
+ext.firebaseVersion = '11.8.0'
+ext.buildToolVersion = '27.0.2'
+ext.supportLibVersion = '27.1.0'
+ext.multidexVersion = '1.0.3'
+ext.butterknifeVersion = '8.8.1'
+ext.gsonVersion = '2.8.2'
+ext.retrofitVersion = '2.3.0'
+ext.loggingInterceptorVersion = '3.4.0'
+ext.glideVersion = '3.7.0'
+ext.steemVersion = '0.4.3'
+ext.junitVersion = '4.12'
+ext.roboelectricVersion = '3.3.2'
+ext.barcodeReaderVersion = '1.1.5'
 
 android {
 
+    compileSdkVersion 27
+    buildToolsVersion "$buildToolsVersion"
+
     lintOptions {
-        checkReleaseBuilds false
-        // Or, if you prefer, you can continue to check for errors in release builds,
-        // but continue the build even when errors are found:
+        checkReleaseBuilds true
         abortOnError false
     }
 
     signingConfigs {
+        // for debug version, default signing will work
+        debug {}
         release {
             keyAlias 'hapramp-and'
             keyPassword 'hapramp'
@@ -24,26 +35,16 @@ android {
         }
     }
 
-    compileSdkVersion 27
-    buildToolsVersion '27.0.3'
-
     buildTypes {
-
         release {
-
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-
         }
 
-        debug {
-
-        }
-
+        debug {}
     }
-
 
     defaultConfig {
 
@@ -61,44 +62,29 @@ android {
 
 dependencies {
 
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    implementation 'com.google.firebase:firebase-messaging:11.8.0'
-    implementation 'com.google.firebase:firebase-storage:11.8.0'
-    implementation 'com.google.firebase:firebase-auth:11.8.0'
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:multidex:1.0.2'
-    implementation 'com.android.support:appcompat-v7:27.0.2'
-    implementation 'com.jakewharton:butterknife:8.6.0'
-    implementation 'com.android.support:support-v4:27.0.2'
-    implementation 'com.google.code.gson:gson:2.8.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.4.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
-    implementation 'com.android.support:design:27.0.2'
-    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    //noinspection GradleCompatible
+    implementation "com.google.firebase:firebase-messaging:$firebaseVersion"
+    implementation "com.google.firebase:firebase-storage:$firebaseVersion"
+    implementation "com.google.firebase:firebase-auth:$firebaseVersion"
+    implementation "com.android.support:multidex:$multidexVersion"
+    implementation "com.android.support:appcompat-v7:$supportLibVersion"
+    implementation "com.android.support:support-v4:$supportLibVersion"
+    implementation "com.android.support:design:$supportLibVersion"
+    implementation "com.jakewharton:butterknife:$butterknifeVersion"
+    implementation "com.google.code.gson:gson:$gsonVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$loggingInterceptorVersion"
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation "com.github.bumptech.glide:glide:$glideVersion"
     implementation 'com.facebook.shimmer:shimmer:0.1.0@aar'
     implementation 'com.github.irshulx:laser-native-editor:2.1.0'
-
-
-    implementation 'eu.bittrade.libs:steemj-core:0.4.3'
-
-    implementation 'com.google.android.gms:play-services-vision:11.8.0'
-    implementation 'info.androidhive:barcode-reader:1.1.5'
-    implementation 'com.google.dagger:dagger:2.13'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.13'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
-
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.robolectric:robolectric:3.0'
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2') {
-        exclude group: 'com.android.support'
-    }
-    androidTestImplementation('com.android.support.test:runner:0.3') {
-        exclude group: 'com.android.support'
-    }
-    androidTestImplementation('com.android.support.test:rules:0.3') {
-        exclude group: 'com.android.support'
-    }
+    implementation "eu.bittrade.libs:steemj-core:$steemVersion"
+    implementation "com.google.android.gms:play-services-vision:$firebaseVersion"
+    implementation "info.androidhive:barcode-reader:$barcodeReaderVersion"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"
+    testImplementation "junit:junit:$junitVersion"
+    testImplementation "org.robolectric:robolectric:$roboelectricVersion"
 
 }
+
 apply plugin: 'com.google.gms.google-services'

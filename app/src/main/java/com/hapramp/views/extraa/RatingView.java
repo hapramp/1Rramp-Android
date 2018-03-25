@@ -90,17 +90,17 @@ public class RatingView extends FrameLayout implements VotePostCallback {
 
         Log.d("ViewC", "inflated View");
 
-        oneStar = (TextView) ratingView.findViewById(R.id.oneStar);
-        twoStar = (TextView) ratingView.findViewById(R.id.twoStar);
-        threeStar = (TextView) ratingView.findViewById(R.id.threeStar);
-        fourStar = (TextView) ratingView.findViewById(R.id.fourStar);
-        fiveStar = (TextView) ratingView.findViewById(R.id.fiveStar);
+        oneStar = ratingView.findViewById(R.id.oneStar);
+        twoStar = ratingView.findViewById(R.id.twoStar);
+        threeStar = ratingView.findViewById(R.id.threeStar);
+        fourStar = ratingView.findViewById(R.id.fourStar);
+        fiveStar = ratingView.findViewById(R.id.fiveStar);
 
-        oneStarFilled = (TextView) ratingView.findViewById(R.id.oneStarFilled);
-        twoStarFilled = (TextView) ratingView.findViewById(R.id.twoStarFilled);
-        threeStarFilled = (TextView) ratingView.findViewById(R.id.threeStarFilled);
-        fourStarFilled = (TextView) ratingView.findViewById(R.id.fourStarFilled);
-        fiveStarFilled = (TextView) ratingView.findViewById(R.id.fiveStarFilled);
+        oneStarFilled = ratingView.findViewById(R.id.oneStarFilled);
+        twoStarFilled = ratingView.findViewById(R.id.twoStarFilled);
+        threeStarFilled = ratingView.findViewById(R.id.threeStarFilled);
+        fourStarFilled = ratingView.findViewById(R.id.fourStarFilled);
+        fiveStarFilled = ratingView.findViewById(R.id.fiveStarFilled);
 
         oneStar.setTypeface(typeface);
         twoStar.setTypeface(typeface);

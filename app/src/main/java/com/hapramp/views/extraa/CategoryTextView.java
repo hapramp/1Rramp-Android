@@ -43,7 +43,7 @@ public class CategoryTextView extends FrameLayout {
 
     private void init(){
         view = LayoutInflater.from(mContext).inflate(R.layout.post_category_item_view,this);
-        content = (TextView) view.findViewById(R.id.category_item_text);
+        content = view.findViewById(R.id.category_item_text);
     }
 
     public void setText(String text){

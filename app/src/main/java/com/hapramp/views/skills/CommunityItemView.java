@@ -59,9 +59,9 @@ public class CommunityItemView extends FrameLayout {
 
         this.mContext = context;
         View view = LayoutInflater.from(context).inflate(R.layout.skills_view, this);
-        communityIv = (ImageView) view.findViewById(R.id.skills_bg_image);
-        skillSelectionOverlay = (TextView) view.findViewById(R.id.skill_selection_overlay);
-        communityItemTitle = (TextView) view.findViewById(R.id.skill_title);
+        communityIv = view.findViewById(R.id.skills_bg_image);
+        skillSelectionOverlay = view.findViewById(R.id.skill_selection_overlay);
+        communityItemTitle = view.findViewById(R.id.skill_title);
         skillSelectionOverlay.setTypeface(new FontManager().getTypeFace(FontManager.FONT_MATERIAL));
 
     }

@@ -49,7 +49,7 @@ public class SelectableInterestsView extends FrameLayout {
     private void init() {
 
         View view = LayoutInflater.from(mContext).inflate(R.layout.category_view_container, this);
-        parentView = (ViewGroup) view.findViewById(R.id.viewWrapper);
+        parentView = view.findViewById(R.id.viewWrapper);
         selectedSkills = new ArrayList<>();
         skills = SkillsUtils.getSkillsSet();
 

@@ -4,6 +4,7 @@ import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 
 /**
@@ -28,10 +29,9 @@ public class PermlinkGenerator {
     private static String getCurrentTimeStamp() {
         try {
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-            String currentDateTime = dateFormat.format(new Date()); // Find todays date
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
+            return dateFormat.format(new Date()); // Find todays date
 
-            return currentDateTime;
         } catch (Exception e) {
             e.printStackTrace();
 

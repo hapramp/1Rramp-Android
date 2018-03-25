@@ -2,7 +2,6 @@ package com.hapramp.fragments;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,14 +17,12 @@ import android.widget.Toast;
 import com.hapramp.adapters.CategoryRecyclerAdapter;
 import com.hapramp.adapters.CompetitionRecyclerAdapter;
 import com.hapramp.R;
-import com.hapramp.activity.CompetitionsDetailedActivity;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.CompetitionFetchCallback;
 import com.hapramp.interfaces.FetchSkillsResponse;
 import com.hapramp.logger.L;
 import com.hapramp.models.response.CompetitionResponse;
 import com.hapramp.models.response.UserModel;
-import com.hapramp.models.response.UserModel.Skills;
 import com.hapramp.preferences.HaprampPreferenceManager;
 
 import java.util.List;
@@ -210,10 +207,7 @@ public class CompetitionFragment extends Fragment implements CompetitionFetchCal
 
     @Override
     public void onKnowMoreTapped(String compId) {
-        // redirect to comp. details page
-        Intent intent = new Intent(mContext, CompetitionsDetailedActivity.class);
-        intent.putExtra("compId",compId);
-        mContext.startActivity(intent);
+
 
     }
 

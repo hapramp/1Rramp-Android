@@ -71,11 +71,11 @@ public class CreateButtonView extends FrameLayout {
 
         this.mContext = context;
         View v = LayoutInflater.from(context).inflate(R.layout.create_new_button_view, this);
-        createArticleBtn = (TextView) v.findViewById(R.id.createArticleBtn);
-        createPostBtn = (TextView) v.findViewById(R.id.createPostBtn);
-        plusBtn = (TextView) v.findViewById(R.id.plusBtn);
-        overlay = (FrameLayout) v.findViewById(R.id.overlay);
-        root = (RelativeLayout) v.findViewById(R.id.root);
+        createArticleBtn = v.findViewById(R.id.createArticleBtn);
+        createPostBtn = v.findViewById(R.id.createPostBtn);
+        plusBtn = v.findViewById(R.id.plusBtn);
+        overlay = v.findViewById(R.id.overlay);
+        root = v.findViewById(R.id.root);
 
         plusBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         plusBtn.setOnClickListener(new OnClickListener() {

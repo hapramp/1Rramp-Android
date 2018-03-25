@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.StringTokenizer;
 
@@ -164,10 +165,8 @@ public class PostJobModel implements Parcelable {
     public static String getCurrentTimeStamp(){
         try {
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-            String currentDateTime = dateFormat.format(new Date()); // Find todays date
-
-            return currentDateTime;
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
+            return dateFormat.format(new Date()); // Find todays date
         } catch (Exception e) {
             e.printStackTrace();
 

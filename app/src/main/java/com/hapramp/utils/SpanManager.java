@@ -192,7 +192,7 @@ public class SpanManager {
 
             l("reset spans");
             spannedContent = new SpannableString(content);
-            endIndex = content.length() == 0 ? 0 : content.length();
+            endIndex = content.length();
             for (int i = 0; i < appliedSpans.size(); i++) {
                 l("Applying spans " + startIndex + " to " + endIndex);
                 spannedContent.setSpan(new AbsoluteSizeSpan(120), startIndex, endIndex, 0);

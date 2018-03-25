@@ -19,8 +19,6 @@
         managing transactions and the issuing of bitcoins is carried out collectively by the network. Bitcoin is open-source; its design is public, nobody owns or controls Bitcoin and everyone can take part. Through many of its unique properties,
         Bitcoin allows exciting uses that could not be covered by any previous payment system.</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="post_created">%1$d Posts Created</string>
     <string name="hapcoins_format">%.1f Hapcoin</string>
     <string name="comment_format">%1d Comment</string>
@@ -31,8 +29,5 @@
     <string name="no_other_comment_format">No Comment</string>
     <string name="type_here">Type Here...</string>
 
-    <string name="feed_request_body_template">
-        "{\"id\":7,\"jsonrpc\":\"2.0\",\"method\":\"call\",\"params\":[\"database_api\",\"get_discussions_by_feed\",[{\"tag\":\"%1$s\",\"limit\": %2$d,\"truncate_body\":1}]]}";
-    </string>
 
 </resources>

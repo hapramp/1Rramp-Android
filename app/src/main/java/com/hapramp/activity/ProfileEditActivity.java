@@ -172,7 +172,6 @@ public class ProfileEditActivity extends AppCompatActivity implements UserDpUpda
                 if (columnIndex < 0) {
                     L.D.m("Profile", "Photo Url error!");
                 } else {
-                    ;
                     uploadMedia(cursor.getString(columnIndex));
                 }
                 cursor.close();

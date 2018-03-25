@@ -20,15 +20,6 @@
             android:name=".activity.LoginActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.SkillRegistrationActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.OrganisationActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.RegisterActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.HomeActivity"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -41,13 +32,6 @@
             android:name=".activity.ProfileActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.TestActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".activity.RegistrationPage2"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.DetailedActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -58,13 +42,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activity.ForgetPasswordActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.NotificationsActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.CompetitionsDetailedActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.InfoEditingActivity"
@@ -84,13 +62,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service
-            android:name=".services.PostService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
-            </intent-filter>
-        </service>
+
 
         <activity
             android:name=".activity.ProfileEditActivity"
