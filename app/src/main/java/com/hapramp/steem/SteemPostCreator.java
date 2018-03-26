@@ -67,7 +67,7 @@ public class SteemPostCreator {
 
                     boolean allowVotes = LocalConfig.ALLOW_VOTES;
                     boolean allowCurationRewards = LocalConfig.ALLOW_CURATION_REWARDS;
-                    short percentSteemDollars = LocalConfig.PERCENT_STEEM_DOLLARS;
+                    int percentSteemDollars = LocalConfig.PERCENT_STEEM_DOLLARS;
                     String jsonMetadata = new JsonMetaDataModel(tags, postStructure).getJson();
 
                     AccountName parentAuthor = null;  // new post

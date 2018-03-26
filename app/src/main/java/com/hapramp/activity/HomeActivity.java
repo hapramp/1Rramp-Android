@@ -39,6 +39,9 @@ import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.views.extraa.CreateButtonView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import eu.bittrade.libs.steemj.SteemJ;
@@ -136,10 +139,10 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            if(homeFragment.isAdded())
+            if (homeFragment.isAdded())
                 homeFragment.forceReloadData();
 
-            if(profileFragment.isAdded())
+            if (profileFragment.isAdded())
                 profileFragment.reloadPosts();
 
         }
@@ -161,20 +164,19 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 //        if (!HaprampPreferenceManager.getInstance().isUserInfoAvailable()) {
 //            fetchCompleteUserInfo();
 //        } else {
-            transactFragment(FRAGMENT_HOME);
-       // }
+        transactFragment(FRAGMENT_HOME);
+        // }
 
     }
 
-    private void testSteemInit(){
-        new Thread(){
+    private void testSteemInit() {
+        new Thread() {
             @Override
             public void run() {
-                SteemJ steemJ =  SteemHelper.getSteemInstance();
-                Log.d("HomeActivity",""+steemJ);
+                SteemJ steemJ = SteemHelper.getSteemInstance();
+                Log.d("HomeActivity", "" + steemJ);
             }
         }.start();
-
     }
 
     @Override
@@ -346,56 +348,56 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 
                 currentVisibleFragment = homeFragment;
 
-               // if (!homeFragment.isAdded()) {
-                    fragmentManager.beginTransaction()
-                            .addToBackStack("home")
-                            .replace(R.id.contentPlaceHolder, homeFragment)
-                            .commit();
-            //    }
+                // if (!homeFragment.isAdded()) {
+                fragmentManager.beginTransaction()
+                        .addToBackStack("home")
+                        .replace(R.id.contentPlaceHolder, homeFragment)
+                        .commit();
+                //    }
 
-             //   showFragment(homeFragment);
+                //   showFragment(homeFragment);
 
                 break;
             case FRAGMENT_COMPETITION:
 
                 currentVisibleFragment = competitionFragment;
 
-            //    if (!competitionFragment.isAdded()) {
-                    fragmentManager.beginTransaction()
-                            .addToBackStack("competition")
-                            .replace(R.id.contentPlaceHolder, competitionFragment)
-                            .commit();
-            //    }
+                //    if (!competitionFragment.isAdded()) {
+                fragmentManager.beginTransaction()
+                        .addToBackStack("competition")
+                        .replace(R.id.contentPlaceHolder, competitionFragment)
+                        .commit();
+                //    }
 
-            //    showFragment(competitionFragment);
+                //    showFragment(competitionFragment);
 
                 break;
             case FRAGMENT_PROFILE:
 
                 currentVisibleFragment = profileFragment;
 
-              //  if (!profileFragment.isAdded()) {
-                    fragmentManager.beginTransaction()
-                            .addToBackStack("profile")
-                            .replace(R.id.contentPlaceHolder, profileFragment)
-                            .commit();
-              //  }
+                //  if (!profileFragment.isAdded()) {
+                fragmentManager.beginTransaction()
+                        .addToBackStack("profile")
+                        .replace(R.id.contentPlaceHolder, profileFragment)
+                        .commit();
+                //  }
 
-             //   showFragment(profileFragment);
+                //   showFragment(profileFragment);
 
                 break;
             case FRAGMENT_SETTINGS:
 
                 currentVisibleFragment = settingsFragment;
 
-              //  if (!settingsFragment.isAdded()) {
-                    fragmentManager.beginTransaction()
-                            .addToBackStack("setting")
-                            .replace(R.id.contentPlaceHolder, settingsFragment)
-                            .commit();
-             //   }
+                //  if (!settingsFragment.isAdded()) {
+                fragmentManager.beginTransaction()
+                        .addToBackStack("setting")
+                        .replace(R.id.contentPlaceHolder, settingsFragment)
+                        .commit();
+                //   }
 
-             //   showFragment(settingsFragment);
+                //   showFragment(settingsFragment);
 
                 break;
 
@@ -403,13 +405,13 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 
                 currentVisibleFragment = earningFragment;
 
-            //    if (!earningFragment.isAdded()) {
-                    fragmentManager.beginTransaction()
-                            .addToBackStack("earning")
-                            .replace(R.id.contentPlaceHolder, earningFragment)
-                            .commit();
-             //   }
-             //   showFragment(earningFragment);
+                //    if (!earningFragment.isAdded()) {
+                fragmentManager.beginTransaction()
+                        .addToBackStack("earning")
+                        .replace(R.id.contentPlaceHolder, earningFragment)
+                        .commit();
+                //   }
+                //   showFragment(earningFragment);
                 break;
 
             default:
