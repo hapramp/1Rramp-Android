@@ -36,6 +36,7 @@ import com.hapramp.steem.PostConfirmationModel;
 import com.hapramp.steem.PreProcessingModel;
 import com.hapramp.steem.ProcessedBodyResponse;
 import com.hapramp.steem.models.Feed;
+import com.hapramp.steem.models.user.SteemUser;
 
 import java.util.List;
 
@@ -83,8 +84,8 @@ public interface HaprampAPI {
     @GET("feeds/user/{username}")
     Call<List<Feed>> getUserFeeds(@Path("username") String username, @Query("limit") int limit);
 
-    @GET("feeds/blog/{blog}")
-    Call<List<Feed>> getPostsOfBlog(@Path("blog") String blog, @Query("limit") int limit);
+    @GET("feeds/blog/{username}")
+    Call<List<Feed>> getPostsOfUser(@Path("username") String username, @Query("limit") int limit);
 
     @GET("feeds/created/{tag}")
     Call<List<Feed>> getLatestFeed(@Path("tag") String tag, @Query("limit") int limit);
@@ -95,6 +96,8 @@ public interface HaprampAPI {
     @GET("feeds/trending/{tag}")
     Call<List<Feed>> getTrendingFeed(@Path("tag") String tag, @Query("limit") int limit);
 
+    @GET
+    Call<SteemUser> getSteemUser(@Url String url);
 
 
 

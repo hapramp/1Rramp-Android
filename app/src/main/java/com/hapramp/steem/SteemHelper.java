@@ -1,14 +1,10 @@
 package com.hapramp.steem;
 
 import android.util.Log;
-
 import com.hapramp.preferences.HaprampPreferenceManager;
-
 import org.apache.commons.lang3.tuple.ImmutablePair;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import eu.bittrade.libs.steemj.SteemJ;
 import eu.bittrade.libs.steemj.base.models.AccountName;
 import eu.bittrade.libs.steemj.configuration.SteemJConfig;
@@ -78,11 +74,4 @@ public class SteemHelper {
         Log.d("SteemHelper",steemJ+"");
         return steemJ;
     }
-
-    public static String getFollowingsRequestString(String username){
-
-       return "{\"id\":2,\"jsonrpc\":\"2.0\",\"method\":\"call\",\"params\":[\"follow_api\",\"get_following\",[\""+username+"\",\"\",\"blog\",100]]}";
-
-    }
-
 }

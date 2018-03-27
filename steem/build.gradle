@@ -5,7 +5,7 @@ dependencies {
     implementation "org.glassfish.tyrus.bundles:tyrus-standalone-client:1.13.1"
     implementation "com.google.http-client:google-http-client:1.23.0"
     implementation "org.slf4j:slf4j-api:1.7.25"
-    implementation "com.fasterxml.jackson.core:jackson-databind:2.9.2"
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.9.4"
     implementation "org.apache.commons:commons-lang3:3.7"
     implementation "commons-io:commons-io:2.6"
     implementation "eu.bittrade.libs:crypto-core:0.1.0pre1"

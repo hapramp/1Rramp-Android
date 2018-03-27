@@ -78,7 +78,7 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glideVersion"
     implementation 'com.facebook.shimmer:shimmer:0.1.0@aar'
     implementation 'com.github.irshulx:laser-native-editor:2.1.0'
-    //implementation "eu.bittrade.libs:steemj-core:$steemVersion"
+    implementation "org.apache.commons:commons-lang3:3.7"
     implementation "com.google.android.gms:play-services-vision:$firebaseVersion"
     implementation "info.androidhive:barcode-reader:$barcodeReaderVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"

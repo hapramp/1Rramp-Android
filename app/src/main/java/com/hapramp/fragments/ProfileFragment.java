@@ -1,9 +1,6 @@
 package com.hapramp.fragments;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,25 +8,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.hapramp.R;
 import com.hapramp.adapters.ProfileRecyclerAdapter;
-import com.hapramp.api.DataServer;
+import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.api.URLS;
-import com.hapramp.interfaces.FullUserDetailsCallback;
-import com.hapramp.interfaces.PostFetchCallback;
-import com.hapramp.models.ProfileHeaderModel;
-import com.hapramp.models.response.PostResponse;
-import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.Feed;
-import com.hapramp.utils.Constants;
+import com.hapramp.steem.models.user.SteemUser;
 import com.hapramp.utils.ViewItemDecoration;
 
 import java.util.List;
@@ -37,56 +27,40 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class ProfileFragment extends Fragment{
+public class ProfileFragment extends Fragment {
 
 
+    private static final int POST_LIMIT = 100;
     @BindView(R.id.profilePostRv)
     RecyclerView profilePostRv;
     @BindView(R.id.contentLoadingProgress)
     ProgressBar contentLoadingProgress;
     private Context mContext;
-
     private ProfileRecyclerAdapter profilePostAdapter;
-    private String dpUrl;
-    private String mBio = "";
     private ViewItemDecoration viewItemDecoration;
     private Unbinder unbinder;
-    private String _t;
     private LinearLayoutManager llm;
-    private PostResponse currentPostReponse;
-    private boolean isReceiverRegistered;
-    private ItemChangeBroadcastReceiver itemChangeBroadcastReceiver;
 
+    private String username;
 
     public ProfileFragment() {
         // Required empty public constructor
     }
 
-    private class ItemChangeBroadcastReceiver extends BroadcastReceiver{
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if(intent.getExtras().getInt("type")== Constants.PROFILE_DATA){
-                fetchUserDetails();
-            }
-        }
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        itemChangeBroadcastReceiver = new ItemChangeBroadcastReceiver();
-
+        username = HaprampPreferenceManager.getInstance().getSteemUsername();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if(!isReceiverRegistered){
-            mContext.registerReceiver(itemChangeBroadcastReceiver,new IntentFilter(Constants.ACTION_USER_DETAILS_CHANGE));
-            isReceiverRegistered = true;
-        }
     }
 
     @Override
@@ -102,12 +76,11 @@ public class ProfileFragment extends Fragment{
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         unbinder = ButterKnife.bind(this, view);
         init();
-        fetchUserDetails();
         return view;
 
     }
 
-    public void reloadPosts(){
+    public void reloadPosts() {
         fetchUserProfilePosts(URLS.POST_FETCH_START_URL);
     }
 
@@ -116,7 +89,6 @@ public class ProfileFragment extends Fragment{
         super.onViewCreated(view, savedInstanceState);
 
     }
-
 
     public abstract class EndlessOnScrollListener extends RecyclerView.OnScrollListener {
 
@@ -182,12 +154,6 @@ public class ProfileFragment extends Fragment{
 
     }
 
-    private void fetchUserDetails() {
-
-        //DataServer.getFullUserDetails(HaprampPreferenceManager.getInstance().getUserId(), this);
-
-    }
-
     private void fetchUserProfilePosts(String url) {
 
         // get all post of this user
@@ -209,12 +175,6 @@ public class ProfileFragment extends Fragment{
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-        if (isReceiverRegistered) {
-            mContext.unregisterReceiver(itemChangeBroadcastReceiver);
-            isReceiverRegistered = false;
-        }
-
     }
 
     @Override
@@ -223,37 +183,79 @@ public class ProfileFragment extends Fragment{
         unbinder.unbind();
     }
 
-//    @Override
-//    public void onFullUserDetailsFetched(UserModel userModel) {
-//
-//        ProfileHeaderModel profileHeaderModel = new ProfileHeaderModel(
-//                userModel.id,
-//                userModel.image_uri,
-//                userModel.username,
-//                "",
-//                true,
-//                userModel.bio,
-//                0,
-//                userModel.followers,
-//                userModel.followings,
-//                userModel.skills);
-//
-//
-//        profilePostAdapter.setProfileHeaderModel(profileHeaderModel);
-//        Log.d("ProfileFragment","user details "+userModel.toString());
-//        fetchUserProfilePosts(URLS.POST_FETCH_START_URL);
-//        showContent(true);
-//
-//    }
-
     private void showContent(boolean show) {
 
-        if(show){
+        if (show) {
             //hide progress bar
-            if(contentLoadingProgress!=null){
+            if (contentLoadingProgress != null) {
                 contentLoadingProgress.setVisibility(View.GONE);
             }
         }
+
+    }
+
+    private void fetchUserDataFromSteem() {
+
+        String user_api_url = String.format(
+                mContext.getResources().getString(R.string.steem_user_api),
+                HaprampPreferenceManager.getInstance().getSteemUsername());
+
+        RetrofitServiceGenerator.getService()
+                .getSteemUser(user_api_url)
+                .enqueue(new Callback<SteemUser>() {
+                    @Override
+                    public void onResponse(Call<SteemUser> call, Response<SteemUser> response) {
+                        //populate User Info
+                        if(response.isSuccessful()) {
+                            bindSteemData(response.body());
+                        }else{
+                            failedToFetchSteemInfo();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<SteemUser> call, Throwable t) {
+                        failedToFetchSteemInfo();
+                    }
+                });
+
+    }
+
+    private void failedToFetchSteemInfo() {
+
+    }
+
+    private void bindSteemData(SteemUser steemUser) {
+
+    }
+
+    private void fetchUserProfilePosts() {
+
+        RetrofitServiceGenerator.getService()
+                .getPostsOfUser(username,POST_LIMIT)
+                .enqueue(new Callback<List<Feed>>() {
+            @Override
+            public void onResponse(Call<List<Feed>> call, Response<List<Feed>> response) {
+                if(response.isSuccessful()){
+                    bindProfilePosts(response.body());
+                }else{
+                    failedToFetchUserPosts();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Feed>> call, Throwable t) {
+                failedToFetchUserPosts();
+            }
+        });
+
+    }
+
+    private void failedToFetchUserPosts() {
+
+    }
+
+    private void bindProfilePosts(List<Feed> body) {
 
     }
 

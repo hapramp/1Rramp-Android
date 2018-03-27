@@ -13,7 +13,7 @@
     <string name="commentUrl">http://hapramp.herokuapp.com/api/posts/%1$d/comments?start=1</string>
     <string name="default_wall_pic">https://user-images.githubusercontent.com/10809719/34511255-2d3d8592-f080-11e7-9540-43d153a96c33.png</string>
     <string name="post_subtitle_format">| %1$s</string>
-
+    <string name="steem_user_api">https://steemit.com/@%1$s.json</string>
 
     <string name="sample">Bitcoin uses peer-to-peer technology to operate with no central authority or banks
         managing transactions and the issuing of bitcoins is carried out collectively by the network. Bitcoin is open-source; its design is public, nobody owns or controls Bitcoin and everyone can take part. Through many of its unique properties,
