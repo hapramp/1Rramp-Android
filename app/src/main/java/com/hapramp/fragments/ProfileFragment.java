@@ -38,9 +38,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class ProfileFragment extends Fragment implements
-        FullUserDetailsCallback,
-        PostFetchCallback{
+public class ProfileFragment extends Fragment{
 
 
     @BindView(R.id.profilePostRv)
@@ -155,18 +153,18 @@ public class ProfileFragment extends Fragment implements
 
     private void loadMore() {
 
-        try {
-            if (currentPostReponse.next.length() == 0) {
-                return;
-            }
-
-            fetchUserProfilePosts(currentPostReponse.next);
-
-        }catch (Exception e){
-
-            Log.d("ProfileFragment",e.toString());
-
-        }
+//        try {
+//            if (currentPostReponse.next.length() == 0) {
+//                return;
+//            }
+//
+//            fetchUserProfilePosts(currentPostReponse.next);
+//
+//        }catch (Exception e){
+//
+//            Log.d("ProfileFragment",e.toString());
+//
+//        }
 
     }
 
@@ -186,14 +184,14 @@ public class ProfileFragment extends Fragment implements
 
     private void fetchUserDetails() {
 
-        DataServer.getFullUserDetails(HaprampPreferenceManager.getInstance().getUserId(), this);
+        //DataServer.getFullUserDetails(HaprampPreferenceManager.getInstance().getUserId(), this);
 
     }
 
     private void fetchUserProfilePosts(String url) {
 
         // get all post of this user
-        DataServer.getPostsByUserId(url, Integer.valueOf(HaprampPreferenceManager.getInstance().getUserId()), this);
+        //DataServer.getPostsByUserId(url, Integer.valueOf(HaprampPreferenceManager.getInstance().getUserId()), this);
 
     }
 
@@ -225,29 +223,28 @@ public class ProfileFragment extends Fragment implements
         unbinder.unbind();
     }
 
-    @Override
-    public void onFullUserDetailsFetched(UserModel userModel) {
-
-        ProfileHeaderModel profileHeaderModel = new ProfileHeaderModel(
-                userModel.id,
-                userModel.image_uri,
-                userModel.username,
-                "",
-                true,
-                userModel.bio,
-                0,
-                userModel.followers,
-                userModel.followings,
-                userModel.skills);
-
-
-        profilePostAdapter.setProfileHeaderModel(profileHeaderModel);
-        Log.d("ProfileFragment","user details "+userModel.toString());
-        // start loading with given default limits
-        fetchUserProfilePosts(URLS.POST_FETCH_START_URL);
-        showContent(true);
-
-    }
+//    @Override
+//    public void onFullUserDetailsFetched(UserModel userModel) {
+//
+//        ProfileHeaderModel profileHeaderModel = new ProfileHeaderModel(
+//                userModel.id,
+//                userModel.image_uri,
+//                userModel.username,
+//                "",
+//                true,
+//                userModel.bio,
+//                0,
+//                userModel.followers,
+//                userModel.followings,
+//                userModel.skills);
+//
+//
+//        profilePostAdapter.setProfileHeaderModel(profileHeaderModel);
+//        Log.d("ProfileFragment","user details "+userModel.toString());
+//        fetchUserProfilePosts(URLS.POST_FETCH_START_URL);
+//        showContent(true);
+//
+//    }
 
     private void showContent(boolean show) {
 
@@ -259,32 +256,5 @@ public class ProfileFragment extends Fragment implements
         }
 
     }
-
-    private void bindPosts(List<Feed> posts) {
-
-        //profilePostAdapter.appendResult(posts);
-
-    }
-
-    @Override
-    public void onFullUserDetailsFetchError() {
-
-    }
-
-    @Override
-    public void onPostFetched(PostResponse postResponses) {
-
-        currentPostReponse = postResponses;
-        profilePostAdapter.setHasMoreToLoad(postResponses.next.length()>0);
-        Log.d("ProfileFragment","Binding posts "+postResponses.results.size());
-        bindPosts(postResponses.results);
-
-    }
-
-    @Override
-    public void onPostFetchError() {
-        Toast.makeText(mContext, "Error Fetching Your Posts...", Toast.LENGTH_SHORT).show();
-    }
-
 
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DtonatorPreferences">
-    <option name="classType" value="SINGLE_FILE_WITH_INNER_CLASS" />
+    <option name="classType" value="SEPARATE_FILE" />
     <option name="customAnnotationPattern" value="@annotationTextHere(&quot;%s&quot;)" />
     <option name="encapsulete">
       <list />
