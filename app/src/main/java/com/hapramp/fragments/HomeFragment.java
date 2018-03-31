@@ -63,16 +63,16 @@ public class HomeFragment extends Fragment implements
         super.onCreate(savedInstanceState);
 
         prepareServiceWorker();
-      //  serviceWorker.requestFeeds(serviceWorkerRequestParams);
+        //  serviceWorker.requestFeeds(serviceWorkerRequestParams);
 
     }
 
-    private void prepareServiceWorker(){
+    private void prepareServiceWorker() {
 
         serviceWorker = new ServiceWorker();
         serviceWorker.init(getActivity());
         serviceWorker.setServiceWorkerCallback(this);
-        serviceWorkerRequestParamsBuilder =  new ServiceWorkerRequestBuilder()
+        serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder()
                 .setUserName("unittestaccount") //todo: make username dynamic
                 .setLimit(10);
 
@@ -133,9 +133,9 @@ public class HomeFragment extends Fragment implements
 
         feedListView.initialLoading();
         currentSelectedTag = tag;
-        if(tag.equals(Communities.ALL)){
+        if (tag.equals(Communities.ALL)) {
             fetchAllPosts();
-        }else{
+        } else {
             fetchCommunityPosts(tag);
         }
 
@@ -155,7 +155,7 @@ public class HomeFragment extends Fragment implements
 
     }
 
-    private void fetchCommunityPosts(String tag){
+    private void fetchCommunityPosts(String tag) {
 
         serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
 
@@ -239,12 +239,16 @@ public class HomeFragment extends Fragment implements
 
     @Override
     public void onFetchingFromServer() {
-        feedListView.feedRefreshing();
+        if (feedListView != null) {
+            feedListView.feedRefreshing();
+        }
     }
 
     @Override
     public void onRefreshing() {
-        feedListView.feedRefreshing();
+        if (feedListView != null) {
+            feedListView.feedRefreshing();
+        }
     }
 
     @Override
@@ -254,27 +258,37 @@ public class HomeFragment extends Fragment implements
 
     @Override
     public void onCacheLoadFailed() {
-        feedListView.noCachedFeeds();
+        if (feedListView != null) {
+            feedListView.noCachedFeeds();
+        }
     }
 
     @Override
     public void onNoDataInCache() {
-        feedListView.noCachedFeeds();
+        if (feedListView != null) {
+            feedListView.noCachedFeeds();
+        }
     }
 
     @Override
     public void onLoadedFromCache(ArrayList<Feed> cachedList) {
-        feedListView.cachedFeedFetched(cachedList);
+        if (feedListView != null) {
+            feedListView.cachedFeedFetched(cachedList);
+        }
     }
 
     @Override
     public void onRefreshed(List<Feed> refreshedList) {
-        feedListView.feedsRefreshed(refreshedList);
+        if (feedListView != null) {
+            feedListView.feedsRefreshed(refreshedList);
+        }
     }
 
     @Override
     public void onRefreshFailed() {
-        feedListView.failedToRefresh("");
+        if (feedListView != null) {
+            feedListView.failedToRefresh("");
+        }
     }
 
     @Override
@@ -294,12 +308,16 @@ public class HomeFragment extends Fragment implements
 
     @Override
     public void onFeedsFetched(ArrayList<Feed> feeds) {
-        feedListView.feedsRefreshed(feeds);
+        if (feedListView != null) {
+            feedListView.feedsRefreshed(feeds);
+        }
     }
 
     @Override
     public void onFetchingFromServerFailed() {
-        feedListView.failedToRefresh("");
+        if (feedListView != null) {
+            feedListView.failedToRefresh("");
+        }
     }
 
 }
