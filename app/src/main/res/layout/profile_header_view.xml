@@ -45,7 +45,6 @@
             android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ankit"
             android:textStyle="bold"
             android:textColor="#000000" />
 
@@ -55,8 +54,7 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/username"
-            android:text=" @Hapramp" />
+            android:layout_toRightOf="@+id/username" />
 
     </RelativeLayout>
 
@@ -104,7 +102,6 @@
         android:layout_below="@+id/profile_user_name_container"
         android:layout_marginTop="48dp"
         android:lineSpacingExtra="2dp"
-        android:text="Your Bio...jgjghjh"
         android:layout_marginStart="18dp"
         android:layout_marginEnd="18dp"
         android:layout_marginBottom="18dp"
