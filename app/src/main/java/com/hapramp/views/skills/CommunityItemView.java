@@ -66,48 +66,6 @@ public class CommunityItemView extends FrameLayout {
 
     }
 
-    @Deprecated
-    private void setCommunityIv(int id) {
-
-        String resId = URLS.URL_ART;
-        String color = "#795548";
-
-        switch (id) {
-            case PHOTOGRAPHY:
-                resId = URLS.URL_PHOTO;
-                color = "#f44336";
-                break;
-            case DANCE:
-                resId = URLS.URL_DANCE;
-                color = "#e91e63";
-                break;
-            case DRAMATICS:
-                resId = URLS.URL_ACTION;
-                color = "#9c27b0";
-                break;
-            case ART:
-                resId = URLS.URL_ART;
-                color = "#3949ab";
-                break;
-            case MUSIC:
-                resId = URLS.URL_MUSIC;
-                color = "#009688";
-                break;
-            case TRAVEL:
-                resId = URLS.URL_TRAVEL;
-                color = "#607d8b";
-                break;
-            case LITERATURE:
-                resId = URLS.URL_LIT;
-                color = "#ff5722";
-                break;
-        }
-
-        ImageHandler.loadCircularImage(mContext, communityIv, resId);
-        setOverlayColor(color);
-
-    }
-
     private void setOverlayColor(String color) {
 
         GradientDrawable background = (GradientDrawable) skillSelectionOverlay.getBackground();

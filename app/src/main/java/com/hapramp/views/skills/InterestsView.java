@@ -9,11 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 
 import com.hapramp.R;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.models.response.UserModel;
-import com.hapramp.utils.SkillsUtils;
 
 import java.util.List;
 
@@ -23,10 +23,9 @@ import java.util.List;
 
 public class InterestsView extends FrameLayout {
 
-    private boolean interestsSet = false;
+    private ProgressBar progressBar;
     private Context mContext;
     private ViewGroup parentView;
-    private List<UserModel.Skills> interests;
     private List<CommunityModel> communities;
 
     public InterestsView(@NonNull Context context) {
@@ -49,7 +48,8 @@ public class InterestsView extends FrameLayout {
 
     private void init() {
 
-        View view = LayoutInflater.from(mContext).inflate(R.layout.category_view_container, this);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.community_view_container, this);
+        progressBar = view.findViewById(R.id.communityLoadingProgressBar);
         parentView = view.findViewById(R.id.viewWrapper);
 
     }
@@ -69,7 +69,7 @@ public class InterestsView extends FrameLayout {
                             ViewGroup.LayoutParams.WRAP_CONTENT));
         }
 
-        this.interestsSet = true;
+        progressBar.setVisibility(GONE);
 
     }
 

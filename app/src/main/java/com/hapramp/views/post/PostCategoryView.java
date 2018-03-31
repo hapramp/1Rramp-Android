@@ -16,7 +16,6 @@ import com.hapramp.R;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
-import com.hapramp.utils.SkillsUtils;
 import com.hapramp.views.extraa.CategoryTextView;
 
 import java.util.ArrayList;
@@ -54,7 +53,7 @@ public class PostCategoryView extends FrameLayout {
 
     private void init() {
 
-        View view = LayoutInflater.from(mContext).inflate(R.layout.category_view_container, this);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.community_view_container, this);
         rootView = view.findViewById(R.id.viewWrapper);
         communityLoadingProgressBar = view.findViewById(R.id.communityLoadingProgressBar);
         selectedTags = new ArrayList<>();

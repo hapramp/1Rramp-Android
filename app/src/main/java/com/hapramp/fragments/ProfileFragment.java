@@ -224,6 +224,7 @@ public class ProfileFragment extends Fragment {
     private void bindProfilePosts(List<Feed> body) {
         Log.d(TAG, "Post Response :" + body.toString());
         profilePostAdapter.setPosts(body);
+        contentLoadingProgress.setVisibility(View.GONE);
     }
 
 }

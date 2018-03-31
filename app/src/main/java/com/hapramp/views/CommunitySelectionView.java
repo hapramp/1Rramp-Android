@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +50,7 @@ public class CommunitySelectionView extends FrameLayout {
     private void init(Context context) {
 
         this.mContext = context;
-        View view = LayoutInflater.from(mContext).inflate(R.layout.category_view_container, this);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.community_view_container, this);
         parentView = view.findViewById(R.id.viewWrapper);
         selectedCommunityIds = new ArrayList<>();
         ButterKnife.bind(this,view);
