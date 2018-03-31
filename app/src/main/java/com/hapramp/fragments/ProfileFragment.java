@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,8 @@ public class ProfileFragment extends Fragment {
 
     private String username;
 
+    private static final String TAG = ProfileFragment.class.getSimpleName();
+
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -76,12 +79,13 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         unbinder = ButterKnife.bind(this, view);
         init();
+        fetchUserProfilePosts();
         return view;
 
     }
 
     public void reloadPosts() {
-        fetchUserProfilePosts(URLS.POST_FETCH_START_URL);
+
     }
 
     @Override
@@ -154,13 +158,6 @@ public class ProfileFragment extends Fragment {
 
     }
 
-    private void fetchUserProfilePosts(String url) {
-
-        // get all post of this user
-        //DataServer.getPostsByUserId(url, Integer.valueOf(HaprampPreferenceManager.getInstance().getUserId()), this);
-
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -194,37 +191,6 @@ public class ProfileFragment extends Fragment {
 
     }
 
-    private void fetchUserDataFromSteem() {
-
-        String user_api_url = String.format(
-                mContext.getResources().getString(R.string.steem_user_api),
-                HaprampPreferenceManager.getInstance().getSteemUsername());
-
-        RetrofitServiceGenerator.getService()
-                .getSteemUser(user_api_url)
-                .enqueue(new Callback<SteemUser>() {
-                    @Override
-                    public void onResponse(Call<SteemUser> call, Response<SteemUser> response) {
-                        //populate User Info
-                        if(response.isSuccessful()) {
-                            bindSteemData(response.body());
-                        }else{
-                            failedToFetchSteemInfo();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<SteemUser> call, Throwable t) {
-                        failedToFetchSteemInfo();
-                    }
-                });
-
-    }
-
-    private void failedToFetchSteemInfo() {
-
-    }
-
     private void bindSteemData(SteemUser steemUser) {
 
     }
@@ -232,22 +198,22 @@ public class ProfileFragment extends Fragment {
     private void fetchUserProfilePosts() {
 
         RetrofitServiceGenerator.getService()
-                .getPostsOfUser(username,POST_LIMIT)
+                .getPostsOfUser(username, POST_LIMIT)
                 .enqueue(new Callback<List<Feed>>() {
-            @Override
-            public void onResponse(Call<List<Feed>> call, Response<List<Feed>> response) {
-                if(response.isSuccessful()){
-                    bindProfilePosts(response.body());
-                }else{
-                    failedToFetchUserPosts();
-                }
-            }
+                    @Override
+                    public void onResponse(Call<List<Feed>> call, Response<List<Feed>> response) {
+                        if (response.isSuccessful()) {
+                            bindProfilePosts(response.body());
+                        } else {
+                            failedToFetchUserPosts();
+                        }
+                    }
 
-            @Override
-            public void onFailure(Call<List<Feed>> call, Throwable t) {
-                failedToFetchUserPosts();
-            }
-        });
+                    @Override
+                    public void onFailure(Call<List<Feed>> call, Throwable t) {
+                        failedToFetchUserPosts();
+                    }
+                });
 
     }
 
@@ -256,7 +222,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void bindProfilePosts(List<Feed> body) {
-
+        Log.d(TAG, "Post Response :" + body.toString());
+        profilePostAdapter.setPosts(body);
     }
 
 }

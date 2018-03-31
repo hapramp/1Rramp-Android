@@ -84,7 +84,7 @@ public class DatabaseUnitTest {
             "    \"root_title\": \"\",\n" +
             "    \"pending_payout_value\": \"0.000 SBD\",\n" +
             "    \"total_pending_payout_value\": \"0.000 STEEM\",\n" +
-            "    \"active_votes\": [],\n" +
+            "    \"active_votes\" : [],\n" +
             "    \"replies\": [],\n" +
             "    \"author_reputation\": 1848870,\n" +
             "    \"promoted\": \"0.000 SBD\",\n" +

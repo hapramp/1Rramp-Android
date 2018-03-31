@@ -20,12 +20,9 @@ import java.util.List;
 public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final int VIEW_TYPE_ITEM = 2;
-    private final int VIEW_TYPE_SHIMMER = 3;
     private final int VIEW_TYPE_PROFILE_HEADER = 1;
 
     public Context mContext;
-    private boolean hasMoreToLoad = true;
-    public ProfileHeaderModel profileHeaderModel;
     private int s;
     private List<Feed> feeds;
 
@@ -34,19 +31,9 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         feeds = new ArrayList<>();
     }
 
-    public void setProfileHeaderModel(ProfileHeaderModel profileHeaderModel) {
-        this.profileHeaderModel = profileHeaderModel;
+    public void setPosts(List<Feed> newPosts) {
+        feeds = newPosts;
         notifyDataSetChanged();
-    }
-
-    public void appendResult(List<Feed> newPosts) {
-        feeds.addAll(newPosts);
-        notifyItemInserted(feeds.size() - (newPosts.size() - 1));
-
-    }
-
-    public void setHasMoreToLoad(boolean hasMoreToLoad) {
-        this.hasMoreToLoad = hasMoreToLoad;
     }
 
     @Override
@@ -86,14 +73,8 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int pos) {
 
         if (viewHolder instanceof PostViewHolder) {
-
             // Log.d("Adapter", "Binding Post at " + pos);
             ((PostViewHolder) viewHolder).bind(feeds.get(pos - 1));
-
-        } else if (viewHolder instanceof ProfileHeaderViewHolder) {
-
-            ((ProfileHeaderViewHolder) viewHolder).bind(profileHeaderModel);
-
         }
     }
 
@@ -131,12 +112,6 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             profileHeaderView = (ProfileHeaderView) itemView;
         }
 
-
-        public void bind(ProfileHeaderModel profileHeaderData) {
-
-            profileHeaderView.setProfileHeaderData(profileHeaderData);
-
-        }
     }
 
 }

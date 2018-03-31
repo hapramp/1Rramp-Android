@@ -59,8 +59,9 @@ public class SelectableInterestsView extends FrameLayout {
 
         for (int i = 0; i < skills.length; i++) {
 
+            // TODO: 3/31/2018 update the community view
             final CommunityItemView view = new CommunityItemView(mContext);
-            view.setCommunityItemTitle(skills[i]);
+            //view.setCommunityItemTitle(skills[i]);
             // set selection
             //
             view.setSelection((selectedSkills.indexOf(SkillsUtils.getSkillIdFromName(skills[i])) > -1));

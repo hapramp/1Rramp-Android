@@ -76,10 +76,9 @@ public class CommunitySelectionView extends FrameLayout {
     //        Log.d("View","Addding "+mCommunityList.get(i).getmName());
 
             final CommunityItemView view = new CommunityItemView(mContext);
-            view.setCommunityItemTitle(String.valueOf(mCommunityList.get(i).getmName()));
+           // view.setCommunityItemTitle(String.valueOf(mCommunityList.get(i).getmName()));
             view.setCommunityDetails(mCommunityList.get(i));
             // set selection
-            //
             view.setSelection((selectedCommunityIds.indexOf(mCommunityList.get(i).getmId()) > -1));
 
             view.setOnClickListener(new OnClickListener() {

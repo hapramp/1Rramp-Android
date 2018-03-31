@@ -123,12 +123,6 @@ public class CommunityItemView extends FrameLayout {
         }
     }
 
-    public void setCommunityItemTitle(String title) {
-
-        communityItemTitle.setText(title);
-
-    }
-
     public String getCommunityTitle() {
         return mCommunity.getmName();
     }

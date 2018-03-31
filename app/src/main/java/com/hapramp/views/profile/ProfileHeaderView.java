@@ -14,17 +14,25 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.activity.ProfileEditActivity;
 import com.hapramp.api.DataServer;
+import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.interfaces.FollowUserCallback;
 import com.hapramp.models.ProfileHeaderModel;
 import com.hapramp.models.requests.FollowRequestBody;
+import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.CommunityListWrapper;
+import com.hapramp.steem.models.user.SteemUser;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.views.skills.InterestsView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Ankit on 12/30/2017.
@@ -90,29 +98,59 @@ public class ProfileHeaderView extends FrameLayout implements FollowUserCallback
     }
 
     private void init(Context context) {
+
         mContext = context;
         View view = LayoutInflater.from(context).inflate(R.layout.profile_header_view, this);
         ButterKnife.bind(this, view);
+        populateData();
+
     }
 
-    public void setProfileHeaderData(ProfileHeaderModel profileData) {
-        this.profileData = profileData;
-        bind(profileData);
+    private void populateData() {
+
+        String user_api_url = String.format(
+                mContext.getResources().getString(R.string.steem_user_api),
+                HaprampPreferenceManager.getInstance().getSteemUsername());
+
+        RetrofitServiceGenerator.getService()
+                .getSteemUser(user_api_url)
+                .enqueue(new Callback<SteemUser>() {
+                    @Override
+                    public void onResponse(Call<SteemUser> call, Response<SteemUser> response) {
+                        //populate User Info
+                        if(response.isSuccessful()) {
+                            bind(response.body());
+                        }else{
+                            failedToFetchSteemInfo();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<SteemUser> call, Throwable t) {
+                        failedToFetchSteemInfo();
+                    }
+                });
+
     }
 
-    private void bind(ProfileHeaderModel profileHeaderModel) {
+    private void failedToFetchSteemInfo() {
 
-        ImageHandler.loadCircularImage(mContext, profilePic, profileHeaderModel.getDpUrl());
+    }
+
+    private void bind(SteemUser data) {
+
+        ImageHandler.loadCircularImage(mContext, profilePic, data.getUser().getJsonMetadata().getProfile().getProfileImage());
         ImageHandler.load(mContext,profileWallPic,mContext.getResources().getString(R.string.default_wall_pic));
 
         //username.setText(profileHeaderModel.getUserName());
-        hapname.setText("@"+profileHeaderModel.getUserName());
-        bio.setText(profileHeaderModel.getBio() != null ? profileHeaderModel.getBio() : "");
-        followersCount.setText(String.format(mContext.getResources().getString(R.string.profile_followers_caption), profileHeaderModel.getFollowers()));
-        followingsCount.setText(String.format(mContext.getResources().getString(R.string.profile_following_count_caption), profileHeaderModel.getFollowing()));
-        interestsView.setInterests(profileHeaderModel.getInterests());
+        hapname.setText(data.getUser().getJsonMetadata().getProfile().getName());
+        bio.setText(data.getUser().getJsonMetadata().getProfile().getAbout());
+        followersCount.setText(String.format(mContext.getResources().getString(R.string.profile_followers_caption),0));
+        followingsCount.setText(String.format(mContext.getResources().getString(R.string.profile_following_count_caption), 0));
+        CommunityListWrapper listWrapper = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson(),CommunityListWrapper.class);
+        interestsView.setCommunities(listWrapper.getCommunityModels());
 
-        if (profileHeaderModel.isEditable()) {
+        if (true) {
 
             followBtn.setVisibility(GONE);
             editBtn.setVisibility(View.VISIBLE);

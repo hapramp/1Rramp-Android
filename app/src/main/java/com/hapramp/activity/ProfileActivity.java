@@ -172,7 +172,7 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
                 userModel.skills);
 
         profileUserName.setText(userModel.username);
-        profilePostAdapter.setProfileHeaderModel(profileHeaderModel);
+      //  profilePostAdapter.setProfileHeaderModel(profileHeaderModel);
         // start loading with given default limits
         fetchProfilePosts(URLS.POST_FETCH_START_URL);
 
@@ -198,7 +198,7 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
     public void onPostFetched(PostResponse postResponses) {
 
         currentPostResponse = postResponses;
-        profilePostAdapter.setHasMoreToLoad(currentPostResponse.next.length() > 0);
+       // profilePostAdapter.setHasMoreToLoad(currentPostResponse.next.length() > 0);
         bindPosts(postResponses.results);
 
     }

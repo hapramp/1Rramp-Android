@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.hapramp.R;
+import com.hapramp.models.CommunityModel;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.utils.SkillsUtils;
 
@@ -20,12 +21,13 @@ import java.util.List;
  * Created by Ankit on 12/26/2017.
  */
 
-public class InterestsView extends FrameLayout{
+public class InterestsView extends FrameLayout {
 
     private boolean interestsSet = false;
     private Context mContext;
     private ViewGroup parentView;
     private List<UserModel.Skills> interests;
+    private List<CommunityModel> communities;
 
     public InterestsView(@NonNull Context context) {
         super(context);
@@ -54,11 +56,11 @@ public class InterestsView extends FrameLayout{
 
     private void addViews() {
 
-        for (int i = 0; i < interests.size(); i++) {
+        for (int i = 0; i < communities.size(); i++) {
 
             final CommunityItemView view = new CommunityItemView(mContext);
-            Log.d("InterestView",interests.get(i).toString());
-            view.setCommunityItemTitle(SkillsUtils.getSkillTitleFromId(interests.get(i).id));
+            Log.d("InterestView", communities.get(i).toString());
+            view.setCommunityDetails(communities.get(i));
             view.setSelection(false);
 
             parentView.addView(view, i,
@@ -71,12 +73,11 @@ public class InterestsView extends FrameLayout{
 
     }
 
-    public void setInterests(List<UserModel.Skills> skills) {
-
-        this.interests = skills;
-
-        if(!interestsSet)
+    public void setCommunities(List<CommunityModel> communities) {
+        this.communities = communities;
+        if (communities != null) {
             addViews();
+        }
     }
 
 }
