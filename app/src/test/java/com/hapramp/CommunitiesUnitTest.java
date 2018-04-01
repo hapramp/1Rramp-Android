@@ -50,10 +50,5 @@ public class CommunitiesUnitTest {
         assert (!Communities.doesCommunityExists("hapramp-test"));
     }
 
-    @Test
-    public void testString(){
-        String s = "0.000 STEEM";
-        System.out.println(s.substring(0,s.indexOf(' ')).length());
-    }
 
 }

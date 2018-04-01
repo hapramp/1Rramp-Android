@@ -86,6 +86,24 @@ public class HaprampPreferenceManager {
 
     }
 
+    public void setCommunityTagToNamePair(String tag,String name){
+        editor.putString(tag+"_name",name);
+        editor.apply();
+    }
+
+    public String getCommunityNameFromTag(String tag){
+        return preferences.getString(tag+"_name","");
+    }
+
+    public void setCommunityTagToColorPair(String tag,String color){
+        editor.putString(tag+"_color",color);
+        editor.apply();
+    }
+
+    public String getCommunityColorFromTag(String tag){
+        return preferences.getString(tag+"_color","#009988");
+    }
+
     public void saveUserSelectedCommunitiesAsJson(String json){
         Log.d("Pref","saving "+json);
         editor.putString("userSelectedCommunity",json);

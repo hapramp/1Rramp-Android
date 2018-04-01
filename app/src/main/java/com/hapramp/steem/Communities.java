@@ -16,6 +16,10 @@ public class Communities {
     public static final String LITERATURE = "hapramp-literature";
     public static final String ALL = "all";
 
+
+    // TODO: 4/1/2018 check community existence from stored list in preference.
+    // It enhances the flexibility to change data dynamically from server
+
     public static boolean doesCommunityExists(String commmunity) {
 
         switch (commmunity) {

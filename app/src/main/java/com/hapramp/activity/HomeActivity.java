@@ -26,14 +26,17 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.api.DataServer;
+import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.fragments.CompetitionFragment;
 import com.hapramp.fragments.EarningFragment;
 import com.hapramp.fragments.HomeFragment;
 import com.hapramp.fragments.ProfileFragment;
 import com.hapramp.fragments.SettingsFragment;
 import com.hapramp.interfaces.FetchUserCallback;
+import com.hapramp.models.CommunityModel;
 import com.hapramp.models.response.FetchUserResponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.SteemHelper;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
@@ -45,6 +48,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import eu.bittrade.libs.steemj.SteemJ;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity implements FetchUserCallback, CreateButtonView.ItemClickListener {
 
@@ -154,18 +160,48 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
+        syncCommunities();
         setupToolbar();
         initObjects();
         attachListeners();
         testSteemInit();
         postUploadReceiver = new PostUploadReceiver();
         notificationUpdateReceiver = new NotificationUpdateReceiver();
-
+        initPreferences();
 //        if (!HaprampPreferenceManager.getInstance().isUserInfoAvailable()) {
 //            fetchCompleteUserInfo();
 //        } else {
         transactFragment(FRAGMENT_HOME);
         // }
+
+    }
+
+    //initialize preference with community data pairs
+    private void initPreferences() {
+
+        CommunityListWrapper communityListWrapper = new Gson().fromJson(HaprampPreferenceManager.getInstance().getAllCommunityAsJson(), CommunityListWrapper.class);
+        List<CommunityModel> communities = communityListWrapper.getCommunityModels();
+        for (int i = 0; i < communities.size(); i++) {
+            HaprampPreferenceManager.getInstance().setCommunityTagToColorPair(communities.get(i).getmTag(),communities.get(i).getmColor());
+            HaprampPreferenceManager.getInstance().setCommunityTagToNamePair(communities.get(i).getmTag(),communities.get(i).getmName());
+        }
+    }
+
+    private void syncCommunities(){
+
+        RetrofitServiceGenerator.getService().getCommunities().enqueue(new Callback<List<CommunityModel>>() {
+            @Override
+            public void onResponse(Call<List<CommunityModel>> call, Response<List<CommunityModel>> response) {
+                if(response.isSuccessful()){
+                    HaprampPreferenceManager.getInstance().saveAllCommunityListAsJson(new Gson().toJson(new CommunityListWrapper(response.body())));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<CommunityModel>> call, Throwable t) {
+
+            }
+        });
 
     }
 

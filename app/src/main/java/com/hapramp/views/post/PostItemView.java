@@ -2,6 +2,7 @@ package com.hapramp.views.post;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,8 +25,11 @@ import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.OnPostDeleteCallback;
 import com.hapramp.interfaces.VoteDeleteCallback;
 import com.hapramp.interfaces.VotePostCallback;
+import com.hapramp.models.CommunityModel;
 import com.hapramp.models.requests.VoteRequestBody;
 import com.hapramp.models.response.PostResponse;
+import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.Communities;
 import com.hapramp.steem.ContentTypes;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.utils.Constants;
@@ -35,6 +39,7 @@ import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.SkillsUtils;
 import com.hapramp.views.extraa.StarView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -44,7 +49,7 @@ import butterknife.ButterKnife;
  * Created by Ankit on 12/30/2017.
  */
 
-public class PostItemView extends FrameLayout{
+public class PostItemView extends FrameLayout {
 
 
     @BindView(R.id.feed_owner_pic)
@@ -153,59 +158,18 @@ public class PostItemView extends FrameLayout{
                 }
             }
 
-            if(isContentEllipsised(postSnippet)){
+            if (isContentEllipsised(postSnippet)) {
                 // show read more button
                 readMoreBtn.setVisibility(VISIBLE);
-            }else{
+            } else {
                 //hide read more button
                 readMoreBtn.setVisibility(GONE);
             }
 
         }
-        //   if (post.post_type == Constants.CONTENT_TYPE_ARTICLE) {
 
-        // set Title
-        //     postTitle.setVisibility(View.VISIBLE);
-        //todo post title required
-        //postTitle.setText(post);
-
-        //   readMoreBtn.setVisibility(View.VISIBLE);
-
-//            readMoreBtn.setOnClickListener(new OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    navigateToDetailedPage(post);
-//                }
-//            });
-
-
-//        } else {
-//            //(post.post_type==Constants.CONTENT_TYPE_POST)
-//            // turn off post title
-//            postTitle.setVisibility(GONE);
-//            readMoreBtn.setVisibility(GONE);
-//
-//        }
-
-        // check for image
-//        if(post.media_uri!=null) {
-//
-//            if (post.media_uri.length() == 0) {
-//                featuredImagePost.setVisibility(GONE);
-//            } else {
-//
-//                featuredImagePost.layout(0, 0, 0, 0);
-//                ImageHandler.load(mContext, featuredImagePost, post.media_uri);
-//                featuredImagePost.setVisibility(View.VISIBLE);
-//
-//            }
-//        }else{
-//            featuredImagePost.setVisibility(GONE);
-//        }
-//
-//
         setHapcoins(feed.totalPayoutValue);
-       // setCommentCount();
+        setCommunities(feed.jsonMetadata.tags);
 //
 //        commentBtn.setOnClickListener(new OnClickListener() {
 //            @Override
@@ -263,14 +227,14 @@ public class PostItemView extends FrameLayout{
 
     }
 
-    private boolean isContentEllipsised(TextView textView){
+    private boolean isContentEllipsised(TextView textView) {
 
         Layout layout = textView.getLayout();
-        if(layout != null) {
+        if (layout != null) {
             int lines = layout.getLineCount();
-            if(lines > 0) {
-                int ellipsisCount = layout.getEllipsisCount(lines-1);
-                if ( ellipsisCount > 0) {
+            if (lines > 0) {
+                int ellipsisCount = layout.getEllipsisCount(lines - 1);
+                if (ellipsisCount > 0) {
                     return true;
                 }
             }
@@ -280,32 +244,60 @@ public class PostItemView extends FrameLayout{
     }
 
     private void setHapcoins(String payout) {
-        hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), payout.substring(0,payout.indexOf(' '))));
+        hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), payout.substring(0, payout.indexOf(' '))));
     }
 
     private void setCommentCount(int count) {
         commentCount.setText(String.format(getResources().getString(R.string.comment_format), count));
     }
 
-    private void setSkills(List<PostResponse.Skills> skills) {
+    private void setCommunities(List<String> communities) {
+        // community name + community color
+        List<CommunityModel> cm = new ArrayList<>();
+        for (int i = 0; i < communities.size(); i++) {
+            if (Communities.doesCommunityExists(communities.get(i))) {
+                cm.add(new CommunityModel("", "", communities.get(i),
+                        HaprampPreferenceManager.getInstance().getCommunityColorFromTag(communities.get(i)),
+                        HaprampPreferenceManager.getInstance().getCommunityNameFromTag(communities.get(i)),
+                        0
+                ));
+            }
+        }
 
-        int size = skills.size();
+        addCommunitiesToLayout(cm);
+
+    }
+
+    private void addCommunitiesToLayout(List<CommunityModel> cms) {
+
+        int size = cms.size();
         resetVisibility();
         if (size > 0) {
             //first skill
             club1.setVisibility(VISIBLE);
-            club1.setText(SkillsUtils.getSkillTitleFromId(skills.get(0).id));
-            club1.getBackground().setColorFilter(SkillsUtils.getSkillTagColorFromId(skills.get(0).id), PorterDuff.Mode.SRC_ATOP);
+
+            club1.setText(cms.get(0).getmName());
+            club1.getBackground().setColorFilter(
+                    Color.parseColor(cms.get(0).getmColor()),
+                    PorterDuff.Mode.SRC_ATOP);
+
             if (size > 1) {
                 // second skills
                 club2.setVisibility(VISIBLE);
-                club2.setText(SkillsUtils.getSkillTitleFromId(skills.get(1).id));
-                club2.getBackground().setColorFilter(SkillsUtils.getSkillTagColorFromId(skills.get(1).id), PorterDuff.Mode.SRC_ATOP);
+
+                club2.setText(cms.get(1).getmName());
+                club2.getBackground().setColorFilter(
+                        Color.parseColor(cms.get(1).getmColor()),
+                        PorterDuff.Mode.SRC_ATOP);
+
                 if (size > 2) {
                     // third skills
                     club3.setVisibility(VISIBLE);
-                    club3.setText(SkillsUtils.getSkillTitleFromId(skills.get(2).id));
-                    club3.getBackground().setColorFilter(SkillsUtils.getSkillTagColorFromId(skills.get(2).id), PorterDuff.Mode.SRC_ATOP);
+
+                    club3.setText(cms.get(2).getmName());
+                    club3.getBackground().setColorFilter(
+                            Color.parseColor(cms.get(2).getmColor()),
+                            PorterDuff.Mode.SRC_ATOP);
                 }
             }
         }
