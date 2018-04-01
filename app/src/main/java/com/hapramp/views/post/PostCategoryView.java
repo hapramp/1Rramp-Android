@@ -73,18 +73,22 @@ public class PostCategoryView extends FrameLayout {
                 public void onClick(View v) {
 
                     int index = selectedTags.indexOf(view.getTag());
-                    if(index==-1){
+                    if (index == -1) {
                         // select it
                         if (selectedTags.size() > 2) {
-                            Toast.makeText(mContext,"Maximum 3 Skills",Toast.LENGTH_LONG).show();
+                            Toast.makeText(mContext, "Maximum 3 Skills", Toast.LENGTH_LONG).show();
                         } else {
                             view.setSelected(true);
                             selectedTags.add((String) view.getTag());
                         }
-                    }else{
+                    } else {
                         // de-select it
                         view.setSelected(false);
                         selectedTags.remove(index);
+                    }
+
+                    if (communitySelectionChangeListener != null) {
+                        communitySelectionChangeListener.onCommunitySelectionChanged(selectedTags);
                     }
 
                 }
@@ -100,17 +104,27 @@ public class PostCategoryView extends FrameLayout {
 
     }
 
-    public List<String> getSelectedTags(){
+    public List<String> getSelectedTags() {
         return selectedTags;
     }
 
 
     public void initCategory() {
 
-        CommunityListWrapper cr = new Gson().fromJson(HaprampPreferenceManager.getInstance().getAllCommunityAsJson(),CommunityListWrapper.class);
+        CommunityListWrapper cr = new Gson().fromJson(HaprampPreferenceManager.getInstance().getAllCommunityAsJson(), CommunityListWrapper.class);
         communities = cr.getCommunityModels();
         addViews();
 
+    }
+
+    private CommunitySelectionChangeListener communitySelectionChangeListener;
+
+    public void setCommunitySelectionChangeListener(CommunitySelectionChangeListener communitySelectionChangeListener) {
+        this.communitySelectionChangeListener = communitySelectionChangeListener;
+    }
+
+    public interface CommunitySelectionChangeListener {
+        void onCommunitySelectionChanged(List<String> communities);
     }
 
 }

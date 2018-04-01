@@ -48,8 +48,8 @@ public class PostImageView extends FrameLayout {
     TextView removeBtn;
     @BindView(R.id.pauseResumeBtn)
     TextView pauseResumeBtn;
-    @BindView(R.id.relativeLayout)
-    RelativeLayout relativeLayout;
+    @BindView(R.id.actionContainer)
+    RelativeLayout actionContainer;
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
     private Context mContext;
@@ -85,6 +85,16 @@ public class PostImageView extends FrameLayout {
     }
 
     private void attachListeners() {
+
+        image.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (downloadUrl != null) {
+                    showAndhideActionContainer();
+                }
+            }
+        });
+
         removeBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,12 +106,12 @@ public class PostImageView extends FrameLayout {
         pauseResumeBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isUploadPaused){
+                if (isUploadPaused) {
                     // resume
                     pauseResumeBtn.setText("Pause");
                     uploadTask.resume();
                     isUploadPaused = false;
-                }else{ // upload is in progress
+                } else { // upload is in progress
                     pauseResumeBtn.setText("Resume");
                     uploadTask.pause();
                     isUploadPaused = true;
@@ -208,6 +218,7 @@ public class PostImageView extends FrameLayout {
                 // remove progress bar
                 progressBar.setVisibility(GONE);
                 informationTv.setText("Uploaded");
+                showAndhideActionContainer();
 
             }
         });
@@ -225,7 +236,7 @@ public class PostImageView extends FrameLayout {
             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
 
                 int progress = (int) ((100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
-                informationTv.setText("Uploading "+progress+" %");
+                informationTv.setText("Uploading " + progress + " %");
                 progressBar.setProgress(progress);
 
             }
@@ -239,12 +250,25 @@ public class PostImageView extends FrameLayout {
         });
     }
 
-    public String getDownloadUrl(){
-        if(downloadUrl!=null) {
+    public String getDownloadUrl() {
+        if (downloadUrl != null) {
             return downloadUrl.toString();
-        }else{
+        } else {
             return null;
         }
 
     }
+
+    private void showAndhideActionContainer() {
+
+        actionContainer.setVisibility(VISIBLE);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                actionContainer.setVisibility(GONE);
+            }
+        }, 2000);
+
+    }
+
 }

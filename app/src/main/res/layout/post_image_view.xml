@@ -15,7 +15,7 @@
         android:background="#90767676"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:id="@+id/relativeLayout">
+        android:id="@+id/actionContainer">
 
         <TextView
             android:textColor="@color/white"
@@ -62,7 +62,7 @@
     </RelativeLayout>
 
     <ProgressBar
-        android:layout_below="@+id/relativeLayout"
+        android:layout_below="@+id/actionContainer"
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
