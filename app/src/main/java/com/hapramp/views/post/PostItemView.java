@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.Space;
 import android.text.Html;
+import android.text.Layout;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,8 +67,6 @@ public class PostItemView extends FrameLayout{
     ImageView featuredImagePost;
     @BindView(R.id.post_title)
     TextView postTitle;
-    @BindView(R.id.tags)
-    TextView tags;
     @BindView(R.id.post_snippet)
     TextView postSnippet;
     @BindView(R.id.readMoreBtn)
@@ -126,6 +125,12 @@ public class PostItemView extends FrameLayout{
         Feed.Content content = feed.jsonMetadata.content;
         if (content.type.equals(Constants.CONTENT_TYPE_POST)) {
 
+            // hide title
+            postTitle.setVisibility(GONE);
+            // hide read more
+            readMoreBtn.setVisibility(GONE);
+
+            // render the content
             for (int i = 0; i < content.data.size(); i++) {
                 if (content.data.get(i).type.equals(ContentTypes.DataType.IMAGE)) {
                     ImageHandler.load(mContext, featuredImagePost, content.data.get(i).content);
@@ -137,12 +142,25 @@ public class PostItemView extends FrameLayout{
             }
 
         } else if (feed.jsonMetadata.content.type.equals(Constants.CONTENT_TYPE_ARTICLE)) {
+            // show title
+            postTitle.setVisibility(VISIBLE);
+            postTitle.setText(feed.getTitle());
+            // show read more if content length is more
             for (int i = 0; i < content.data.size(); i++) {
                 if (content.data.get(i).type.equals(ContentTypes.DataType.TEXT)) {
                     postSnippet.setText(content.data.get(i).content);
                     break;
                 }
             }
+
+            if(isContentEllipsised(postSnippet)){
+                // show read more button
+                readMoreBtn.setVisibility(VISIBLE);
+            }else{
+                //hide read more button
+                readMoreBtn.setVisibility(GONE);
+            }
+
         }
         //   if (post.post_type == Constants.CONTENT_TYPE_ARTICLE) {
 
@@ -186,8 +204,8 @@ public class PostItemView extends FrameLayout{
 //        }
 //
 //
-//        setHapcoins(post.hapcoins);
-//        setCommentCount(post.comment_count);
+        setHapcoins(feed.totalPayoutValue);
+       // setCommentCount();
 //
 //        commentBtn.setOnClickListener(new OnClickListener() {
 //            @Override
@@ -245,8 +263,24 @@ public class PostItemView extends FrameLayout{
 
     }
 
-    private void setHapcoins(float hapcoins) {
-        hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), hapcoins));
+    private boolean isContentEllipsised(TextView textView){
+
+        Layout layout = textView.getLayout();
+        if(layout != null) {
+            int lines = layout.getLineCount();
+            if(lines > 0) {
+                int ellipsisCount = layout.getEllipsisCount(lines-1);
+                if ( ellipsisCount > 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+
+    }
+
+    private void setHapcoins(String payout) {
+        hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), payout.substring(0,payout.indexOf(' '))));
     }
 
     private void setCommentCount(int count) {

@@ -74,6 +74,7 @@
         android:id="@+id/post_meta_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="16dp"
         android:layout_below="@+id/featured_image_post"
         android:background="#ffffff">
 
@@ -83,30 +84,20 @@
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="16sp"
-            android:paddingTop="8dp"
-            android:paddingStart="8dp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/tags"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/post_title"
-            android:padding="8dp"
-            android:textSize="12sp"
-            android:visibility="gone" />
+            android:text="Arrow Styles"
+            />
 
         <TextView
             android:id="@+id/post_snippet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tags"
-            android:padding="8dp"
+            android:layout_below="@+id/post_title"
             android:text="@string/sample"
-            android:maxLines="4"
+            android:maxLines="5"
             android:maxHeight="36dp"
             android:ellipsize="end"
-            android:textColor="@color/Black38" />
+            android:layout_marginTop="8dp"
+            android:textColor="@color/Black54" />
 
         <TextView
             android:clickable="true"
@@ -115,15 +106,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/post_snippet"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/read_more_bg"
             android:gravity="center"
             android:paddingBottom="8dp"
-            android:paddingEnd="20dp"
-            android:paddingStart="20dp"
             android:paddingTop="8dp"
-            android:text="Read More"
-            android:textColor="@color/Black38"
+            android:text="READ MORE"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
             android:textSize="14sp" />
 
 
@@ -182,7 +170,7 @@
                 android:gravity="center"
                 android:textColor="#ffffff"
                 android:background="@drawable/rs_coin_bg"
-                android:text="H"
+                android:text="$"
                 android:textStyle="bold"
                 android:textSize="14sp" />
 
@@ -195,7 +183,6 @@
                 android:layout_alignParentEnd="true"
                 android:gravity="center_vertical"
                 android:textColor="@color/Black54"
-                android:text="120 Hapcoins"
                 android:textSize="12sp" />
 
             <com.hapramp.views.extraa.StarView
