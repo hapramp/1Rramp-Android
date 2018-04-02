@@ -108,12 +108,12 @@ public class ProfileHeaderView extends FrameLayout implements FollowUserCallback
 
     private void populateData() {
 
-        String user_api_url = String.format(
+        String current_user_api_url = String.format(
                 mContext.getResources().getString(R.string.steem_user_api),
                 HaprampPreferenceManager.getInstance().getSteemUsername());
 
         RetrofitServiceGenerator.getService()
-                .getSteemUser(user_api_url)
+                .getSteemUser(current_user_api_url)
                 .enqueue(new Callback<SteemUser>() {
                     @Override
                     public void onResponse(Call<SteemUser> call, Response<SteemUser> response) {

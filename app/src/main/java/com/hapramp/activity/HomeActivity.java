@@ -38,6 +38,7 @@ import com.hapramp.models.response.FetchUserResponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.SteemHelper;
+import com.hapramp.steem.models.user.SteemUser;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.views.extraa.CreateButtonView;
@@ -52,7 +53,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeActivity extends AppCompatActivity implements FetchUserCallback, CreateButtonView.ItemClickListener {
+public class HomeActivity extends AppCompatActivity implements CreateButtonView.ItemClickListener {
 
 
     @BindView(R.id.search_icon)
@@ -164,12 +165,11 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
         setupToolbar();
         initObjects();
         attachListeners();
-        testSteemInit();
         postUploadReceiver = new PostUploadReceiver();
         notificationUpdateReceiver = new NotificationUpdateReceiver();
         initPreferences();
 //        if (!HaprampPreferenceManager.getInstance().isUserInfoAvailable()) {
-//            fetchCompleteUserInfo();
+        fetchCompleteUserInfo();
 //        } else {
         transactFragment(FRAGMENT_HOME);
         // }
@@ -182,17 +182,17 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
         CommunityListWrapper communityListWrapper = new Gson().fromJson(HaprampPreferenceManager.getInstance().getAllCommunityAsJson(), CommunityListWrapper.class);
         List<CommunityModel> communities = communityListWrapper.getCommunityModels();
         for (int i = 0; i < communities.size(); i++) {
-            HaprampPreferenceManager.getInstance().setCommunityTagToColorPair(communities.get(i).getmTag(),communities.get(i).getmColor());
-            HaprampPreferenceManager.getInstance().setCommunityTagToNamePair(communities.get(i).getmTag(),communities.get(i).getmName());
+            HaprampPreferenceManager.getInstance().setCommunityTagToColorPair(communities.get(i).getmTag(), communities.get(i).getmColor());
+            HaprampPreferenceManager.getInstance().setCommunityTagToNamePair(communities.get(i).getmTag(), communities.get(i).getmName());
         }
     }
 
-    private void syncCommunities(){
+    private void syncCommunities() {
 
         RetrofitServiceGenerator.getService().getCommunities().enqueue(new Callback<List<CommunityModel>>() {
             @Override
             public void onResponse(Call<List<CommunityModel>> call, Response<List<CommunityModel>> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     HaprampPreferenceManager.getInstance().saveAllCommunityListAsJson(new Gson().toJson(new CommunityListWrapper(response.body())));
                 }
             }
@@ -205,15 +205,6 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
 
     }
 
-    private void testSteemInit() {
-        new Thread() {
-            @Override
-            public void run() {
-                SteemJ steemJ = SteemHelper.getSteemInstance();
-                Log.d("HomeActivity", "" + steemJ);
-            }
-        }.start();
-    }
 
     @Override
     protected void onResume() {
@@ -557,33 +548,23 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
     }
 
     private void fetchCompleteUserInfo() {
-        showProgress("Getting Your Account...");
-        DataServer.fetchUser(this);
-    }
-
-    @Override
-    public void onUserFetched(FetchUserResponse userResponse) {
-
-        hideProgress();
-        HaprampPreferenceManager.getInstance().setUserInfoAvailable(true);
-        HaprampPreferenceManager.getInstance().setUser(new Gson().toJson(userResponse));
-        HaprampPreferenceManager.getInstance().setLoggedIn(true);
-        HaprampPreferenceManager.getInstance().setUserId(String.valueOf(userResponse.getId()));
-        HaprampPreferenceManager.getInstance().setUserEmail(userResponse.getEmail());
-
-        if (userResponse.getOrganization() == null) {
-            redirectToOrgsPage();
-        } else {
-            if (userResponse.getSkills().size() == 0) {
-                redirectToSkillsPage();
-            } else {
-                // Everything is set!
-                // transact
-                transactFragment(FRAGMENT_HOME);
+        RetrofitServiceGenerator.getService().getSteemUser(String.format(
+                getResources().getString(R.string.steem_user_api),
+                HaprampPreferenceManager.getInstance().getSteemUsername())).enqueue(new Callback<SteemUser>() {
+            @Override
+            public void onResponse(Call<SteemUser> call, Response<SteemUser> response) {
+                if(response.isSuccessful()){
+                    //save user to preference
+                    HaprampPreferenceManager.getInstance().saveCurrentUserInfoAsJson(new Gson().toJson(response.body()));
+                }
             }
-        }
-    }
 
+            @Override
+            public void onFailure(Call<SteemUser> call, Throwable t) {
+
+            }
+        });
+    }
 
     private void redirectToOrgsPage() {
         hideProgress();
@@ -604,19 +585,6 @@ public class HomeActivity extends AppCompatActivity implements FetchUserCallback
         if (progressDialog != null) {
             progressDialog.dismiss();
         }
-    }
-
-    @Override
-    public void onUserFetchedError() {
-
-        hideProgress();
-        Toast.makeText(this, "User Fetched Error!", Toast.LENGTH_LONG).show();
-        hideProgress();
-    }
-
-    @Override
-    public void onUserNotExists() {
-
     }
 
     @Override

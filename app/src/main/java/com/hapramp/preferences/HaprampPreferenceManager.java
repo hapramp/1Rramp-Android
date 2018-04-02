@@ -72,6 +72,15 @@ public class HaprampPreferenceManager {
         return preferences.getString("ppk","");
     }
 
+    public void saveCurrentUserInfoAsJson(String json){
+        editor.putString("c_user",json);
+        editor.apply();
+    }
+
+    public String getCurrentUserInfoAsJson(){
+        return preferences.getString("c_user","");
+    }
+
     public void saveAllCommunityListAsJson(String json){
 
         Log.d("Pref","saving "+json);
