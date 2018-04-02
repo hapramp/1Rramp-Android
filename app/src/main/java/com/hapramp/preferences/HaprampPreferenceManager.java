@@ -130,9 +130,14 @@ public class HaprampPreferenceManager {
         return HashGenerator.getSHA2(getPPK());
     }
 
+    public void saveUserProfile(String username,String json){
+        editor.putString("user_profile_"+username,json);
+        editor.apply();
+    }
 
-
-
+    public String getUserProfile(String username){
+        return preferences.getString("user_profile_"+username,"");
+    }
 
 
 

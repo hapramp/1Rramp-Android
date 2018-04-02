@@ -10,6 +10,7 @@ import android.support.v4.widget.Space;
 import android.text.Html;
 import android.text.Layout;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.activity.CommentsActivity;
 import com.hapramp.activity.DetailedActivity;
@@ -32,6 +34,7 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
 import com.hapramp.steem.ContentTypes;
 import com.hapramp.steem.models.Feed;
+import com.hapramp.steem.models.user.Profile;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
@@ -120,7 +123,6 @@ public class PostItemView extends FrameLayout {
 
     private void bind(final Feed feed) {
         // set basic meta-info
-        //ImageHandler.loadCircularImage(mContext, postCreatorPic, post.user.image_uri);
         feedOwnerTitle.setText(feed.author);
         feedOwnerSubtitle.setText(
                 String.format(mContext.getResources().getString(R.string.post_subtitle_format),
@@ -170,6 +172,12 @@ public class PostItemView extends FrameLayout {
 
         setHapcoins(feed.totalPayoutValue);
         setCommunities(feed.jsonMetadata.tags);
+        Profile _p = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserProfile(feed.getAuthor()), Profile.class);
+        if (_p != null) {
+            Log.d("PostItemView", "loading image from " + HaprampPreferenceManager.getInstance().getUserProfile(feed.getAuthor()));
+            ImageHandler.loadCircularImage(mContext, feedOwnerPic, _p.getProfileImage());
+        }
+
 //
 //        commentBtn.setOnClickListener(new OnClickListener() {
 //            @Override

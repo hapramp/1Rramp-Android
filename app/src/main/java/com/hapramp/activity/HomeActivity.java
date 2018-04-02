@@ -38,6 +38,7 @@ import com.hapramp.models.response.FetchUserResponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.SteemHelper;
+import com.hapramp.steem.models.user.Profile;
 import com.hapramp.steem.models.user.SteemUser;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
@@ -49,6 +50,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import eu.bittrade.libs.steemj.SteemJ;
+import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
+import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -170,6 +173,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
         initPreferences();
 //        if (!HaprampPreferenceManager.getInstance().isUserInfoAvailable()) {
         fetchCompleteUserInfo();
+
 //        } else {
         transactFragment(FRAGMENT_HOME);
         // }
@@ -553,7 +557,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
                 HaprampPreferenceManager.getInstance().getSteemUsername())).enqueue(new Callback<SteemUser>() {
             @Override
             public void onResponse(Call<SteemUser> call, Response<SteemUser> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     //save user to preference
                     HaprampPreferenceManager.getInstance().saveCurrentUserInfoAsJson(new Gson().toJson(response.body()));
                 }

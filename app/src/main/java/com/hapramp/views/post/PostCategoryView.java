@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,10 +80,12 @@ public class PostCategoryView extends FrameLayout {
                             Toast.makeText(mContext, "Maximum 3 Skills", Toast.LENGTH_LONG).show();
                         } else {
                             view.setSelected(true);
+                         //   Log.d("PostCategoryView","selecting : "+view.getTag());
                             selectedTags.add((String) view.getTag());
                         }
                     } else {
                         // de-select it
+                       // Log.d("PostCategoryView","de-selecting : "+view.getTag());
                         view.setSelected(false);
                         selectedTags.remove(index);
                     }

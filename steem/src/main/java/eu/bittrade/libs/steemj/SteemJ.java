@@ -104,7 +104,7 @@ import eu.bittrade.libs.steemj.util.SteemJUtils;
 /**
  * This class is a wrapper for the Steem web socket API and provides all
  * features known from the Steem CLI Wallet.
- * 
+ *
  * @author <a href="http://steemit.com/@dez1337">dez1337</a>
  */
 public class SteemJ {
@@ -119,21 +119,19 @@ public class SteemJ {
 
     /**
      * Initialize the SteemJ.
-     * 
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     *
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public SteemJ() throws SteemCommunicationException, SteemResponseException {
         this.communicationHandler = new CommunicationHandler();
@@ -173,25 +171,21 @@ public class SteemJ {
      * does not mean that the operation has been accepted and has been
      * processed. If you want to make sure that this is the case use the
      * {@link #broadcastTransactionSynchronous(SignedTransaction)} method.
-     * 
-     * @param transaction
-     *            The {@link SignedTransaction} object to broadcast.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             In case the provided transaction is not valid.
+     *
+     * @param transaction The {@link SignedTransaction} object to broadcast.
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException In case the provided transaction is not valid.
      */
     public void broadcastTransaction(SignedTransaction transaction)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
@@ -202,28 +196,24 @@ public class SteemJ {
      * Broadcast a transaction on the Steem blockchain. This method will
      * validate the transaction and return after it has been accepted and
      * applied.
-     * 
-     * @param transaction
-     *            The {@link SignedTransaction} object to broadcast.
+     *
+     * @param transaction The {@link SignedTransaction} object to broadcast.
      * @return A {@link BroadcastTransactionSynchronousReturn} object providing
-     *         information about the block in which the transaction has been
-     *         applied.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             In case the provided transaction is not valid.
+     * information about the block in which the transaction has been
+     * applied.
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException In case the provided transaction is not valid.
      */
     public BroadcastTransactionSynchronousReturn broadcastTransactionSynchronous(SignedTransaction transaction)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
@@ -232,23 +222,20 @@ public class SteemJ {
 
     /**
      * Broadcast a whole block.
-     * 
-     * @param signedBlock
-     *            The {@link SignedBlock} object to broadcast.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     *
+     * @param signedBlock The {@link SignedBlock} object to broadcast.
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public void broadcastBlock(SignedBlock signedBlock) throws SteemCommunicationException, SteemResponseException {
         NetworkBroadcastApi.broadcastBlock(communicationHandler, signedBlock);
@@ -260,34 +247,30 @@ public class SteemJ {
 
     /**
      * Use this method to authenticate to the RPC server.
-     * 
+     * <p>
      * <p>
      * When setting up a Steem Node the operator has the possibility to protect
      * specific APIs with a user name and a password. Requests to secured
      * API-Endpoints require a login before being accessed. This can be achieved
      * by using this method.
      * </p>
-     * 
-     * @param accountName
-     *            The user name used to login.
-     * @param password
-     *            The password that belongs to the <code>accountName</code>.
+     *
+     * @param accountName The user name used to login.
+     * @param password    The password that belongs to the <code>accountName</code>.
      * @return <code>true</code> if the login was successful, otherwise
-     *         <code>false</code>.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * <code>false</code>.
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public boolean login(AccountName accountName, String password)
             throws SteemCommunicationException, SteemResponseException {
@@ -298,7 +281,7 @@ public class SteemJ {
      * Use this method to receive the ID of an API or <code>null</code> if an
      * API with the <code>apiName</code> does not exist or is disabled.
      * @deprecated This API call is no longer supported.
-     * 
+     *
      * @param apiName
      *            The name of the API.
      * @return The ID for the given API name or <code>null</code>, if the API is
@@ -317,7 +300,7 @@ public class SteemJ {
      *             into a Java object.</li>
      *             <li>If the Server returned an error object.</li>
      *             </ul>
-     *             
+     *
      */
 //    @Deprecated
 //    public Integer getApiByName(String apiName) throws SteemCommunicationException, SteemResponseException {
@@ -329,21 +312,19 @@ public class SteemJ {
      * the node SteemJ is connected to.
      *
      * @return A {@link SteemVersionInfo} object which contains detailed
-     *         information about the Steem version the node is running.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * information about the Steem version the node is running.
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public SteemVersionInfo getVersion() throws SteemCommunicationException, SteemResponseException {
         return LoginApi.getVersion(communicationHandler);
@@ -356,35 +337,32 @@ public class SteemJ {
     /**
      * Use this method to register a callback method that is called whenever a
      * new block has been applied.
-     * 
+     * <p>
      * <p>
      * Please <b>Notice</b>, that there can only be one active Callback. If you
      * call this method multiple times with different callback methods, only the
      * last one will be called.
-     * 
+     * <p>
      * Beside that there is currently no way to cancel a subscription. Once
      * you've registered a callback it will be called until the connection has
      * been closed.
      * </p>
-     * 
-     * @param blockAppliedCallback
-     *            A class implementing the
-     *            {@link eu.bittrade.libs.steemj.communication.BlockAppliedCallback
-     *            BlockAppliedCallback}.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     *
+     * @param blockAppliedCallback A class implementing the
+     *                             {@link eu.bittrade.libs.steemj.communication.BlockAppliedCallback
+     *                             BlockAppliedCallback}.
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public void setBlockAppliedCallback(BlockAppliedCallback blockAppliedCallback)
             throws SteemCommunicationException, SteemResponseException {
@@ -394,7 +372,7 @@ public class SteemJ {
     /**
      * Use this method to get detailed values and metrics for tags. The methods
      * accepts a String as a search pattern and a number to limit the results.
-     * 
+     * <p>
      * <b>Example</b>
      * <p>
      * <code>getTrendingTags(communicationHandler, "steem", 2);</code> <br>
@@ -403,28 +381,24 @@ public class SteemJ {
      * tag "steem" and "steemit", while "steem" would be the first entry in the
      * list as it has a bigger match than "steemit".
      * </p>
-     * 
-     * @param firstTagPattern
-     *            The search pattern used to build the resulting list of tags.
-     * @param limit
-     *            The maximum number of results.
+     *
+     * @param firstTagPattern The search pattern used to build the resulting list of tags.
+     * @param limit           The maximum number of results.
      * @return A list of the tags. The first entry in the list is the tag that
-     *         has the biggest match with the <code>firstTagPattern</code>.
-     *         while the last tag in the last has the smallest match.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * has the biggest match with the <code>firstTagPattern</code>.
+     * while the last tag in the last has the smallest match.
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<Tag> getTrendingTags(String firstTagPattern, int limit)
             throws SteemCommunicationException, SteemResponseException {
@@ -434,26 +408,23 @@ public class SteemJ {
     /**
      * This API is a short-cut for returning all of the state required for a
      * particular URL with a single query.
-     * 
+     * <p>
      * TODO: Provide examples.
-     * 
-     * @param path
-     *            TODO: Fix JavaDoc
+     *
+     * @param path TODO: Fix JavaDoc
      * @return TODO: Fix JavaDoc
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public State getState(Permlink path) throws SteemCommunicationException, SteemResponseException {
         return DatabaseApi.getState(communicationHandler, path);
@@ -461,22 +432,20 @@ public class SteemJ {
 
     /**
      * Get the list of the current active witnesses.
-     * 
+     *
      * @return The list of the current active witnesses.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<AccountName> getActiveWitnesses() throws SteemCommunicationException, SteemResponseException {
         return DatabaseApi.getActiveWitnesses(communicationHandler);
@@ -487,22 +456,20 @@ public class SteemJ {
      * be aware that mining has been disabled for the Steem Blockchain.
      * Therefore this method will return an empty list for the original Steem
      * Blockchain.
-     * 
+     *
      * @return A list of account names that are in the mining queue.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<AccountName> getMinerQueue() throws SteemCommunicationException, SteemResponseException {
         return DatabaseApi.getMinerQueue(communicationHandler);
@@ -512,25 +479,22 @@ public class SteemJ {
      * Get a full, signed block by providing its <code>blockNumber</code>. The
      * returned object contains all information related to the block (e.g.
      * processed transactions, the witness and the creation time).
-     * 
-     * @param blockNumber
-     *            Height of the block to be returned.
+     *
+     * @param blockNumber Height of the block to be returned.
      * @return The referenced full, signed block, or <code>null</code> if no
-     *         matching block was found.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * matching block was found.
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public SignedBlockWithInfo getBlock(long blockNumber) throws SteemCommunicationException, SteemResponseException {
         return DatabaseApi.getBlock(communicationHandler, blockNumber);
@@ -539,25 +503,22 @@ public class SteemJ {
     /**
      * Like {@link #getBlock(long)}, but will only return the header of the
      * requested block instead of the full, signed one.
-     * 
-     * @param blockNumber
-     *            Height of the block to be returned.
+     *
+     * @param blockNumber Height of the block to be returned.
      * @return The referenced full, signed block, or <code>null</code> if no
-     *         matching block was found.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * matching block was found.
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public BlockHeader getBlockHeader(long blockNumber) throws SteemCommunicationException, SteemResponseException {
         return DatabaseApi.getBlockHeader(communicationHandler, blockNumber);
@@ -566,29 +527,25 @@ public class SteemJ {
     /**
      * Get a sequence of operations included/generated within a particular
      * block.
-     * 
-     * @param blockNumber
-     *            Height of the block whose generated virtual operations should
-     *            be returned.
-     * @param onlyVirtual
-     *            Define if only virtual operations should be returned
-     *            (<code>true</code>) or not (<code>false</code>).
+     *
+     * @param blockNumber Height of the block whose generated virtual operations should
+     *                    be returned.
+     * @param onlyVirtual Define if only virtual operations should be returned
+     *                    (<code>true</code>) or not (<code>false</code>).
      * @return A sequence of operations included/generated within a particular
-     *         block.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * block.
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<AppliedOperation> getOpsInBlock(int blockNumber, boolean onlyVirtual)
             throws SteemCommunicationException, SteemResponseException {
@@ -597,22 +554,20 @@ public class SteemJ {
 
     /**
      * Get the current number of registered Steem accounts.
-     * 
+     *
      * @return The number of accounts.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public int getAccountCount() throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
@@ -626,36 +581,31 @@ public class SteemJ {
 
     /**
      * Get all operations performed by the specified account.
-     * 
-     * @param accountName
-     *            The user name of the account.
-     * @param from
-     *            The starting point.
-     * @param limit
-     *            The maximum number of entries.
+     *
+     * @param accountName The user name of the account.
+     * @param from        The starting point.
+     * @param limit       The maximum number of entries.
      * @return A map containing the activities. The key is the id of the
-     *         activity.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * activity.
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public Map<Integer, AppliedOperation> getAccountHistory(AccountName accountName, int from, int limit)
             throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
         requestObject.setSteemApi(SteemApiType.DATABASE_API);
         requestObject.setApiMethod(RequestMethods.GET_ACCOUNT_HISTORY);
-        String[] parameters = { accountName.getName(), String.valueOf(from), String.valueOf(limit) };
+        String[] parameters = {accountName.getName(), String.valueOf(from), String.valueOf(limit)};
         requestObject.setAdditionalParameters(parameters);
 
         Map<Integer, AppliedOperation> accountActivities = new HashMap<>();
@@ -670,24 +620,20 @@ public class SteemJ {
     }
 
     /**
-     * 
-     * @param accountNames
-     *            A list of accounts you want to request the details for.
+     * @param accountNames A list of accounts you want to request the details for.
      * @return A List of accounts found for the given account names.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<ExtendedAccount> getAccounts(List<AccountName> accountNames)
             throws SteemCommunicationException, SteemResponseException {
@@ -701,39 +647,67 @@ public class SteemJ {
             innerParameters[i] = accountNames.get(i).getName();
         }
 
-        String[][] parameters = { innerParameters };
+        String[][] parameters = {innerParameters};
 
         requestObject.setAdditionalParameters(parameters);
         return communicationHandler.performRequest(requestObject, ExtendedAccount.class);
     }
 
+    public List<String> getUserProfileImages(List<String> usernames) throws SteemCommunicationException, SteemResponseException {
+        JsonRPCRequest requestObject = new JsonRPCRequest();
+        requestObject.setSteemApi(SteemApiType.DATABASE_API);
+        requestObject.setApiMethod(RequestMethods.GET_ACCOUNTS);
+        int size = usernames.size();
+        // The API expects an array of arrays here.
+        String[] innerParameters = new String[size];
+        for (int i = 0; i < size; i++) {
+            innerParameters[i] = usernames.get(i);
+        }
+
+        String[][] parameters = {innerParameters};
+
+        requestObject.setAdditionalParameters(parameters);
+        List<ExtendedAccount> extendedAccounts = communicationHandler.performRequest(requestObject, ExtendedAccount.class);
+        List<String> userProfileImages = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            if(extendedAccounts.get(i).getJsonMetadata().length()>0) {
+                userProfileImages.add(extendedAccounts.get(i).getJsonMetadata());
+            }else{
+                userProfileImages.add(getDefaultProfileAsJson());
+            }
+        }
+        return userProfileImages;
+    }
+
+    public static String getDefaultProfileAsJson() {
+        String json = "{\"about\":\"about\",\"location\":\"location\",\"name\":\"name\",\"profile_image\":\"https://user-images.githubusercontent.com/10809719/38206885-b36c8a66-36c9-11e8-9c7a-3bba603b4994.png\",\"website\":\"website\"}";
+        return json;
+    }
+
     /**
      * Get a list of all votes done by a specific account.
-     * 
-     * @param accountName
-     *            The user name of the account.
+     *
+     * @param accountName The user name of the account.
      * @return A List of votes done by the specified account.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<AccountVote> getAccountVotes(AccountName accountName)
             throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
         requestObject.setSteemApi(SteemApiType.DATABASE_API);
         requestObject.setApiMethod(RequestMethods.GET_ACCOUNT_VOTES);
-        String[] parameters = { accountName.getName() };
+        String[] parameters = {accountName.getName()};
         requestObject.setAdditionalParameters(parameters);
 
         return communicationHandler.performRequest(requestObject, AccountVote.class);
@@ -741,33 +715,29 @@ public class SteemJ {
 
     /**
      * Get the active votes for a given post of a given author.
-     * 
-     * @param author
-     *            The authors name.
-     * @param permlink
-     *            The permlink of the article.
+     *
+     * @param author   The authors name.
+     * @param permlink The permlink of the article.
      * @return A list of votes for a specific article.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<VoteState> getActiveVotes(AccountName author, Permlink permlink)
             throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
         requestObject.setApiMethod(RequestMethods.GET_ACTIVE_VOTES);
         requestObject.setSteemApi(SteemApiType.DATABASE_API);
-        String[] parameters = { author.getName(), permlink.getLink() };
+        String[] parameters = {author.getName(), permlink.getLink()};
         requestObject.setAdditionalParameters(parameters);
 
         return communicationHandler.performRequest(requestObject, VoteState.class);
@@ -775,22 +745,20 @@ public class SteemJ {
 
     /**
      * Get the chain properties.
-     * 
+     *
      * @return The chain properties.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public ChainProperties getChainProperties() throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
@@ -804,22 +772,20 @@ public class SteemJ {
 
     /**
      * Get the configuration.
-     * 
+     *
      * @return The steem configuration.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public Config getConfig() throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
@@ -833,33 +799,29 @@ public class SteemJ {
 
     /**
      * Get the details of a specific post.
-     * 
-     * @param author
-     *            The authors name.
-     * @param permlink
-     *            The permlink of the article.
+     *
+     * @param author   The authors name.
+     * @param permlink The permlink of the article.
      * @return The details of a specific post.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public Discussion getContent(AccountName author, Permlink permlink)
             throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
         requestObject.setApiMethod(RequestMethods.GET_CONTENT);
         requestObject.setSteemApi(SteemApiType.DATABASE_API);
-        String[] parameters = { author.getName(), permlink.getLink() };
+        String[] parameters = {author.getName(), permlink.getLink()};
         requestObject.setAdditionalParameters(parameters);
 
         return communicationHandler.performRequest(requestObject, Discussion.class).get(0);
@@ -867,33 +829,29 @@ public class SteemJ {
 
     /**
      * Get the replies of a specific post.
-     * 
-     * @param author
-     *            The authors name.
-     * @param permlink
-     *            The permlink of the article.
+     *
+     * @param author   The authors name.
+     * @param permlink The permlink of the article.
      * @return A list of discussions or null if the post has no replies.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<Discussion> getContentReplies(AccountName author, Permlink permlink)
             throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
         requestObject.setApiMethod(RequestMethods.GET_CONTENT_REPLIES);
         requestObject.setSteemApi(SteemApiType.DATABASE_API);
-        String[] parameters = { author.getName(), permlink.getLink() };
+        String[] parameters = {author.getName(), permlink.getLink()};
         requestObject.setAdditionalParameters(parameters);
 
         return communicationHandler.performRequest(requestObject, Discussion.class);
@@ -901,31 +859,28 @@ public class SteemJ {
 
     /**
      * TODO: Look up what this is used for and what it can return.
-     * 
-     * @param account
-     *            The account name.
+     *
+     * @param account The account name.
      * @return Unknown
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public Object[] getConversionRequests(AccountName account)
             throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
         requestObject.setApiMethod(RequestMethods.GET_CONVERSION_REQUESTS);
         requestObject.setSteemApi(SteemApiType.DATABASE_API);
-        String[] parameters = { account.getName() };
+        String[] parameters = {account.getName()};
         requestObject.setAdditionalParameters(parameters);
 
         return communicationHandler.performRequest(requestObject, Object[].class).get(0);
@@ -933,22 +888,20 @@ public class SteemJ {
 
     /**
      * Grab the current median conversion price of SBD / STEEM.
-     * 
+     *
      * @return The current median price.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public Price getCurrentMedianHistoryPrice() throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
@@ -962,26 +915,22 @@ public class SteemJ {
 
     /**
      * Get active discussions for a specified tag.
-     * 
-     * @param discussionQuery
-     *            A query defining specific search parameters.
-     * @param sortBy
-     *            Choose the method used for sorting the results.
+     *
+     * @param discussionQuery A query defining specific search parameters.
+     * @param sortBy          Choose the method used for sorting the results.
      * @return A list of discussions matching the given conditions.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<Discussion> getDiscussionsBy(DiscussionQuery discussionQuery, DiscussionSortType sortBy)
             throws SteemCommunicationException, SteemResponseException {
@@ -989,7 +938,7 @@ public class SteemJ {
 
         requestObject.setApiMethod(RequestMethods.valueOf(sortBy.name()));
         requestObject.setSteemApi(SteemApiType.DATABASE_API);
-        Object[] parameters = { discussionQuery };
+        Object[] parameters = {discussionQuery};
         requestObject.setAdditionalParameters(parameters);
 
         return communicationHandler.performRequest(requestObject, Discussion.class);
@@ -997,34 +946,28 @@ public class SteemJ {
 
     /**
      * Get a list of discussion for a given author.
-     * 
-     * @param author
-     *            The authors name.
-     * @param permlink
-     *            The permlink of the article.
-     * @param date
-     *            Only return articles before this date. (This field seems to be
-     *            ignored by the Steem api)
-     * @param limit
-     *            The number of results you want to receive.
+     *
+     * @param author   The authors name.
+     * @param permlink The permlink of the article.
+     * @param date     Only return articles before this date. (This field seems to be
+     *                 ignored by the Steem api)
+     * @param limit    The number of results you want to receive.
      * @return A list of discussions.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<Discussion> getDiscussionsByAuthorBeforeDate(AccountName author, Permlink permlink, String date,
-            int limit) throws SteemCommunicationException, SteemResponseException {
+                                                             int limit) throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
 
         requestObject.setApiMethod(RequestMethods.GET_DISCUSSIONS_BY_AUTHOR_BEFORE_DATE);
@@ -1040,8 +983,8 @@ public class SteemJ {
             throw new SteemTransformationException("Could not parse the received date to a Date object.", e);
         }
 
-        String[] parameters = { author.getName(), permlink.getLink(), simpleDateFormat.format(beforeDate),
-                String.valueOf(limit) };
+        String[] parameters = {author.getName(), permlink.getLink(), simpleDateFormat.format(beforeDate),
+                String.valueOf(limit)};
         requestObject.setAdditionalParameters(parameters);
 
         return communicationHandler.performRequest(requestObject, Discussion.class);
@@ -1049,22 +992,20 @@ public class SteemJ {
 
     /**
      * Get the global properties.
-     * 
+     *
      * @return The dynamic global properties.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public DynamicGlobalProperty getDynamicGlobalProperties()
             throws SteemCommunicationException, SteemResponseException {
@@ -1080,22 +1021,20 @@ public class SteemJ {
     /**
      * Get the current price and a list of history prices combined in one
      * object.
-     * 
+     *
      * @return The conversion history of SBD / STEEM.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public FeedHistory getFeedHistory() throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
@@ -1109,22 +1048,20 @@ public class SteemJ {
 
     /**
      * Get the hardfork version the node you are connected to is using.
-     * 
+     *
      * @return The hardfork version that the connected node is running on.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public String getHardforkVersion() throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
@@ -1138,31 +1075,28 @@ public class SteemJ {
 
     /**
      * Search for users under the use of their public key(s).
-     * 
-     * @param publicKeys
-     *            An array containing one or more public keys.
+     *
+     * @param publicKeys An array containing one or more public keys.
      * @return A list of arrays containing the matching account names.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<String[]> getKeyReferences(String[] publicKeys)
             throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
         requestObject.setApiMethod(RequestMethods.GET_KEY_REFERENCES);
         requestObject.setSteemApi(SteemApiType.ACCOUNT_BY_KEY_API);
-        Object[] parameters = { publicKeys };
+        Object[] parameters = {publicKeys};
         requestObject.setAdditionalParameters(parameters);
 
         return communicationHandler.performRequest(requestObject, String[].class);
@@ -1170,34 +1104,30 @@ public class SteemJ {
 
     /**
      * Get the liquidity queue for a specified account.
-     * 
-     * @param accoutName
-     *            The name of the account you want to request the queue entries
-     *            for.
-     * @param limit
-     *            Number of results.
+     *
+     * @param accoutName The name of the account you want to request the queue entries
+     *                   for.
+     * @param limit      Number of results.
      * @return A list of liquidity queue entries.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<LiquidityBalance> getLiquidityQueue(AccountName accoutName, int limit)
             throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
         requestObject.setApiMethod(RequestMethods.GET_LIQUIDITY_QUEUE);
         requestObject.setSteemApi(SteemApiType.DATABASE_API);
-        Object[] parameters = { accoutName.getName(), String.valueOf(limit) };
+        Object[] parameters = {accoutName.getName(), String.valueOf(limit)};
         requestObject.setAdditionalParameters(parameters);
 
         return communicationHandler.performRequest(requestObject, LiquidityBalance.class);
@@ -1206,22 +1136,20 @@ public class SteemJ {
     /**
      * TODO: Check what this method is supposed to do. In a fist test it seems
      * to return the time since the current version is active.
-     * 
+     *
      * @return ???
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public ScheduledHardfork getNextScheduledHarfork() throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
@@ -1236,31 +1164,28 @@ public class SteemJ {
     /**
      * If specified user name has orders open on the internal STEEM market it
      * will return them.
-     * 
-     * @param accountName
-     *            The name of the account.
+     *
+     * @param accountName The name of the account.
      * @return A list of open orders for this account.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<ExtendedLimitOrder> getOpenOrders(AccountName accountName)
             throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
         requestObject.setApiMethod(RequestMethods.GET_OPEN_ORDERS);
         requestObject.setSteemApi(SteemApiType.DATABASE_API);
-        String[] parameters = { accountName.getName() };
+        String[] parameters = {accountName.getName()};
         requestObject.setAdditionalParameters(parameters);
 
         return communicationHandler.performRequest(requestObject, ExtendedLimitOrder.class);
@@ -1268,31 +1193,28 @@ public class SteemJ {
 
     /**
      * Returns a list of orders on the internal steem market.
-     * 
-     * @param limit
-     *            The maximum number of results for each category (asks / bids).
+     *
+     * @param limit The maximum number of results for each category (asks / bids).
      * @return A list of orders on the internal steem market.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public OrderBook getOrderBookUsingDatabaseApi(int limit)
             throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
         requestObject.setApiMethod(RequestMethods.GET_ORDER_BOOK);
         requestObject.setSteemApi(SteemApiType.DATABASE_API);
-        String[] parameters = { String.valueOf(limit) };
+        String[] parameters = {String.valueOf(limit)};
         requestObject.setAdditionalParameters(parameters);
 
         return communicationHandler.performRequest(requestObject, OrderBook.class).get(0);
@@ -1312,35 +1234,30 @@ public class SteemJ {
     /**
      * /** Get a list of Content starting from the given post of the given user.
      * The list will be sorted by the Date of the last update.
-     * 
-     * @param username
-     *            The name of the user.
-     * @param permlink
-     *            The permlink of an article.
-     * @param limit
-     *            Number of results.
+     *
+     * @param username The name of the user.
+     * @param permlink The permlink of an article.
+     * @param limit    Number of results.
      * @return A list of Content objects.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<Discussion> getRepliesByLastUpdate(AccountName username, Permlink permlink, int limit)
             throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
         requestObject.setApiMethod(RequestMethods.GET_REPLIES_BY_LAST_UPDATE);
         requestObject.setSteemApi(SteemApiType.DATABASE_API);
-        Object[] parameters = { username, permlink.getLink(), String.valueOf(limit) };
+        Object[] parameters = {username, permlink.getLink(), String.valueOf(limit)};
         requestObject.setAdditionalParameters(parameters);
 
         return communicationHandler.performRequest(requestObject, Discussion.class);
@@ -1348,33 +1265,30 @@ public class SteemJ {
 
     /**
      * Get detailed information of a specific reward fund.
-     * 
-     * @param rewordFundType
-     *            One of the {@link eu.bittrade.libs.steemj.enums.RewardFundType
-     *            RewardFundType}s.
+     *
+     * @param rewordFundType One of the {@link eu.bittrade.libs.steemj.enums.RewardFundType
+     *                       RewardFundType}s.
      * @return A refund object containing detailed information about the
-     *         requested reward fund.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * requested reward fund.
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public RewardFund getRewardFund(RewardFundType rewordFundType)
             throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
         requestObject.setApiMethod(RequestMethods.GET_REWARD_FUND);
         requestObject.setSteemApi(SteemApiType.DATABASE_API);
-        Object[] parameters = { rewordFundType.name().toLowerCase() };
+        Object[] parameters = {rewordFundType.name().toLowerCase()};
         requestObject.setAdditionalParameters(parameters);
 
         return communicationHandler.performRequest(requestObject, RewardFund.class).get(0);
@@ -1383,25 +1297,22 @@ public class SteemJ {
     /**
      * Use the Steem API to receive the HEX representation of a signed
      * transaction.
-     * 
-     * @param signedTransaction
-     *            The signed Transaction object you want to receive the HEX
-     *            representation for.
+     *
+     * @param signedTransaction The signed Transaction object you want to receive the HEX
+     *                          representation for.
      * @return The HEX representation.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public String getTransactionHex(SignedTransaction signedTransaction)
             throws SteemCommunicationException, SteemResponseException {
@@ -1409,7 +1320,7 @@ public class SteemJ {
         requestObject.setApiMethod(RequestMethods.GET_TRANSACTION_HEX);
         requestObject.setSteemApi(SteemApiType.DATABASE_API);
 
-        Object[] parameters = { signedTransaction };
+        Object[] parameters = {signedTransaction};
         requestObject.setAdditionalParameters(parameters);
 
         return communicationHandler.performRequest(requestObject, String.class).get(0);
@@ -1417,31 +1328,28 @@ public class SteemJ {
 
     /**
      * Get the witness information for a given witness account name.
-     * 
-     * @param witnessName
-     *            The witness name.
+     *
+     * @param witnessName The witness name.
      * @return A list of witnesses.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public Witness getWitnessByAccount(AccountName witnessName)
             throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
         requestObject.setApiMethod(RequestMethods.GET_WITNESS_BY_ACCOUNT);
         requestObject.setSteemApi(SteemApiType.DATABASE_API);
-        String[] parameters = { witnessName.getName() };
+        String[] parameters = {witnessName.getName()};
         requestObject.setAdditionalParameters(parameters);
 
         return communicationHandler.performRequest(requestObject, Witness.class).get(0);
@@ -1451,33 +1359,29 @@ public class SteemJ {
      * Get a list of witnesses sorted by the amount of votes. The list begins
      * with the given account name and contains the next witnesses with less
      * votes than given one.
-     * 
-     * @param witnessName
-     *            The witness name to start from.
-     * @param limit
-     *            The number of results.
+     *
+     * @param witnessName The witness name to start from.
+     * @param limit       The number of results.
      * @return A list of witnesses.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<Witness> getWitnessByVote(AccountName witnessName, int limit)
             throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
         requestObject.setApiMethod(RequestMethods.GET_WITNESSES_BY_VOTE);
         requestObject.setSteemApi(SteemApiType.DATABASE_API);
-        String[] parameters = { witnessName.getName(), String.valueOf(limit) };
+        String[] parameters = {witnessName.getName(), String.valueOf(limit)};
         requestObject.setAdditionalParameters(parameters);
 
         return communicationHandler.performRequest(requestObject, Witness.class);
@@ -1485,22 +1389,20 @@ public class SteemJ {
 
     /**
      * Get the current number of active witnesses.
-     * 
+     *
      * @return The number of witnesses.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public int getWitnessCount() throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
@@ -1514,22 +1416,20 @@ public class SteemJ {
 
     /**
      * Get all witnesses.
-     * 
+     *
      * @return A list of witnesses.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<Witness> getWitnesses() throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
@@ -1543,22 +1443,20 @@ public class SteemJ {
 
     /**
      * Get the witness schedule.
-     * 
+     *
      * @return The witness schedule.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public WitnessSchedule getWitnessSchedule() throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
@@ -1572,33 +1470,29 @@ public class SteemJ {
 
     /**
      * Search for accounts.
-     * 
-     * @param pattern
-     *            The lower case pattern you want to search for.
-     * @param limit
-     *            The maximum number of account names.
+     *
+     * @param pattern The lower case pattern you want to search for.
+     * @param limit   The maximum number of account names.
      * @return A list of matching account names.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<String> lookupAccounts(String pattern, int limit)
             throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
         requestObject.setApiMethod(RequestMethods.LOOKUP_ACCOUNTS);
         requestObject.setSteemApi(SteemApiType.DATABASE_API);
-        String[] parameters = { pattern, String.valueOf(limit) };
+        String[] parameters = {pattern, String.valueOf(limit)};
         requestObject.setAdditionalParameters(parameters);
 
         return communicationHandler.performRequest(requestObject, String.class);
@@ -1606,33 +1500,29 @@ public class SteemJ {
 
     /**
      * Search for witness accounts.
-     * 
-     * @param pattern
-     *            The lower case pattern you want to search for.
-     * @param limit
-     *            The maximum number of account names.
+     *
+     * @param pattern The lower case pattern you want to search for.
+     * @param limit   The maximum number of account names.
      * @return A list of matching account names.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<String> lookupWitnessAccounts(String pattern, int limit)
             throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
         requestObject.setApiMethod(RequestMethods.LOOKUP_WITNESS_ACCOUNTS);
         requestObject.setSteemApi(SteemApiType.DATABASE_API);
-        String[] parameters = { pattern, String.valueOf(limit) };
+        String[] parameters = {pattern, String.valueOf(limit)};
         requestObject.setAdditionalParameters(parameters);
 
         return communicationHandler.performRequest(requestObject, String.class);
@@ -1641,25 +1531,22 @@ public class SteemJ {
     /**
      * Use the Steem API to verify the required authorities for this
      * transaction.
-     * 
-     * @param signedTransaction
-     *            A {@link SignedTransaction} transaction which has been signed.
+     *
+     * @param signedTransaction A {@link SignedTransaction} transaction which has been signed.
      * @return <code>true</code> if the given transaction has been signed
-     *         correctly, otherwise an Exception will be thrown.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * correctly, otherwise an Exception will be thrown.
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public boolean verifyAuthority(SignedTransaction signedTransaction)
             throws SteemCommunicationException, SteemResponseException {
@@ -1667,7 +1554,7 @@ public class SteemJ {
         requestObject.setApiMethod(RequestMethods.VERIFY_AUTHORITY);
         requestObject.setSteemApi(SteemApiType.DATABASE_API);
 
-        Object[] parameters = { signedTransaction };
+        Object[] parameters = {signedTransaction};
         requestObject.setAdditionalParameters(parameters);
         // The method does not simply return false, it throws an error
         // describing the problem.
@@ -1681,75 +1568,63 @@ public class SteemJ {
     /**
      * Get a list of account names which the <code>following</code> account is
      * followed by.
-     * 
-     * @param following
-     *            The account name for whose followers should be returned.
-     * @param startFollower
-     *            A filter to limit the number of results. If not empty, the
-     *            method will only return account names after the
-     *            <code>following</code> account has been followed by the
-     *            <code>startFollower</code> account.
-     * @param type
-     *            The follow type.
-     * @param limit
-     *            The maximum number of results returned.
+     *
+     * @param following     The account name for whose followers should be returned.
+     * @param startFollower A filter to limit the number of results. If not empty, the
+     *                      method will only return account names after the
+     *                      <code>following</code> account has been followed by the
+     *                      <code>startFollower</code> account.
+     * @param type          The follow type.
+     * @param limit         The maximum number of results returned.
      * @return A list of account names that follow the <code>follower</code>
-     *         account..
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * account..
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<FollowApiObject> getFollowers(AccountName following, AccountName startFollower, FollowType type,
-            short limit) throws SteemCommunicationException, SteemResponseException {
+                                              short limit) throws SteemCommunicationException, SteemResponseException {
         return FollowApi.getFollowers(communicationHandler, following, startFollower, type, limit);
     }
 
     /**
      * Get a list of account names which the <code>follower</code> account
      * follows.
-     * 
-     * @param follower
-     *            The account name for which the account names should be
-     *            returned, that the <code>follower</code> is following.
-     * @param startFollowing
-     *            A filter to limit the number of results. If not empty, the
-     *            method will only return account names after the
-     *            <code>follower</code> account has followed the
-     *            <code>startFollowing</code> account.
-     * @param type
-     *            The follow type.
-     * @param limit
-     *            The maximum number of results returned.
+     *
+     * @param follower       The account name for which the account names should be
+     *                       returned, that the <code>follower</code> is following.
+     * @param startFollowing A filter to limit the number of results. If not empty, the
+     *                       method will only return account names after the
+     *                       <code>follower</code> account has followed the
+     *                       <code>startFollowing</code> account.
+     * @param type           The follow type.
+     * @param limit          The maximum number of results returned.
      * @return A list of account names the <code>follower</code> account is
-     *         following.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * following.
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<FollowApiObject> getFollowing(AccountName follower, AccountName startFollowing, FollowType type,
-            short limit) throws SteemCommunicationException, SteemResponseException {
+                                              short limit) throws SteemCommunicationException, SteemResponseException {
         return FollowApi.getFollowing(communicationHandler, follower, startFollowing, type, limit);
     }
 
@@ -1757,25 +1632,22 @@ public class SteemJ {
      * Get the amount of accounts following the given <code>account</code> and
      * the number of accounts this <code>account</code> follows. Both values are
      * wrapped in a FollowCountApiObject.
-     * 
-     * @param account
-     *            The account to get the number of followers / following
-     *            accounts for.
+     *
+     * @param account The account to get the number of followers / following
+     *                accounts for.
      * @return The number of followers / following accounts
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public FollowCountApiObject getFollowCount(AccountName account)
             throws SteemCommunicationException, SteemResponseException {
@@ -1787,30 +1659,25 @@ public class SteemJ {
      * getBlogEntries(AccountName, int, short)} method, but instead of returning
      * blog entries, the getFeedEntries method returns the feed of the given
      * account.
-     * 
-     * @param account
-     *            The account to get the feed entries for.
-     * @param entryId
-     *            The first feed entry id to return.
-     * @param limit
-     *            The number of results.
+     *
+     * @param account The account to get the feed entries for.
+     * @param entryId The first feed entry id to return.
+     * @param limit   The number of results.
      * @return A list of feed entries from the given <code>author</code> based
-     *         on the given conditions (<code>entryId</code> and
-     *         <code>limit</code>).
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * on the given conditions (<code>entryId</code> and
+     * <code>limit</code>).
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<FeedEntry> getFeedEntries(AccountName account, int entryId, short limit)
             throws SteemCommunicationException, SteemResponseException {
@@ -1821,30 +1688,25 @@ public class SteemJ {
      * This method is like the {@link #getBlog(AccountName, int, short)
      * getBlog(AccountName, int, short)} method, but instead of returning blog
      * entries, the getFeed method returns the feed of the given account.
-     * 
-     * @param account
-     *            The account to get the feed entries for.
-     * @param entryId
-     *            The first feed entry id to return.
-     * @param limit
-     *            The number of results.
+     *
+     * @param account The account to get the feed entries for.
+     * @param entryId The first feed entry id to return.
+     * @param limit   The number of results.
      * @return A list of feed entries from the given <code>author</code> based
-     *         on the given conditions (<code>entryId</code> and
-     *         <code>limit</code>).
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * on the given conditions (<code>entryId</code> and
+     * <code>limit</code>).
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<CommentFeedEntry> getFeed(AccountName account, int entryId, short limit)
             throws SteemCommunicationException, SteemResponseException {
@@ -1854,53 +1716,48 @@ public class SteemJ {
     /**
      * Get the blog entries of the given <code>author</code> based on the given
      * coniditions.
-     * 
+     * <p>
      * Each blog entry of an <code>author</code> (resteemed or posted on his/her
      * own) has an <code>entryId</code>, while the <code>entryId</code> starts
      * with 0 for the first blog entry and is increment by 1 for each resteem or
      * post of the <code>author</code>.
-     * 
+     * <p>
      * Steem allows to use the <code>entryId</code> as a search criteria: The
      * first entry of the returned list is the blog entry with the given
      * <code>entryId</code>. Beside that, the <code>limit</code> can be used to
      * limit the number of results.
-     * 
+     * <p>
      * So if the method is called with <code>entryId</code> set to 5 and the
      * <code>limit</code> is set to 2, the returned list will contain 2 entries:
      * The first one is the blog entry with <code>entryId</code> of 5, the
      * second one has the <code>entryId</code> 4.
-     * 
+     * <p>
      * If the <code>entryId</code> is set to 0, the first returned item will be
      * the latest blog entry of the given <code>author</code>.
-     * 
+     * <p>
      * So if a user has 50 blog entries and this method is called with an
      * <code>entryId</code> set to 0 and a <code>limit</code> of 2, the returned
      * list will contain the blog entries with the <code>entryId</code>s 50 and
      * 49.
-     * 
-     * @param account
-     *            The account to get the blog entries for.
-     * @param entryId
-     *            The first blog entry id to return.
-     * @param limit
-     *            The number of results.
+     *
+     * @param account The account to get the blog entries for.
+     * @param entryId The first blog entry id to return.
+     * @param limit   The number of results.
      * @return A list of blog entries from the given <code>author</code> based
-     *         on the given conditions (<code>entryId</code> and
-     *         <code>limit</code>).
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * on the given conditions (<code>entryId</code> and
+     * <code>limit</code>).
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<BlogEntry> getBlogEntries(AccountName account, int entryId, short limit)
             throws SteemCommunicationException, SteemResponseException {
@@ -1912,30 +1769,25 @@ public class SteemJ {
      * Like {@link #getBlogEntries(AccountName, int, short)
      * getBlogEntries(AccountName, int, short)}, but contains the whole content
      * of the blog entry.
-     * 
-     * @param account
-     *            The account to get the blog entries for.
-     * @param entryId
-     *            The first blog entry id to return.
-     * @param limit
-     *            The number of results.
+     *
+     * @param account The account to get the blog entries for.
+     * @param entryId The first blog entry id to return.
+     * @param limit   The number of results.
      * @return A list of blog entries from the given <code>author</code> based
-     *         on the given conditions (<code>entryId</code> and
-     *         <code>limit</code>).
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * on the given conditions (<code>entryId</code> and
+     * <code>limit</code>).
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<CommentBlogEntry> getBlog(AccountName account, int entryId, short limit)
             throws SteemCommunicationException, SteemResponseException {
@@ -1946,7 +1798,7 @@ public class SteemJ {
      * Get the reputation for one or more accounts. This method will return the
      * reputation of the {@code limit} number of accounts that mostly match the
      * given {@code accountName}.
-     * 
+     * <p>
      * <p>
      * <b>Example:</b>
      * </p>
@@ -1963,28 +1815,24 @@ public class SteemJ {
      * This example will return the reputation of the account "dez1337" and
      * "dez243", because "dez243" is the most similar account name to "dez1337".
      * </p>
-     * 
-     * @param accountName
-     *            The first account name to get the reputation for.
-     * @param limit
-     *            The number of results.
+     *
+     * @param accountName The first account name to get the reputation for.
+     * @param limit       The number of results.
      * @return A list of
-     *         {@link eu.bittrade.libs.steemj.apis.follow.model.AccountReputation
-     *         AccountReputation}.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * {@link eu.bittrade.libs.steemj.apis.follow.model.AccountReputation
+     * AccountReputation}.
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<AccountReputation> getAccountReputations(AccountName accountName, int limit)
             throws SteemCommunicationException, SteemResponseException {
@@ -1993,26 +1841,22 @@ public class SteemJ {
 
     /**
      * Gets list of accounts that have reblogged a particular post.
-     * 
-     * @param author
-     *            The author of the post to get the rebloggers for.
-     * @param permlink
-     *            The permlink of the post to get the rebloggers for.
+     *
+     * @param author   The author of the post to get the rebloggers for.
+     * @param permlink The permlink of the post to get the rebloggers for.
      * @return A list of accounts that have reblogged a particular post.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<AccountName> getRebloggedBy(AccountName author, Permlink permlink)
             throws SteemCommunicationException, SteemResponseException {
@@ -2022,26 +1866,23 @@ public class SteemJ {
     /**
      * Use this method to find out how many posts of different authors have been
      * resteemed by the given <code>blogAccount</code>.
-     * 
-     * @param blogAccount
-     *            The account whose blog should be analyzed.
+     *
+     * @param blogAccount The account whose blog should be analyzed.
      * @return A list of pairs, while each pair contains the author name and the
-     *         number of blog entries from this author published by the
-     *         <code>blogAuthor</code>.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * number of blog entries from this author published by the
+     * <code>blogAuthor</code>.
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<PostsPerAuthorPair> getBlogAuthors(AccountName blogAccount)
             throws SteemCommunicationException, SteemResponseException {
@@ -2055,22 +1896,20 @@ public class SteemJ {
     /**
      * Use this method to receive statistic values of the internal SBD:STEEM
      * market for the last 24 hours.
-     * 
+     *
      * @return The market ticker for the internal SBD:STEEM market.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public MarketTicker getTicker() throws SteemCommunicationException, SteemResponseException {
         return MarketHistoryApi.getTicker(communicationHandler);
@@ -2079,22 +1918,20 @@ public class SteemJ {
     /**
      * Use this method to get the SBD and Steem volume that has been traded in
      * the past 24 hours at the internal SBD:STEEM market.
-     * 
+     *
      * @return The market volume for the past 24 hours.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public MarketVolume getVolume() throws SteemCommunicationException, SteemResponseException {
         return MarketHistoryApi.getVolume(communicationHandler);
@@ -2103,28 +1940,24 @@ public class SteemJ {
     /**
      * Use this method to receive the current order book of the internal
      * SBD:STEEM market.
-     * @deprecated Use {@link #getOrderBookUsingDatabaseApi(int)}
-     * 
-     * @param limit
-     *            The number of orders to have on each side of the order book.
-     *            Maximum is 500.
+     *
+     * @param limit The number of orders to have on each side of the order book.
+     *              Maximum is 500.
      * @return Returns the current order book for the internal SBD:STEEM market.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws InvalidParameterException
-     *             If the limit is less than 0 or greater than 500.
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
+     * @throws InvalidParameterException   If the limit is less than 0 or greater than 500.
+     * @deprecated Use {@link #getOrderBookUsingDatabaseApi(int)}
      */
     public eu.bittrade.libs.steemj.apis.market.history.model.OrderBook getOrderBookUsingMarketApi(short limit)
             throws SteemCommunicationException, SteemResponseException {
@@ -2134,30 +1967,24 @@ public class SteemJ {
     /**
      * Use this method to get the trade history of the internal SBD:STEEM market
      * between the defined <code>start</code> and <code>end</code> time.
-     * 
-     * @param start
-     *            The start time of the trade history.
-     * @param end
-     *            The end time of the trade history.
-     * @param limit
-     *            The number of trades to return. Maximum is 1000.
+     *
+     * @param start The start time of the trade history.
+     * @param end   The end time of the trade history.
+     * @param limit The number of trades to return. Maximum is 1000.
      * @return A list of completed trades.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws InvalidParameterException
-     *             If the limit is less than 0 or greater than 500.
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
+     * @throws InvalidParameterException   If the limit is less than 0 or greater than 500.
      */
     public List<MarketTrade> getTradeHistory(TimePointSec start, TimePointSec end, short limit)
             throws SteemCommunicationException, SteemResponseException {
@@ -2169,25 +1996,21 @@ public class SteemJ {
      * SBD:STEEM market. The number of results is limited by the
      * <code>limit</code> parameter.
      *
-     * @param limit
-     *            The number of trades to return. Maximum is 1000.
+     * @param limit The number of trades to return. Maximum is 1000.
      * @return A list of completed trades.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws InvalidParameterException
-     *             If the limit is less than 0 or greater than 500.
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
+     * @throws InvalidParameterException   If the limit is less than 0 or greater than 500.
      */
     public List<MarketTrade> getRecentTrades(short limit) throws SteemCommunicationException, SteemResponseException {
         return MarketHistoryApi.getRecentTrades(communicationHandler, limit);
@@ -2196,32 +2019,27 @@ public class SteemJ {
     /**
      * Use this method to receive the market history for the internal SBD:STEEM
      * market.
-     * 
-     * @param bucketSeconds
-     *            The size of buckets the history is broken into. The bucket
-     *            size must be configured in the plugin options and can be
-     *            requested using the {@link #getMarketHistoryBuckets()} method.
-     * @param start
-     *            The start time to get market history.
-     * @param end
-     *            The end time to get market history.
+     *
+     * @param bucketSeconds The size of buckets the history is broken into. The bucket
+     *                      size must be configured in the plugin options and can be
+     *                      requested using the {@link #getMarketHistoryBuckets()} method.
+     * @param start         The start time to get market history.
+     * @param end           The end time to get market history.
      * @return A list of market history
-     *         {@link eu.bittrade.libs.steemj.apis.market.history.model.Bucket
-     *         Bucket}s.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * {@link eu.bittrade.libs.steemj.apis.market.history.model.Bucket
+     * Bucket}s.
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<Bucket> getMarketHistory(long bucketSeconds, TimePointSec start, TimePointSec end)
             throws SteemCommunicationException, SteemResponseException {
@@ -2230,22 +2048,20 @@ public class SteemJ {
 
     /**
      * Use this method to receive the bucket seconds being tracked by the node.
-     * 
+     *
      * @return Returns the bucket seconds being tracked by the node.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
+     * @throws SteemCommunicationException <ul>
+     *                                     <li>If the server was not able to answer the request in the
+     *                                     given time (see
+     *                                     {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                     setResponseTimeout}).</li>
+     *                                     <li>If there is a connection problem.</li>
+     *                                     </ul>
+     * @throws SteemResponseException      <ul>
+     *                                     <li>If the SteemJ is unable to transform the JSON response
+     *                                     into a Java object.</li>
+     *                                     <li>If the Server returned an error object.</li>
+     *                                     </ul>
      */
     public List<Integer> getMarketHistoryBuckets() throws SteemCommunicationException, SteemResponseException {
         return MarketHistoryApi.getMarketHistoryBuckets(communicationHandler);
@@ -2258,18 +2074,15 @@ public class SteemJ {
     /**
      * Get the private and public key of a given type for the given
      * <code>account</code>
-     * 
-     * @param account
-     *            The account name to generate the passwords for.
-     * @param role
-     *            The key type that should be generated.
-     * @param steemPassword
-     *            The password of the <code>account</code> valid for the Steem
-     *            blockchain.
+     *
+     * @param account       The account name to generate the passwords for.
+     * @param role          The key type that should be generated.
+     * @param steemPassword The password of the <code>account</code> valid for the Steem
+     *                      blockchain.
      * @return The requested key pair.
      */
     public static ImmutablePair<PublicKey, String> getPrivateKeyFromPassword(AccountName account, PrivateKeyType role,
-            String steemPassword) {
+                                                                             String steemPassword) {
         String seed = account.getName() + role.name().toLowerCase() + steemPassword;
         ECKey keyPair = ECKey.fromPrivate(Sha256Hash.hash(seed.getBytes(), 0, seed.length()));
 
@@ -2282,7 +2095,7 @@ public class SteemJ {
 
     /**
      * Use this method to up or down vote a post or a comment.
-     * 
+     * <p>
      * <b>Attention</b>
      * <ul>
      * <li>This method will write data on the blockchain. As all writing
@@ -2298,48 +2111,41 @@ public class SteemJ {
      * the {@link #vote(AccountName, AccountName, Permlink, short)} method and
      * provide the voter account separately.</li>
      * </ul>
-     * 
-     * @param postOrCommentAuthor
-     *            The author of the post or the comment to vote for.
-     *            <p>
-     *            Example:<br>
-     *            <code>new AccountName("dez1337")</code>
-     *            </p>
-     * @param postOrCommentPermlink
-     *            The permanent link of the post or the comment to vote for.
-     *            <p>
-     *            Example:<br>
-     *            <code>new Permlink("steemj-v0-2-4-has-been-released-update-9")</code>
-     *            </p>
-     * @param percentage
-     *            Define how much of your voting power should be used to up or
-     *            down vote the post or the comment.
-     *            <ul>
-     *            <li>If you want to up vote the post or the comment provide a
-     *            value between 1 (1.0%) and 100 (100.0%).</li>
-     *            <li>If you want to down vote (as known as <b>flag</b>) the
-     *            post or the comment provide a value between -1 (-1.0%) and
-     *            -100 (-100.0%).</li>
-     *            </ul>
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
-     * @throws InvalidParameterException
-     *             If one of the provided parameters does not fulfill the
-     *             requirements described above.
+     *
+     * @param postOrCommentAuthor   The author of the post or the comment to vote for.
+     *                              <p>
+     *                              Example:<br>
+     *                              <code>new AccountName("dez1337")</code>
+     *                              </p>
+     * @param postOrCommentPermlink The permanent link of the post or the comment to vote for.
+     *                              <p>
+     *                              Example:<br>
+     *                              <code>new Permlink("steemj-v0-2-4-has-been-released-update-9")</code>
+     *                              </p>
+     * @param percentage            Define how much of your voting power should be used to up or
+     *                              down vote the post or the comment.
+     *                              <ul>
+     *                              <li>If you want to up vote the post or the comment provide a
+     *                              value between 1 (1.0%) and 100 (100.0%).</li>
+     *                              <li>If you want to down vote (as known as <b>flag</b>) the
+     *                              post or the comment provide a value between -1 (-1.0%) and
+     *                              -100 (-100.0%).</li>
+     *                              </ul>
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
+     * @throws InvalidParameterException        If one of the provided parameters does not fulfill the
+     *                                          requirements described above.
      */
     public void vote(AccountName postOrCommentAuthor, Permlink postOrCommentPermlink, short percentage)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
@@ -2357,57 +2163,49 @@ public class SteemJ {
      * {@link #vote(AccountName, Permlink, short)} method, but lets you define
      * the <code>voter</code> account separately instead of using the
      * {@link SteemJConfig#getDefaultAccount() DefaultAccount}.
-     * 
-     * @param voter
-     *            The account that should vote for the post or the comment.
-     *            <p>
-     *            Example<br>
-     *            <code>new AccountName("steemj")</code>
-     *            </p>
-     * @param postOrCommentAuthor
-     *            The author of the post or the comment to vote for.
-     *            <p>
-     *            Example:<br>
-     *            <code>new AccountName("dez1337")</code>
-     *            </p>
-     * @param postOrCommentPermlink
-     *            The permanent link of the post or the comment to vote for.
-     *            <p>
-     *            Example:<br>
-     *            <code>new Permlink("steemj-v0-2-4-has-been-released-update-9")</code>
-     *            </p>
-     * @param percentage
-     *            Define how much of your voting power should be used to up or
-     *            down vote the post or the comment.
-     *            <ul>
-     *            <li>If you want to up vote the post or the comment provide a
-     *            value between 1 (1.0%) and 100 (100.0%).</li>
-     *            <li>If you want to down vote (as known as <b>flag</b>) the
-     *            post or the comment provide a value between -1 (-1.0%) and
-     *            -100 (-100.0%).</li>
-     *            </ul>
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
-     * @throws InvalidParameterException
-     *             If one of the provided parameters does not fulfill the
-     *             requirements described above.
+     *
+     * @param voter                 The account that should vote for the post or the comment.
+     *                              <p>
+     *                              Example<br>
+     *                              <code>new AccountName("steemj")</code>
+     *                              </p>
+     * @param postOrCommentAuthor   The author of the post or the comment to vote for.
+     *                              <p>
+     *                              Example:<br>
+     *                              <code>new AccountName("dez1337")</code>
+     *                              </p>
+     * @param postOrCommentPermlink The permanent link of the post or the comment to vote for.
+     *                              <p>
+     *                              Example:<br>
+     *                              <code>new Permlink("steemj-v0-2-4-has-been-released-update-9")</code>
+     *                              </p>
+     * @param percentage            Define how much of your voting power should be used to up or
+     *                              down vote the post or the comment.
+     *                              <ul>
+     *                              <li>If you want to up vote the post or the comment provide a
+     *                              value between 1 (1.0%) and 100 (100.0%).</li>
+     *                              <li>If you want to down vote (as known as <b>flag</b>) the
+     *                              post or the comment provide a value between -1 (-1.0%) and
+     *                              -100 (-100.0%).</li>
+     *                              </ul>
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
+     * @throws InvalidParameterException        If one of the provided parameters does not fulfill the
+     *                                          requirements described above.
      */
     public void vote(AccountName voter, AccountName postOrCommentAuthor, Permlink postOrCommentPermlink,
-            short percentage)
+                     short percentage)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
         if (percentage < -100 || percentage > 100 || percentage == 0) {
             throw new InvalidParameterException(
@@ -2432,7 +2230,7 @@ public class SteemJ {
 
     /**
      * Use this method to cancel a previous vote for a post or a comment.
-     * 
+     * <p>
      * <b>Attention</b>
      * <ul>
      * <li>This method will write data on the blockchain. As all writing
@@ -2448,39 +2246,33 @@ public class SteemJ {
      * the {@link #vote(AccountName, AccountName, Permlink, short)} method and
      * provide the voter account separately.</li>
      * </ul>
-     * 
-     * @param postOrCommentAuthor
-     *            The author of the post or the comment to cancel the vote for.
-     *            <p>
-     *            Example:<br>
-     *            <code>new AccountName("dez1337")</code>
-     *            </p>
-     * @param postOrCommentPermlink
-     *            The permanent link of the post or the comment to cancel the
-     *            vote for.
-     *            <p>
-     *            Example:<br>
-     *            <code>new Permlink("steemj-v0-2-4-has-been-released-update-9")</code>
-     *            </p>
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
-     * @throws InvalidParameterException
-     *             If one of the provided parameters does not fulfill the
-     *             requirements described above.
+     *
+     * @param postOrCommentAuthor   The author of the post or the comment to cancel the vote for.
+     *                              <p>
+     *                              Example:<br>
+     *                              <code>new AccountName("dez1337")</code>
+     *                              </p>
+     * @param postOrCommentPermlink The permanent link of the post or the comment to cancel the
+     *                              vote for.
+     *                              <p>
+     *                              Example:<br>
+     *                              <code>new Permlink("steemj-v0-2-4-has-been-released-update-9")</code>
+     *                              </p>
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
+     * @throws InvalidParameterException        If one of the provided parameters does not fulfill the
+     *                                          requirements described above.
      */
     public void cancelVote(AccountName postOrCommentAuthor, Permlink postOrCommentPermlink)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
@@ -2496,44 +2288,37 @@ public class SteemJ {
      * {@link #cancelVote(AccountName, Permlink)} method, but lets you define
      * the <code>voter</code> account separately instead of using the
      * {@link SteemJConfig#getDefaultAccount() DefaultAccount}.
-     * 
-     * @param voter
-     *            The account that should vote for the post or the comment.
-     *            <p>
-     *            Example<br>
-     *            <code>new AccountName("steemj")</code>
-     *            </p>
-     * @param postOrCommentAuthor
-     *            The author of the post or the comment to vote for.
-     *            <p>
-     *            Example:<br>
-     *            <code>new AccountName("dez1337")</code>
-     *            </p>
-     * @param postOrCommentPermlink
-     *            The permanent link of the post or the comment to vote for.
-     *            <p>
-     *            Example:<br>
-     *            <code>new Permlink("steemj-v0-2-4-has-been-released-update-9")</code>
-     *            </p>
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
-     * @throws InvalidParameterException
-     *             If one of the provided parameters does not fulfill the
-     *             requirements described above.
+     *
+     * @param voter                 The account that should vote for the post or the comment.
+     *                              <p>
+     *                              Example<br>
+     *                              <code>new AccountName("steemj")</code>
+     *                              </p>
+     * @param postOrCommentAuthor   The author of the post or the comment to vote for.
+     *                              <p>
+     *                              Example:<br>
+     *                              <code>new AccountName("dez1337")</code>
+     *                              </p>
+     * @param postOrCommentPermlink The permanent link of the post or the comment to vote for.
+     *                              <p>
+     *                              Example:<br>
+     *                              <code>new Permlink("steemj-v0-2-4-has-been-released-update-9")</code>
+     *                              </p>
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
+     * @throws InvalidParameterException        If one of the provided parameters does not fulfill the
+     *                                          requirements described above.
      */
     public void cancelVote(AccountName voter, AccountName postOrCommentAuthor, Permlink postOrCommentPermlink)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
@@ -2554,7 +2339,7 @@ public class SteemJ {
 
     /**
      * Use this method to follow the <code>accountToFollow</code>.
-     * 
+     * <p>
      * <b>Attention</b>
      * <ul>
      * <li>This method will write data on the blockchain. As all writing
@@ -2571,30 +2356,25 @@ public class SteemJ {
      * {@link #follow(AccountName, AccountName)} method and provide the
      * following account separately.</li>
      * </ul>
-     * 
-     * @param accountToFollow
-     *            The account name of the account the
-     *            {@link SteemJConfig#getDefaultAccount() DefaultAccount} should
-     *            follow.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
-     * @throws InvalidParameterException
-     *             If one of the provided parameters does not fulfill the
-     *             requirements described above.
+     *
+     * @param accountToFollow The account name of the account the
+     *                        {@link SteemJConfig#getDefaultAccount() DefaultAccount} should
+     *                        follow.
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
+     * @throws InvalidParameterException        If one of the provided parameters does not fulfill the
+     *                                          requirements described above.
      */
     public void follow(AccountName accountToFollow)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
@@ -2609,33 +2389,27 @@ public class SteemJ {
      * This method is equivalent to the {@link #follow(AccountName)} method, but
      * lets you define the <code>accountThatFollows</code> separately instead of
      * using the {@link SteemJConfig#getDefaultAccount() DefaultAccount}.
-     * 
-     * @param accountThatFollows
-     *            The account name of the account that will follow the
-     *            <code>accountToFollow</code>.
-     * @param accountToFollow
-     *            The account name of the account the
-     *            {@link SteemJConfig#getDefaultAccount() DefaultAccount} should
-     *            follow.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
-     * @throws InvalidParameterException
-     *             If one of the provided parameters does not fulfill the
-     *             requirements described above.
+     *
+     * @param accountThatFollows The account name of the account that will follow the
+     *                           <code>accountToFollow</code>.
+     * @param accountToFollow    The account name of the account the
+     *                           {@link SteemJConfig#getDefaultAccount() DefaultAccount} should
+     *                           follow.
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
+     * @throws InvalidParameterException        If one of the provided parameters does not fulfill the
+     *                                          requirements described above.
      */
     public void follow(AccountName accountThatFollows, AccountName accountToFollow)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
@@ -2663,7 +2437,7 @@ public class SteemJ {
 
     /**
      * Use this method to unfollow the <code>accountToUnfollow</code>.
-     * 
+     * <p>
      * <b>Attention</b>
      * <ul>
      * <li>This method will write data on the blockchain. As all writing
@@ -2680,30 +2454,25 @@ public class SteemJ {
      * please use the {@link #follow(AccountName, AccountName)} method and
      * provide the following account separately.</li>
      * </ul>
-     * 
-     * @param accountToUnfollow
-     *            The account name of the account the
-     *            {@link SteemJConfig#getDefaultAccount() DefaultAccount} should
-     *            no longer follow.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
-     * @throws InvalidParameterException
-     *             If one of the provided parameters does not fulfill the
-     *             requirements described above.
+     *
+     * @param accountToUnfollow The account name of the account the
+     *                          {@link SteemJConfig#getDefaultAccount() DefaultAccount} should
+     *                          no longer follow.
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
+     * @throws InvalidParameterException        If one of the provided parameters does not fulfill the
+     *                                          requirements described above.
      */
     public void unfollow(AccountName accountToUnfollow)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
@@ -2719,33 +2488,27 @@ public class SteemJ {
      * but lets you define the <code>accountThatUnfollows</code> account
      * separately instead of using the {@link SteemJConfig#getDefaultAccount()
      * DefaultAccount}.
-     * 
-     * @param accountThatUnfollows
-     *            The account name of the account that will no longer follow the
-     *            <code>accountToUnfollow</code>.
-     * @param accountToUnfollow
-     *            The account name of the account the
-     *            {@link SteemJConfig#getDefaultAccount() DefaultAccount} should
-     *            no longer follow.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
-     * @throws InvalidParameterException
-     *             If one of the provided parameters does not fulfill the
-     *             requirements described above.
+     *
+     * @param accountThatUnfollows The account name of the account that will no longer follow the
+     *                             <code>accountToUnfollow</code>.
+     * @param accountToUnfollow    The account name of the account the
+     *                             {@link SteemJConfig#getDefaultAccount() DefaultAccount} should
+     *                             no longer follow.
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
+     * @throws InvalidParameterException        If one of the provided parameters does not fulfill the
+     *                                          requirements described above.
      */
     public void unfollow(AccountName accountThatUnfollows, AccountName accountToUnfollow)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
@@ -2773,7 +2536,7 @@ public class SteemJ {
 
     /**
      * Use this method to reblog a post.
-     * 
+     * <p>
      * <b>Attention</b>
      * <ul>
      * <li>This method will write data on the blockchain. As all writing
@@ -2793,30 +2556,24 @@ public class SteemJ {
      * <li>Please be aware that there is no way to undo a reblog operation - If
      * a post has been reblogged it has been reblogged.
      * </ul>
-     * 
-     * @param authorOfThePostToReblog
-     *            The author of the post to reblog.
-     * @param permlinkOfThePostToReblog
-     *            The permlink of the post to reblog.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
-     * @throws InvalidParameterException
-     *             If one of the provided parameters does not fulfill the
-     *             requirements described above.
+     *
+     * @param authorOfThePostToReblog   The author of the post to reblog.
+     * @param permlinkOfThePostToReblog The permlink of the post to reblog.
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
+     * @throws InvalidParameterException        If one of the provided parameters does not fulfill the
+     *                                          requirements described above.
      */
     public void reblog(AccountName authorOfThePostToReblog, Permlink permlinkOfThePostToReblog)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
@@ -2832,37 +2589,30 @@ public class SteemJ {
      * method, but lets you define the <code>accountThatReblogsThePost</code>
      * account separately instead of using the
      * {@link SteemJConfig#getDefaultAccount() DefaultAccount}.
-     * 
-     * @param accountThatReblogsThePost
-     *            The account who wants to reblog the post defined by the
-     *            <code>accountThatResteemsThePost</code> and
-     *            <code>authorOfThePostToResteem</code> parameters.
-     * @param authorOfThePostToReblog
-     *            The author of the post to reblog.
-     * @param permlinkOfThePostToReblog
-     *            The permlink of the post to reblog.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
-     * @throws InvalidParameterException
-     *             If one of the provided parameters does not fulfill the
-     *             requirements described above.
+     *
+     * @param accountThatReblogsThePost The account who wants to reblog the post defined by the
+     *                                  <code>accountThatResteemsThePost</code> and
+     *                                  <code>authorOfThePostToResteem</code> parameters.
+     * @param authorOfThePostToReblog   The author of the post to reblog.
+     * @param permlinkOfThePostToReblog The permlink of the post to reblog.
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
+     * @throws InvalidParameterException        If one of the provided parameters does not fulfill the
+     *                                          requirements described above.
      */
     public void reblog(AccountName accountThatReblogsThePost, AccountName authorOfThePostToReblog,
-            Permlink permlinkOfThePostToReblog)
+                       Permlink permlinkOfThePostToReblog)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
         ArrayList<Operation> operations = new ArrayList<>();
 
@@ -2889,7 +2639,7 @@ public class SteemJ {
 
     /**
      * Use this method to create a new post.
-     * 
+     * <p>
      * <b>Attention</b>
      * <ul>
      * <li>This method will write data on the blockchain. As all writing
@@ -2910,37 +2660,30 @@ public class SteemJ {
      * {@link #createPost(AccountName, String, String, String[])} method and
      * provide the author account separately.</li>
      * </ul>
-     * 
-     * @param title
-     *            The title of the post to publish.
-     * @param content
-     *            The content of the post to publish.
-     * @param tags
-     *            A list of tags while the first tag in this list is the main
-     *            tag. You can provide up to five tags but at least one needs to
-     *            be provided.
+     *
+     * @param title   The title of the post to publish.
+     * @param content The content of the post to publish.
+     * @param tags    A list of tags while the first tag in this list is the main
+     *                tag. You can provide up to five tags but at least one needs to
+     *                be provided.
      * @return The {@link CommentOperation} which has been created within this
-     *         method. The returned Operation allows you to access the generated
-     *         values.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
-     * @throws InvalidParameterException
-     *             If one of the provided parameters does not fulfill the
-     *             requirements described above.
+     * method. The returned Operation allows you to access the generated
+     * values.
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
+     * @throws InvalidParameterException        If one of the provided parameters does not fulfill the
+     *                                          requirements described above.
      */
     public CommentOperation createPost(String title, String content, String[] tags)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
@@ -2956,42 +2699,34 @@ public class SteemJ {
      * {@link #createPost(String, String, String[])} method, but lets you define
      * the <code>authorThatPublishsThePost</code> account separately instead of
      * using the {@link SteemJConfig#getDefaultAccount() DefaultAccount}.
-     * 
-     * @param authorThatPublishsThePost
-     *            The account who wants to publish the post.
-     * @param title
-     *            The title of the post to publish.
-     * @param content
-     *            The content of the post to publish.
-     * @param tags
-     *            A list of tags while the first tag in this list is the main
-     *            tag. You can provide up to five tags but at least one needs to
-     *            be provided.
+     *
+     * @param authorThatPublishsThePost The account who wants to publish the post.
+     * @param title                     The title of the post to publish.
+     * @param content                   The content of the post to publish.
+     * @param tags                      A list of tags while the first tag in this list is the main
+     *                                  tag. You can provide up to five tags but at least one needs to
+     *                                  be provided.
      * @return The {@link CommentOperation} which has been created within this
-     *         method. The returned Operation allows you to access the generated
-     *         values.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
-     * @throws InvalidParameterException
-     *             If one of the provided parameters does not fulfill the
-     *             requirements described above.
+     * method. The returned Operation allows you to access the generated
+     * values.
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
+     * @throws InvalidParameterException        If one of the provided parameters does not fulfill the
+     *                                          requirements described above.
      */
     public CommentOperation createPost(AccountName authorThatPublishsThePost, String title, String content,
-            String[] tags)
+                                       String[] tags)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
         if (tags == null || tags.length < 1 || tags.length > 5) {
             throw new InvalidParameterException(TAG_ERROR_MESSAGE);
@@ -3057,7 +2792,7 @@ public class SteemJ {
 
     /**
      * Use this method to create a new comment.
-     * 
+     * <p>
      * <b>Attention</b>
      * <ul>
      * <li>This method will write data on the blockchain. As all writing
@@ -3078,42 +2813,34 @@ public class SteemJ {
      * {@link #createComment(AccountName, AccountName, Permlink, String, String[])}
      * method and provide the author account separately.</li>
      * </ul>
-     * 
-     * @param authorOfThePostOrCommentToReplyTo
-     *            The author of the post or comment to reply to.
-     * @param permlinkOfThePostOrCommentToReplyTo
-     *            The permlink of the post or comment to reply to.
-     * @param content
-     *            The content to publish.
-     * @param tags
-     *            A list of tags while the first tag in this list is the main
-     *            tag. You can provide up to five tags but at least one needs to
-     *            be provided.
+     *
+     * @param authorOfThePostOrCommentToReplyTo   The author of the post or comment to reply to.
+     * @param permlinkOfThePostOrCommentToReplyTo The permlink of the post or comment to reply to.
+     * @param content                             The content to publish.
+     * @param tags                                A list of tags while the first tag in this list is the main
+     *                                            tag. You can provide up to five tags but at least one needs to
+     *                                            be provided.
      * @return The {@link CommentOperation} which has been created within this
-     *         method. The returned Operation allows you to access the generated
-     *         values.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
-     * @throws InvalidParameterException
-     *             If one of the provided parameters does not fulfill the
-     *             requirements described above.
+     * method. The returned Operation allows you to access the generated
+     * values.
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
+     * @throws InvalidParameterException        If one of the provided parameters does not fulfill the
+     *                                          requirements described above.
      */
     public CommentOperation createComment(AccountName authorOfThePostOrCommentToReplyTo,
-            Permlink permlinkOfThePostOrCommentToReplyTo, String content, String[] tags)
+                                          Permlink permlinkOfThePostOrCommentToReplyTo, String content, String[] tags)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
         if (SteemJConfig.getInstance().getDefaultAccount().isEmpty()) {
             throw new InvalidParameterException(NO_DEFAULT_ACCOUNT_ERROR_MESSAGE);
@@ -3129,45 +2856,36 @@ public class SteemJ {
      * but lets you define the <code>authorThatPublishsTheComment</code> account
      * separately instead of using the {@link SteemJConfig#getDefaultAccount()
      * DefaultAccount}.
-     * 
-     * @param authorThatPublishsTheComment
-     *            The account that wants to publish the comment.
-     * @param authorOfThePostOrCommentToReplyTo
-     *            The author of the post or comment to reply to.
-     * @param permlinkOfThePostOrCommentToReplyTo
-     *            The permlink of the post or comment to reply to.
-     * @param content
-     *            The content to publish.
-     * @param tags
-     *            A list of tags while the first tag in this list is the main
-     *            tag. You can provide up to five tags but at least one needs to
-     *            be provided.
+     *
+     * @param authorThatPublishsTheComment        The account that wants to publish the comment.
+     * @param authorOfThePostOrCommentToReplyTo   The author of the post or comment to reply to.
+     * @param permlinkOfThePostOrCommentToReplyTo The permlink of the post or comment to reply to.
+     * @param content                             The content to publish.
+     * @param tags                                A list of tags while the first tag in this list is the main
+     *                                            tag. You can provide up to five tags but at least one needs to
+     *                                            be provided.
      * @return The {@link CommentOperation} which has been created within this
-     *         method. The returned Operation allows you to access the generated
-     *         values.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
-     * @throws InvalidParameterException
-     *             If one of the provided parameters does not fulfill the
-     *             requirements described above.
+     * method. The returned Operation allows you to access the generated
+     * values.
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
+     * @throws InvalidParameterException        If one of the provided parameters does not fulfill the
+     *                                          requirements described above.
      */
     public CommentOperation createComment(AccountName authorThatPublishsTheComment,
-            AccountName authorOfThePostOrCommentToReplyTo, Permlink permlinkOfThePostOrCommentToReplyTo, String content,
-            String[] tags)
+                                          AccountName authorOfThePostOrCommentToReplyTo, Permlink permlinkOfThePostOrCommentToReplyTo, String content,
+                                          String[] tags)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
         if (tags == null || tags.length < 1 || tags.length > 5) {
             throw new InvalidParameterException(TAG_ERROR_MESSAGE);
@@ -3231,7 +2949,7 @@ public class SteemJ {
 
     /**
      * Use this method to update an existing post.
-     * 
+     * <p>
      * <b>Attention</b>
      * <ul>
      * <li>Updating a post only works if Steem can identify the existing post -
@@ -3254,42 +2972,34 @@ public class SteemJ {
      * {@link #updatePost(AccountName, Permlink, String, String, String[])}
      * method and provide the author account separately.</li>
      * </ul>
-     * 
-     * @param permlinkOfThePostToUpdate
-     *            The permlink of the post to update. <b>Attention</b> If the
-     *            permlink is not configured currently, SteemJ could accidently
-     *            create a new post instead of updating an existing one.
-     * @param title
-     *            The new title of the post to set.
-     * @param content
-     *            The new content of the post to set.
-     * @param tags
-     *            The new tags of the post. <b>Attention</b> The first tag still
-     *            needs to be the same as before otherwise SteemJ could
-     *            accidently create a new post instead of updating an existing
-     *            one.
+     *
+     * @param permlinkOfThePostToUpdate The permlink of the post to update. <b>Attention</b> If the
+     *                                  permlink is not configured currently, SteemJ could accidently
+     *                                  create a new post instead of updating an existing one.
+     * @param title                     The new title of the post to set.
+     * @param content                   The new content of the post to set.
+     * @param tags                      The new tags of the post. <b>Attention</b> The first tag still
+     *                                  needs to be the same as before otherwise SteemJ could
+     *                                  accidently create a new post instead of updating an existing
+     *                                  one.
      * @return The {@link CommentOperation} which has been created within this
-     *         method. The returned Operation allows you to access the generated
-     *         values.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
-     * @throws InvalidParameterException
-     *             If one of the provided parameters does not fulfill the
-     *             requirements described above.
+     * method. The returned Operation allows you to access the generated
+     * values.
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
+     * @throws InvalidParameterException        If one of the provided parameters does not fulfill the
+     *                                          requirements described above.
      */
     public CommentOperation updatePost(Permlink permlinkOfThePostToUpdate, String title, String content, String[] tags)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
@@ -3307,48 +3017,39 @@ public class SteemJ {
      * you define the <code>authorOfThePostToUpdate</code> account separately
      * instead of using the {@link SteemJConfig#getDefaultAccount()
      * DefaultAccount}.
-     * 
-     * @param authorOfThePostToUpdate
-     *            The account that wants to perform the update. In most cases,
-     *            this should be the author of the already existing post.
-     * @param permlinkOfThePostToUpdate
-     *            The permlink of the post to update. <b>Attention</b> If the
-     *            permlink is not configured currently, SteemJ could accidently
-     *            create a new post instead of updating an existing one.
-     * @param title
-     *            The new title of the post to set.
-     * @param content
-     *            The new content of the post to set.
-     * @param tags
-     *            The new tags of the post. <b>Attention</b> The first tag still
-     *            needs to be the same as before otherwise SteemJ could
-     *            accidently create a new post instead of updating an existing
-     *            one.
+     *
+     * @param authorOfThePostToUpdate   The account that wants to perform the update. In most cases,
+     *                                  this should be the author of the already existing post.
+     * @param permlinkOfThePostToUpdate The permlink of the post to update. <b>Attention</b> If the
+     *                                  permlink is not configured currently, SteemJ could accidently
+     *                                  create a new post instead of updating an existing one.
+     * @param title                     The new title of the post to set.
+     * @param content                   The new content of the post to set.
+     * @param tags                      The new tags of the post. <b>Attention</b> The first tag still
+     *                                  needs to be the same as before otherwise SteemJ could
+     *                                  accidently create a new post instead of updating an existing
+     *                                  one.
      * @return The {@link CommentOperation} which has been created within this
-     *         method. The returned Operation allows you to access the generated
-     *         values.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
-     * @throws InvalidParameterException
-     *             If one of the provided parameters does not fulfill the
-     *             requirements described above.
+     * method. The returned Operation allows you to access the generated
+     * values.
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
+     * @throws InvalidParameterException        If one of the provided parameters does not fulfill the
+     *                                          requirements described above.
      */
     public CommentOperation updatePost(AccountName authorOfThePostToUpdate, Permlink permlinkOfThePostToUpdate,
-            String title, String content, String[] tags)
+                                       String title, String content, String[] tags)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
         if (tags == null || tags.length < 1 || tags.length > 5) {
             throw new InvalidParameterException(TAG_ERROR_MESSAGE);
@@ -3380,7 +3081,7 @@ public class SteemJ {
 
     /**
      * Use this method to update an existing comment.
-     * 
+     * <p>
      * <b>Attention</b>
      * <ul>
      * <li>Updating a comment only works if Steem can identify the existing
@@ -3404,47 +3105,38 @@ public class SteemJ {
      * {@link #updateComment(AccountName, AccountName, Permlink, Permlink, String, String[])}
      * method and provide the author account separately.</li>
      * </ul>
-     * 
-     * @param parentAuthor
-     *            The author of the post or comment that you initially replied
-     *            to.
-     * @param parentPermlink
-     *            The permlink of the post or comment that you initially replied
-     *            to.
-     * @param originalPermlinkOfTheCommentToUpdate
-     *            The permlink of the comment to update.
-     * @param content
-     *            The new content of the comment to set.
-     * @param tags
-     *            The new tags of the comment. <b>Attention</b> The first tag
-     *            still needs to be the same as before otherwise SteemJ could
-     *            accidently create a new comment instead of updating an
-     *            existing one.
+     *
+     * @param parentAuthor                         The author of the post or comment that you initially replied
+     *                                             to.
+     * @param parentPermlink                       The permlink of the post or comment that you initially replied
+     *                                             to.
+     * @param originalPermlinkOfTheCommentToUpdate The permlink of the comment to update.
+     * @param content                              The new content of the comment to set.
+     * @param tags                                 The new tags of the comment. <b>Attention</b> The first tag
+     *                                             still needs to be the same as before otherwise SteemJ could
+     *                                             accidently create a new comment instead of updating an
+     *                                             existing one.
      * @return The {@link CommentOperation} which has been created within this
-     *         method. The returned Operation allows you to access the generated
-     *         values.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
-     * @throws InvalidParameterException
-     *             If one of the provided parameters does not fulfill the
-     *             requirements described above.
+     * method. The returned Operation allows you to access the generated
+     * values.
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
+     * @throws InvalidParameterException        If one of the provided parameters does not fulfill the
+     *                                          requirements described above.
      */
     public CommentOperation updateComment(AccountName parentAuthor, Permlink parentPermlink,
-            Permlink originalPermlinkOfTheCommentToUpdate, String content, String[] tags)
+                                          Permlink originalPermlinkOfTheCommentToUpdate, String content, String[] tags)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
         if (SteemJConfig.getInstance().getDefaultAccount().isEmpty()) {
             throw new InvalidParameterException(NO_DEFAULT_ACCOUNT_ERROR_MESSAGE);
@@ -3461,50 +3153,40 @@ public class SteemJ {
      * <code>originalAuthorOfTheCommentToUpdate</code> account separately
      * instead of using the {@link SteemJConfig#getDefaultAccount()
      * DefaultAccount}.
-     * 
-     * @param originalAuthorOfTheCommentToUpdate
-     *            The account that wants to perform the update. In most cases,
-     *            this should be the author of the already existing comment.
-     * @param parentAuthor
-     *            The author of the post or comment that you initially replied
-     *            to.
-     * @param parentPermlink
-     *            The permlink of the post or comment that you initially replied
-     *            to.
-     * @param originalPermlinkOfTheCommentToUpdate
-     *            The permlink of the comment to update.
-     * @param content
-     *            The new content of the comment to set.
-     * @param tags
-     *            The new tags of the comment. <b>Attention</b> The first tag
-     *            still needs to be the same as before otherwise SteemJ could
-     *            accidently create a new comment instead of updating an
-     *            existing one.
+     *
+     * @param originalAuthorOfTheCommentToUpdate   The account that wants to perform the update. In most cases,
+     *                                             this should be the author of the already existing comment.
+     * @param parentAuthor                         The author of the post or comment that you initially replied
+     *                                             to.
+     * @param parentPermlink                       The permlink of the post or comment that you initially replied
+     *                                             to.
+     * @param originalPermlinkOfTheCommentToUpdate The permlink of the comment to update.
+     * @param content                              The new content of the comment to set.
+     * @param tags                                 The new tags of the comment. <b>Attention</b> The first tag
+     *                                             still needs to be the same as before otherwise SteemJ could
+     *                                             accidently create a new comment instead of updating an
+     *                                             existing one.
      * @return The {@link CommentOperation} which has been created within this
-     *         method. The returned Operation allows you to access the generated
-     *         values.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
-     * @throws InvalidParameterException
-     *             If one of the provided parameters does not fulfill the
-     *             requirements described above.
+     * method. The returned Operation allows you to access the generated
+     * values.
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
+     * @throws InvalidParameterException        If one of the provided parameters does not fulfill the
+     *                                          requirements described above.
      */
     public CommentOperation updateComment(AccountName originalAuthorOfTheCommentToUpdate, AccountName parentAuthor,
-            Permlink parentPermlink, Permlink originalPermlinkOfTheCommentToUpdate, String content, String[] tags)
+                                          Permlink parentPermlink, Permlink originalPermlinkOfTheCommentToUpdate, String content, String[] tags)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
         if (tags == null || tags.length < 1 || tags.length > 5) {
             throw new InvalidParameterException(TAG_ERROR_MESSAGE);
@@ -3532,7 +3214,7 @@ public class SteemJ {
 
     /**
      * Use this method to remove a comment or a post.
-     * 
+     * <p>
      * <b>Attention</b>
      * <ul>
      * <li>This method will write data on the blockchain. As all writing
@@ -3549,33 +3231,27 @@ public class SteemJ {
      * {@link #deletePostOrComment(AccountName, Permlink)} method and provide
      * the author account separately.</li>
      * </ul>
-     * 
-     * 
-     * @param postOrCommentPermlink
-     *            The permanent link of the post or the comment to delete.
-     *            <p>
-     *            Example:<br>
-     *            <code>new Permlink("steemj-v0-2-4-has-been-released-update-9")</code>
-     *            </p>
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
-     * @throws InvalidParameterException
-     *             If one of the provided parameters does not fulfill the
-     *             requirements described above.
+     *
+     * @param postOrCommentPermlink The permanent link of the post or the comment to delete.
+     *                              <p>
+     *                              Example:<br>
+     *                              <code>new Permlink("steemj-v0-2-4-has-been-released-update-9")</code>
+     *                              </p>
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
+     * @throws InvalidParameterException        If one of the provided parameters does not fulfill the
+     *                                          requirements described above.
      */
     public void deletePostOrComment(Permlink postOrCommentPermlink)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
@@ -3590,38 +3266,32 @@ public class SteemJ {
      * This method is like the {@link #deletePostOrComment(Permlink)} method,
      * but allows you to define the author account separately instead of using
      * the {@link SteemJConfig#getDefaultAccount() DefaultAccount}.
-     * 
-     * @param postOrCommentAuthor
-     *            The author of the post or the comment to vote for.
-     *            <p>
-     *            Example:<br>
-     *            <code>new AccountName("dez1337")</code>
-     *            </p>
-     * @param postOrCommentPermlink
-     *            The permanent link of the post or the comment to delete.
-     *            <p>
-     *            Example:<br>
-     *            <code>new Permlink("steemj-v0-2-4-has-been-released-update-9")</code>
-     *            </p>
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
-     * @throws InvalidParameterException
-     *             If one of the provided parameters does not fulfill the
-     *             requirements described above.
+     *
+     * @param postOrCommentAuthor   The author of the post or the comment to vote for.
+     *                              <p>
+     *                              Example:<br>
+     *                              <code>new AccountName("dez1337")</code>
+     *                              </p>
+     * @param postOrCommentPermlink The permanent link of the post or the comment to delete.
+     *                              <p>
+     *                              Example:<br>
+     *                              <code>new Permlink("steemj-v0-2-4-has-been-released-update-9")</code>
+     *                              </p>
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
+     * @throws InvalidParameterException        If one of the provided parameters does not fulfill the
+     *                                          requirements described above.
      */
     public void deletePostOrComment(AccountName postOrCommentAuthor, Permlink postOrCommentPermlink)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
@@ -3648,7 +3318,7 @@ public class SteemJ {
      * representation. For example, to transfer 1.00 SBD to another account,
      * simply use:
      * <code>SteemJ.transfer(new AccountName("accountb"), new Asset(1.0, AssetSymbolType.SBD), "My memo");</code>
-     *
+     * <p>
      * <b>Attention</b>
      * <ul>
      * <li>This method will write data on the blockchain. As all writing
@@ -3666,36 +3336,29 @@ public class SteemJ {
      * provide the <code>from</code> account separately.</li>
      * </ul>
      *
-     * @param to
-     *            The account name of the account the
-     *            {@link SteemJConfig#getDefaultAccount() DefaultAccount} should
-     *            transfer currency to.
-     * @param amount
-     *            An {@link Asset} object containing the Asset type (see
-     *            {@link eu.bittrade.libs.steemj.enums.AssetSymbolType} and the
-     *            amount to transfer.
-     * @param memo
-     *            Message include with transfer (255 char max)
+     * @param to     The account name of the account the
+     *               {@link SteemJConfig#getDefaultAccount() DefaultAccount} should
+     *               transfer currency to.
+     * @param amount An {@link Asset} object containing the Asset type (see
+     *               {@link eu.bittrade.libs.steemj.enums.AssetSymbolType} and the
+     *               amount to transfer.
+     * @param memo   Message include with transfer (255 char max)
      * @return The TransferOperation broadcast.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
-     * @throws InvalidParameterException
-     *             If one of the provided parameters does not fulfill the
-     *             requirements described above.
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
+     * @throws InvalidParameterException        If one of the provided parameters does not fulfill the
+     *                                          requirements described above.
      */
     public TransferOperation transfer(AccountName to, Asset amount, String memo)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
@@ -3712,7 +3375,7 @@ public class SteemJ {
      * representation. For example, to transfer 1.00 SBD to another account,
      * simply use:
      * <code>SteemJ.transfer(new AccountName("accounta"), new AccountName("accountb"), AssetSymbolType.SBD, 1.0, "My memo");</code>
-     *
+     * <p>
      * <b>Attention</b> This method will write data on the blockchain. As all
      * writing operations, a private key is required to sign the transaction.
      * For a transfer operation the private active key of the
@@ -3720,36 +3383,28 @@ public class SteemJ {
      * configured in the {@link SteemJConfig#getPrivateKeyStorage()
      * PrivateKeyStorage}.
      *
-     * @param from
-     *            The account from which to transfer currency.
-     * @param to
-     *            The account to which to transfer currency.
-     * @param amount
-     *            An {@link Asset} object containing the Asset type (see
-     *            {@link eu.bittrade.libs.steemj.enums.AssetSymbolType} and the
-     *            amount to transfer.
-     * @param memo
-     *            Message include with transfer (255 char max)
+     * @param from   The account from which to transfer currency.
+     * @param to     The account to which to transfer currency.
+     * @param amount An {@link Asset} object containing the Asset type (see
+     *               {@link eu.bittrade.libs.steemj.enums.AssetSymbolType} and the
+     *               amount to transfer.
+     * @param memo   Message include with transfer (255 char max)
      * @return The TransferOperation broadcast.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
-     * @throws InvalidParameterException
-     *             If one of the provided parameters does not fulfill the
-     *             requirements described above.
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
+     * @throws InvalidParameterException        If one of the provided parameters does not fulfill the
+     *                                          requirements described above.
      */
     public TransferOperation transfer(AccountName from, AccountName to, Asset amount, String memo)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
@@ -3767,7 +3422,7 @@ public class SteemJ {
     /**
      * Claim all available Steem, SDB and VEST (Steam Power) rewards for the
      * default account.
-     *
+     * <p>
      * <b>Attention</b>
      * <ul>
      * <li>This method will write data on the blockchain if a reward balance is
@@ -3784,23 +3439,20 @@ public class SteemJ {
      * </ul>
      *
      * @return The ClaimOperation for reward balances found. This will only have
-     *         been broadcast if one of the balances is non-zero.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
+     * been broadcast if one of the balances is non-zero.
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
      */
     public ClaimRewardBalanceOperation claimRewards()
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
@@ -3814,32 +3466,28 @@ public class SteemJ {
     /**
      * Claim all available Steem, SDB and VEST (Steam Power) rewards for the
      * specified account.
-     *
+     * <p>
      * <b>Attention</b> This method will write data on the blockchain if a
      * reward balance is available to be claimed. As with all writing
      * operations, a private key is required to sign the transaction. See
      * {@link SteemJConfig#getPrivateKeyStorage() PrivateKeyStorage}.
      *
-     * @param accountName
-     *            The account to claim rewards for.
+     * @param accountName The account to claim rewards for.
      * @return The ClaimOperation for reward balances found. This will only have
-     *         been broadcast if one of the balances is non-zero.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
+     * been broadcast if one of the balances is non-zero.
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
      */
     public ClaimRewardBalanceOperation claimRewards(AccountName accountName)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
@@ -3876,27 +3524,22 @@ public class SteemJ {
      * needed. (i.e. a delegation of 0 removes the delegation) When a delegation
      * is removed the shares are placed in limbo for a week to prevent a satoshi
      * of VESTS from voting on the same content twice.
-     * 
-     * @param delegatee
-     *            The account that the vesting shares are delegated to.
-     * @param vestingShares
-     *            The amount of vesting shares.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
+     *
+     * @param delegatee     The account that the vesting shares are delegated to.
+     * @param vestingShares The amount of vesting shares.
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
      */
     public void delegateVestingShares(AccountName delegatee, Asset vestingShares)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
@@ -3912,29 +3555,23 @@ public class SteemJ {
      * {@link #delegateVestingShares(AccountName, AccountName, Asset)} method,
      * but allows you to define the author account separately instead of using
      * the {@link SteemJConfig#getDefaultAccount() DefaultAccount}.
-     * 
-     * @param delegator
-     *            The account that will delegate the vesting shares.
-     * @param delegatee
-     *            The account that the vesting shares are delegated to.
-     * @param vestingShares
-     *            The amount of vesting shares.
-     * @throws SteemCommunicationException
-     *             <ul>
-     *             <li>If the server was not able to answer the request in the
-     *             given time (see
-     *             {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
-     *             setResponseTimeout}).</li>
-     *             <li>If there is a connection problem.</li>
-     *             </ul>
-     * @throws SteemResponseException
-     *             <ul>
-     *             <li>If the SteemJ is unable to transform the JSON response
-     *             into a Java object.</li>
-     *             <li>If the Server returned an error object.</li>
-     *             </ul>
-     * @throws SteemInvalidTransactionException
-     *             If there is a problem while signing the transaction.
+     *
+     * @param delegator     The account that will delegate the vesting shares.
+     * @param delegatee     The account that the vesting shares are delegated to.
+     * @param vestingShares The amount of vesting shares.
+     * @throws SteemCommunicationException      <ul>
+     *                                          <li>If the server was not able to answer the request in the
+     *                                          given time (see
+     *                                          {@link eu.bittrade.libs.steemj.configuration.SteemJConfig#setResponseTimeout(int)
+     *                                          setResponseTimeout}).</li>
+     *                                          <li>If there is a connection problem.</li>
+     *                                          </ul>
+     * @throws SteemResponseException           <ul>
+     *                                          <li>If the SteemJ is unable to transform the JSON response
+     *                                          into a Java object.</li>
+     *                                          <li>If the Server returned an error object.</li>
+     *                                          </ul>
+     * @throws SteemInvalidTransactionException If there is a problem while signing the transaction.
      */
     public void delegateVestingShares(AccountName delegator, AccountName delegatee, Asset vestingShares)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {

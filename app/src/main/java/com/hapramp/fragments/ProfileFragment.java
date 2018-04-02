@@ -20,6 +20,7 @@ import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.api.URLS;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.Feed;
+import com.hapramp.steem.models.user.Profile;
 import com.hapramp.steem.models.user.SteemUser;
 import com.hapramp.utils.ViewItemDecoration;
 
@@ -186,9 +187,10 @@ public class ProfileFragment extends Fragment {
             //hide progress bar
             if (contentLoadingProgress != null) {
                 contentLoadingProgress.setVisibility(View.GONE);
-            }
-        }
 
+            }
+
+        }
     }
 
     private void bindSteemData(SteemUser steemUser) {
@@ -196,6 +198,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void fetchUserProfilePosts() {
+
+        Log.d("ProfilePost",Profile.getDefaultProfileAsJson());
 
         RetrofitServiceGenerator.getService()
                 .getPostsOfUser(username, POST_LIMIT)
@@ -222,7 +226,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void bindProfilePosts(List<Feed> body) {
-        Log.d(TAG, "Post Response :" + body.toString());
+        Profile.fetchUserProfilesFor(body);
         profilePostAdapter.setPosts(body);
         contentLoadingProgress.setVisibility(View.GONE);
     }

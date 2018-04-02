@@ -14,6 +14,7 @@ public class Communities {
     public static final String DRAMATICS = "hapramp-dramatics";
     public static final String TRAVEL = "hapramp-travel";
     public static final String LITERATURE = "hapramp-literature";
+    public static final String DESIGN = "hapramp-design";
     public static final String ALL = "all";
 
 
@@ -38,6 +39,8 @@ public class Communities {
             case TRAVEL:
                 return true;
             case LITERATURE:
+                return true;
+            case DESIGN:
                 return true;
             default:
                 return false;

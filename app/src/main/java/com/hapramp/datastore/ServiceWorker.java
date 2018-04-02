@@ -4,17 +4,23 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.db.DatabaseHelper;
 import com.hapramp.interfaces.datatore_callback.ServiceWorkerCallback;
 import com.hapramp.preferences.CachePreference;
+import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
 import com.hapramp.steem.ServiceWorkerRequestParams;
 import com.hapramp.steem.models.Feed;
+import com.hapramp.steem.models.user.Profile;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.bittrade.libs.steemj.SteemJ;
+import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
+import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -49,7 +55,7 @@ public class ServiceWorker {
     //method to get all feeds(cached or fresh)
     public void requestAllFeeds(final ServiceWorkerRequestParams requestParams) {
 
-        l("Requesting All Feeds : "+requestParams.getCommunityTag());
+        l("Requesting All Feeds : " + requestParams.getCommunityTag());
         this.currentRequestParams = requestParams;
         // TODO: 2/28/2018
         // 1 - check for the cache, if found return else report its absence
@@ -90,7 +96,7 @@ public class ServiceWorker {
     //method to get community feeds from cache or api server
     public void requestCommunityFeeds(final ServiceWorkerRequestParams requestParams) {
 
-        l("Requesting Community Feeds "+requestParams.getCommunityTag());
+        l("Requesting Community Feeds " + requestParams.getCommunityTag());
 
         if (serviceWorkerCallback != null) {
             serviceWorkerCallback.onLoadingFromCache();
@@ -181,6 +187,8 @@ public class ServiceWorker {
                     @Override
                     public void onResponse(Call<List<Feed>> call, final Response<List<Feed>> response) {
 
+                        Profile.fetchUserProfilesFor(response.body());
+
                         // check for life of request(whether other request has came and over-written on this)
                         if (isRequestLive(feedRequestParams)) {
 
@@ -194,6 +202,7 @@ public class ServiceWorker {
                                         public void run() {
                                             l("Caching Feeds!");
                                             mDatabaseHelper.insertFeeds((ArrayList<Feed>) response.body());
+
                                         }
                                     }.start();
 
@@ -241,6 +250,8 @@ public class ServiceWorker {
                 });
 
     }
+
+
 
     private void fetchHotFeeds(final ServiceWorkerRequestParams feedRequestParams) {
         // hot , trending , created are for
