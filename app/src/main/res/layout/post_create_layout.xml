@@ -16,7 +16,7 @@
             android:id="@+id/feed_owner_pic"
             android:layout_width="64dp"
             android:layout_height="match_parent"
-            android:padding="16dp"
+            android:padding="12dp"
             android:src="@drawable/profile" />
 
         <android.support.v4.widget.Space

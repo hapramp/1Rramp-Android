@@ -18,10 +18,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
+import com.hapramp.steem.models.user.SteemUser;
+import com.hapramp.utils.ImageHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,11 +40,11 @@ public class PostCreateComponent extends FrameLayout implements PostCategoryView
 
 
     @BindView(R.id.feed_owner_pic)
-    ImageView feedOwnerPic;
+    ImageView postCreatorPic;
     @BindView(R.id.reference_line)
     Space referenceLine;
     @BindView(R.id.feed_owner_title)
-    TextView feedOwnerTitle;
+    TextView postCreatorTitle;
     @BindView(R.id.feed_owner_subtitle)
     TextView feedOwnerSubtitle;
     @BindView(R.id.club3)
@@ -83,6 +86,17 @@ public class PostCreateComponent extends FrameLayout implements PostCategoryView
         ButterKnife.bind(this,view);
         postCategoryView.initCategory();
         postCategoryView.setCommunitySelectionChangeListener(this);
+        //load post creator pic
+        SteemUser steemUser = new Gson().fromJson(HaprampPreferenceManager.getInstance().getCurrentUserInfoAsJson(), SteemUser.class);
+        String pic_url = steemUser
+                .getUser()
+                .getJsonMetadata()
+                .getProfile()
+                .getProfileImage();
+
+        ImageHandler.loadCircularImage(context,postCreatorPic,pic_url);
+        postCreatorTitle.setText(steemUser.getUser().getJsonMetadata().getProfile().getName());
+
     }
 
 

@@ -120,7 +120,7 @@ public class PostItemView extends FrameLayout {
 
     private void bind(final Feed feed) {
         // set basic meta-info
-        //ImageHandler.loadCircularImage(mContext, feedOwnerPic, post.user.image_uri);
+        //ImageHandler.loadCircularImage(mContext, postCreatorPic, post.user.image_uri);
         feedOwnerTitle.setText(feed.author);
         feedOwnerSubtitle.setText(
                 String.format(mContext.getResources().getString(R.string.post_subtitle_format),
@@ -211,7 +211,7 @@ public class PostItemView extends FrameLayout {
 //
 //        setSkills(post.skills);
 //
-//        feedOwnerPic.setOnClickListener(new OnClickListener() {
+//        postCreatorPic.setOnClickListener(new OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
 //                navigateToUserProfile(post.user.id);
