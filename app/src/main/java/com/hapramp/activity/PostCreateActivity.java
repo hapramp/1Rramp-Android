@@ -3,6 +3,7 @@ package com.hapramp.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -99,7 +101,31 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
         super.onResume();
         //    loadDraft();
     }
-//
+
+    @Override
+    public void onBackPressed() {
+        showExistAlert();
+    }
+
+
+    private void showExistAlert() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle("Close")
+                .setMessage("Do you want to Close Post Creation ?")
+                .setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", null);
+
+        builder.show();
+
+    }
+
+    //
 //    private void loadDraft() {
 //
 ////        //load content
@@ -363,7 +389,7 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
 
         if (requestCode == REQUEST_IMAGE_SELECTOR && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
             try {
-               postCreateComponent.setImageResource(MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData()));
+                postCreateComponent.setImageResource(MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
