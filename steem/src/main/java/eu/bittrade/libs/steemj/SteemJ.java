@@ -17,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.google.common.collect.Lists;
 
 import eu.bittrade.crypto.core.ECKey;
@@ -653,7 +655,7 @@ public class SteemJ {
         return communicationHandler.performRequest(requestObject, ExtendedAccount.class);
     }
 
-    public List<String> getUserProfileImages(List<String> usernames) throws SteemCommunicationException, SteemResponseException {
+    public List<ExtendedAccount> getUserProfiles(List<String> usernames) throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
         requestObject.setSteemApi(SteemApiType.DATABASE_API);
         requestObject.setApiMethod(RequestMethods.GET_ACCOUNTS);
@@ -663,25 +665,10 @@ public class SteemJ {
         for (int i = 0; i < size; i++) {
             innerParameters[i] = usernames.get(i);
         }
-
         String[][] parameters = {innerParameters};
-
         requestObject.setAdditionalParameters(parameters);
-        List<ExtendedAccount> extendedAccounts = communicationHandler.performRequest(requestObject, ExtendedAccount.class);
-        List<String> userProfileImages = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            if(extendedAccounts.get(i).getJsonMetadata().length()>0) {
-                userProfileImages.add(extendedAccounts.get(i).getJsonMetadata());
-            }else{
-                userProfileImages.add(getDefaultProfileAsJson());
-            }
-        }
-        return userProfileImages;
-    }
+        return communicationHandler.performRequest(requestObject, ExtendedAccount.class);
 
-    public static String getDefaultProfileAsJson() {
-        String json = "{\"about\":\"about\",\"location\":\"location\",\"name\":\"name\",\"profile_image\":\"https://user-images.githubusercontent.com/10809719/38206885-b36c8a66-36c9-11e8-9c7a-3bba603b4994.png\",\"website\":\"website\"}";
-        return json;
     }
 
     /**

@@ -7,11 +7,13 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.Feed;
+import com.hapramp.steem.models.ProfileWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import eu.bittrade.libs.steemj.SteemJ;
+import eu.bittrade.libs.steemj.base.models.ExtendedAccount;
 import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
 import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 
@@ -96,12 +98,23 @@ public class Profile {
             public void run() {
                 try {
                     SteemJ steemJ = new SteemJ();
-                    List<String> userData = steemJ.getUserProfileImages(users);
-                    Log.d(TAG, userData.toString());
+                    List<ExtendedAccount> extendedAccounts = steemJ.getUserProfiles(users);
+                    List<String> userProfiles = new ArrayList<>();
+                    for (int i = 0; i < users.size(); i++) {
+                        if (extendedAccounts.get(i).getJsonMetadata().length() > 0) {
+                            // extract profile object
+                            ProfileWrapper profileWrapper = new Gson().fromJson(extendedAccounts.get(i).getJsonMetadata(),ProfileWrapper.class);
+                            userProfiles.add(new Gson().toJson(profileWrapper.getProfile()));
+
+                        } else {
+                            userProfiles.add(getDefaultProfileAsJson());
+                        }
+                    }
+                    //Log.d(TAG, userData.toString());
                     // save to pref
-                    for (int i = 0; i < userData.size(); i++) {
-                        Log.d(TAG, "key:"+users.get(i)+" value:"+userData.get(i));;
-                        HaprampPreferenceManager.getInstance().saveUserProfile(users.get(i), userData.get(i));
+                    for (int i = 0; i < userProfiles.size(); i++) {
+                        Log.d(TAG, "key:" + users.get(i) + " value:" + userProfiles.get(i));
+                        HaprampPreferenceManager.getInstance().saveUserProfile(users.get(i), userProfiles.get(i));
                     }
 
                 } catch (SteemCommunicationException e) {
@@ -127,14 +140,9 @@ public class Profile {
     }
 
     public static String getDefaultProfileAsJson() {
-
-        Profile dummy = new Profile("https://user-images.githubusercontent.com/10809719/38206885-b36c8a66-36c9-11e8-9c7a-3bba603b4994.png",
-                "name",
-                "location",
-                "website",
-                "about");
-        return new Gson().toJson(dummy);
-
+        String json = "{\"about\":\"about\",\"location\":\"location\",\"name\":\"name\",\"profile_image\":\"https://user-images.githubusercontent.com/10809719/38206885-b36c8a66-36c9-11e8-9c7a-3bba603b4994.png\",\"website\":\"website\"}";
+        return json;
     }
+
 
 }

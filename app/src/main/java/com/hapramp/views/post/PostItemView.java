@@ -172,9 +172,11 @@ public class PostItemView extends FrameLayout {
 
         setHapcoins(feed.totalPayoutValue);
         setCommunities(feed.jsonMetadata.tags);
+        Log.d("PostItemView","requesting image for "+feed.author);
         Profile _p = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserProfile(feed.getAuthor()), Profile.class);
+        Log.d("PostItemView","Got: "+HaprampPreferenceManager.getInstance().getUserProfile(feed.getAuthor()));
         if (_p != null) {
-            Log.d("PostItemView", "loading image from " + HaprampPreferenceManager.getInstance().getUserProfile(feed.getAuthor()));
+            Log.d("PostItemView", "loading image from " + _p.getProfileImage());
             ImageHandler.loadCircularImage(mContext, feedOwnerPic, _p.getProfileImage());
         }
 
