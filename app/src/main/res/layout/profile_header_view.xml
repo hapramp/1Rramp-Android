@@ -7,7 +7,7 @@
     <RelativeLayout
         android:id="@+id/profile_header_container"
         android:layout_width="match_parent"
-        android:layout_height="196dp">
+        android:layout_height="256dp">
 
         <ImageView
             android:id="@+id/profile_wall_pic"
@@ -22,6 +22,7 @@
             android:layout_centerHorizontal="true">
 
             <ImageView
+                android:background="@drawable/profile_image_bg"
                 android:id="@+id/profile_pic"
                 android:layout_width="108dp"
                 android:layout_height="108dp"
