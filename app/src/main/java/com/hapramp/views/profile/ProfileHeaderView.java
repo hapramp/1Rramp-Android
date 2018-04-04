@@ -90,6 +90,8 @@ public class ProfileHeaderView extends FrameLayout implements FollowUserCallback
     private boolean isFollowed = false;
     private String mUsername;
     private Handler mHandler;
+    private boolean loaded;
+
     public ProfileHeaderView(@NonNull Context context) {
         super(context);
         init(context);
@@ -116,8 +118,10 @@ public class ProfileHeaderView extends FrameLayout implements FollowUserCallback
     public void setUsername(String username) {
         this.mUsername = username;
         if (username != null) {
-            fetchUserInfo();
-            fetchFollowInfo();
+            if(!loaded) {
+                fetchUserInfo();
+                fetchFollowInfo();
+            }
         }
     }
 
@@ -153,6 +157,8 @@ public class ProfileHeaderView extends FrameLayout implements FollowUserCallback
     }
 
     private void bind(SteemUser data) {
+
+        loaded = true;
 
         ImageHandler.loadCircularImage(mContext, profilePic, data.getUser().getJsonMetadata().getProfile().getProfileImage());
 
