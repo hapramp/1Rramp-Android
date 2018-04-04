@@ -4,6 +4,8 @@ import com.hapramp.models.CommunityModel;
 import com.hapramp.models.CommunitySelectionServerUpdateBody;
 import com.hapramp.models.UserDataUpdateBody;
 import com.hapramp.models.UserResponse;
+import com.hapramp.models.VoteModel;
+import com.hapramp.models.VoteStatus;
 import com.hapramp.models.requests.FollowRequestBody;
 import com.hapramp.models.requests.SteemLoginResponseModel;
 import com.hapramp.models.requests.SteemSignupRequestModel;
@@ -99,8 +101,14 @@ public interface HaprampAPI {
     @GET
     Call<SteemUser> getSteemUser(@Url String url);
 
+    @GET("posts/votes")
+    Call<List<VoteModel>> getPostVotes(@Query("permlink") String permlink);
 
+    @POST("posts/votes")
+    Call<VoteStatus> castVote(@Query("permlink") String permlink, @Body VoteRequestBody voteRequestBody);
 
+    @DELETE("posts/votes")
+    Call<VoteStatus> deleteVote(@Query("permlink") String permlink);
 
 
 
@@ -178,8 +186,8 @@ public interface HaprampAPI {
     @PUT("users/{user_id}")
     Call<UserResponse> updateUserBio(@Path("user_id") String userId, @Body UserBioUpdateRequestBody body);
 
-    @POST("posts/{post_id}/votes")
-    Call<Feed> votePost(@Path("post_id") String postId, @Body VoteRequestBody body);
+//    @POST("posts/{post_id}/votes")
+//    Call<Feed> votePost(@Path("post_id") String postId, @Body VoteRequestBody body);
 
     @DELETE("posts/{post_id}/votes")
     Call<Feed> deleteVote(@Path("post_id") int postId);

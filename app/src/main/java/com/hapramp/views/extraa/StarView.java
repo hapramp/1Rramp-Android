@@ -96,7 +96,7 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
 
         this.legacyState = new Vote(
                 voteState.iHaveVoted,
-                voteState.postId,
+                voteState.postPermlink,
                 voteState.myVote,
                 voteState.totalVotedUsers,
                 voteState.totalVotesSum);
@@ -144,7 +144,7 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
         float _rating = currentState.getTotalVotesSum();
         int _totalUser = (int) currentState.getTotalVotedUsers();
 
-        return _totalUser > 0 ? String.format(mContext.getResources().getString(R.string.star_info), ((_rating) / _totalUser), _totalUser) : "0.0 of 0";
+        return _totalUser > 0 ? String.format(mContext.getResources().getString(R.string.star_info), ((_rating) / _totalUser), _totalUser) : "0.0 from 0";
 
     }
 
@@ -328,11 +328,11 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
     }
 
     private void sendVoteToAppServer() {
-        onVoteUpdateCallback.onVoted(currentState.postId,(int) currentState.myVote);
+        onVoteUpdateCallback.onVoted(currentState.postPermlink,(int) currentState.myVote);
     }
 
     private void deleteVoteFromAppServer() {
-        onVoteUpdateCallback.onVoteDeleted(currentState.postId);
+        onVoteUpdateCallback.onVoteDeleted(currentState.postPermlink);
     }
 
     @Override
@@ -368,7 +368,7 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
     public static class Vote {
 
         boolean iHaveVoted;
-        int postId;
+        String postPermlink;
         float myVote;
         float totalVotedUsers;
         float totalVotesSum;
@@ -376,9 +376,9 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
         public Vote() {
         }
 
-        public Vote(boolean iHaveVoted, int postId, float vote, float totalVotedUsers, float totalVotesSum) {
+        public Vote(boolean iHaveVoted, String postPermlink, float vote, float totalVotedUsers, float totalVotesSum) {
             this.iHaveVoted = iHaveVoted;
-            this.postId = postId;
+            this.postPermlink = postPermlink;
             this.myVote = vote;
             this.totalVotedUsers = totalVotedUsers;
             this.totalVotesSum = totalVotesSum;
@@ -420,7 +420,7 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
         public String toString() {
             return "Vote{" +
                     "iHaveVoted=" + iHaveVoted +
-                    ", postId=" + postId +
+                    ", postPermlink=" + postPermlink +
                     ", myVote=" + myVote +
                     ", totalVotedUsers=" + totalVotedUsers +
                     ", totalVotesSum=" + totalVotesSum +
@@ -430,8 +430,8 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
 
     public interface onVoteUpdateCallback{
 
-        void onVoted(int postId, int vote);
-        void onVoteDeleted(int postId);
+        void onVoted(String permlink, int vote);
+        void onVoteDeleted(String permlink);
 
     }
 

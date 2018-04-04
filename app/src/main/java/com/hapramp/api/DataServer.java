@@ -592,23 +592,23 @@ public class DataServer {
 
     public static void votePost(String postId, final VoteRequestBody body, final VotePostCallback callback) {
 
-        getService()
-                .votePost(postId, body)
-                .enqueue(new Callback<Feed>() {
-                    @Override
-                    public void onResponse(Call<Feed> call, Response<Feed> response) {
-                        if (response.isSuccessful()) {
-                            callback.onPostVoted(response.body());
-                        } else {
-                            callback.onPostVoteError();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Feed> call, Throwable t) {
-                        callback.onPostVoteError();
-                    }
-                });
+//        getService()
+//                .votePost(postId, body)
+//                .enqueue(new Callback<Feed>() {
+//                    @Override
+//                    public void onResponse(Call<Feed> call, Response<Feed> response) {
+//                        if (response.isSuccessful()) {
+//                            callback.onPostVoted(response.body());
+//                        } else {
+//                            callback.onPostVoteError();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<Feed> call, Throwable t) {
+//                        callback.onPostVoteError();
+//                    }
+//                });
 
     }
 

@@ -17,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hapramp.R;
@@ -24,10 +25,13 @@ import com.hapramp.activity.CommentsActivity;
 import com.hapramp.activity.DetailedActivity;
 import com.hapramp.activity.ProfileActivity;
 import com.hapramp.api.DataServer;
+import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.interfaces.OnPostDeleteCallback;
 import com.hapramp.interfaces.VoteDeleteCallback;
 import com.hapramp.interfaces.VotePostCallback;
 import com.hapramp.models.CommunityModel;
+import com.hapramp.models.VoteModel;
+import com.hapramp.models.VoteStatus;
 import com.hapramp.models.requests.VoteRequestBody;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -47,6 +51,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Ankit on 12/30/2017.
@@ -172,13 +179,15 @@ public class PostItemView extends FrameLayout {
 
         setHapcoins(feed.totalPayoutValue);
         setCommunities(feed.jsonMetadata.tags);
-        Log.d("PostItemView","requesting image for "+feed.author);
+        Log.d("PostItemView", "requesting image for " + feed.author);
         Profile _p = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserProfile(feed.getAuthor()), Profile.class);
-        Log.d("PostItemView","Got: "+HaprampPreferenceManager.getInstance().getUserProfile(feed.getAuthor()));
+        Log.d("PostItemView", "Got: " + HaprampPreferenceManager.getInstance().getUserProfile(feed.getAuthor()));
         if (_p != null) {
             Log.d("PostItemView", "loading image from " + _p.getProfileImage());
             ImageHandler.loadCircularImage(mContext, feedOwnerPic, _p.getProfileImage());
         }
+
+        fetchVotes(String.format("%1$s/%2$s",feed.getAuthor(),feed.getPermlink()));
 
 //
 //        commentBtn.setOnClickListener(new OnClickListener() {
@@ -199,25 +208,6 @@ public class PostItemView extends FrameLayout {
 //
 //        postSnippet.setText(Html.fromHtml(post.content));
 //
-//        // initialize the starview
-//        starView.setVoteState(
-//                new StarView.Vote(
-//                        post.is_voted,
-//                        post.id,
-//                        post.current_vote,
-//                        post.vote_count,
-//                        post.vote_sum))
-//                .setOnVoteUpdateCallback(new StarView.onVoteUpdateCallback() {
-//                    @Override
-//                    public void onVoted(int postId, int _vote) {
-//                        performVote(postId, _vote);
-//                    }
-//
-//                    @Override
-//                    public void onVoteDeleted(int postId) {
-//                        deleteVote(postId);
-//                    }
-//                });
 //
 //        setSkills(post.skills);
 //
@@ -228,12 +218,12 @@ public class PostItemView extends FrameLayout {
 //            }
 //        });
 //
-//        starView.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                starView.onStarIndicatorTapped();
-//            }
-//        });
+        starView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                starView.onStarIndicatorTapped();
+            }
+        });
 
     }
 
@@ -336,9 +326,128 @@ public class PostItemView extends FrameLayout {
         mContext.startActivity(intent);
     }
 
-
     public void setPostData(Feed postData) {
         bind(postData);
+    }
+
+    private void fetchVotes(final String permlink) {
+
+        RetrofitServiceGenerator.getService().getPostVotes(permlink).enqueue(new Callback<List<VoteModel>>() {
+            @Override
+            public void onResponse(Call<List<VoteModel>> call, Response<List<VoteModel>> response) {
+                if (response.isSuccessful()) {
+                    bindVotes(response.body(), permlink);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<VoteModel>> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    private float getVoteSum(List<VoteModel> votes) {
+        float sum = 0;
+        for (int i = 0; i < votes.size(); i++) {
+            sum += votes.get(i).vote;
+        }
+        return sum;
+    }
+
+    private VoteModel getVoteForCurrentUser(List<VoteModel> votes) {
+        for (int i = 0; i < votes.size(); i++) {
+            if (votes.get(i).getUsernam().equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
+                return votes.get(i);
+            }
+        }
+        return null;
+    }
+
+    private void bindVotes(List<VoteModel> votes, String permlink) {
+
+        // initialize the starview
+        VoteModel myVote = getVoteForCurrentUser(votes);
+        boolean isVoted = (myVote != null);
+        float voteSum = getVoteSum(votes);
+
+        starView.setVoteState(
+                new StarView.Vote(
+                        isVoted,
+                        permlink,
+                        isVoted ? myVote.vote : 0,
+                        votes.size(),
+                        voteSum))
+                .setOnVoteUpdateCallback(new StarView.onVoteUpdateCallback() {
+                    @Override
+                    public void onVoted(String permlink, int _vote) {
+                        performVote(permlink, _vote);
+                    }
+
+                    @Override
+                    public void onVoteDeleted(String permlink) {
+                        deleteVote(permlink);
+                    }
+                });
+
+
+    }
+
+    private void deleteVote(String permlink) {
+
+        RetrofitServiceGenerator.getService().deleteVote(permlink).enqueue(new Callback<VoteStatus>() {
+            @Override
+            public void onResponse(Call<VoteStatus> call, Response<VoteStatus> response) {
+                if (response.isSuccessful()) {
+                    voteDeleteSuccess();
+                } else {
+                    voteDeleteFailed();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<VoteStatus> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    private void performVote(String permlink, int vote) {
+        RetrofitServiceGenerator.getService().castVote(permlink, new VoteRequestBody(vote)).enqueue(new Callback<VoteStatus>() {
+            @Override
+            public void onResponse(Call<VoteStatus> call, Response<VoteStatus> response) {
+                if (response.isSuccessful()) {
+                    if (response.body().getStatus().equals("ok")) {
+                        castingVoteSuccess();
+                    }
+                } else {
+                    castingVoteFailed();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<VoteStatus> call, Throwable t) {
+                castingVoteFailed();
+            }
+        });
+    }
+
+    private void castingVoteFailed() {
+        Toast.makeText(mContext, "FAILED : Vote Casting", Toast.LENGTH_LONG).show();
+    }
+
+    private void castingVoteSuccess() {
+        Toast.makeText(mContext, "SUCCESS : Vote Casting", Toast.LENGTH_LONG).show();
+    }
+
+    private void voteDeleteFailed() {
+        Toast.makeText(mContext, "FAILED : Vote Delete", Toast.LENGTH_LONG).show();
+    }
+
+    private void voteDeleteSuccess() {
+        Toast.makeText(mContext, "SUCCESS : Vote Deleted", Toast.LENGTH_LONG).show();
     }
 
 }
