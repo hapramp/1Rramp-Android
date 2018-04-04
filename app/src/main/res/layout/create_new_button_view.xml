@@ -2,17 +2,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
    android:layout_width="match_parent"
     android:id="@+id/root"
+    android:clickable="false"
     android:layout_height="match_parent">
 
     <FrameLayout
         android:visibility="gone"
-        android:background="#e3ffffff"
+        android:background="#ffffff"
         android:id="@+id/overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
     <TextView
-        android:alpha="0"
+        android:visibility="gone"
+        android:alpha="1"
         android:clickable="false"
         android:focusable="false"
         android:id="@+id/createArticleBtn"
@@ -34,6 +36,7 @@
         android:clickable="false"
         android:focusable="false"
         android:alpha="0"
+        android:visibility="gone"
         android:id="@+id/createPostBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -46,7 +49,7 @@
         android:paddingStart="20dp"
         android:paddingTop="8dp"
         android:text="POST"
-        android:textColor="@color/Black38"
+        android:textColor="@color/colorPrimary"
         android:textSize="14sp" />
 
 

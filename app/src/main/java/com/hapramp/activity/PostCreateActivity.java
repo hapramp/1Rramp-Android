@@ -172,7 +172,6 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
             }
         });
 
-
         audioBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -300,7 +299,7 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
 
     private void sendPostToSteemBlockChain(final String body) {
 
-        showPublishingProgressDialog(true, "Adding to Blockchain...");
+        showPublishingProgressDialog(true, "Adding to Blockchain... Please wait");
 
         steemPostCreator.createPost(body, title, tags, postStructureModel, generated_permalink);
 
@@ -316,8 +315,7 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
                     @Override
                     public void onResponse(Call<ProcessedBodyResponse> call, Response<ProcessedBodyResponse> response) {
                         if (response.isSuccessful()) {
-                            toast("Server Confirmed!");
-                            showPublishingProgressDialog(false, "");
+                            serverConfirmed();
                         } else {
                             toast("Failed to Confirm Server!");
                             showPublishingProgressDialog(false, "");
@@ -331,6 +329,12 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
                     }
                 });
 
+    }
+
+    private void serverConfirmed() {
+        toast("Your post is live now.");
+        showPublishingProgressDialog(false, "");
+        finish();
     }
 
     private void toast(String s) {
@@ -412,7 +416,7 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
 
     @Override
     public void onPostCreatedOnSteem() {
-        toast("Post Created on Blockchain");
+        toast("Your post will take few seconds to appear");
         showPublishingProgressDialog(false, "");
         // send confirmation to server
         confirmServerForPostCreation();

@@ -176,28 +176,28 @@ public class ProfileHeaderView extends FrameLayout implements FollowUserCallback
         CommunityListWrapper listWrapper = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
         interestsView.setCommunities(listWrapper.getCommunityModels());
 
-        if (true) {
-
-            followBtn.setVisibility(GONE);
-            editBtn.setVisibility(View.VISIBLE);
-            editBtn.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    navigateToProfileEditActivity();
-                }
-            });
-
-        } else {
-
-            editBtn.setVisibility(GONE);
-            followBtn.setVisibility(View.VISIBLE);
-            followBtn.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    setUserFollow(!isFollowed);
-                }
-            });
-        }
+//        if (true) {
+//
+//            followBtn.setVisibility(GONE);
+//            editBtn.setVisibility(View.VISIBLE);
+//            editBtn.setOnClickListener(new OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    navigateToProfileEditActivity();
+//                }
+//            });
+//
+//        } else {
+//
+//            editBtn.setVisibility(GONE);
+//            followBtn.setVisibility(View.VISIBLE);
+//            followBtn.setOnClickListener(new OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    setUserFollow(!isFollowed);
+//                }
+//            });
+//        }
 
     }
 
