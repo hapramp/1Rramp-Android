@@ -148,7 +148,7 @@ public class HomeFragment extends Fragment implements
 
         serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(Communities.ALL)
                 .setLimit(100)
-                .setUserName(HaprampPreferenceManager.getInstance().getSteemUsername())
+                .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
                 .createRequestParam();
 
         serviceWorker.requestAllFeeds(serviceWorkerRequestParams);
@@ -161,7 +161,7 @@ public class HomeFragment extends Fragment implements
 
         serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(tag)
                 .setLimit(100)
-                .setUserName(HaprampPreferenceManager.getInstance().getSteemUsername())
+                .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
                 .createRequestParam();
 
         serviceWorker.requestCommunityFeeds(serviceWorkerRequestParams);

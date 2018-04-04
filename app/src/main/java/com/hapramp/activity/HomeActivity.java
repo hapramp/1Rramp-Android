@@ -14,44 +14,33 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hapramp.R;
-import com.hapramp.api.DataServer;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.fragments.CompetitionFragment;
 import com.hapramp.fragments.EarningFragment;
 import com.hapramp.fragments.HomeFragment;
 import com.hapramp.fragments.ProfileFragment;
 import com.hapramp.fragments.SettingsFragment;
-import com.hapramp.interfaces.FetchUserCallback;
 import com.hapramp.models.CommunityModel;
-import com.hapramp.models.response.FetchUserResponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
-import com.hapramp.steem.SteemHelper;
-import com.hapramp.steem.models.user.Profile;
 import com.hapramp.steem.models.user.SteemUser;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.views.extraa.CreateButtonView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import eu.bittrade.libs.steemj.SteemJ;
-import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
-import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -554,7 +543,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     private void fetchCompleteUserInfo() {
         RetrofitServiceGenerator.getService().getSteemUser(String.format(
                 getResources().getString(R.string.steem_user_api),
-                HaprampPreferenceManager.getInstance().getSteemUsername())).enqueue(new Callback<SteemUser>() {
+                HaprampPreferenceManager.getInstance().getCurrentSteemUsername())).enqueue(new Callback<SteemUser>() {
             @Override
             public void onResponse(Call<SteemUser> call, Response<SteemUser> response) {
                 if (response.isSuccessful()) {

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -37,7 +36,6 @@ import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FeaturedImageItemDecorator;
 import com.hapramp.utils.FontManager;
-import com.hapramp.utils.SkillsUtils;
 import com.hapramp.views.editor.EditorView;
 import com.hapramp.views.post.PostCategoryView;
 
@@ -271,7 +269,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
 
         showPublishingProgressDialog(true, "Sending Confirmation to Server...");
 
-        String full_permlink = HaprampPreferenceManager.getInstance().getSteemUsername() + "/" + generated_permalink;
+        String full_permlink = HaprampPreferenceManager.getInstance().getCurrentSteemUsername() + "/" + generated_permalink;
 
         RetrofitServiceGenerator.getService()
                 .sendPostCreationConfirmation(new PostConfirmationModel(full_permlink))

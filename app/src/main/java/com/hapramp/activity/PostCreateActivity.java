@@ -13,8 +13,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -261,7 +259,7 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
     private void preparePost() {
 
         generated_permalink = PermlinkGenerator.getPermlink();
-        full_permlink = HaprampPreferenceManager.getInstance().getSteemUsername() + "/" + generated_permalink;
+        full_permlink = HaprampPreferenceManager.getInstance().getCurrentSteemUsername() + "/" + generated_permalink;
         Log.d("TEST", "Full Permlink " + full_permlink);
         //prepare title
         title = "";

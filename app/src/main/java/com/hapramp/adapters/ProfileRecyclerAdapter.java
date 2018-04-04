@@ -21,18 +21,22 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     private final int VIEW_TYPE_ITEM = 2;
     private final int VIEW_TYPE_PROFILE_HEADER = 1;
+    private final String mUsername;
 
     public Context mContext;
     private int s;
     private List<Feed> feeds;
+    private int totalFeedsCount = 0;
 
-    public ProfileRecyclerAdapter(Context mContext) {
+    public ProfileRecyclerAdapter(Context mContext , String username) {
         this.mContext = mContext;
+        this.mUsername = username;
         feeds = new ArrayList<>();
     }
 
     public void setPosts(List<Feed> newPosts) {
         feeds = newPosts;
+        totalFeedsCount = feeds.size();
         notifyDataSetChanged();
     }
 
@@ -75,6 +79,9 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         if (viewHolder instanceof PostViewHolder) {
             // Log.d("Adapter", "Binding Post at " + pos);
             ((PostViewHolder) viewHolder).bind(feeds.get(pos - 1));
+
+        }else if(viewHolder instanceof ProfileHeaderViewHolder){
+            ((ProfileHeaderViewHolder) viewHolder).setUsername(mUsername);
         }
     }
 
@@ -110,6 +117,10 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         public ProfileHeaderViewHolder(View itemView) {
             super(itemView);
             profileHeaderView = (ProfileHeaderView) itemView;
+        }
+
+        public void setUsername(String username){
+            profileHeaderView.setUsername(username);
         }
 
     }

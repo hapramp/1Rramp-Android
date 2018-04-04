@@ -118,7 +118,8 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
     private void init() {
 
         userId = getIntent().getExtras().getString(Constants.EXTRAA_KEY_USER_ID);
-        profilePostAdapter = new ProfileRecyclerAdapter(this);
+        //todo: make sure userId is `username` of steem account
+        profilePostAdapter = new ProfileRecyclerAdapter(this,userId);
         closeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         overflowBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         llm = new LinearLayoutManager(this);

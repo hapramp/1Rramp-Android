@@ -64,7 +64,7 @@ public class HaprampPreferenceManager {
 
     }
 
-    public String getSteemUsername(){
+    public String getCurrentSteemUsername(){
         return preferences.getString("username","");
     }
 

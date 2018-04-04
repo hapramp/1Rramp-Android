@@ -58,7 +58,7 @@ public class SteemPostCreator {
 
                 try {
                     //author account of post
-                    String username = HaprampPreferenceManager.getInstance().getSteemUsername();
+                    String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
                     Log.d("TEST", "Username " + username);
                     Log.d("TEST", "permalink " + __permlink);
 

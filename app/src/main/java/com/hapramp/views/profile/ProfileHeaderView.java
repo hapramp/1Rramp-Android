@@ -2,6 +2,7 @@ package com.hapramp.views.profile;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -30,6 +31,12 @@ import com.hapramp.views.skills.InterestsView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import eu.bittrade.libs.steemj.SteemJ;
+import eu.bittrade.libs.steemj.apis.follow.model.FollowCountApiObject;
+import eu.bittrade.libs.steemj.base.models.Account;
+import eu.bittrade.libs.steemj.base.models.AccountName;
+import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
+import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -81,7 +88,8 @@ public class ProfileHeaderView extends FrameLayout implements FollowUserCallback
     private String TICK_TEXT = "\u2713";
     private ProfileHeaderModel profileData;
     private boolean isFollowed = false;
-
+    private String mUsername;
+    private Handler mHandler;
     public ProfileHeaderView(@NonNull Context context) {
         super(context);
         init(context);
@@ -102,15 +110,22 @@ public class ProfileHeaderView extends FrameLayout implements FollowUserCallback
         mContext = context;
         View view = LayoutInflater.from(context).inflate(R.layout.profile_header_view, this);
         ButterKnife.bind(this, view);
-        populateData();
-
+        mHandler = new Handler();
     }
 
-    private void populateData() {
+    public void setUsername(String username) {
+        this.mUsername = username;
+        if (username != null) {
+            fetchUserInfo();
+            fetchFollowInfo();
+        }
+    }
+
+    private void fetchUserInfo() {
 
         String current_user_api_url = String.format(
                 mContext.getResources().getString(R.string.steem_user_api),
-                HaprampPreferenceManager.getInstance().getSteemUsername());
+                mUsername);
 
         RetrofitServiceGenerator.getService()
                 .getSteemUser(current_user_api_url)
@@ -146,14 +161,12 @@ public class ProfileHeaderView extends FrameLayout implements FollowUserCallback
                 :
                 mContext.getResources().getString(R.string.default_wall_pic);
 
-        ImageHandler.load(mContext, profileWallPic,wall_pic_url);
+        ImageHandler.load(mContext, profileWallPic, wall_pic_url);
 
         username.setText(data.getUser().getJsonMetadata().getProfile().getName());
-        //
         hapname.setText(String.format("@%s", data.getUser().getName()));
         bio.setText(data.getUser().getJsonMetadata().getProfile().getAbout());
-        followersCount.setText(String.format(mContext.getResources().getString(R.string.profile_followers_caption), 0));
-        followingsCount.setText(String.format(mContext.getResources().getString(R.string.profile_following_count_caption), 0));
+        setPostsCount(data.getUser().getPostCount());
         CommunityListWrapper listWrapper = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
         interestsView.setCommunities(listWrapper.getCommunityModels());
 
@@ -180,6 +193,30 @@ public class ProfileHeaderView extends FrameLayout implements FollowUserCallback
             });
         }
 
+    }
+
+    private void fetchFollowInfo() {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    SteemJ steemJ = new SteemJ();
+                    AccountName accountName = new AccountName(mUsername);
+                    final FollowCountApiObject followCountApiObject = steemJ.getFollowCount(accountName);
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            followersCount.setText(String.format(mContext.getResources().getString(R.string.profile_followers_caption), followCountApiObject.getFollowerCount()));
+                            followingsCount.setText(String.format(mContext.getResources().getString(R.string.profile_following_count_caption), followCountApiObject.getFollowingCount()));
+                        }
+                    });
+                } catch (SteemCommunicationException e) {
+                    e.printStackTrace();
+                } catch (SteemResponseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 
     private void navigateToProfileEditActivity() {
@@ -215,5 +252,9 @@ public class ProfileHeaderView extends FrameLayout implements FollowUserCallback
             isFollowed = false;
         }
 
+    }
+
+    public void setPostsCount(long count) {
+        postCounts.setText(String.format(mContext.getResources().getString(R.string.profile_posts_count_caption),count));
     }
 }

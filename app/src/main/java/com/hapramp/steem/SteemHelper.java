@@ -47,7 +47,7 @@ public class SteemHelper {
     public static SteemJ getSteemInstance(){
 
         SteemJ steemJ = null;
-        String username = HaprampPreferenceManager.getInstance().getSteemUsername();
+        String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
         String ppk = HaprampPreferenceManager.getInstance().getPPK();
         Log.d("SteemHelper","getSteemInstance() Username:"+username+" ppk:"+ppk);
         if(ppk.length()==0)

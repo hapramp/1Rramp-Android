@@ -17,7 +17,6 @@ import android.widget.ProgressBar;
 import com.hapramp.R;
 import com.hapramp.adapters.ProfileRecyclerAdapter;
 import com.hapramp.api.RetrofitServiceGenerator;
-import com.hapramp.api.URLS;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.user.Profile;
@@ -59,7 +58,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        username = HaprampPreferenceManager.getInstance().getSteemUsername();
+        username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
     }
 
     @Override
@@ -147,7 +146,7 @@ public class ProfileFragment extends Fragment {
 
     private void init() {
 
-        profilePostAdapter = new ProfileRecyclerAdapter(mContext);
+        profilePostAdapter = new ProfileRecyclerAdapter(mContext , HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
         Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
         viewItemDecoration = new ViewItemDecoration(drawable);
         viewItemDecoration.setWantTopOffset(false);
