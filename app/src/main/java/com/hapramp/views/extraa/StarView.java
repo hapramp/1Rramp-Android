@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +25,7 @@ import com.hapramp.utils.FontManager;
  * Created by Ankit on 12/14/2017.
  */
 
-public class StarView extends FrameLayout implements VotePostCallback, VoteDeleteCallback {
+public class StarView extends FrameLayout{
 
     private static final long REVEAL_DELAY = 500;
     private static final float REVEAL_START_OFFSET = 84;
@@ -35,6 +36,8 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
     RatingBar ratingBar;
     LinearLayout ratingBarContainer;
     TextView cancelRateBtn;
+    TextView ratingError;
+    ProgressBar ratingProgress;
     private Handler mHandler;
     private Runnable autoHideRatingBarRunnable = new Runnable() {
         @Override
@@ -72,8 +75,11 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
         starIndicator = v.findViewById(R.id.starIndicator);
         starInfo = v.findViewById(R.id.starInfo);
         ratingBar = v.findViewById(R.id.ratingBar);
+        ratingError = v.findViewById(R.id.ratingError);
+        ratingProgress = v.findViewById(R.id.ratingProgress);
         ratingBarContainer = v.findViewById(R.id.ratingBarContainer);
         cancelRateBtn = v.findViewById(R.id.cancelBtn);
+        ratingError.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         starIndicator.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         cancelRateBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         setRatingBarListener();
@@ -121,6 +127,20 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
             ratingBar.setRating(0);
         }
 
+    }
+
+    private void showRatingProgress(boolean show){
+        if(show){
+            //hide text
+            starInfo.setVisibility(GONE);
+            //show progress
+            ratingProgress.setVisibility(VISIBLE);
+        }else{
+            //show text
+            starInfo.setVisibility(VISIBLE);
+            //hide progress
+            ratingProgress.setVisibility(GONE);
+        }
     }
 
     private void setStarIndicatorState(boolean isRated) {
@@ -192,7 +212,6 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
 
     }
 
-
     private void hideRatingBar() {
         // for now just hide the visibility of Rating Bar
         //ratingBarContainer.setVisibility(GONE);
@@ -221,7 +240,7 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
 //            revealAnimator.start();
 //
 //        }else{
-            ratingBarContainer.setVisibility(View.VISIBLE);
+        ratingBarContainer.setVisibility(View.VISIBLE);
         //}
 
 
@@ -270,7 +289,7 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
 //            revealAnimator.start();
 //
 //        } else {
-            ratingBarContainer.setVisibility(View.GONE);
+        ratingBarContainer.setVisibility(View.GONE);
         //}
 
     }
@@ -286,7 +305,6 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
         cancelRateBtn.setVisibility(GONE);
 
     }
-
 
     private void setRatingBarListener() {
 
@@ -324,46 +342,68 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
     }
 
     private void l(String s) {
-     //   Log.i("STRV", s);
+        //   Log.i("STRV", s);
     }
 
     private void sendVoteToAppServer() {
-        onVoteUpdateCallback.onVoted(currentState.postPermlink,(int) currentState.myVote);
+        onVoteUpdateCallback.onVoted(currentState.postPermlink, (int) currentState.myVote);
     }
 
     private void deleteVoteFromAppServer() {
         onVoteUpdateCallback.onVoteDeleted(currentState.postPermlink);
     }
 
-    @Override
-    public void onPostVoted(final Feed updatedResult) {
+    public void onVoteLoading(){
+        //show progress
+        ratingProgress.setVisibility(VISIBLE);
+    }
+
+    public void onVoteLoadingFailed(){
+        //hide progress
+        ratingProgress.setVisibility(GONE);
+        //show error
+        ratingError.setVisibility(VISIBLE);
+
+    }
+
+    public void onVoteLoaded(){
+        //hide progress
+        ratingProgress.setVisibility(GONE);
+        //hide error
+        ratingError.setVisibility(GONE);
+    }
+
+    public void voteProcessing(){
+        showRatingProgress(true);
+    }
+
+    public void castedVoteSuccessfully() {
         // set new state as the legacy state
         this.legacyState = currentState;
+        showRatingProgress(false);
     }
 
-    @Override
-    public void onPostVoteError() {
+    public void deletedVoteSuccessfully() {
+        // set new state as the legacy state
+        this.legacyState = currentState;
+        showRatingProgress(false);
+    }
 
-        Toast.makeText(mContext, "Cannot Vote!", Toast.LENGTH_LONG).show();
+    public void failedToDeleteVoteFromServer() {
+        this.currentState = legacyState;
+        setCurrentState(currentState);
+        showRatingProgress(false);
+    }
+
+    public void failedToCastVote() {
         // re-gain the legacy state
         this.currentState = legacyState;
         setCurrentState(currentState);
+        showRatingProgress(false);
 
     }
 
 
-    @Override
-    public void onVoteDeleted(Feed updatedPost) {
-
-    }
-
-    @Override
-    public void onVoteDeleteError() {
-        // re-gain the legacy state
-     //   l("Vote Cannot Delete!");
-        this.currentState = legacyState;
-        setCurrentState(currentState);
-    }
 
     public static class Vote {
 
@@ -428,9 +468,10 @@ public class StarView extends FrameLayout implements VotePostCallback, VoteDelet
         }
     }
 
-    public interface onVoteUpdateCallback{
+    public interface onVoteUpdateCallback {
 
         void onVoted(String permlink, int vote);
+
         void onVoteDeleted(String permlink);
 
     }

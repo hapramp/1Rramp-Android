@@ -39,6 +39,7 @@ import com.hapramp.steem.Communities;
 import com.hapramp.steem.ContentTypes;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.user.Profile;
+import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
@@ -187,7 +188,7 @@ public class PostItemView extends FrameLayout {
             ImageHandler.loadCircularImage(mContext, feedOwnerPic, _p.getProfileImage());
         }
 
-        fetchVotes(String.format("%1$s/%2$s",feed.getAuthor(),feed.getPermlink()));
+        fetchVotes(String.format("%1$s/%2$s", feed.getAuthor(), feed.getPermlink()));
 
 //
 //        commentBtn.setOnClickListener(new OnClickListener() {
@@ -221,7 +222,9 @@ public class PostItemView extends FrameLayout {
         starView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                starView.onStarIndicatorTapped();
+                if (ConnectionUtils.isConnected(mContext)) {
+                    starView.onStarIndicatorTapped();
+                }
             }
         });
 
@@ -332,17 +335,22 @@ public class PostItemView extends FrameLayout {
 
     private void fetchVotes(final String permlink) {
 
+        starView.onVoteLoading();
+
         RetrofitServiceGenerator.getService().getPostVotes(permlink).enqueue(new Callback<List<VoteModel>>() {
             @Override
             public void onResponse(Call<List<VoteModel>> call, Response<List<VoteModel>> response) {
                 if (response.isSuccessful()) {
                     bindVotes(response.body(), permlink);
+                    starView.onVoteLoaded();
+                } else {
+                    starView.onVoteLoadingFailed();
                 }
             }
 
             @Override
             public void onFailure(Call<List<VoteModel>> call, Throwable t) {
-
+                starView.onVoteLoadingFailed();
             }
         });
 
@@ -396,6 +404,8 @@ public class PostItemView extends FrameLayout {
 
     private void deleteVote(String permlink) {
 
+        starView.voteProcessing();
+
         RetrofitServiceGenerator.getService().deleteVote(permlink).enqueue(new Callback<VoteStatus>() {
             @Override
             public void onResponse(Call<VoteStatus> call, Response<VoteStatus> response) {
@@ -415,6 +425,9 @@ public class PostItemView extends FrameLayout {
     }
 
     private void performVote(String permlink, int vote) {
+
+        starView.voteProcessing();
+
         RetrofitServiceGenerator.getService().castVote(permlink, new VoteRequestBody(vote)).enqueue(new Callback<VoteStatus>() {
             @Override
             public void onResponse(Call<VoteStatus> call, Response<VoteStatus> response) {
@@ -435,18 +448,22 @@ public class PostItemView extends FrameLayout {
     }
 
     private void castingVoteFailed() {
+        starView.failedToCastVote();
         Toast.makeText(mContext, "FAILED : Vote Casting", Toast.LENGTH_LONG).show();
     }
 
     private void castingVoteSuccess() {
+        starView.castedVoteSuccessfully();
         Toast.makeText(mContext, "SUCCESS : Vote Casting", Toast.LENGTH_LONG).show();
     }
 
     private void voteDeleteFailed() {
+        starView.failedToDeleteVoteFromServer();
         Toast.makeText(mContext, "FAILED : Vote Delete", Toast.LENGTH_LONG).show();
     }
 
     private void voteDeleteSuccess() {
+        starView.deletedVoteSuccessfully();
         Toast.makeText(mContext, "SUCCESS : Vote Deleted", Toast.LENGTH_LONG).show();
     }
 

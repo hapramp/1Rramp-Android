@@ -9,7 +9,7 @@
     <string name="Rs">\u20B9</string>
     <string name="earnedHapcoins">\u20B9 %.1f</string>
     <string name="post_limit">%1$d/140</string>
-    <string name="star_info">%1$.1f of %2$d</string>
+    <string name="star_info">%1$.1f from %2$d</string>
     <string name="commentUrl">http://hapramp.herokuapp.com/api/posts/%1$d/comments?start=1</string>
     <string name="default_wall_pic">https://user-images.githubusercontent.com/10809719/34511255-2d3d8592-f080-11e7-9540-43d153a96c33.png</string>
     <string name="post_subtitle_format">| %1$s</string>
