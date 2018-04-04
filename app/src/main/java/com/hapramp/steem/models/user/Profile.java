@@ -33,21 +33,28 @@ public class Profile {
     @Expose
     public String name;
     @SerializedName("location")
-    @Expose
     public String location;
-    @SerializedName("website")
     @Expose
+    @SerializedName("cover_image")
+    public String cover_image;
+    @Expose
+    @SerializedName("website")
     public String website;
     @SerializedName("about")
     @Expose
     public String about;
 
-    public Profile(String profileImage, String name, String location, String website, String about) {
+    public Profile(String profileImage, String name, String location, String website, String about ,String cover_image ) {
         this.profileImage = profileImage;
         this.name = name;
         this.location = location;
         this.website = website;
+        this.cover_image = cover_image;
         this.about = about;
+    }
+
+    public String getCover_image() {
+        return cover_image;
     }
 
     public String getProfileImage() {
@@ -134,13 +141,13 @@ public class Profile {
                 "name",
                 "location",
                 "website",
-                "about");
+                "about","cover_image_url");
         return dummy;
 
     }
 
     public static String getDefaultProfileAsJson() {
-        String json = "{\"about\":\"about\",\"location\":\"location\",\"name\":\"name\",\"profile_image\":\"https://user-images.githubusercontent.com/10809719/38206885-b36c8a66-36c9-11e8-9c7a-3bba603b4994.png\",\"website\":\"website\"}";
+        String json = "{\"about\":\"about\",\"location\":\"location\",\"name\":\"name\",\"profile_image\":\"https://user-images.githubusercontent.com/10809719/38206885-b36c8a66-36c9-11e8-9c7a-3bba603b4994.png\",\"website\":\"website\",\"cover_image\":\"cover_image_url\"}";
         return json;
     }
 

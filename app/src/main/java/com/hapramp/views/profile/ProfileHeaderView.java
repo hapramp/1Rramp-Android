@@ -118,9 +118,9 @@ public class ProfileHeaderView extends FrameLayout implements FollowUserCallback
                     @Override
                     public void onResponse(Call<SteemUser> call, Response<SteemUser> response) {
                         //populate User Info
-                        if(response.isSuccessful()) {
+                        if (response.isSuccessful()) {
                             bind(response.body());
-                        }else{
+                        } else {
                             failedToFetchSteemInfo();
                         }
                     }
@@ -140,14 +140,21 @@ public class ProfileHeaderView extends FrameLayout implements FollowUserCallback
     private void bind(SteemUser data) {
 
         ImageHandler.loadCircularImage(mContext, profilePic, data.getUser().getJsonMetadata().getProfile().getProfileImage());
-        ImageHandler.load(mContext,profileWallPic,mContext.getResources().getString(R.string.default_wall_pic));
 
-        //username.setText(profileHeaderModel.getUserName());
-        hapname.setText(data.getUser().getJsonMetadata().getProfile().getName());
+        String wall_pic_url = data.getUser().getJsonMetadata().getProfile().getCover_image() != null ?
+                data.getUser().getJsonMetadata().getProfile().getCover_image()
+                :
+                mContext.getResources().getString(R.string.default_wall_pic);
+
+        ImageHandler.load(mContext, profileWallPic,wall_pic_url);
+
+        username.setText(data.getUser().getJsonMetadata().getProfile().getName());
+        //
+        hapname.setText(String.format("@%s", data.getUser().getName()));
         bio.setText(data.getUser().getJsonMetadata().getProfile().getAbout());
-        followersCount.setText(String.format(mContext.getResources().getString(R.string.profile_followers_caption),0));
+        followersCount.setText(String.format(mContext.getResources().getString(R.string.profile_followers_caption), 0));
         followingsCount.setText(String.format(mContext.getResources().getString(R.string.profile_following_count_caption), 0));
-        CommunityListWrapper listWrapper = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson(),CommunityListWrapper.class);
+        CommunityListWrapper listWrapper = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
         interestsView.setCommunities(listWrapper.getCommunityModels());
 
         if (true) {
