@@ -1,10 +1,6 @@
 package com.hapramp.models.response;
 
 import com.google.gson.annotations.SerializedName;
-import com.hapramp.models.UserResponse;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Ankit on 10/22/2017.

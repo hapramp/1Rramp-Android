@@ -91,7 +91,7 @@ public class CommentsActivity extends AppCompatActivity{
         sendButton.setTypeface(typeface);
 
         //load self image to created
-        ImageHandler.loadCircularImage(this,commentCreaterAvatar,HaprampPreferenceManager.getInstance().getUser().getImage_uri());
+        ImageHandler.loadCircularImage(this,commentCreaterAvatar,"");
         postId = getIntent().getExtras().getString(Constants.EXTRAA_KEY_POST_ID);
         initialCommentUrl = String.format(getResources().getString(R.string.commentUrl), Integer.valueOf(postId));
         commentsAdapter = new CommentsAdapter(this);

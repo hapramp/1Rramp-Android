@@ -19,7 +19,7 @@ public class ProfileHeaderModel {
     private int followers;
     private int following;
     private boolean editable;
-    private List<UserModel.Skills> interests;
+    private List<CommunityModel> interests;
 
     public ProfileHeaderModel(int userId,
                               String dpUrl, String userName,
@@ -29,7 +29,7 @@ public class ProfileHeaderModel {
                               int posts,
                               int followers,
                               int following,
-                              List<UserModel.Skills> interests) {
+                              List<CommunityModel> interests) {
 
         this.userId = userId;
         this.dpUrl = dpUrl;
@@ -116,14 +116,6 @@ public class ProfileHeaderModel {
 
     public void setFollowing(int following) {
         this.following = following;
-    }
-
-    public List<UserModel.Skills> getInterests() {
-        return interests;
-    }
-
-    public void setInterests(List<UserModel.Skills> interests) {
-        this.interests = interests;
     }
 
     @Override

@@ -160,17 +160,17 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
     @Override
     public void onFullUserDetailsFetched(UserModel userModel) {
 
-        ProfileHeaderModel profileHeaderModel = new ProfileHeaderModel(
-                userModel.id,
-                userModel.image_uri,
-                userModel.username,
-                "@hapname",
-                userModel.id == Integer.valueOf(HaprampPreferenceManager.getInstance().getUserId()), // if its mine then its editable
-                userModel.bio,
-                0,
-                userModel.followers,
-                userModel.followings,
-                userModel.skills);
+//        ProfileHeaderModel profileHeaderModel = new ProfileHeaderModel(
+//                userModel.id,
+//                userModel.image_uri,
+//                userModel.username,
+//                "@hapname",
+//                userModel.id == Integer.valueOf(HaprampPreferenceManager.getInstance().getUserId()), // if its mine then its editable
+//                userModel.bio,
+//                0,
+//                userModel.followers,
+//                userModel.followings,
+//                userModel.skills);
 
         profileUserName.setText(userModel.username);
       //  profilePostAdapter.setProfileHeaderModel(profileHeaderModel);

@@ -63,7 +63,6 @@
             </intent-filter>
         </service>
 
-
         <activity
             android:name=".activity.ProfileEditActivity"
             android:screenOrientation="portrait" />
@@ -80,7 +79,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.QrScanningActivity" />
-        <activity android:name=".activity.CommunitySelectionActivity"></activity>
+        <activity android:name=".activity.CommunitySelectionActivity" />
+        <activity android:name=".activity.UserSearchActivity"></activity>
     </application>
 
 </manifest>

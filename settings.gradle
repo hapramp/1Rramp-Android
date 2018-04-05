@@ -1,1 +1,1 @@
-include ':app', ':steem'
+include ':app', ':steem', ':search'

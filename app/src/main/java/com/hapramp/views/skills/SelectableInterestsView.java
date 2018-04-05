@@ -105,11 +105,11 @@ public class SelectableInterestsView extends FrameLayout {
         return selectedSkills;
     }
 
-    public void setInterests(List<UserModel.Skills> skills) {
-        for (UserModel.Skills skill : skills) {
-            selectedSkills.add(skill.getId());
-        }
-        addViews();
-    }
+//    public void setInterests(List<UserModel.Skills> skills) {
+//        for (UserModel.Skills skill : skills) {
+//            selectedSkills.add(skill.getId());
+//        }
+//        addViews();
+//    }
 
 }

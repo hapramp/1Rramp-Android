@@ -230,10 +230,10 @@ public class ProfileEditActivity extends AppCompatActivity implements UserDpUpda
                 bioEt.getText().toString(),
                 selectedOrgId);
 
-        DataServer.updataUserDpUrl(
-                HaprampPreferenceManager.getInstance().getUserId(),
-                body
-                , this);
+//        DataServer.updataUserDpUrl(
+//                HaprampPreferenceManager.getInstance().getUserId(),
+//                body
+//                , this);
 
     }
 
@@ -278,51 +278,51 @@ public class ProfileEditActivity extends AppCompatActivity implements UserDpUpda
     private void bindValues(UserModel userModel) {
 
         userData = userModel;
-        //dp
-        dpUrl = userModel.image_uri;
-        ImageHandler.loadCircularImage(this, profilePic, userModel.image_uri);
-        //edit Btn
-        editBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openGallery();
-            }
-        });
-        saveButton.setEnabled(true);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateAppServerForDpUpdate();
-            }
-        });
-
-        //name
-        nameEt.setText(userModel.full_name);
-        //usernameEt
-        usernameEt.setText(userModel.username);
-        //bio
-        bioEt.setText(userModel.bio);
-        //interest
-        interestView.setInterests(userModel.skills);
-        //email
-        emailEt.setText(userModel.email);
-        //disable for now
-        emailEt.setEnabled(false);
-
-        selectedOrgId = userModel.organization.id;
-
-        orgDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedOrgId = orgs.get(position).getId();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
+//        //dp
+//        dpUrl = userModel.image_uri;
+//        ImageHandler.loadCircularImage(this, profilePic, userModel.image_uri);
+//        //edit Btn
+//        editBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                openGallery();
+//            }
+//        });
+//        saveButton.setEnabled(true);
+//        saveButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                updateAppServerForDpUpdate();
+//            }
+//        });
+//
+//        //name
+//        nameEt.setText(userModel.full_name);
+//        //usernameEt
+//        usernameEt.setText(userModel.username);
+//        //bio
+//        bioEt.setText(userModel.bio);
+//        //interest
+//        interestView.setInterests(userModel.skills);
+//        //email
+//        emailEt.setText(userModel.email);
+//        //disable for now
+//        emailEt.setEnabled(false);
+//
+//        selectedOrgId = userModel.organization.id;
+//
+//        orgDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                selectedOrgId = orgs.get(position).getId();
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//
+//            }
+//        });
+//
 
     }
 

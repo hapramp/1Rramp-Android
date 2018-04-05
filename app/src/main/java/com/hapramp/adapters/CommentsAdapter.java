@@ -10,8 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
-import com.hapramp.models.CommentModel;
-import com.hapramp.models.UserResponse;
 import com.hapramp.models.response.CommentCreateResponse;
 import com.hapramp.models.response.CommentsResponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -99,14 +97,14 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
 
     public void addComment(CommentCreateResponse comment) {
 
-        UserResponse user = HaprampPreferenceManager.getInstance().getUser();
-
-        commentsList.add(0,
-                new CommentsResponse.Results(
-                        comment.id,
-                        comment.created_at,
-                        comment.content, false, 0
-                        , new CommentsResponse.User(user.id, user.username, user.full_name, user.image_uri)));
+//        UserResponse user = HaprampPreferenceManager.getInstance().getUser();
+//
+//        commentsList.add(0,
+//                new CommentsResponse.Results(
+//                        comment.id,
+//                        comment.created_at,
+//                        comment.content, false, 0
+//                        , new CommentsResponse.User(user.id, user.username, user.full_name, user.image_uri)));
 
         notifyItemInserted(0);
 

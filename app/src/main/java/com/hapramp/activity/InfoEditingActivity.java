@@ -68,8 +68,8 @@ public class InfoEditingActivity extends AppCompatActivity implements UserBioUpd
 
         if(validateBio()){
             showProgress("Updating Your Bio...");
-            DataServer.updateUserBio(HaprampPreferenceManager.getInstance().getUserId(),
-                    new UserBioUpdateRequestBody(bioEt.getText().toString()),this);
+//            DataServer.updateUserBio(HaprampPreferenceManager.getInstance().getUserId(),
+//                    new UserBioUpdateRequestBody(bioEt.getText().toString()),this);
         }
 
     }

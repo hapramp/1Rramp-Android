@@ -81,12 +81,13 @@ dependencies {
     implementation "org.apache.commons:commons-lang3:3.7"
     implementation "com.google.android.gms:play-services-vision:$firebaseVersion"
     implementation "info.androidhive:barcode-reader:$barcodeReaderVersion"
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"
     testImplementation "junit:junit:$junitVersion"
     testImplementation "org.robolectric:robolectric:$roboelectricVersion"
 
-    compile project(':steem')
-
+    implementation project(':steem')
+    implementation project(':search')
 }
 
 apply plugin: 'com.google.gms.google-services'

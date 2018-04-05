@@ -24,7 +24,6 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.api.RetrofitServiceGenerator;
-import com.hapramp.fragments.CompetitionFragment;
 import com.hapramp.fragments.EarningFragment;
 import com.hapramp.fragments.HomeFragment;
 import com.hapramp.fragments.ProfileFragment;
@@ -107,7 +106,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     private Typeface materialTypface;
     private FragmentManager fragmentManager;
     private HomeFragment homeFragment;
-    private CompetitionFragment competitionFragment;
     private ProfileFragment profileFragment;
     private SettingsFragment settingsFragment;
     private EarningFragment earningFragment;
@@ -255,7 +253,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
 
         fragmentManager = getSupportFragmentManager();
         homeFragment = new HomeFragment();
-        competitionFragment = new CompetitionFragment();
         profileFragment = new ProfileFragment();
         settingsFragment = new SettingsFragment();
         earningFragment = new EarningFragment();
@@ -359,6 +356,14 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
             }
         });
 
+        searchIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(HomeActivity.this,UserSearchActivity.class);
+                startActivity(i);
+            }
+        });
+
     }
 
     private void transactFragment(int fragment) {
@@ -378,20 +383,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
                 //   showFragment(homeFragment);
 
                 break;
-            case FRAGMENT_COMPETITION:
-
-                currentVisibleFragment = competitionFragment;
-
-                //    if (!competitionFragment.isAdded()) {
-                fragmentManager.beginTransaction()
-                        .addToBackStack("competition")
-                        .replace(R.id.contentPlaceHolder, competitionFragment)
-                        .commit();
-                //    }
-
-                //    showFragment(competitionFragment);
-
-                break;
+         
             case FRAGMENT_PROFILE:
 
                 currentVisibleFragment = profileFragment;

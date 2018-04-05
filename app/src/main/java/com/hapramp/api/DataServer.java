@@ -7,9 +7,7 @@ import com.hapramp.interfaces.CommentFetchCallback;
 import com.hapramp.interfaces.CompetitionFetchCallback;
 import com.hapramp.interfaces.CompetitionsPostFetchCallback;
 import com.hapramp.interfaces.CreateUserCallback;
-import com.hapramp.interfaces.FetchSkillsResponse;
 import com.hapramp.interfaces.FetchUserCallback;
-import com.hapramp.interfaces.FollowUserCallback;
 import com.hapramp.interfaces.FullUserDetailsCallback;
 import com.hapramp.interfaces.MarkAsReadNotificationCallback;
 import com.hapramp.interfaces.MarkallAsReadNotificationCallback;
@@ -20,17 +18,10 @@ import com.hapramp.interfaces.OrgUpdateCallback;
 import com.hapramp.interfaces.OrgsFetchCallback;
 import com.hapramp.interfaces.PostCreateCallback;
 import com.hapramp.interfaces.PostFetchCallback;
-import com.hapramp.interfaces.UserBioUpdateRequestCallback;
-import com.hapramp.interfaces.UserDpUpdateRequestCallback;
-import com.hapramp.interfaces.UserFetchCallback;
 import com.hapramp.interfaces.UserStatsCallback;
 import com.hapramp.interfaces.VoteDeleteCallback;
 import com.hapramp.interfaces.VotePostCallback;
 import com.hapramp.logger.L;
-import com.hapramp.models.UserDataUpdateBody;
-import com.hapramp.models.UserResponse;
-import com.hapramp.models.requests.FollowRequestBody;
-import com.hapramp.models.requests.UserBioUpdateRequestBody;
 import com.hapramp.models.requests.VoteRequestBody;
 import com.hapramp.models.response.CompetitionsPostReponse;
 import com.hapramp.models.requests.CommentBody;
@@ -176,27 +167,6 @@ public class DataServer {
             }
         });
 
-    }
-
-    public static void fetchSkills(final FetchSkillsResponse callback) {
-
-        L.D.m(TAG, "Fetching Skills...");
-        getService().getSkills().enqueue(new Callback<List<UserModel.Skills>>() {
-            @Override
-            public void onResponse(Call<List<UserModel.Skills>> call, Response<List<UserModel.Skills>> response) {
-                if (response.isSuccessful()) {
-                    L.D.m(TAG, "Skills " + response.body().toString());
-                    callback.onSkillsFetched(response.body());
-                } else {
-                    callback.onSkillFetchError();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<UserModel.Skills>> call, Throwable t) {
-                callback.onSkillFetchError();
-            }
-        });
     }
 
     public static void setSkills(SkillsUpdateBody body, final OnSkillsUpdateCallback callback) {
@@ -524,71 +494,71 @@ public class DataServer {
 
     }
 
-    public static void setFollowUser(String userId, final FollowRequestBody requestBody, final FollowUserCallback callback) {
+//    public static void setFollowUser(String userId, final FollowRequestBody requestBody, final FollowUserCallback callback) {
+//
+//        getService()
+//                .followUser(userId, requestBody)
+//                .enqueue(new Callback<UserResponse>() {
+//                    @Override
+//                    public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+//                        if (response.isSuccessful()) {
+//                            callback.onUserFollowSet(requestBody.follow);
+//                        } else {
+//                            callback.onUserFollowSetFailed(!requestBody.follow);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<UserResponse> call, Throwable t) {
+//                        callback.onUserFollowSetFailed(!requestBody.follow);
+//                    }
+//                });
+//
+//    }
 
-        getService()
-                .followUser(userId, requestBody)
-                .enqueue(new Callback<UserResponse>() {
-                    @Override
-                    public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                        if (response.isSuccessful()) {
-                            callback.onUserFollowSet(requestBody.follow);
-                        } else {
-                            callback.onUserFollowSetFailed(!requestBody.follow);
-                        }
-                    }
+//    public static void updataUserDpUrl(String userId, final UserDataUpdateBody body, final UserDpUpdateRequestCallback callback) {
+//
+//        getService()
+//                .updateUserDp(userId, body)
+//                .enqueue(new Callback<UserResponse>() {
+//                    @Override
+//                    public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+//                        if (response.isSuccessful()) {
+//                            callback.onUserDataUpdated();
+//                        } else {
+//                            callback.onUserDataUpdateError();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<UserResponse> call, Throwable t) {
+//                        callback.onUserDataUpdateError();
+//                    }
+//                });
+//
+//    }
 
-                    @Override
-                    public void onFailure(Call<UserResponse> call, Throwable t) {
-                        callback.onUserFollowSetFailed(!requestBody.follow);
-                    }
-                });
-
-    }
-
-    public static void updataUserDpUrl(String userId, final UserDataUpdateBody body, final UserDpUpdateRequestCallback callback) {
-
-        getService()
-                .updateUserDp(userId, body)
-                .enqueue(new Callback<UserResponse>() {
-                    @Override
-                    public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                        if (response.isSuccessful()) {
-                            callback.onUserDataUpdated();
-                        } else {
-                            callback.onUserDataUpdateError();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<UserResponse> call, Throwable t) {
-                        callback.onUserDataUpdateError();
-                    }
-                });
-
-    }
-
-    public static void updateUserBio(String userId, final UserBioUpdateRequestBody body, final UserBioUpdateRequestCallback callback) {
-
-        getService()
-                .updateUserBio(userId, body)
-                .enqueue(new Callback<UserResponse>() {
-                    @Override
-                    public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                        if (response.isSuccessful()) {
-                            callback.onBioUpdated();
-                        } else {
-                            callback.onBioUpdateError();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<UserResponse> call, Throwable t) {
-                        callback.onBioUpdateError();
-                    }
-                });
-
-    }
+//    public static void updateUserBio(String userId, final UserBioUpdateRequestBody body, final UserBioUpdateRequestCallback callback) {
+//
+//        getService()
+//                .updateUserBio(userId, body)
+//                .enqueue(new Callback<UserResponse>() {
+//                    @Override
+//                    public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+//                        if (response.isSuccessful()) {
+//                            callback.onBioUpdated();
+//                        } else {
+//                            callback.onBioUpdateError();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<UserResponse> call, Throwable t) {
+//                        callback.onBioUpdateError();
+//                    }
+//                });
+//
+//    }
 
     public static void votePost(String postId, final VoteRequestBody body, final VotePostCallback callback) {
 
@@ -635,29 +605,29 @@ public class DataServer {
 
     }
 
-    public static void requestUser(final int commentPosition, int user_id, final UserFetchCallback callback) {
-
-        L.D.m(TAG, "Fetching user.." + user_id);
-
-        getService()
-                .fetchUser(user_id)
-                .enqueue(new Callback<UserResponse>() {
-                    @Override
-                    public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                        if (response.isSuccessful()) {
-                            callback.onUserFetched(commentPosition, response.body());
-                        } else {
-                            callback.onUserFetchError();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<UserResponse> call, Throwable t) {
-                        callback.onUserFetchError();
-                    }
-                });
-
-    }
+//    public static void requestUser(final int commentPosition, int user_id, final UserFetchCallback callback) {
+//
+//        L.D.m(TAG, "Fetching user.." + user_id);
+//
+//        getService()
+//                .fetchUser(user_id)
+//                .enqueue(new Callback<UserResponse>() {
+//                    @Override
+//                    public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+//                        if (response.isSuccessful()) {
+//                            callback.onUserFetched(commentPosition, response.body());
+//                        } else {
+//                            callback.onUserFetchError();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<UserResponse> call, Throwable t) {
+//                        callback.onUserFetchError();
+//                    }
+//                });
+//
+//    }
 
     public static void deleteVote(int postId, final VoteDeleteCallback callback) {
 

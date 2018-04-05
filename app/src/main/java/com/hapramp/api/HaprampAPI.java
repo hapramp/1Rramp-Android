@@ -3,7 +3,6 @@ package com.hapramp.api;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.models.CommunitySelectionServerUpdateBody;
 import com.hapramp.models.UserDataUpdateBody;
-import com.hapramp.models.UserResponse;
 import com.hapramp.models.VoteModel;
 import com.hapramp.models.VoteStatus;
 import com.hapramp.models.requests.FollowRequestBody;
@@ -83,6 +82,9 @@ public interface HaprampAPI {
     @PUT("users/communities")
     Call<CommunitySelectionResponse> updateCommunitySelections(@Body CommunitySelectionServerUpdateBody body);
 
+    @GET("users")
+    Call<List<UserModel>> getAllUsersOnPlatform();
+
     @GET("feeds/user/{username}")
     Call<List<Feed>> getUserFeeds(@Path("username") String username, @Query("limit") int limit);
 
@@ -119,17 +121,11 @@ public interface HaprampAPI {
     @GET("organizations")
     Call<List<OrgsResponse>> getOrgs();
 
-    @GET("users/{user_id}")
-    Call<UserResponse> fetchUser(@Path("user_id") int user_id);
-
     @GET("users/user")
     Call<FetchUserResponse> getUserFromToken();
 
     @PUT("users/{user_id}")
     Call<UpdateUserResponse> updateOrg(@Path("user_id") String userID, @Body UserUpdateModel user);
-
-    @GET("skills")
-    Call<List<UserModel.Skills>> getSkills();
 
     @PUT("users/skills")
     Call<SkillsUpdateResponse> setSkills(@Body SkillsUpdateBody skillsUpdateBody);
@@ -176,15 +172,15 @@ public interface HaprampAPI {
 
     @GET("contests/{contest_id}/posts")
     Call<CompetitionsPostReponse> getCompetitionsPosts(@Path("contest_id") String compId);
-
-    @POST("users/{user_id}/_follow")
-    Call<UserResponse> followUser(@Path("user_id") String userId, @Body FollowRequestBody body);
-
-    @PUT("users/{user_id}")
-    Call<UserResponse> updateUserDp(@Path("user_id") String userId, @Body UserDataUpdateBody body);
-
-    @PUT("users/{user_id}")
-    Call<UserResponse> updateUserBio(@Path("user_id") String userId, @Body UserBioUpdateRequestBody body);
+//
+//    @POST("users/{user_id}/_follow")
+//    Call<UserResponse> followUser(@Path("user_id") String userId, @Body FollowRequestBody body);
+//
+//    @PUT("users/{user_id}")
+//    Call<UserResponse> updateUserDp(@Path("user_id") String userId, @Body UserDataUpdateBody body);
+//
+//    @PUT("users/{user_id}")
+//    Call<UserResponse> updateUserBio(@Path("user_id") String userId, @Body UserBioUpdateRequestBody body);
 
 //    @POST("posts/{post_id}/votes")
 //    Call<Feed> votePost(@Path("post_id") String postId, @Body VoteRequestBody body);
