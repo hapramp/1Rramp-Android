@@ -158,8 +158,11 @@ public class ProfileHeaderView extends FrameLayout implements FollowUserCallback
 
     private void bind(SteemUser data) {
 
-        loaded = true;
+        //check for null view(incase view is removed)
+        if(username==null)
+            return;
 
+        loaded = true;
         ImageHandler.loadCircularImage(mContext, profilePic, data.getUser().getJsonMetadata().getProfile().getProfileImage());
 
         String wall_pic_url = data.getUser().getJsonMetadata().getProfile().getCover_image() != null ?
@@ -230,12 +233,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowUserCallback
         Intent intent = new Intent(mContext, ProfileEditActivity.class);
         mContext.startActivity(intent);
 
-    }
-
-    private void setUserFollow(boolean follow) {
-        DataServer.setFollowUser(
-                String.valueOf(profileData.getUserId()),
-                new FollowRequestBody(follow), this);
     }
 
     @Override
