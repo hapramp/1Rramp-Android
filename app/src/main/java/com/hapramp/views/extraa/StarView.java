@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -130,6 +131,7 @@ public class StarView extends FrameLayout{
     }
 
     private void showRatingProgress(boolean show){
+        l("Show rating progress "+show);
         if(show){
             //hide text
             starInfo.setVisibility(GONE);
@@ -342,7 +344,7 @@ public class StarView extends FrameLayout{
     }
 
     private void l(String s) {
-        //   Log.i("STRV", s);
+           Log.i("STRV", s);
     }
 
     private void sendVoteToAppServer() {
@@ -355,12 +357,12 @@ public class StarView extends FrameLayout{
 
     public void onVoteLoading(){
         //show progress
-        ratingProgress.setVisibility(VISIBLE);
+        showRatingProgress(true);
     }
 
     public void onVoteLoadingFailed(){
         //hide progress
-        ratingProgress.setVisibility(GONE);
+        showRatingProgress(false);
         //show error
         ratingError.setVisibility(VISIBLE);
 
@@ -368,7 +370,7 @@ public class StarView extends FrameLayout{
 
     public void onVoteLoaded(){
         //hide progress
-        ratingProgress.setVisibility(GONE);
+        showRatingProgress(false);
         //hide error
         ratingError.setVisibility(GONE);
     }
