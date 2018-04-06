@@ -1,10 +1,14 @@
 package com.hapramp.views;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -81,7 +85,7 @@ public class UserSearchItemView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 if (isFollowed()) {
-                    requestUnFollowOnSteem();
+                    confirmUnfollowAction();
                 } else {
                     requestFollowOnSteem();
                 }
@@ -183,13 +187,34 @@ public class UserSearchItemView extends FrameLayout {
     private void setFollowedState() {
         //user is followed, so now Unfollow
         followUnfollowBtn.setText("UnFollow");
+        followUnfollowBtn.setBackgroundResource(R.drawable.unfollow_btn_bg);
         followed = true;
+
     }
 
     private void setUnFollowedState() {
         //user is followed, so now Unfollow
         followUnfollowBtn.setText("Follow");
+        followUnfollowBtn.setBackgroundResource(R.drawable.follow_btn_bg);
         followed = false;
+    }
+
+
+    private void confirmUnfollowAction() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
+                .setTitle("Unfollow")
+                .setMessage("Do you want to Unfollow "+getUsername()+" ?")
+                .setPositiveButton("UnFollow", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                       requestUnFollowOnSteem();
+                    }
+                })
+                .setNegativeButton("No", null);
+
+        builder.show();
+
     }
 
 
@@ -218,6 +243,7 @@ public class UserSearchItemView extends FrameLayout {
         setFollowedState();
         t("Failed to unfollow "+getUsername());
     }
+
 
     private void showProgress(boolean show){
 
