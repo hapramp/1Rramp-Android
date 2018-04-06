@@ -273,4 +273,14 @@ public class HaprampPreferenceManager {
         editor.putString("platform_users", json);
         editor.apply();
     }
+
+    public void saveCurrentUserFollowingsAsJson(String json) {
+        editor.putString("current_user_followings",json);
+        editor.apply();
+    }
+
+    public String getCurrentUserFollowingsAsJson(){
+        return  preferences.getString("current_user_followings","");
+    }
+
 }

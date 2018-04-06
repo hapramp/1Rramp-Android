@@ -2,6 +2,11 @@ package com.hapramp.search;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import eu.bittrade.libs.steemj.SteemJ;
+import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
+import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 
 /**
  * Created by Ankit on 3/9/2018.
@@ -13,62 +18,47 @@ public class SearchManager {
     HashMap<String, IndexNode> tree;
     private SearchListener searchListener;
 
-    public SearchManager(final ArrayList<String> dataList, SearchListener searchListener) {
+    public SearchManager(SearchListener searchListener) {
 
         this.searchListener = searchListener;
 
-        new Thread() {
-            @Override
-            public void run() {
-
-                //callback
-                onPreparing();
-
-                if (dataList != null) {
-                    indexTreeBuilder = new IndexTreeBuilder(dataList);
-                }
-                tree = indexTreeBuilder.buildTree();
-
-                //callback
-                onPrepared();
-
-            }
-        }.start();
-
     }
 
-    public void requestSuggestionsFor(String segment) {
+    public void requestSuggestionsFor(final String segment) {
 
         //callback
         onSearching();
+        onPrepared();
 
-        ArrayList<String> empty_suggestion = new ArrayList<>();
+        final ArrayList<String> empty_suggestion = new ArrayList<>();
         //loop through characters
         int len = segment.length();
-
-        //first character
-        String s = segment.substring(0, 1);
-
-        //get the first node from tree
-        IndexNode currNode = tree.get(s);
-        // check for existence
-        if (currNode == null) {
-            //return empty arrayList
+        if (len == 0) {
             onSearched(empty_suggestion);
             return;
         }
 
-        for (int i = 1; i < len; i++) {
-            if (currNode.getNode(String.valueOf(segment.charAt(i))) == null) {
-                // send empty list
-                onSearched(empty_suggestion);
-                return;
-            } else {
-                currNode = currNode.getNode(String.valueOf(segment.charAt(i)));
-            }
-        }
+        //perform steem search and result
+        new Thread() {
+            @Override
+            public void run() {
+                try {
 
-        onSearched(currNode.getListOfWords());
+                    onSearching();
+                    SteemJ steemJ = new SteemJ();
+                    final List<String> users = steemJ.lookupAccounts(segment, 10);
+                    onSearched((ArrayList<String>) users);
+
+                } catch (SteemCommunicationException e) {
+                    onSearched(empty_suggestion);
+                    e.printStackTrace();
+                } catch (SteemResponseException e) {
+                    onSearched(empty_suggestion);
+                    e.printStackTrace();
+                }
+
+            }
+        }.start();
 
     }
 
@@ -80,57 +70,20 @@ public class SearchManager {
 
     private void onPrepared() {
         if (searchListener != null) {
-
-                    searchListener.onPrepared();
-
+            searchListener.onPrepared();
         }
     }
 
     private void onSearching() {
         if (searchListener != null) {
-
-                    searchListener.onSearching();
-
+            searchListener.onSearching();
         }
     }
 
     private void onSearched(final ArrayList<String> suggs) {
         if (searchListener != null) {
-
-                    searchListener.onSearched(suggs);
-
+            searchListener.onSearched(suggs);
         }
-    }
-
-    public static SearchBuilder Builder() {
-        return new SearchBuilder();
-    }
-
-    public static class SearchBuilder {
-
-        ArrayList<String> words;
-        SearchListener searchListener;
-        SearchManager searchManager;
-
-        public SearchBuilder() {
-
-        }
-
-        public SearchBuilder feedWords(ArrayList<String> words) {
-            this.words = words;
-            return this;
-        }
-
-        public SearchBuilder setSearchCallback(SearchListener searchCallback) {
-            this.searchListener = searchCallback;
-            return this;
-        }
-
-        public SearchManager build() {
-            searchManager = new SearchManager(words, searchListener);
-            return searchManager;
-        }
-
     }
 
     public interface SearchListener {

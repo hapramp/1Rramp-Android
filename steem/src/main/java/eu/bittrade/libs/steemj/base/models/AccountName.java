@@ -103,7 +103,9 @@ public class AccountName implements ByteTransformable, SignatureObject {
 
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+        return "AccountName{" +
+                "name='" + name + '\'' +
+                '}';
     }
 
     @Override

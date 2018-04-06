@@ -49,6 +49,17 @@ public class FollowApiObject {
 
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+        return "FollowApiObject{" +
+                "follower=" + follower +
+                ", following=" + following +
+                ", what=" + what +
+                '}';
     }
+
+    //
+//    @Override
+//    public String toString() {
+//        return ToStringBuilder.reflectionToString(this);
+//    }
+//
 }
