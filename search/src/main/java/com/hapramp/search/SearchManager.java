@@ -46,7 +46,7 @@ public class SearchManager {
 
                     onSearching();
                     SteemJ steemJ = new SteemJ();
-                    final List<String> users = steemJ.lookupAccounts(segment, 10);
+                    final List<String> users = steemJ.lookupAccounts(segment, 5);
                     onSearched((ArrayList<String>) users);
 
                 } catch (SteemCommunicationException e) {

@@ -1,14 +1,18 @@
 package com.hapramp.activity;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -19,10 +23,13 @@ import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.search.SearchManager;
 import com.hapramp.steem.FollowApiObjectWrapper;
+import com.hapramp.utils.FontManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import eu.bittrade.libs.steemj.SteemJ;
 import eu.bittrade.libs.steemj.apis.follow.enums.FollowType;
 import eu.bittrade.libs.steemj.apis.follow.model.FollowApiObject;
@@ -33,21 +40,37 @@ import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 public class UserSearchActivity extends AppCompatActivity implements SearchManager.SearchListener {
 
     public static final String TAG = UserSearchActivity.class.getSimpleName();
+    @BindView(R.id.backBtn)
+    TextView backBtn;
+    @BindView(R.id.searchInput)
+    EditText searchInput;
+    @BindView(R.id.searchBtn)
+    TextView searchBtn;
+    @BindView(R.id.action_bar_container)
+    RelativeLayout actionBarContainer;
+    @BindView(R.id.countTv)
+    TextView countTv;
+    @BindView(R.id.suggestionsListView)
+    ListView suggestionsListView;
+    @BindView(R.id.suggestionsProgressBar)
+    ProgressBar suggestionsProgressBar;
+    @BindView(R.id.messagePanel)
+    TextView messagePanel;
+    @BindView(R.id.toolbar_drop_shadow)
+    FrameLayout toolbarDropShadow;
+    @BindView(R.id.appBar)
+    RelativeLayout appBar;
 
     private boolean loadedUserFromAppServer;
-    ListView suggestionsListView;
-    ProgressBar suggestionProgressBar;
-    TextView messagePanel;
-    EditText searchInputBox;
     UserSuggestionListAdapter adapter;
     SearchManager searchManager;
-    TextView countTv;
     private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        ButterKnife.bind(this);
         initView();
         attachListener();
         initSearchManager();
@@ -56,19 +79,31 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
 
     private void initView() {
 
-        suggestionsListView = findViewById(R.id.suggestionsListView);
-        suggestionProgressBar = findViewById(R.id.suggestionsProgressBar);
-        messagePanel = findViewById(R.id.messagePanel);
-        countTv = findViewById(R.id.countTv);
-        searchInputBox = findViewById(R.id.searchInput);
         adapter = new UserSuggestionListAdapter(this);
         suggestionsListView.setAdapter(adapter);
         mHandler = new Handler();
+        backBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+        searchBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
 
     }
 
     private void attachListener() {
-        searchInputBox.addTextChangedListener(new TextWatcher() {
+
+        searchInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    String searchTerm = searchInput.getText().toString();
+                    if (searchTerm.length() >= 0) {
+                        fetchSuggestions(searchTerm);
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        searchInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -87,7 +122,19 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
 
             }
         });
+
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String searchTerm = searchInput.getText().toString();
+                if (searchTerm.length() >= 0) {
+                    fetchSuggestions(searchTerm);
+                }
+            }
+        });
+
     }
+
 
     private void initSearchManager() {
         searchManager = new SearchManager(this);
@@ -162,7 +209,7 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
 
                 suggestionsListView.setVisibility(View.GONE);
                 messagePanel.setVisibility(View.VISIBLE);
-                suggestionProgressBar.setVisibility(View.VISIBLE);
+                suggestionsProgressBar.setVisibility(View.VISIBLE);
                 messagePanel.setText("Preparing...");
 
             }
@@ -177,7 +224,7 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
             public void run() {
                 suggestionsListView.setVisibility(View.GONE);
                 messagePanel.setVisibility(View.VISIBLE);
-                suggestionProgressBar.setVisibility(View.GONE);
+                suggestionsProgressBar.setVisibility(View.GONE);
                 messagePanel.setText("Ready For Search!!");
                 countTv.setVisibility(View.GONE);
             }
@@ -191,7 +238,7 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
             public void run() {
                 suggestionsListView.setVisibility(View.GONE);
                 messagePanel.setVisibility(View.VISIBLE);
-                suggestionProgressBar.setVisibility(View.VISIBLE);
+                suggestionsProgressBar.setVisibility(View.VISIBLE);
                 countTv.setVisibility(View.VISIBLE);
                 countTv.setVisibility(View.GONE);
                 messagePanel.setText("Searching...");
@@ -208,7 +255,7 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
             public void run() {
                 suggestionsListView.setVisibility(View.VISIBLE);
                 messagePanel.setVisibility(View.GONE);
-                suggestionProgressBar.setVisibility(View.GONE);
+                suggestionsProgressBar.setVisibility(View.GONE);
                 countTv.setVisibility(View.VISIBLE);
                 countTv.setText(suggestions.size() + " Result Found!");
                 adapter.setUsernames(suggestions);
