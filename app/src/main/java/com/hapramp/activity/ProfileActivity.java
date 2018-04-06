@@ -61,10 +61,6 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
         ButterKnife.bind(this);
         init();
         attachListeners();
-        requestData();
-    }
-
-    private void requestData() {
         fetchProfileData();
     }
 
@@ -117,8 +113,8 @@ public class ProfileActivity extends AppCompatActivity implements FullUserDetail
 
     private void init() {
 
-        userId = getIntent().getExtras().getString(Constants.EXTRAA_KEY_USER_ID);
-        //todo: make sure userId is `username` of steem account
+        userId = getIntent().getExtras().getString(Constants.EXTRAA_KEY_STEEM_USER_NAME);
+        //todo: make sure `username` of steem account
         profilePostAdapter = new ProfileRecyclerAdapter(this,userId);
         closeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         overflowBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));

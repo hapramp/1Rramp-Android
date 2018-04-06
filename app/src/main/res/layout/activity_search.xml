@@ -28,6 +28,7 @@
             android:textSize="14sp"
             android:imeOptions="actionSearch"
             android:layout_toEndOf="@+id/backBtn"
+            android:layout_toStartOf="@+id/searchBtn"
             android:hint="Search user.."
             android:textColorHint="@color/Black38"
             android:layout_width="match_parent"
@@ -50,8 +51,8 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_below="@+id/action_bar_container">
 
         <TextView
@@ -76,10 +77,9 @@
 
         <ProgressBar
             android:id="@+id/suggestionsProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:padding="24dp" />
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerHorizontal="true" />
 
         <TextView
             android:id="@+id/messagePanel"

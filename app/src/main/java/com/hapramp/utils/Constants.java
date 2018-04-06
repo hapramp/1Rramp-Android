@@ -8,6 +8,7 @@ public class Constants {
 
 
     public static final String EXTRAA_KEY_USER_ID = "userId";
+    public static final String EXTRAA_KEY_STEEM_USER_NAME = "steemUsername";
     public static final String EXTRAA_KEY_CONTEXT_TEXT = "context";
     public static final String EXTRAA_KEY_POST_ID = "postId";
     public static final String EXTRAA_KEY_MEDIA_URL = "mediaUrl";

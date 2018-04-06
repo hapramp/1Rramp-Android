@@ -133,6 +133,13 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
             }
         });
 
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
     }
 
 
@@ -256,8 +263,8 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
                 suggestionsListView.setVisibility(View.VISIBLE);
                 messagePanel.setVisibility(View.GONE);
                 suggestionsProgressBar.setVisibility(View.GONE);
-                countTv.setVisibility(View.VISIBLE);
-                countTv.setText(suggestions.size() + " Result Found!");
+               // countTv.setVisibility(View.VISIBLE);
+               // countTv.setText(suggestions.size() + " Result Found!");
                 adapter.setUsernames(suggestions);
             }
         });
