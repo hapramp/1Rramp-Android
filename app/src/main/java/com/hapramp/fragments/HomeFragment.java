@@ -168,9 +168,6 @@ public class HomeFragment extends Fragment implements
 
     }
 
-    public void forceReloadData() {
-    }
-
     private void loadMore(String tag) {
 
         //todo: implement after lazy loading is enabled
@@ -211,12 +208,12 @@ public class HomeFragment extends Fragment implements
 
     @Override
     public void onRetryFeedLoading() {
-        forceReloadData();
+        fetchCommunityPosts(currentSelectedTag);
     }
 
     @Override
     public void onRefreshFeeds() {
-        forceReloadData();
+        fetchCommunityPosts(currentSelectedTag);
     }
 
     @Override

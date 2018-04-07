@@ -136,9 +136,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            if (homeFragment.isAdded())
-                homeFragment.forceReloadData();
-
             if (profileFragment.isAdded())
                 profileFragment.reloadPosts();
 
