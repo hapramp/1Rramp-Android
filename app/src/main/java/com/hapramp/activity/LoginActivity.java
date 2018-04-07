@@ -64,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
     ImageView logo;
     @BindView(R.id.user_icon)
     TextView userIcon;
-    @BindView(R.id.username)
+    @BindView(R.id.usernameTv)
     EditText usernameEt;
     @BindView(R.id.usernameHolder)
     LinearLayout usernameHolder;

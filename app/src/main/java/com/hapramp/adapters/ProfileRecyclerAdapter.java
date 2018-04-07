@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.hapramp.models.ProfileHeaderModel;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.views.post.PostItemView;
 import com.hapramp.views.profile.ProfileHeaderView;
@@ -91,7 +90,7 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         // since we have additional item at the top + one at the bottom
         s = feeds.size();
 
-        return s == 0 ? 0 : s + 1;
+        return s == 0 ? 1 : s + 1;
 
     }
 

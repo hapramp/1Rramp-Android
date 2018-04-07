@@ -143,7 +143,7 @@
                     android:id="@+id/usernameEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="username"
+                    android:hint="usernameTv"
                     android:textColor="@color/Black54"
                     android:textSize="14sp" />
 

@@ -2,6 +2,7 @@ package com.hapramp.views;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
@@ -20,9 +21,11 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hapramp.R;
+import com.hapramp.activity.ProfileActivity;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.FollowApiObjectWrapper;
 import com.hapramp.steem.SteemHelper;
+import com.hapramp.utils.Constants;
 
 import java.util.List;
 
@@ -53,7 +56,7 @@ public class UserSearchItemView extends FrameLayout {
     private Context mContext;
 
     private Handler mHandler;
-    private String username;
+    private String mUsername;
 
     public UserSearchItemView(@NonNull Context context) {
         super(context);
@@ -89,6 +92,15 @@ public class UserSearchItemView extends FrameLayout {
                 } else {
                     requestFollowOnSteem();
                 }
+            }
+        });
+
+        content.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(mContext, ProfileActivity.class);
+                i.putExtra(Constants.EXTRAA_KEY_STEEM_USER_NAME,getUsername());
+                mContext.startActivity(i);
             }
         });
 
@@ -157,14 +169,21 @@ public class UserSearchItemView extends FrameLayout {
     //set username
     public void setUsername(String username) {
 
-        this.username = username;
+        this.mUsername = username;
         // set text
         content.setText(username);
+
         setFollowButtonState();
 
     }
 
     private void setFollowButtonState() {
+
+        // hide follow button for self account
+        if(mUsername.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())){
+            followUnfollowBtn.setVisibility(GONE);
+            return;
+        }
 
         FollowApiObjectWrapper followApiObjectWrapper = new Gson().fromJson(HaprampPreferenceManager.getInstance().getCurrentUserFollowingsAsJson(), FollowApiObjectWrapper.class);
         List<FollowApiObject> followApiObjects = followApiObjectWrapper.getFollowings();
@@ -292,7 +311,7 @@ public class UserSearchItemView extends FrameLayout {
     }
 
     private String getUsername() {
-        return this.username;
+        return this.mUsername;
     }
 
     private void t(String s){

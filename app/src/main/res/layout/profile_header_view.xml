@@ -43,7 +43,7 @@
         android:padding="8dp">
 
         <TextView
-            android:id="@+id/username"
+            android:id="@+id/usernameTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
@@ -55,7 +55,7 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/username" />
+            android:layout_toRightOf="@+id/usernameTv" />
 
     </RelativeLayout>
 
@@ -96,8 +96,20 @@
         android:textSize="16dp"
         android:textColor="#ffffff" />
 
+    <ProgressBar
+
+        android:id="@+id/followUnfollowProgress"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/profile_user_name_container"
+        android:layout_marginTop="12dp"
+        android:visibility="gone"
+        android:layout_width="24dp"
+        android:layout_height="24dp" />
+
     <TextView
         android:id="@+id/bio"
+        android:hint="Your Bio Here..."
+        android:textColorHint="@color/Black38"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/profile_user_name_container"

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.hapramp.R;
 import com.hapramp.models.CommunityModel;
@@ -27,6 +28,7 @@ public class InterestsView extends FrameLayout {
     private Context mContext;
     private ViewGroup parentView;
     private List<CommunityModel> communities;
+    private TextView noInterestMessage;
 
     public InterestsView(@NonNull Context context) {
         super(context);
@@ -51,10 +53,16 @@ public class InterestsView extends FrameLayout {
         View view = LayoutInflater.from(mContext).inflate(R.layout.community_view_container, this);
         progressBar = view.findViewById(R.id.communityLoadingProgressBar);
         parentView = view.findViewById(R.id.viewWrapper);
+        noInterestMessage = view.findViewById(R.id.no_interest_msg);
 
     }
 
     private void addViews() {
+
+        if (parentView.getChildCount() > 0) {
+            // already added, no need to add more duplicate views
+            return;
+        }
 
         for (int i = 0; i < communities.size(); i++) {
 
@@ -70,13 +78,17 @@ public class InterestsView extends FrameLayout {
         }
 
         progressBar.setVisibility(GONE);
+        noInterestMessage.setVisibility(GONE);
 
     }
 
     public void setCommunities(List<CommunityModel> communities) {
         this.communities = communities;
-        if (communities != null) {
+        if (communities != null && communities.size() > 0) {
             addViews();
+        }else{
+            progressBar.setVisibility(GONE);
+            noInterestMessage.setVisibility(VISIBLE);
         }
     }
 
