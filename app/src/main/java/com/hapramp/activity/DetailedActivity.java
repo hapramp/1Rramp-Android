@@ -3,6 +3,7 @@ package com.hapramp.activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -27,22 +28,33 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.hapramp.R;
+import com.hapramp.models.CommunityModel;
 import com.hapramp.models.response.CommentsResponse;
 import com.hapramp.models.response.PostResponse;
+import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.Communities;
 import com.hapramp.steem.models.Feed;
+import com.hapramp.steem.models.user.Profile;
+import com.hapramp.steem.models.user.SteemUser;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
+import com.hapramp.utils.ImageHandler;
+import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.SkillsUtils;
 import com.hapramp.views.comments.CommentView;
 import com.hapramp.views.extraa.StarView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DetailedActivity extends AppCompatActivity{
+import static android.view.View.VISIBLE;
+
+public class DetailedActivity extends AppCompatActivity {
 
     @BindView(R.id.closeBtn)
     TextView closeBtn;
@@ -128,7 +140,7 @@ public class DetailedActivity extends AppCompatActivity{
         collectExtras();
         fetchComments();
         setTypefaces();
-        //bindValues();
+        bindValues();
         attachListener();
 
     }
@@ -158,7 +170,7 @@ public class DetailedActivity extends AppCompatActivity{
 
     private void collectExtras() {
 
-        post = getIntent().getExtras().getParcelable("postData");
+        post = getIntent().getExtras().getParcelable(Constants.EXTRAA_KEY_POST_DATA);
         currentCommentUrl = String.format(getResources().getString(R.string.commentUrl), Integer.valueOf(post.id));
         progressDialog = new ProgressDialog(this);
 
@@ -166,7 +178,7 @@ public class DetailedActivity extends AppCompatActivity{
 
     private void fetchComments() {
 
-     //   DataServer.getComments(currentCommentUrl, this);
+        //   DataServer.getComments(currentCommentUrl, this);
 
     }
 
@@ -220,7 +232,7 @@ public class DetailedActivity extends AppCompatActivity{
         commentInputBox.setText("");
         if (cmnt.length() > 2) {
             showProgress("Posting Your Comment...");
-           // DataServer.createComment(String.valueOf(post.id), new CommentBody(cmnt), this);
+            // DataServer.createComment(String.valueOf(post.id), new CommentBody(cmnt), this);
         } else {
             Toast.makeText(this, "Comment Too Short!!", Toast.LENGTH_LONG).show();
         }
@@ -251,19 +263,24 @@ public class DetailedActivity extends AppCompatActivity{
         sendButtonMock.setTypeface(t);
 
     }
-//
-//    private void bindValues() {
-//
-//        // set basic meta-info
-//        ImageHandler.loadCircularImage(this, feedOwnerPic, post.user.image_uri);
-//        feedOwnerTitle.setText(post.user.full_name);
-//        feedOwnerSubtitle.setText(
-//                String.format(getResources().getString(R.string.post_subtitle_format),
-//                        MomentsUtils.getFormattedTime(post.created_at)));
-//
-//        setSkills(post.skills);
+
+    //
+    private void bindValues() {
+
+        // set basic meta-info
+        Profile _p = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserProfile(post.getAuthor()), Profile.class);
+        if (_p != null) {
+            ImageHandler.loadCircularImage(this, feedOwnerPic, _p.getProfileImage());
+        }
+
+        feedOwnerTitle.setText(post.author);
+        feedOwnerSubtitle.setText(
+                String.format(getResources().getString(R.string.post_subtitle_format),
+                        MomentsUtils.getFormattedTime(post.created)));
+
+        setCommunities(post.jsonMetadata.tags);
 //        content.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-//        content.loadDataWithBaseURL(null, "<style>img{display: inline;height: auto;max-width: 100%;}</style>" + post.content, "text/html", "UTF-8", null);
+//        content.loadDataWithBaseURL(null, "<style>img{display: inline;height: auto;max-width: 100%;}</style>" + post.jsonMetadata.content., "text/html", "UTF-8", null);
 //        // initialize the starview
 //        starView.setVoteState(
 //                new StarView.Vote(
@@ -283,18 +300,76 @@ public class DetailedActivity extends AppCompatActivity{
 //                deleteVote(postId);
 //            }
 //        });
-//
-//        //String _comment_info = post.comment_count > 1 ? String.valueOf(post.comment_count).concat(" comments") : String.valueOf(post.comment_count).concat(" comment");
+
+        //String _comment_info = post.comment_count > 1 ? String.valueOf(post.comment_count).concat(" comments") : String.valueOf(post.comment_count).concat(" comment");
 //        setCommentCount(post.comment_count);
 //        setHapcoins(post.hapcoins);
-//
-//        ImageHandler.loadCircularImage(this, commentCreaterAvatar, HaprampPreferenceManager.getInstance().getUser().getImage_uri());
-//        ImageHandler.loadCircularImage(this, commentCreaterAvatarMock, HaprampPreferenceManager.getInstance().getUser().getImage_uri());
-//
-//    }
+
+        SteemUser steemUser = new Gson().fromJson(HaprampPreferenceManager.getInstance().getCurrentUserInfoAsJson(), SteemUser.class);
+        String user_profile_url = steemUser.getUser().getJsonMetadata().getProfile().getProfileImage() != null ?
+                steemUser.getUser().getJsonMetadata().getProfile().getProfileImage()
+                :
+                "";
+
+        ImageHandler.loadCircularImage(this, commentCreaterAvatar, user_profile_url);
+        ImageHandler.loadCircularImage(this, commentCreaterAvatarMock, user_profile_url);
+
+    }
+
+    private void setCommunities(List<String> communities) {
+        // community name + community color
+        List<CommunityModel> cm = new ArrayList<>();
+        for (int i = 0; i < communities.size(); i++) {
+            if (Communities.doesCommunityExists(communities.get(i))) {
+                cm.add(new CommunityModel("", "", communities.get(i),
+                        HaprampPreferenceManager.getInstance().getCommunityColorFromTag(communities.get(i)),
+                        HaprampPreferenceManager.getInstance().getCommunityNameFromTag(communities.get(i)),
+                        0
+                ));
+            }
+        }
+
+        addCommunitiesToLayout(cm);
+
+    }
+
+    private void addCommunitiesToLayout(List<CommunityModel> cms) {
+
+        int size = cms.size();
+        if (size > 0) {
+            //first skill
+            club1.setVisibility(VISIBLE);
+
+            club1.setText(cms.get(0).getmName());
+            club1.getBackground().setColorFilter(
+                    Color.parseColor(cms.get(0).getmColor()),
+                    PorterDuff.Mode.SRC_ATOP);
+
+            if (size > 1) {
+                // second skills
+                club2.setVisibility(VISIBLE);
+
+                club2.setText(cms.get(1).getmName());
+                club2.getBackground().setColorFilter(
+                        Color.parseColor(cms.get(1).getmColor()),
+                        PorterDuff.Mode.SRC_ATOP);
+
+                if (size > 2) {
+                    // third skills
+                    club3.setVisibility(VISIBLE);
+
+                    club3.setText(cms.get(2).getmName());
+                    club3.getBackground().setColorFilter(
+                            Color.parseColor(cms.get(2).getmColor()),
+                            PorterDuff.Mode.SRC_ATOP);
+                }
+            }
+        }
+
+    }
 
     private void setHapcoins(float hapcoins) {
-        hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), hapcoins));
+                                                                            /// hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), hapcoins));
     }
 
     private void setCommentCount(int count) {
@@ -306,17 +381,17 @@ public class DetailedActivity extends AppCompatActivity{
         int size = skills.size();
         if (size > 0) {
             //first skill
-            club1.setVisibility(View.VISIBLE);
+            club1.setVisibility(VISIBLE);
             club1.setText(SkillsUtils.getSkillTitleFromId(skills.get(0).id));
             club1.getBackground().setColorFilter(SkillsUtils.getSkillTagColorFromId(skills.get(0).id), PorterDuff.Mode.SRC_ATOP);
             if (size > 1) {
                 // second skills
-                club2.setVisibility(View.VISIBLE);
+                club2.setVisibility(VISIBLE);
                 club2.setText(SkillsUtils.getSkillTitleFromId(skills.get(1).id));
                 club2.getBackground().setColorFilter(SkillsUtils.getSkillTagColorFromId(skills.get(1).id), PorterDuff.Mode.SRC_ATOP);
                 if (size > 2) {
                     // third skills
-                    club3.setVisibility(View.VISIBLE);
+                    club3.setVisibility(VISIBLE);
                     club3.setText(SkillsUtils.getSkillTitleFromId(skills.get(2).id));
                     club3.getBackground().setColorFilter(SkillsUtils.getSkillTagColorFromId(skills.get(2).id), PorterDuff.Mode.SRC_ATOP);
                 }
@@ -330,7 +405,7 @@ public class DetailedActivity extends AppCompatActivity{
         int commentCount = results.size();
         commentLoadingProgressBar.setVisibility(View.GONE);
         if (commentCount == 0) {
-            emptyCommentsCaption.setVisibility(View.VISIBLE);
+            emptyCommentsCaption.setVisibility(VISIBLE);
         }
 
         int range = commentCount > 3 ? 3 : results.size();
@@ -347,7 +422,7 @@ public class DetailedActivity extends AppCompatActivity{
         }
 
         if (commentCount > 3) {
-            moreCommentsCaption.setVisibility(View.VISIBLE);
+            moreCommentsCaption.setVisibility(VISIBLE);
         }
 
     }
@@ -363,13 +438,13 @@ public class DetailedActivity extends AppCompatActivity{
 //                    .translationYBy(PixelUtils.dpToPx(64))
 //                    .setDuration(1000)
 //                    .start();
-            commentInputContainer.setVisibility(View.VISIBLE);
+            commentInputContainer.setVisibility(VISIBLE);
 
         } else {
 
             commentBarVisible = false;
             //show mock bar and hide real input box
-            mockCommentParentView.setVisibility(View.VISIBLE);
+            mockCommentParentView.setVisibility(VISIBLE);
 //            commentInputContainer.animate()
 //                    .translationY(PixelUtils.dpToPx(64))
 //                    .setDuration(1000)
@@ -449,7 +524,7 @@ public class DetailedActivity extends AppCompatActivity{
     }
 
     private void requestPostDelete(int post_id, int pos) {
-       // DataServer.deletePost(String.valueOf(post_id), pos, this);
+        // DataServer.deletePost(String.valueOf(post_id), pos, this);
     }
 
 //    @Override

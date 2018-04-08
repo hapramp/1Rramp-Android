@@ -49,7 +49,7 @@ android {
     defaultConfig {
 
         applicationId "com.hapramp"
-        minSdkVersion 17
+        minSdkVersion 19
         targetSdkVersion 27
         versionCode 5
         versionName "0.0.4"
@@ -85,6 +85,7 @@ dependencies {
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"
     testImplementation "junit:junit:$junitVersion"
     testImplementation "org.robolectric:robolectric:$roboelectricVersion"
+    testImplementation "org.robolectric:shadows-multidex:$roboelectricVersion"
 
     implementation project(':steem')
     implementation project(':search')

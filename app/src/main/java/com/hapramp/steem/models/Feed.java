@@ -4,13 +4,17 @@ package com.hapramp.steem.models;
  * Created by Ankit on 3/8/2018.
  */
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
-public class Feed {
+public class Feed implements Parcelable {
 
     @Expose
     @SerializedName("hapramp_votes")
@@ -144,6 +148,139 @@ public class Feed {
     @Expose
     @SerializedName("id")
     public int id;
+
+    protected Feed(Parcel in) {
+        haprampVotes = in.readInt();
+        haprampRating = in.readInt();
+        if (in.readByte() == 0x01) {
+            rebloggedBy = new ArrayList<String>();
+            in.readList(rebloggedBy, String.class.getClassLoader());
+        } else {
+            rebloggedBy = null;
+        }
+        bodyLength = in.readInt();
+        promoted = in.readString();
+        authorReputation = in.readInt();
+        totalPendingPayoutValue = in.readString();
+        pendingPayoutValue = in.readString();
+        rootTitle = in.readString();
+        url = in.readString();
+        if (in.readByte() == 0x01) {
+            beneficiaries = new ArrayList<Beneficiaries>();
+            in.readList(beneficiaries, Beneficiaries.class.getClassLoader());
+        } else {
+            beneficiaries = null;
+        }
+        allowCurationRewards = in.readByte() != 0x00;
+        allowVotes = in.readByte() != 0x00;
+        allowReplies = in.readByte() != 0x00;
+        percentSteemDollars = in.readInt();
+        maxAcceptedPayout = in.readString();
+        rootComment = in.readInt();
+        netVotes = in.readInt();
+        authorRewards = in.readInt();
+        curatorPayoutValue = in.readString();
+        totalPayoutValue = in.readString();
+        rewardWeight = in.readInt();
+        totalVoteWeight = in.readInt();
+        maxCashoutTime = in.readString();
+        cashoutTime = in.readString();
+        childrenAbsRshares = in.readInt();
+        voteRshares = in.readInt();
+        absRshares = in.readInt();
+        netRshares = in.readInt();
+        children = in.readInt();
+        depth = in.readInt();
+        lastPayout = in.readString();
+        active = in.readString();
+        created = in.readString();
+        lastUpdate = in.readString();
+        jsonMetadata = (JsonMetadata) in.readValue(JsonMetadata.class.getClassLoader());
+        body = in.readString();
+        title = in.readString();
+        parentPermlink = in.readString();
+        parentAuthor = in.readString();
+        category = in.readString();
+        permlink = in.readString();
+        author = in.readString();
+        id = in.readInt();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(haprampVotes);
+        dest.writeInt(haprampRating);
+        if (rebloggedBy == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(rebloggedBy);
+        }
+        dest.writeInt(bodyLength);
+        dest.writeString(promoted);
+        dest.writeInt(authorReputation);
+        dest.writeString(totalPendingPayoutValue);
+        dest.writeString(pendingPayoutValue);
+        dest.writeString(rootTitle);
+        dest.writeString(url);
+        if (beneficiaries == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(beneficiaries);
+        }
+        dest.writeByte((byte) (allowCurationRewards ? 0x01 : 0x00));
+        dest.writeByte((byte) (allowVotes ? 0x01 : 0x00));
+        dest.writeByte((byte) (allowReplies ? 0x01 : 0x00));
+        dest.writeInt(percentSteemDollars);
+        dest.writeString(maxAcceptedPayout);
+        dest.writeInt(rootComment);
+        dest.writeInt(netVotes);
+        dest.writeInt(authorRewards);
+        dest.writeString(curatorPayoutValue);
+        dest.writeString(totalPayoutValue);
+        dest.writeInt(rewardWeight);
+        dest.writeInt(totalVoteWeight);
+        dest.writeString(maxCashoutTime);
+        dest.writeString(cashoutTime);
+        dest.writeInt(childrenAbsRshares);
+        dest.writeInt(voteRshares);
+        dest.writeInt(absRshares);
+        dest.writeInt(netRshares);
+        dest.writeInt(children);
+        dest.writeInt(depth);
+        dest.writeString(lastPayout);
+        dest.writeString(active);
+        dest.writeString(created);
+        dest.writeString(lastUpdate);
+        dest.writeValue(jsonMetadata);
+        dest.writeString(body);
+        dest.writeString(title);
+        dest.writeString(parentPermlink);
+        dest.writeString(parentAuthor);
+        dest.writeString(category);
+        dest.writeString(permlink);
+        dest.writeString(author);
+        dest.writeInt(id);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Feed> CREATOR = new Parcelable.Creator<Feed>() {
+        @Override
+        public Feed createFromParcel(Parcel in) {
+            return new Feed(in);
+        }
+
+        @Override
+        public Feed[] newArray(int size) {
+            return new Feed[size];
+        }
+    };
 
 
     public int getHaprampVotes() {
@@ -498,13 +635,42 @@ public class Feed {
         this.id = id;
     }
 
-    public static class Beneficiaries {
+    public static class Beneficiaries implements Parcelable {
         @Expose
         @SerializedName("weight")
         public int weight;
         @Expose
         @SerializedName("account")
         public String account;
+
+        protected Beneficiaries(Parcel in) {
+            weight = in.readInt();
+            account = in.readString();
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(weight);
+            dest.writeString(account);
+        }
+
+        @SuppressWarnings("unused")
+        public static final Parcelable.Creator<Beneficiaries> CREATOR = new Parcelable.Creator<Beneficiaries>() {
+            @Override
+            public Beneficiaries createFromParcel(Parcel in) {
+                return new Beneficiaries(in);
+            }
+
+            @Override
+            public Beneficiaries[] newArray(int size) {
+                return new Beneficiaries[size];
+            }
+        };
 
         public int getWeight() {
             return weight;
@@ -523,7 +689,7 @@ public class Feed {
         }
     }
 
-    public static class JsonMetadata {
+    public static class JsonMetadata implements Parcelable {
         @Expose
         @SerializedName("tags")
         public List<String> tags;
@@ -533,6 +699,47 @@ public class Feed {
         @Expose
         @SerializedName("app")
         public String app;
+
+        protected JsonMetadata(Parcel in) {
+            if (in.readByte() == 0x01) {
+                tags = new ArrayList<String>();
+                in.readList(tags, String.class.getClassLoader());
+            } else {
+                tags = null;
+            }
+            content = (Content) in.readValue(Content.class.getClassLoader());
+            app = in.readString();
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            if (tags == null) {
+                dest.writeByte((byte) (0x00));
+            } else {
+                dest.writeByte((byte) (0x01));
+                dest.writeList(tags);
+            }
+            dest.writeValue(content);
+            dest.writeString(app);
+        }
+
+        @SuppressWarnings("unused")
+        public static final Parcelable.Creator<JsonMetadata> CREATOR = new Parcelable.Creator<JsonMetadata>() {
+            @Override
+            public JsonMetadata createFromParcel(Parcel in) {
+                return new JsonMetadata(in);
+            }
+
+            @Override
+            public JsonMetadata[] newArray(int size) {
+                return new JsonMetadata[size];
+            }
+        };
 
         public List<String> getTags() {
             return tags;
@@ -559,13 +766,52 @@ public class Feed {
         }
     }
 
-    public static class Content {
+    public static class Content implements Parcelable {
         @Expose
         @SerializedName("type")
         public String type;
         @Expose
         @SerializedName("data")
         public List<Data> data;
+
+        protected Content(Parcel in) {
+            type = in.readString();
+            if (in.readByte() == 0x01) {
+                data = new ArrayList<Data>();
+                in.readList(data, Data.class.getClassLoader());
+            } else {
+                data = null;
+            }
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(type);
+            if (data == null) {
+                dest.writeByte((byte) (0x00));
+            } else {
+                dest.writeByte((byte) (0x01));
+                dest.writeList(data);
+            }
+        }
+
+        @SuppressWarnings("unused")
+        public static final Parcelable.Creator<Content> CREATOR = new Parcelable.Creator<Content>() {
+            @Override
+            public Content createFromParcel(Parcel in) {
+                return new Content(in);
+            }
+
+            @Override
+            public Content[] newArray(int size) {
+                return new Content[size];
+            }
+        };
 
         public String getType() {
             return type;
@@ -584,13 +830,43 @@ public class Feed {
         }
     }
 
-    public static class Data {
+    public static class Data implements Parcelable {
         @Expose
         @SerializedName("type")
         public String type;
         @Expose
         @SerializedName("content")
         public String content;
+
+        protected Data(Parcel in) {
+            type = in.readString();
+            content = in.readString();
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(type);
+            dest.writeString(content);
+        }
+
+        @SuppressWarnings("unused")
+        public static final Parcelable.Creator<Data> CREATOR = new Parcelable.Creator<Data>() {
+            @Override
+            public Data createFromParcel(Parcel in) {
+                return new Data(in);
+            }
+
+            @Override
+            public Data[] newArray(int size) {
+                return new Data[size];
+            }
+        };
+
 
         public String getType() {
             return type;

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.activity.CommentsActivity;
+import com.hapramp.activity.DetailedActivity;
 import com.hapramp.activity.ProfileActivity;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.models.CommunityModel;
@@ -132,6 +134,19 @@ public class PostItemView extends FrameLayout {
         popupMenuDots.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         mHandler = new Handler();
 
+        commentBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateToDetailsPage();
+            }
+        });
+
+    }
+
+    private void navigateToDetailsPage() {
+        Intent detailsIntent = new Intent(mContext, DetailedActivity.class);
+        detailsIntent.putExtra(Constants.EXTRAA_KEY_POST_DATA,mFeed);
+        mContext.startActivity(detailsIntent);
     }
 
     private void bind(final Feed feed) {
@@ -154,6 +169,7 @@ public class PostItemView extends FrameLayout {
             // render the content
             for (int i = 0; i < content.data.size(); i++) {
                 if (content.data.get(i).type.equals(ContentTypes.DataType.IMAGE)) {
+                    featuredImagePost.layout(0,0,0,0);
                     ImageHandler.load(mContext, featuredImagePost, content.data.get(i).content);
                 }
                 if (content.data.get(i).type.equals(ContentTypes.DataType.TEXT)) {
