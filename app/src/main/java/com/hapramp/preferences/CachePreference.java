@@ -2,7 +2,9 @@ package com.hapramp.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
+import com.hapramp.api.DataServer;
 import com.hapramp.main.HapRampMain;
 
 /**
@@ -31,6 +33,11 @@ public class CachePreference {
             mInstance = new CachePreference();
         }
         return mInstance;
+    }
+
+    public void clearCachePreferences() {
+        editor.clear();
+        editor.apply();
     }
 
     public void setPostSynced(String segment){

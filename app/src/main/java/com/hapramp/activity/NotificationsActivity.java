@@ -62,6 +62,11 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
 
     }
 
+    @Override
+    public void onBackPressed() {
+        close();
+    }
+
     private void init() {
 
         materialTypeface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
@@ -69,7 +74,7 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                close();
             }
         });
         notificationsAdapter = new NotificationsAdapter(this);
@@ -158,4 +163,10 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
     public void markAllReadFailed() {
 
     }
+
+    private void close(){
+        finish();
+        overridePendingTransition(R.anim.slide_right_enter,R.anim.slide_right_exit);
+    }
+
 }

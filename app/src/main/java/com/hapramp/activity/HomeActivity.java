@@ -193,7 +193,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
 
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -350,6 +349,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(HomeActivity.this, NotificationsActivity.class));
+                overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
             }
         });
 
@@ -358,6 +358,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
             public void onClick(View v) {
                 Intent i = new Intent(HomeActivity.this,UserSearchActivity.class);
                 startActivity(i);
+                overridePendingTransition(R.anim.slide_right_enter,R.anim.slide_right_exit);
             }
         });
 
@@ -579,6 +580,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     public void onCreatePostButtonClicked() {
         Intent intent = new Intent(this, PostCreateActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_up_enter,R.anim.slide_up_exit);
     }
 }
 

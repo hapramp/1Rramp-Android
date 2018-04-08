@@ -115,7 +115,7 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
                 .setPositiveButton("Close", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        finish();
+                       close();
                     }
                 })
                 .setNegativeButton("No", null);
@@ -162,7 +162,7 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+               close();
             }
         });
 
@@ -396,7 +396,7 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
     @Override
     public void onPostCreated(String... jobId) {
         showPublishingProgressDialog(false, "");
-        finish();
+       close();
     }
 
     @Override
@@ -422,5 +422,10 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
         toast(msg);
         showPublishingProgressDialog(false, "");
         Log.d(PostCreateActivity.class.getSimpleName(), msg);
+    }
+
+    private void close(){
+        finish();
+        overridePendingTransition(R.anim.slide_down_enter,R.anim.slide_down_exit);
     }
 }

@@ -41,6 +41,7 @@ public class HaprampPreferenceManager {
 
     public void clearPreferences() {
         DataServer.resetAPI();
+        CachePreference.getInstance().clearCachePreferences();
         editor.clear();
         editor.apply();
         Log.d("Pref", "Cleared Prefs.");

@@ -87,6 +87,11 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
 
     }
 
+    @Override
+    public void onBackPressed() {
+        close();
+    }
+
     private void attachListener() {
 
         searchInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -136,12 +141,16 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                close();
             }
         });
 
     }
 
+    private void close(){
+        finish();
+        overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
+    }
 
     private void initSearchManager() {
         searchManager = new SearchManager(this);
@@ -263,8 +272,8 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
                 suggestionsListView.setVisibility(View.VISIBLE);
                 messagePanel.setVisibility(View.GONE);
                 suggestionsProgressBar.setVisibility(View.GONE);
-               // countTv.setVisibility(View.VISIBLE);
-               // countTv.setText(suggestions.size() + " Result Found!");
+                // countTv.setVisibility(View.VISIBLE);
+                // countTv.setText(suggestions.size() + " Result Found!");
                 adapter.setUsernames(suggestions);
             }
         });
