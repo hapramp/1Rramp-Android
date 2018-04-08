@@ -29,6 +29,7 @@
     <string name="no_other_comment_format">No Comment</string>
     <string name="type_here">Type Here...</string>
     <string name="default_user_pic">https://user-images.githubusercontent.com/10809719/38453010-68604fa2-3a6c-11e8-9ba6-0515cd7fbe97.png</string>
+    <string name="unregistered_user_profile_msg">User not registered on Hapramp</string>
 
 
 </resources>

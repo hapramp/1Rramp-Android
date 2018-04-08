@@ -112,6 +112,9 @@ public interface HaprampAPI {
     @DELETE("posts/votes")
     Call<VoteStatus> deleteVote(@Query("permlink") String permlink);
 
+    @GET("users/usernames/{username}")
+    Call<UserModel> getUserFromUsername(@Path("username") String username);
+
 
 
 

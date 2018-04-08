@@ -2,6 +2,7 @@ package com.hapramp.main;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDexApplication;
 
 import com.google.firebase.FirebaseApp;
 
@@ -9,7 +10,7 @@ import com.google.firebase.FirebaseApp;
  * Created by Ankit on 5/16/2017.
  */
 
-public class HapRampMain extends Application {
+public class HapRampMain extends MultiDexApplication {
 
     private static Context context;
 

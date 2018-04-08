@@ -20,7 +20,7 @@
         android:visibility="gone"
         android:id="@+id/no_interest_msg"
         android:textColor="@color/Black54"
-        android:text="No Interest Selected"
+        android:text="@string/unregistered_user_profile_msg"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

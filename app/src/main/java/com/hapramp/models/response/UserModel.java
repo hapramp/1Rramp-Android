@@ -17,7 +17,7 @@ public class UserModel {
     @SerializedName("email") public String email;
     @SerializedName("username") public String username;
     @SerializedName("deviceID") public String deviceID;
-    @SerializedName("communitites") public List<CommunityModel> communityModels;
+    @SerializedName("communities") public List<CommunityModel> communityModels;
 
     public UserModel(int id, String email, String username, String deviceID, List<CommunityModel> communityModels) {
         this.id = id;

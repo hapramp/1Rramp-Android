@@ -146,7 +146,7 @@ public class ProfileFragment extends Fragment {
 
     private void init() {
 
-        profilePostAdapter = new ProfileRecyclerAdapter(mContext , HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
+        profilePostAdapter = new ProfileRecyclerAdapter(mContext, HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
         Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
         viewItemDecoration = new ViewItemDecoration(drawable);
         viewItemDecoration.setWantTopOffset(false);
@@ -198,7 +198,7 @@ public class ProfileFragment extends Fragment {
 
     private void fetchUserProfilePosts() {
 
-        Log.d("ProfilePost",Profile.getDefaultProfileAsJson());
+        Log.d("ProfilePost", Profile.getDefaultProfileAsJson());
 
         RetrofitServiceGenerator.getService()
                 .getPostsOfUser(username, POST_LIMIT)
@@ -221,10 +221,11 @@ public class ProfileFragment extends Fragment {
     }
 
     private void failedToFetchUserPosts() {
-
+        showContent(true);
     }
 
     private void bindProfilePosts(List<Feed> body) {
+        Log.d("ProfileFragment"," posts "+body.size());
         Profile.fetchUserProfilesFor(body);
         profilePostAdapter.setPosts(body);
         contentLoadingProgress.setVisibility(View.GONE);

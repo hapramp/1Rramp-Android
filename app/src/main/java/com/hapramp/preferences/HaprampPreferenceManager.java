@@ -121,7 +121,7 @@ public class HaprampPreferenceManager {
 
     public String getUserSelectedCommunityAsJson() {
 
-        return preferences.getString("userSelectedCommunity", "[]");
+        return preferences.getString("userSelectedCommunity", "");
 
     }
 

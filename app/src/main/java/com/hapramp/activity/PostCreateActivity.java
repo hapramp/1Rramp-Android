@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -238,18 +239,6 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
             preparePost();
             showPublishingProgressDialog(true, "Pre-processing...");
             sendPostToServerForProcessing(postStructureModel);
-
-//
-//            PostCreateBody postCreateBody = new PostCreateBody(
-//                    content.getText().toString(),
-//                    postImageView.getDownloadUrl(),
-//                    Constants.CONTENT_TYPE_POST,
-//                    postCategoryView.getSelectedTags(),
-//                    null);
-//
-//            showPublishingProgressDialog(true);
-//            //gather the data
-//            DataServer.createPost(postCreateBody, this);
         } else {
             toast("Your media has not been uploaded yet");
         }
@@ -334,7 +323,13 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
     private void serverConfirmed() {
         toast("Your post is live now.");
         showPublishingProgressDialog(false, "");
-        finish();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                finish();
+            }
+        }, 1000);
+
     }
 
     private void toast(String s) {

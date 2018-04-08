@@ -23,6 +23,7 @@ import com.hapramp.R;
 import com.hapramp.activity.ProfileEditActivity;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.models.CommunityModel;
+import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.FollowApiObjectWrapper;
@@ -224,10 +225,8 @@ public class ProfileHeaderView extends FrameLayout {
             followBtn.setVisibility(VISIBLE);
             // set follow or unfollow button
             invalidateFollowButton();
-            interestsView.setCommunities(new ArrayList<CommunityModel>());
-
+            fetchUserCommunities();
         }
-
 
     }
 
@@ -268,6 +267,30 @@ public class ProfileHeaderView extends FrameLayout {
                 }
             }
         }.start();
+    }
+
+    private void fetchUserCommunities(){
+
+        RetrofitServiceGenerator.getService().getUserFromUsername(mUsername).enqueue(new Callback<UserModel>() {
+            @Override
+            public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                if(response.isSuccessful()){
+                    setCommunities(response.body().getCommunityModels());
+                }else{
+                    setCommunities(new ArrayList<CommunityModel>());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserModel> call, Throwable t) {
+                setCommunities(new ArrayList<CommunityModel>());
+            }
+        });
+
+    }
+
+    private void setCommunities(List<CommunityModel> communities){
+        interestsView.setCommunities(communities);
     }
 
     private void requestFollowOnSteem() {

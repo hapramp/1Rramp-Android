@@ -105,8 +105,14 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void checkLastLoginAndMoveAhead() {
-        if(HaprampPreferenceManager.getInstance().isLoggedIn()){
-            navigateToHomePage();
+        if (HaprampPreferenceManager.getInstance().isLoggedIn()) {
+            //navigateToHomePage();
+            if (HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson().length() == 0) {
+                // navigate to community page for selection
+                navigateToCommunityPage();
+            } else {
+                navigateToHomePage();
+            }
         }
     }
 
@@ -115,17 +121,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onResume();
 
         if (!networkChangeReceiverRegistered) {
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-            }
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-            }
-
+            registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
             networkChangeReceiverRegistered = true;
-
         }
 
     }
@@ -435,13 +432,13 @@ public class LoginActivity extends AppCompatActivity {
 
         hideProgress();
         saveUserAndPpkToPreference();
-        //if (body.getmCommunities().size() == 0) {
+        if (body.getmCommunities().size() == 0) {
             navigateToCommunityPage();
-//        } else {
-//            HaprampPreferenceManager.getInstance().saveUserSelectedCommunitiesAsJson(new Gson().toJson(new CommunityListWrapper(body.getmCommunities())));
-//            navigateToHomePage();
+        } else {
+            HaprampPreferenceManager.getInstance().saveUserSelectedCommunitiesAsJson(new Gson().toJson(new CommunityListWrapper(body.getmCommunities())));
+            navigateToHomePage();
 //            //navigateToPostCreatePage();
-//        }
+        }
 
     }
 

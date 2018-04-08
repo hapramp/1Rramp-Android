@@ -154,7 +154,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
         attachListeners();
         postUploadReceiver = new PostUploadReceiver();
         notificationUpdateReceiver = new NotificationUpdateReceiver();
-        initPreferences();
 //        if (!HaprampPreferenceManager.getInstance().isUserInfoAvailable()) {
         fetchCompleteUserInfo();
 
@@ -165,7 +164,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     }
 
     //initialize preference with community data pairs
-    private void initPreferences() {
+    private void cacheCommunitiesList() {
 
         CommunityListWrapper communityListWrapper = new Gson().fromJson(HaprampPreferenceManager.getInstance().getAllCommunityAsJson(), CommunityListWrapper.class);
         List<CommunityModel> communities = communityListWrapper.getCommunityModels();
@@ -182,6 +181,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
             public void onResponse(Call<List<CommunityModel>> call, Response<List<CommunityModel>> response) {
                 if (response.isSuccessful()) {
                     HaprampPreferenceManager.getInstance().saveAllCommunityListAsJson(new Gson().toJson(new CommunityListWrapper(response.body())));
+                    cacheCommunitiesList();
                 }
             }
 
