@@ -1,11 +1,11 @@
 package com.hapramp.steem;
 
-public class ContentTypes {
+public class FeedData {
 
-    public static final String CONTENT_TYPE_ARTICLE = "article";
-    public static final String CONTENT_TYPE_POST = "post";
+    public static final String FEED_TYPE_ARTICLE = "article";
+    public static final String FEED_TYPE_POST = "post";
 
-    public static class DataType {
+    public static class ContentType {
 
         public static final String TEXT = "text";
         public static final String IMAGE = "image";

@@ -26,13 +26,14 @@ import com.hapramp.R;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.interfaces.PostCreateCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.ContentTypes;
+import com.hapramp.steem.FeedData;
 import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.PostConfirmationModel;
 import com.hapramp.steem.PostStructureModel;
 import com.hapramp.steem.PreProcessingModel;
 import com.hapramp.steem.ProcessedBodyResponse;
 import com.hapramp.steem.SteemPostCreator;
+import com.hapramp.steem.models.data.FeedDataItemModel;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FontManager;
 import com.hapramp.views.post.PostCreateComponent;
@@ -254,10 +255,10 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
         //prepare tags
         tags = postCreateComponent.getSelectedCommunityTags();
         //prepare post structure
-        List<PostStructureModel.Data> datas = new ArrayList<>();
-        datas.add(new PostStructureModel.Data(postCreateComponent.getImageDownloadUrl(), ContentTypes.DataType.IMAGE));
-        datas.add(new PostStructureModel.Data(postCreateComponent.getContent(), ContentTypes.DataType.TEXT));
-        postStructureModel = new PostStructureModel(datas, ContentTypes.CONTENT_TYPE_POST);
+        List<FeedDataItemModel> datas = new ArrayList<>();
+        datas.add(new FeedDataItemModel(postCreateComponent.getImageDownloadUrl(), FeedData.ContentType.IMAGE));
+        datas.add(new FeedDataItemModel(postCreateComponent.getContent(), FeedData.ContentType.TEXT));
+        postStructureModel = new PostStructureModel(datas, FeedData.FEED_TYPE_POST);
 
     }
 

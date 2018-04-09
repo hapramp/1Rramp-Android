@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.Space;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -17,14 +18,12 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.ScaleAnimation;
-import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +34,7 @@ import com.hapramp.models.response.CommentsResponse;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
+import com.hapramp.steem.PostStructureModel;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.user.Profile;
 import com.hapramp.steem.models.user.SteemUser;
@@ -45,6 +45,7 @@ import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.SkillsUtils;
 import com.hapramp.views.comments.CommentView;
 import com.hapramp.views.extraa.StarView;
+import com.hapramp.views.renderer.RendererView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,7 @@ import butterknife.ButterKnife;
 import static android.view.View.VISIBLE;
 
 public class DetailedActivity extends AppCompatActivity {
+
 
     @BindView(R.id.closeBtn)
     TextView closeBtn;
@@ -78,10 +80,8 @@ public class DetailedActivity extends AppCompatActivity {
     TextView club1;
     @BindView(R.id.post_header_container)
     RelativeLayout postHeaderContainer;
-    @BindView(R.id.content)
-    WebView content;
-    @BindView(R.id.tags)
-    TextView tags;
+    @BindView(R.id.renderView)
+    RendererView renderView;
     @BindView(R.id.shareBtn)
     TextView shareBtn;
     @BindView(R.id.commentsViewContainer)
@@ -101,7 +101,7 @@ public class DetailedActivity extends AppCompatActivity {
     @BindView(R.id.mockCommentParentView)
     RelativeLayout mockCommentParentView;
     @BindView(R.id.scroller)
-    ScrollView scroller;
+    NestedScrollView scroller;
     @BindView(R.id.shadow)
     ImageView shadow;
     @BindView(R.id.commentBtn)
@@ -177,8 +177,6 @@ public class DetailedActivity extends AppCompatActivity {
     }
 
     private void fetchComments() {
-
-        //   DataServer.getComments(currentCommentUrl, this);
 
     }
 
@@ -279,6 +277,8 @@ public class DetailedActivity extends AppCompatActivity {
                         MomentsUtils.getFormattedTime(post.created)));
 
         setCommunities(post.jsonMetadata.tags);
+        PostStructureModel postStructureModel = new PostStructureModel(post.getJsonMetadata().content.getData(),post.getJsonMetadata().getContent().type);
+        renderView.render(postStructureModel);
 //        content.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
 //        content.loadDataWithBaseURL(null, "<style>img{display: inline;height: auto;max-width: 100%;}</style>" + post.jsonMetadata.content., "text/html", "UTF-8", null);
 //        // initialize the starview
@@ -369,7 +369,7 @@ public class DetailedActivity extends AppCompatActivity {
     }
 
     private void setHapcoins(float hapcoins) {
-                                                                            /// hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), hapcoins));
+        /// hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), hapcoins));
     }
 
     private void setCommentCount(int count) {

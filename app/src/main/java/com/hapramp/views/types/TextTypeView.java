@@ -10,7 +10,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
-import com.hapramp.steem.ContentTypes;
 
 
 /**

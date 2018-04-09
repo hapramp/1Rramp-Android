@@ -26,13 +26,14 @@ import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.interfaces.PostCreateCallback;
 import com.hapramp.models.FeaturedImageSelectionModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.ContentTypes;
+import com.hapramp.steem.FeedData;
 import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.PostConfirmationModel;
 import com.hapramp.steem.PostStructureModel;
 import com.hapramp.steem.PreProcessingModel;
 import com.hapramp.steem.ProcessedBodyResponse;
 import com.hapramp.steem.SteemPostCreator;
+import com.hapramp.steem.models.data.FeedDataItemModel;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FeaturedImageItemDecorator;
 import com.hapramp.utils.FontManager;
@@ -223,10 +224,10 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
         //prepare tags
         tags = new ArrayList<>();
         //prepare post structure
-        List<PostStructureModel.Data> datas = new ArrayList<>();
-        datas.add(new PostStructureModel.Data(featuredImageAdapter.getSelectedFeaturedImageUrl(), ContentTypes.DataType.IMAGE));
-        datas.add(new PostStructureModel.Data(editor.getContentAsHTML(), ContentTypes.DataType.TEXT));
-        postStructureModel = new PostStructureModel(datas, ContentTypes.CONTENT_TYPE_POST);
+        List<FeedDataItemModel> datas = new ArrayList<>();
+        datas.add(new FeedDataItemModel(featuredImageAdapter.getSelectedFeaturedImageUrl(), FeedData.ContentType.IMAGE));
+        datas.add(new FeedDataItemModel(editor.getContentAsHTML(), FeedData.ContentType.TEXT));
+        postStructureModel = new PostStructureModel(datas, FeedData.FEED_TYPE_POST);
 
     }
 

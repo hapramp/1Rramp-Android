@@ -31,9 +31,10 @@ import com.hapramp.models.VoteStatus;
 import com.hapramp.models.requests.VoteRequestBody;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
-import com.hapramp.steem.ContentTypes;
+import com.hapramp.steem.FeedData;
 import com.hapramp.steem.SteemHelper;
 import com.hapramp.steem.models.Feed;
+import com.hapramp.steem.models.data.Content;
 import com.hapramp.steem.models.user.Profile;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
@@ -157,7 +158,7 @@ public class PostItemView extends FrameLayout {
                         MomentsUtils.getFormattedTime(feed.created)));
 
         // classify the type of content
-        Feed.Content content = feed.jsonMetadata.content;
+        Content content = feed.jsonMetadata.content;
         if (content.type.equals(Constants.CONTENT_TYPE_POST)) {
 
             // hide title
@@ -167,11 +168,11 @@ public class PostItemView extends FrameLayout {
 
             // render the content
             for (int i = 0; i < content.data.size(); i++) {
-                if (content.data.get(i).type.equals(ContentTypes.DataType.IMAGE)) {
+                if (content.data.get(i).type.equals(FeedData.ContentType.IMAGE)) {
                     featuredImagePost.layout(0,0,0,0);
                     ImageHandler.load(mContext, featuredImagePost, content.data.get(i).content);
                 }
-                if (content.data.get(i).type.equals(ContentTypes.DataType.TEXT)) {
+                if (content.data.get(i).type.equals(FeedData.ContentType.TEXT)) {
                     postSnippet.setText(content.data.get(i).content);
                     break;
                 }
@@ -183,7 +184,7 @@ public class PostItemView extends FrameLayout {
             postTitle.setText(feed.getTitle());
             // show read more if content length is more
             for (int i = 0; i < content.data.size(); i++) {
-                if (content.data.get(i).type.equals(ContentTypes.DataType.TEXT)) {
+                if (content.data.get(i).type.equals(FeedData.ContentType.TEXT)) {
                     postSnippet.setText(content.data.get(i).content);
                     break;
                 }

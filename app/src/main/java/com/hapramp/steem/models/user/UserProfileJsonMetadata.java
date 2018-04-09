@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
  */
 
 
-public class JsonMetadata {
+public class UserProfileJsonMetadata {
 
     @SerializedName("profile")
     @Expose

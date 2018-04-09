@@ -20,7 +20,7 @@ public class User {
     public String memoKey;
     @SerializedName("json_metadata")
     @Expose
-    public JsonMetadata jsonMetadata;
+    public UserProfileJsonMetadata jsonMetadata;
     @SerializedName("last_owner_update")
     @Expose
     public String lastOwnerUpdate;
@@ -181,7 +181,7 @@ public class User {
         return memoKey;
     }
 
-    public JsonMetadata getJsonMetadata() {
+    public UserProfileJsonMetadata getJsonMetadata() {
         return jsonMetadata;
     }
 

@@ -11,8 +11,9 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.hapramp.R;
-import com.hapramp.steem.ContentTypes;
+import com.hapramp.steem.FeedData;
 import com.hapramp.steem.PostStructureModel;
+import com.hapramp.steem.models.data.FeedDataItemModel;
 import com.hapramp.views.types.BlockquoteTypeView;
 import com.hapramp.views.types.HeadingOneTypeView;
 import com.hapramp.views.types.HeadingThreeTypeView;
@@ -24,7 +25,6 @@ import com.hapramp.views.types.TextTypeView;
 import com.hapramp.views.types.YoutubeVideoTypeView;
 
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Ankit on 4/8/2018.
@@ -60,7 +60,7 @@ public class RendererView extends FrameLayout {
 
         //todo show rendering progress bar
 
-        List<PostStructureModel.Data> dataSeries = postStructureModel.getDataSeries();
+        List<FeedDataItemModel> dataSeries = postStructureModel.getDataSeries();
         //loop for views
         for (int i = 0; i < dataSeries.size(); i++) {
             //check for view type
@@ -77,50 +77,50 @@ public class RendererView extends FrameLayout {
     }
 
 
-    private View getViewType(PostStructureModel.Data data) {
+    private View getViewType(FeedDataItemModel data) {
 
         View view = null;
         switch (data.getContentType()) {
 
-            case ContentTypes.DataType.TEXT:
+            case FeedData.ContentType.TEXT:
                 TextTypeView textTypeView = new TextTypeView(mContext);
                 textTypeView.setText(data.getContent());
                 return textTypeView;
 
-            case ContentTypes.DataType.IMAGE:
+            case FeedData.ContentType.IMAGE:
                 ImageTypeView imageTypeView = new ImageTypeView(mContext);
                 imageTypeView.setImageSource(data.getContent());
                 return imageTypeView;
 
-            case ContentTypes.DataType.H1:
+            case FeedData.ContentType.H1:
                 HeadingOneTypeView headingTypeView1 = new HeadingOneTypeView(mContext);
                 headingTypeView1.setText(data.getContent());
                 return headingTypeView1;
 
-            case ContentTypes.DataType.H2:
+            case FeedData.ContentType.H2:
                 HeadingTwoTypeView headingTypeView2 = new HeadingTwoTypeView(mContext);
                 headingTypeView2.setText(data.getContent());
                 return headingTypeView2;
 
-            case ContentTypes.DataType.H3:
+            case FeedData.ContentType.H3:
                 HeadingThreeTypeView headingTypeView3 = new HeadingThreeTypeView(mContext);
                 headingTypeView3.setText(data.getContent());
                 return headingTypeView3;
 
-            case ContentTypes.DataType.H4:
+            case FeedData.ContentType.H4:
                 HeadingFourTypeView headingTypeView4 = new HeadingFourTypeView(mContext);
                 headingTypeView4.setText(data.getContent());
                 return headingTypeView4;
 
-            case ContentTypes.DataType.BLOCKQUOTE:
+            case FeedData.ContentType.BLOCKQUOTE:
                 BlockquoteTypeView blockquoteTypeView = new BlockquoteTypeView(mContext);
                 blockquoteTypeView.setText(data.getContent());
                 return blockquoteTypeView;
 
-            case ContentTypes.DataType.HR:
+            case FeedData.ContentType.HR:
                 return new HorizontalDividerTypeView(mContext);
 
-            case ContentTypes.DataType.YOUTUBE:
+            case FeedData.ContentType.YOUTUBE:
                 YoutubeVideoTypeView youtubeVideoTypeView = new YoutubeVideoTypeView(mContext);
                 youtubeVideoTypeView.setVideoKey(data.getContent());
                 return youtubeVideoTypeView;
