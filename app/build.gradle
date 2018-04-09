@@ -89,6 +89,7 @@ dependencies {
 
     implementation project(':steem')
     implementation project(':search')
+    implementation files('libs/youtube_player.jar')
 }
 
 apply plugin: 'com.google.gms.google-services'

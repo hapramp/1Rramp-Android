@@ -13,14 +13,18 @@ import android.widget.LinearLayout;
 import com.hapramp.R;
 import com.hapramp.steem.ContentTypes;
 import com.hapramp.steem.PostStructureModel;
+import com.hapramp.views.types.BlockquoteTypeView;
 import com.hapramp.views.types.HeadingOneTypeView;
 import com.hapramp.views.types.HeadingThreeTypeView;
 import com.hapramp.views.types.HeadingTwoTypeView;
 import com.hapramp.views.types.HeadingFourTypeView;
+import com.hapramp.views.types.HorizontalDividerTypeView;
 import com.hapramp.views.types.ImageTypeView;
 import com.hapramp.views.types.TextTypeView;
+import com.hapramp.views.types.YoutubeVideoTypeView;
 
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Ankit on 4/8/2018.
@@ -107,6 +111,19 @@ public class RendererView extends FrameLayout {
                 HeadingFourTypeView headingTypeView4 = new HeadingFourTypeView(mContext);
                 headingTypeView4.setText(data.getContent());
                 return headingTypeView4;
+
+            case ContentTypes.DataType.BLOCKQUOTE:
+                BlockquoteTypeView blockquoteTypeView = new BlockquoteTypeView(mContext);
+                blockquoteTypeView.setText(data.getContent());
+                return blockquoteTypeView;
+
+            case ContentTypes.DataType.HR:
+                return new HorizontalDividerTypeView(mContext);
+
+            case ContentTypes.DataType.YOUTUBE:
+                YoutubeVideoTypeView youtubeVideoTypeView = new YoutubeVideoTypeView(mContext);
+                youtubeVideoTypeView.setVideoKey(data.getContent());
+                return youtubeVideoTypeView;
 
             default:
                 return view;
