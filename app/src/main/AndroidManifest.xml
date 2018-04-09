@@ -80,7 +80,8 @@
         </activity>
         <activity android:name=".activity.QrScanningActivity" />
         <activity android:name=".activity.CommunitySelectionActivity" />
-        <activity android:name=".activity.UserSearchActivity"></activity>
+        <activity android:name=".activity.UserSearchActivity" />
+        <activity android:name=".activity.TestActivity"></activity>
     </application>
 
 </manifest>

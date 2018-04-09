@@ -76,6 +76,7 @@
         android:layout_below="@+id/action_bar_container"
         android:background="@drawable/toolbar_shadow" />
 
+
     <TextView
         android:layout_below="@+id/toolbar_drop_shadow"
         android:id="@+id/postUploadStatus"
