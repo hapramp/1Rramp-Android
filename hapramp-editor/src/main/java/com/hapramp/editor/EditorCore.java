@@ -474,12 +474,6 @@ public class EditorCore extends LinearLayout {
                     }
                     list.add(node);
                     break;
-                case map:
-                    EditorControl mapTag = (EditorControl) view.getTag();
-                    Editable desc = ((CustomEditText) view.findViewById(R.id.desc)).getText();
-                    node.content.add(mapTag.Cords);
-                    node.content.add(desc.length() > 0 ? desc.toString() : "");
-                    list.add(node);
             }
         }
         editorState.nodes = list;
@@ -525,13 +519,11 @@ public class EditorCore extends LinearLayout {
         }
     }
 
-
     public boolean isLastRow(View view) {
         int index = this.__parentView.indexOfChild(view);
         int length = this.__parentView.getChildCount();
         return length - 1 == index;
     }
-
 
     public void renderEditorFromHtml(String content) {
         __htmlExtensions.parseHtml(content);

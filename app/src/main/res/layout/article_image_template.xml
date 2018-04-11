@@ -15,7 +15,7 @@
         android:focusableInTouchMode="true"
         android:src="@color/lightBackground" />
 
-    <com.github.irshulx.Components.CustomEditText
+    <com.hapramp.editor.Components.CustomEditText
         android:id="@+id/desc"
         style="@style/WysiwygEditText"
         android:layout_width="match_parent"

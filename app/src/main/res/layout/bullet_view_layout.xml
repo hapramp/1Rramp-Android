@@ -10,7 +10,7 @@
         android:layout_marginRight="7dp"
         android:text="•"/>
 
-    <com.github.irshulx.Components.CustomEditText
+    <com.hapramp.editor.Components.CustomEditText
         android:layout_column="2"
         android:id="@+id/txtText"
         android:layout_weight="1"

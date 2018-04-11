@@ -1,76 +1,52 @@
 package com.hapramp.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerFragment;
 import com.hapramp.R;
+import com.hapramp.editor.EditorCore;
+import com.hapramp.editor.models.EditorContent;
+import com.hapramp.editor.models.Node;
+import com.hapramp.views.editor.EditorView;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TestActivity extends AppCompatActivity{
+public class TestActivity extends AppCompatActivity {
 
-
-    private YouTubePlayerFragment playerFragment1;
-    private YouTubePlayerFragment playerFragment2;
-
-
-    private YouTubePlayer mPlayer;
-    private String YouTubeKey = "AIzaSyBVUoUB41eL2GS_ERrG5bAfrjr1bukCu2g";
-    private java.lang.String key = "7asVllRWL74";
+    @BindView(R.id.getContentBtn)
+    Button getContentBtn;
+    @BindView(R.id.editorView)
+    EditorView editorView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
         ButterKnife.bind(this);
-        init();
-        new Handler().postDelayed(new Runnable() {
+        testContent();
+    }
+
+    private void testContent() {
+
+        getContentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                Intent i = new Intent(TestActivity.this,TestActivity.class);
-                startActivity(i);
-                finish();
+            public void onClick(View v) {
+
+                EditorContent editorContent = editorView.getEditor().getContent();
+                List<Node> nodes = editorContent.nodes;
+                for (int i = 0; i < nodes.size(); i++) {
+                    Log.d("TestActivity", nodes.get(i).toString());
+                }
             }
-        },40000);
+        });
 
     }
-
-    private void init() {
-
-        playerFragment1 = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.youtube_player_fragment1);
-        playerFragment2 = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.youtube_player_fragment2);
-
-        playerFragment1.initialize(YouTubeKey,listener1);
-        playerFragment2.initialize(YouTubeKey,listener2);
-
-    }
-
-    YouTubePlayer.OnInitializedListener listener1 = new YouTubePlayer.OnInitializedListener() {
-        @Override
-        public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-            youTubePlayer.loadVideo(key);
-        }
-
-        @Override
-        public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-
-        }
-    };
-    YouTubePlayer.OnInitializedListener listener2 = new YouTubePlayer.OnInitializedListener() {
-        @Override
-        public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-            youTubePlayer.loadVideo(key);
-        }
-
-        @Override
-        public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-
-        }
-    };
 
 }

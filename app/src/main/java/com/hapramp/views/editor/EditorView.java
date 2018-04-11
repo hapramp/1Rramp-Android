@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -22,10 +23,16 @@ import com.google.firebase.storage.UploadTask;
 import com.hapramp.R;
 import com.hapramp.editor.Editor;
 import com.hapramp.editor.EditorListener;
+import com.hapramp.editor.models.EditorContent;
 import com.hapramp.editor.models.EditorTextStyle;
+import com.hapramp.editor.models.EditorType;
+import com.hapramp.editor.models.Node;
 import com.hapramp.models.PostJobModel;
+import com.hapramp.steem.models.data.FeedDataItemModel;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -135,7 +142,6 @@ public class EditorView extends FrameLayout implements TextHeaderView.HeadingCha
 
     }
 
-
     private void uploadMedia(byte[] bytes, final String uuid) {
 
         Log.d("EditorView", "Uploading Media");
@@ -152,7 +158,7 @@ public class EditorView extends FrameLayout implements TextHeaderView.HeadingCha
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
                 editor.onImageUploadComplete(downloadUrl.toString(), uuid);
-                if(onImageUploadListener!=null){
+                if (onImageUploadListener != null) {
                     onImageUploadListener.onImageUploaded(downloadUrl.toString());
                 }
             }
@@ -233,13 +239,37 @@ public class EditorView extends FrameLayout implements TextHeaderView.HeadingCha
         return editor;
     }
 
+
+    // public method to format nodes
+    public ArrayList<FeedDataItemModel> getDataItemList() {
+
+        ArrayList<FeedDataItemModel> feedDataItemModels = new ArrayList<>();
+        EditorContent editorContent = getEditor().getContent();
+
+        List<Node> nodes = editorContent.nodes;
+        for (int i = 0; i < nodes.size(); i++) {
+            feedDataItemModels.add(getFormatedItem(nodes.get(i)));
+        }
+
+        return feedDataItemModels;
+    }
+
+    private FeedDataItemModel getFormatedItem(Node node) {
+        switch (node.type){
+            case EditorType.INPUT:
+
+        }
+    }
+
     private OnImageUploadListener onImageUploadListener;
 
     public void setOnImageUploadListener(OnImageUploadListener onImageUploadListener) {
         this.onImageUploadListener = onImageUploadListener;
     }
 
-    public interface OnImageUploadListener{
+    public interface OnImageUploadListener {
         void onImageUploaded(String remotePath);
     }
+
+
 }
