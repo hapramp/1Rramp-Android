@@ -1,24 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.hapramp.activity.TestActivity">
+    android:fillViewport="true"
+    android:layout_height="match_parent">
 
-
-    <com.hapramp.views.renderer.RendererView
-        android:id="@+id/renderView"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:context="com.hapramp.activity.TestActivity">
 
-    <!--<ImageView-->
-        <!--android:id="@+id/image"-->
-        <!--android:src="@drawable/logo_new_app"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:scaleType="fitCenter"-->
-        <!--android:visibility="visible" />-->
+        <fragment
+            android:id="@+id/youtube_player_fragment1"
+            android:name="com.google.android.youtube.player.YouTubePlayerFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
+        <fragment
+            android:layout_marginTop="8dp"
+            android:id="@+id/youtube_player_fragment2"
+            android:name="com.google.android.youtube.player.YouTubePlayerFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-</RelativeLayout>
+    </LinearLayout>
+
+</ScrollView>

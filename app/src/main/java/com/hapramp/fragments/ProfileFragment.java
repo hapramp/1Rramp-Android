@@ -225,10 +225,14 @@ public class ProfileFragment extends Fragment {
     }
 
     private void bindProfilePosts(List<Feed> body) {
-        Log.d("ProfileFragment"," posts "+body.size());
-        Profile.fetchUserProfilesFor(body);
-        profilePostAdapter.setPosts(body);
-        contentLoadingProgress.setVisibility(View.GONE);
+
+        Log.d("ProfileFragment", " posts " + body.size());
+        if (contentLoadingProgress != null) {
+            Profile.fetchUserProfilesFor(body);
+            profilePostAdapter.setPosts(body);
+            contentLoadingProgress.setVisibility(View.GONE);
+        }
+
     }
 
 }

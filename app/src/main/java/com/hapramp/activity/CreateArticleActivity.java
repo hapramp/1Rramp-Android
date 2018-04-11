@@ -18,11 +18,10 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.github.irshulx.Editor;
 import com.hapramp.R;
 import com.hapramp.adapters.FeaturedImageAdapter;
 import com.hapramp.api.RetrofitServiceGenerator;
+import com.hapramp.editor.Editor;
 import com.hapramp.interfaces.PostCreateCallback;
 import com.hapramp.models.FeaturedImageSelectionModel;
 import com.hapramp.preferences.HaprampPreferenceManager;

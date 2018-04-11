@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/HapRamp.iml" filepath="$PROJECT_DIR$/HapRamp.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hapramp-editor/laser-native-editor.iml" filepath="$PROJECT_DIR$/hapramp-editor/laser-native-editor.iml" />
       <module fileurl="file://$PROJECT_DIR$/search/search.iml" filepath="$PROJECT_DIR$/search/search.iml" />
       <module fileurl="file://$PROJECT_DIR$/steem/steem.iml" filepath="$PROJECT_DIR$/steem/steem.iml" />
     </modules>

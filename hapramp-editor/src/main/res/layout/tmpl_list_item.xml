@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android" android:paddingTop="10dp" android:paddingBottom="10dp">
+    <TextView
+        android:layout_column="1"
+        android:textColor="@color/darkertext"
+        android:textSize="20sp"
+        android:id="@+id/lblOrder"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="7dp"
+        android:textStyle="bold"
+        android:text="•"></TextView>
+    <com.hapramp.editor.Components.CustomEditText
+        android:layout_column="2"
+        android:id="@+id/txtText"
+        android:layout_weight="1"
+        android:focusableInTouchMode="true"
+        style="@style/WysiwygEditText"
+        android:text=""
+        android:layout_marginBottom="8dp"
+        android:layout_width="wrap_content"
+        android:background="@drawable/invisible_edit_text"></com.hapramp.editor.Components.CustomEditText>
+
+    <TextView
+        android:layout_column="2"
+        android:id="@+id/lblText"
+        android:layout_weight="1"
+        android:visibility="gone"
+        style="@style/WysiwygEditText"
+        android:layout_marginBottom="8dp"
+        android:layout_width="wrap_content"></TextView>
+
+</TableRow>

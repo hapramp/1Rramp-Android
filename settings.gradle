@@ -1,1 +1,1 @@
-include ':app', ':steem', ':search'
+include ':app', ':steem', ':search', ':hapramp-editor'

@@ -14,16 +14,15 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-
-import com.github.irshulx.Editor;
-import com.github.irshulx.EditorListener;
-import com.github.irshulx.models.EditorTextStyle;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.hapramp.R;
+import com.hapramp.editor.Editor;
+import com.hapramp.editor.EditorListener;
+import com.hapramp.editor.models.EditorTextStyle;
 import com.hapramp.models.PostJobModel;
 
 import java.io.ByteArrayOutputStream;
@@ -84,7 +83,6 @@ public class EditorView extends FrameLayout implements TextHeaderView.HeadingCha
         editor.setListItemLayout(R.layout.bullet_view_layout);
         editor.setDividerLayout(R.layout.article_line_divider);
         editor.render();
-
     }
 
     private void attachListeners() {
