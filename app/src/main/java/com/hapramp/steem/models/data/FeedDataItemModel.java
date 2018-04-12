@@ -69,4 +69,12 @@ public class FeedDataItemModel implements Parcelable {
     public void setContent(String content) {
         this.content = content;
     }
+
+    @Override
+    public String toString() {
+        return "FeedDataItemModel{" +
+                "type='" + type + '\'' +
+                ", content='" + content + '\'' +
+                '}';
+    }
 }

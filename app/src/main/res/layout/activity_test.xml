@@ -8,7 +8,7 @@
     tools:context="com.hapramp.activity.TestActivity">
 
     <Button
-        android:text="Get Content"
+        android:text="Preview"
         android:id="@+id/getContentBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

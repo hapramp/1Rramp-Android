@@ -8,6 +8,6 @@ public enum EditorType{
     UL_LI,
     OL_LI,
     img,
-    INPUT,
+    INPUT,  // text , h1, h2, h3
     map
 }

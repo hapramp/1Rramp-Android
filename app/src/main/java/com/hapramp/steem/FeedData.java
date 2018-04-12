@@ -14,6 +14,7 @@ public class FeedData {
         public static final String H2 = "h2";
         public static final String H3 = "h3";
         public static final String H4 = "h4";
+        public static final String BULLET = "bullet";
         public static final String YOUTUBE = "youtube";
         public static final String HR = "hr";
         public static final String VIDEO = "video";

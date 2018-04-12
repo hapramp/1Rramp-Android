@@ -25,7 +25,6 @@ import com.hapramp.editor.Editor;
 import com.hapramp.editor.EditorListener;
 import com.hapramp.editor.models.EditorContent;
 import com.hapramp.editor.models.EditorTextStyle;
-import com.hapramp.editor.models.EditorType;
 import com.hapramp.editor.models.Node;
 import com.hapramp.models.PostJobModel;
 import com.hapramp.steem.models.data.FeedDataItemModel;
@@ -36,6 +35,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.hapramp.editor.models.EditorTextStyle.*;
+import static com.hapramp.utils.EditorDataFormatter.getFormatedItem;
 
 
 /**
@@ -174,17 +176,17 @@ public class EditorView extends FrameLayout implements TextHeaderView.HeadingCha
 
     @Override
     public void onHeading1Active() {
-        editor.updateTextStyle(EditorTextStyle.H1);
+        editor.updateTextStyle(H1);
     }
 
     @Override
     public void onHeading2Active() {
-        editor.updateTextStyle(EditorTextStyle.H2);
+        editor.updateTextStyle(H2);
     }
 
     @Override
     public void onHeadingClear() {
-        editor.updateTextStyle(EditorTextStyle.H1);
+        editor.updateTextStyle(H1);
     }
 
     @Override
@@ -229,7 +231,6 @@ public class EditorView extends FrameLayout implements TextHeaderView.HeadingCha
         editor.insertDivider();
     }
 
-
     @Override
     public void onInsertImage() {
         editor.openImagePicker();
@@ -238,7 +239,6 @@ public class EditorView extends FrameLayout implements TextHeaderView.HeadingCha
     public Editor getEditor() {
         return editor;
     }
-
 
     // public method to format nodes
     public ArrayList<FeedDataItemModel> getDataItemList() {
@@ -252,13 +252,6 @@ public class EditorView extends FrameLayout implements TextHeaderView.HeadingCha
         }
 
         return feedDataItemModels;
-    }
-
-    private FeedDataItemModel getFormatedItem(Node node) {
-        switch (node.type){
-            case EditorType.INPUT:
-
-        }
     }
 
     private OnImageUploadListener onImageUploadListener;

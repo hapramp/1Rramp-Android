@@ -80,7 +80,10 @@
         <activity android:name=".activity.QrScanningActivity" />
         <activity android:name=".activity.CommunitySelectionActivity" />
         <activity android:name=".activity.UserSearchActivity" />
-        <activity android:name=".activity.TestActivity" android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.TestActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.PreviewActivity"></activity>
     </application>
 
 </manifest>
