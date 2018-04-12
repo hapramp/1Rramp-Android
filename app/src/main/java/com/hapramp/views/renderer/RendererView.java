@@ -15,6 +15,7 @@ import com.hapramp.steem.FeedData;
 import com.hapramp.steem.PostStructureModel;
 import com.hapramp.steem.models.data.FeedDataItemModel;
 import com.hapramp.views.types.BlockquoteTypeView;
+import com.hapramp.views.types.BulletTypeView;
 import com.hapramp.views.types.HeadingOneTypeView;
 import com.hapramp.views.types.HeadingThreeTypeView;
 import com.hapramp.views.types.HeadingTwoTypeView;
@@ -65,6 +66,8 @@ public class RendererView extends FrameLayout {
         for (int i = 0; i < dataSeries.size(); i++) {
             //check for view type
             View viewToAdd = getViewType(dataSeries.get(i));
+            if (viewToAdd == null)
+                continue;
             //add to parent view
             container.addView(viewToAdd, i,
                     new ViewGroup.LayoutParams(
@@ -111,6 +114,11 @@ public class RendererView extends FrameLayout {
                 HeadingFourTypeView headingTypeView4 = new HeadingFourTypeView(mContext);
                 headingTypeView4.setText(data.getContent());
                 return headingTypeView4;
+
+            case FeedData.ContentType.BULLET:
+                BulletTypeView bulletTypeView = new BulletTypeView(mContext);
+                bulletTypeView.setText(data.getContent());
+                return bulletTypeView;
 
             case FeedData.ContentType.BLOCKQUOTE:
                 BlockquoteTypeView blockquoteTypeView = new BlockquoteTypeView(mContext);
