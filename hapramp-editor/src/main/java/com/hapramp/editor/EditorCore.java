@@ -447,7 +447,7 @@ public class EditorCore extends LinearLayout {
                     EditText _text = (EditText) view;
                     EditorControl tag = (EditorControl) view.getTag();
                     node.contentStyles = tag._ControlStyles;
-                    node.content.add(Html.toHtml(_text.getText()));
+                    node.content.add(_text.getText().toString());
                     list.add(node);
                     break;
                 case img:
@@ -470,7 +470,7 @@ public class EditorCore extends LinearLayout {
                     for (int j = 0; j < _rowCount; j++) {
                         View row = table.getChildAt(j);
                         EditText li = (EditText) row.findViewById(R.id.txtText);
-                        node.content.add(Html.toHtml(li.getText()));
+                        node.content.add(li.getText().toString());
                     }
                     list.add(node);
                     break;

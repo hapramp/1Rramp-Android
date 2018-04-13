@@ -115,10 +115,17 @@ public class RendererView extends FrameLayout {
                 headingTypeView4.setText(data.getContent());
                 return headingTypeView4;
 
-            case FeedData.ContentType.BULLET:
-                BulletTypeView bulletTypeView = new BulletTypeView(mContext);
-                bulletTypeView.setText(data.getContent());
-                return bulletTypeView;
+            case FeedData.ContentType.UL:
+                BulletTypeView bulletTypeView_UL = new BulletTypeView(mContext);
+                bulletTypeView_UL.setBulletType(BulletTypeView.TYPE_UL);
+                bulletTypeView_UL.setText(data.getContent());
+                return bulletTypeView_UL;
+
+            case FeedData.ContentType.OL:
+                BulletTypeView bulletTypeView_OL = new BulletTypeView(mContext);
+                bulletTypeView_OL.setBulletType(BulletTypeView.TYPE_OL);
+                bulletTypeView_OL.setText(data.getContent());
+                return bulletTypeView_OL;
 
             case FeedData.ContentType.BLOCKQUOTE:
                 BlockquoteTypeView blockquoteTypeView = new BlockquoteTypeView(mContext);

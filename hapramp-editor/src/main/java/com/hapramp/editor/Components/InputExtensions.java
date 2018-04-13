@@ -123,7 +123,6 @@ public class InputExtensions {
         this.headingTypeface = headingTypeface;
     }
 
-
     public InputExtensions(EditorCore editorCore) {
         this.editorCore = editorCore;
     }
@@ -138,7 +137,6 @@ public class InputExtensions {
         CharSequence toReplace = GetSanitizedHtml(text);
         textView.setText(toReplace);
     }
-
 
     private TextView getNewTextView(String text) {
         final TextView textView = new TextView(new ContextThemeWrapper(this.editorCore.getContext(), R.style.WysiwygEditText));
@@ -194,7 +192,7 @@ public class InputExtensions {
 
             @Override
             public void afterTextChanged(Editable s) {
-                String text = Html.toHtml(editText.getText());
+                String text = "";//Html.toHtml(editText.getText());
                 Object tag = editText.getTag(R.id.control_tag);
                 if (s.length() == 0 && tag != null)
                     editText.setHint(tag.toString());
@@ -251,7 +249,6 @@ public class InputExtensions {
 
     }
 
-
     public TextView insertEditText(int position, String hint, String text) {
         String nextHint = isLastText(position) ? null : editorCore.placeHolder;
         if (editorCore.getRenderType() == RenderType.Editor) {
@@ -275,7 +272,6 @@ public class InputExtensions {
         }
     }
 
-
     private EditorControl reWriteTags(EditorControl tag, EditorTextStyle styleToAdd) {
         tag = editorCore.updateTagStyle(tag, EditorTextStyle.H1, Op.Delete);
         tag = editorCore.updateTagStyle(tag, EditorTextStyle.H2, Op.Delete);
@@ -292,7 +288,6 @@ public class InputExtensions {
     public boolean isEditorTextStyleContentStyles(EditorTextStyle editorTextStyle) {
         return editorTextStyle == EditorTextStyle.BOLD || editorTextStyle == EditorTextStyle.BOLDITALIC || editorTextStyle == EditorTextStyle.ITALIC;
     }
-
 
     public int getTextStyleFromStyle(EditorTextStyle editorTextStyle) {
         if (editorTextStyle == EditorTextStyle.H1)
@@ -333,7 +328,6 @@ public class InputExtensions {
         }
         return false;
     }
-
 
     public void boldifyText(EditorControl tag, TextView editText, int textMode) {
         if (editorCore.containsStyle(tag._ControlStyles, EditorTextStyle.BOLD)) {
@@ -455,14 +449,11 @@ public class InputExtensions {
         if (editorType == EditorType.INPUT || editorType == EditorType.UL_LI) {
             String text = Html.toHtml(editText.getText());
             if (TextUtils.isEmpty(text))
-                text = "<p dir=\"ltr\"></p>";
+                text = "";
             text = trimLineEnding(text);
-            Document _doc = Jsoup.parse(text);
-            Elements x = _doc.select("p");
-            String existing = x.get(0).html();
-            x.get(0).html(existing + " <a href='" + uri + "'>" + uri + "</a>");
-            Spanned toTrim = Html.fromHtml(x.toString());
-            CharSequence trimmed = noTrailingwhiteLines(toTrim);
+            text = text + " <a href='" + uri + "'>" + uri + "</a>";
+//            Spanned toTrim = Html.fromHtml(text);
+            CharSequence trimmed = noTrailingwhiteLines(text);
             editText.setText(trimmed);   //
             editText.setSelection(editText.getText().length());
         }
@@ -482,9 +473,10 @@ public class InputExtensions {
     }
 
     private String trimLineEnding(String s) {
-        if (s.charAt(s.length() - 1) == '\n') {
-            String formatted = s.toString().substring(0, s.length() - 1);
-            return formatted;
+        if(s.length()>0) {
+            if (s.charAt(s.length() - 1) == '\n') {
+                return s.toString().substring(0, s.length() - 1);
+            }
         }
         return s;
     }

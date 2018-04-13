@@ -3,6 +3,7 @@ package com.hapramp.views.types;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +42,7 @@ public class TextTypeView extends FrameLayout{
     }
 
     public void setText(String text){
-        content.setText(text);
+        content.setText(Html.fromHtml(text));
     }
 
 }

@@ -115,7 +115,6 @@ public class HTMLExtensions {
         return element.getAllElements().size() > 0;
     }
 
-
     private static boolean matchesTag(String test) {
         for (HtmlTag tag : HtmlTag.values()) {
             if (tag.name().equals(test)) {
@@ -247,7 +246,6 @@ public class HTMLExtensions {
         EditorContent content = editorCore.getContentDeserialized(editorContentAsSerialized);
         return getContentAsHTML(content);
     }
-
 
     private String getListAsHtml(Node item) {
         int count = item.content.size();

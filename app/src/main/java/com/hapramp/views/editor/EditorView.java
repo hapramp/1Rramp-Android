@@ -248,6 +248,7 @@ public class EditorView extends FrameLayout implements TextHeaderView.HeadingCha
 
         List<Node> nodes = editorContent.nodes;
         for (int i = 0; i < nodes.size(); i++) {
+            Log.d("EditorView","Node:"+nodes.get(i));
             feedDataItemModels.add(getFormatedItem(nodes.get(i)));
         }
 
