@@ -31,7 +31,7 @@
             android:textSize="18sp" />
 
         <TextView
-            android:id="@+id/draftButton"
+            android:id="@+id/previewButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toStartOf="@+id/nextButton"
@@ -43,7 +43,7 @@
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
             android:paddingTop="6dp"
-            android:text="DRAFT"
+            android:text="Preview"
             android:textColor="@color/colorPrimary"
             android:textSize="14sp" />
 

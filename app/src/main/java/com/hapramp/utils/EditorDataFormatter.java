@@ -68,7 +68,7 @@ public class EditorDataFormatter {
 
     private static String getContent(String content, List<EditorTextStyle> contentStyles) {
 
-        String __content = "";
+        String __content;
         if (contentStyles.contains(BOLDITALIC)) {
             __content = "<b><i>" + content + "</i></b>";
         } else if (contentStyles.contains(BOLD)) {
@@ -100,19 +100,19 @@ public class EditorDataFormatter {
 
         String type;
         if (contentStyles.contains(H1)) {
-            type = FeedData.ContentType.H1;
+            type = FeedData.ContentType.H1; //rendered as custom view + html
         } else if (contentStyles.contains(H2)) {
-            type = FeedData.ContentType.H2;
+            type = FeedData.ContentType.H2; //rendered as custom view + html
         } else if (contentStyles.contains(H3)) {
-            type = FeedData.ContentType.H3;
+            type = FeedData.ContentType.H3; //rendered as custom view + html
         } else if (contentStyles.contains(NORMAL)) {
-            type = FeedData.ContentType.TEXT;
+            type = FeedData.ContentType.TEXT; //rendered as html
         } else if (contentStyles.contains(BOLDITALIC)) {
-            type = "text"; //render as html
+            type = "text"; //rendered as html
         } else if (contentStyles.contains(BOLD)) {
-            type = "text"; //render as html
+            type = "text"; //rendered as html
         } else {
-            type = "text"; //render as html
+            type = "text"; //rendered as html
         }
         return type;
 

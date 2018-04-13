@@ -17,6 +17,7 @@ package com.hapramp.editor;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
@@ -27,6 +28,8 @@ import com.hapramp.editor.models.EditorContent;
 import com.hapramp.editor.models.RenderType;
 
 import java.util.Map;
+
+import static com.hapramp.editor.Components.InputExtensions.CONTENT;
 
 public class Editor extends EditorCore {
     public Editor(Context context, AttributeSet attrs) {
@@ -117,7 +120,7 @@ public class Editor extends EditorCore {
      * @param size
      */
     public void setH1TextSize(int size) {
-        getInputExtensions().setH1TextSize(size);
+       // getInputExtensions().setH1TextSize(size);
     }
 
     public int getH2TextSize() {
@@ -129,7 +132,7 @@ public class Editor extends EditorCore {
      * @param size
      */
     public void setH2TextSize(int size) {
-        getInputExtensions().setH2TextSize(size);
+        //getInputExtensions().setH2TextSize(size);
     }
 
     public int getH3TextSize() {
@@ -141,7 +144,7 @@ public class Editor extends EditorCore {
      * @param size
      */
     public void setH3TextSize(int size) {
-        getInputExtensions().setH3TextSize(size);
+        //getInputExtensions().setH3TextSize(size);
     }
 
     /**
@@ -149,7 +152,7 @@ public class Editor extends EditorCore {
      * @param size
      */
     public void setNormalTextSize(int size){
-        getInputExtensions().setNormalTextSize(size);
+       // getInputExtensions().setNormalTextSize(size);
     }
 
     /**
@@ -162,6 +165,13 @@ public class Editor extends EditorCore {
         getInputExtensions().setFontFace(StringResource);
     }
 
+    public Typeface getNormalFontTypeface(){
+        return Typeface.create(getInputExtensions().getFontFace(), Typeface.NORMAL);
+    }
+
+    public Typeface getBoldFontTypeface(){
+        return Typeface.create(getInputExtensions().getFontFace(), Typeface.BOLD);
+    }
 
     public void updateTextStyle(EditorTextStyle style) {
         getInputExtensions().UpdateTextStyle(style, null);

@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.hapramp.R;
+import com.hapramp.editor.FontSize;
 import com.hapramp.steem.FeedData;
 import com.hapramp.steem.PostStructureModel;
 import com.hapramp.steem.models.data.FeedDataItemModel;
@@ -88,6 +89,7 @@ public class RendererView extends FrameLayout {
             case FeedData.ContentType.TEXT:
                 TextTypeView textTypeView = new TextTypeView(mContext);
                 textTypeView.setText(data.getContent());
+                textTypeView.setTextSize(FontSize.NORMALTEXTSIZE);
                 return textTypeView;
 
             case FeedData.ContentType.IMAGE:
@@ -98,16 +100,19 @@ public class RendererView extends FrameLayout {
             case FeedData.ContentType.H1:
                 HeadingOneTypeView headingTypeView1 = new HeadingOneTypeView(mContext);
                 headingTypeView1.setText(data.getContent());
+                headingTypeView1.setTextSize(FontSize.H1TEXTSIZE);
                 return headingTypeView1;
 
             case FeedData.ContentType.H2:
                 HeadingTwoTypeView headingTypeView2 = new HeadingTwoTypeView(mContext);
                 headingTypeView2.setText(data.getContent());
+                headingTypeView2.setTextSize(FontSize.H2TEXTSIZE);
                 return headingTypeView2;
 
             case FeedData.ContentType.H3:
                 HeadingThreeTypeView headingTypeView3 = new HeadingThreeTypeView(mContext);
                 headingTypeView3.setText(data.getContent());
+                headingTypeView3.setTextSize(FontSize.H3TEXTSIZE);
                 return headingTypeView3;
 
             case FeedData.ContentType.H4:
@@ -119,12 +124,14 @@ public class RendererView extends FrameLayout {
                 BulletTypeView bulletTypeView_UL = new BulletTypeView(mContext);
                 bulletTypeView_UL.setBulletType(BulletTypeView.TYPE_UL);
                 bulletTypeView_UL.setText(data.getContent());
+                bulletTypeView_UL.setTextSize(FontSize.NORMALTEXTSIZE);
                 return bulletTypeView_UL;
 
             case FeedData.ContentType.OL:
                 BulletTypeView bulletTypeView_OL = new BulletTypeView(mContext);
                 bulletTypeView_OL.setBulletType(BulletTypeView.TYPE_OL);
                 bulletTypeView_OL.setText(data.getContent());
+                bulletTypeView_OL.setTextSize(FontSize.NORMALTEXTSIZE);
                 return bulletTypeView_OL;
 
             case FeedData.ContentType.BLOCKQUOTE:

@@ -17,6 +17,7 @@ package com.hapramp.editor.Components;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -36,7 +37,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.hapramp.editor.EditorCore;
+import com.hapramp.editor.FontColor;
+import com.hapramp.editor.FontSize;
 import com.hapramp.editor.R;
 import com.hapramp.editor.Utilities.FontCache;
 import com.hapramp.editor.models.EditorControl;
@@ -51,52 +55,40 @@ import org.jsoup.select.Elements;
 
 import java.util.Map;
 
+import static com.hapramp.editor.FontSize.H1TEXTSIZE;
+import static com.hapramp.editor.FontSize.H2TEXTSIZE;
+import static com.hapramp.editor.FontSize.H3TEXTSIZE;
+import static com.hapramp.editor.FontSize.NORMALTEXTSIZE;
+import static com.hapramp.editor.Utilities.FontCache.BOLD_ROBOTO;
+import static com.hapramp.editor.Utilities.FontCache.LIGHT_ROBOTO;
+
 /**
  * Created by mkallingal on 4/30/2016.
  */
 public class InputExtensions {
     public static final int HEADING = 0;
     public static final int CONTENT = 1;
-    private int H1TEXTSIZE = 23;
-    private int H2TEXTSIZE = 20;
-    private int H3TEXTSIZE = 18;
-    private int NORMALTEXTSIZE = 16;
-    private int fontFace = R.string.fontFamily__serif;
+    private int fontFace = R.string.fontFamily__sans_serif_medium;
     EditorCore editorCore;
     private Map<Integer, String> contentTypeface;
     private Map<Integer, String> headingTypeface;
 
     public int getH1TextSize() {
-        return this.H1TEXTSIZE;
-    }
-
-    public void setH1TextSize(int size) {
-        this.H1TEXTSIZE = size;
+        return H1TEXTSIZE;
     }
 
     public int getH2TextSize() {
-        return this.H2TEXTSIZE;
-    }
-
-    public void setH2TextSize(int size) {
-        this.H2TEXTSIZE = size;
+        return H2TEXTSIZE;
     }
 
     public int getH3TextSize() {
-        return this.H3TEXTSIZE;
-    }
-
-    public void setH3TextSize(int size) {
-        this.H3TEXTSIZE = size;
+        return H3TEXTSIZE;
     }
 
     public int getNormalTextSize() {
-        return this.NORMALTEXTSIZE;
+        return NORMALTEXTSIZE;
     }
 
-    public void setNormalTextSize(int size){
-        this.NORMALTEXTSIZE = size;
-    }
 
     public String getFontFace() {
         return editorCore.getContext().getResources().getString(fontFace);
@@ -139,8 +131,8 @@ public class InputExtensions {
     }
 
     private TextView getNewTextView(String text) {
-        final TextView textView = new TextView(new ContextThemeWrapper(this.editorCore.getContext(), R.style.WysiwygEditText));
-        addEditableStyling(textView);
+        final TextView textView = new TextView(this.editorCore.getContext());
+        addEditableStyling(textView, FontSize.NORMALTEXTSIZE);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.setMargins(0, 0, 0, (int) editorCore.getContext().getResources().getDimension(R.dimen.edittext_margin_bottom));
         textView.setLayoutParams(params);
@@ -152,9 +144,10 @@ public class InputExtensions {
         return textView;
     }
 
-    public CustomEditText getNewEditTextInst(final String hint, String text) {
-        final CustomEditText editText = new CustomEditText(new ContextThemeWrapper(this.editorCore.getContext(), R.style.WysiwygEditText));
-        addEditableStyling(editText);
+    public CustomEditText getNewEditTextInst(final String hint, String text, int textSize) {
+
+        final CustomEditText editText = new CustomEditText(this.editorCore.getContext());
+        addEditableStyling(editText, textSize);
         editText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         if (hint != null) {
             editText.setHint(hint);
@@ -164,6 +157,7 @@ public class InputExtensions {
         }
         editText.setTag(editorCore.createTag(EditorType.INPUT));
         editText.setBackgroundDrawable(ContextCompat.getDrawable(this.editorCore.getContext(), R.drawable.invisible_edit_text));
+        editText.setPadding(16, 2, 16, 2);
         editText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -232,6 +226,7 @@ public class InputExtensions {
             }
         });
         return editText;
+
     }
 
     private boolean isLastText(int index) {
@@ -242,17 +237,26 @@ public class InputExtensions {
         return type == EditorType.INPUT;
     }
 
-    private void addEditableStyling(TextView editText) {
-        editText.setTypeface(getTypeface(CONTENT, Typeface.NORMAL));
+    private void addEditableStyling(TextView editText, int textSize) {
+
         editText.setFocusableInTouchMode(true);
-        editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, NORMALTEXTSIZE);
+        editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
 
     }
 
     public TextView insertEditText(int position, String hint, String text) {
+
+        int textSize = FontSize.NORMALTEXTSIZE;
+
         String nextHint = isLastText(position) ? null : editorCore.placeHolder;
         if (editorCore.getRenderType() == RenderType.Editor) {
-            final CustomEditText view = getNewEditTextInst(nextHint, text);
+            if (position == 0) {
+                nextHint = "Heading..";
+            }
+            if (position == 1) {
+                nextHint = "Sub Heading...";
+            }
+            final CustomEditText view = getNewEditTextInst(nextHint, text, textSize);
             editorCore.getParentView().addView(view, position);
             editorCore.setActiveView(view);
             final android.os.Handler handler = new android.os.Handler();
@@ -311,7 +315,13 @@ public class InputExtensions {
                 editText.setTypeface(getTypeface(CONTENT, Typeface.NORMAL));
                 tag = reWriteTags(editorControl, EditorTextStyle.NORMAL);
             } else {
-                editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, getTextStyleFromStyle(editorTextStyle));
+                int ts = getTextStyleFromStyle(editorTextStyle);
+                if (ts == FontSize.H2TEXTSIZE) {
+                    editText.setTextColor(Color.parseColor(FontColor.COLOR_SUBHEADING));
+                }else{
+                    editText.setTextColor(Color.parseColor(FontColor.COLOR_BLACK));
+                }
+                editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, ts);
                 editText.setTypeface(getTypeface(HEADING, Typeface.BOLD));
                 tag = reWriteTags(editorControl, editorTextStyle);
             }
@@ -473,7 +483,7 @@ public class InputExtensions {
     }
 
     private String trimLineEnding(String s) {
-        if(s.length()>0) {
+        if (s.length() > 0) {
             if (s.charAt(s.length() - 1) == '\n') {
                 return s.toString().substring(0, s.length() - 1);
             }
@@ -489,6 +499,7 @@ public class InputExtensions {
      * @return typeface
      */
     public Typeface getTypeface(int mode, int style) {
+
         if (mode == HEADING && headingTypeface == null) {
             return Typeface.create(getFontFace(), style);
         } else if (mode == CONTENT && contentTypeface == null) {

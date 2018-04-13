@@ -38,19 +38,8 @@ public class TestActivity extends AppCompatActivity {
 
     private void testContent() {
 
-        getContentBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-               ArrayList<FeedDataItemModel> feedDataItemModels = editorView.getDataItemList();
-               Intent i = new Intent(TestActivity.this,PreviewActivity.class);
-               i.putParcelableArrayListExtra("data",feedDataItemModels);
-               startActivity(i);
-//                for (int i = 0; i < feedDataItemModels.size(); i++) {
-//                    Log.d("TestActivity", feedDataItemModels.get(i).toString());
-//                }
-            }
-        });
+        Intent i = new Intent(this, CreateArticleActivity.class);
+        startActivity(i);
 
     }
 

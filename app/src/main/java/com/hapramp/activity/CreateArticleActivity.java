@@ -53,8 +53,8 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
 
     @BindView(R.id.closeBtn)
     TextView closeBtn;
-    @BindView(R.id.draftButton)
-    TextView draftButton;
+    @BindView(R.id.previewButton)
+    TextView previewButton;
     @BindView(R.id.nextButton)
     TextView nextButton;
     @BindView(R.id.meta_toolbar_container)
@@ -180,10 +180,15 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     private void attachListeners() {
 
         // draft button
-        draftButton.setOnClickListener(new View.OnClickListener() {
+        previewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveDraft();
+
+                ArrayList<FeedDataItemModel> feedDataItemModels = editorView.getDataItemList();
+                Intent i = new Intent(CreateArticleActivity.this,PreviewActivity.class);
+                i.putParcelableArrayListExtra("data",feedDataItemModels);
+                startActivity(i);
+
             }
         });
 
@@ -311,10 +316,6 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     }
 
     private void saveDraft() {
-
-        HaprampPreferenceManager
-                .getInstance()
-                .setArticleAsDraft(editor.getContentAsHTML());
 
         toast("Article Saved To Draft");
 

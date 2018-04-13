@@ -609,4 +609,5 @@ public class EditorCore extends LinearLayout {
             Toast.makeText(__context, message, Toast.LENGTH_SHORT).show();
         }
     }
+
 }

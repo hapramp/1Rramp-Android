@@ -18,6 +18,7 @@ package com.hapramp.editor.Components;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.text.Editable;
@@ -36,6 +37,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import com.hapramp.editor.EditorCore;
+import com.hapramp.editor.FontFace;
 import com.hapramp.editor.R;
 import com.hapramp.editor.models.EditorControl;
 import com.hapramp.editor.models.EditorType;
@@ -72,17 +74,18 @@ public class ListItemExtensions {
     public TableLayout CreateTable() {
         TableLayout table = new TableLayout(editorCore.getContext());
         table.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        table.setPadding(30, 10, 10, 10);
+        table.setPadding(30, 4, 10, 2);
         return table;
     }
-
 
     public View AddListItem(TableLayout layout, boolean isOrdered, String text) {
         final View childLayout = ((Activity) editorCore.getContext()).getLayoutInflater().inflate(this.listItemTemplate, null);
         final CustomEditText editText = (CustomEditText) childLayout.findViewById(R.id.txtText);
         final TextView _order = (TextView) childLayout.findViewById(R.id.lblOrder);
-        _order.setTypeface(Typeface.create(editorCore.getInputExtensions().getFontFace(), Typeface.BOLD));
-        editText.setTypeface(Typeface.create(editorCore.getInputExtensions().getFontFace(), Typeface.NORMAL));
+
+        _order.setTypeface(FontFace.getBoldTypeface(editorCore.getContext()));
+        editText.setTypeface(FontFace.getNormalTypeface(editorCore.getContext()));
+
         if (isOrdered) {
             int count = layout.getChildCount();
             _order.setText(String.valueOf(count + 1) + ".");
@@ -223,7 +226,6 @@ public class ListItemExtensions {
         }
     }
 
-
     public void convertListToUnordered(TableLayout _table) {
         EditorControl type = editorCore.createTag(EditorType.ul);
         _table.setTag(type);
@@ -236,7 +238,6 @@ public class ListItemExtensions {
             _bullet.setText("•");
         }
     }
-
 
     public String getTextFromListItem(View row) {
         CustomEditText _text = (CustomEditText) row.findViewById(R.id.txtText);
@@ -362,7 +363,6 @@ public class ListItemExtensions {
 
     }
 
-
     private void rearrangeColumns(TableLayout _table) {
         //TODO, make sure that if OL, all the items are ordered numerically
         for (int i = 0; i < _table.getChildCount(); i++) {
@@ -371,7 +371,6 @@ public class ListItemExtensions {
             _bullet.setText(String.valueOf(i + 1) + ".");
         }
     }
-
 
     public void validateAndRemoveLisNode(View view, EditorControl contentType) {
         /*
@@ -419,7 +418,6 @@ public class ListItemExtensions {
             }
         }
     }
-
 
     public int getIndexOnEditorByEditText(CustomEditText customEditText) {
         TableRow tableRow = (TableRow) customEditText.getParent();
