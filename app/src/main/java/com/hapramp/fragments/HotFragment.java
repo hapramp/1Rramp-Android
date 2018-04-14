@@ -85,12 +85,12 @@ public class HotFragment extends Fragment implements FeedListView.FeedListViewLi
 
         serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
 
-        serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(Communities.PHOTOGRAPHY) //todo: for test- we are using Photography tag
+        serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(Communities.TAG_HAPRAMP)
                 .setLimit(100)
                 .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
                 .createRequestParam();
 
-        serviceWorker.requestTrendingPosts(serviceWorkerRequestParams);
+        serviceWorker.requestHotPosts(serviceWorkerRequestParams);
 
     }
 

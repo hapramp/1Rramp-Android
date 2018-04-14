@@ -53,9 +53,9 @@ public class CommunitiesUnitTest {
 
     @Test
     public void test_StringFormatting(){
-        String t = "ankit|kumar";
-        String[] lines = t.split("|");
-        System.out.println(lines[1]);
+        String t = "ankit kumar";
+        String[] lines = t.split(" ");
+        System.out.println(lines.length);
     }
 
 

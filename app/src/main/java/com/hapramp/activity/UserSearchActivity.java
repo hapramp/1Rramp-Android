@@ -86,6 +86,12 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
         fetchFollowingsAndCache();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setBrowseMode();
+    }
+
     private void initView() {
 
         //set up view pager
@@ -112,29 +118,6 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
     }
 
     private void attachListener() {
-
-        searchInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                String searchTerm = searchInput.getText().toString();
-                if (searchTerm.length() > 0) {
-                    //fetchSuggestions(searchTerm);
-                } else {
-                    setBrowseMode();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
 
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override

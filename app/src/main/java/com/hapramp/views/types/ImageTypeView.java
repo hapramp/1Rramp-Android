@@ -51,24 +51,7 @@ public class ImageTypeView extends FrameLayout {
         desc = v.findViewById(R.id.image_desc);
     }
 
-    public void setImageInfo(String info) {
-
-        String[] __info = info.split("\n");
-        String image_url = "";
-        String des = "";
-        // data is in format : <desc>\n<image_url>
-        if (__info.length > 1) {
-            // desc was included
-            //[desc,url]
-            des = __info[0];
-            image_url = __info[1];
-        } else {
-            //desc was not included
-            //[url]
-            image_url = __info[0];
-        }
-
-
+    public void setImageInfo(String des , String image_url) {
         setImageDesc(des);
         setImageSource(image_url);
     }

@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.hapramp.R;
 import com.hapramp.adapters.FeaturedImageAdapter;
 import com.hapramp.api.RetrofitServiceGenerator;
@@ -142,9 +143,9 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
 
     }
 
-    private void close(){
+    private void close() {
         finish();
-        overridePendingTransition(R.anim.slide_down_enter,R.anim.slide_down_exit);
+        overridePendingTransition(R.anim.slide_down_enter, R.anim.slide_down_exit);
     }
 
     @Override
@@ -182,7 +183,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
 
     }
 
-    private void showPublishingProgressDialog(boolean show,String msg) {
+    private void showPublishingProgressDialog(boolean show, String msg) {
 
         if (progressDialog != null) {
             if (show) {
@@ -215,8 +216,8 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
             public void onClick(View v) {
 
                 ArrayList<FeedDataItemModel> feedDataItemModels = editorView.getDataItemList();
-                Intent i = new Intent(CreateArticleActivity.this,PreviewActivity.class);
-                i.putParcelableArrayListExtra("data",feedDataItemModels);
+                Intent i = new Intent(CreateArticleActivity.this, PreviewActivity.class);
+                i.putParcelableArrayListExtra("data", feedDataItemModels);
                 startActivity(i);
 
             }
@@ -265,14 +266,21 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
         title = "";
         //prepare tags
         tags = (ArrayList<String>) articleCategoryView.getSelectedTags();
-
-
+        includeCustomTags(tags);
         //prepare post structure
         List<FeedDataItemModel> datas = editorView.getDataItemList();
-        postStructureModel = new PostStructureModel(datas, FeedData.FEED_TYPE_POST);
+        postStructureModel = new PostStructureModel(datas, FeedData.FEED_TYPE_ARTICLE);
 
         sendPostToServerForProcessing(postStructureModel);
 
+    }
+
+    private void includeCustomTags(ArrayList<String> tags) {
+        String[] __segs = tagsInputBox.getText().toString().split(" ");
+        for (int i = 0; i < __segs.length; i++) {
+            if(__segs[i].length()>0)
+                tags.add(__segs[i]);
+        }
     }
 
     //PUBLISHING SECTION
@@ -306,7 +314,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
         showPublishingProgressDialog(true, "Adding to Blockchain...");
         SteemPostCreator steemPostCreator = new SteemPostCreator();
         steemPostCreator.setSteemPostCreatorCallback(this);
-        steemPostCreator.createPost(body, title, tags, postStructureModel,generated_permalink);
+        steemPostCreator.createPost(body, title, tags, postStructureModel, generated_permalink);
 
     }
 
@@ -378,20 +386,20 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
 
     @Override
     public void onPostCreated(String... jobId) {
-        showPublishingProgressDialog(false,"");
+        showPublishingProgressDialog(false, "");
         finish();
     }
 
     @Override
     public void onPostCreateError(String... jobId) {
-        showPublishingProgressDialog(false,"");
+        showPublishingProgressDialog(false, "");
         toast("Error while creating post");
     }
 
     @Override
     public void onPostCreatedOnSteem() {
         toast("Post Created on Blockchain");
-        showPublishingProgressDialog(false,"");
+        showPublishingProgressDialog(false, "");
         // send confirmation to server
         confirmServerForPostCreation();
     }
@@ -399,7 +407,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     @Override
     public void onPostCreationFailedOnSteem(String msg) {
         toast(msg);
-        Log.d(CreateArticleActivity.class.getSimpleName(),msg);
+        Log.d(CreateArticleActivity.class.getSimpleName(), msg);
     }
 
 }

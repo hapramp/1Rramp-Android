@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Ankit on 4/9/2018.
  */
 
-public class Beneficiaries implements Parcelable {
+public class Beneficiary implements Parcelable {
     @Expose
     @SerializedName("weight")
     public int weight;
@@ -18,7 +18,7 @@ public class Beneficiaries implements Parcelable {
     @SerializedName("account")
     public String account;
 
-    protected Beneficiaries(Parcel in) {
+    protected Beneficiary(Parcel in) {
         weight = in.readInt();
         account = in.readString();
     }
@@ -35,15 +35,15 @@ public class Beneficiaries implements Parcelable {
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Beneficiaries> CREATOR = new Parcelable.Creator<Beneficiaries>() {
+    public static final Parcelable.Creator<Beneficiary> CREATOR = new Parcelable.Creator<Beneficiary>() {
         @Override
-        public Beneficiaries createFromParcel(Parcel in) {
-            return new Beneficiaries(in);
+        public Beneficiary createFromParcel(Parcel in) {
+            return new Beneficiary(in);
         }
 
         @Override
-        public Beneficiaries[] newArray(int size) {
-            return new Beneficiaries[size];
+        public Beneficiary[] newArray(int size) {
+            return new Beneficiary[size];
         }
     };
 

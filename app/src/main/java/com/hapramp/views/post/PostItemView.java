@@ -34,7 +34,9 @@ import com.hapramp.steem.Communities;
 import com.hapramp.steem.FeedData;
 import com.hapramp.steem.SteemHelper;
 import com.hapramp.steem.models.Feed;
+import com.hapramp.steem.models.data.ActiveVote;
 import com.hapramp.steem.models.data.Content;
+import com.hapramp.steem.models.data.FeedDataItemModel;
 import com.hapramp.steem.models.user.Profile;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
@@ -145,7 +147,7 @@ public class PostItemView extends FrameLayout {
 
     private void navigateToDetailsPage() {
         Intent detailsIntent = new Intent(mContext, DetailedActivity.class);
-        detailsIntent.putExtra(Constants.EXTRAA_KEY_POST_DATA,mFeed);
+        detailsIntent.putExtra(Constants.EXTRAA_KEY_POST_DATA, mFeed);
         mContext.startActivity(detailsIntent);
     }
 
@@ -159,36 +161,25 @@ public class PostItemView extends FrameLayout {
 
         // classify the type of content
         Content content = feed.jsonMetadata.content;
-        if (content.type.equals(Constants.CONTENT_TYPE_POST)) {
 
+        //load featured image and snippet for article | post
+        String image_url = extractImageUrlForPost(content.data);
+        String text = extractTextSnippetForPost(content.data);
+
+        postSnippet.setText(text);
+        ImageHandler.load(mContext, featuredImagePost, image_url);
+
+        if (content.type.equals(Constants.CONTENT_TYPE_POST)) {
             // hide title
             postTitle.setVisibility(GONE);
             // hide read more
             readMoreBtn.setVisibility(GONE);
 
-            // render the content
-            for (int i = 0; i < content.data.size(); i++) {
-                if (content.data.get(i).type.equals(FeedData.ContentType.IMAGE)) {
-                    featuredImagePost.layout(0,0,0,0);
-                    ImageHandler.load(mContext, featuredImagePost, content.data.get(i).content);
-                }
-                if (content.data.get(i).type.equals(FeedData.ContentType.TEXT)) {
-                    postSnippet.setText(content.data.get(i).content);
-                    break;
-                }
-            }
-
-        } else if (feed.jsonMetadata.content.type.equals(Constants.CONTENT_TYPE_ARTICLE)) {
+        } else if (content.type.equals(Constants.CONTENT_TYPE_ARTICLE)) {
             // show title
+            String title = extractTitleForArticle(content.data);
             postTitle.setVisibility(VISIBLE);
-            postTitle.setText(feed.getTitle());
-            // show read more if content length is more
-            for (int i = 0; i < content.data.size(); i++) {
-                if (content.data.get(i).type.equals(FeedData.ContentType.TEXT)) {
-                    postSnippet.setText(content.data.get(i).content);
-                    break;
-                }
-            }
+            postTitle.setText(title);
 
             if (isContentEllipsised(postSnippet)) {
                 // show read more button
@@ -203,14 +194,14 @@ public class PostItemView extends FrameLayout {
         setHapcoins(feed.totalPayoutValue);
         setCommunities(feed.jsonMetadata.tags);
         Log.d("PostItemView", "requesting image for " + feed.author);
-        Profile _p = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserProfile(feed.getAuthor()), Profile.class);
-        Log.d("PostItemView", "Got: " + HaprampPreferenceManager.getInstance().getUserProfile(feed.getAuthor()));
+        Profile _p = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserProfile(feed.author), Profile.class);
+        Log.d("PostItemView", "Got: " + HaprampPreferenceManager.getInstance().getUserProfile(feed.author));
         if (_p != null) {
             Log.d("PostItemView", "loading image from " + _p.getProfileImage());
             ImageHandler.loadCircularImage(mContext, feedOwnerPic, _p.getProfileImage());
         }
 
-        fetchVotes(String.format("%1$s/%2$s", feed.getAuthor(), feed.getPermlink()));
+        bindVotes(feed.activeVotes , feed.permlink);
 
 //
 //        commentBtn.setOnClickListener(new OnClickListener() {
@@ -241,6 +232,8 @@ public class PostItemView extends FrameLayout {
 //            }
 //        });
 //
+
+
         starView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -252,15 +245,63 @@ public class PostItemView extends FrameLayout {
 
     }
 
+    private long getVotePercentSum(List<ActiveVote> activeVotes) {
+        long sum = 0;
+        for (int i = 0; i < activeVotes.size(); i++) {
+            sum += activeVotes.get(i).percent;
+        }
+        return sum;
+    }
+
+    private String extractTitleForArticle(List<FeedDataItemModel> data) {
+        //return first h1 type text
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i).type.equals(FeedData.ContentType.H1)) {
+                return data.get(i).content;
+            }
+
+            //check also for h2
+            if (data.get(i).type.equals(FeedData.ContentType.H2)) {
+                return data.get(i).content;
+            }
+
+        }
+        return "";
+    }
+
+    private String extractTextSnippetForPost(List<FeedDataItemModel> data) {
+
+        //return first text type
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i).type.equals(FeedData.ContentType.TEXT)) {
+                return data.get(i).content;
+            }
+        }
+        return "";
+
+    }
+
+    private String extractImageUrlForPost(List<FeedDataItemModel> data) {
+
+        //return first image type
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i).type.equals(FeedData.ContentType.IMAGE)) {
+                return data.get(i).content;
+            }
+        }
+        return "";
+
+    }
+
     public String getAuthor() {
-        return mFeed.getAuthor();
+        return mFeed.author;
     }
 
     public String getPermlinkAsString() {
-        return mFeed.getPermlink();
+        return mFeed.permlink;
     }
 
-    public String getFullPermlinkAsString(){
+    public String getFullPermlinkAsString() {
         return String.format("%1$s/%2$s", getAuthor(), getPermlinkAsString());
     }
 
@@ -367,60 +408,20 @@ public class PostItemView extends FrameLayout {
         bind(postData);
     }
 
-    private void fetchVotes(final String full_permlink) {
+    private void bindVotes(List<ActiveVote> votes , String permlink) {
 
-        starView.onVoteLoading();
-
-        RetrofitServiceGenerator.getService().getPostVotes(full_permlink).enqueue(new Callback<List<VoteModel>>() {
-            @Override
-            public void onResponse(Call<List<VoteModel>> call, Response<List<VoteModel>> response) {
-                if (response.isSuccessful()) {
-                    bindVotes(response.body(), full_permlink);
-                    starView.onVoteLoaded();
-                } else {
-                    starView.onVoteLoadingFailed();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<VoteModel>> call, Throwable t) {
-                starView.onVoteLoadingFailed();
-            }
-        });
-
-    }
-
-    private float getVoteSum(List<VoteModel> votes) {
-        float sum = 0;
-        for (int i = 0; i < votes.size(); i++) {
-            sum += votes.get(i).vote;
-        }
-        return sum;
-    }
-
-    private VoteModel getVoteForCurrentUser(List<VoteModel> votes) {
-        for (int i = 0; i < votes.size(); i++) {
-            if (votes.get(i).getUsernam().equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
-                return votes.get(i);
-            }
-        }
-        return null;
-    }
-
-    private void bindVotes(List<VoteModel> votes, String permlink) {
-
-        // initialize the starview
-        VoteModel myVote = getVoteForCurrentUser(votes);
-        boolean isVoted = (myVote != null);
-        float voteSum = getVoteSum(votes);
+        long votePercentSum = getVotePercentSum(votes);
+        boolean amIVoted = checkForMyVote(votes);
+        long myVotePercent = amIVoted ? getMyVotePercent(votes) : 0 ;
+        long totalVotes = getNonZeroVoters(votes);
 
         starView.setVoteState(
                 new StarView.Vote(
-                        isVoted,
+                        amIVoted,
                         permlink,
-                        isVoted ? myVote.vote : 0,
-                        votes.size(),
-                        voteSum))
+                        myVotePercent,
+                        totalVotes,
+                        votePercentSum))
                 .setOnVoteUpdateCallback(new StarView.onVoteUpdateCallback() {
                     @Override
                     public void onVoted(String full_permlink, int _vote) {
@@ -434,6 +435,34 @@ public class PostItemView extends FrameLayout {
                 });
 
 
+    }
+
+    private long getNonZeroVoters(List<ActiveVote> votes) {
+        long sum = 0;
+        for (int i = 0; i < votes.size(); i++) {
+            if (votes.get(i).percent > 0) {
+                sum++;
+            }
+        }
+        return sum;
+    }
+
+    private long getMyVotePercent(List<ActiveVote> votes) {
+        for (int i = 0; i < votes.size(); i++) {
+            if (votes.get(i).voter.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
+                return votes.get(i).percent;
+            }
+        }
+        return 0;
+    }
+
+    private boolean checkForMyVote(List<ActiveVote> votes) {
+        for (int i = 0; i < votes.size(); i++) {
+            if (votes.get(i).voter.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private Runnable steemCastingVoteExceptionRunnable = new Runnable() {
@@ -457,9 +486,10 @@ public class PostItemView extends FrameLayout {
     *  votePower: 100 for 3-5 rate
     * */
     private void performVoteOnSteem(final int vote) {
+
         starView.voteProcessing();
 
-        final int votePower = vote < 3 ? 1 : 100;
+        final int votePower = vote * 2000;
 
         new Thread() {
 
@@ -478,7 +508,7 @@ public class PostItemView extends FrameLayout {
                         @Override
                         public void run() {
                             l("Sending Vote to App server");
-                            performVoteOnAppServer(getFullPermlinkAsString(),vote);
+                            castingVoteSuccess();
                         }
                     });
 
@@ -505,6 +535,7 @@ public class PostItemView extends FrameLayout {
     private void deleteVoteOnSteem() {
 
         starView.voteProcessing();
+
         new Thread() {
 
             @Override
@@ -520,8 +551,7 @@ public class PostItemView extends FrameLayout {
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            l("Deleting vote on app server");
-                            deleteVoteOnAppServer(getFullPermlinkAsString());
+                            voteDeleteSuccess();
                         }
                     });
 
@@ -538,46 +568,6 @@ public class PostItemView extends FrameLayout {
 
             }
         }.start();
-
-    }
-
-    private void performVoteOnAppServer(String full_permlink, int vote) {
-
-        RetrofitServiceGenerator.getService().castVote(full_permlink, new VoteRequestBody(vote)).enqueue(new Callback<VoteStatus>() {
-            @Override
-            public void onResponse(Call<VoteStatus> call, Response<VoteStatus> response) {
-                if (response.isSuccessful()) {
-                    if (response.body().getStatus().equals("ok")) {
-                        castingVoteSuccess();
-                    }
-                } else {
-                    castingVoteFailed();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<VoteStatus> call, Throwable t) {
-                castingVoteFailed();
-            }
-        });
-    }
-
-    private void deleteVoteOnAppServer(String full_permlink) {
-        RetrofitServiceGenerator.getService().deleteVote(full_permlink).enqueue(new Callback<VoteStatus>() {
-            @Override
-            public void onResponse(Call<VoteStatus> call, Response<VoteStatus> response) {
-                if (response.isSuccessful()) {
-                    voteDeleteSuccess();
-                } else {
-                    voteDeleteFailed();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<VoteStatus> call, Throwable t) {
-
-            }
-        });
 
     }
 
@@ -601,8 +591,8 @@ public class PostItemView extends FrameLayout {
         Toast.makeText(mContext, "SUCCESS : Vote Deleted", Toast.LENGTH_LONG).show();
     }
 
-    private void l(String msg){
-        Log.d(TAG,msg);
+    private void l(String msg) {
+        Log.d(TAG, msg);
     }
 
 }

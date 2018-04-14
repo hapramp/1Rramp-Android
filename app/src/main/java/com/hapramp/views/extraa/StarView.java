@@ -14,19 +14,15 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hapramp.R;
-import com.hapramp.interfaces.VoteDeleteCallback;
-import com.hapramp.interfaces.VotePostCallback;
-import com.hapramp.steem.models.Feed;
 import com.hapramp.utils.FontManager;
 
 /**
  * Created by Ankit on 12/14/2017.
  */
 
-public class StarView extends FrameLayout{
+public class StarView extends FrameLayout {
 
     private static final long REVEAL_DELAY = 500;
     private static final float REVEAL_START_OFFSET = 84;
@@ -69,6 +65,19 @@ public class StarView extends FrameLayout{
 
     }
 
+    /*
+    *  Vote percent: will be like:
+    *  for 1 star : 20 * 100 * 1
+    *  for 2 star : 20 * 100 * 2 and so on..
+    *
+    *  VoteCount : active votes whose percent > 0
+    *  VoteSum : (Sum of all active vote percent)/(20 * 100)
+    *  Avg: VoteSum/VoteCount
+    *
+    *  This view receives vote as percent
+    *
+    * */
+
     private void init(Context context) {
 
         this.mContext = context;
@@ -104,9 +113,9 @@ public class StarView extends FrameLayout{
         this.legacyState = new Vote(
                 voteState.iHaveVoted,
                 voteState.postPermlink,
-                voteState.myVote,
+                voteState.myVotePercent,
                 voteState.totalVotedUsers,
-                voteState.totalVotesSum);
+                voteState.totalVotePercentSum);
 
         setCurrentState(voteState);
         return this;
@@ -123,21 +132,25 @@ public class StarView extends FrameLayout{
         setStarIndicatorState(currentState.iHaveVoted);
 
         if (voteState.iHaveVoted) {
-            ratingBar.setRating(currentState.myVote);
+            ratingBar.setRating(getMappedRatingFromPercent(currentState.myVotePercent));
         } else {
             ratingBar.setRating(0);
         }
 
     }
 
-    private void showRatingProgress(boolean show){
-        l("Show rating progress "+show);
-        if(show){
+    private float getMappedRatingFromPercent(float myVotePercent) {
+        return myVotePercent / 2000;
+    }
+
+    private void showRatingProgress(boolean show) {
+        l("Show rating progress " + show);
+        if (show) {
             //hide text
             starInfo.setVisibility(GONE);
             //show progress
             ratingProgress.setVisibility(VISIBLE);
-        }else{
+        } else {
             //show text
             starInfo.setVisibility(VISIBLE);
             //hide progress
@@ -151,23 +164,29 @@ public class StarView extends FrameLayout{
             // color it
             starIndicator.setTextColor(mContext.getResources().getColor(R.color.colorPrimary));
             // set info
-            starInfo.setText(getCalculatedInfo());
+            starInfo.setText(getRatingDescriptionWithAverage());
 
         } else {
             starIndicator.setTextColor(Color.parseColor("#8a000000"));
             //cancel my rate
-            starInfo.setText(getCalculatedInfo());
+            starInfo.setText(getRatingDescriptionWithAverage());
         }
 
     }
 
-    private String getCalculatedInfo() {
+    // This method returns string with average and vote count
 
-        float _rating = currentState.getTotalVotesSum();
+    private String getRatingDescriptionWithAverage() {
+
+        float voteSum = getVoteSumFromVotePercentSum(currentState.getTotalVotePercentSum());
         int _totalUser = (int) currentState.getTotalVotedUsers();
 
-        return _totalUser > 0 ? String.format(mContext.getResources().getString(R.string.star_info), ((_rating) / _totalUser), _totalUser) : "0.0 from 0";
+        return _totalUser > 0 ? String.format(mContext.getResources().getString(R.string.star_info), ((voteSum) / _totalUser), _totalUser) : "0.0 from 0";
 
+    }
+
+    private float getVoteSumFromVotePercentSum(float totalVotePercentSum) {
+        return totalVotePercentSum / 2000;
     }
 
     private float getRating() {
@@ -178,31 +197,47 @@ public class StarView extends FrameLayout{
 
     public void onStarIndicatorTapped() {
 
-        if (currentState.iHaveVoted) {
-            // show the rating bar with cancel btn
-            showRatingBar();
-            showRatingCancelButton();
-        } else {
-            // show the rating bar without cancel btn
-            showRatingBar();
-            removeRatingCancelButton();
 
+        if (currentState.iHaveVoted) {
+            // cancel all my ratings
+            cancelMyRating();
+
+            // showRatingBar();
+            // showRatingCancelButton();
+        } else {
+            // rate 5 star
+            setNewRating(5);
+            // showRatingBar();
+            // removeRatingCancelButton();
         }
 
     }
+
+    public void onStarIndicatorLongPressed() {
+
+        if (currentState.iHaveVoted) {
+            showRatingBar();
+            showRatingCancelButton();
+        } else {
+            showRatingBar();
+            removeRatingCancelButton();
+        }
+
+    }
+
 
     private void cancelMyRating() {
 
         // cancel my existing ratings
         currentState.setiHaveVoted(false);
         currentState.totalVotedUsers -= 1;
-        currentState.totalVotesSum -= currentState.myVote;
-        currentState.myVote = 0;
+        currentState.totalVotePercentSum -= currentState.myVotePercent;
+        currentState.myVotePercent = 0;
         // reset rating Bar
         ratingBar.setRating(0);
         // update the UI
         setCurrentState(currentState);
-        deleteVoteFromAppServer();
+        deleteVoteFromSteem();
 
     }
 
@@ -317,7 +352,7 @@ public class StarView extends FrameLayout{
                 if (fromUser) {
                     //ratings has changed
                     setNewRating(rating);
-                    sendVoteToAppServer();
+                    sendVoteToSteem();
                 }
             }
         });
@@ -336,31 +371,35 @@ public class StarView extends FrameLayout{
         }
 
         currentState.setiHaveVoted(true);
-        currentState.setMyVote(rating);
+        currentState.setMyVotePercent(rating);
         currentState.totalVotedUsers += 1;
-        currentState.totalVotesSum += rating;
+        currentState.totalVotePercentSum += getVotePercentFromRating(rating);
         setCurrentState(currentState);
 
     }
 
+    private float getVotePercentFromRating(float rating) {
+        return rating * 2000;
+    }
+
     private void l(String s) {
-           Log.i("STRV", s);
+        Log.i("STRV", s);
     }
 
-    private void sendVoteToAppServer() {
-        onVoteUpdateCallback.onVoted(currentState.postPermlink, (int) currentState.myVote);
+    private void sendVoteToSteem() {
+        onVoteUpdateCallback.onVoted(currentState.postPermlink, (int) currentState.myVotePercent);
     }
 
-    private void deleteVoteFromAppServer() {
+    private void deleteVoteFromSteem() {
         onVoteUpdateCallback.onVoteDeleted(currentState.postPermlink);
     }
 
-    public void onVoteLoading(){
+    public void onVoteLoading() {
         //show progress
         showRatingProgress(true);
     }
 
-    public void onVoteLoadingFailed(){
+    public void onVoteLoadingFailed() {
         //hide progress
         showRatingProgress(false);
         //show error
@@ -368,14 +407,14 @@ public class StarView extends FrameLayout{
 
     }
 
-    public void onVoteLoaded(){
+    public void onVoteLoaded() {
         //hide progress
         showRatingProgress(false);
         //hide error
         ratingError.setVisibility(GONE);
     }
 
-    public void voteProcessing(){
+    public void voteProcessing() {
         showRatingProgress(true);
     }
 
@@ -406,14 +445,13 @@ public class StarView extends FrameLayout{
     }
 
 
-
     public static class Vote {
 
         boolean iHaveVoted;
         String postPermlink;
-        float myVote;
+        float myVotePercent;
         float totalVotedUsers;
-        float totalVotesSum;
+        float totalVotePercentSum;
 
         public Vote() {
         }
@@ -421,9 +459,9 @@ public class StarView extends FrameLayout{
         public Vote(boolean iHaveVoted, String postPermlink, float vote, float totalVotedUsers, float totalVotesSum) {
             this.iHaveVoted = iHaveVoted;
             this.postPermlink = postPermlink;
-            this.myVote = vote;
+            this.myVotePercent = vote;
             this.totalVotedUsers = totalVotedUsers;
-            this.totalVotesSum = totalVotesSum;
+            this.totalVotePercentSum = totalVotesSum;
         }
 
         public boolean getiHaveVoted() {
@@ -434,12 +472,12 @@ public class StarView extends FrameLayout{
             this.iHaveVoted = iHaveVoted;
         }
 
-        public float getMyVote() {
-            return myVote;
+        public float getMyVotePercent() {
+            return myVotePercent;
         }
 
-        public void setMyVote(float myVote) {
-            this.myVote = myVote;
+        public void setMyVotePercent(float myVotePercent) {
+            this.myVotePercent = myVotePercent;
         }
 
         public float getTotalVotedUsers() {
@@ -450,12 +488,12 @@ public class StarView extends FrameLayout{
             this.totalVotedUsers = totalVotedUsers;
         }
 
-        public float getTotalVotesSum() {
-            return totalVotesSum;
+        public float getTotalVotePercentSum() {
+            return totalVotePercentSum;
         }
 
-        public void setTotalVotesSum(float totalVotesSum) {
-            this.totalVotesSum = totalVotesSum;
+        public void setTotalVotePercentSum(float totalVotePercentSum) {
+            this.totalVotePercentSum = totalVotePercentSum;
         }
 
         @Override
@@ -463,9 +501,9 @@ public class StarView extends FrameLayout{
             return "Vote{" +
                     "iHaveVoted=" + iHaveVoted +
                     ", postPermlink=" + postPermlink +
-                    ", myVote=" + myVote +
+                    ", myVotePercent=" + myVotePercent +
                     ", totalVotedUsers=" + totalVotedUsers +
-                    ", totalVotesSum=" + totalVotesSum +
+                    ", totalVotePercentSum=" + totalVotePercentSum +
                     '}';
         }
     }

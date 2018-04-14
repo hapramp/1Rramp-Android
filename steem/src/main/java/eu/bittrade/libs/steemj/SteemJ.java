@@ -2143,6 +2143,7 @@ public class SteemJ {
 
         this.vote(SteemJConfig.getInstance().getDefaultAccount(), postOrCommentAuthor, postOrCommentPermlink,
                 percentage);
+
     }
 
     /**

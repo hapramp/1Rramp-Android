@@ -85,8 +85,8 @@ public class Profile {
             public void run() {
                 final List<String> users = new ArrayList<>();
                 for (int i = 0; i < feeds.size(); i++) {
-                    if (!users.contains(feeds.get(i).getAuthor())) {
-                        users.add(feeds.get(i).getAuthor());
+                    if (!users.contains(feeds.get(i).author)) {
+                        users.add(feeds.get(i).author);
                     }
                 }
                 Log.d(TAG, "Request for : " + users.toString());

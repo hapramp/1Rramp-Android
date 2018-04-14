@@ -42,8 +42,8 @@ import butterknife.ButterKnife;
 public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoadMoreListener {
 
 
-    private boolean wantBottomSpace;
-    private boolean wantTopSpace;
+    private boolean wantBottomSpace = true;
+    private boolean wantTopSpace = true;
     @BindView(R.id.feed_owner_pic)
     ImageView feedOwnerPic;
     @BindView(R.id.reference_line)

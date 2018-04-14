@@ -106,7 +106,7 @@
                 android:layout_below="@+id/articleCategoryView"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:text="Tags (seperated by space or comma)"
+                android:text="Tags (seperated by space only)"
                 android:textColor="@color/Black38" />
 
             <EditText

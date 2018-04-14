@@ -42,10 +42,15 @@ public class EditorDataFormatter {
             case img:
                 // image path at index:0
                 // image desc at index: 1
-                // format it as: <desc>|<path>
-                content = node.content.get(1)+"\n"+node.content.get(0);
+                //put desc to caption of data item
+                content = node.content.get(0);
                 //we can extract image description
                 feedDataItemModel = new FeedDataItemModel(content, FeedData.ContentType.IMAGE);
+
+                if(node.content.size()>1) {
+                    feedDataItemModel.setCaption(node.content.get(1));
+                }
+
                 break;
 
             case hr:

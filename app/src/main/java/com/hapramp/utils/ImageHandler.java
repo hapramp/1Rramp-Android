@@ -21,40 +21,57 @@ public class ImageHandler {
 
     public static void load(Context context, ImageView target, String _uri) {
 
-        Glide.with(context)
-                .load(_uri)
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                .into(target);
+       try {
+            Glide.with(context)
+                    .load(_uri)
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .into(target);
+        }catch (IllegalArgumentException e){
+
+       }
 
     }
 
     public static void loadSmaller(Context context,ImageView imageView, String _uri){
 
-        Glide.with(context)
-                .load(_uri)
-                .override(PixelUtils.dpToPx(72),PixelUtils.dpToPx(72))
-                .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imageView);
+       try {
+
+            Glide.with(context)
+                    .load(_uri)
+                    .override(PixelUtils.dpToPx(72), PixelUtils.dpToPx(72))
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(imageView);
+
+        }catch (IllegalArgumentException e){
+
+       }
 
     }
 
     public static void loadCircularImage(final Context context, final ImageView imageView, String url) {
 
-        Glide.with(context)
-                .load(url)
-                .asBitmap()
-                .centerCrop()
-                .into(new BitmapImageViewTarget(imageView) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
+        try{
 
-                        RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(context.getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        imageView.setImageDrawable(circularBitmapDrawable);
+            Glide.with(context)
+                    .load(url)
+                    .asBitmap()
+                    .centerCrop()
+                    .into(new BitmapImageViewTarget(imageView) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
 
-                    }
-                });
+                            RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(context.getResources(), resource);
+                            circularBitmapDrawable.setCircular(true);
+                            imageView.setImageDrawable(circularBitmapDrawable);
+
+                        }
+                    });
+
+        }catch (IllegalArgumentException e){
+
+        }
+
     }
 
     private static int getWidth(Activity activity) {

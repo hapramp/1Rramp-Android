@@ -57,7 +57,7 @@ public class RatingView extends FrameLayout implements VotePostCallback {
         @Override
         public void run() {
             ratingView.setVisibility(GONE);
-            //update App server with the myVote
+            //update App server with the myVotePercent
             updateAppServer();
         }
     };

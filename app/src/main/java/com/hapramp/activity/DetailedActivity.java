@@ -266,7 +266,7 @@ public class DetailedActivity extends AppCompatActivity {
     private void bindValues() {
 
         // set basic meta-info
-        Profile _p = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserProfile(post.getAuthor()), Profile.class);
+        Profile _p = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserProfile(post.author), Profile.class);
         if (_p != null) {
             ImageHandler.loadCircularImage(this, feedOwnerPic, _p.getProfileImage());
         }
@@ -277,7 +277,7 @@ public class DetailedActivity extends AppCompatActivity {
                         MomentsUtils.getFormattedTime(post.created)));
 
         setCommunities(post.jsonMetadata.tags);
-        PostStructureModel postStructureModel = new PostStructureModel(post.getJsonMetadata().content.getData(),post.getJsonMetadata().getContent().type);
+        PostStructureModel postStructureModel = new PostStructureModel(post.jsonMetadata.content.getData(),post.jsonMetadata.getContent().type);
         renderView.render(postStructureModel);
 //        content.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
 //        content.loadDataWithBaseURL(null, "<style>img{display: inline;height: auto;max-width: 100%;}</style>" + post.jsonMetadata.content., "text/html", "UTF-8", null);

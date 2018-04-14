@@ -94,7 +94,7 @@ public class RendererView extends FrameLayout {
 
             case FeedData.ContentType.IMAGE:
                 ImageTypeView imageTypeView = new ImageTypeView(mContext);
-                imageTypeView.setImageInfo(data.getContent());
+                imageTypeView.setImageInfo(data.getCaption() , data.getContent());
                 return imageTypeView;
 
             case FeedData.ContentType.H1:

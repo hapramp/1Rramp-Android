@@ -3,6 +3,7 @@ package com.hapramp.steem.models.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.storage.StorageException;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -12,12 +13,22 @@ import com.google.gson.annotations.SerializedName;
 
 
 public class FeedDataItemModel implements Parcelable {
+
     @Expose
     @SerializedName("type")
     public String type;
     @Expose
     @SerializedName("content")
     public String content;
+    @Expose
+    @SerializedName("height")
+    public String height;
+    @Expose
+    @SerializedName("width")
+    public String width;
+    @Expose
+    @SerializedName("caption")
+    public String caption;
 
     public FeedDataItemModel(String content, String type) {
         this.type = type;
@@ -25,8 +36,13 @@ public class FeedDataItemModel implements Parcelable {
     }
 
     protected FeedDataItemModel(Parcel in) {
+
         type = in.readString();
         content = in.readString();
+        height = in.readString();
+        width = in.readString();
+        caption = in.readString();
+
     }
 
     @Override
@@ -38,6 +54,37 @@ public class FeedDataItemModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(type);
         dest.writeString(content);
+        dest.writeString(height);
+        dest.writeString(width);
+        dest.writeString(caption);
+    }
+
+    public void setHeight(String height) {
+        this.height = height;
+    }
+
+    public void setWidth(String width) {
+        this.width = width;
+    }
+
+    public void setCaption(String caption) {
+        this.caption = caption;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getHeight() {
+        return height;
+    }
+
+    public String getWidth() {
+        return width;
+    }
+
+    public String getCaption() {
+        return caption;
     }
 
     @SuppressWarnings("unused")

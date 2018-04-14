@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.Communities;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.views.extraa.CategoryTextView;
 
@@ -108,6 +109,8 @@ public class PostCategoryView extends FrameLayout {
     }
 
     public List<String> getSelectedTags() {
+
+        selectedTags.add(Communities.TAG_HAPRAMP); //communites should be added by default
         return selectedTags;
     }
 
