@@ -11,9 +11,11 @@
         android:layout_height="match_parent"/>
 
     <android.support.v7.widget.RecyclerView
+        xmlns:customNS="http://schemas.android.com/apk/res/com.hapramp"
         android:id="@+id/sectionsRv"
         android:layout_width="match_parent"
         android:layout_height="88dp"
+        customNS:wantTopSpaceOffset="false"
         android:background="#ffffff"
         android:elevation="2dp" />
 

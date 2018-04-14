@@ -54,6 +54,7 @@
         android:id="@+id/retryFeedLoadingBtn"
         android:clickable="true"
         android:focusable="true"
+        android:enabled="true"
         android:layout_below="@+id/failed_message_card_container"
         android:textColor="@color/white"
         android:textSize="12sp"

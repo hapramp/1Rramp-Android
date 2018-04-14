@@ -2,6 +2,8 @@ package com.hapramp.activity;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.adapters.UserSuggestionListAdapter;
+import com.hapramp.adapters.ViewPagerAdapter;
 import com.hapramp.models.UserModelWrapper;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -60,6 +63,10 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
     FrameLayout toolbarDropShadow;
     @BindView(R.id.appBar)
     RelativeLayout appBar;
+    @BindView(R.id.tabs)
+    TabLayout tabs;
+    @BindView(R.id.viewpager)
+    ViewPager viewpager;
 
     private boolean loadedUserFromAppServer;
     UserSuggestionListAdapter adapter;
@@ -79,12 +86,22 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
 
     private void initView() {
 
+        //set up view pager
+        setupViewPager(viewpager);
+        //set up tabs
+        tabs.setupWithViewPager(viewpager);
+        tabs.setSelectedTabIndicatorHeight((int) (2 * getResources().getDisplayMetrics().density));
         adapter = new UserSuggestionListAdapter(this);
         suggestionsListView.setAdapter(adapter);
         mHandler = new Handler();
         backBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         searchBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
 
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(adapter);
     }
 
     @Override
@@ -147,9 +164,9 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
 
     }
 
-    private void close(){
+    private void close() {
         finish();
-        overridePendingTransition(R.anim.slide_left_enter,R.anim.slide_left_exit);
+        overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit);
     }
 
     private void initSearchManager() {

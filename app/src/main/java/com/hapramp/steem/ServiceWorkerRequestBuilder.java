@@ -12,7 +12,7 @@ public class ServiceWorkerRequestBuilder {
     private int limit;
 
     public ServiceWorkerRequestBuilder() {
-        this.requestId = (int) SystemClock.currentThreadTimeMillis();
+        this.requestId = (int) System.currentTimeMillis();
     }
 
     public ServiceWorkerRequestBuilder serCommunityTag(String tag){

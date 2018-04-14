@@ -40,8 +40,10 @@ public class EditorDataFormatter {
 
             //image
             case img:
-                // image path
-                content = node.content.get(0);
+                // image path at index:0
+                // image desc at index: 1
+                // format it as: <desc>|<path>
+                content = node.content.get(1)+"\n"+node.content.get(0);
                 //we can extract image description
                 feedDataItemModel = new FeedDataItemModel(content, FeedData.ContentType.IMAGE);
                 break;

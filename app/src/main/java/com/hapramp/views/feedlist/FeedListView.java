@@ -1,6 +1,7 @@
 package com.hapramp.views.feedlist;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -41,6 +42,8 @@ import butterknife.ButterKnife;
 public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoadMoreListener {
 
 
+    private boolean wantBottomSpace;
+    private boolean wantTopSpace;
     @BindView(R.id.feed_owner_pic)
     ImageView feedOwnerPic;
     @BindView(R.id.reference_line)
@@ -149,6 +152,13 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
 
     public FeedListView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs,R.styleable.FeedListView,0,0);
+        try{
+            wantTopSpace = typedArray.getBoolean(R.styleable.FeedListView_wantTopSpaceOffset,false);
+            wantBottomSpace = typedArray.getBoolean(R.styleable.FeedListView_wantBottomSpaceOffset,false);
+        }finally {
+            typedArray.recycle();
+        }
         init(context);
     }
 
@@ -166,6 +176,7 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
 
         Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
         viewItemDecoration = new ViewItemDecoration(drawable);
+        viewItemDecoration.setWantTopOffset(wantTopSpace);
         spaceDecorator = new SpaceDecorator();
 
         layoutManager = new LinearLayoutManager(mContext);
@@ -212,10 +223,12 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL || newState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
-                    if (y > 0) {
-                        feedListViewListener.onHideCommunityList();
-                    } else {
-                        feedListViewListener.onShowCommunityList();
+                    if(feedListViewListener!=null) {
+                        if (y > 0) {
+                            feedListViewListener.onHideCommunityList();
+                        } else {
+                            feedListViewListener.onShowCommunityList();
+                        }
                     }
                 }
             }
@@ -323,7 +336,6 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
 
         l("failedToRefresh");
         // TODO: 2/12/2018 show error toast | if adapter has no posts already, then call failedToLoadInitial | diable swiperefresing views
-        Toast.makeText(mContext,msg,Toast.LENGTH_SHORT).show();
 
         if(homeFeedsAdapter.getFeedsCount() == 0) {
             //hide recycler view

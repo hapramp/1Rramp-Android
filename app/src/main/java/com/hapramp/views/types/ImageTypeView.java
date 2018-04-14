@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -25,6 +26,7 @@ public class ImageTypeView extends FrameLayout {
 
     private ImageView image;
     private Context mContext;
+    private TextView desc;
 
     public ImageTypeView(@NonNull Context context) {
         super(context);
@@ -46,9 +48,36 @@ public class ImageTypeView extends FrameLayout {
         this.mContext = context;
         View v = LayoutInflater.from(context).inflate(R.layout.image_type_view, this);
         image = v.findViewById(R.id.image);
+        desc = v.findViewById(R.id.image_desc);
     }
 
-    public void setImageSource(String url) {
+    public void setImageInfo(String info) {
+
+        String[] __info = info.split("\n");
+        String image_url = "";
+        String des = "";
+        // data is in format : <desc>\n<image_url>
+        if (__info.length > 1) {
+            // desc was included
+            //[desc,url]
+            des = __info[0];
+            image_url = __info[1];
+        } else {
+            //desc was not included
+            //[url]
+            image_url = __info[0];
+        }
+
+
+        setImageDesc(des);
+        setImageSource(image_url);
+    }
+
+    private void setImageDesc(String des) {
+        desc.setText(des);
+    }
+
+    private void setImageSource(String url) {
 
         Glide.with(mContext)
                 .load(url)

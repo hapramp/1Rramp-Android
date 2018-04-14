@@ -95,7 +95,7 @@ public interface HaprampAPI {
     Call<List<Feed>> getLatestFeed(@Path("tag") String tag, @Query("limit") int limit);
 
     @GET("feeds/hot/{tag}")
-    Call<List<Feed>> getHotFeedInTag(@Path("tag") String tag, @Query("limit") int limit);
+    Call<List<Feed>> getHotFeed(@Path("tag") String tag, @Query("limit") int limit);
 
     @GET("feeds/trending/{tag}")
     Call<List<Feed>> getTrendingFeed(@Path("tag") String tag, @Query("limit") int limit);
@@ -202,5 +202,6 @@ public interface HaprampAPI {
 
     @POST("notifications/_mark_all_read")
     Call<NotificationResponse> markAsAllRead();
+
 
 }

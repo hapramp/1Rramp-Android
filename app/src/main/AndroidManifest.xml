@@ -70,20 +70,19 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.Splash"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/SplashTheme"  android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.QrScanningActivity" />
-        <activity android:name=".activity.CommunitySelectionActivity" />
-        <activity android:name=".activity.UserSearchActivity" />
+        <activity android:name=".activity.QrScanningActivity"  android:screenOrientation="portrait" />
+        <activity android:name=".activity.CommunitySelectionActivity"  android:screenOrientation="portrait" />
+        <activity android:name=".activity.UserSearchActivity"  android:screenOrientation="portrait" />
         <activity
             android:name=".activity.TestActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.PreviewActivity"></activity>
+        <activity android:name=".activity.PreviewActivity"  android:screenOrientation="portrait" />
     </application>
 
 </manifest>

@@ -171,7 +171,7 @@ public class DetailedActivity extends AppCompatActivity {
     private void collectExtras() {
 
         post = getIntent().getExtras().getParcelable(Constants.EXTRAA_KEY_POST_DATA);
-        currentCommentUrl = String.format(getResources().getString(R.string.commentUrl), Integer.valueOf(post.id));
+        currentCommentUrl = String.format(getResources().getString(R.string.commentUrl), Long.valueOf(post.id));
         progressDialog = new ProgressDialog(this);
 
     }

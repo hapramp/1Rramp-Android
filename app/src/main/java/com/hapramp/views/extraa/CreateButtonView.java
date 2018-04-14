@@ -71,8 +71,7 @@ public class CreateButtonView extends FrameLayout {
 
         this.mContext = context;
         View v = LayoutInflater.from(context).inflate(R.layout.create_new_button_view, this);
-        // TODO: 4/4/2018 post creation is pending
-//        createArticleBtn = v.findViewById(R.id.createArticleBtn);
+        createArticleBtn = v.findViewById(R.id.createArticleBtn);
         createPostBtn = v.findViewById(R.id.createPostBtn);
         plusBtn = v.findViewById(R.id.plusBtn);
         overlay = v.findViewById(R.id.overlay);
@@ -93,18 +92,17 @@ public class CreateButtonView extends FrameLayout {
             }
         });
 
-        // TODO: 4/4/2018 post creation is pending
-//        createArticleBtn.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                hideFloatingButton();
-//                if (itemClickListener != null) {
-//                    itemClickListener.onCreateArticleButtonClicked();
-//                }
-//
-//            }
-//        });
+        createArticleBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                hideFloatingButton();
+                if (itemClickListener != null) {
+                    itemClickListener.onCreateArticleButtonClicked();
+                }
+
+            }
+        });
 
         createPostBtn.setOnClickListener(new OnClickListener() {
             @Override
@@ -137,13 +135,11 @@ public class CreateButtonView extends FrameLayout {
         // show the overlay
         showOverlay();
         root.setClickable(true);
-        // TODO: 4/4/2018 blog creation is pending
-        //createArticleBtn.setVisibility(VISIBLE);
+        createArticleBtn.setVisibility(VISIBLE);
         createPostBtn.setVisibility(VISIBLE);
 
         createPostBtn.setClickable(true);
-        // TODO: 4/4/2018 post creation is pending
-        // createArticleBtn.setClickable(true);
+         createArticleBtn.setClickable(true);
 
         // rotate + button
         plusBtn.animate()
@@ -159,13 +155,13 @@ public class CreateButtonView extends FrameLayout {
                 .alpha(1)
                 .setDuration(FLOATING_BUTTON_DELAY)
                 .start();
-// TODO: 4/4/2018 post creation is pending
-//        createArticleBtn.animate()
-//                .setInterpolator(new OvershootInterpolator(FLOATING_BUTTONOVERSHOOT_TENSION))
-//                .alpha(1)
-//                .translationY(-(getShiftAmount(ARTICLE_BUTTON_TRANSLATION_Y)))
-//                .setDuration(FLOATING_BUTTON_DELAY)
-//                .start();
+
+        createArticleBtn.animate()
+                .setInterpolator(new OvershootInterpolator(FLOATING_BUTTONOVERSHOOT_TENSION))
+                .alpha(1)
+                .translationY(-(getShiftAmount(ARTICLE_BUTTON_TRANSLATION_Y)))
+                .setDuration(FLOATING_BUTTON_DELAY)
+                .start();
 
         // set floating
         isFloating = true;
@@ -179,8 +175,7 @@ public class CreateButtonView extends FrameLayout {
         root.setClickable(false);
         // remove buttons
         createPostBtn.setVisibility(GONE);
-        // TODO: 4/4/2018 post creation is pending
-        //createArticleBtn.setVisibility(GONE);
+        createArticleBtn.setVisibility(GONE);
 
         // bump the buttons
         createPostBtn.animate()
@@ -189,13 +184,13 @@ public class CreateButtonView extends FrameLayout {
                 .alpha(0)
                 .setDuration(FLOATING_BUTTON_DELAY)
                 .start();
-// TODO: 4/4/2018 post creation is pending
-//        createArticleBtn.animate()
-//                .setInterpolator(new OvershootInterpolator(FLOATING_BUTTONOVERSHOOT_TENSION))
-//                .alpha(0)
-//                .translationY(0)
-//                .setDuration(FLOATING_BUTTON_DELAY)
-//                .start();
+
+        createArticleBtn.animate()
+                .setInterpolator(new OvershootInterpolator(FLOATING_BUTTONOVERSHOOT_TENSION))
+                .alpha(0)
+                .translationY(0)
+                .setDuration(FLOATING_BUTTON_DELAY)
+                .start();
 
         // re-gain the rotated +
         plusBtn.animate()

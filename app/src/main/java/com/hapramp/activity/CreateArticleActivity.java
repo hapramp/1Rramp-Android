@@ -3,12 +3,14 @@ package com.hapramp.activity;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -117,6 +119,33 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
         // restoreDraft();
     }
 
+    @Override
+    public void onBackPressed() {
+        showExistAlert();
+    }
+
+
+    private void showExistAlert() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle("Close")
+                .setMessage("Do you want to Close Post Creation ?")
+                .setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        close();
+                    }
+                })
+                .setNegativeButton("No", null);
+
+        builder.show();
+
+    }
+
+    private void close(){
+        finish();
+        overridePendingTransition(R.anim.slide_down_enter,R.anim.slide_down_exit);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -149,6 +178,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
         featuredImageSelectorRV.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         featuredImageSelectorRV.setAdapter(featuredImageAdapter);
         featuredImageSelectorRV.addItemDecoration(new FeaturedImageItemDecorator());
+        articleCategoryView.initCategory();
 
     }
 
@@ -219,6 +249,14 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
                 }
             }
         });
+
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showExistAlert();
+            }
+        });
+
     }
 
     private void publishArticle() {
@@ -226,12 +264,14 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
         //prepare title
         title = "";
         //prepare tags
-        tags = new ArrayList<>();
+        tags = (ArrayList<String>) articleCategoryView.getSelectedTags();
+
+
         //prepare post structure
-        List<FeedDataItemModel> datas = new ArrayList<>();
-        datas.add(new FeedDataItemModel(featuredImageAdapter.getSelectedFeaturedImageUrl(), FeedData.ContentType.IMAGE));
-        datas.add(new FeedDataItemModel(editor.getContentAsHTML(), FeedData.ContentType.TEXT));
+        List<FeedDataItemModel> datas = editorView.getDataItemList();
         postStructureModel = new PostStructureModel(datas, FeedData.FEED_TYPE_POST);
+
+        sendPostToServerForProcessing(postStructureModel);
 
     }
 
@@ -299,7 +339,6 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
 
     }
 
-
     private String getMediaUri() {
         String mediaUri = featuredImageAdapter.getSelectedFeaturedImageUrl();
         if (mediaUri == null) {
@@ -339,7 +378,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
 
     @Override
     public void onPostCreated(String... jobId) {
-        showPublishingProgressDialog(true,"");
+        showPublishingProgressDialog(false,"");
         finish();
     }
 

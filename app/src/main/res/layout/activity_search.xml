@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/appBar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -13,47 +14,65 @@
 
         <TextView
             android:id="@+id/backBtn"
-            android:text=""
+            android:layout_width="56dp"
+            android:layout_height="match_parent"
+            android:background="?selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            android:background="?selectableItemBackgroundBorderless"
-            android:textSize="24sp"
             android:gravity="center"
-            android:layout_width="56dp"
-            android:layout_height="match_parent" />
+            android:text=""
+            android:textSize="24sp" />
 
         <EditText
-            android:background="#ffffff"
             android:id="@+id/searchInput"
-            android:textSize="14sp"
-            android:imeOptions="actionSearch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_toEndOf="@+id/backBtn"
             android:layout_toStartOf="@+id/searchBtn"
+            android:background="#ffffff"
             android:hint="Search user.."
+            android:imeOptions="actionSearch"
             android:textColorHint="@color/Black38"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/searchBtn"
-            android:text=""
+            android:layout_width="56dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
             android:background="?selectableItemBackgroundBorderless"
-            android:textSize="24sp"
-            android:gravity="center"
             android:clickable="true"
             android:focusable="true"
-            android:layout_alignParentEnd="true"
-            android:layout_width="56dp"
+            android:gravity="center"
+            android:text=""
             android:textColor="@color/Black54"
-            android:layout_height="match_parent" />
+            android:textSize="24sp" />
 
 
     </RelativeLayout>
 
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/action_bar_container"
+        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+        app:tabIndicatorColor="@color/colorPrimary"
+        app:tabGravity="fill"
+        app:tabMode="fixed" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tabs" />
+
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/action_bar_container">
+        android:layout_below="@+id/action_bar_container"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/countTv"

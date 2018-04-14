@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hapramp.R;
@@ -73,8 +74,8 @@ public class HomeFragment extends Fragment implements
         serviceWorker.init(getActivity());
         serviceWorker.setServiceWorkerCallback(this);
         serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder()
-                .setUserName("unittestaccount") //todo: make username dynamic
-                .setLimit(10);
+                .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
+                .setLimit(100);
 
     }
 
@@ -104,7 +105,6 @@ public class HomeFragment extends Fragment implements
         fetchAllPosts();
 
     }
-
 
     private void bringBackCategorySection() {
         sectionsRv.animate().translationY(0);
@@ -140,7 +140,6 @@ public class HomeFragment extends Fragment implements
         }
 
     }
-
 
     private void fetchAllPosts() {
 
@@ -208,6 +207,7 @@ public class HomeFragment extends Fragment implements
 
     @Override
     public void onRetryFeedLoading() {
+        Toast.makeText(mContext,"Retrying loading...",Toast.LENGTH_LONG).show();
         fetchCommunityPosts(currentSelectedTag);
     }
 

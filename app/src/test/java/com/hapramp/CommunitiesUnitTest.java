@@ -53,8 +53,8 @@ public class CommunitiesUnitTest {
 
     @Test
     public void test_StringFormatting(){
-        String t = "ankit\nkumar\nis";
-        String[] lines = t.split("\n");
+        String t = "ankit|kumar";
+        String[] lines = t.split("|");
         System.out.println(lines[1]);
     }
 

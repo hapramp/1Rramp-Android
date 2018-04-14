@@ -28,6 +28,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.hapramp.editor.EditorCore;
 import com.hapramp.editor.R;
 import com.hapramp.editor.models.EditorControl;
@@ -76,7 +77,7 @@ public class ImageExtensions {
         final View childLayout = ((Activity) editorCore.getContext()).getLayoutInflater().inflate(this.editorImageLayout, null);
         ImageView imageView = (ImageView) childLayout.findViewById(R.id.imageView);
         final TextView lblStatus = (TextView) childLayout.findViewById(R.id.lblStatus);
-        CustomEditText desc = (CustomEditText)childLayout.findViewById(R.id.desc);
+        CustomEditText desc = (CustomEditText) childLayout.findViewById(R.id.desc);
         imageView.setImageBitmap(image);
         final String uuid = generateUUID();
         if (index == -1) {
@@ -92,14 +93,14 @@ public class ImageExtensions {
         EditorControl control = editorCore.createTag(EditorType.img);
         control.path = uuid; // set the imageId,so we can recognize later after upload
         childLayout.setTag(control);
-        if(!TextUtils.isEmpty(subTitle))
+        if (!TextUtils.isEmpty(subTitle))
             desc.setText(subTitle);
-        if(editorCore.getRenderType()== RenderType.Editor) {
+        if (editorCore.getRenderType() == RenderType.Editor) {
             lblStatus.setVisibility(View.VISIBLE);
             BindEvents(childLayout);
             childLayout.findViewById(R.id.progress).setVisibility(View.VISIBLE);
             editorCore.getEditorListener().onUpload(image, uuid);
-        }else {
+        } else {
             desc.setEnabled(false);
             lblStatus.setVisibility(View.GONE);
         }
@@ -168,7 +169,12 @@ public class ImageExtensions {
     }
 
     public void onPostUpload(String url, String imageId) {
+
         View view = findImageById(imageId);
+
+        if (view == null)
+            return;
+
         final TextView lblStatus = (TextView) view.findViewById(R.id.lblStatus);
         lblStatus.setText(!TextUtils.isEmpty(url) ? "Upload complete" : "Upload failed");
         if (!TextUtils.isEmpty(url)) {
@@ -198,9 +204,11 @@ public class ImageExtensions {
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         private int InsertIndex;
         private String subTitle;
+
         public DownloadImageTask(int index) {
             this.InsertIndex = index;
         }
+
         protected Bitmap doInBackground(String... urls) {
             String urldisplay = urls[0];
             this.subTitle = urls[1];
@@ -214,8 +222,9 @@ public class ImageExtensions {
             }
             return mIcon11;
         }
+
         protected void onPostExecute(Bitmap result) {
-            insertImage(result, this.InsertIndex,subTitle);
+            insertImage(result, this.InsertIndex, subTitle);
         }
     }
 

@@ -138,7 +138,6 @@ public class ServiceWorker {
 
     }
 
-
     /*
      * Public method for fetching trailing feeds, these feeds are intermediate feeds and need not to be cached.
      * */
@@ -251,22 +250,123 @@ public class ServiceWorker {
 
     }
 
+    public void requestTrendingPosts(final ServiceWorkerRequestParams serviceWorkerRequestParams) {
 
+        this.currentRequestParams = serviceWorkerRequestParams;
 
-    private void fetchHotFeeds(final ServiceWorkerRequestParams feedRequestParams) {
-        // hot , trending , created are for
+        if (serviceWorkerCallback != null) {
+            serviceWorkerCallback.onFetchingFromServer();
+        }
+
+        RetrofitServiceGenerator.getService().getTrendingFeed(serviceWorkerRequestParams.getCommunityTag(), serviceWorkerRequestParams.getLimit())
+                .enqueue(new Callback<List<Feed>>() {
+                    @Override
+                    public void onResponse(Call<List<Feed>> call, Response<List<Feed>> response) {
+                        Profile.fetchUserProfilesFor(response.body());
+
+                        // check for life of request(whether other request has came and over-written on this)
+                        if (isRequestLive(serviceWorkerRequestParams)) {
+
+                            if (serviceWorkerCallback != null) {
+
+                                if (response.isSuccessful()) {
+                                    l("Returning All Feeds");
+                                    // return all feeds
+                                    serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body());
+                                } else {
+                                    l("Error :(");
+                                    serviceWorkerCallback.onFetchingFromServerFailed();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Feed>> call, Throwable t) {
+                        l("Error :(");
+                        serviceWorkerCallback.onFetchingFromServerFailed();
+                    }
+                });
 
     }
 
-    private void fetchCreatedFeeds(final ServiceWorkerRequestParams feedRequestParams) {
+    public void requestHotPosts(final ServiceWorkerRequestParams serviceWorkerRequestParams) {
+
+        this.currentRequestParams = serviceWorkerRequestParams;
+
+        if (serviceWorkerCallback != null) {
+            serviceWorkerCallback.onFetchingFromServer();
+        }
+
+        RetrofitServiceGenerator.getService().getHotFeed(serviceWorkerRequestParams.getCommunityTag(), serviceWorkerRequestParams.getLimit())
+                .enqueue(new Callback<List<Feed>>() {
+                    @Override
+                    public void onResponse(Call<List<Feed>> call, Response<List<Feed>> response) {
+
+                        Profile.fetchUserProfilesFor(response.body());
+                        // check for life of request(whether other request has came and over-written on this)
+                        if (isRequestLive(serviceWorkerRequestParams)) {
+
+                            if (serviceWorkerCallback != null) {
+
+                                if (response.isSuccessful()) {
+                                    l("Returning All Feeds");
+                                    // return all feeds
+                                    serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body());
+                                } else {
+                                    l("Error :(");
+                                    serviceWorkerCallback.onFetchingFromServerFailed();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Feed>> call, Throwable t) {
+                        l("Error :(");
+                        serviceWorkerCallback.onFetchingFromServerFailed();
+                    }
+                });
 
     }
 
-    private void fetchTrendingFeeds(final ServiceWorkerRequestParams feedRequestParams) {
+    public void requestLatestPosts(final ServiceWorkerRequestParams serviceWorkerRequestParams) {
 
-    }
+        this.currentRequestParams = serviceWorkerRequestParams;
 
-    private void fetchBlogFeeds(final ServiceWorkerRequestParams feedRequestParams) {
+        if (serviceWorkerCallback != null) {
+            serviceWorkerCallback.onFetchingFromServer();
+        }
+
+        RetrofitServiceGenerator.getService().getLatestFeed(serviceWorkerRequestParams.getCommunityTag(), serviceWorkerRequestParams.getLimit())
+                .enqueue(new Callback<List<Feed>>() {
+                    @Override
+                    public void onResponse(Call<List<Feed>> call, Response<List<Feed>> response) {
+                        Profile.fetchUserProfilesFor(response.body());
+
+                        // check for life of request(whether other request has came and over-written on this)
+                        if (isRequestLive(serviceWorkerRequestParams)) {
+
+                            if (serviceWorkerCallback != null) {
+
+                                if (response.isSuccessful()) {
+                                    l("Returning All Feeds");
+                                    // return all feeds
+                                    serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body());
+                                } else {
+                                    l("Error :(");
+                                    serviceWorkerCallback.onFetchingFromServerFailed();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Feed>> call, Throwable t) {
+                        l("Error :(");
+                        serviceWorkerCallback.onFetchingFromServerFailed();
+                    }
+                });
 
     }
 
@@ -286,5 +386,6 @@ public class ServiceWorker {
     private void l(String msg) {
         Log.d(TAG, msg);
     }
+
 
 }

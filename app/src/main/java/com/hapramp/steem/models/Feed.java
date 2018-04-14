@@ -20,22 +20,22 @@ public class Feed implements Parcelable {
 
     @Expose
     @SerializedName("hapramp_votes")
-    public int haprampVotes;
+    public long haprampVotes;
     @Expose
     @SerializedName("hapramp_rating")
-    public int haprampRating;
+    public long haprampRating;
     @Expose
     @SerializedName("reblogged_by")
     public List<String> rebloggedBy;
     @Expose
     @SerializedName("body_length")
-    public int bodyLength;
+    public long bodyLength;
     @Expose
     @SerializedName("promoted")
     public String promoted;
     @Expose
     @SerializedName("author_reputation")
-    public int authorReputation;
+    public long authorReputation;
     @Expose
     @SerializedName("total_pending_payout_value")
     public String totalPendingPayoutValue;
@@ -62,19 +62,19 @@ public class Feed implements Parcelable {
     public boolean allowReplies;
     @Expose
     @SerializedName("percent_steem_dollars")
-    public int percentSteemDollars;
+    public long percentSteemDollars;
     @Expose
     @SerializedName("max_accepted_payout")
     public String maxAcceptedPayout;
     @Expose
     @SerializedName("root_comment")
-    public int rootComment;
+    public long rootComment;
     @Expose
     @SerializedName("net_votes")
-    public int netVotes;
+    public long netVotes;
     @Expose
     @SerializedName("author_rewards")
-    public int authorRewards;
+    public long authorRewards;
     @Expose
     @SerializedName("curator_payout_value")
     public String curatorPayoutValue;
@@ -83,10 +83,10 @@ public class Feed implements Parcelable {
     public String totalPayoutValue;
     @Expose
     @SerializedName("reward_weight")
-    public int rewardWeight;
+    public long rewardWeight;
     @Expose
     @SerializedName("total_vote_weight")
-    public int totalVoteWeight;
+    public long totalVoteWeight;
     @Expose
     @SerializedName("max_cashout_time")
     public String maxCashoutTime;
@@ -95,22 +95,22 @@ public class Feed implements Parcelable {
     public String cashoutTime;
     @Expose
     @SerializedName("children_abs_rshares")
-    public int childrenAbsRshares;
+    public long childrenAbsRshares;
     @Expose
     @SerializedName("vote_rshares")
-    public int voteRshares;
+    public long voteRshares;
     @Expose
     @SerializedName("abs_rshares")
-    public int absRshares;
+    public long absRshares;
     @Expose
     @SerializedName("net_rshares")
-    public int netRshares;
+    public long netRshares;
     @Expose
     @SerializedName("children")
-    public int children;
+    public long children;
     @Expose
     @SerializedName("depth")
-    public int depth;
+    public long depth;
     @Expose
     @SerializedName("last_payout")
     public String lastPayout;
@@ -149,20 +149,20 @@ public class Feed implements Parcelable {
     public String author;
     @Expose
     @SerializedName("id")
-    public int id;
+    public long id;
 
     protected Feed(Parcel in) {
-        haprampVotes = in.readInt();
-        haprampRating = in.readInt();
+        haprampVotes = in.readLong();
+        haprampRating = in.readLong();
         if (in.readByte() == 0x01) {
             rebloggedBy = new ArrayList<String>();
             in.readList(rebloggedBy, String.class.getClassLoader());
         } else {
             rebloggedBy = null;
         }
-        bodyLength = in.readInt();
+        bodyLength = in.readLong();
         promoted = in.readString();
-        authorReputation = in.readInt();
+        authorReputation = in.readLong();
         totalPendingPayoutValue = in.readString();
         pendingPayoutValue = in.readString();
         rootTitle = in.readString();
@@ -176,23 +176,23 @@ public class Feed implements Parcelable {
         allowCurationRewards = in.readByte() != 0x00;
         allowVotes = in.readByte() != 0x00;
         allowReplies = in.readByte() != 0x00;
-        percentSteemDollars = in.readInt();
+        percentSteemDollars = in.readLong();
         maxAcceptedPayout = in.readString();
-        rootComment = in.readInt();
-        netVotes = in.readInt();
-        authorRewards = in.readInt();
+        rootComment = in.readLong();
+        netVotes = in.readLong();
+        authorRewards = in.readLong();
         curatorPayoutValue = in.readString();
         totalPayoutValue = in.readString();
-        rewardWeight = in.readInt();
-        totalVoteWeight = in.readInt();
+        rewardWeight = in.readLong();
+        totalVoteWeight = in.readLong();
         maxCashoutTime = in.readString();
         cashoutTime = in.readString();
-        childrenAbsRshares = in.readInt();
-        voteRshares = in.readInt();
-        absRshares = in.readInt();
-        netRshares = in.readInt();
-        children = in.readInt();
-        depth = in.readInt();
+        childrenAbsRshares = in.readLong();
+        voteRshares = in.readLong();
+        absRshares = in.readLong();
+        netRshares = in.readLong();
+        children = in.readLong();
+        depth = in.readLong();
         lastPayout = in.readString();
         active = in.readString();
         created = in.readString();
@@ -205,7 +205,7 @@ public class Feed implements Parcelable {
         category = in.readString();
         permlink = in.readString();
         author = in.readString();
-        id = in.readInt();
+        id = in.readLong();
     }
 
     @Override
@@ -215,17 +215,17 @@ public class Feed implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(haprampVotes);
-        dest.writeInt(haprampRating);
+        dest.writeLong(haprampVotes);
+        dest.writeLong(haprampRating);
         if (rebloggedBy == null) {
             dest.writeByte((byte) (0x00));
         } else {
             dest.writeByte((byte) (0x01));
             dest.writeList(rebloggedBy);
         }
-        dest.writeInt(bodyLength);
+        dest.writeLong(bodyLength);
         dest.writeString(promoted);
-        dest.writeInt(authorReputation);
+        dest.writeLong(authorReputation);
         dest.writeString(totalPendingPayoutValue);
         dest.writeString(pendingPayoutValue);
         dest.writeString(rootTitle);
@@ -239,23 +239,23 @@ public class Feed implements Parcelable {
         dest.writeByte((byte) (allowCurationRewards ? 0x01 : 0x00));
         dest.writeByte((byte) (allowVotes ? 0x01 : 0x00));
         dest.writeByte((byte) (allowReplies ? 0x01 : 0x00));
-        dest.writeInt(percentSteemDollars);
+        dest.writeLong(percentSteemDollars);
         dest.writeString(maxAcceptedPayout);
-        dest.writeInt(rootComment);
-        dest.writeInt(netVotes);
-        dest.writeInt(authorRewards);
+        dest.writeLong(rootComment);
+        dest.writeLong(netVotes);
+        dest.writeLong(authorRewards);
         dest.writeString(curatorPayoutValue);
         dest.writeString(totalPayoutValue);
-        dest.writeInt(rewardWeight);
-        dest.writeInt(totalVoteWeight);
+        dest.writeLong(rewardWeight);
+        dest.writeLong(totalVoteWeight);
         dest.writeString(maxCashoutTime);
         dest.writeString(cashoutTime);
-        dest.writeInt(childrenAbsRshares);
-        dest.writeInt(voteRshares);
-        dest.writeInt(absRshares);
-        dest.writeInt(netRshares);
-        dest.writeInt(children);
-        dest.writeInt(depth);
+        dest.writeLong(childrenAbsRshares);
+        dest.writeLong(voteRshares);
+        dest.writeLong(absRshares);
+        dest.writeLong(netRshares);
+        dest.writeLong(children);
+        dest.writeLong(depth);
         dest.writeString(lastPayout);
         dest.writeString(active);
         dest.writeString(created);
@@ -268,7 +268,7 @@ public class Feed implements Parcelable {
         dest.writeString(category);
         dest.writeString(permlink);
         dest.writeString(author);
-        dest.writeInt(id);
+        dest.writeLong(id);
     }
 
     @SuppressWarnings("unused")
@@ -328,11 +328,11 @@ public class Feed implements Parcelable {
         return author;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

@@ -16,7 +16,7 @@ public class Communities {
     public static final String LITERATURE = "hapramp-literature";
     public static final String DESIGN = "hapramp-design";
     public static final String ALL = "all";
-
+    public static final String TAG_HAPRAMP = "hapramp";
 
     // TODO: 4/1/2018 check community existence from stored list in preference.
     // It enhances the flexibility to change data dynamically from server

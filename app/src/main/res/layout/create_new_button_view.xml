@@ -14,7 +14,7 @@
 
     <TextView
         android:visibility="gone"
-        android:alpha="1"
+        android:alpha="0"
         android:clickable="false"
         android:focusable="false"
         android:id="@+id/createArticleBtn"
@@ -28,8 +28,8 @@
         android:paddingEnd="20dp"
         android:paddingStart="20dp"
         android:paddingTop="8dp"
-        android:text="ARTICLE"
-        android:textColor="@color/Black38"
+        android:text="BLOG"
+        android:textColor="@color/colorPrimary"
         android:textSize="14sp" />
 
     <TextView
