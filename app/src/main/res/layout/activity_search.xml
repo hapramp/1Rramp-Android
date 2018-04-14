@@ -67,47 +67,50 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/tabs" />
 
-
     <RelativeLayout
+        android:id="@+id/suggestionsContainer"
+        android:background="#32acacac"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/action_bar_container"
         android:visibility="gone">
 
-        <TextView
-            android:id="@+id/countTv"
+        <RelativeLayout
+            android:elevation="8dp"
+            android:background="#ffffff"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="4dp"
-            android:background="@drawable/result_count_bg"
-            android:padding="8dp"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp"
-            android:text="0 results found"
-            android:textColor="#ffffff"
-            android:visibility="gone" />
+            android:layout_height="wrap_content">
 
         <ListView
             android:id="@+id/suggestionsListView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/countTv" />
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+
+           />
 
         <ProgressBar
+            android:visibility="gone"
             android:id="@+id/suggestionsProgressBar"
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:layout_marginTop="16dp"
             android:layout_centerHorizontal="true" />
 
         <TextView
             android:id="@+id/messagePanel"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:layout_below="@+id/suggestionsProgressBar"
             android:layout_centerHorizontal="true"
             android:textColor="@color/colorAccent"
+            android:layout_marginBottom="16dp"
             android:visibility="gone" />
+
+        </RelativeLayout>
 
     </RelativeLayout>
 

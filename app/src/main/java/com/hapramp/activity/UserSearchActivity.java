@@ -43,6 +43,8 @@ import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 public class UserSearchActivity extends AppCompatActivity implements SearchManager.SearchListener {
 
     public static final String TAG = UserSearchActivity.class.getSimpleName();
+    private static boolean SEARCH_MODE = false;
+
     @BindView(R.id.backBtn)
     TextView backBtn;
     @BindView(R.id.searchInput)
@@ -51,8 +53,6 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
     TextView searchBtn;
     @BindView(R.id.action_bar_container)
     RelativeLayout actionBarContainer;
-    @BindView(R.id.countTv)
-    TextView countTv;
     @BindView(R.id.suggestionsListView)
     ListView suggestionsListView;
     @BindView(R.id.suggestionsProgressBar)
@@ -67,11 +67,13 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
     TabLayout tabs;
     @BindView(R.id.viewpager)
     ViewPager viewpager;
-
-    private boolean loadedUserFromAppServer;
+    @BindView(R.id.suggestionsContainer)
+    RelativeLayout suggestionsContainer;
     UserSuggestionListAdapter adapter;
     SearchManager searchManager;
     private Handler mHandler;
+    private final String backTextIcon = "\uF04D";
+    private final String closeSearchTextIcon = "\uF156";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,20 +113,6 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
 
     private void attachListener() {
 
-        searchInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    String searchTerm = searchInput.getText().toString();
-                    if (searchTerm.length() >= 0) {
-                        fetchSuggestions(searchTerm);
-                    }
-                    return true;
-                }
-                return false;
-            }
-        });
-
         searchInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -133,10 +121,13 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() >= 0) {
-                    fetchSuggestions(s.toString());
+
+                String searchTerm = searchInput.getText().toString();
+                if (searchTerm.length() > 0) {
+                    //fetchSuggestions(searchTerm);
+                } else {
+                    setBrowseMode();
                 }
-                //fetchSuggestions(s.toString());
             }
 
             @Override
@@ -148,20 +139,63 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 String searchTerm = searchInput.getText().toString();
                 if (searchTerm.length() >= 0) {
                     fetchSuggestions(searchTerm);
+                    setSearchMode();
                 }
+
             }
         });
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                close();
+                if (SEARCH_MODE) {
+                    setBrowseMode();
+                } else {
+                    close();
+                }
             }
         });
 
+    }
+
+    private void setSearchMode() {
+
+        SEARCH_MODE = true;
+
+        // show suggestion
+        if (suggestionsContainer != null) {
+            suggestionsContainer.setVisibility(View.VISIBLE);
+        }
+
+        //change back icon to cross
+        if (backBtn != null) {
+            backBtn.setText(closeSearchTextIcon);
+        }
+
+    }
+
+    private void setBrowseMode() {
+
+        SEARCH_MODE = false;
+
+        // hide suggestion
+        if (suggestionsContainer != null) {
+            suggestionsContainer.setVisibility(View.GONE);
+        }
+
+        //clear search view
+        if (searchInput != null) {
+            searchInput.setText("");
+        }
+
+        //change cross icon to back
+        if (backBtn != null) {
+            backBtn.setText(backTextIcon);
+        }
     }
 
     private void close() {
@@ -187,20 +221,20 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
     }
 
     private void onNoUserCache() {
-        if (loadedUserFromAppServer) {
-            //show error
-        } else {
-            //show progress
-        }
     }
 
     private void failedToFetchPlatformUsers() {
         //show error
     }
 
-
     private void fetchSuggestions(String query) {
+
+        if (suggestionsContainer != null) {
+            suggestionsContainer.setVisibility(View.VISIBLE);
+        }
+
         searchManager.requestSuggestionsFor(query);
+
     }
 
     private void fetchFollowingsAndCache() {
@@ -236,32 +270,31 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
     @Override
     public void onPreparing() {
 
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-
-                suggestionsListView.setVisibility(View.GONE);
-                messagePanel.setVisibility(View.VISIBLE);
-                suggestionsProgressBar.setVisibility(View.VISIBLE);
-                messagePanel.setText("Preparing...");
-
-            }
-        });
+//        mHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                suggestionsListView.setVisibility(View.GONE);
+//                messagePanel.setVisibility(View.VISIBLE);
+//                suggestionsProgressBar.setVisibility(View.VISIBLE);
+//                messagePanel.setText("Preparing...");
+//
+//            }
+//        });
     }
 
     @Override
     public void onPrepared() {
-
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                suggestionsListView.setVisibility(View.GONE);
-                messagePanel.setVisibility(View.VISIBLE);
-                suggestionsProgressBar.setVisibility(View.GONE);
-                messagePanel.setText("Ready For Search!!");
-                countTv.setVisibility(View.GONE);
-            }
-        });
+//
+//        mHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                suggestionsListView.setVisibility(View.GONE);
+//                messagePanel.setVisibility(View.VISIBLE);
+//                suggestionsProgressBar.setVisibility(View.GONE);
+//                messagePanel.setText("Ready For Search!!");
+//            }
+//        });
     }
 
     @Override
@@ -272,8 +305,6 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
                 suggestionsListView.setVisibility(View.GONE);
                 messagePanel.setVisibility(View.VISIBLE);
                 suggestionsProgressBar.setVisibility(View.VISIBLE);
-                countTv.setVisibility(View.VISIBLE);
-                countTv.setVisibility(View.GONE);
                 messagePanel.setText("Searching...");
             }
         });
@@ -282,6 +313,10 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
 
     @Override
     public void onSearched(final ArrayList<String> suggestions) {
+
+        if (suggestionsContainer != null) {
+            suggestionsContainer.setVisibility(View.VISIBLE);
+        }
 
         mHandler.post(new Runnable() {
             @Override
@@ -295,4 +330,5 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
             }
         });
     }
+
 }
