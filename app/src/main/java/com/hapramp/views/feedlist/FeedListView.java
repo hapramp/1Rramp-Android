@@ -152,11 +152,11 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
 
     public FeedListView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        TypedArray typedArray = context.obtainStyledAttributes(attrs,R.styleable.FeedListView,0,0);
-        try{
-            wantTopSpace = typedArray.getBoolean(R.styleable.FeedListView_wantTopSpaceOffset,false);
-            wantBottomSpace = typedArray.getBoolean(R.styleable.FeedListView_wantBottomSpaceOffset,false);
-        }finally {
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.FeedListView, 0, 0);
+        try {
+            wantTopSpace = typedArray.getBoolean(R.styleable.FeedListView_wantTopSpaceOffset, false);
+            wantBottomSpace = typedArray.getBoolean(R.styleable.FeedListView_wantBottomSpaceOffset, false);
+        } finally {
             typedArray.recycle();
         }
         init(context);
@@ -164,6 +164,13 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
 
     public FeedListView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.FeedListView, 0, 0);
+        try {
+            wantTopSpace = typedArray.getBoolean(R.styleable.FeedListView_wantTopSpaceOffset, false);
+            wantBottomSpace = typedArray.getBoolean(R.styleable.FeedListView_wantBottomSpaceOffset, false);
+        } finally {
+            typedArray.recycle();
+        }
         init(context);
     }
 
@@ -223,7 +230,7 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL || newState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
-                    if(feedListViewListener!=null) {
+                    if (feedListViewListener != null) {
                         if (y > 0) {
                             feedListViewListener.onHideCommunityList();
                         } else {
@@ -337,7 +344,7 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
         l("failedToRefresh");
         // TODO: 2/12/2018 show error toast | if adapter has no posts already, then call failedToLoadInitial | diable swiperefresing views
 
-        if(homeFeedsAdapter.getFeedsCount() == 0) {
+        if (homeFeedsAdapter.getFeedsCount() == 0) {
             //hide recycler view
             setFeedRecyclerViewVisibility(false);
             //hide failed view
@@ -352,7 +359,7 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
             failedMessageTitle.setText("Failed To Load Feeds");
             failedMessageDetails.setText("We are having issue loading feeds");
 
-        }else{
+        } else {
             // hide the progress bar
             showRefreshingLayout(false);
 
@@ -364,8 +371,8 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
 
         l("loadMoreFeeds");
         // TODO: 2/12/2018 append items to adapter
-       if(feedRecyclerView.getVisibility()!=VISIBLE)
-        setFeedRecyclerViewVisibility(true);
+        if (feedRecyclerView.getVisibility() != VISIBLE)
+            setFeedRecyclerViewVisibility(true);
 
         homeFeedsAdapter.appendFeeds(moreFeeds);
 
@@ -450,7 +457,7 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
     }
 
     private void l(String msg) {
-        Log.i("HomeFeedTest"," > ["+TAG+"]  "+ msg);
+        Log.i("HomeFeedTest", " > [" + TAG + "]  " + msg);
     }
 
     public void setHasMoreToLoad(boolean hasMoreToLoad) {

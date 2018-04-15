@@ -66,7 +66,7 @@ public class SteemReplyFetcher {
                                 discussion.getAuthor().getName(),
                                 discussion.getBody(),
                                 discussion.getLastUpdate().getDateTime(),
-                                _p.getProfileImage()
+                                _p != null ? _p.getProfileImage() : ""
                         ));
                     }
 
