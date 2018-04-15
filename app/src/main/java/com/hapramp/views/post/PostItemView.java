@@ -218,6 +218,25 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         bindVotes(feed.activeVotes, feed.permlink);
         replyFetcher.requestReplyForPost(feed.author,feed.permlink);
         attachListenersOnStarView();
+        attachListerOnAuthorHeader();
+
+    }
+
+    private void attachListerOnAuthorHeader() {
+
+        feedOwnerPic.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateToUserProfile();
+            }
+        });
+
+        feedOwnerTitle.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateToUserProfile();
+            }
+        });
 
     }
 
@@ -616,10 +635,12 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
 
     }
 
-    private void navigateToUserProfile(int userId) {
+    private void navigateToUserProfile() {
+
         Intent intent = new Intent(mContext, ProfileActivity.class);
-        intent.putExtra(Constants.EXTRAA_KEY_USER_ID, String.valueOf(userId));
+        intent.putExtra(Constants.EXTRAA_KEY_STEEM_USER_NAME, mFeed.author);
         mContext.startActivity(intent);
+
     }
 
     public void setPostData(Feed postData) {
