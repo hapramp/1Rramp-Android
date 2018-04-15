@@ -7,7 +7,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v4.widget.NestedScrollView;
+import android.os.Handler;
 import android.support.v4.widget.Space;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -31,22 +31,22 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.models.CommunityModel;
-import com.hapramp.models.response.CommentsResponse;
-import com.hapramp.models.response.PostResponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
-import com.hapramp.steem.ContentCommentModel;
+import com.hapramp.steem.SteemCommentModel;
 import com.hapramp.steem.PostStructureModel;
 import com.hapramp.steem.SteemCommentCreator;
+import com.hapramp.steem.SteemHelper;
 import com.hapramp.steem.SteemReplyFetcher;
 import com.hapramp.steem.models.Feed;
+import com.hapramp.steem.models.data.ActiveVote;
 import com.hapramp.steem.models.user.Profile;
 import com.hapramp.steem.models.user.SteemUser;
+import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
-import com.hapramp.utils.SkillsUtils;
 import com.hapramp.views.comments.CommentView;
 import com.hapramp.views.extraa.StarView;
 import com.hapramp.views.renderer.RendererView;
@@ -56,7 +56,12 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import eu.bittrade.libs.steemj.apis.database.models.state.Discussion;
+import eu.bittrade.libs.steemj.SteemJ;
+import eu.bittrade.libs.steemj.base.models.AccountName;
+import eu.bittrade.libs.steemj.base.models.Permlink;
+import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
+import eu.bittrade.libs.steemj.exceptions.SteemInvalidTransactionException;
+import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 
 import static android.view.View.VISIBLE;
 
@@ -129,14 +134,14 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     TextView sendCommentButton;
     @BindView(R.id.commentInputContainer)
     RelativeLayout commentInputContainer;
-    private List<CommentsResponse.Results> comments;
     private String currentCommentUrl;
-
+    private Handler mHandler;
     private Feed post;
     private boolean commentBarVisible;
     private ProgressDialog progressDialog;
     private SteemCommentCreator steemCommentCreator;
     private SteemReplyFetcher replyFetcher;
+    private List<SteemCommentModel> comments = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,10 +182,13 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     }
 
     private void init(){
+
+        mHandler = new Handler();
         steemCommentCreator = new SteemCommentCreator();
         replyFetcher = new SteemReplyFetcher();
         replyFetcher.setSteemReplyFetchCallback(this);
         steemCommentCreator.setSteemCommentCreateCallback(this);
+
     }
 
     private void collectExtras() {
@@ -203,12 +211,15 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     }
 
     @Override
-    public void onReplyFetched(List<ContentCommentModel> discussions) {
+    public void onReplyFetched(List<SteemCommentModel> discussions) {
 
         if(commentLoadingProgressBar!=null){
             commentLoadingProgressBar.setVisibility(View.GONE);
         }
-        addComment(discussions);
+
+        setCommentCount(discussions.size());
+        addCommentsToView(discussions);
+        comments = discussions;
         Log.d("DetailedActivity","Replies "+discussions.toString());
 
     }
@@ -246,11 +257,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         moreCommentsCaption.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Intent intent = new Intent(DetailedActivity.this, CommentsActivity.class);
-                intent.putExtra(Constants.EXTRAA_KEY_POST_ID, String.valueOf(post.id));
-                startActivity(intent);
-
+                navigateToCommentsPage();
             }
         });
 
@@ -260,6 +267,30 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
                 postComment();
             }
         });
+
+        commentCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateToCommentsPage();
+            }
+        });
+
+        commentBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateToCommentsPage();
+            }
+        });
+
+    }
+
+    private void navigateToCommentsPage() {
+
+        Intent intent = new Intent(DetailedActivity.this, CommentsActivity.class);
+        intent.putExtra(Constants.EXTRAA_KEY_POST_AUTHOR,post.author);
+        intent.putExtra(Constants.EXTRAA_KEY_POST_PERMLINK,post.permlink);
+        intent.putParcelableArrayListExtra(Constants.EXTRAA_KEY_COMMENTS, (ArrayList<SteemCommentModel>) comments);
+        startActivity(intent);
 
     }
 
@@ -335,31 +366,6 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         setCommunities(post.jsonMetadata.tags);
         PostStructureModel postStructureModel = new PostStructureModel(post.jsonMetadata.content.getData(),post.jsonMetadata.getContent().type);
         renderView.render(postStructureModel);
-//        content.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-//        content.loadDataWithBaseURL(null, "<style>img{display: inline;height: auto;max-width: 100%;}</style>" + post.jsonMetadata.content., "text/html", "UTF-8", null);
-//        // initialize the starview
-//        starView.setVoteState(
-//                new StarView.Vote(
-//                        post.is_voted,
-//                        post.id,
-//                        post.current_vote,
-//                        post.vote_sum,
-//                        post.vote_count
-//                )).setOnVoteUpdateCallback(new StarView.onVoteUpdateCallback() {
-//            @Override
-//            public void onVoted(int postId, int vote) {
-//                vote(postId, vote);
-//            }
-//
-//            @Override
-//            public void onVoteDeleted(int postId) {
-//                deleteVote(postId);
-//            }
-//        });
-
-        //String _comment_info = post.comment_count > 1 ? String.valueOf(post.comment_count).concat(" comments") : String.valueOf(post.comment_count).concat(" comment");
-//        setCommentCount(post.comment_count);
-//        setHapcoins(post.hapcoins);
 
         SteemUser steemUser = new Gson().fromJson(HaprampPreferenceManager.getInstance().getCurrentUserInfoAsJson(), SteemUser.class);
         String user_profile_url = steemUser.getUser().getJsonMetadata().getProfile().getProfileImage() != null ?
@@ -370,7 +376,252 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         ImageHandler.loadCircularImage(this, commentCreaterAvatar, user_profile_url);
         ImageHandler.loadCircularImage(this, commentCreaterAvatarMock, user_profile_url);
 
+        setSteemEarnings(post.totalPayoutValue);
+        bindVotes(post.activeVotes, post.permlink);
+        attachListenersOnStarView();
+
     }
+
+    //==================================================================================
+    // Vote part begins
+
+    private void attachListenersOnStarView() {
+
+        starView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ConnectionUtils.isConnected(DetailedActivity.this)) {
+                    starView.onStarIndicatorTapped();
+                }else{
+                    Toast.makeText(DetailedActivity.this,"Check Network Connection",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        starView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (ConnectionUtils.isConnected(DetailedActivity.this)) {
+                    starView.onStarIndicatorLongPressed();
+                }else{
+                    Toast.makeText(DetailedActivity.this,"Check Network Connection",Toast.LENGTH_LONG).show();
+                }
+                return true;
+            }
+        });
+
+    }
+
+    private void bindVotes(List<ActiveVote> votes, String permlink) {
+
+        long votePercentSum = getVotePercentSum(votes);
+        boolean amIVoted = checkForMyVote(votes);
+        long myVotePercent = amIVoted ? getMyVotePercent(votes) : 0;
+        long totalVotes = getNonZeroVoters(votes);
+
+        starView.setVoteState(
+                new StarView.Vote(
+                        amIVoted,
+                        permlink,
+                        myVotePercent,
+                        totalVotes,
+                        votePercentSum))
+                .setOnVoteUpdateCallback(new StarView.onVoteUpdateCallback() {
+                    @Override
+                    public void onVoted(String full_permlink, int _vote) {
+                        performVoteOnSteem(_vote);
+                    }
+
+                    @Override
+                    public void onVoteDeleted(String full_permlink) {
+                        deleteVoteOnSteem();
+                    }
+                });
+
+
+    }
+
+    private long getNonZeroVoters(List<ActiveVote> votes) {
+        long sum = 0;
+        for (int i = 0; i < votes.size(); i++) {
+            if (votes.get(i).percent > 0) {
+                sum++;
+            }
+        }
+        return sum;
+    }
+
+    private long getVotePercentSum(List<ActiveVote> activeVotes) {
+        long sum = 0;
+        for (int i = 0; i < activeVotes.size(); i++) {
+            sum += activeVotes.get(i).percent;
+        }
+        return sum;
+    }
+
+    private long getMyVotePercent(List<ActiveVote> votes) {
+        for (int i = 0; i < votes.size(); i++) {
+            if (votes.get(i).voter.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
+                return votes.get(i).percent;
+            }
+        }
+        return 0;
+    }
+
+    private boolean checkForMyVote(List<ActiveVote> votes) {
+        for (int i = 0; i < votes.size(); i++) {
+            if (votes.get(i).voter.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername()) && votes.get(i).percent > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /*
+    *  author of the vote: author of the pose
+    *  votePower: 0 for 1-2 ratte
+    *  votePower: 100 for 3-5 rate
+    * */
+    private void performVoteOnSteem(final int vote) {
+
+        starView.voteProcessing();
+
+        final int votePower = vote;
+        Log.d("VoteTest", "voting with percent " + votePower);
+        new Thread() {
+
+            @Override
+            public void run() {
+                try {
+
+                    AccountName voteFor = new AccountName(post.author);
+                    AccountName voter = new AccountName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
+                    SteemJ steemJ = SteemHelper.getSteemInstance();
+
+                    steemJ.vote(voter, voteFor, new Permlink(post.permlink), (short) votePower);
+                    Log.d("VoteTest", "voted " + votePower);
+                    //callback for success
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            castingVoteSuccess();
+                        }
+                    });
+
+                } catch (SteemCommunicationException e) {
+                    e.printStackTrace();
+                    Log.d("VoteTest", "error " + e.toString());
+                    mHandler.post(steemCastingVoteExceptionRunnable);
+                } catch (SteemResponseException e) {
+                    e.printStackTrace();
+                    Log.d("VoteTest", "error " + e.toString());
+                    mHandler.post(steemCastingVoteExceptionRunnable);
+                } catch (SteemInvalidTransactionException e) {
+                    e.printStackTrace();
+                    Log.d("VoteTest", "error " + e.toString());
+                    mHandler.post(steemCastingVoteExceptionRunnable);
+                }
+
+            }
+        }.start();
+
+    }
+
+    /*
+      *  author of the vote: author of the pose
+      *  cancel vote
+      * */
+    private void deleteVoteOnSteem() {
+
+        Log.d("VoteTest", "Deleting vote");
+
+        starView.voteProcessing();
+
+        new Thread() {
+
+            @Override
+            public void run() {
+                try {
+
+                    AccountName voteFor = new AccountName(post.author);
+                    AccountName voter = new AccountName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
+                    SteemJ steemJ = SteemHelper.getSteemInstance();
+                    steemJ.cancelVote(voter, voteFor, new Permlink(post.permlink));
+                    Log.d("VoteTest", "Deleted Vote");
+
+                    //callback for success
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            voteDeleteSuccess();
+                        }
+                    });
+
+                } catch (SteemCommunicationException e) {
+                    e.printStackTrace();
+                    Log.d("VoteTest", "Deleting vote error " + e.toString());
+
+                    mHandler.post(steemCancellingVoteExceptionRunnable);
+                } catch (SteemResponseException e) {
+                    e.printStackTrace();
+                    Log.d("VoteTest", "Deleting vote error " + e.toString());
+                    mHandler.post(steemCancellingVoteExceptionRunnable);
+                } catch (SteemInvalidTransactionException e) {
+                    e.printStackTrace();
+                    Log.d("VoteTest", "Deleting vote error " + e.toString());
+                    mHandler.post(steemCancellingVoteExceptionRunnable);
+                }
+
+            }
+        }.start();
+
+    }
+
+    private void castingVoteFailed() {
+        if (starView != null) {
+            starView.failedToCastVote();
+        }
+        Toast.makeText(this, "FAILED : Vote Casting", Toast.LENGTH_LONG).show();
+    }
+
+    private void castingVoteSuccess() {
+        if (starView != null) {
+            starView.castedVoteSuccessfully();
+        }
+        Toast.makeText(this, "SUCCESS : Vote Casting", Toast.LENGTH_LONG).show();
+    }
+
+    private void voteDeleteFailed() {
+        if (starView != null) {
+            starView.failedToDeleteVoteFromServer();
+        }
+        Toast.makeText(this, "FAILED : Vote Delete", Toast.LENGTH_LONG).show();
+    }
+
+    private void voteDeleteSuccess() {
+        if (starView != null) {
+            starView.deletedVoteSuccessfully();
+        }
+        Toast.makeText(this, "SUCCESS : Vote Deleted", Toast.LENGTH_LONG).show();
+    }
+
+    private Runnable steemCastingVoteExceptionRunnable = new Runnable() {
+        @Override
+        public void run() {
+            castingVoteFailed();
+        }
+    };
+
+    private Runnable steemCancellingVoteExceptionRunnable = new Runnable() {
+        @Override
+        public void run() {
+            voteDeleteFailed();
+        }
+    };
+
+    // Ends Vote part
+    // ================================================================================
+
 
     private void setCommunities(List<String> communities) {
         // community name + community color
@@ -424,39 +675,15 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
 
     }
 
-    private void setHapcoins(float hapcoins) {
-        /// hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), hapcoins));
+    private void setSteemEarnings(String payout) {
+        hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), payout.substring(0, payout.indexOf(' '))));
     }
 
     private void setCommentCount(int count) {
         commentCount.setText(String.format(getResources().getString(R.string.comment_format), count));
     }
 
-    private void setSkills(List<PostResponse.Skills> skills) {
-
-        int size = skills.size();
-        if (size > 0) {
-            //first skill
-            club1.setVisibility(VISIBLE);
-            club1.setText(SkillsUtils.getSkillTitleFromId(skills.get(0).id));
-            club1.getBackground().setColorFilter(SkillsUtils.getSkillTagColorFromId(skills.get(0).id), PorterDuff.Mode.SRC_ATOP);
-            if (size > 1) {
-                // second skills
-                club2.setVisibility(VISIBLE);
-                club2.setText(SkillsUtils.getSkillTitleFromId(skills.get(1).id));
-                club2.getBackground().setColorFilter(SkillsUtils.getSkillTagColorFromId(skills.get(1).id), PorterDuff.Mode.SRC_ATOP);
-                if (size > 2) {
-                    // third skills
-                    club3.setVisibility(VISIBLE);
-                    club3.setText(SkillsUtils.getSkillTitleFromId(skills.get(2).id));
-                    club3.getBackground().setColorFilter(SkillsUtils.getSkillTagColorFromId(skills.get(2).id), PorterDuff.Mode.SRC_ATOP);
-                }
-            }
-        }
-
-    }
-
-    private void addComment(List<ContentCommentModel> discussions) {
+    private void addCommentsToView(List<SteemCommentModel> discussions) {
 
         int commentCount = discussions.size();
         commentLoadingProgressBar.setVisibility(View.GONE);
@@ -583,92 +810,4 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         // DataServer.deletePost(String.valueOf(post_id), pos, this);
     }
 
-
-//    @Override
-//    public void onCommentFetched(CommentsResponse response) {
-//
-//        addComment(response.results);
-//
-//    }
-//
-//
-//    @Override
-//    public void onCommentFetchError() {
-//
-//    }
-//
-//    @Override
-//    public void onUserFetched(int commentPosition, UserResponse response) {
-//
-//    }
-//
-//    @Override
-//    public void onUserFetchError() {
-//        Toast.makeText(this, "Error While Fetching Comments!", Toast.LENGTH_SHORT).show();
-//    }
-//
-//    @Override
-//    public void onPostDeleted(int position) {
-//
-//    }
-//
-//    @Override
-//    public void onPostDeleteFailed() {
-//
-//    }
-//
-//    private void deleteVote(int postId) {
-//        DataServer.deleteVote(postId, this);
-//    }
-//
-//    private void vote(int postId, int vote) {
-//        DataServer.votePost(String.valueOf(postId), new VoteRequestBody((int) vote), this);
-//    }
-
-//    @Override
-//    public void onVoteDeleted(Feed updatedPost) {
-//        //update mHapcoins
-//        setHapcoins(updatedPost.hapcoins);
-//    }
-//
-//    @Override
-//    public void onVoteDeleteError() {
-//
-//    }
-//
-//    @Override
-//    public void onPostVoted(Feed updatedPost) {
-//        //update mHapcoins
-//        setHapcoins(updatedPost.hapcoins);
-//    }
-//
-//    @Override
-//    public void onPostVoteError() {
-//
-//    }
-//
-//    @Override
-//    public void onCommentCreated(CommentCreateResponse comment) {
-//
-//        hideProgress();
-//
-//        CommentView view = new CommentView(this);
-//        UserResponse user = HaprampPreferenceManager.getInstance().getUser();
-//        view.setComment(new CommentsResponse.Results(
-//                comment.id,
-//                comment.created_at,
-//                comment.content, false, 0
-//                , new CommentsResponse.User(user.id, user.username, user.full_name, user.image_uri)));
-//
-//        commentsViewContainer.addView(view, 0,
-//                new ViewGroup.LayoutParams(
-//                        ViewGroup.LayoutParams.WRAP_CONTENT,
-//                        ViewGroup.LayoutParams.WRAP_CONTENT));
-//
-//    }
-//
-//    @Override
-//    public void onCommentCreateError() {
-//        hideProgress();
-//    }
 }

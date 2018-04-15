@@ -58,11 +58,11 @@ public class SteemReplyFetcher {
 
 //                    Log.d(TAG,"replies fetched");
 
-                    final List<ContentCommentModel> contentCommentModels = new ArrayList<>();
+                    final List<SteemCommentModel> contentCommentModels = new ArrayList<>();
                     for (int i = 0; i < discussions.size(); i++) {
                         Discussion discussion = discussions.get(i);
                         Profile _p = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserProfile(discussion.getAuthor().getName()), Profile.class);
-                        contentCommentModels.add(new ContentCommentModel(
+                        contentCommentModels.add(new SteemCommentModel(
                                 discussion.getAuthor().getName(),
                                 discussion.getBody(),
                                 discussion.getLastUpdate().getDateTime(),
@@ -113,7 +113,7 @@ public class SteemReplyFetcher {
 
         void onReplyFetching();
 
-        void onReplyFetched(List<ContentCommentModel> replies);
+        void onReplyFetched(List<SteemCommentModel> replies);
 
         void onReplyFetchError();
     }

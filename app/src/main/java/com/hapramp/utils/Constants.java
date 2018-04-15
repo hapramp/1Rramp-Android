@@ -41,6 +41,9 @@ public class Constants {
     public static final String ACTION_USER_DETAILS_CHANGE = "com.hapramp.user.item_change";
     public static final String DISPATCHER_UNIQUE_ID = "hapramp_dispatcher";
     public static final String EXTRAA_KEY_POST_DATA = "postData";
+    public static final String EXTRAA_KEY_COMMENTS = "comments_parcel";
+    public static final java.lang.String EXTRAA_KEY_POST_AUTHOR = "postAuthor";
+    public static final java.lang.String EXTRAA_KEY_POST_PERMLINK = "post_permlink";
     public static int PROFILE_DATA = 1011;
 
 }

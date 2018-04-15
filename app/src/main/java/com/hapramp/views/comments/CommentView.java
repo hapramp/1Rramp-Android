@@ -12,8 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
-import com.hapramp.models.response.CommentsResponse;
-import com.hapramp.steem.ContentCommentModel;
+import com.hapramp.steem.SteemCommentModel;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 
@@ -62,7 +61,7 @@ public class CommentView extends FrameLayout {
 
     }
 
-    public void setComment(ContentCommentModel result) {
+    public void setComment(SteemCommentModel result) {
 
         ImageHandler.loadCircularImage(mContext, commentAvatar, result.getCommentAuthorImageUri());
         commentOwnerName.setText(result.getCommentAuthor());

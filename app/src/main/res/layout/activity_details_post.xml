@@ -290,7 +290,7 @@
                 android:gravity="center"
                 android:textColor="#ffffff"
                 android:background="@drawable/rs_coin_bg"
-                android:text="H"
+                android:text="$"
                 android:textStyle="bold"
                 android:textSize="14sp" />
 
@@ -303,7 +303,6 @@
                 android:layout_alignParentEnd="true"
                 android:gravity="center_vertical"
                 android:textColor="@color/Black54"
-                android:text="120 Hapcoins"
                 android:textSize="12sp" />
 
             <com.hapramp.views.extraa.StarView

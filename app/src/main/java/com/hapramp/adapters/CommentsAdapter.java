@@ -11,14 +11,11 @@ import android.widget.TextView;
 
 import com.hapramp.R;
 import com.hapramp.models.response.CommentCreateResponse;
-import com.hapramp.models.response.CommentsResponse;
-import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.ContentCommentModel;
+import com.hapramp.steem.SteemCommentModel;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,7 +27,7 @@ import butterknife.ButterKnife;
 public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.CommentViewHolder> {
 
 
-    private List<ContentCommentModel> commentsList;
+    private ArrayList<SteemCommentModel> commentsList;
     private Context mContext;
 
     public CommentsAdapter(Context mContext) {
@@ -80,13 +77,13 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
 
         }
 
-        public void bind(ContentCommentModel comment) {
+        public void bind(SteemCommentModel comment) {
 
             ImageHandler.loadCircularImage(mContext, commentAvatar, comment.getCommentAuthorImageUri());
             commentOwnerName.setText(comment.getCommentAuthor());
 
             if (comment.getCreatedAt().length()>0) {
-                createdTime.setText(comment.getCreatedAt().length());
+                createdTime.setText(MomentsUtils.getFormattedTime(comment.getCreatedAt()));
             } else {
                 createdTime.setText("Now");
             }
@@ -96,22 +93,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
         }
     }
 
-    public void addComment(CommentCreateResponse comment) {
-
-//        UserResponse user = HaprampPreferenceManager.getInstance().getUser();
-//
-//        commentsList.add(0,
-//                new CommentsResponse.Results(
-//                        comment.id,
-//                        comment.created_at,
-//                        comment.content, false, 0
-//                        , new CommentsResponse.User(user.id, user.username, user.full_name, user.image_uri)));
-
-        notifyItemInserted(0);
-
-    }
-
-    public void addComments(List<ContentCommentModel> comments) {
+    public void addComments(ArrayList<SteemCommentModel> comments) {
 
         commentsList.addAll(comments);
         notifyItemInserted(commentsList.size() - comments.size() - 1);

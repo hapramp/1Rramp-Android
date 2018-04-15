@@ -27,7 +27,7 @@ import com.hapramp.activity.ProfileActivity;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
-import com.hapramp.steem.ContentCommentModel;
+import com.hapramp.steem.SteemCommentModel;
 import com.hapramp.steem.FeedData;
 import com.hapramp.steem.SteemHelper;
 import com.hapramp.steem.SteemReplyFetcher;
@@ -214,8 +214,17 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
             ImageHandler.loadCircularImage(mContext, feedOwnerPic, _p.getProfileImage());
         }
 
+
         bindVotes(feed.activeVotes, feed.permlink);
         replyFetcher.requestReplyForPost(feed.author,feed.permlink);
+        attachListenersOnStarView();
+
+    }
+
+    //==================================================================================
+    // Vote part begins
+
+    private void attachListenersOnStarView() {
 
         starView.setOnClickListener(new OnClickListener() {
             @Override
@@ -240,171 +249,6 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
             }
         });
 
-
-
-    }
-
-    private long getVotePercentSum(List<ActiveVote> activeVotes) {
-        long sum = 0;
-        for (int i = 0; i < activeVotes.size(); i++) {
-            sum += activeVotes.get(i).percent;
-        }
-        return sum;
-    }
-
-    private String extractTitleForArticle(List<FeedDataItemModel> data) {
-        //return first h1 type text
-        for (int i = 0; i < data.size(); i++) {
-            if (data.get(i).type.equals(FeedData.ContentType.H1)) {
-                return data.get(i).content;
-            }
-
-            //check also for h2
-            if (data.get(i).type.equals(FeedData.ContentType.H2)) {
-                return data.get(i).content;
-            }
-
-        }
-        return "";
-    }
-
-    private String extractTextSnippetForPost(List<FeedDataItemModel> data) {
-
-        //return first text type
-        for (int i = 0; i < data.size(); i++) {
-            if (data.get(i).type.equals(FeedData.ContentType.TEXT)) {
-                return data.get(i).content;
-            }
-        }
-        return "";
-
-    }
-
-    private String extractImageUrlForPost(List<FeedDataItemModel> data) {
-
-        //return first image type
-        for (int i = 0; i < data.size(); i++) {
-            if (data.get(i).type.equals(FeedData.ContentType.IMAGE)) {
-                return data.get(i).content;
-            }
-        }
-        return "";
-
-    }
-
-    public String getAuthor() {
-        return mFeed.author;
-    }
-
-    public String getPermlinkAsString() {
-        return mFeed.permlink;
-    }
-
-    public String getFullPermlinkAsString() {
-        return String.format("%1$s/%2$s", getAuthor(), getPermlinkAsString());
-    }
-
-    private boolean isContentEllipsised(TextView textView) {
-
-        Layout layout = textView.getLayout();
-        if (layout != null) {
-            int lines = layout.getLineCount();
-            if (lines > 0) {
-                int ellipsisCount = layout.getEllipsisCount(lines - 1);
-                if (ellipsisCount > 0) {
-                    return true;
-                }
-            }
-        }
-        return false;
-
-    }
-
-    private void setSteemEarnings(String payout) {
-        hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), payout.substring(0, payout.indexOf(' '))));
-    }
-
-    private void setCommentCount(int count) {
-        commentCount.setText(String.format(getResources().getString(R.string.comment_format), count));
-    }
-
-    private void setCommunities(List<String> communities) {
-        // community name + community color
-        List<CommunityModel> cm = new ArrayList<>();
-        for (int i = 0; i < communities.size(); i++) {
-            if (Communities.doesCommunityExists(communities.get(i))) {
-                cm.add(new CommunityModel("", "", communities.get(i),
-                        HaprampPreferenceManager.getInstance().getCommunityColorFromTag(communities.get(i)),
-                        HaprampPreferenceManager.getInstance().getCommunityNameFromTag(communities.get(i)),
-                        0
-                ));
-            }
-        }
-
-        addCommunitiesToLayout(cm);
-
-    }
-
-    private void addCommunitiesToLayout(List<CommunityModel> cms) {
-
-        int size = cms.size();
-        resetVisibility();
-        if (size > 0) {
-            //first skill
-            club1.setVisibility(VISIBLE);
-
-            club1.setText(cms.get(0).getmName());
-            club1.getBackground().setColorFilter(
-                    Color.parseColor(cms.get(0).getmColor()),
-                    PorterDuff.Mode.SRC_ATOP);
-
-            if (size > 1) {
-                // second skills
-                club2.setVisibility(VISIBLE);
-
-                club2.setText(cms.get(1).getmName());
-                club2.getBackground().setColorFilter(
-                        Color.parseColor(cms.get(1).getmColor()),
-                        PorterDuff.Mode.SRC_ATOP);
-
-                if (size > 2) {
-                    // third skills
-                    club3.setVisibility(VISIBLE);
-
-                    club3.setText(cms.get(2).getmName());
-                    club3.getBackground().setColorFilter(
-                            Color.parseColor(cms.get(2).getmColor()),
-                            PorterDuff.Mode.SRC_ATOP);
-                }
-            }
-        }
-
-    }
-
-    private void resetVisibility() {
-
-        club1.setVisibility(GONE);
-        club2.setVisibility(GONE);
-        club3.setVisibility(GONE);
-
-    }
-
-    private void navigateToCommentCreateActivity(int postId) {
-
-        Intent intent = new Intent(mContext, CommentsActivity.class);
-        intent.putExtra(Constants.EXTRAA_KEY_POST_ID, String.valueOf(postId));
-        mContext.startActivity(intent);
-
-    }
-
-    private void navigateToUserProfile(int userId) {
-        Intent intent = new Intent(mContext, ProfileActivity.class);
-        intent.putExtra(Constants.EXTRAA_KEY_USER_ID, String.valueOf(userId));
-        mContext.startActivity(intent);
-    }
-
-    public void setPostData(Feed postData) {
-        bind(postData);
     }
 
     private void bindVotes(List<ActiveVote> votes, String permlink) {
@@ -454,6 +298,15 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         }
         return 0;
     }
+
+    private long getVotePercentSum(List<ActiveVote> activeVotes) {
+        long sum = 0;
+        for (int i = 0; i < activeVotes.size(); i++) {
+            sum += activeVotes.get(i).percent;
+        }
+        return sum;
+    }
+
 
     private boolean checkForMyVote(List<ActiveVote> votes) {
         for (int i = 0; i < votes.size(); i++) {
@@ -614,6 +467,164 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         }
     };
 
+    ///================================================================================
+    // Ends Vote part
+
+
+    private String extractTitleForArticle(List<FeedDataItemModel> data) {
+        //return first h1 type text
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i).type.equals(FeedData.ContentType.H1)) {
+                return data.get(i).content;
+            }
+
+            //check also for h2
+            if (data.get(i).type.equals(FeedData.ContentType.H2)) {
+                return data.get(i).content;
+            }
+
+        }
+        return "";
+    }
+
+    private String extractTextSnippetForPost(List<FeedDataItemModel> data) {
+
+        //return first text type
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i).type.equals(FeedData.ContentType.TEXT)) {
+                return data.get(i).content;
+            }
+        }
+        return "";
+
+    }
+
+    private String extractImageUrlForPost(List<FeedDataItemModel> data) {
+
+        //return first image type
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i).type.equals(FeedData.ContentType.IMAGE)) {
+                return data.get(i).content;
+            }
+        }
+        return "";
+
+    }
+
+    public String getAuthor() {
+        return mFeed.author;
+    }
+
+    public String getPermlinkAsString() {
+        return mFeed.permlink;
+    }
+
+    public String getFullPermlinkAsString() {
+        return String.format("%1$s/%2$s", getAuthor(), getPermlinkAsString());
+    }
+
+    private boolean isContentEllipsised(TextView textView) {
+
+        Layout layout = textView.getLayout();
+        if (layout != null) {
+            int lines = layout.getLineCount();
+            if (lines > 0) {
+                int ellipsisCount = layout.getEllipsisCount(lines - 1);
+                if (ellipsisCount > 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+
+    }
+
+    private void setSteemEarnings(String payout) {
+        hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), payout.substring(0, payout.indexOf(' '))));
+    }
+
+    private void setCommentCount(int count) {
+        commentCount.setText(String.format(getResources().getString(R.string.comment_format), count));
+    }
+
+    private void setCommunities(List<String> communities) {
+        // community name + community color
+        List<CommunityModel> cm = new ArrayList<>();
+        for (int i = 0; i < communities.size(); i++) {
+            if (Communities.doesCommunityExists(communities.get(i))) {
+                cm.add(new CommunityModel("", "", communities.get(i),
+                        HaprampPreferenceManager.getInstance().getCommunityColorFromTag(communities.get(i)),
+                        HaprampPreferenceManager.getInstance().getCommunityNameFromTag(communities.get(i)),
+                        0
+                ));
+            }
+        }
+
+        addCommunitiesToLayout(cm);
+
+    }
+
+    private void addCommunitiesToLayout(List<CommunityModel> cms) {
+
+        int size = cms.size();
+        resetVisibility();
+        if (size > 0) {
+            //first skill
+            club1.setVisibility(VISIBLE);
+
+            club1.setText(cms.get(0).getmName());
+            club1.getBackground().setColorFilter(
+                    Color.parseColor(cms.get(0).getmColor()),
+                    PorterDuff.Mode.SRC_ATOP);
+
+            if (size > 1) {
+                // second skills
+                club2.setVisibility(VISIBLE);
+
+                club2.setText(cms.get(1).getmName());
+                club2.getBackground().setColorFilter(
+                        Color.parseColor(cms.get(1).getmColor()),
+                        PorterDuff.Mode.SRC_ATOP);
+
+                if (size > 2) {
+                    // third skills
+                    club3.setVisibility(VISIBLE);
+
+                    club3.setText(cms.get(2).getmName());
+                    club3.getBackground().setColorFilter(
+                            Color.parseColor(cms.get(2).getmColor()),
+                            PorterDuff.Mode.SRC_ATOP);
+                }
+            }
+        }
+
+    }
+
+    private void resetVisibility() {
+
+        club1.setVisibility(GONE);
+        club2.setVisibility(GONE);
+        club3.setVisibility(GONE);
+
+    }
+
+    private void navigateToCommentCreateActivity(int postId) {
+
+        Intent intent = new Intent(mContext, CommentsActivity.class);
+        intent.putExtra(Constants.EXTRAA_KEY_POST_ID, String.valueOf(postId));
+        mContext.startActivity(intent);
+
+    }
+
+    private void navigateToUserProfile(int userId) {
+        Intent intent = new Intent(mContext, ProfileActivity.class);
+        intent.putExtra(Constants.EXTRAA_KEY_USER_ID, String.valueOf(userId));
+        mContext.startActivity(intent);
+    }
+
+    public void setPostData(Feed postData) {
+        bind(postData);
+    }
 
     @Override
     public void onReplyFetching() {
@@ -621,7 +632,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     }
 
     @Override
-    public void onReplyFetched(List<ContentCommentModel> replies) {
+    public void onReplyFetched(List<SteemCommentModel> replies) {
         setCommentCount(replies.size());
     }
 

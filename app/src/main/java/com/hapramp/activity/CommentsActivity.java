@@ -17,22 +17,21 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.adapters.CommentsAdapter;
-import com.hapramp.api.DataServer;
-import com.hapramp.interfaces.CommentCreateCallback;
-import com.hapramp.interfaces.CommentFetchCallback;
-import com.hapramp.models.requests.CommentBody;
-import com.hapramp.models.response.CommentCreateResponse;
-import com.hapramp.models.response.CommentsResponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.models.Feed;
+import com.hapramp.steem.SteemCommentCreator;
+import com.hapramp.steem.SteemCommentModel;
+import com.hapramp.steem.SteemReplyFetcher;
+import com.hapramp.steem.models.user.Profile;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.ViewItemDecoration;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,7 +40,7 @@ import butterknife.ButterKnife;
  * Created by Ankit on 2/9/2018.
  */
 
-public class CommentsActivity extends AppCompatActivity{
+public class CommentsActivity extends AppCompatActivity implements SteemCommentCreator.SteemCommentCreateCallback, SteemReplyFetcher.SteemReplyFetchCallback {
 
     @BindView(R.id.backBtn)
     TextView backBtn;
@@ -70,6 +69,11 @@ public class CommentsActivity extends AppCompatActivity{
     private String moreCommentsAt;
     private ProgressDialog progressDialog;
     private Typeface typeface;
+    private ArrayList<SteemCommentModel> commentsList;
+    private String postAuthor;
+    private String postPermlink;
+    private SteemCommentCreator steemCommentCreator;
+    private SteemReplyFetcher replyFetcher;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,22 +82,34 @@ public class CommentsActivity extends AppCompatActivity{
         setContentView(R.layout.comments_screen);
         ButterKnife.bind(this);
         init();
-        fetchComments(initialCommentUrl);
         attachListeners();
 
     }
 
     private void init() {
 
+        steemCommentCreator = new SteemCommentCreator();
+        steemCommentCreator.setSteemCommentCreateCallback(this);
+        replyFetcher = new SteemReplyFetcher();
+        replyFetcher.setSteemReplyFetchCallback(this);
+
+
+        commentsList = getIntent().getExtras().getParcelableArrayList(Constants.EXTRAA_KEY_COMMENTS);
+        postAuthor = getIntent().getExtras().getString(Constants.EXTRAA_KEY_POST_AUTHOR, "");
+        postPermlink = getIntent().getExtras().getString(Constants.EXTRAA_KEY_POST_PERMLINK, "");
+
         progressDialog = new ProgressDialog(this);
         typeface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
         backBtn.setTypeface(typeface);
         sendButton.setTypeface(typeface);
 
-        //load self image to created
-        ImageHandler.loadCircularImage(this,commentCreaterAvatar,"");
-        postId = getIntent().getExtras().getString(Constants.EXTRAA_KEY_POST_ID);
-        initialCommentUrl = String.format(getResources().getString(R.string.commentUrl), Integer.valueOf(postId));
+        // set basic meta-info
+        Profile _p = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserProfile(HaprampPreferenceManager.getInstance().getCurrentSteemUsername()), Profile.class);
+        if (_p != null) {
+            //load self image to created
+            ImageHandler.loadCircularImage(this, commentCreaterAvatar, _p.getProfileImage());
+        }
+
         commentsAdapter = new CommentsAdapter(this);
         commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -103,6 +119,17 @@ public class CommentsActivity extends AppCompatActivity{
         commentsRecyclerView.addItemDecoration(viewItemDecoration);
         commentsRecyclerView.setAdapter(commentsAdapter);
 
+        if (commentsList.size() == 0) {
+            refetchComments();
+        } else {
+            commentLoadingProgressBar.setVisibility(View.GONE);
+            commentsAdapter.addComments(commentsList);
+        }
+
+    }
+
+    private void refetchComments() {
+        replyFetcher.requestReplyForPost(postAuthor, postPermlink);
     }
 
     private void attachListeners() {
@@ -110,7 +137,7 @@ public class CommentsActivity extends AppCompatActivity{
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                postComment();
+
             }
         });
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -121,82 +148,42 @@ public class CommentsActivity extends AppCompatActivity{
         });
     }
 
-    private void fetchComments(String url) {
-
-        showCommentLoadingProgress();
-
-    }
+    //================================
+    // Comments part
 
     private void postComment() {
 
         String cmnt = commentInputBox.getText().toString().trim();
         commentInputBox.setText("");
         if (cmnt.length() > 2) {
-            showProgress("Posting Your Comment..." + postId);
-           // DataServer.createComment(postId, new CommentBody(cmnt), this);
+            steemCommentCreator.createComment(cmnt, postAuthor, postPermlink);
         } else {
             Toast.makeText(this, "Comment Too Short!!", Toast.LENGTH_LONG).show();
         }
 
     }
 
-    private void showCommentLoadingProgress(){
-        if(commentLoadingProgressBar!=null){
-            commentLoadingProgressBar.setVisibility(View.VISIBLE);
-        }
+    @Override
+    public void onCommentCreateProcessing() {
+        showProgress("Posting Your Comment...");
     }
 
-    private void hideCommentLoadingProgress(){
-        if(commentLoadingProgressBar!=null){
-            commentLoadingProgressBar.setVisibility(View.GONE);
-        }
+    @Override
+    public void onCommentCreated() {
+        hideProgress();
+        Toast.makeText(this, "Comment Created", Toast.LENGTH_LONG).show();
     }
 
-//    @Override
-//    public void onCommentFetched(CommentsResponse response) {
-//
-//        hideCommentLoadingProgress();
-//
-//        int len = response.results.size();
-//        if (len == 0) {
-//            noCommentsCaption.setVisibility(View.VISIBLE);
-//        } else {
-//
-//            noCommentsCaption.setVisibility(View.GONE);
-//
-//        }
-//        moreCommentsAt = response.next;
-//        Collections.reverse(response.results);
-//        commentsAdapter.addComments(response.results);
-//
-//        if (moreCommentsAt.length() > 0) {
-//            fetchComments(moreCommentsAt);
-//        }
-//
-//    }
+    @Override
+    public void onCommentCreateFailed() {
+        hideProgress();
+        Toast.makeText(this, "Comment Operation Failed", Toast.LENGTH_LONG).show();
+    }
 
-//    @Override
-//    public void onCommentCreated(CommentCreateResponse response) {
-//
-//        hideProgress();
-//        Toast.makeText(this, "Create Comment", Toast.LENGTH_SHORT).show();
-//        commentsAdapter.addComment(response);
-//        commentsRecyclerView.getLayoutManager().scrollToPosition(0);
-//        noCommentsCaption.setVisibility(View.GONE);
-//
-//    }
-//
-//    @Override
-//    public void onCommentCreateError() {
-//
-//        hideProgress();
-//        finish();
-//        Toast.makeText(this, "Cannot Create Comment!", Toast.LENGTH_SHORT).show();
-//
-//    }
 
     private void showProgress(String msg) {
         progressDialog.setMessage(msg);
+        progressDialog.setCancelable(false);
         progressDialog.show();
     }
 
@@ -208,4 +195,19 @@ public class CommentsActivity extends AppCompatActivity{
 
     }
 
+    @Override
+    public void onReplyFetching() {
+
+    }
+
+    @Override
+    public void onReplyFetched(List<SteemCommentModel> replies) {
+        commentLoadingProgressBar.setVisibility(View.GONE);
+        commentsAdapter.addComments(commentsList);
+    }
+
+    @Override
+    public void onReplyFetchError() {
+
+    }
 }
