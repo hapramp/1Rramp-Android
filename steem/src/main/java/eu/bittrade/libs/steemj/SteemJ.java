@@ -2195,13 +2195,13 @@ public class SteemJ {
     public void vote(AccountName voter, AccountName postOrCommentAuthor, Permlink postOrCommentPermlink,
                      short percentage)
             throws SteemCommunicationException, SteemResponseException, SteemInvalidTransactionException {
-        if (percentage < -100 || percentage > 100 || percentage == 0) {
+        if (percentage < -1000 || percentage > 10000) {
             throw new InvalidParameterException(
-                    "Please provide a percentage between -100 and 100 which is also not 0.");
+                    "Please provide a percentage between -10000 and 10000.");
         }
 
         VoteOperation voteOperation = new VoteOperation(voter, postOrCommentAuthor, postOrCommentPermlink,
-                (short) (percentage * 100));
+                (short) (percentage));
 
         ArrayList<Operation> operations = new ArrayList<>();
         operations.add(voteOperation);

@@ -31,7 +31,7 @@
 
     </RelativeLayout>
 
-    <android.support.v4.widget.NestedScrollView
+    <ScrollView
         android:id="@+id/scroller"
         android:fillViewport="true"
         android:paddingBottom="56dp"
@@ -162,7 +162,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:id="@+id/mockCommentParentView"
                 android:layout_height="wrap_content"
@@ -223,9 +223,10 @@
 
         </LinearLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+    </ScrollView>
 
     <RelativeLayout
+        android:visibility="visible"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

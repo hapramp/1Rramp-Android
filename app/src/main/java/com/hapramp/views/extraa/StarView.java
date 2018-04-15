@@ -117,8 +117,11 @@ public class StarView extends FrameLayout {
                 voteState.totalVotedUsers,
                 voteState.totalVotePercentSum);
 
+        Log.d("VoteTest","CurrentVote :"+voteState.toString());
+
         setCurrentState(voteState);
         return this;
+
     }
 
     public void setOnVoteUpdateCallback(StarView.onVoteUpdateCallback onVoteUpdateCallback) {
@@ -207,6 +210,7 @@ public class StarView extends FrameLayout {
         } else {
             // rate 5 star
             setNewRating(5);
+            sendVoteToSteem();
             // showRatingBar();
             // removeRatingCancelButton();
         }
@@ -225,6 +229,27 @@ public class StarView extends FrameLayout {
 
     }
 
+    private void setNewRating(float rating) {
+
+        mHandler.removeCallbacks(autoHideRatingBarRunnable);
+        mHandler.postDelayed(autoHideRatingBarRunnable, HIDE_RATING_BAR_DELAY / 2);
+
+        // update info
+        if (currentState.iHaveVoted) {
+            // reset my existing vote
+            cancelMyRating();
+        }
+
+        currentState.setiHaveVoted(true);
+        currentState.setMyVotePercent(getVotePercentFromRating(rating));
+        currentState.totalVotedUsers += 1;
+        currentState.totalVotePercentSum += getVotePercentFromRating(rating);
+        setCurrentState(currentState);
+
+        Log.d("VoteTest","After Voting | CurrentVote :"+currentState.toString());
+
+
+    }
 
     private void cancelMyRating() {
 
@@ -237,6 +262,7 @@ public class StarView extends FrameLayout {
         ratingBar.setRating(0);
         // update the UI
         setCurrentState(currentState);
+        Log.d("VoteTest","After Deleting | CurrentVote :"+currentState.toString());
         deleteVoteFromSteem();
 
     }
@@ -359,25 +385,6 @@ public class StarView extends FrameLayout {
 
     }
 
-    private void setNewRating(float rating) {
-
-        mHandler.removeCallbacks(autoHideRatingBarRunnable);
-        mHandler.postDelayed(autoHideRatingBarRunnable, HIDE_RATING_BAR_DELAY / 2);
-
-        // update info
-        if (currentState.iHaveVoted) {
-            // reset my existing vote
-            cancelMyRating();
-        }
-
-        currentState.setiHaveVoted(true);
-        currentState.setMyVotePercent(rating);
-        currentState.totalVotedUsers += 1;
-        currentState.totalVotePercentSum += getVotePercentFromRating(rating);
-        setCurrentState(currentState);
-
-    }
-
     private float getVotePercentFromRating(float rating) {
         return rating * 2000;
     }
@@ -443,7 +450,6 @@ public class StarView extends FrameLayout {
         showRatingProgress(false);
 
     }
-
 
     public static class Vote {
 

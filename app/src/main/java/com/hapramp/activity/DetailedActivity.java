@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +35,10 @@ import com.hapramp.models.response.CommentsResponse;
 import com.hapramp.models.response.PostResponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
+import com.hapramp.steem.ContentCommentModel;
 import com.hapramp.steem.PostStructureModel;
+import com.hapramp.steem.SteemCommentCreator;
+import com.hapramp.steem.SteemReplyFetcher;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.user.Profile;
 import com.hapramp.steem.models.user.SteemUser;
@@ -52,10 +56,11 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import eu.bittrade.libs.steemj.apis.database.models.state.Discussion;
 
 import static android.view.View.VISIBLE;
 
-public class DetailedActivity extends AppCompatActivity {
+public class DetailedActivity extends AppCompatActivity implements SteemCommentCreator.SteemCommentCreateCallback, SteemReplyFetcher.SteemReplyFetchCallback {
 
 
     @BindView(R.id.closeBtn)
@@ -101,7 +106,7 @@ public class DetailedActivity extends AppCompatActivity {
     @BindView(R.id.mockCommentParentView)
     RelativeLayout mockCommentParentView;
     @BindView(R.id.scroller)
-    NestedScrollView scroller;
+    ScrollView scroller;
     @BindView(R.id.shadow)
     ImageView shadow;
     @BindView(R.id.commentBtn)
@@ -121,7 +126,7 @@ public class DetailedActivity extends AppCompatActivity {
     @BindView(R.id.commentInputBox)
     EditText commentInputBox;
     @BindView(R.id.sendButton)
-    TextView sendButton;
+    TextView sendCommentButton;
     @BindView(R.id.commentInputContainer)
     RelativeLayout commentInputContainer;
     private List<CommentsResponse.Results> comments;
@@ -130,6 +135,8 @@ public class DetailedActivity extends AppCompatActivity {
     private Feed post;
     private boolean commentBarVisible;
     private ProgressDialog progressDialog;
+    private SteemCommentCreator steemCommentCreator;
+    private SteemReplyFetcher replyFetcher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +145,7 @@ public class DetailedActivity extends AppCompatActivity {
         setContentView(R.layout.activity_details_post);
         ButterKnife.bind(this);
         collectExtras();
+        init();
         fetchComments();
         setTypefaces();
         bindValues();
@@ -168,6 +176,13 @@ public class DetailedActivity extends AppCompatActivity {
 
     }
 
+    private void init(){
+        steemCommentCreator = new SteemCommentCreator();
+        replyFetcher = new SteemReplyFetcher();
+        replyFetcher.setSteemReplyFetchCallback(this);
+        steemCommentCreator.setSteemCommentCreateCallback(this);
+    }
+
     private void collectExtras() {
 
         post = getIntent().getExtras().getParcelable(Constants.EXTRAA_KEY_POST_DATA);
@@ -177,7 +192,32 @@ public class DetailedActivity extends AppCompatActivity {
     }
 
     private void fetchComments() {
+        replyFetcher.requestReplyForPost(post.author,post.permlink);
+    }
 
+    @Override
+    public void onReplyFetching() {
+        if(commentLoadingProgressBar!=null){
+            commentLoadingProgressBar.setVisibility(VISIBLE);
+        }
+    }
+
+    @Override
+    public void onReplyFetched(List<ContentCommentModel> discussions) {
+
+        if(commentLoadingProgressBar!=null){
+            commentLoadingProgressBar.setVisibility(View.GONE);
+        }
+        addComment(discussions);
+        Log.d("DetailedActivity","Replies "+discussions.toString());
+
+    }
+
+    @Override
+    public void onReplyFetchError() {
+        if(commentLoadingProgressBar!=null){
+            commentLoadingProgressBar.setVisibility(View.GONE);
+        }
     }
 
     private void attachListener() {
@@ -214,7 +254,7 @@ public class DetailedActivity extends AppCompatActivity {
             }
         });
 
-        sendButton.setOnClickListener(new View.OnClickListener() {
+        sendCommentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 postComment();
@@ -223,22 +263,38 @@ public class DetailedActivity extends AppCompatActivity {
 
     }
 
-
     private void postComment() {
 
         String cmnt = commentInputBox.getText().toString().trim();
         commentInputBox.setText("");
         if (cmnt.length() > 2) {
-            showProgress("Posting Your Comment...");
-            // DataServer.createComment(String.valueOf(post.id), new CommentBody(cmnt), this);
+            steemCommentCreator.createComment(cmnt,post.author,post.permlink);
         } else {
             Toast.makeText(this, "Comment Too Short!!", Toast.LENGTH_LONG).show();
         }
 
     }
 
+    @Override
+    public void onCommentCreateProcessing() {
+        showProgress("Posting Your Comment...");
+    }
+
+    @Override
+    public void onCommentCreated() {
+        hideProgress();
+        Toast.makeText(this,"Comment Created",Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onCommentCreateFailed() {
+        hideProgress();
+        Toast.makeText(this,"Comment Operation Failed",Toast.LENGTH_LONG).show();
+    }
+
     private void showProgress(String msg) {
         progressDialog.setMessage(msg);
+        progressDialog.setCancelable(false);
         progressDialog.show();
     }
 
@@ -257,7 +313,7 @@ public class DetailedActivity extends AppCompatActivity {
         overflowBtn.setTypeface(t);
         commentBtn.setTypeface(t);
         hapcoinBtn.setTypeface(t);
-        sendButton.setTypeface(t);
+        sendCommentButton.setTypeface(t);
         sendButtonMock.setTypeface(t);
 
     }
@@ -400,20 +456,20 @@ public class DetailedActivity extends AppCompatActivity {
 
     }
 
-    private void addComment(List<CommentsResponse.Results> results) {
+    private void addComment(List<ContentCommentModel> discussions) {
 
-        int commentCount = results.size();
+        int commentCount = discussions.size();
         commentLoadingProgressBar.setVisibility(View.GONE);
         if (commentCount == 0) {
             emptyCommentsCaption.setVisibility(VISIBLE);
         }
 
-        int range = commentCount > 3 ? 3 : results.size();
+        int range = commentCount > 3 ? 3 : discussions.size();
 
         for (int i = 0; i < range; i++) {
 
             CommentView view = new CommentView(this);
-            view.setComment(results.get(i));
+            view.setComment(discussions.get(i));
             commentsViewContainer.addView(view, i,
                     new ViewGroup.LayoutParams(
                             ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -526,6 +582,7 @@ public class DetailedActivity extends AppCompatActivity {
     private void requestPostDelete(int post_id, int pos) {
         // DataServer.deletePost(String.valueOf(post_id), pos, this);
     }
+
 
 //    @Override
 //    public void onCommentFetched(CommentsResponse response) {

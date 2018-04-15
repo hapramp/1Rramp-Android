@@ -28,23 +28,23 @@ public class Profile {
 
     @SerializedName("profile_image")
     @Expose
-    public String profileImage;
+    public String profileImage = "";
     @SerializedName("name")
     @Expose
-    public String name;
+    public String name = "";
     @SerializedName("location")
-    public String location;
+    public String location = "";
     @Expose
     @SerializedName("cover_image")
-    public String cover_image;
+    public String cover_image = "";
     @Expose
     @SerializedName("website")
-    public String website;
+    public String website = "";
     @SerializedName("about")
     @Expose
-    public String about;
+    public String about = "";
 
-    public Profile(String profileImage, String name, String location, String website, String about ,String cover_image ) {
+    public Profile(String profileImage, String name, String location, String website, String about, String cover_image) {
         this.profileImage = profileImage;
         this.name = name;
         this.location = location;
@@ -110,7 +110,7 @@ public class Profile {
                     for (int i = 0; i < users.size(); i++) {
                         if (extendedAccounts.get(i).getJsonMetadata().length() > 0) {
                             // extract profile object
-                            ProfileWrapper profileWrapper = new Gson().fromJson(extendedAccounts.get(i).getJsonMetadata(),ProfileWrapper.class);
+                            ProfileWrapper profileWrapper = new Gson().fromJson(extendedAccounts.get(i).getJsonMetadata(), ProfileWrapper.class);
                             userProfiles.add(new Gson().toJson(profileWrapper.getProfile()));
 
                         } else {
@@ -141,7 +141,7 @@ public class Profile {
                 "name",
                 "location",
                 "website",
-                "about","cover_image_url");
+                "about", "cover_image_url");
         return dummy;
 
     }

@@ -13,6 +13,7 @@ import com.hapramp.R;
 import com.hapramp.models.response.CommentCreateResponse;
 import com.hapramp.models.response.CommentsResponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.ContentCommentModel;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
 
@@ -29,7 +30,7 @@ import butterknife.ButterKnife;
 public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.CommentViewHolder> {
 
 
-    private List<CommentsResponse.Results> commentsList;
+    private List<ContentCommentModel> commentsList;
     private Context mContext;
 
     public CommentsAdapter(Context mContext) {
@@ -79,18 +80,18 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
 
         }
 
-        public void bind(CommentsResponse.Results comment) {
+        public void bind(ContentCommentModel comment) {
 
-            ImageHandler.loadCircularImage(mContext, commentAvatar, comment.user.image_uri);
-            commentOwnerName.setText(comment.user.full_name);
+            ImageHandler.loadCircularImage(mContext, commentAvatar, comment.getCommentAuthorImageUri());
+            commentOwnerName.setText(comment.getCommentAuthor());
 
-            if (comment.created_at.length() != 0) {
-                createdTime.setText(MomentsUtils.getFormattedTime(comment.created_at));
+            if (comment.getCreatedAt().length()>0) {
+                createdTime.setText(comment.getCreatedAt().length());
             } else {
                 createdTime.setText("Now");
             }
 
-            commentTv.setText(comment.content);
+            commentTv.setText(comment.getComment());
 
         }
     }
@@ -110,7 +111,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
 
     }
 
-    public void addComments(List<CommentsResponse.Results> comments) {
+    public void addComments(List<ContentCommentModel> comments) {
 
         commentsList.addAll(comments);
         notifyItemInserted(commentsList.size() - comments.size() - 1);

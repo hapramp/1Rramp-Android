@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.hapramp.R;
 import com.hapramp.models.response.CommentsResponse;
+import com.hapramp.steem.ContentCommentModel;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 
@@ -61,11 +62,11 @@ public class CommentView extends FrameLayout {
 
     }
 
-    public void setComment(CommentsResponse.Results results) {
+    public void setComment(ContentCommentModel result) {
 
-        ImageHandler.loadCircularImage(mContext, commentAvatar, results.user.image_uri);
-        commentOwnerName.setText(results.user.full_name);
-        commentTv.setText(results.content);
+        ImageHandler.loadCircularImage(mContext, commentAvatar, result.getCommentAuthorImageUri());
+        commentOwnerName.setText(result.getCommentAuthor());
+        commentTv.setText(result.getComment());
 
     }
 }
