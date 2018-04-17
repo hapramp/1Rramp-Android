@@ -52,7 +52,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CreateArticleActivity extends AppCompatActivity implements EditorView.OnImageUploadListener, PostCreateCallback, SteemPostCreator.SteemPostCreatorCallback {
+public class CreateArticleActivity extends AppCompatActivity implements EditorView.OnImageUploadListener, SteemPostCreator.SteemPostCreatorCallback {
 
     @BindView(R.id.closeBtn)
     TextView closeBtn;
@@ -191,11 +191,10 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
                 progressDialog.setMessage(msg);
                 progressDialog.setIndeterminate(true);
                 progressDialog.show();
+            } else {
+                progressDialog.hide();
             }
-        } else {
-            progressDialog.hide();
         }
-
     }
 
     private void showConnectivityError() {
@@ -332,6 +331,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
                         if (response.isSuccessful()) {
                             toast("Server Confirmed!");
                             showPublishingProgressDialog(false, "");
+                            close();
                         } else {
                             toast("Failed to Confirm Server!");
                             showPublishingProgressDialog(false, "");
@@ -382,18 +382,6 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     public void onImageUploaded(String remotePath) {
         insertedImages.add(new FeaturedImageSelectionModel(false, remotePath));
         feedFeaturedImageData();
-    }
-
-    @Override
-    public void onPostCreated(String... jobId) {
-        showPublishingProgressDialog(false, "");
-        finish();
-    }
-
-    @Override
-    public void onPostCreateError(String... jobId) {
-        showPublishingProgressDialog(false, "");
-        toast("Error while creating post");
     }
 
     @Override
