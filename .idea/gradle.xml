@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/hapramp-editor" />
             <option value="$PROJECT_DIR$/search" />
             <option value="$PROJECT_DIR$/steem" />
+            <option value="$PROJECT_DIR$/youtube_player" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

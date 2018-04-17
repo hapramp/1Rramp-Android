@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="?selectableItemBackgroundBorderless"
+    android:layout_height="110dp">
+
+    <ImageView
+        android:id="@+id/youtube_thumbnail"
+        android:layout_width="172dp"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true"
+        android:layout_height="108dp" />
+
+    <TextView
+        android:layout_toEndOf="@+id/youtube_thumbnail"
+        android:id="@+id/title"
+        android:lines="2"
+        android:textSize="14sp"
+        android:textColor="#e6000000"
+        android:padding="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_toEndOf="@+id/youtube_thumbnail"
+        android:layout_below="@+id/title"
+        android:id="@+id/author"
+        android:lines="1"
+        android:paddingStart="8dp"
+        android:textSize="12sp"
+        android:textColor="#c8383838"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/views"
+        android:layout_toEndOf="@+id/youtube_thumbnail"
+        android:layout_below="@+id/author"
+        android:textColor="#da000000"
+        android:textSize="12sp"
+        android:layout_width="match_parent"
+        android:paddingStart="8dp"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/length"
+        android:layout_toEndOf="@+id/youtube_thumbnail"
+        android:layout_below="@+id/views"
+        android:textSize="12sp"
+        android:paddingStart="8dp"
+        android:textColor="@color/colorPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <FrameLayout
+        android:id="@+id/toolbar_drop_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@+id/youtube_thumbnail"
+        android:background="@drawable/toolbar_shadow" />
+
+</RelativeLayout>

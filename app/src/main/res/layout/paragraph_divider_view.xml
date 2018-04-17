@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/divider_btn"
-        android:text=""
+        android:text=""
         android:layout_centerInParent="true"
         android:padding="6dp"
         android:background="?selectableItemBackgroundBorderless"

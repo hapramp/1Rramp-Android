@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.hapramp.BuildConfig;
 import com.hapramp.R;
 import com.hapramp.api.DataServer;
 import com.hapramp.models.requests.SteemLoginResponseModel;

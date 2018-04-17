@@ -7,6 +7,7 @@
       <module fileurl="file://$PROJECT_DIR$/hapramp-editor/hapramp-editor.iml" filepath="$PROJECT_DIR$/hapramp-editor/hapramp-editor.iml" />
       <module fileurl="file://$PROJECT_DIR$/search/search.iml" filepath="$PROJECT_DIR$/search/search.iml" />
       <module fileurl="file://$PROJECT_DIR$/steem/steem.iml" filepath="$PROJECT_DIR$/steem/steem.iml" />
+      <module fileurl="file://$PROJECT_DIR$/youtube_player/youtube_player.iml" filepath="$PROJECT_DIR$/youtube_player/youtube_player.iml" />
     </modules>
   </component>
 </project>

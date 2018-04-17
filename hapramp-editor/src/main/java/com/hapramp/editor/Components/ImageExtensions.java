@@ -75,14 +75,18 @@ public class ImageExtensions {
     public void insertImage(Bitmap image, int index, String subTitle) {
         // Render(getStateFromString());
         final View childLayout = ((Activity) editorCore.getContext()).getLayoutInflater().inflate(this.editorImageLayout, null);
+
         ImageView imageView = (ImageView) childLayout.findViewById(R.id.imageView);
         final TextView lblStatus = (TextView) childLayout.findViewById(R.id.lblStatus);
         CustomEditText desc = (CustomEditText) childLayout.findViewById(R.id.desc);
         imageView.setImageBitmap(image);
+
         final String uuid = generateUUID();
+
         if (index == -1) {
             index = editorCore.determineIndex(EditorType.img);
         }
+
         showNextInputHint(index);
         editorCore.getParentView().addView(childLayout, index);
 
@@ -90,9 +94,11 @@ public class ImageExtensions {
         if (editorCore.isLastRow(childLayout)) {
             editorCore.getInputExtensions().insertEditText(index + 1, null, null);
         }
+
         EditorControl control = editorCore.createTag(EditorType.img);
         control.path = uuid; // set the imageId,so we can recognize later after upload
         childLayout.setTag(control);
+
         if (!TextUtils.isEmpty(subTitle))
             desc.setText(subTitle);
         if (editorCore.getRenderType() == RenderType.Editor) {
@@ -156,7 +162,6 @@ public class ImageExtensions {
         Picasso.with(this.editorCore.getContext()).load(_path).into(imageView);
         editorCore.getParentView().addView(childLayout);
     }
-
 
     public View findImageById(String imageId) {
         for (int i = 0; i < editorCore.getParentChildCount(); i++) {

@@ -70,8 +70,8 @@ public class YoutubeVideoTypeView extends FrameLayout implements YouTubePlayer.O
         mPlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_SYSTEM_UI);
 
         if (!wasRestored) {
-            //player.cueVideo(key);
-            mPlayer.loadVideo(key);
+            player.cueVideo(key);
+            //mPlayer.loadVideo(key);
         } else {
             mPlayer.play();
         }

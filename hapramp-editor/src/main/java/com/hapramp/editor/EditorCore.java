@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.hapramp.editor.Components.DividerExtensions;
 import com.hapramp.editor.Components.CustomEditText;
 import com.hapramp.editor.Components.HTMLExtensions;
@@ -26,6 +27,7 @@ import com.hapramp.editor.Components.ImageExtensions;
 import com.hapramp.editor.Components.InputExtensions;
 import com.hapramp.editor.Components.ListItemExtensions;
 import com.hapramp.editor.Components.MapExtensions;
+import com.hapramp.editor.Components.YoutubeExtension;
 import com.hapramp.editor.models.EditorContent;
 import com.hapramp.editor.models.EditorControl;
 import com.hapramp.editor.models.EditorTextStyle;
@@ -67,6 +69,8 @@ public class EditorCore extends LinearLayout {
     private DividerExtensions __dividerExtensions;
     private HTMLExtensions __htmlExtensions;
     private MapExtensions __mapExtensions;
+    private YoutubeExtension __youtubeExtension;
+
 
     public EditorCore(Context _context, AttributeSet attrs) {
         super(_context, attrs);
@@ -87,6 +91,7 @@ public class EditorCore extends LinearLayout {
         __dividerExtensions = new DividerExtensions(this);
         __mapExtensions = new MapExtensions(this);
         __htmlExtensions = new HTMLExtensions(this);
+        __youtubeExtension = new YoutubeExtension(this);
         this.__parentView = this;
     }
 
@@ -196,6 +201,10 @@ public class EditorCore extends LinearLayout {
     public DividerExtensions getDividerExtensions() {
         return this.__dividerExtensions;
     }
+
+    public YoutubeExtension getYoutubeExtension() {
+        return __youtubeExtension;
+    }
 /*
  *
  *
@@ -234,14 +243,18 @@ public class EditorCore extends LinearLayout {
      * @return
      */
     public int determineIndex(EditorType type) {
+
         int size = this.__parentView.getChildCount();
         if (this.__renderType == RenderType.Renderer)
             return size;
         View _view = this.__activeView;
         if (_view == null)
             return size;
+
         int currentIndex = this.__parentView.indexOfChild(_view);
+
         EditorType tag = getControlType(_view);
+
         if (tag == EditorType.INPUT) {
             int length = ((EditText) this.__activeView).getText().length();
             if (length > 0) {
@@ -310,6 +323,7 @@ public class EditorCore extends LinearLayout {
             case img:
             case INPUT:
             case ul:
+            case ytb:
             case UL_LI:
         }
         return control;
@@ -460,6 +474,15 @@ public class EditorCore extends LinearLayout {
                     }
                     //field type, content[]
                     break;
+
+                    case ytb:
+                    EditorControl ytbTag = (EditorControl) view.getTag();
+                    if (!TextUtils.isEmpty(ytbTag.path)) {
+                        node.content.add(ytbTag.path);      // path is video key of youtube url : qpbGqtRLVN8   outof-  https://www.youtube.com/watch?v=qpbGqtRLVN8
+                        list.add(node);
+                    }
+                    break;
+
                 case hr:
                     list.add(node);
                     break;

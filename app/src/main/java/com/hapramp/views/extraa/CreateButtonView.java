@@ -1,17 +1,12 @@
 package com.hapramp.views.extraa;
 
-import android.animation.Animator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewAnimationUtils;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
@@ -19,8 +14,6 @@ import android.widget.TextView;
 
 import com.hapramp.R;
 import com.hapramp.utils.FontManager;
-
-import butterknife.BindView;
 
 /**
  * Created by Ankit on 12/19/2017.

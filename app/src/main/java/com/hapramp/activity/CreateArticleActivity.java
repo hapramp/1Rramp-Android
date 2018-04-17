@@ -25,7 +25,6 @@ import com.hapramp.R;
 import com.hapramp.adapters.FeaturedImageAdapter;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.editor.Editor;
-import com.hapramp.interfaces.PostCreateCallback;
 import com.hapramp.models.FeaturedImageSelectionModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.FeedData;

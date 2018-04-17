@@ -1,6 +1,6 @@
 package com.hapramp.editor.models;
 
-public enum EditorType{
+public enum EditorType {
     none,
     hr,
     ul,
@@ -9,5 +9,6 @@ public enum EditorType{
     OL_LI,
     img,
     INPUT,  // text , h1, h2, h3
-    map
+    map,
+    ytb
 }

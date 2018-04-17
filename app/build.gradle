@@ -89,7 +89,7 @@ dependencies {
     implementation project(':steem')
     implementation project(':search')
     implementation project(':hapramp-editor')
-    implementation files('libs/youtube_player.jar')
+    implementation project(':youtube_player')
 }
 
 apply plugin: 'com.google.gms.google-services'

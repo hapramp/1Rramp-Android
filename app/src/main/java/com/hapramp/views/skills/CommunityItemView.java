@@ -6,7 +6,6 @@ import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -14,19 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hapramp.R;
-import com.hapramp.api.URLS;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
-import com.hapramp.utils.SkillsUtils;
-
-import static com.hapramp.utils.SkillsUtils.DRAMATICS;
-import static com.hapramp.utils.SkillsUtils.ART;
-import static com.hapramp.utils.SkillsUtils.DANCE;
-import static com.hapramp.utils.SkillsUtils.LITERATURE;
-import static com.hapramp.utils.SkillsUtils.MUSIC;
-import static com.hapramp.utils.SkillsUtils.PHOTOGRAPHY;
-import static com.hapramp.utils.SkillsUtils.TRAVEL;
 
 /**
  * Created by Ankit on 6/22/2017.

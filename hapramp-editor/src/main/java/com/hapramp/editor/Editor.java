@@ -29,8 +29,6 @@ import com.hapramp.editor.models.RenderType;
 
 import java.util.Map;
 
-import static com.hapramp.editor.Components.InputExtensions.CONTENT;
-
 public class Editor extends EditorCore {
     public Editor(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -256,6 +254,10 @@ public class Editor extends EditorCore {
 
     public void insertImage(Bitmap bitmap) {
         getImageExtensions().insertImage(bitmap, -1,null);
+    }
+
+    public void insertYoutubeVideo(){
+        getYoutubeExtension().insertYoutubeVideo();
     }
 
     public void onImageUploadComplete(String url, String imageId) {

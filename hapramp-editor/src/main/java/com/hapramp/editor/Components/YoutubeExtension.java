@@ -1,0 +1,188 @@
+package com.hapramp.editor.Components;
+
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.Rect;
+import android.support.v7.app.AlertDialog;
+import android.text.InputType;
+import android.text.TextUtils;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.hapramp.editor.EditorCore;
+import com.hapramp.editor.R;
+import com.hapramp.editor.Utilities.FontManager;
+import com.hapramp.editor.models.EditorControl;
+import com.hapramp.editor.models.EditorType;
+import com.squareup.picasso.Picasso;
+
+/**
+ * Created by Ankit on 4/17/2018.
+ */
+
+public class YoutubeExtension {
+
+    private EditorCore editorCore;
+    private int editorYoutubeLayout = R.layout.tmpl_youtube_view;
+
+    public YoutubeExtension(EditorCore editorCore) {
+        this.editorCore = editorCore;
+    }
+
+    public void insertYoutubeVideo() {
+
+        final AlertDialog.Builder inputAlert = new AlertDialog.Builder(this.editorCore.getContext());
+        inputAlert.setTitle("Add a Link");
+        final EditText userInput = new EditText(this.editorCore.getContext());
+        //dont forget to add some margins on the left and right to match the title
+        userInput.setHint("type the URL here");
+        userInput.setText("-10Il5L962M");
+        userInput.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT);
+        inputAlert.setView(userInput);
+        inputAlert.setPositiveButton("Insert", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String userInputValue = userInput.getText().toString();
+                insertYoutubeVideoThumbnail(userInputValue,-1);
+            }
+        });
+
+        inputAlert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alertDialog = inputAlert.create();
+        alertDialog.show();
+
+    }
+
+    private void insertYoutubeVideoThumbnail(String videoKey, int index) {
+
+        String imageUrl = getYoutubeThumbnailUrl(videoKey);
+        final View childLayout = ((Activity) editorCore.getContext()).getLayoutInflater().inflate(this.editorYoutubeLayout, null);
+        ImageView imageView = childLayout.findViewById(R.id.youtube_thumbnailIv);
+        loadImage(imageView , imageUrl);
+        if (index == -1) {
+            index = editorCore.determineIndex(EditorType.ytb);
+        }
+
+        showNextInputHint(index);
+        editorCore.getParentView().addView(childLayout, index);
+
+        //      _Views.add(childLayout);
+        if (editorCore.isLastRow(childLayout)) {
+            editorCore.getInputExtensions().insertEditText(index + 1, null, null);
+        }
+
+        //set video key
+        if (!TextUtils.isEmpty(videoKey)) {
+            EditorControl control = editorCore.createTag(EditorType.ytb);
+            control.path = videoKey;
+            childLayout.setTag(control);
+        }
+
+        BindEvents(childLayout);
+
+    }
+
+    private String getYoutubeThumbnailUrl(String videoKey) {
+        return String.format("https://i.ytimg.com/vi/%s/hqdefault.jpg", videoKey);
+    }
+
+
+    private void showNextInputHint(int index) {
+        View view = editorCore.getParentView().getChildAt(index);
+        EditorType type = editorCore.getControlType(view);
+        if (type != EditorType.INPUT)
+            return;
+        TextView tv = (TextView) view;
+        tv.setHint(editorCore.placeHolder);
+    }
+
+    private void hideInputHint(int index) {
+        View view = editorCore.getParentView().getChildAt(index);
+        EditorType type = editorCore.getControlType(view);
+        if (type != EditorType.INPUT)
+            return;
+
+        String hint = editorCore.placeHolder;
+        if (index > 0) {
+            View prevView = editorCore.getParentView().getChildAt(index - 1);
+            EditorType prevType = editorCore.getControlType(prevView);
+            if (prevType == EditorType.INPUT)
+                hint = null;
+        }
+        TextView tv = (TextView) view;
+        tv.setHint(hint);
+    }
+
+    /*
+      /used by the renderer to render the image from the Node
+    */
+    public void loadImage(ImageView target , String imageUrl) {
+
+        Picasso.with(this.editorCore.getContext()).load(imageUrl).into(target);
+
+    }
+
+
+    private void BindEvents(final View layout) {
+
+        final ImageView imageView = layout.findViewById(R.id.youtube_thumbnailIv);
+        final View btn_remove = layout.findViewById(R.id.btn_remove);
+        final TextView ytbLogo = layout.findViewById(R.id.youtube_icon);
+        ytbLogo.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL , this.editorCore.getContext()));
+
+        btn_remove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int index = editorCore.getParentView().indexOfChild(layout);
+                editorCore.getParentView().removeView(layout);
+                hideInputHint(index);
+                editorCore.getInputExtensions().setFocusToPrevious(index);
+            }
+        });
+
+        imageView.setOnTouchListener(new View.OnTouchListener() {
+            private Rect rect;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    imageView.setColorFilter(Color.argb(50, 0, 0, 0));
+                    rect = new Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    imageView.setColorFilter(Color.argb(0, 0, 0, 0));
+                }
+                if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    if (!rect.contains(v.getLeft() + (int) event.getX(), v.getTop() + (int) event.getY())) {
+                        imageView.setColorFilter(Color.argb(0, 0, 0, 0));
+                    }
+                }
+                return false;
+            }
+        });
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btn_remove.setVisibility(View.VISIBLE);
+            }
+        });
+        imageView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                btn_remove.setVisibility(hasFocus ? View.VISIBLE : View.GONE);
+            }
+        });
+    }
+
+}

@@ -15,13 +15,7 @@ import android.widget.Toast;
 
 import com.hapramp.R;
 import com.hapramp.adapters.ProfileRecyclerAdapter;
-import com.hapramp.api.DataServer;
 import com.hapramp.api.RetrofitServiceGenerator;
-import com.hapramp.api.URLS;
-import com.hapramp.interfaces.FullUserDetailsCallback;
-import com.hapramp.interfaces.PostFetchCallback;
-import com.hapramp.models.response.PostResponse;
-import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.user.Profile;

@@ -18,4 +18,5 @@ public class URLS {
     public static final String URL_TRAVEL = "https://user-images.githubusercontent.com/10809719/34512768-588ae082-f08a-11e7-911a-580d2619618e.png";
 
 
+
 }

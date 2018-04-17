@@ -38,6 +38,7 @@ import com.hapramp.steem.PreProcessingModel;
 import com.hapramp.steem.ProcessedBodyResponse;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.user.SteemUser;
+import com.hapramp.youtube.YoutubeResultModel;
 
 import java.util.List;
 
@@ -114,6 +115,10 @@ public interface HaprampAPI {
 
     @GET("users/usernames/{username}")
     Call<UserModel> getUserFromUsername(@Path("username") String username);
+
+    @GET
+    Call<YoutubeResultModel> getYoutubeResults(@Url String url);
+
 
 
 

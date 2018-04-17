@@ -53,6 +53,11 @@ public class EditorDataFormatter {
 
                 break;
 
+            case ytb:
+                content = node.content.get(0); // this is video Id of Youtube
+                feedDataItemModel = new FeedDataItemModel(content, FeedData.ContentType.YOUTUBE);
+                break;
+
             case hr:
                 feedDataItemModel = new FeedDataItemModel("", FeedData.ContentType.HR);
                 break;

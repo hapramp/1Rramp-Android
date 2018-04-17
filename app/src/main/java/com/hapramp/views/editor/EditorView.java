@@ -228,7 +228,7 @@ public class EditorView extends FrameLayout implements TextHeaderView.HeadingCha
 
     @Override
     public void onInsertDivider() {
-        editor.insertDivider();
+        editor.insertYoutubeVideo();
     }
 
     @Override

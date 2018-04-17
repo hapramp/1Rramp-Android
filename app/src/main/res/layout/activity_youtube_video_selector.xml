@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/appBar"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    tools:context="com.hapramp.youtube.YoutubeVideoSelectorActivity">
 
 
     <RelativeLayout
@@ -30,7 +30,7 @@
             android:layout_toEndOf="@+id/backBtn"
             android:layout_toStartOf="@+id/searchBtn"
             android:background="#ffffff"
-            android:hint="Search user.."
+            android:hint="Search youtube videos..."
             android:imeOptions="actionSearch"
             android:textColorHint="@color/Black38"
             android:textSize="14sp" />
@@ -48,70 +48,32 @@
             android:textColor="@color/Black54"
             android:textSize="24sp" />
 
-
     </RelativeLayout>
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tabs"
+    <ListView
+        android:layout_below="@+id/action_bar_container"
+        android:id="@+id/suggestionsListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:scrollbars="none"
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:visibility="gone"
         android:layout_below="@+id/action_bar_container"
-        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-        app:tabIndicatorColor="@color/colorPrimary"
-        app:tabGravity="fill"
-        app:tabMode="fixed" />
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
+        android:id="@+id/youtube_results_rv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/tabs" />
+        android:layout_height="match_parent"/>
 
-    <RelativeLayout
-        android:id="@+id/suggestionsContainer"
-        android:background="#32acacac"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <ProgressBar
+        android:visibility="gone"
+        android:id="@+id/suggestionsProgressBar"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="36dp"
         android:layout_below="@+id/action_bar_container"
-        android:visibility="gone">
-
-        <RelativeLayout
-            android:elevation="8dp"
-            android:background="#ffffff"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-        <ListView
-            android:id="@+id/suggestionsListView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none"
-           />
-
-        <ProgressBar
-            android:visibility="gone"
-            android:id="@+id/suggestionsProgressBar"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginTop="16dp"
-            android:layout_centerHorizontal="true" />
-
-        <TextView
-            android:id="@+id/messagePanel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:layout_below="@+id/suggestionsProgressBar"
-            android:layout_centerHorizontal="true"
-            android:textColor="@color/colorAccent"
-            android:layout_marginBottom="16dp"
-            android:visibility="gone" />
-
-        </RelativeLayout>
-
-    </RelativeLayout>
+        android:layout_centerHorizontal="true" />
 
     <FrameLayout
         android:id="@+id/toolbar_drop_shadow"
