@@ -142,6 +142,8 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     private SteemCommentCreator steemCommentCreator;
     private SteemReplyFetcher replyFetcher;
     private List<SteemCommentModel> comments = new ArrayList<>();
+    private List<SteemCommentModel> mComments;
+    private Profile myProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,7 +155,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         init();
         fetchComments();
         setTypefaces();
-        bindValues();
+        bindPostValues();
         attachListener();
 
     }
@@ -181,7 +183,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
 
     }
 
-    private void init(){
+    private void init() {
 
         mHandler = new Handler();
         steemCommentCreator = new SteemCommentCreator();
@@ -200,12 +202,12 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     }
 
     private void fetchComments() {
-        replyFetcher.requestReplyForPost(post.author,post.permlink);
+        replyFetcher.requestReplyForPost(post.author, post.permlink);
     }
 
     @Override
     public void onReplyFetching() {
-        if(commentLoadingProgressBar!=null){
+        if (commentLoadingProgressBar != null) {
             commentLoadingProgressBar.setVisibility(VISIBLE);
         }
     }
@@ -213,20 +215,21 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     @Override
     public void onReplyFetched(List<SteemCommentModel> discussions) {
 
-        if(commentLoadingProgressBar!=null){
+        if (commentLoadingProgressBar != null) {
             commentLoadingProgressBar.setVisibility(View.GONE);
         }
 
+        this.mComments = discussions;
         setCommentCount(discussions.size());
-        addCommentsToView(discussions);
+        addAllCommentsToView(discussions);
         comments = discussions;
-        Log.d("DetailedActivity","Replies "+discussions.toString());
+        Log.d("DetailedActivity", "Replies " + discussions.toString());
 
     }
 
     @Override
     public void onReplyFetchError() {
-        if(commentLoadingProgressBar!=null){
+        if (commentLoadingProgressBar != null) {
             commentLoadingProgressBar.setVisibility(View.GONE);
         }
     }
@@ -287,8 +290,8 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     private void navigateToCommentsPage() {
 
         Intent intent = new Intent(DetailedActivity.this, CommentsActivity.class);
-        intent.putExtra(Constants.EXTRAA_KEY_POST_AUTHOR,post.author);
-        intent.putExtra(Constants.EXTRAA_KEY_POST_PERMLINK,post.permlink);
+        intent.putExtra(Constants.EXTRAA_KEY_POST_AUTHOR, post.author);
+        intent.putExtra(Constants.EXTRAA_KEY_POST_PERMLINK, post.permlink);
         intent.putParcelableArrayListExtra(Constants.EXTRAA_KEY_COMMENTS, (ArrayList<SteemCommentModel>) comments);
         startActivity(intent);
 
@@ -299,10 +302,19 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         String cmnt = commentInputBox.getText().toString().trim();
         commentInputBox.setText("");
         if (cmnt.length() > 2) {
-            steemCommentCreator.createComment(cmnt,post.author,post.permlink);
+            steemCommentCreator.createComment(cmnt, post.author, post.permlink);
         } else {
             Toast.makeText(this, "Comment Too Short!!", Toast.LENGTH_LONG).show();
         }
+
+        //add to view temprorily
+
+        String image_uri = "";
+        if (myProfile != null) {
+            image_uri = myProfile.getProfileImage();
+        }
+        SteemCommentModel steemCommentModel = new SteemCommentModel(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(), cmnt, MomentsUtils.getCurrentTime(), image_uri);
+        includeNewComment(steemCommentModel);
 
     }
 
@@ -314,13 +326,14 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     @Override
     public void onCommentCreated() {
         hideProgress();
-        Toast.makeText(this,"Comment Created",Toast.LENGTH_LONG).show();
+        //add to current view
+        Toast.makeText(this, "Comment Created", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onCommentCreateFailed() {
         hideProgress();
-        Toast.makeText(this,"Comment Operation Failed",Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Comment Operation Failed", Toast.LENGTH_LONG).show();
     }
 
     private void showProgress(String msg) {
@@ -349,13 +362,12 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
 
     }
 
-    //
-    private void bindValues() {
+    private void bindPostValues() {
 
         // set basic meta-info
-        Profile _p = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserProfile(post.author), Profile.class);
-        if (_p != null) {
-            ImageHandler.loadCircularImage(this, feedOwnerPic, _p.getProfileImage());
+        myProfile = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserProfile(post.author), Profile.class);
+        if (myProfile != null) {
+            ImageHandler.loadCircularImage(this, feedOwnerPic, myProfile.getProfileImage());
         }
 
         feedOwnerTitle.setText(post.author);
@@ -364,7 +376,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
                         MomentsUtils.getFormattedTime(post.created)));
 
         setCommunities(post.jsonMetadata.tags);
-        PostStructureModel postStructureModel = new PostStructureModel(post.jsonMetadata.content.getData(),post.jsonMetadata.getContent().type);
+        PostStructureModel postStructureModel = new PostStructureModel(post.jsonMetadata.content.getData(), post.jsonMetadata.getContent().type);
         renderView.render(postStructureModel);
 
         SteemUser steemUser = new Gson().fromJson(HaprampPreferenceManager.getInstance().getCurrentUserInfoAsJson(), SteemUser.class);
@@ -392,8 +404,8 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
             public void onClick(View v) {
                 if (ConnectionUtils.isConnected(DetailedActivity.this)) {
                     starView.onStarIndicatorTapped();
-                }else{
-                    Toast.makeText(DetailedActivity.this,"Check Network Connection",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(DetailedActivity.this, "Check Network Connection", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -403,8 +415,8 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
             public boolean onLongClick(View v) {
                 if (ConnectionUtils.isConnected(DetailedActivity.this)) {
                     starView.onStarIndicatorLongPressed();
-                }else{
-                    Toast.makeText(DetailedActivity.this,"Check Network Connection",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(DetailedActivity.this, "Check Network Connection", Toast.LENGTH_LONG).show();
                 }
                 return true;
             }
@@ -683,8 +695,10 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         commentCount.setText(String.format(getResources().getString(R.string.comment_format), count));
     }
 
-    private void addCommentsToView(List<SteemCommentModel> discussions) {
+    private void addAllCommentsToView(List<SteemCommentModel> discussions) {
 
+        //clear the view first
+        commentsViewContainer.removeAllViews();
         int commentCount = discussions.size();
         commentLoadingProgressBar.setVisibility(View.GONE);
         if (commentCount == 0) {
@@ -694,20 +708,31 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         int range = commentCount > 3 ? 3 : discussions.size();
 
         for (int i = 0; i < range; i++) {
-
-            CommentView view = new CommentView(this);
-            view.setComment(discussions.get(i));
-            commentsViewContainer.addView(view, i,
-                    new ViewGroup.LayoutParams(
-                            ViewGroup.LayoutParams.WRAP_CONTENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT));
-
+            addCommentToView(discussions.get(i), i);
         }
 
         if (commentCount > 3) {
             moreCommentsCaption.setVisibility(VISIBLE);
         }
 
+    }
+
+    private void addCommentToView(SteemCommentModel steemCommentModel, int index) {
+
+        CommentView view = new CommentView(this);
+        view.setComment(steemCommentModel);
+        commentsViewContainer.addView(view, index,
+                new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT));
+
+    }
+
+    private void includeNewComment(SteemCommentModel steemCommentModel) {
+        //add this to top of existing list
+        mComments.add(0, steemCommentModel);
+        //invalidate the comments view
+        addAllCommentsToView(mComments);
     }
 
     private void showCommentBar(boolean show) {

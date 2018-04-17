@@ -26,7 +26,6 @@ public class MomentsUtils {
         sdf.setTimeZone(tz);
 
         try {
-
             Date mDate = sdf.parse(timeStamp);
             long timeInMilliseconds = mDate.getTime();
             formattedTime = DateUtils.getRelativeTimeSpanString(timeInMilliseconds).toString();
@@ -37,4 +36,12 @@ public class MomentsUtils {
         return formattedTime;
     }
 
+    public static String getCurrentTime() {
+
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
+        String date = df.format(c.getTime());
+        return date;
+
+    }
 }
