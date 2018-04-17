@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hapramp.R;
 import com.hapramp.utils.FontManager;
@@ -44,6 +45,7 @@ public class StarView extends FrameLayout {
     };
     private Vote currentState;
     private Vote legacyState;
+    private boolean voteUnderProcess;
     private onVoteUpdateCallback onVoteUpdateCallback;
 
     public StarView(@NonNull Context context) {
@@ -117,7 +119,7 @@ public class StarView extends FrameLayout {
                 voteState.totalVotedUsers,
                 voteState.totalVotePercentSum);
 
-        Log.d("VoteTest","CurrentVote :"+voteState.toString());
+        Log.d("VoteTest", "CurrentVote :" + voteState.toString());
 
         setCurrentState(voteState);
         return this;
@@ -200,6 +202,10 @@ public class StarView extends FrameLayout {
 
     public void onStarIndicatorTapped() {
 
+        if (voteUnderProcess) {
+            Toast.makeText(mContext, "Your previous vote is under process.", Toast.LENGTH_LONG).show();
+            return;
+        }
 
         if (currentState.iHaveVoted) {
             // cancel all my ratings
@@ -218,6 +224,11 @@ public class StarView extends FrameLayout {
     }
 
     public void onStarIndicatorLongPressed() {
+
+        if (!voteUnderProcess) {
+            Toast.makeText(mContext, "Your previous vote is under process.", Toast.LENGTH_LONG).show();
+            return;
+        }
 
         if (currentState.iHaveVoted) {
             showRatingBar();
@@ -246,7 +257,7 @@ public class StarView extends FrameLayout {
         currentState.totalVotePercentSum += getVotePercentFromRating(rating);
         setCurrentState(currentState);
 
-        Log.d("VoteTest","After Voting | CurrentVote :"+currentState.toString());
+        Log.d("VoteTest", "After Voting | CurrentVote :" + currentState.toString());
 
 
     }
@@ -262,7 +273,7 @@ public class StarView extends FrameLayout {
         ratingBar.setRating(0);
         // update the UI
         setCurrentState(currentState);
-        Log.d("VoteTest","After Deleting | CurrentVote :"+currentState.toString());
+        Log.d("VoteTest", "After Deleting | CurrentVote :" + currentState.toString());
         deleteVoteFromSteem();
 
     }
@@ -425,16 +436,34 @@ public class StarView extends FrameLayout {
         showRatingProgress(true);
     }
 
+    public void castedVoteTemporarily() {
+        this.voteUnderProcess = true;
+        toast("Your vote is under process. We will let you know when its done!");
+        showRatingProgress(false);
+    }
+
+    public void deletedVoteTemporarily() {
+        this.voteUnderProcess = true;
+        toast("Your vote is under process. We will let you know when its done!");
+        showRatingProgress(false);
+    }
+
     public void castedVoteSuccessfully() {
         // set new state as the legacy state
         this.legacyState = currentState;
         showRatingProgress(false);
+        toast("Your vote processed successfully!");
+        this.voteUnderProcess = false;
+
     }
 
     public void deletedVoteSuccessfully() {
         // set new state as the legacy state
         this.legacyState = currentState;
         showRatingProgress(false);
+        toast("Your vote processed successfully!");
+        this.voteUnderProcess = false;
+
     }
 
     public void failedToDeleteVoteFromServer() {
@@ -449,6 +478,10 @@ public class StarView extends FrameLayout {
         setCurrentState(currentState);
         showRatingProgress(false);
 
+    }
+
+    private void toast(String msg){
+        Toast.makeText(mContext,msg,Toast.LENGTH_LONG).show();
     }
 
     public static class Vote {

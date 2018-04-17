@@ -354,6 +354,13 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
 
         starView.voteProcessing();
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                starView.castedVoteTemporarily();
+            }
+        }, 500);
+
         final int votePower = vote;
         Log.d("VoteTest", "voting with percent " + votePower);
         new Thread() {
@@ -367,8 +374,6 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
                     SteemJ steemJ = SteemHelper.getSteemInstance();
 
                     steemJ.vote(voter, voteFor, new Permlink(getPermlinkAsString()), (short) votePower);
-                    l("Voted on Steem!");
-                    Log.d("VoteTest", "voted " + votePower);
                     //callback for success
                     mHandler.post(new Runnable() {
                         @Override
@@ -406,6 +411,14 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         Log.d("VoteTest", "Deleting vote");
 
         starView.voteProcessing();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                starView.deletedVoteTemporarily();
+            }
+        }, 500);
+
 
         new Thread() {
 
@@ -452,28 +465,24 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         if (starView != null) {
             starView.failedToCastVote();
         }
-        Toast.makeText(mContext, "FAILED : Vote Casting", Toast.LENGTH_LONG).show();
     }
 
     private void castingVoteSuccess() {
         if (starView != null) {
             starView.castedVoteSuccessfully();
         }
-        Toast.makeText(mContext, "SUCCESS : Vote Casting", Toast.LENGTH_LONG).show();
     }
 
     private void voteDeleteFailed() {
         if (starView != null) {
             starView.failedToDeleteVoteFromServer();
         }
-        Toast.makeText(mContext, "FAILED : Vote Delete", Toast.LENGTH_LONG).show();
     }
 
     private void voteDeleteSuccess() {
         if (starView != null) {
             starView.deletedVoteSuccessfully();
         }
-        Toast.makeText(mContext, "SUCCESS : Vote Deleted", Toast.LENGTH_LONG).show();
     }
 
     private void l(String msg) {
