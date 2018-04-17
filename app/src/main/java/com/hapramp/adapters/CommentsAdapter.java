@@ -82,7 +82,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
             ImageHandler.loadCircularImage(mContext, commentAvatar, comment.getCommentAuthorImageUri());
             commentOwnerName.setText(comment.getCommentAuthor());
 
-            if (comment.getCreatedAt().length()>0) {
+            if (comment.getCreatedAt().length() > 0) {
                 createdTime.setText(MomentsUtils.getFormattedTime(comment.getCreatedAt()));
             } else {
                 createdTime.setText("Now");
@@ -100,5 +100,9 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
 
     }
 
+    public void addSingleComment(SteemCommentModel steemCommentModel) {
+        commentsList.add(0, steemCommentModel);
+        notifyItemInserted(0);
+    }
 
 }

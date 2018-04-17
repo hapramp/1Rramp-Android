@@ -733,6 +733,9 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         mComments.add(0, steemCommentModel);
         //invalidate the comments view
         addAllCommentsToView(mComments);
+        //update comment count
+        setCommentCount(mComments.size());
+
     }
 
     private void showCommentBar(boolean show) {

@@ -28,6 +28,7 @@ import com.hapramp.steem.models.user.Profile;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
+import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.ViewItemDecoration;
 
 import java.util.ArrayList;
@@ -74,6 +75,7 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
     private String postPermlink;
     private SteemCommentCreator steemCommentCreator;
     private SteemReplyFetcher replyFetcher;
+    private Profile myProfile;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -104,10 +106,10 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
         sendButton.setTypeface(typeface);
 
         // set basic meta-info
-        Profile _p = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserProfile(HaprampPreferenceManager.getInstance().getCurrentSteemUsername()), Profile.class);
-        if (_p != null) {
+        myProfile = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserProfile(HaprampPreferenceManager.getInstance().getCurrentSteemUsername()), Profile.class);
+        if (myProfile != null) {
             //load self image to created
-            ImageHandler.loadCircularImage(this, commentCreaterAvatar, _p.getProfileImage());
+            ImageHandler.loadCircularImage(this, commentCreaterAvatar, myProfile.getProfileImage());
         }
 
         commentsAdapter = new CommentsAdapter(this);
@@ -137,7 +139,7 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                postComment();
             }
         });
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -161,7 +163,17 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
             Toast.makeText(this, "Comment Too Short!!", Toast.LENGTH_LONG).show();
         }
 
+        //add the comment to view instantly
+        String image_uri = "";
+        if (myProfile != null) {
+            image_uri = myProfile.getProfileImage();
+        }
+        SteemCommentModel steemCommentModel = new SteemCommentModel(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(), cmnt, MomentsUtils.getCurrentTime(), image_uri);
+        commentsAdapter.addSingleComment(steemCommentModel);
+
     }
+
+
 
     @Override
     public void onCommentCreateProcessing() {
