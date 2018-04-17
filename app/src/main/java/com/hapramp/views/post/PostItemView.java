@@ -1,18 +1,25 @@
 package com.hapramp.views.post;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v4.widget.Space;
+import android.support.v4.widget.TextViewCompat;
 import android.text.Layout;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -51,6 +58,7 @@ import butterknife.ButterKnife;
 import eu.bittrade.libs.steemj.SteemJ;
 import eu.bittrade.libs.steemj.base.models.AccountName;
 import eu.bittrade.libs.steemj.base.models.Permlink;
+import eu.bittrade.libs.steemj.base.models.deserializer.GuestBloggerPairDeserializer;
 import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
 import eu.bittrade.libs.steemj.exceptions.SteemInvalidTransactionException;
 import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
@@ -155,13 +163,21 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
             }
         });
 
+        readMoreBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateToDetailsPage();
+            }
+        });
 
     }
 
     private void navigateToDetailsPage() {
+
         Intent detailsIntent = new Intent(mContext, DetailedActivity.class);
         detailsIntent.putExtra(Constants.EXTRAA_KEY_POST_DATA, mFeed);
         mContext.startActivity(detailsIntent);
+
     }
 
     private void bind(final Feed feed) {
@@ -194,29 +210,22 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
             postTitle.setVisibility(VISIBLE);
             postTitle.setText(title);
 
-            if (isContentEllipsised(postSnippet)) {
-                // show read more button
-                readMoreBtn.setVisibility(VISIBLE);
-            } else {
-                //hide read more button
-                readMoreBtn.setVisibility(GONE);
-            }
-
+            checkEllipseAndInvalidateReadMoreButton(postSnippet, readMoreBtn);
         }
 
         setSteemEarnings(feed.totalPayoutValue);
         setCommunities(feed.jsonMetadata.tags);
-        Log.d("PostItemView", "requesting image for " + feed.author);
+        //   Log.d("PostItemView", "requesting image for " + feed.author);
         Profile _p = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserProfile(feed.author), Profile.class);
-        Log.d("PostItemView", "Got: " + HaprampPreferenceManager.getInstance().getUserProfile(feed.author));
+        //  Log.d("PostItemView", "Got: " + HaprampPreferenceManager.getInstance().getUserProfile(feed.author));
         if (_p != null) {
-            Log.d("PostItemView", "loading image from " + _p.getProfileImage());
+            //  Log.d("PostItemView", "loading image from " + _p.getProfileImage());
             ImageHandler.loadCircularImage(mContext, feedOwnerPic, _p.getProfileImage());
         }
 
 
         bindVotes(feed.activeVotes, feed.permlink);
-        replyFetcher.requestReplyForPost(feed.author,feed.permlink);
+        replyFetcher.requestReplyForPost(feed.author, feed.permlink);
         attachListenersOnStarView();
         attachListerOnAuthorHeader();
 
@@ -250,8 +259,8 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
             public void onClick(View v) {
                 if (ConnectionUtils.isConnected(mContext)) {
                     starView.onStarIndicatorTapped();
-                }else{
-                    Toast.makeText(mContext,"Check Network Connection",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(mContext, "Check Network Connection", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -261,8 +270,8 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
             public boolean onLongClick(View v) {
                 if (ConnectionUtils.isConnected(mContext)) {
                     starView.onStarIndicatorLongPressed();
-                }else{
-                    Toast.makeText(mContext,"Check Network Connection",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(mContext, "Check Network Connection", Toast.LENGTH_LONG).show();
                 }
                 return true;
             }
@@ -545,17 +554,34 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     private boolean isContentEllipsised(TextView textView) {
 
         Layout layout = textView.getLayout();
+        // Log.d("PostItemView", "layout:" + layout);
         if (layout != null) {
-            int lines = layout.getLineCount();
-            if (lines > 0) {
-                int ellipsisCount = layout.getEllipsisCount(lines - 1);
-                if (ellipsisCount > 0) {
+            int lineCount = layout.getLineCount();
+            //  Log.d("PostItemView", "lines:" + lineCount);
+            for (int i = 0; i < lineCount; i++) {
+                //  Log.d("PostItemView", "Ellipse Count" + layout.getEllipsisCount(i) + " MaxLines:" + TextViewCompat.getMaxLines(textView));
+                if (layout.getEllipsisCount(i) > 0) {
                     return true;
                 }
             }
         }
         return false;
 
+    }
+
+    private void checkEllipseAndInvalidateReadMoreButton(final TextView target, final TextView readMoreBtn) {
+
+        ViewTreeObserver vto = target.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (isContentEllipsised(target)) {
+                    readMoreBtn.setVisibility(VISIBLE);
+                } else {
+                    readMoreBtn.setVisibility(GONE);
+                }
+            }
+        });
     }
 
     private void setSteemEarnings(String payout) {

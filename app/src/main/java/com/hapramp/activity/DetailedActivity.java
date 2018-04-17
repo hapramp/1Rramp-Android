@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.RequiresApi;
 import android.support.v4.widget.Space;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -33,9 +35,9 @@ import com.hapramp.R;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
-import com.hapramp.steem.SteemCommentModel;
 import com.hapramp.steem.PostStructureModel;
 import com.hapramp.steem.SteemCommentCreator;
+import com.hapramp.steem.SteemCommentModel;
 import com.hapramp.steem.SteemHelper;
 import com.hapramp.steem.SteemReplyFetcher;
 import com.hapramp.steem.models.Feed;
@@ -145,6 +147,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     private List<SteemCommentModel> mComments;
     private Profile myProfile;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

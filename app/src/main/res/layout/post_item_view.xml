@@ -83,7 +83,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:text="Arrow Styles"
             />
 
@@ -93,9 +93,11 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/post_title"
             android:text="@string/sample"
-            android:maxLines="5"
+            android:maxLines="4"
             android:maxHeight="36dp"
             android:ellipsize="end"
+            android:textSize="16sp"
+            android:lineSpacingExtra="2dp"
             android:layout_marginTop="8dp"
             android:textColor="@color/Black54" />
 
@@ -107,9 +109,11 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/post_snippet"
             android:gravity="center"
+            android:paddingEnd="8dp"
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
             android:text="READ MORE"
+            android:background="?selectableItemBackground"
             android:textColor="@color/colorPrimary"
             android:textStyle="bold"
             android:textSize="14sp" />
