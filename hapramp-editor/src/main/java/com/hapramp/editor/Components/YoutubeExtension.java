@@ -2,6 +2,7 @@ package com.hapramp.editor.Components;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.support.v7.app.AlertDialog;
@@ -33,33 +34,9 @@ public class YoutubeExtension {
         this.editorCore = editorCore;
     }
 
-    public void insertYoutubeVideo() {
+    public void insertYoutubeVideo(String videoId) {
 
-        final AlertDialog.Builder inputAlert = new AlertDialog.Builder(this.editorCore.getContext());
-        inputAlert.setTitle("Add a Link");
-        final EditText userInput = new EditText(this.editorCore.getContext());
-        //dont forget to add some margins on the left and right to match the title
-        userInput.setHint("type the URL here");
-        userInput.setText("-10Il5L962M");
-        userInput.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT);
-        inputAlert.setView(userInput);
-        inputAlert.setPositiveButton("Insert", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String userInputValue = userInput.getText().toString();
-                insertYoutubeVideoThumbnail(userInputValue,-1);
-            }
-        });
-
-        inputAlert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        AlertDialog alertDialog = inputAlert.create();
-        alertDialog.show();
+        insertYoutubeVideoThumbnail(videoId, -1);
 
     }
 
@@ -68,7 +45,7 @@ public class YoutubeExtension {
         String imageUrl = getYoutubeThumbnailUrl(videoKey);
         final View childLayout = ((Activity) editorCore.getContext()).getLayoutInflater().inflate(this.editorYoutubeLayout, null);
         ImageView imageView = childLayout.findViewById(R.id.youtube_thumbnailIv);
-        loadImage(imageView , imageUrl);
+        loadImage(imageView, imageUrl);
         if (index == -1) {
             index = editorCore.determineIndex(EditorType.ytb);
         }
@@ -126,7 +103,7 @@ public class YoutubeExtension {
     /*
       /used by the renderer to render the image from the Node
     */
-    public void loadImage(ImageView target , String imageUrl) {
+    public void loadImage(ImageView target, String imageUrl) {
 
         Picasso.with(this.editorCore.getContext()).load(imageUrl).into(target);
 
@@ -138,7 +115,7 @@ public class YoutubeExtension {
         final ImageView imageView = layout.findViewById(R.id.youtube_thumbnailIv);
         final View btn_remove = layout.findViewById(R.id.btn_remove);
         final TextView ytbLogo = layout.findViewById(R.id.youtube_icon);
-        ytbLogo.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL , this.editorCore.getContext()));
+        ytbLogo.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL, this.editorCore.getContext()));
 
         btn_remove.setOnClickListener(new View.OnClickListener() {
             @Override

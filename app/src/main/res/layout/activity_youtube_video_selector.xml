@@ -32,6 +32,7 @@
             android:background="#ffffff"
             android:hint="Search youtube videos..."
             android:imeOptions="actionSearch"
+            android:inputType="text"
             android:textColorHint="@color/Black38"
             android:textSize="14sp" />
 

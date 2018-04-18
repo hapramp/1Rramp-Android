@@ -74,7 +74,7 @@
             android:layout_width="0dp"
             android:layout_height="48dp"/>
 
-        <com.hapramp.views.editor.DividerView
+        <com.hapramp.views.editor.YoutubeInsertView
             android:layout_weight="1"
             android:layout_toRightOf="@+id/link_view"
             android:layout_centerVertical="true"

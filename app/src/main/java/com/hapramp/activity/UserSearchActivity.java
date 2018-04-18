@@ -186,7 +186,6 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
         searchManager = new SearchManager(this);
     }
 
-
     private void updateUserCache(List<UserModel> response) {
 
         String userJson = new Gson().toJson(new UserModelWrapper(response));

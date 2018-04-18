@@ -48,7 +48,7 @@ public class YoutubeResultAdapter extends RecyclerView.Adapter<YoutubeResultAdap
 
     @Override
     public void onBindViewHolder(@NonNull YtbResultViewHolder holder, int position) {
-        holder.bind(youtubeResults.get(position));
+        holder.bind(youtubeResults.get(position), videoItemClickListener);
     }
 
     @Override
@@ -71,12 +71,16 @@ public class YoutubeResultAdapter extends RecyclerView.Adapter<YoutubeResultAdap
         @BindView(R.id.toolbar_drop_shadow)
         FrameLayout toolbarDropShadow;
 
+        View rootView;
+
         public YtbResultViewHolder(View itemView) {
             super(itemView);
+            rootView = itemView;
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(YoutubeResultModel.Result youtubeResultModel) {
+        public void bind(final YoutubeResultModel.Result youtubeResultModel, final VideoItemClickListener videoItemClickListener) {
+
             String imageUrl = "https://img.youtube.com/vi/" + youtubeResultModel.getId() + "/hqdefault.jpg";
             //thumb
             ImageHandler.load(context, youtubeThumbnail, imageUrl);
@@ -87,10 +91,28 @@ public class YoutubeResultAdapter extends RecyclerView.Adapter<YoutubeResultAdap
             //length
             length.setText(youtubeResultModel.getLength());
             //views
-            views.setText(youtubeResultModel.getViews()+" Views");
+            views.setText(youtubeResultModel.getViews() + " Views");
 
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (videoItemClickListener != null) {
+                        videoItemClickListener.onClicked(youtubeResultModel.getId());
+                    }
+                }
+            });
         }
 
+    }
+
+    public VideoItemClickListener videoItemClickListener;
+
+    public void setVideoItemClickListener(VideoItemClickListener videoItemClickListener) {
+        this.videoItemClickListener = videoItemClickListener;
+    }
+
+    public interface VideoItemClickListener {
+        void onClicked(String id);
     }
 
 }

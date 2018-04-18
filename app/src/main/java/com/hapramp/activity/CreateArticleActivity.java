@@ -40,6 +40,7 @@ import com.hapramp.utils.FeaturedImageItemDecorator;
 import com.hapramp.utils.FontManager;
 import com.hapramp.views.editor.EditorView;
 import com.hapramp.views.post.PostCategoryView;
+import com.hapramp.youtube.YoutubeVideoSelectorActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,6 +51,8 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.hapramp.views.editor.YoutubeInsertView.YOUTUBE_RESULT_REQUEST;
 
 public class CreateArticleActivity extends AppCompatActivity implements EditorView.OnImageUploadListener, SteemPostCreator.SteemPostCreatorCallback {
 
@@ -159,8 +162,15 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else if (resultCode == Activity.RESULT_CANCELED) {
-            // editor.RestoreState();
+        }
+
+        if (requestCode == YOUTUBE_RESULT_REQUEST && resultCode == Activity.RESULT_OK) {
+
+            String videoId = data.getStringExtra(YoutubeVideoSelectorActivity.EXTRA_VIDEO_KEY);
+            editorView.insertYoutube(videoId);
+
+        } else {
+            Toast.makeText(this, "No Video Selected!", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -276,7 +286,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     private void includeCustomTags(ArrayList<String> tags) {
         String[] __segs = tagsInputBox.getText().toString().split(" ");
         for (int i = 0; i < __segs.length; i++) {
-            if(__segs[i].length()>0)
+            if (__segs[i].length() > 0)
                 tags.add(__segs[i]);
         }
     }

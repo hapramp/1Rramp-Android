@@ -256,8 +256,8 @@ public class Editor extends EditorCore {
         getImageExtensions().insertImage(bitmap, -1,null);
     }
 
-    public void insertYoutubeVideo(){
-        getYoutubeExtension().insertYoutubeVideo();
+    public void insertYoutubeVideo(String videoId){
+        getYoutubeExtension().insertYoutubeVideo(videoId);
     }
 
     public void onImageUploadComplete(String url, String imageId) {

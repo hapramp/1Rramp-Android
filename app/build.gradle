@@ -86,6 +86,7 @@ dependencies {
     testImplementation "org.robolectric:robolectric:$roboelectricVersion"
     testImplementation "org.robolectric:shadows-multidex:$roboelectricVersion"
 
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':steem')
     implementation project(':search')
     implementation project(':hapramp-editor')

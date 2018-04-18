@@ -44,7 +44,7 @@ import static com.hapramp.utils.EditorDataFormatter.getFormatedItem;
  * Created by Ankit on 12/31/2017.
  */
 
-public class EditorView extends FrameLayout implements TextHeaderView.HeadingChangeListener, BoldButtonView.BoldTextListener, ItalicView.ItalicTextListener, BulletsView.BulletListener, LinkView.LinkInsertListener, DividerView.DividerListener, ImageInsertView.ImageInsertListener {
+public class EditorView extends FrameLayout implements TextHeaderView.HeadingChangeListener, BoldButtonView.BoldTextListener, ItalicView.ItalicTextListener, BulletsView.BulletListener, LinkView.LinkInsertListener, ImageInsertView.ImageInsertListener {
 
 
     @BindView(R.id.editor)
@@ -62,7 +62,7 @@ public class EditorView extends FrameLayout implements TextHeaderView.HeadingCha
     @BindView(R.id.link_view)
     LinkView linkView;
     @BindView(R.id.paragraph_divider_view)
-    DividerView paragraphDividerView;
+    YoutubeInsertView paragraphDividerView;
     @BindView(R.id.image_insertBtn)
     ImageInsertView imageInsertBtn;
     private Context mContext;
@@ -100,7 +100,6 @@ public class EditorView extends FrameLayout implements TextHeaderView.HeadingCha
         italicTextControl.setItalicTextListener(this);
         bulletsControl.setBulletListener(this);
         linkView.setLinkInsertListener(this);
-        paragraphDividerView.setDividerListener(this);
         imageInsertBtn.setInsertListener(this);
 
         editor.setEditorListener(new EditorListener() {
@@ -226,9 +225,8 @@ public class EditorView extends FrameLayout implements TextHeaderView.HeadingCha
 
     }
 
-    @Override
-    public void onInsertDivider() {
-        editor.insertYoutubeVideo();
+    public void insertYoutube(String videoId) {
+        editor.insertYoutubeVideo(videoId);
     }
 
     @Override
