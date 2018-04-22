@@ -106,7 +106,7 @@
                 android:layout_below="@+id/articleCategoryView"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:text="Tags (seperated by space only)"
+                android:text="Hashtags (seperated by space only)"
                 android:textColor="@color/Black38" />
 
             <EditText
@@ -117,7 +117,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/add_tag_editor_bg"
-                android:hint="Add Tags"
+                android:hint="Add Hashtags"
                 android:padding="8dp"
                 android:layout_marginTop="8dp"
                 android:textSize="14sp" />

@@ -127,7 +127,6 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
         showExistAlert();
     }
 
-
     private void showExistAlert() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
@@ -174,7 +173,6 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
         }
 
     }
-
 
     private void init() {
 

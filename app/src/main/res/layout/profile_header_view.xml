@@ -7,12 +7,12 @@
     <RelativeLayout
         android:id="@+id/profile_header_container"
         android:layout_width="match_parent"
-        android:layout_height="256dp">
+        android:layout_height="228dp">
 
         <ImageView
             android:id="@+id/profile_wall_pic"
             android:layout_width="match_parent"
-            android:layout_height="196dp"
+            android:layout_height="172dp"
             android:scaleType="fitXY" />
 
         <FrameLayout
