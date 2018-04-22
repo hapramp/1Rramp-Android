@@ -52,7 +52,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.hapramp.views.editor.YoutubeInsertView.YOUTUBE_RESULT_REQUEST;
+import static com.hapramp.views.editor.YoutubeInsertButtonView.YOUTUBE_RESULT_REQUEST;
 
 public class CreateArticleActivity extends AppCompatActivity implements EditorView.OnImageUploadListener, SteemPostCreator.SteemPostCreatorCallback {
 

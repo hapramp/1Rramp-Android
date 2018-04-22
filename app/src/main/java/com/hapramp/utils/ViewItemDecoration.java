@@ -15,11 +15,14 @@ public class ViewItemDecoration extends RecyclerView.ItemDecoration {
 
     private Drawable mDivider;
     private boolean wantTopOffset = true;
+    private int topOffset;
+
     public ViewItemDecoration(Drawable drawable) {
         this.mDivider = drawable;
     }
 
-    public void setWantTopOffset(boolean want){
+    public void setWantTopOffset(boolean want , int topOffset){
+        this.topOffset = topOffset;
         this.wantTopOffset = want;
     }
 
@@ -28,7 +31,7 @@ public class ViewItemDecoration extends RecyclerView.ItemDecoration {
 
         if (parent.getChildAdapterPosition(view) == 0 && wantTopOffset) {
 
-            outRect.top = PixelUtils.dpToPx(84);
+            outRect.top = PixelUtils.dpToPx(104);
             outRect.bottom = mDivider.getIntrinsicHeight();
 
         }else{
@@ -75,4 +78,7 @@ public class ViewItemDecoration extends RecyclerView.ItemDecoration {
 
     }
 
+    public void setTopOffset(int topOffset) {
+
+    }
 }

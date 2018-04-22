@@ -287,18 +287,6 @@ public class Editor extends EditorCore {
          *
          */
 
-    public void setMapViewLayout(int layout) {
-        this.getMapExtensions().setMapViewTemplate(layout);
-    }
-
-    public void insertMap() {
-        getMapExtensions().loadMapActivity();
-    }
-
-    public void insertMap(String Cords) {
-        getMapExtensions().insertMap(Cords, null, true);
-    }
-
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event, CustomEditText editText) {
         boolean onKey = super.onKey(v, keyCode, event, editText);

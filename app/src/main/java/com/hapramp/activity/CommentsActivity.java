@@ -117,7 +117,7 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
 
         Drawable drawable = ContextCompat.getDrawable(this, R.drawable.comment_item_divider_view);
         viewItemDecoration = new ViewItemDecoration(drawable);
-        viewItemDecoration.setWantTopOffset(false);
+        viewItemDecoration.setWantTopOffset(false,0);
         commentsRecyclerView.addItemDecoration(viewItemDecoration);
         commentsRecyclerView.setAdapter(commentsAdapter);
 

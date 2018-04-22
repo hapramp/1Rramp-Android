@@ -149,7 +149,7 @@ public class ProfileFragment extends Fragment {
         profilePostAdapter = new ProfileRecyclerAdapter(mContext, HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
         Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
         viewItemDecoration = new ViewItemDecoration(drawable);
-        viewItemDecoration.setWantTopOffset(false);
+        viewItemDecoration.setWantTopOffset(false,0);
         profilePostRv.addItemDecoration(viewItemDecoration);
         llm = new LinearLayoutManager(mContext);
         profilePostRv.setLayoutManager(llm);

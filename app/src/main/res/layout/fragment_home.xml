@@ -10,6 +10,7 @@
         android:id="@+id/feedListView"
         android:layout_width="match_parent"
         customNS:wantTopSpaceOffset="true"
+        customNS:topOffset="108"
         android:layout_height="match_parent"/>
 
     <android.support.v7.widget.RecyclerView

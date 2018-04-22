@@ -145,7 +145,6 @@ public class RendererView extends FrameLayout {
             case FeedData.ContentType.YOUTUBE:
                 YoutubeVideoTypeView youtubeVideoTypeView = new YoutubeVideoTypeView(mContext);
                 youtubeVideoTypeView.setVideoKey(data.getContent());
-                youtubeVideoTypeView.setTag(data.getContent());
                 return youtubeVideoTypeView;
 
             default:

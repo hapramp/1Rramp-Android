@@ -7,7 +7,6 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Point;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -26,7 +25,6 @@ import com.hapramp.editor.Components.HTMLExtensions;
 import com.hapramp.editor.Components.ImageExtensions;
 import com.hapramp.editor.Components.InputExtensions;
 import com.hapramp.editor.Components.ListItemExtensions;
-import com.hapramp.editor.Components.MapExtensions;
 import com.hapramp.editor.Components.YoutubeExtension;
 import com.hapramp.editor.models.EditorContent;
 import com.hapramp.editor.models.EditorControl;
@@ -68,7 +66,6 @@ public class EditorCore extends LinearLayout {
     private ListItemExtensions __listItemExtensions;
     private DividerExtensions __dividerExtensions;
     private HTMLExtensions __htmlExtensions;
-    private MapExtensions __mapExtensions;
     private YoutubeExtension __youtubeExtension;
 
 
@@ -89,7 +86,6 @@ public class EditorCore extends LinearLayout {
         __imageExtensions = new ImageExtensions(this);
         __listItemExtensions = new ListItemExtensions(this);
         __dividerExtensions = new DividerExtensions(this);
-        __mapExtensions = new MapExtensions(this);
         __htmlExtensions = new HTMLExtensions(this);
         __youtubeExtension = new YoutubeExtension(this);
         this.__parentView = this;
@@ -184,10 +180,6 @@ public class EditorCore extends LinearLayout {
 
     public ImageExtensions getImageExtensions() {
         return this.__imageExtensions;
-    }
-
-    public MapExtensions getMapExtensions() {
-        return this.__mapExtensions;
     }
 
     public HTMLExtensions getHtmlExtensions() {
@@ -534,9 +526,6 @@ public class EditorCore extends LinearLayout {
                             __listItemExtensions.AddListItem(_layout, item.type == EditorType.ol, item.content.get(i));
                         }
                     }
-                    break;
-                case map:
-                    __mapExtensions.insertMap(item.content.get(0), item.content.get(1), true);
                     break;
             }
         }

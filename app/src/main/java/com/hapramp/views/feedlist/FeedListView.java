@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -41,101 +42,90 @@ import butterknife.ButterKnife;
 public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoadMoreListener {
 
 
-    private boolean wantBottomSpace = true;
-    private boolean wantTopSpace = true;
+    private int topOffset;
+    private int bottomOffset;
     @BindView(R.id.feed_owner_pic)
     ImageView feedOwnerPic;
     @BindView(R.id.reference_line)
     Space referenceLine;
     @BindView(R.id.feed_owner_title)
-    TextView feedOwnerTitle;
-    @BindView(R.id.feed_owner_subtitle)
-    TextView feedOwnerSubtitle;
+    View feedOwnerTitle;
+    @BindView(R.id.date_mock)
+    View dateMock;
+    @BindView(R.id.com1)
+    View com1;
+    @BindView(R.id.com2)
+    View com2;
+    @BindView(R.id.com3)
+    View com3;
     @BindView(R.id.post_header_container)
     RelativeLayout postHeaderContainer;
     @BindView(R.id.image_mock)
     FrameLayout imageMock;
     @BindView(R.id.post_title)
-    TextView postTitle;
-    @BindView(R.id.tags)
-    TextView tags;
+    View postTitle;
     @BindView(R.id.line1)
-    TextView line1;
+    View line1;
     @BindView(R.id.line2)
-    TextView line2;
+    View line2;
     @BindView(R.id.line3)
-    TextView line3;
+    View line3;
     @BindView(R.id.line4)
-    TextView line4;
+    View line4;
     @BindView(R.id.post_meta_container)
     RelativeLayout postMetaContainer;
+    @BindView(R.id.star_mock)
+    View starMock;
+    @BindView(R.id.star_count)
+    View starCount;
+    @BindView(R.id.comment_mock)
+    View commentMock;
+    @BindView(R.id.comment_count_mock)
+    View commentCountMock;
+    @BindView(R.id.comment_mock_container)
+    LinearLayout commentMockContainer;
+    @BindView(R.id.hapcoin_mock)
+    View hapcoinMock;
+    @BindView(R.id.comment_count_mock1)
+    View commentCountMock1;
     @BindView(R.id.shimmer_view_container)
     ShimmerFrameLayout shimmerViewContainer;
     @BindView(R.id.mock1)
     FrameLayout mock1;
-    @BindView(R.id.feed_owner_pic1)
-    ImageView feedOwnerPic1;
-    @BindView(R.id.reference_line1)
-    Space referenceLine1;
-    @BindView(R.id.feed_owner_title1)
-    TextView feedOwnerTitle1;
-    @BindView(R.id.feed_owner_subtitle1)
-    TextView feedOwnerSubtitle1;
-    @BindView(R.id.post_header_container1)
-    RelativeLayout postHeaderContainer1;
-    @BindView(R.id.image_mock1)
-    FrameLayout imageMock1;
-    @BindView(R.id.post_title1)
-    TextView postTitle1;
-    @BindView(R.id.tags1)
-    TextView tags1;
-    @BindView(R.id.line11)
-    TextView line11;
-    @BindView(R.id.line21)
-    TextView line21;
-    @BindView(R.id.line31)
-    TextView line31;
-    @BindView(R.id.line41)
-    TextView line41;
-    @BindView(R.id.post_meta_container1)
-    RelativeLayout postMetaContainer1;
-    @BindView(R.id.shimmer_view_container1)
-    ShimmerFrameLayout shimmerViewContainer1;
-    @BindView(R.id.mock2)
-    FrameLayout mock2;
-    @BindView(R.id.no_post_sad_icon)
-    TextView noPostSadIcon;
+    @BindView(R.id.mockContainer)
+    RelativeLayout mockContainer;
+    @BindView(R.id.sad_icon)
+    TextView sadIcon;
     @BindView(R.id.failed_message_title)
     TextView failedMessageTitle;
     @BindView(R.id.failed_message_details)
     TextView failedMessageDetails;
     @BindView(R.id.failed_message_card_container)
     RelativeLayout failedMessageCardContainer;
-    @BindView(R.id.sad_icon)
-    TextView sadIcon;
+    @BindView(R.id.retryFeedLoadingBtn)
+    TextView retryFeedLoadingBtn;
+    @BindView(R.id.failedToLoadViewContainer)
+    RelativeLayout failedToLoadViewContainer;
+    @BindView(R.id.no_post_sad_icon)
+    TextView noPostSadIcon;
     @BindView(R.id.nopost_message_title)
     TextView nopostMessageTitle;
     @BindView(R.id.nopost_message_details)
     TextView nopostMessageDetails;
     @BindView(R.id.nopost_message_card_container)
     RelativeLayout nopostMessageCardContainer;
+    @BindView(R.id.noPostLoadedViewContainer)
+    RelativeLayout noPostLoadedViewContainer;
     @BindView(R.id.feedRecyclerView)
     RecyclerView feedRecyclerView;
     @BindView(R.id.feedRefreshLayout)
     SwipeRefreshLayout feedRefreshLayout;
     @BindView(R.id.moveToTop)
     TextView moveToTop;
-    @BindView(R.id.retryFeedLoadingBtn)
-    TextView retryFeedLoadingBtn;
-    @BindView(R.id.mockContainer)
-    RelativeLayout mockContainer;
-    @BindView(R.id.failedToLoadViewContainer)
-    RelativeLayout failedToLoadViewContainer;
-    @BindView(R.id.noPostLoadedViewContainer)
-    RelativeLayout noFeedLoadedViewContainer;
+    private boolean wantBottomSpace = true;
+    private boolean wantTopSpace = true;
     private Context mContext;
     private View rootView;
-
     private HomeFeedsAdapter homeFeedsAdapter;
     private LinearLayoutManager layoutManager;
     private ViewItemDecoration viewItemDecoration;
@@ -165,8 +155,12 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
         super(context, attrs, defStyleAttr);
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.FeedListView, 0, 0);
         try {
+
             wantTopSpace = typedArray.getBoolean(R.styleable.FeedListView_wantTopSpaceOffset, false);
             wantBottomSpace = typedArray.getBoolean(R.styleable.FeedListView_wantBottomSpaceOffset, false);
+            topOffset = typedArray.getInt(R.styleable.FeedListView_topOffset, 108);
+            bottomOffset = typedArray.getInt(R.styleable.FeedListView_bottomOffset, 0);
+
         } finally {
             typedArray.recycle();
         }
@@ -182,7 +176,7 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
 
         Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
         viewItemDecoration = new ViewItemDecoration(drawable);
-        viewItemDecoration.setWantTopOffset(wantTopSpace);
+        viewItemDecoration.setWantTopOffset(wantTopSpace , topOffset);
         spaceDecorator = new SpaceDecorator();
 
         layoutManager = new LinearLayoutManager(mContext);
@@ -202,6 +196,17 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
         sadIcon.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         noPostSadIcon.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
 
+    }
+
+    //for setting shimmer offset
+    public void setTopMarginForShimmer(int dp) {
+
+        mockContainer.setPadding(0, PixelUtils.dpToPx(dp), 0, 0);
+
+    }
+
+    public void setTopMarginForRecyclerView(int dp) {
+        feedRecyclerView.setPadding(0, PixelUtils.dpToPx(dp), 0, 0);
     }
 
     private void attachListeners() {
@@ -399,7 +404,7 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
 
     private void setNoFeedLoadedViewVisibility(boolean show) {
 
-        setViewVisibility(show, noFeedLoadedViewContainer);
+        setViewVisibility(show, noPostLoadedViewContainer);
 
     }
 

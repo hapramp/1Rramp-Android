@@ -102,6 +102,7 @@ public class HomeFragment extends Fragment implements
 
         feedListView.setFeedListViewListener(this);
         feedListView.initialLoading();
+        feedListView.setTopMarginForShimmer(104);
         fetchAllPosts();
 
     }

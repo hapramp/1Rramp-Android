@@ -26,7 +26,7 @@ public class ImageHandler {
                     .load(_uri)
                     .diskCacheStrategy(DiskCacheStrategy.RESULT)
                     .into(target);
-        }catch (IllegalArgumentException e){
+        }catch (Exception e){
 
        }
 

@@ -230,9 +230,6 @@ public class HTMLExtensions {
                 case hr:
                     htmlBlock.append(getTemplateHtml(item.type));
                     break;
-                case map:
-                    htmlBlock.append(getTemplateHtml(item.type).replace("{{$content}}", editorCore.getMapExtensions().getCordsAsUri(item.content.get(0))).replace("{{$desc}}", item.content.get(1)));
-                    break;
                 case ul:
                 case ol:
                     htmlBlock.append(getListAsHtml(item));

@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Ankit on 1/28/2018.
  */
-public class YoutubeInsertView extends FrameLayout {
+public class YoutubeInsertButtonView extends FrameLayout {
 
     @BindView(R.id.container)
     RelativeLayout container;
@@ -32,17 +32,17 @@ public class YoutubeInsertView extends FrameLayout {
     public static int YOUTUBE_RESULT_REQUEST = 101;
 
 
-    public YoutubeInsertView(@NonNull Context context) {
+    public YoutubeInsertButtonView(@NonNull Context context) {
         super(context);
         init(context);
     }
 
-    public YoutubeInsertView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public YoutubeInsertButtonView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public YoutubeInsertView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public YoutubeInsertButtonView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }

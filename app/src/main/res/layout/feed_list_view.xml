@@ -5,8 +5,7 @@
     android:layout_height="match_parent">
 
     <include
-        android:layout_marginTop="84dp"
-        android:visibility="gone"
+        android:visibility="visible"
         layout="@layout/load_more_progress_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

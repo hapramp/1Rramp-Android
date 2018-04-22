@@ -74,20 +74,21 @@
             android:layout_width="0dp"
             android:layout_height="48dp"/>
 
-        <com.hapramp.views.editor.YoutubeInsertView
-            android:layout_weight="1"
-            android:layout_toRightOf="@+id/link_view"
-            android:layout_centerVertical="true"
-            android:contentDescription="Line Divider"
-            android:id="@+id/paragraph_divider_view"
-            android:layout_width="0dp"
-            android:layout_height="48dp"/>
 
         <com.hapramp.views.editor.ImageInsertView
             android:layout_weight="1"
             android:layout_toRightOf="@+id/paragraph_divider_view"
             android:layout_centerVertical="true"
             android:id="@+id/image_insertBtn"
+            android:layout_width="0dp"
+            android:layout_height="48dp"/>
+
+        <com.hapramp.views.editor.YoutubeInsertButtonView
+            android:layout_weight="1"
+            android:layout_toRightOf="@+id/link_view"
+            android:layout_centerVertical="true"
+            android:contentDescription="Line Divider"
+            android:id="@+id/paragraph_divider_view"
             android:layout_width="0dp"
             android:layout_height="48dp"/>
 

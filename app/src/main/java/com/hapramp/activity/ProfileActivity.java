@@ -123,7 +123,7 @@ public class ProfileActivity extends AppCompatActivity {
         profilePostRv.setLayoutManager(llm);
         Drawable drawable = ContextCompat.getDrawable(this, R.drawable.post_item_divider_view);
         viewItemDecoration = new ViewItemDecoration(drawable);
-        viewItemDecoration.setWantTopOffset(false);
+        viewItemDecoration.setWantTopOffset(false,0);
         profilePostRv.addItemDecoration(viewItemDecoration);
         profilePostRv.setAdapter(profilePostAdapter);
         setScrollListener();

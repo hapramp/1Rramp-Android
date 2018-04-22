@@ -43,12 +43,14 @@ public class YoutubeVideoTypeView extends FrameLayout implements YouTubePlayer.O
     }
 
     private void init(Context context) {
+
         this.mContext = context;
         View view = LayoutInflater.from(mContext).inflate(R.layout.youtube_view_layout, this);
-
+        //YouTubePlayerFragment youTubePlayerFragment = new YouTubePlayerFragment();
+        //((AppCompatActivity) mContext).getFragmentManager().beginTransaction().add(R.id.content_holder,youTubePlayerFragment,"tag_"+System.currentTimeMillis()).commit();
         playerFragment = (YouTubePlayerFragment) ((AppCompatActivity) mContext).getFragmentManager().findFragmentById(R.id.youtube_player_fragment);
-
         playerFragment.initialize(YouTubeKey, this);
+
     }
 
     public void setVideoKey(String key) {
@@ -64,7 +66,7 @@ public class YoutubeVideoTypeView extends FrameLayout implements YouTubePlayer.O
         mPlayer.setFullscreenControlFlags(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_ORIENTATION);
 
         //Show full screen in landscape mode always
-       // mPlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_ALWAYS_FULLSCREEN_IN_LANDSCAPE);
+        // mPlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_ALWAYS_FULLSCREEN_IN_LANDSCAPE);
 
         //System controls will appear automatically
         mPlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_SYSTEM_UI);

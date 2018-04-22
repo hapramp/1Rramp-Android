@@ -29,13 +29,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hapramp.editor.EditorCore;
 import com.hapramp.editor.R;
 import com.hapramp.editor.models.EditorControl;
 import com.hapramp.editor.models.EditorType;
 import com.hapramp.editor.models.RenderType;
-import com.squareup.picasso.Picasso;
-
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -150,6 +150,7 @@ public class ImageExtensions {
       /used by the renderer to render the image from the Node
     */
     public void loadImage(String _path, String desc) {
+
         final View childLayout = ((Activity) editorCore.getContext()).getLayoutInflater().inflate(this.editorImageLayout, null);
         ImageView imageView = (ImageView) childLayout.findViewById(R.id.imageView);
         CustomEditText text = (CustomEditText) childLayout.findViewById(R.id.desc);
@@ -159,7 +160,12 @@ public class ImageExtensions {
             text.setText(desc);
             text.setEnabled(false);
         }
-        Picasso.with(this.editorCore.getContext()).load(_path).into(imageView);
+
+        Glide.with(this.editorCore.getContext())
+                .load(_path)
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .into(imageView);
+
         editorCore.getParentView().addView(childLayout);
     }
 

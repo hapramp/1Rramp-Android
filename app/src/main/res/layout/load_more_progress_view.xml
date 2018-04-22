@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
     android:id="@+id/mockContainer"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <FrameLayout
@@ -33,7 +33,7 @@
                         android:layout_width="64dp"
                         android:layout_height="match_parent"
                         android:padding="12dp"
-                        android:src="@drawable/rs_coin_bg" />
+                        android:src="@drawable/user_pic_moc_bg" />
 
                     <android.support.v4.widget.Space
                         android:id="@+id/reference_line"
@@ -41,9 +41,9 @@
                         android:layout_height="4dp"
                         android:layout_centerVertical="true" />
 
-                    <TextView
+                    <View
                         android:id="@+id/feed_owner_title"
-                        android:layout_width="144dp"
+                        android:layout_width="108dp"
                         android:layout_height="16dp"
                         android:layout_above="@+id/reference_line"
                         android:layout_toEndOf="@+id/feed_owner_pic"
@@ -51,14 +51,42 @@
                         android:text=""
                         android:textStyle="bold" />
 
-
-                    <TextView
-                        android:id="@+id/feed_owner_subtitle"
+                    <View
+                        android:id="@+id/date_mock"
                         android:layout_width="84dp"
+                        android:layout_height="16dp"
+                        android:layout_above="@+id/reference_line"
+                        android:layout_marginStart="4dp"
+                        android:layout_toEndOf="@+id/feed_owner_title"
+                        android:background="@color/Black12" />
+
+                    <View
+                        android:id="@+id/com1"
+                        android:layout_width="36dp"
                         android:layout_height="12dp"
                         android:layout_below="@+id/reference_line"
                         android:layout_toEndOf="@+id/feed_owner_pic"
-                        android:background="@color/Black12"
+                        android:background="@drawable/community_mock_bg"
+                        android:text="" />
+
+                    <View
+                        android:id="@+id/com2"
+                        android:layout_width="36dp"
+                        android:layout_height="12dp"
+                        android:layout_below="@+id/reference_line"
+                        android:layout_marginStart="4dp"
+                        android:layout_toEndOf="@+id/com1"
+                        android:background="@drawable/community_mock_bg"
+                        android:text="" />
+
+                    <View
+                        android:id="@+id/com3"
+                        android:layout_width="36dp"
+                        android:layout_height="12dp"
+                        android:layout_below="@+id/reference_line"
+                        android:layout_marginStart="4dp"
+                        android:layout_toEndOf="@+id/com2"
+                        android:background="@drawable/community_mock_bg"
                         android:text="" />
 
                 </RelativeLayout>
@@ -66,7 +94,7 @@
                 <FrameLayout
                     android:id="@+id/image_mock"
                     android:layout_width="match_parent"
-                    android:layout_height="144dp"
+                    android:layout_height="172dp"
                     android:layout_below="@+id/post_header_container"
                     android:background="@color/LightBlack" />
 
@@ -78,7 +106,7 @@
                     android:background="#ffffff"
                     android:padding="16dp">
 
-                    <TextView
+                    <View
                         android:id="@+id/post_title"
                         android:layout_width="144dp"
                         android:layout_height="16dp"
@@ -88,31 +116,17 @@
                         android:text=""
                         android:textSize="16sp" />
 
-
-                    <TextView
-                        android:id="@+id/tags"
-                        android:layout_width="84dp"
+                    <View
+                        android:id="@+id/line1"
+                        android:layout_width="match_parent"
                         android:layout_height="8dp"
                         android:layout_below="@+id/post_title"
                         android:layout_marginTop="8dp"
                         android:background="@color/Black12"
-                        android:padding="8dp"
-                        android:text=""
-                        android:textSize="12sp"
-                        android:visibility="visible" />
-
-
-                    <TextView
-                        android:id="@+id/line1"
-                        android:layout_width="match_parent"
-                        android:layout_height="8dp"
-                        android:layout_below="@+id/tags"
-                        android:layout_marginTop="16dp"
-                        android:background="@color/Black12"
                         android:text=""
                         android:textSize="16sp" />
 
-                    <TextView
+                    <View
                         android:id="@+id/line2"
                         android:layout_width="match_parent"
                         android:layout_height="8dp"
@@ -122,7 +136,7 @@
                         android:text=""
                         android:textSize="16sp" />
 
-                    <TextView
+                    <View
                         android:id="@+id/line3"
                         android:layout_width="match_parent"
                         android:layout_height="8dp"
@@ -133,7 +147,7 @@
                         android:textSize="16sp" />
 
 
-                    <TextView
+                    <View
                         android:id="@+id/line4"
                         android:layout_width="match_parent"
                         android:layout_height="8dp"
@@ -145,164 +159,92 @@
 
                 </RelativeLayout>
 
-
-            </RelativeLayout>
-
-        </com.facebook.shimmer.ShimmerFrameLayout>
-
-    </FrameLayout>
-
-
-
-    <FrameLayout
-        android:id="@+id/mock2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/mock1"
-        android:layout_marginTop="16dp"
-        android:background="#ffffff">
-
-        <com.facebook.shimmer.ShimmerFrameLayout
-            android:id="@+id/shimmer_view_container1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
                 <RelativeLayout
-                    android:id="@+id/post_header_container1"
                     android:layout_width="match_parent"
-                    android:layout_height="64dp"
-                    android:background="#ffffff"
-                    android:clickable="true"
-                    android:focusable="true">
+                    android:layout_height="48dp"
+                    android:layout_below="@+id/post_meta_container"
+                    android:layout_marginStart="16dp">
 
-                    <ImageView
-                        android:id="@+id/feed_owner_pic1"
-                        android:layout_width="64dp"
-                        android:layout_height="match_parent"
-                        android:padding="12dp"
-                        android:src="@drawable/rs_coin_bg" />
+                    <View
+                        android:id="@+id/star_mock"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/user_pic_moc_bg" />
 
-                    <android.support.v4.widget.Space
-                        android:id="@+id/reference_line1"
-                        android:layout_width="match_parent"
-                        android:layout_height="4dp"
-                        android:layout_centerVertical="true" />
-
-                    <TextView
-                        android:id="@+id/feed_owner_title1"
-                        android:layout_width="144dp"
+                    <View
+                        android:id="@+id/star_count"
+                        android:layout_width="48dp"
                         android:layout_height="16dp"
-                        android:layout_above="@+id/reference_line1"
-                        android:layout_toEndOf="@+id/feed_owner_pic1"
-                        android:background="@color/Black12"
-                        android:text=""
-                        android:textStyle="bold" />
-
-
-                    <TextView
-                        android:id="@+id/feed_owner_subtitle1"
-                        android:layout_width="84dp"
-                        android:layout_height="12dp"
-                        android:layout_below="@+id/reference_line1"
-                        android:layout_toEndOf="@+id/feed_owner_pic1"
-                        android:background="@color/Black12"
+                        android:layout_marginStart="4dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@+id/star_mock"
+                        android:background="@drawable/community_mock_bg"
                         android:text="" />
 
-                </RelativeLayout>
+                    <LinearLayout
+                        android:id="@+id/comment_mock_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
-                <FrameLayout
-                    android:id="@+id/image_mock1"
-                    android:layout_width="match_parent"
-                    android:layout_height="144dp"
-                    android:layout_below="@+id/post_header_container1"
-                    android:background="@color/LightBlack" />
-
-                <RelativeLayout
-                    android:id="@+id/post_meta_container1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/image_mock1"
-                    android:background="#ffffff"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:id="@+id/post_title1"
-                        android:layout_width="144dp"
-                        android:layout_height="16dp"
-                        android:background="@color/Black12"
-                        android:paddingStart="8dp"
-                        android:paddingTop="8dp"
-                        android:text=""
-                        android:textSize="16sp" />
+                        <View
+                            android:id="@+id/comment_mock"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/user_pic_moc_bg" />
 
 
-                    <TextView
-                        android:id="@+id/tags1"
-                        android:layout_width="84dp"
-                        android:layout_height="8dp"
-                        android:layout_below="@+id/post_title1"
-                        android:layout_marginTop="8dp"
-                        android:background="@color/Black12"
-                        android:padding="8dp"
-                        android:text=""
-                        android:textSize="12sp"
-                        android:visibility="visible" />
+                        <View
+                            android:id="@+id/comment_count_mock"
+                            android:layout_width="48dp"
+                            android:layout_height="16dp"
+                            android:layout_marginStart="4dp"
+                            android:background="@drawable/community_mock_bg"
+                            android:gravity="center_horizontal"
+                            android:text="" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_marginEnd="16dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:id="@+id/hapcoin_mock"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/user_pic_moc_bg" />
 
 
-                    <TextView
-                        android:id="@+id/line11"
-                        android:layout_width="match_parent"
-                        android:layout_height="8dp"
-                        android:layout_below="@+id/tags1"
-                        android:layout_marginTop="16dp"
-                        android:background="@color/Black12"
-                        android:text=""
-                        android:textSize="16sp" />
+                        <View
+                            android:id="@+id/comment_count_mock1"
+                            android:layout_width="48dp"
+                            android:layout_height="16dp"
+                            android:layout_marginStart="4dp"
+                            android:background="@drawable/community_mock_bg"
+                            android:gravity="center_horizontal"
+                            android:text="" />
 
-                    <TextView
-                        android:id="@+id/line21"
-                        android:layout_width="match_parent"
-                        android:layout_height="8dp"
-                        android:layout_below="@+id/line11"
-                        android:layout_marginTop="4dp"
-                        android:background="@color/Black12"
-                        android:text=""
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:id="@+id/line31"
-                        android:layout_width="match_parent"
-                        android:layout_height="8dp"
-                        android:layout_below="@+id/line21"
-                        android:layout_marginTop="4dp"
-                        android:background="@color/Black12"
-                        android:text=""
-                        android:textSize="16sp" />
-
-
-                    <TextView
-                        android:id="@+id/line41"
-                        android:layout_width="match_parent"
-                        android:layout_height="8dp"
-                        android:layout_below="@+id/line31"
-                        android:layout_marginTop="4dp"
-                        android:background="@color/Black12"
-                        android:text=""
-                        android:textSize="16sp" />
+                    </LinearLayout>
 
                 </RelativeLayout>
-
 
             </RelativeLayout>
 
         </com.facebook.shimmer.ShimmerFrameLayout>
 
     </FrameLayout>
-
 
 </RelativeLayout>

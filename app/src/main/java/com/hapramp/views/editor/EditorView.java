@@ -62,7 +62,7 @@ public class EditorView extends FrameLayout implements TextHeaderView.HeadingCha
     @BindView(R.id.link_view)
     LinkView linkView;
     @BindView(R.id.paragraph_divider_view)
-    YoutubeInsertView paragraphDividerView;
+    YoutubeInsertButtonView paragraphDividerView;
     @BindView(R.id.image_insertBtn)
     ImageInsertView imageInsertBtn;
     private Context mContext;

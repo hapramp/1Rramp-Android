@@ -1,25 +1,20 @@
 package com.hapramp.editor.Components;
 
 import android.app.Activity;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.support.v7.app.AlertDialog;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hapramp.editor.EditorCore;
 import com.hapramp.editor.R;
 import com.hapramp.editor.Utilities.FontManager;
 import com.hapramp.editor.models.EditorControl;
 import com.hapramp.editor.models.EditorType;
-import com.squareup.picasso.Picasso;
 
 /**
  * Created by Ankit on 4/17/2018.
@@ -105,7 +100,11 @@ public class YoutubeExtension {
     */
     public void loadImage(ImageView target, String imageUrl) {
 
-        Picasso.with(this.editorCore.getContext()).load(imageUrl).into(target);
+        Glide.with(this.editorCore.getContext())
+                .load(imageUrl)
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .into(target);
+
 
     }
 
