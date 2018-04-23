@@ -6,20 +6,20 @@
     android:layout_height="match_parent">
 
     <FrameLayout
-        android:visibility="gone"
+        android:visibility="visible"
         android:background="#ffffff"
         android:id="@+id/overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
     <TextView
-        android:visibility="gone"
-        android:alpha="0"
+        android:visibility="visible"
+        android:alpha="1"
         android:clickable="false"
         android:focusable="false"
         android:id="@+id/createArticleBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="87dp"
+        android:layout_height="32dp"
         android:layout_above="@+id/createPostBtn"
         android:layout_centerHorizontal="true"
         android:background="@drawable/create_post_floating_btn_bg"
@@ -29,17 +29,17 @@
         android:paddingStart="20dp"
         android:paddingTop="8dp"
         android:text="BLOG"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/Black38"
         android:textSize="14sp" />
 
     <TextView
         android:clickable="false"
         android:focusable="false"
-        android:alpha="0"
-        android:visibility="gone"
+        android:alpha="1"
+        android:visibility="visible"
         android:id="@+id/createPostBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="87dp"
+        android:layout_height="32dp"
         android:layout_above="@+id/plusBtn"
         android:layout_centerHorizontal="true"
         android:background="@drawable/create_post_floating_btn_bg"
@@ -49,7 +49,7 @@
         android:paddingStart="20dp"
         android:paddingTop="8dp"
         android:text="POST"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/Black38"
         android:textSize="14sp" />
 
 

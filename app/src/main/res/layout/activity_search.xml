@@ -56,10 +56,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/action_bar_container"
-        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-        app:tabIndicatorColor="@color/colorPrimary"
         app:tabGravity="fill"
-        app:tabMode="fixed" />
+        app:tabIndicatorColor="@color/colorPrimary"
+        app:tabMode="fixed"
+        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
@@ -69,47 +69,36 @@
 
     <RelativeLayout
         android:id="@+id/suggestionsContainer"
-        android:background="#32acacac"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/action_bar_container"
-        android:visibility="gone">
-
-        <RelativeLayout
-            android:elevation="8dp"
-            android:background="#ffffff"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        android:background="#ffffff"
+        android:visibility="visible">
 
         <ListView
             android:id="@+id/suggestionsListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scrollbars="none"
-           />
+            android:scrollbars="none" />
 
         <ProgressBar
-            android:visibility="gone"
             android:id="@+id/suggestionsProgressBar"
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="16dp"
-            android:layout_centerHorizontal="true" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/messagePanel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:layout_below="@+id/suggestionsProgressBar"
             android:layout_centerHorizontal="true"
-            android:textColor="@color/colorAccent"
             android:layout_marginBottom="16dp"
+            android:gravity="center_horizontal"
+            android:textColor="@color/colorAccent"
             android:visibility="gone" />
-
-        </RelativeLayout>
 
     </RelativeLayout>
 

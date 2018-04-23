@@ -131,6 +131,7 @@ public class InputExtensions {
     }
 
     private TextView getNewTextView(String text) {
+
         final TextView textView = new TextView(this.editorCore.getContext());
         addEditableStyling(textView, FontSize.NORMALTEXTSIZE);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -142,6 +143,7 @@ public class InputExtensions {
             textView.setText(toReplace);
         }
         return textView;
+
     }
 
     public CustomEditText getNewEditTextInst(final String hint, String text, int textSize) {
@@ -207,7 +209,7 @@ public class InputExtensions {
                     /* if the index was 0, set the placeholder to empty, behaviour happens when the user just press enter
                      */
                             if (index == 0) {
-                                editText.setHint(null);
+                                editText.setHint("Write Article...");
                                 editText.setTag(R.id.control_tag, hint);
                             }
                             int position = index + 1;
@@ -250,12 +252,6 @@ public class InputExtensions {
 
         String nextHint = isLastText(position) ? null : editorCore.placeHolder;
         if (editorCore.getRenderType() == RenderType.Editor) {
-            if (position == 0) {
-                nextHint = "Heading..";
-            }
-            if (position == 1) {
-                nextHint = "Sub Heading...";
-            }
             final CustomEditText view = getNewEditTextInst(nextHint, text, textSize);
             editorCore.getParentView().addView(view, position);
             editorCore.setActiveView(view);

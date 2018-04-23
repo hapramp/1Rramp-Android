@@ -11,7 +11,7 @@
         android:lineSpacingExtra="2dp"
         android:padding="8dp"
         android:text="Text using H1 size"
-        android:textColor="#1e1e1e"
-        android:textSize="16sp" />
+        android:textColor="@color/Black54"
+        android:textSize="14sp" />
 
 </LinearLayout>

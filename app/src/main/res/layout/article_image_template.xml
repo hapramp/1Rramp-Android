@@ -24,7 +24,7 @@
         android:layout_marginTop="3dp"
         android:background="@android:color/transparent"
         android:gravity="center_horizontal"
-        android:hint="Image Subtitle (optional)"
+        android:hint="Image caption (optional)"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:textColor="@color/darktext"

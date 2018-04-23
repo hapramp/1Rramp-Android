@@ -35,7 +35,7 @@ public class CreateButtonView extends FrameLayout {
     private final float FLOATING_BUTTONOVERSHOOT_TENSION = 5f;
     private final float ADD_BUTTON_ROTATION_ANGLE = 45f;
     private static final int POST_BUTTON_TRANSLATION_Y = 24;
-    private static final int ARTICLE_BUTTON_TRANSLATION_Y = 32;
+    private static final int ARTICLE_BUTTON_TRANSLATION_Y = 40;
 
 
     private Context mContext;
