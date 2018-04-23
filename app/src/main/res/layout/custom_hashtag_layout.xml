@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.hapramp.views.post.WrapViewGroup
+        android:animateLayoutChanges="true"
+        android:id="@+id/chips_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:layout_below="@+id/chips_container"
+        android:textSize="14sp"
+        android:paddingStart="4dp"
+        android:hint="Add Hashtags"
+        android:layout_marginTop="16dp"
+        android:id="@+id/tag_input"
+        android:background="@drawable/add_tag_editor_bg"
+        android:layout_width="match_parent"
+        android:layout_height="36dp" />
+
+
+
+</RelativeLayout>

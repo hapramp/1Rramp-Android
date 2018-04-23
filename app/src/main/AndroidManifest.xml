@@ -91,7 +91,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.TestActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+
+        </activity>
         <activity
             android:name=".activity.PreviewActivity"
             android:screenOrientation="portrait" />

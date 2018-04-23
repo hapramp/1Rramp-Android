@@ -7,14 +7,10 @@
     android:orientation="vertical"
     tools:context="com.hapramp.activity.TestActivity">
 
-    <Button
-        android:text="Preview"
-        android:id="@+id/getContentBtn"
+    <com.hapramp.views.hashtag.CustomHashTagInput
+        android:animateLayoutChanges="true"
+        android:id="@+id/edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.hapramp.views.editor.EditorView
-        android:id="@+id/editorView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
 </LinearLayout>

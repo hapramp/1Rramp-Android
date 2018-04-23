@@ -39,6 +39,7 @@ import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FeaturedImageItemDecorator;
 import com.hapramp.utils.FontManager;
 import com.hapramp.views.editor.EditorView;
+import com.hapramp.views.hashtag.CustomHashTagInput;
 import com.hapramp.views.post.PostCategoryView;
 import com.hapramp.youtube.YoutubeVideoSelectorActivity;
 
@@ -81,7 +82,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     @BindView(R.id.tagsCaption)
     TextView tagsCaption;
     @BindView(R.id.tagsInputBox)
-    EditText tagsInputBox;
+    CustomHashTagInput tagsInputBox;
     @BindView(R.id.skills_wrapper)
     RelativeLayout skillsWrapper;
     @BindView(R.id.metaView)
@@ -282,11 +283,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     }
 
     private void includeCustomTags(ArrayList<String> tags) {
-        String[] __segs = tagsInputBox.getText().toString().split(" ");
-        for (int i = 0; i < __segs.length; i++) {
-            if (__segs[i].length() > 0)
-                tags.add(__segs[i]);
-        }
+        tags.addAll(tagsInputBox.getHashTags());
     }
 
     //PUBLISHING SECTION

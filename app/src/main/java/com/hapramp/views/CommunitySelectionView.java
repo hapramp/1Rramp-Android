@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.hapramp.R;
 import com.hapramp.models.CommunityModel;
-import com.hapramp.views.post.PostCategoryViewGroup;
+import com.hapramp.views.post.WrapViewGroup;
 import com.hapramp.views.skills.CommunityItemView;
 
 import java.util.ArrayList;
@@ -24,7 +24,8 @@ import butterknife.ButterKnife;
 
 public class CommunitySelectionView extends FrameLayout {
 
-    @BindView(R.id.viewWrapper) PostCategoryViewGroup viewWrapper;
+    @BindView(R.id.viewWrapper)
+    WrapViewGroup viewWrapper;
     @BindView(R.id.communityLoadingProgressBar) ProgressBar communityLoadingProgressBar;
 
     private Context mContext;

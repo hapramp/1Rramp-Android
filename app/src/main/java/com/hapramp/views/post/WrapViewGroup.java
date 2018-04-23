@@ -13,21 +13,21 @@ import android.view.WindowManager;
  * Created by Ankit on 12/25/2017.
  */
 
-public class PostCategoryViewGroup extends ViewGroup {
+public class WrapViewGroup extends ViewGroup {
 
     private int deviceWidth;
 
-    public PostCategoryViewGroup(Context context) {
+    public WrapViewGroup(Context context) {
         super(context);
         init(context);
     }
 
-    public PostCategoryViewGroup(Context context, AttributeSet attrs) {
+    public WrapViewGroup(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public PostCategoryViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
+    public WrapViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
