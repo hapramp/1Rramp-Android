@@ -30,7 +30,6 @@ import java.util.List;
 public class PostCategoryView extends FrameLayout {
 
     private ViewGroup rootView;
-    private ProgressBar communityLoadingProgressBar;
     private Context mContext;
     private List<CommunityModel> communities;
     private ArrayList<String> selectedTags;
@@ -57,7 +56,6 @@ public class PostCategoryView extends FrameLayout {
 
         View view = LayoutInflater.from(mContext).inflate(R.layout.community_view_container, this);
         rootView = view.findViewById(R.id.viewWrapper);
-        communityLoadingProgressBar = view.findViewById(R.id.communityLoadingProgressBar);
         selectedTags = new ArrayList<>();
 
     }
@@ -103,8 +101,6 @@ public class PostCategoryView extends FrameLayout {
                             ViewGroup.LayoutParams.WRAP_CONTENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT));
         }
-
-        communityLoadingProgressBar.setVisibility(GONE);
 
     }
 

@@ -26,7 +26,6 @@ public class CommunitySelectionView extends FrameLayout {
 
     @BindView(R.id.viewWrapper)
     WrapViewGroup viewWrapper;
-    @BindView(R.id.communityLoadingProgressBar) ProgressBar communityLoadingProgressBar;
 
     private Context mContext;
     private ViewGroup parentView;
@@ -61,11 +60,6 @@ public class CommunitySelectionView extends FrameLayout {
     public void setCommunityList(List<CommunityModel> communityList) {
 
         this.mCommunityList = communityList;
-
-        if (communityLoadingProgressBar != null) {
-            communityLoadingProgressBar.setVisibility(GONE);
-        }
-
         addViews();
 
     }

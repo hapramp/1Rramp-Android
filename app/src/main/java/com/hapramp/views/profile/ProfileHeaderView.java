@@ -238,6 +238,7 @@ public class ProfileHeaderView extends FrameLayout {
         } else {
 
             followBtn.setVisibility(VISIBLE);
+            editBtn.setVisibility(GONE);
             // set follow or unfollow button
             invalidateFollowButton();
             fetchUserCommunities();

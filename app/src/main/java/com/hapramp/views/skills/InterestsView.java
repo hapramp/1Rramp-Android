@@ -24,7 +24,6 @@ import java.util.List;
 
 public class InterestsView extends FrameLayout {
 
-    private ProgressBar progressBar;
     private Context mContext;
     private ViewGroup parentView;
     private List<CommunityModel> communities;
@@ -51,7 +50,6 @@ public class InterestsView extends FrameLayout {
     private void init() {
 
         View view = LayoutInflater.from(mContext).inflate(R.layout.community_view_container, this);
-        progressBar = view.findViewById(R.id.communityLoadingProgressBar);
         parentView = view.findViewById(R.id.viewWrapper);
         noInterestMessage = view.findViewById(R.id.no_interest_msg);
 
@@ -77,7 +75,6 @@ public class InterestsView extends FrameLayout {
                             ViewGroup.LayoutParams.WRAP_CONTENT));
         }
 
-        progressBar.setVisibility(GONE);
         noInterestMessage.setVisibility(GONE);
 
     }
@@ -87,7 +84,6 @@ public class InterestsView extends FrameLayout {
         if (communities != null && communities.size() > 0) {
             addViews();
         }else{
-            progressBar.setVisibility(GONE);
             noInterestMessage.setVisibility(VISIBLE);
         }
     }
