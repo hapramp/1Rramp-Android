@@ -186,7 +186,7 @@ public class ServiceWorker {
                     @Override
                     public void onResponse(Call<List<Feed>> call, final Response<List<Feed>> response) {
 
-                        Profile.fetchUserProfilesFor(response.body());
+                        //Profile.fetchUserProfilesFor(response.body());
 
                         // check for life of request(whether other request has came and over-written on this)
                         if (isRequestLive(feedRequestParams)) {
@@ -262,7 +262,7 @@ public class ServiceWorker {
                 .enqueue(new Callback<List<Feed>>() {
                     @Override
                     public void onResponse(Call<List<Feed>> call, Response<List<Feed>> response) {
-                        Profile.fetchUserProfilesFor(response.body());
+                        //Profile.fetchUserProfilesFor(response.body());
 
                         // check for life of request(whether other request has came and over-written on this)
                         if (isRequestLive(serviceWorkerRequestParams)) {
@@ -303,7 +303,7 @@ public class ServiceWorker {
                     @Override
                     public void onResponse(Call<List<Feed>> call, Response<List<Feed>> response) {
 
-                        Profile.fetchUserProfilesFor(response.body());
+                        //Profile.fetchUserProfilesFor(response.body());
                         // check for life of request(whether other request has came and over-written on this)
                         if (isRequestLive(serviceWorkerRequestParams)) {
 
@@ -342,7 +342,7 @@ public class ServiceWorker {
                 .enqueue(new Callback<List<Feed>>() {
                     @Override
                     public void onResponse(Call<List<Feed>> call, Response<List<Feed>> response) {
-                        Profile.fetchUserProfilesFor(response.body());
+                        //Profile.fetchUserProfilesFor(response.body());
 
                         // check for life of request(whether other request has came and over-written on this)
                         if (isRequestLive(serviceWorkerRequestParams)) {

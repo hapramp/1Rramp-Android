@@ -63,7 +63,7 @@ public class CommentView extends FrameLayout {
 
     public void setComment(SteemCommentModel result) {
 
-        ImageHandler.loadCircularImage(mContext, commentAvatar, result.getCommentAuthorImageUri());
+        ImageHandler.loadCircularImage(mContext, commentAvatar, String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format), result.commentAuthor));
         commentOwnerName.setText(result.getCommentAuthor());
         commentTv.setText(result.getComment());
 

@@ -3,9 +3,6 @@ package com.hapramp.views;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +24,7 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.FollowApiObjectWrapper;
 import com.hapramp.steem.SteemHelper;
 import com.hapramp.utils.Constants;
+import com.hapramp.utils.ImageHandler;
 
 import java.util.List;
 
@@ -45,6 +44,8 @@ import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 
 public class UserSearchItemView extends FrameLayout {
 
+    @BindView(R.id.user_pic)
+    ImageView userPic;
     private boolean followed = false;
 
     @BindView(R.id.content)
@@ -99,7 +100,7 @@ public class UserSearchItemView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(mContext, ProfileActivity.class);
-                i.putExtra(Constants.EXTRAA_KEY_STEEM_USER_NAME,getUsername());
+                i.putExtra(Constants.EXTRAA_KEY_STEEM_USER_NAME, getUsername());
                 mContext.startActivity(i);
             }
         });
@@ -173,6 +174,9 @@ public class UserSearchItemView extends FrameLayout {
         // set text
         content.setText(username);
 
+        //load image
+        ImageHandler.loadCircularImage(mContext, userPic, String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format), username));
+
         setFollowButtonState();
 
     }
@@ -180,7 +184,7 @@ public class UserSearchItemView extends FrameLayout {
     private void setFollowButtonState() {
 
         // hide follow button for self account
-        if(mUsername.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())){
+        if (mUsername.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
             followUnfollowBtn.setVisibility(GONE);
             return;
         }
@@ -190,7 +194,7 @@ public class UserSearchItemView extends FrameLayout {
 
         for (int i = 0; i < followApiObjects.size(); i++) {
             String _followedUser = followApiObjects.get(i).getFollowing().getName();
-            Log.d("UserSearchItem","matching "+getUsername()+" vs "+_followedUser);
+            Log.d("UserSearchItem", "matching " + getUsername() + " vs " + _followedUser);
 
             if (_followedUser.equals(getUsername())) {
                 setFollowedState();
@@ -205,7 +209,8 @@ public class UserSearchItemView extends FrameLayout {
 
     private void setFollowedState() {
         //user is followed, so now Unfollow
-        followUnfollowBtn.setText("UnFollow");
+        followUnfollowBtn.setText("Unfollow");
+        followUnfollowBtn.setSelected(true);
         followUnfollowBtn.setBackgroundResource(R.drawable.unfollow_btn_bg);
         followed = true;
 
@@ -214,6 +219,7 @@ public class UserSearchItemView extends FrameLayout {
     private void setUnFollowedState() {
         //user is followed, so now Unfollow
         followUnfollowBtn.setText("Follow");
+        followUnfollowBtn.setSelected(false);
         followUnfollowBtn.setBackgroundResource(R.drawable.follow_btn_bg);
         followed = false;
     }
@@ -223,11 +229,11 @@ public class UserSearchItemView extends FrameLayout {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
                 .setTitle("Unfollow")
-                .setMessage("Do you want to Unfollow "+getUsername()+" ?")
+                .setMessage("Do you want to Unfollow " + getUsername() + " ?")
                 .setPositiveButton("UnFollow", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                       requestUnFollowOnSteem();
+                        requestUnFollowOnSteem();
                     }
                 })
                 .setNegativeButton("No", null);
@@ -241,36 +247,36 @@ public class UserSearchItemView extends FrameLayout {
         showProgress(false);
         setFollowedState();
         fetchFollowingsAndCache();
-        t("You started following "+getUsername());
+        t("You started following " + getUsername());
     }
 
     private void userFollowFailed() {
         showProgress(false);
         setUnFollowedState();
-        t("Failed to follow "+getUsername());
+        t("Failed to follow " + getUsername());
     }
 
     private void userUnFollowedOnSteem() {
         showProgress(false);
         setUnFollowedState();
         fetchFollowingsAndCache();
-        t("You unfollowed "+getUsername());
+        t("You unfollowed " + getUsername());
     }
 
     private void userUnfollowFailed() {
         showProgress(false);
         setFollowedState();
-        t("Failed to unfollow "+getUsername());
+        t("Failed to unfollow " + getUsername());
     }
 
 
-    private void showProgress(boolean show){
+    private void showProgress(boolean show) {
 
-        if(show){
+        if (show) {
             //hide button
             followUnfollowBtn.setVisibility(GONE);
             followUnfollowProgress.setVisibility(VISIBLE);
-        }else{
+        } else {
             //show button
             followUnfollowBtn.setVisibility(VISIBLE);
             followUnfollowProgress.setVisibility(GONE);
@@ -314,8 +320,8 @@ public class UserSearchItemView extends FrameLayout {
         return this.mUsername;
     }
 
-    private void t(String s){
-        Toast.makeText(mContext,s,Toast.LENGTH_LONG).show();
+    private void t(String s) {
+        Toast.makeText(mContext, s, Toast.LENGTH_LONG).show();
     }
 
 }

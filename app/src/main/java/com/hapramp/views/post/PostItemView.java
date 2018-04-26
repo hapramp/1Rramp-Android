@@ -209,12 +209,12 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         setSteemEarnings(feed.totalPayoutValue);
         setCommunities(feed.jsonMetadata.tags);
         //   Log.d("PostItemView", "requesting image for " + feed.author);
-        Profile _p = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserProfile(feed.author), Profile.class);
+        //Profile _p = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserProfile(feed.author), Profile.class);
         //  Log.d("PostItemView", "Got: " + HaprampPreferenceManager.getInstance().getUserProfile(feed.author));
-        if (_p != null) {
+     //   if (_p != null) {
             //  Log.d("PostItemView", "loading image from " + _p.getProfileImage());
-            ImageHandler.loadCircularImage(mContext, feedOwnerPic, _p.getProfileImage());
-        }
+            ImageHandler.loadCircularImage(mContext, feedOwnerPic,  String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format), feed.author));
+      //  }
 
 
         bindVotes(feed.activeVotes, feed.permlink);

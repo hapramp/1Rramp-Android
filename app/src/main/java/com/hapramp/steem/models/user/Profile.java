@@ -134,7 +134,6 @@ public class Profile {
 
     }
 
-
     public static Profile getDefaultProfile() {
 
         Profile dummy = new Profile("https://user-images.githubusercontent.com/10809719/38206885-b36c8a66-36c9-11e8-9c7a-3bba603b4994.png",

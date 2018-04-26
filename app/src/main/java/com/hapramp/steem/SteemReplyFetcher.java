@@ -61,12 +61,12 @@ public class SteemReplyFetcher {
                     final List<SteemCommentModel> contentCommentModels = new ArrayList<>();
                     for (int i = 0; i < discussions.size(); i++) {
                         Discussion discussion = discussions.get(i);
-                        Profile _p = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserProfile(discussion.getAuthor().getName()), Profile.class);
+                        //Profile _p = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserProfile(discussion.getAuthor().getName()), Profile.class);
                         contentCommentModels.add(new SteemCommentModel(
                                 discussion.getAuthor().getName(),
                                 discussion.getBody(),
                                 discussion.getLastUpdate().getDateTime(),
-                                _p != null ? _p.getProfileImage() : ""
+                                ""
                         ));
                     }
 

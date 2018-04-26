@@ -165,7 +165,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void bindProfilePosts(List<Feed> body) {
-        Profile.fetchUserProfilesFor(body);
+        //Profile.fetchUserProfilesFor(body);
         profilePostAdapter.setPosts(body);
     }
 

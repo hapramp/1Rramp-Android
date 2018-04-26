@@ -209,25 +209,6 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
         searchManager = new SearchManager(this);
     }
 
-    private void updateUserCache(List<UserModel> response) {
-
-        String userJson = new Gson().toJson(new UserModelWrapper(response));
-        HaprampPreferenceManager.getInstance().saveAllPlatformUserAsJson(userJson);
-        updateSearchManager();
-
-    }
-
-    private void updateSearchManager() {
-        initSearchManager();
-    }
-
-    private void onNoUserCache() {
-    }
-
-    private void failedToFetchPlatformUsers() {
-        //show error
-    }
-
     private void fetchSuggestions(String query) {
 
         if (suggestionsContainer != null) {

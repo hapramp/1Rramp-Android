@@ -79,7 +79,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
 
         public void bind(SteemCommentModel comment) {
 
-            ImageHandler.loadCircularImage(mContext, commentAvatar, comment.getCommentAuthorImageUri());
+            ImageHandler.loadCircularImage(mContext, commentAvatar, String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format), comment.commentAuthor));
             commentOwnerName.setText(comment.getCommentAuthor());
 
             if (comment.getCreatedAt().length() > 0) {
