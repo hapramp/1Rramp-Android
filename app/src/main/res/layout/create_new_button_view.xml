@@ -6,15 +6,15 @@
     android:layout_height="match_parent">
 
     <FrameLayout
-        android:visibility="visible"
+        android:visibility="gone"
         android:background="#ffffff"
         android:id="@+id/overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
     <TextView
-        android:visibility="visible"
-        android:alpha="1"
+        android:visibility="gone"
+        android:alpha="0"
         android:clickable="false"
         android:focusable="false"
         android:id="@+id/createArticleBtn"
@@ -35,7 +35,7 @@
     <TextView
         android:clickable="false"
         android:focusable="false"
-        android:alpha="1"
+        android:alpha="0"
         android:visibility="visible"
         android:id="@+id/createPostBtn"
         android:layout_width="87dp"

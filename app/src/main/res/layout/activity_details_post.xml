@@ -102,6 +102,16 @@
                android:layout_height="wrap_content"/>
 
             <TextView
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:textSize="12sp"
+                android:id="@+id/hashtags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
                 android:id="@+id/shareBtn"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
@@ -169,14 +179,14 @@
                 android:background="#ffffff">
 
                 <ImageView
-                    android:id="@+id/commentCreaterAvatarMock"
+                    android:id="@+id/commentCreaterAvatar"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:padding="12dp"
                     />
 
                 <RelativeLayout
-                    android:layout_toEndOf="@+id/commentCreaterAvatarMock"
+                    android:layout_toEndOf="@+id/commentCreaterAvatar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
@@ -187,14 +197,12 @@
 
                     <EditText
                         android:clickable="true"
-                        android:cursorVisible="false"
-                        android:focusable="false"
-                        android:id="@+id/commentInputBoxMock"
+                        android:id="@+id/commentInputBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginStart="16dp"
-                        android:layout_toStartOf="@+id/sendButtonMock"
+                        android:layout_toStartOf="@+id/sendButton"
                         android:background="@drawable/blank_input_bg"
                         android:hint="Comment Here..."
                         android:minHeight="36dp"
@@ -205,8 +213,8 @@
                         android:textSize="14sp" />
 
                     <TextView
-                        android:clickable="false"
-                        android:id="@+id/sendButtonMock"
+                        android:clickable="true"
+                        android:id="@+id/sendButton"
                         android:layout_width="48dp"
                         android:layout_height="36dp"
                         android:layout_alignParentEnd="true"
@@ -313,14 +321,6 @@
 
         </RelativeLayout>
 
-        <include
-            android:visibility="gone"
-            layout="@layout/comment_editor_view"
-            android:layout_below="@+id/shadow"
-            android:id="@+id/commentInputContainer"
-            android:background="#ffffff"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
 
     </RelativeLayout>
 

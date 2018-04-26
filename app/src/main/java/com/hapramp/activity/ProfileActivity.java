@@ -39,7 +39,6 @@ public class ProfileActivity extends AppCompatActivity {
     @BindView(R.id.closeBtn) TextView closeBtn;
     @BindView(R.id.toolbar_container) RelativeLayout toolbarContainer;
     @BindView(R.id.profilePostRv) RecyclerView profilePostRv;
-    @BindView(R.id.contentLoadingProgress) ProgressBar contentLoadingProgress;
     @BindView(R.id.profile_user_name) TextView profileUserName;
 
     private String username;
@@ -127,7 +126,6 @@ public class ProfileActivity extends AppCompatActivity {
         profilePostRv.addItemDecoration(viewItemDecoration);
         profilePostRv.setAdapter(profilePostAdapter);
         setScrollListener();
-        showContent(true);
 
     }
 
@@ -175,13 +173,5 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
-    private void showContent(boolean show) {
-        if (show) {
-            //hide progress bar
-            if (contentLoadingProgress != null) {
-                contentLoadingProgress.setVisibility(View.GONE);
-            }
-        }
-    }
 
 }

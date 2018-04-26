@@ -17,9 +17,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.ScaleAnimation;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -104,12 +101,12 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     TextView emptyCommentsCaption;
     @BindView(R.id.moreCommentsCaption)
     TextView moreCommentsCaption;
-    @BindView(R.id.commentCreaterAvatarMock)
-    ImageView commentCreaterAvatarMock;
-    @BindView(R.id.commentInputBoxMock)
-    EditText commentInputBoxMock;
-    @BindView(R.id.sendButtonMock)
-    TextView sendButtonMock;
+    @BindView(R.id.commentCreaterAvatar)
+    ImageView commentCreaterAvatar;
+    @BindView(R.id.commentInputBox)
+    EditText commentInputBox;
+    @BindView(R.id.sendButton)
+    TextView sendCommentButton;
     @BindView(R.id.mockCommentParentView)
     RelativeLayout mockCommentParentView;
     @BindView(R.id.scroller)
@@ -128,14 +125,8 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     StarView starView;
     @BindView(R.id.postMetaContainer)
     RelativeLayout postMetaContainer;
-    @BindView(R.id.commentCreaterAvatar)
-    ImageView commentCreaterAvatar;
-    @BindView(R.id.commentInputBox)
-    EditText commentInputBox;
-    @BindView(R.id.sendButton)
-    TextView sendCommentButton;
-    @BindView(R.id.commentInputContainer)
-    RelativeLayout commentInputContainer;
+    @BindView(R.id.hashtags)
+    TextView hashtagsTv;
     private String currentCommentUrl;
     private Handler mHandler;
     private Feed post;
@@ -172,11 +163,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     @Override
     public void onBackPressed() {
 
-        if (commentBarVisible) {
-            showCommentBar(false);
-        } else {
-            super.onBackPressed();
-        }
+        super.onBackPressed();
 
     }
 
@@ -250,13 +237,6 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
             @Override
             public void onClick(View v) {
                 starView.onStarIndicatorTapped();
-            }
-        });
-
-        commentInputBoxMock.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showCommentBar(true);
             }
         });
 
@@ -361,7 +341,6 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         commentBtn.setTypeface(t);
         hapcoinBtn.setTypeface(t);
         sendCommentButton.setTypeface(t);
-        sendButtonMock.setTypeface(t);
 
     }
 
@@ -382,6 +361,8 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         PostStructureModel postStructureModel = new PostStructureModel(post.jsonMetadata.content.getData(), post.jsonMetadata.getContent().type);
         renderView.render(postStructureModel);
 
+        //bind hash tags
+
         SteemUser steemUser = new Gson().fromJson(HaprampPreferenceManager.getInstance().getCurrentUserInfoAsJson(), SteemUser.class);
         String user_profile_url = steemUser.getUser().getJsonMetadata().getProfile().getProfileImage() != null ?
                 steemUser.getUser().getJsonMetadata().getProfile().getProfileImage()
@@ -389,7 +370,6 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
                 "";
 
         ImageHandler.loadCircularImage(this, commentCreaterAvatar, user_profile_url);
-        ImageHandler.loadCircularImage(this, commentCreaterAvatarMock, user_profile_url);
 
         setSteemEarnings(post.totalPayoutValue);
         bindVotes(post.activeVotes, post.permlink);
@@ -641,6 +621,8 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     private void setCommunities(List<String> communities) {
         // community name + community color
         List<CommunityModel> cm = new ArrayList<>();
+        StringBuilder hashtags = new StringBuilder();
+
         for (int i = 0; i < communities.size(); i++) {
             if (Communities.doesCommunityExists(communities.get(i))) {
                 cm.add(new CommunityModel("", "", communities.get(i),
@@ -648,10 +630,15 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
                         HaprampPreferenceManager.getInstance().getCommunityNameFromTag(communities.get(i)),
                         0
                 ));
+            } else {
+                hashtags.append("#")
+                        .append(communities.get(i))
+                        .append(" ");
             }
         }
 
         addCommunitiesToLayout(cm);
+        hashtagsTv.setText(hashtags);
 
     }
 
@@ -738,65 +725,6 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         addAllCommentsToView(mComments);
         //update comment count
         setCommentCount(mComments.size());
-
-    }
-
-    private void showCommentBar(boolean show) {
-
-        if (show) {
-            commentBarVisible = true;
-            // hide mock bar and show real input box
-            scaleAndHideMainView(mockCommentParentView);
-//            commentInputContainer.animate()
-//                    .translationY(0)
-//                    .translationYBy(PixelUtils.dpToPx(64))
-//                    .setDuration(1000)
-//                    .start();
-            commentInputContainer.setVisibility(VISIBLE);
-
-        } else {
-
-            commentBarVisible = false;
-            //show mock bar and hide real input box
-            mockCommentParentView.setVisibility(VISIBLE);
-//            commentInputContainer.animate()
-//                    .translationY(PixelUtils.dpToPx(64))
-//                    .setDuration(1000)
-//                    .start();
-            commentInputContainer.setVisibility(View.GONE);
-
-        }
-
-    }
-
-    public void scaleAndHideMainView(final View view) {
-
-        Animation anim = new ScaleAnimation(
-                1f, 1f, // Start and end values for the X axis scaling
-                1f, 0f, // Start and end values for the Y axis scaling
-                Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
-                Animation.RELATIVE_TO_SELF, 1f); // Pivot point of Y scaling
-        anim.setFillAfter(false); // Needed to keep the result of the animation
-        anim.setDuration(200);
-        anim.setInterpolator(new DecelerateInterpolator(1f));
-        view.startAnimation(anim);
-        anim.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                view.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-
 
     }
 

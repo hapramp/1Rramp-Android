@@ -38,8 +38,7 @@ public class ProfileFragment extends Fragment {
     private static final int POST_LIMIT = 100;
     @BindView(R.id.profilePostRv)
     RecyclerView profilePostRv;
-    @BindView(R.id.contentLoadingProgress)
-    ProgressBar contentLoadingProgress;
+
     private Context mContext;
     private ProfileRecyclerAdapter profilePostAdapter;
     private ViewItemDecoration viewItemDecoration;
@@ -149,7 +148,7 @@ public class ProfileFragment extends Fragment {
         profilePostAdapter = new ProfileRecyclerAdapter(mContext, HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
         Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
         viewItemDecoration = new ViewItemDecoration(drawable);
-        viewItemDecoration.setWantTopOffset(false,0);
+        viewItemDecoration.setWantTopOffset(false, 0);
         profilePostRv.addItemDecoration(viewItemDecoration);
         llm = new LinearLayoutManager(mContext);
         profilePostRv.setLayoutManager(llm);
@@ -180,22 +179,6 @@ public class ProfileFragment extends Fragment {
         unbinder.unbind();
     }
 
-    private void showContent(boolean show) {
-
-        if (show) {
-            //hide progress bar
-            if (contentLoadingProgress != null) {
-                contentLoadingProgress.setVisibility(View.GONE);
-
-            }
-
-        }
-    }
-
-    private void bindSteemData(SteemUser steemUser) {
-
-    }
-
     private void fetchUserProfilePosts() {
 
         Log.d("ProfilePost", Profile.getDefaultProfileAsJson());
@@ -221,17 +204,14 @@ public class ProfileFragment extends Fragment {
     }
 
     private void failedToFetchUserPosts() {
-        showContent(true);
+
     }
 
     private void bindProfilePosts(List<Feed> body) {
 
         Log.d("ProfileFragment", " posts " + body.size());
-        if (contentLoadingProgress != null) {
-            Profile.fetchUserProfilesFor(body);
-            profilePostAdapter.setPosts(body);
-            contentLoadingProgress.setVisibility(View.GONE);
-        }
+        Profile.fetchUserProfilesFor(body);
+        profilePostAdapter.setPosts(body);
 
     }
 

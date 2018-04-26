@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.activity.ProfileEditActivity;
@@ -55,6 +56,9 @@ import retrofit2.Response;
 
 public class ProfileHeaderView extends FrameLayout {
 
+
+    @BindView(R.id.profile_wall_pic)
+    ImageView profileWallPic;
     @BindView(R.id.profile_pic)
     ImageView profilePic;
     @BindView(R.id.profile_header_container)
@@ -69,6 +73,8 @@ public class ProfileHeaderView extends FrameLayout {
     TextView editBtn;
     @BindView(R.id.follow_btn)
     TextView followBtn;
+    @BindView(R.id.followUnfollowProgress)
+    ProgressBar followUnfollowProgress;
     @BindView(R.id.bio)
     TextView bio;
     @BindView(R.id.divider_top)
@@ -89,10 +95,10 @@ public class ProfileHeaderView extends FrameLayout {
     InterestsView interestsView;
     @BindView(R.id.postsCaption)
     TextView postsCaption;
-    @BindView(R.id.profile_wall_pic)
-    ImageView profileWallPic;
-    @BindView(R.id.followUnfollowProgress)
-    ProgressBar followUnfollowProgress;
+    @BindView(R.id.profile_header_view_real)
+    RelativeLayout profileHeaderViewReal;
+    @BindView(R.id.profile_header_view_shimmer_view_container)
+    RelativeLayout shimmerFrameLayout;
 
     private Context mContext;
     private String TICK_TEXT = "\u2713";
@@ -143,6 +149,12 @@ public class ProfileHeaderView extends FrameLayout {
 
     public void setUsername(String username) {
         this.mUsername = username;
+
+        //hide shimmer
+        if(shimmerFrameLayout!=null){
+            shimmerFrameLayout.setVisibility(VISIBLE);
+        }
+
         if (username != null) {
             if (!loaded) {
                 fetchUserInfo();
@@ -150,6 +162,8 @@ public class ProfileHeaderView extends FrameLayout {
             }
         }
     }
+
+
 
     private void fetchUserInfo() {
 
@@ -189,7 +203,6 @@ public class ProfileHeaderView extends FrameLayout {
             return;
 
 
-
         loaded = true;
         String profile_pic = data.getUser().getJsonMetadata().getProfile().getProfileImage() != null ?
                 data.getUser().getJsonMetadata().getProfile().getProfileImage()
@@ -214,18 +227,29 @@ public class ProfileHeaderView extends FrameLayout {
 
         setPostsCount(data.getUser().getPostCount());
 
-        if(mUsername.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())){
+        if (mUsername.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
             //self Profile
             followBtn.setVisibility(GONE);
+            editBtn.setVisibility(VISIBLE);
+            editBtn.setEnabled(false);
             CommunityListWrapper listWrapper = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
             interestsView.setCommunities(listWrapper.getCommunityModels());
 
-        }else{
+        } else {
 
             followBtn.setVisibility(VISIBLE);
             // set follow or unfollow button
             invalidateFollowButton();
             fetchUserCommunities();
+        }
+
+        //hide shimmer
+        if(shimmerFrameLayout!=null){
+            shimmerFrameLayout.setVisibility(GONE);
+        }
+        //show content
+        if(profileHeaderViewReal!=null){
+            profileHeaderViewReal.setVisibility(VISIBLE);
         }
 
     }
@@ -269,14 +293,14 @@ public class ProfileHeaderView extends FrameLayout {
         }.start();
     }
 
-    private void fetchUserCommunities(){
+    private void fetchUserCommunities() {
 
         RetrofitServiceGenerator.getService().getUserFromUsername(mUsername).enqueue(new Callback<UserModel>() {
             @Override
             public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     setCommunities(response.body().getCommunityModels());
-                }else{
+                } else {
                     setCommunities(new ArrayList<CommunityModel>());
                 }
             }
@@ -289,7 +313,7 @@ public class ProfileHeaderView extends FrameLayout {
 
     }
 
-    private void setCommunities(List<CommunityModel> communities){
+    private void setCommunities(List<CommunityModel> communities) {
         interestsView.setCommunities(communities);
     }
 

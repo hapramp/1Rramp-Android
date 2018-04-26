@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -27,6 +28,7 @@ import com.hapramp.editor.models.EditorContent;
 import com.hapramp.editor.models.EditorTextStyle;
 import com.hapramp.editor.models.Node;
 import com.hapramp.models.PostJobModel;
+import com.hapramp.steem.FeedData;
 import com.hapramp.steem.models.data.FeedDataItemModel;
 
 import java.io.ByteArrayOutputStream;
@@ -36,7 +38,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.hapramp.editor.models.EditorTextStyle.*;
+import static com.hapramp.editor.models.EditorTextStyle.H1;
+import static com.hapramp.editor.models.EditorTextStyle.H2;
 import static com.hapramp.utils.EditorDataFormatter.getFormatedItem;
 
 
@@ -65,6 +68,12 @@ public class EditorView extends FrameLayout implements TextHeaderView.HeadingCha
     YoutubeInsertButtonView paragraphDividerView;
     @BindView(R.id.image_insertBtn)
     ImageInsertView imageInsertBtn;
+    @BindView(R.id.heading)
+    EditText heading;
+    @BindView(R.id.sub_heading)
+    EditText subHeading;
+    @BindView(R.id.editor_scroll)
+    ScrollView editorScroll;
     private Context mContext;
     private View view;
 
@@ -246,11 +255,24 @@ public class EditorView extends FrameLayout implements TextHeaderView.HeadingCha
 
         List<Node> nodes = editorContent.nodes;
         for (int i = 0; i < nodes.size(); i++) {
-            Log.d("EditorView","Node:"+nodes.get(i));
+            Log.d("EditorView", "Node:" + nodes.get(i));
             feedDataItemModels.add(getFormatedItem(nodes.get(i)));
         }
 
+        //insert sub heading(if any)
+        String sub_heading = subHeading.getText().toString().trim();
+        if (sub_heading.length() > 0) {
+            feedDataItemModels.add(0, new FeedDataItemModel(sub_heading, FeedData.ContentType.H2));
+        }
+
+        //insert heading(if any)
+        String _heading = heading.getText().toString().trim();
+        if (_heading.length() > 0) {
+            feedDataItemModels.add(0, new FeedDataItemModel(_heading, FeedData.ContentType.H1));
+        }
+
         return feedDataItemModels;
+
     }
 
     private OnImageUploadListener onImageUploadListener;
