@@ -131,12 +131,12 @@ public class HaprampPreferenceManager {
     }
 
     public void saveUserProfile(String username, String json) {
-        editor.putString("user_profile_" + username, json);
+        editor.putString("user_profile_data_" + username, json);
         editor.apply();
     }
 
     public String getUserProfile(String username) {
-        return preferences.getString("user_profile_" + username, "");
+        return preferences.getString("user_profile_data_" + username, "");
     }
 
 
@@ -188,7 +188,6 @@ public class HaprampPreferenceManager {
     public boolean isPostHardRefreshRequired() {
         return preferences.getBoolean("post_ref", false);
     }
-
 
     public void savePostDraft(String s) {
         editor.putString("post_draft", s);

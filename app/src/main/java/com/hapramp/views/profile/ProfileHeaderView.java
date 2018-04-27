@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -97,8 +98,8 @@ public class ProfileHeaderView extends FrameLayout {
     TextView postsCaption;
     @BindView(R.id.profile_header_view_real)
     RelativeLayout profileHeaderViewReal;
-    @BindView(R.id.profile_header_view_shimmer_view_container)
-    RelativeLayout shimmerFrameLayout;
+    @BindView(R.id.shimmer_view_container)
+    ShimmerFrameLayout shimmerFrameLayout;
 
     private Context mContext;
     private String TICK_TEXT = "\u2713";
@@ -151,16 +152,35 @@ public class ProfileHeaderView extends FrameLayout {
         this.mUsername = username;
 
         //hide shimmer
-        if(shimmerFrameLayout!=null){
+        if (shimmerFrameLayout != null) {
+            shimmerFrameLayout.setBaseAlpha(0.1f);
+            shimmerFrameLayout.setDropoff(0.08f);
+            shimmerFrameLayout.setTilt(0f);
+            shimmerFrameLayout.setDuration(2000);
+            shimmerFrameLayout.setIntensity(0.02f);
             shimmerFrameLayout.setVisibility(VISIBLE);
+            shimmerFrameLayout.startShimmerAnimation();
+
         }
 
         if (username != null) {
             if (!loaded) {
+                checkCacheAndLoad();
                 fetchUserInfo();
                 fetchFollowInfo();
             }
         }
+    }
+
+    private void checkCacheAndLoad() {
+
+        String json = HaprampPreferenceManager.getInstance().getUserProfile(mUsername);
+        if (json.length() > 0) {
+            SteemUser steemUser = new Gson().fromJson(json, SteemUser.class);
+            Log.d("ProfileHeaderView", "loaded from cache");
+            bind(steemUser);
+        }
+
     }
 
     private void fetchUserInfo() {
@@ -168,6 +188,8 @@ public class ProfileHeaderView extends FrameLayout {
         String current_user_api_url = String.format(
                 mContext.getResources().getString(R.string.steem_user_api),
                 mUsername);
+
+        Log.d("ProfileHeaderView", "fetching user");
 
         RetrofitServiceGenerator.getService()
                 .getSteemUser(current_user_api_url)
@@ -177,6 +199,9 @@ public class ProfileHeaderView extends FrameLayout {
                         //populate User Info
                         if (response.isSuccessful()) {
                             bind(response.body());
+                            cacheUserProfile(response.body());
+                            Log.d("ProfileHeaderView", "user fetched");
+
                         } else {
                             failedToFetchSteemInfo();
                         }
@@ -190,11 +215,28 @@ public class ProfileHeaderView extends FrameLayout {
 
     }
 
+    private void cacheUserProfile(SteemUser body) {
+        //convert to gson
+        String json = new Gson().toJson(body);
+        HaprampPreferenceManager.getInstance().saveUserProfile(mUsername, json);
+
+    }
+
     private void failedToFetchSteemInfo() {
 
     }
 
     private void bind(SteemUser data) {
+
+        //hide shimmer
+        if (shimmerFrameLayout != null) {
+            shimmerFrameLayout.stopShimmerAnimation();
+            shimmerFrameLayout.setVisibility(GONE);
+        }
+        //show content
+        if (profileHeaderViewReal != null) {
+            profileHeaderViewReal.setVisibility(VISIBLE);
+        }
 
         //check for null view(incase view is removed)
         if (usernameTv == null)
@@ -202,10 +244,7 @@ public class ProfileHeaderView extends FrameLayout {
 
 
         loaded = true;
-        String profile_pic = data.getUser().getJsonMetadata().getProfile().getProfileImage() != null ?
-                data.getUser().getJsonMetadata().getProfile().getProfileImage()
-                :
-                mContext.getResources().getString(R.string.default_user_pic);
+        String profile_pic = String.format(getResources().getString(R.string.steem_user_profile_pic_format), mUsername);
 
         String wall_pic_url = data.getUser().getJsonMetadata().getProfile().getCover_image() != null ?
                 data.getUser().getJsonMetadata().getProfile().getCover_image()
@@ -242,15 +281,6 @@ public class ProfileHeaderView extends FrameLayout {
             fetchUserCommunities();
         }
 
-        //hide shimmer
-        if(shimmerFrameLayout!=null){
-            shimmerFrameLayout.setVisibility(GONE);
-        }
-        //show content
-        if(profileHeaderViewReal!=null){
-            profileHeaderViewReal.setVisibility(VISIBLE);
-        }
-
     }
 
     private void invalidateFollowButton() {
@@ -269,13 +299,16 @@ public class ProfileHeaderView extends FrameLayout {
     }
 
     private void fetchFollowInfo() {
+
         new Thread() {
             @Override
             public void run() {
                 try {
+
                     SteemJ steemJ = new SteemJ();
                     AccountName accountName = new AccountName(mUsername);
                     final FollowCountApiObject followCountApiObject = steemJ.getFollowCount(accountName);
+
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -283,6 +316,7 @@ public class ProfileHeaderView extends FrameLayout {
                             followingsCount.setText(String.format(mContext.getResources().getString(R.string.profile_following_count_caption), followCountApiObject.getFollowingCount()));
                         }
                     });
+
                 } catch (SteemCommunicationException e) {
                     e.printStackTrace();
                 } catch (SteemResponseException e) {

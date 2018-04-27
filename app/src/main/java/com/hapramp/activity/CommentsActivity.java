@@ -105,19 +105,14 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
         backBtn.setTypeface(typeface);
         sendButton.setTypeface(typeface);
 
-        // set basic meta-info
-        myProfile = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserProfile(HaprampPreferenceManager.getInstance().getCurrentSteemUsername()), Profile.class);
-        if (myProfile != null) {
-            //load self image to created
-            ImageHandler.loadCircularImage(this, commentCreaterAvatar, myProfile.getProfileImage());
-        }
+        ImageHandler.loadCircularImage(this, commentCreaterAvatar, String.format(getResources().getString(R.string.steem_user_profile_pic_format), HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
 
         commentsAdapter = new CommentsAdapter(this);
         commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         Drawable drawable = ContextCompat.getDrawable(this, R.drawable.comment_item_divider_view);
         viewItemDecoration = new ViewItemDecoration(drawable);
-        viewItemDecoration.setWantTopOffset(false,0);
+        viewItemDecoration.setWantTopOffset(false, 0);
         commentsRecyclerView.addItemDecoration(viewItemDecoration);
         commentsRecyclerView.setAdapter(commentsAdapter);
 
@@ -172,7 +167,6 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
         commentsAdapter.addSingleComment(steemCommentModel);
 
     }
-
 
 
     @Override

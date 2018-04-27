@@ -359,8 +359,6 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         PostStructureModel postStructureModel = new PostStructureModel(post.jsonMetadata.content.getData(), post.jsonMetadata.getContent().type);
         renderView.render(postStructureModel);
 
-        //bind hash tags
-
         ImageHandler.loadCircularImage(this, commentCreaterAvatar, String.format(getResources().getString(R.string.steem_user_profile_pic_format), HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
 
         setSteemEarnings(post.totalPayoutValue);

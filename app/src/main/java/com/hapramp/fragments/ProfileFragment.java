@@ -57,6 +57,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
     }
 

@@ -26,6 +26,7 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private int s;
     private List<Feed> feeds;
     private int totalFeedsCount = 0;
+    private boolean profileHeaderInitialized;
 
     public ProfileRecyclerAdapter(Context mContext , String username) {
         this.mContext = mContext;
@@ -80,7 +81,10 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             ((PostViewHolder) viewHolder).bind(feeds.get(pos - 1));
 
         }else if(viewHolder instanceof ProfileHeaderViewHolder){
-            ((ProfileHeaderViewHolder) viewHolder).setUsername(mUsername);
+            if(!profileHeaderInitialized) {
+                ((ProfileHeaderViewHolder) viewHolder).setUsername(mUsername);
+                profileHeaderInitialized = true;
+            }
         }
     }
 

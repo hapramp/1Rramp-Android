@@ -6,9 +6,9 @@ package com.hapramp.editor;
 
 public class FontSize {
 
-    public static int H1TEXTSIZE = 24;
-    public static int H2TEXTSIZE = 22;
-    public static int H3TEXTSIZE = 18;
-    public static int NORMALTEXTSIZE = 16;
+    public static int H1TEXTSIZE = 20;
+    public static int H2TEXTSIZE = 18;
+    public static int H3TEXTSIZE = 16;
+    public static int NORMALTEXTSIZE = 14;
 
 }
