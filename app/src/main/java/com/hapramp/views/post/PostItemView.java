@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +41,6 @@ import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.views.extraa.StarView;
-import com.hapramp.views.types.YoutubeVideoTypeView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,6 +94,10 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     TextView hapcoinsCount;
     @BindView(R.id.starView)
     StarView starView;
+    @BindView(R.id.youtube_indicator)
+    ImageView youtubeIndicator;
+    @BindView(R.id.image_container)
+    RelativeLayout imageContainer;
 
 
     private Context mContext;
@@ -542,6 +546,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         if (feedRenderTypeModel.isFirstMediaImage) {
             //make visible and bind image
             if (featuredImagePost != null) {
+                youtubeIndicator.setVisibility(GONE);
                 featuredImagePost.setVisibility(VISIBLE);
                 ImageHandler.load(mContext, featuredImagePost, feedRenderTypeModel.firstImageUrl);
             }
@@ -550,6 +555,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         if (feedRenderTypeModel.isFirstMediaVideo) {
             //make visible and bind image
             if (featuredImagePost != null) {
+                youtubeIndicator.setVisibility(VISIBLE);
                 featuredImagePost.setVisibility(VISIBLE);
                 ImageHandler.load(mContext, featuredImagePost, feedRenderTypeModel.firstVideoUrl);
             }
@@ -559,6 +565,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         if (feedRenderTypeModel.isTitleSet) {
             //set title
             if (postTitle != null) {
+                youtubeIndicator.setVisibility(GONE);
                 postTitle.setVisibility(VISIBLE);
                 postTitle.setText(feedRenderTypeModel.title);
             }
@@ -567,6 +574,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         if (feedRenderTypeModel.hasContent) {
             //bind content
             if (postSnippet != null) {
+                youtubeIndicator.setVisibility(GONE);
                 postSnippet.setVisibility(VISIBLE);
                 postSnippet.setText(feedRenderTypeModel.text);
             }
@@ -623,7 +631,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
 
         }
 
-        Log.d("PostItemView","scanned Model : "+feedRenderTypeModel.toString());
+        Log.d("PostItemView", "scanned Model : " + feedRenderTypeModel.toString());
         return feedRenderTypeModel;
 
     }

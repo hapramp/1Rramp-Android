@@ -2,9 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
     android:background="@color/white"
-    android:paddingBottom="8dp7"
-    android:animateLayoutChanges="true">
+    android:paddingBottom="8dp">
 
     <ImageView
         android:id="@+id/feed_owner_pic"
@@ -50,27 +50,42 @@
         android:textColor="@color/Black38"
         android:textSize="24sp" />
 
-    <ImageView
-        android:id="@+id/featured_image_post"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <RelativeLayout
+        android:id="@+id/image_container"
         android:layout_below="@+id/feed_owner_pic"
-        android:scaleType="fitCenter"
-        android:visibility="gone" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/featured_image_post"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/youtube_indicator"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ytb"
+            android:visibility="gone"
+            android:layout_width="64dp"
+            android:adjustViewBounds="true"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/post_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/featured_image_post"
+        android:layout_below="@+id/image_container"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="18sp"
         android:visibility="gone" />
 
     <TextView
         android:id="@+id/post_snippet"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/post_title"
@@ -83,7 +98,8 @@
         android:maxLines="4"
         android:text="@string/sample"
         android:textColor="@color/Black54"
-        android:textSize="16sp" />
+        android:textSize="14sp"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/readMoreBtn"
@@ -102,14 +118,14 @@
         android:text="READ MORE"
         android:textColor="@color/colorPrimary"
         android:textSize="14sp"
-        android:visibility="gone"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="gone" />
 
     <RelativeLayout
-        android:layout_below="@+id/readMoreBtn"
-        android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
-        android:layout_height="48dp">
+        android:layout_height="48dp"
+        android:layout_below="@+id/readMoreBtn"
+        android:layout_centerHorizontal="true">
 
         <TextView
             android:id="@+id/commentBtn"
@@ -159,9 +175,9 @@
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_alignParentEnd="true"
-        android:gravity="center_vertical"
         android:layout_below="@+id/readMoreBtn"
         android:layout_marginStart="8dp"
+        android:gravity="center_vertical"
         android:paddingEnd="16dp"
         android:textColor="@color/Black54"
         android:textSize="12sp" />

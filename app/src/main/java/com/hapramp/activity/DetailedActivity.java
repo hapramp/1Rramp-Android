@@ -347,11 +347,8 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
 
     private void bindPostValues() {
 
-        // set basic meta-info
-        myProfile = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserProfile(post.author), Profile.class);
-        if (myProfile != null) {
-            ImageHandler.loadCircularImage(this, feedOwnerPic, myProfile.getProfileImage());
-        }
+
+        ImageHandler.loadCircularImage(this, feedOwnerPic, String.format(getResources().getString(R.string.steem_user_profile_pic_format), post.author));
 
         feedOwnerTitle.setText(post.author);
         feedOwnerSubtitle.setText(
@@ -364,13 +361,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
 
         //bind hash tags
 
-        SteemUser steemUser = new Gson().fromJson(HaprampPreferenceManager.getInstance().getCurrentUserInfoAsJson(), SteemUser.class);
-        String user_profile_url = steemUser.getUser().getJsonMetadata().getProfile().getProfileImage() != null ?
-                steemUser.getUser().getJsonMetadata().getProfile().getProfileImage()
-                :
-                "";
-
-        ImageHandler.loadCircularImage(this, commentCreaterAvatar, user_profile_url);
+        ImageHandler.loadCircularImage(this, commentCreaterAvatar, String.format(getResources().getString(R.string.steem_user_profile_pic_format), HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
 
         setSteemEarnings(post.totalPayoutValue);
         bindVotes(post.activeVotes, post.permlink);
