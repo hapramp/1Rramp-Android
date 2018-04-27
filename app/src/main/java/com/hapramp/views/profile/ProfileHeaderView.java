@@ -163,8 +163,6 @@ public class ProfileHeaderView extends FrameLayout {
         }
     }
 
-
-
     private void fetchUserInfo() {
 
         String current_user_api_url = String.format(

@@ -8,6 +8,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hapramp.editor.EditorCore;
@@ -113,8 +115,6 @@ public class YoutubeExtension {
 
         final ImageView imageView = layout.findViewById(R.id.youtube_thumbnailIv);
         final View btn_remove = layout.findViewById(R.id.btn_remove);
-        final TextView ytbLogo = layout.findViewById(R.id.youtube_icon);
-        ytbLogo.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL, this.editorCore.getContext()));
 
         btn_remove.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
     <ScrollView
@@ -12,8 +13,8 @@
         android:layout_above="@+id/editorControlHolder">
 
         <RelativeLayout
-            android:padding="8dp"
-            android:background="#ffffff"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
@@ -22,10 +23,10 @@
                 android:id="@+id/heading"
                 android:hint="Heading"
                 android:textSize="20sp"
-                android:textStyle="bold"
                 android:paddingStart="8dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:textColor="@color/colorPrimary"
                 android:background="@drawable/article_heading_bg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -35,12 +36,11 @@
                 android:hint="Sub Heading"
                 android:layout_marginStart="8dp"
                 android:background="@drawable/article_heading_bg"
-                android:textSize="18sp"
-                android:textStyle="bold"
+                android:textSize="16sp"
                 android:paddingStart="8dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="8dp"
                 android:paddingTop="2dp"
-                android:paddingBottom="4dp"
+                android:paddingBottom="2dp"
                 android:textColor="@color/Black38"
                 android:layout_below="@+id/heading"
                 android:layout_width="match_parent"
