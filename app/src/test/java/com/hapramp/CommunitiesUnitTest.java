@@ -25,7 +25,7 @@ public class CommunitiesUnitTest {
 
 
     @Before
-    public void populateCommunityList(){
+    public void populateCommunityList() {
 
         communities = new ArrayList<>();
         communities.add(PHOTOGRAPHY);
@@ -40,7 +40,7 @@ public class CommunitiesUnitTest {
     }
 
     @Test
-    public void testMethod_doesCommunityExists(){
+    public void testMethod_doesCommunityExists() {
         ///System.out.println(String.format("%1$s/%2$s","ankit","kumar"));
         //true test
         assert (Communities.doesCommunityExists("hapramp-art"));
@@ -52,10 +52,10 @@ public class CommunitiesUnitTest {
 
 
     @Test
-    public void test_StringFormatting(){
-        String t = "ankit kumar";
-        String[] lines = t.split(" ");
-        System.out.println(lines.length);
+    public void test_StringFormatting() {
+        String t = "0.004";
+        double usd = Double.valueOf(t);
+        System.out.println(usd * 65);
     }
 
 

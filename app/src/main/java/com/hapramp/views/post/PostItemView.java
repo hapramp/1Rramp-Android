@@ -7,7 +7,6 @@ import android.graphics.PorterDuff;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.Space;
 import android.text.Layout;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -16,33 +15,32 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.activity.CommentsActivity;
 import com.hapramp.activity.DetailedActivity;
 import com.hapramp.activity.ProfileActivity;
 import com.hapramp.models.CommunityModel;
+import com.hapramp.models.FeedRenderTypeModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
-import com.hapramp.steem.SteemCommentModel;
 import com.hapramp.steem.FeedData;
+import com.hapramp.steem.SteemCommentModel;
 import com.hapramp.steem.SteemHelper;
 import com.hapramp.steem.SteemReplyFetcher;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.data.ActiveVote;
 import com.hapramp.steem.models.data.Content;
 import com.hapramp.steem.models.data.FeedDataItemModel;
-import com.hapramp.steem.models.user.Profile;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.views.extraa.StarView;
+import com.hapramp.views.types.YoutubeVideoTypeView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,11 +62,8 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
 
 
     public static final String TAG = PostItemView.class.getSimpleName();
-
     @BindView(R.id.feed_owner_pic)
     ImageView feedOwnerPic;
-    @BindView(R.id.reference_line)
-    Space referenceLine;
     @BindView(R.id.feed_owner_title)
     TextView feedOwnerTitle;
     @BindView(R.id.feed_owner_subtitle)
@@ -79,8 +74,8 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     TextView club2;
     @BindView(R.id.club1)
     TextView club1;
-    @BindView(R.id.post_header_container)
-    RelativeLayout postHeaderContainer;
+    @BindView(R.id.popupMenuDots)
+    TextView popupMenuDots;
     @BindView(R.id.featured_image_post)
     ImageView featuredImagePost;
     @BindView(R.id.post_title)
@@ -99,10 +94,8 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     TextView hapcoinsCount;
     @BindView(R.id.starView)
     StarView starView;
-    @BindView(R.id.post_meta_container)
-    RelativeLayout postMetaContainer;
-    @BindView(R.id.popupMenuDots)
-    TextView popupMenuDots;
+
+
     private Context mContext;
     private Feed mFeed;
     private Handler mHandler;
@@ -163,6 +156,13 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
             }
         });
 
+        postSnippet.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateToDetailsPage();
+            }
+        });
+
     }
 
     private void navigateToDetailsPage() {
@@ -191,6 +191,8 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         postSnippet.setText(text);
         ImageHandler.load(mContext, featuredImagePost, image_url);
 
+        bindPostContent(content.data);
+
         if (content.type.equals(Constants.CONTENT_TYPE_POST)) {
             // hide title
             postTitle.setVisibility(GONE);
@@ -198,24 +200,12 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
             readMoreBtn.setVisibility(GONE);
 
         } else if (content.type.equals(Constants.CONTENT_TYPE_ARTICLE)) {
-            // show title
-            String title = extractTitleForArticle(content.data);
-            postTitle.setVisibility(VISIBLE);
-            postTitle.setText(title);
-
             checkEllipseAndInvalidateReadMoreButton(postSnippet, readMoreBtn);
         }
 
         setSteemEarnings(feed.totalPayoutValue);
         setCommunities(feed.jsonMetadata.tags);
-        //   Log.d("PostItemView", "requesting image for " + feed.author);
-        //Profile _p = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserProfile(feed.author), Profile.class);
-        //  Log.d("PostItemView", "Got: " + HaprampPreferenceManager.getInstance().getUserProfile(feed.author));
-     //   if (_p != null) {
-            //  Log.d("PostItemView", "loading image from " + _p.getProfileImage());
-            ImageHandler.loadCircularImage(mContext, feedOwnerPic,  String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format), feed.author));
-      //  }
-
+        ImageHandler.loadCircularImage(mContext, feedOwnerPic, String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format), feed.author));
 
         bindVotes(feed.activeVotes, feed.permlink);
         replyFetcher.requestReplyForPost(feed.author, feed.permlink);
@@ -327,7 +317,6 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         }
         return sum;
     }
-
 
     private boolean checkForMyVote(List<ActiveVote> votes) {
         for (int i = 0; i < votes.size(); i++) {
@@ -541,6 +530,104 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
 
     }
 
+    //=====================
+    // CONTENT TYPE BINDING
+    //=====================
+
+    private void bindPostContent(List<FeedDataItemModel> data) {
+
+        //scan for feed content
+        FeedRenderTypeModel feedRenderTypeModel = scanFeedContentsForRendering(data);
+        //check for image
+        if (feedRenderTypeModel.isFirstMediaImage) {
+            //make visible and bind image
+            if (featuredImagePost != null) {
+                featuredImagePost.setVisibility(VISIBLE);
+                ImageHandler.load(mContext, featuredImagePost, feedRenderTypeModel.firstImageUrl);
+            }
+        }
+
+        if (feedRenderTypeModel.isFirstMediaVideo) {
+            //make visible and bind image
+            if (featuredImagePost != null) {
+                featuredImagePost.setVisibility(VISIBLE);
+                ImageHandler.load(mContext, featuredImagePost, feedRenderTypeModel.firstVideoUrl);
+            }
+
+        }
+
+        if (feedRenderTypeModel.isTitleSet) {
+            //set title
+            if (postTitle != null) {
+                postTitle.setVisibility(VISIBLE);
+                postTitle.setText(feedRenderTypeModel.title);
+            }
+        }
+
+        if (feedRenderTypeModel.hasContent) {
+            //bind content
+            if (postSnippet != null) {
+                postSnippet.setVisibility(VISIBLE);
+                postSnippet.setText(feedRenderTypeModel.text);
+            }
+        }
+
+    }
+
+    private FeedRenderTypeModel scanFeedContentsForRendering(List<FeedDataItemModel> data) {
+
+        FeedRenderTypeModel feedRenderTypeModel = new FeedRenderTypeModel();
+
+        //iterate through all the content
+        for (int i = 0; i < data.size(); i++) {
+
+            //for image
+            if (data.get(i).type.equals(FeedData.ContentType.IMAGE)) {
+
+                //neither video or image is detected prior
+                if (!feedRenderTypeModel.isFirstMediaImage && !feedRenderTypeModel.isFirstMediaVideo) {
+                    //set media
+                    feedRenderTypeModel.setFirstImageUrl(data.get(i).content);
+                    feedRenderTypeModel.setFirstMediaImage(true);
+                }
+
+            }
+
+            //for youtube
+            if (data.get(i).type.equals(FeedData.ContentType.YOUTUBE)) {
+
+                //neither video or image is detected prior
+                if (!feedRenderTypeModel.isFirstMediaImage && !feedRenderTypeModel.isFirstMediaVideo) {
+                    //set media
+                    feedRenderTypeModel.setFirstVideoId(data.get(i).content);
+                    feedRenderTypeModel.setFirstMediaVideo(true);
+                }
+
+            }
+
+            //accumulate text
+            if (data.get(i).type.equals(FeedData.ContentType.TEXT) || data.get(i).type.equals(FeedData.ContentType.H2) || data.get(i).type.equals(FeedData.ContentType.H3)) {
+
+                feedRenderTypeModel
+                        .appendText(data.get(i).getContent());
+
+            }
+
+            //check for heading
+            if (data.get(i).type.equals(FeedData.ContentType.H1)) {
+
+                if (!feedRenderTypeModel.isTitleSet)
+                    feedRenderTypeModel.setTitle(data.get(i).getContent());
+
+            }
+
+        }
+
+        Log.d("PostItemView","scanned Model : "+feedRenderTypeModel.toString());
+        return feedRenderTypeModel;
+
+    }
+
     public String getAuthor() {
         return mFeed.author;
     }
@@ -587,10 +674,12 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     }
 
     private void setSteemEarnings(String payout) {
+        //double
         hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), payout.substring(0, payout.indexOf(' '))));
     }
 
     private void setCommentCount(int count) {
+
         commentCount.setText(String.format(getResources().getString(R.string.comment_format), count));
     }
 
@@ -619,7 +708,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
             //first skill
             club1.setVisibility(VISIBLE);
 
-            club1.setText(cms.get(0).getmName());
+            club1.setText(cms.get(0).getmName().toUpperCase());
             club1.getBackground().setColorFilter(
                     Color.parseColor(cms.get(0).getmColor()),
                     PorterDuff.Mode.SRC_ATOP);
@@ -628,7 +717,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
                 // second skills
                 club2.setVisibility(VISIBLE);
 
-                club2.setText(cms.get(1).getmName());
+                club2.setText(cms.get(1).getmName().toUpperCase());
                 club2.getBackground().setColorFilter(
                         Color.parseColor(cms.get(1).getmColor()),
                         PorterDuff.Mode.SRC_ATOP);
@@ -637,7 +726,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
                     // third skills
                     club3.setVisibility(VISIBLE);
 
-                    club3.setText(cms.get(2).getmName());
+                    club3.setText(cms.get(2).getmName().toUpperCase());
                     club3.getBackground().setColorFilter(
                             Color.parseColor(cms.get(2).getmColor()),
                             PorterDuff.Mode.SRC_ATOP);

@@ -5,14 +5,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.hapramp.R;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
-import com.hapramp.R;
 
 /**
  * Created by Ankit on 4/9/2018.
@@ -45,11 +47,15 @@ public class YoutubeVideoTypeView extends FrameLayout implements YouTubePlayer.O
     private void init(Context context) {
 
         this.mContext = context;
-        View view = LayoutInflater.from(mContext).inflate(R.layout.youtube_view_layout, this);
-        //YouTubePlayerFragment youTubePlayerFragment = new YouTubePlayerFragment();
-        //((AppCompatActivity) mContext).getFragmentManager().beginTransaction().add(R.id.content_holder,youTubePlayerFragment,"tag_"+System.currentTimeMillis()).commit();
-        playerFragment = (YouTubePlayerFragment) ((AppCompatActivity) mContext).getFragmentManager().findFragmentById(R.id.youtube_player_fragment);
-        playerFragment.initialize(YouTubeKey, this);
+        try {
+            LayoutInflater.from(mContext).inflate(R.layout.youtube_view_layout, this);
+            //YouTubePlayerFragment youTubePlayerFragment = new YouTubePlayerFragment();
+            //((AppCompatActivity) mContext).getFragmentManager().beginTransaction().add(R.id.content_holder,youTubePlayerFragment,"tag_"+System.currentTimeMillis()).commit();
+            playerFragment = (YouTubePlayerFragment) ((AppCompatActivity) mContext).getFragmentManager().findFragmentById(R.id.youtube_player_fragment);
+            playerFragment.initialize(YouTubeKey, this);
+        } catch (InflateException e) {
+            Log.d("YoutubeView","Cannot inflate second time");
+        }
 
     }
 

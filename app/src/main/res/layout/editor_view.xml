@@ -50,7 +50,7 @@
                 android:layout_below="@+id/sub_heading"
                 android:id="@+id/editor"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
                 app:render_type="Editor" />

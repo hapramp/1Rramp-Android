@@ -21,8 +21,9 @@
         Bitcoin allows exciting uses that could not be covered by any previous payment system.</string>
 
     <string name="post_created">%1$d Posts Created</string>
-    <string name="hapcoins_format">%1$s $</string>
-    <string name="comment_format">%1d Comment</string>
+    <string name="hapcoins_format">$%1$s Earned</string>
+    <string name="comment_format">%1d Comments</string>
+
     <string name="post_rated">%1$d Posts Rated</string>
     <string name="comment_author">By : %1$s</string>
     <string name="other_comments_format">Comments[%1$d]</string>
