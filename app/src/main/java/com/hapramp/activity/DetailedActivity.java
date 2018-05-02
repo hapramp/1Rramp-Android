@@ -304,20 +304,20 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
 
     @Override
     public void onCommentCreateProcessing() {
-        showProgress("Posting Your Comment...");
+       // showProgress("Posting Your Comment...");
     }
 
     @Override
     public void onCommentCreated() {
         hideProgress();
         //add to current view
-        Toast.makeText(this, "Comment Created", Toast.LENGTH_LONG).show();
+       // Toast.makeText(this, "Comment Created", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onCommentCreateFailed() {
         hideProgress();
-        Toast.makeText(this, "Comment Operation Failed", Toast.LENGTH_LONG).show();
+      //  Toast.makeText(this, "Comment Operation Failed", Toast.LENGTH_LONG).show();
     }
 
     private void showProgress(String msg) {
@@ -472,7 +472,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         starView.voteProcessing();
 
         final int votePower = vote;
-        Log.d("VoteTest", "voting with percent " + votePower);
+       // Log.d("VoteTest", "voting with percent " + votePower);
         new Thread() {
 
             @Override
@@ -484,7 +484,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
                     SteemJ steemJ = SteemHelper.getSteemInstance();
 
                     steemJ.vote(voter, voteFor, new Permlink(post.permlink), (short) votePower);
-                    Log.d("VoteTest", "voted " + votePower);
+               //     Log.d("VoteTest", "voted " + votePower);
                     //callback for success
                     mHandler.post(new Runnable() {
                         @Override
@@ -495,15 +495,15 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
 
                 } catch (SteemCommunicationException e) {
                     e.printStackTrace();
-                    Log.d("VoteTest", "error " + e.toString());
+                //    Log.d("VoteTest", "error " + e.toString());
                     mHandler.post(steemCastingVoteExceptionRunnable);
                 } catch (SteemResponseException e) {
                     e.printStackTrace();
-                    Log.d("VoteTest", "error " + e.toString());
+                 //   Log.d("VoteTest", "error " + e.toString());
                     mHandler.post(steemCastingVoteExceptionRunnable);
                 } catch (SteemInvalidTransactionException e) {
                     e.printStackTrace();
-                    Log.d("VoteTest", "error " + e.toString());
+                  //  Log.d("VoteTest", "error " + e.toString());
                     mHandler.post(steemCastingVoteExceptionRunnable);
                 }
 
@@ -518,7 +518,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
       * */
     private void deleteVoteOnSteem() {
 
-        Log.d("VoteTest", "Deleting vote");
+       // Log.d("VoteTest", "Deleting vote");
 
         starView.voteProcessing();
 
@@ -532,7 +532,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
                     AccountName voter = new AccountName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
                     SteemJ steemJ = SteemHelper.getSteemInstance();
                     steemJ.cancelVote(voter, voteFor, new Permlink(post.permlink));
-                    Log.d("VoteTest", "Deleted Vote");
+               //     Log.d("VoteTest", "Deleted Vote");
 
                     //callback for success
                     mHandler.post(new Runnable() {
@@ -544,16 +544,16 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
 
                 } catch (SteemCommunicationException e) {
                     e.printStackTrace();
-                    Log.d("VoteTest", "Deleting vote error " + e.toString());
+                 //   Log.d("VoteTest", "Deleting vote error " + e.toString());
 
                     mHandler.post(steemCancellingVoteExceptionRunnable);
                 } catch (SteemResponseException e) {
                     e.printStackTrace();
-                    Log.d("VoteTest", "Deleting vote error " + e.toString());
+                 //   Log.d("VoteTest", "Deleting vote error " + e.toString());
                     mHandler.post(steemCancellingVoteExceptionRunnable);
                 } catch (SteemInvalidTransactionException e) {
                     e.printStackTrace();
-                    Log.d("VoteTest", "Deleting vote error " + e.toString());
+                 //   Log.d("VoteTest", "Deleting vote error " + e.toString());
                     mHandler.post(steemCancellingVoteExceptionRunnable);
                 }
 
@@ -566,28 +566,28 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         if (starView != null) {
             starView.failedToCastVote();
         }
-        Toast.makeText(this, "FAILED : Vote Casting", Toast.LENGTH_LONG).show();
+       // Toast.makeText(this, "FAILED : Vote Casting", Toast.LENGTH_LONG).show();
     }
 
     private void castingVoteSuccess() {
         if (starView != null) {
             starView.castedVoteSuccessfully();
         }
-        Toast.makeText(this, "SUCCESS : Vote Casting", Toast.LENGTH_LONG).show();
+      //  Toast.makeText(this, "SUCCESS : Vote Casting", Toast.LENGTH_LONG).show();
     }
 
     private void voteDeleteFailed() {
         if (starView != null) {
             starView.failedToDeleteVoteFromServer();
         }
-        Toast.makeText(this, "FAILED : Vote Delete", Toast.LENGTH_LONG).show();
+     //   Toast.makeText(this, "FAILED : Vote Delete", Toast.LENGTH_LONG).show();
     }
 
     private void voteDeleteSuccess() {
         if (starView != null) {
             starView.deletedVoteSuccessfully();
         }
-        Toast.makeText(this, "SUCCESS : Vote Deleted", Toast.LENGTH_LONG).show();
+      //  Toast.makeText(this, "SUCCESS : Vote Deleted", Toast.LENGTH_LONG).show();
     }
 
     private Runnable steemCastingVoteExceptionRunnable = new Runnable() {

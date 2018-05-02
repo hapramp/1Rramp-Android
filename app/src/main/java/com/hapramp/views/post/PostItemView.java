@@ -27,7 +27,7 @@ import com.hapramp.models.CommunityModel;
 import com.hapramp.models.FeedRenderTypeModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
-import com.hapramp.steem.FeedData;
+import com.hapramp.steem.FeedDataConstants;
 import com.hapramp.steem.SteemCommentModel;
 import com.hapramp.steem.SteemHelper;
 import com.hapramp.steem.SteemReplyFetcher;
@@ -497,12 +497,12 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     private String extractTitleForArticle(List<FeedDataItemModel> data) {
         //return first h1 type text
         for (int i = 0; i < data.size(); i++) {
-            if (data.get(i).type.equals(FeedData.ContentType.H1)) {
+            if (data.get(i).type.equals(FeedDataConstants.ContentType.H1)) {
                 return data.get(i).content;
             }
 
             //check also for h2
-            if (data.get(i).type.equals(FeedData.ContentType.H2)) {
+            if (data.get(i).type.equals(FeedDataConstants.ContentType.H2)) {
                 return data.get(i).content;
             }
 
@@ -514,7 +514,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
 
         //return first text type
         for (int i = 0; i < data.size(); i++) {
-            if (data.get(i).type.equals(FeedData.ContentType.TEXT)) {
+            if (data.get(i).type.equals(FeedDataConstants.ContentType.TEXT)) {
                 return data.get(i).content;
             }
         }
@@ -526,7 +526,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
 
         //return first image type
         for (int i = 0; i < data.size(); i++) {
-            if (data.get(i).type.equals(FeedData.ContentType.IMAGE)) {
+            if (data.get(i).type.equals(FeedDataConstants.ContentType.IMAGE)) {
                 return data.get(i).content;
             }
         }
@@ -590,7 +590,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         for (int i = 0; i < data.size(); i++) {
 
             //for image
-            if (data.get(i).type.equals(FeedData.ContentType.IMAGE)) {
+            if (data.get(i).type.equals(FeedDataConstants.ContentType.IMAGE)) {
 
                 //neither video or image is detected prior
                 if (!feedRenderTypeModel.isFirstMediaImage && !feedRenderTypeModel.isFirstMediaVideo) {
@@ -602,7 +602,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
             }
 
             //for youtube
-            if (data.get(i).type.equals(FeedData.ContentType.YOUTUBE)) {
+            if (data.get(i).type.equals(FeedDataConstants.ContentType.YOUTUBE)) {
 
                 //neither video or image is detected prior
                 if (!feedRenderTypeModel.isFirstMediaImage && !feedRenderTypeModel.isFirstMediaVideo) {
@@ -614,7 +614,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
             }
 
             //accumulate text
-            if (data.get(i).type.equals(FeedData.ContentType.TEXT) || data.get(i).type.equals(FeedData.ContentType.H2) || data.get(i).type.equals(FeedData.ContentType.H3)) {
+            if (data.get(i).type.equals(FeedDataConstants.ContentType.TEXT) || data.get(i).type.equals(FeedDataConstants.ContentType.H2) || data.get(i).type.equals(FeedDataConstants.ContentType.H3)) {
 
                 feedRenderTypeModel
                         .appendText(data.get(i).getContent());
@@ -622,7 +622,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
             }
 
             //check for heading
-            if (data.get(i).type.equals(FeedData.ContentType.H1)) {
+            if (data.get(i).type.equals(FeedDataConstants.ContentType.H1)) {
 
                 if (!feedRenderTypeModel.isTitleSet)
                     feedRenderTypeModel.setTitle(data.get(i).getContent());

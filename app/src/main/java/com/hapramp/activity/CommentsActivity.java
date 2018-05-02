@@ -171,19 +171,19 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
 
     @Override
     public void onCommentCreateProcessing() {
-        showProgress("Posting Your Comment...");
+        //showProgress("Posting Your Comment...");
     }
 
     @Override
     public void onCommentCreated() {
         hideProgress();
-        Toast.makeText(this, "Comment Created", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Comment Created", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onCommentCreateFailed() {
         hideProgress();
-        Toast.makeText(this, "Comment Operation Failed", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Comment Operation Failed", Toast.LENGTH_LONG).show();
     }
 
 

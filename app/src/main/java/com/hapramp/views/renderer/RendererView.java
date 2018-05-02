@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 
 import com.hapramp.R;
 import com.hapramp.editor.FontSize;
-import com.hapramp.steem.FeedData;
+import com.hapramp.steem.FeedDataConstants;
 import com.hapramp.steem.PostStructureModel;
 import com.hapramp.steem.models.data.FeedDataItemModel;
 import com.hapramp.views.types.BlockquoteTypeView;
@@ -86,63 +86,63 @@ public class RendererView extends FrameLayout {
         View view = null;
         switch (data.getContentType()) {
 
-            case FeedData.ContentType.TEXT:
+            case FeedDataConstants.ContentType.TEXT:
                 TextTypeView textTypeView = new TextTypeView(mContext);
                 textTypeView.setText(data.getContent());
                 textTypeView.setTextSize(FontSize.NORMALTEXTSIZE);
                 return textTypeView;
 
-            case FeedData.ContentType.IMAGE:
+            case FeedDataConstants.ContentType.IMAGE:
                 ImageTypeView imageTypeView = new ImageTypeView(mContext);
                 imageTypeView.setImageInfo(data.getCaption() , data.getContent());
                 return imageTypeView;
 
-            case FeedData.ContentType.H1:
+            case FeedDataConstants.ContentType.H1:
                 HeadingOneTypeView headingTypeView1 = new HeadingOneTypeView(mContext);
                 headingTypeView1.setText(data.getContent());
                 headingTypeView1.setTextSize(FontSize.H1TEXTSIZE);
                 return headingTypeView1;
 
-            case FeedData.ContentType.H2:
+            case FeedDataConstants.ContentType.H2:
                 HeadingTwoTypeView headingTypeView2 = new HeadingTwoTypeView(mContext);
                 headingTypeView2.setText(data.getContent());
                 headingTypeView2.setTextSize(FontSize.H2TEXTSIZE);
                 return headingTypeView2;
 
-            case FeedData.ContentType.H3:
+            case FeedDataConstants.ContentType.H3:
                 HeadingThreeTypeView headingTypeView3 = new HeadingThreeTypeView(mContext);
                 headingTypeView3.setText(data.getContent());
                 headingTypeView3.setTextSize(FontSize.H3TEXTSIZE);
                 return headingTypeView3;
 
-            case FeedData.ContentType.H4:
+            case FeedDataConstants.ContentType.H4:
                 HeadingFourTypeView headingTypeView4 = new HeadingFourTypeView(mContext);
                 headingTypeView4.setText(data.getContent());
                 return headingTypeView4;
 
-            case FeedData.ContentType.UL:
+            case FeedDataConstants.ContentType.UL:
                 BulletTypeView bulletTypeView_UL = new BulletTypeView(mContext);
                 bulletTypeView_UL.setBulletType(BulletTypeView.TYPE_UL);
                 bulletTypeView_UL.setText(data.getContent());
                 bulletTypeView_UL.setTextSize(FontSize.NORMALTEXTSIZE);
                 return bulletTypeView_UL;
 
-            case FeedData.ContentType.OL:
+            case FeedDataConstants.ContentType.OL:
                 BulletTypeView bulletTypeView_OL = new BulletTypeView(mContext);
                 bulletTypeView_OL.setBulletType(BulletTypeView.TYPE_OL);
                 bulletTypeView_OL.setText(data.getContent());
                 bulletTypeView_OL.setTextSize(FontSize.NORMALTEXTSIZE);
                 return bulletTypeView_OL;
 
-            case FeedData.ContentType.BLOCKQUOTE:
+            case FeedDataConstants.ContentType.BLOCKQUOTE:
                 BlockquoteTypeView blockquoteTypeView = new BlockquoteTypeView(mContext);
                 blockquoteTypeView.setText(data.getContent());
                 return blockquoteTypeView;
 
-            case FeedData.ContentType.HR:
+            case FeedDataConstants.ContentType.HR:
                 return new HorizontalDividerTypeView(mContext);
 
-            case FeedData.ContentType.YOUTUBE:
+            case FeedDataConstants.ContentType.YOUTUBE:
                 YoutubeVideoTypeView youtubeVideoTypeView = new YoutubeVideoTypeView(mContext);
                 youtubeVideoTypeView.setVideoKey(data.getContent());
                 return youtubeVideoTypeView;

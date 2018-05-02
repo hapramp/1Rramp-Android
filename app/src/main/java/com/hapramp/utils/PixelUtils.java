@@ -15,6 +15,8 @@ import com.hapramp.main.HapRampMain;
 
 public class PixelUtils {
 
+    private static String height;
+
     public static int pxToDp(int px) {
         return (int) (px / Resources.getSystem().getDisplayMetrics().density);
     }
@@ -39,4 +41,12 @@ public class PixelUtils {
         return metrics;
     }
 
+    public static int getHeight() {
+
+        WindowManager wm = (WindowManager) HapRampMain.getContext().getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        return size.y/2;
+    }
 }

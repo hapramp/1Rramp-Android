@@ -22,6 +22,9 @@ public class ImageHandler {
     public static void load(Context context, ImageView target, String _uri) {
 
        try {
+
+           target.layout(0,0,0,0);
+
             Glide.with(context)
                     .load(_uri)
                     .diskCacheStrategy(DiskCacheStrategy.RESULT)

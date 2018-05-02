@@ -2,7 +2,7 @@ package com.hapramp.utils;
 
 import com.hapramp.editor.models.EditorTextStyle;
 import com.hapramp.editor.models.Node;
-import com.hapramp.steem.FeedData;
+import com.hapramp.steem.FeedDataConstants;
 import com.hapramp.steem.models.data.FeedDataItemModel;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class EditorDataFormatter {
 
     public static FeedDataItemModel getFormatedItem(Node node) {
 
-        FeedDataItemModel feedDataItemModel = new FeedDataItemModel("", FeedData.ContentType.TEXT);
+        FeedDataItemModel feedDataItemModel = new FeedDataItemModel("", FeedDataConstants.ContentType.TEXT);
         String content = "";
 
         switch (node.type) {
@@ -45,7 +45,7 @@ public class EditorDataFormatter {
                 //put desc to caption of data item
                 content = node.content.get(0);
                 //we can extract image description
-                feedDataItemModel = new FeedDataItemModel(content, FeedData.ContentType.IMAGE);
+                feedDataItemModel = new FeedDataItemModel(content, FeedDataConstants.ContentType.IMAGE);
 
                 if(node.content.size()>1) {
                     feedDataItemModel.setCaption(node.content.get(1));
@@ -55,21 +55,21 @@ public class EditorDataFormatter {
 
             case ytb:
                 content = node.content.get(0); // this is video Id of Youtube
-                feedDataItemModel = new FeedDataItemModel(content, FeedData.ContentType.YOUTUBE);
+                feedDataItemModel = new FeedDataItemModel(content, FeedDataConstants.ContentType.YOUTUBE);
                 break;
 
             case hr:
-                feedDataItemModel = new FeedDataItemModel("", FeedData.ContentType.HR);
+                feedDataItemModel = new FeedDataItemModel("", FeedDataConstants.ContentType.HR);
                 break;
 
             case ol:
                 content = getBulletListContent(node.content);
-                feedDataItemModel = new FeedDataItemModel(content, FeedData.ContentType.OL);
+                feedDataItemModel = new FeedDataItemModel(content, FeedDataConstants.ContentType.OL);
                 break;
 
             case ul:
                 content = getBulletListContent(node.content);
-                feedDataItemModel = new FeedDataItemModel(content, FeedData.ContentType.UL);
+                feedDataItemModel = new FeedDataItemModel(content, FeedDataConstants.ContentType.UL);
                 break;
 
             // TODO: 4/12/2018 Need Blockquote, Youtube type
@@ -112,13 +112,13 @@ public class EditorDataFormatter {
 
         String type;
         if (contentStyles.contains(H1)) {
-            type = FeedData.ContentType.H1; //rendered as custom view + html
+            type = FeedDataConstants.ContentType.H1; //rendered as custom view + html
         } else if (contentStyles.contains(H2)) {
-            type = FeedData.ContentType.H2; //rendered as custom view + html
+            type = FeedDataConstants.ContentType.H2; //rendered as custom view + html
         } else if (contentStyles.contains(H3)) {
-            type = FeedData.ContentType.H3; //rendered as custom view + html
+            type = FeedDataConstants.ContentType.H3; //rendered as custom view + html
         } else if (contentStyles.contains(NORMAL)) {
-            type = FeedData.ContentType.TEXT; //rendered as html
+            type = FeedDataConstants.ContentType.TEXT; //rendered as html
         } else if (contentStyles.contains(BOLDITALIC)) {
             type = "text"; //rendered as html
         } else if (contentStyles.contains(BOLD)) {

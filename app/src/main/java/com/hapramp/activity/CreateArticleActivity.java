@@ -16,18 +16,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.adapters.FeaturedImageAdapter;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.editor.Editor;
 import com.hapramp.models.FeaturedImageSelectionModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.FeedData;
+import com.hapramp.steem.FeedDataConstants;
 import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.PostConfirmationModel;
 import com.hapramp.steem.PostStructureModel;
@@ -276,7 +276,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
         includeCustomTags(tags);
         //prepare post structure
         List<FeedDataItemModel> datas = editorView.getDataItemList();
-        postStructureModel = new PostStructureModel(datas, FeedData.FEED_TYPE_ARTICLE);
+        postStructureModel = new PostStructureModel(datas, FeedDataConstants.FEED_TYPE_ARTICLE);
 
         sendPostToServerForProcessing(postStructureModel);
 
@@ -290,7 +290,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     private void sendPostToServerForProcessing(PostStructureModel content) {
 
         generated_permalink = PermlinkGenerator.getPermlink();
-        PreProcessingModel preProcessingModel = new PreProcessingModel(generated_permalink, content);
+        PreProcessingModel preProcessingModel = new PreProcessingModel(generated_permalink, new Gson().toJson(content));
 
         RetrofitServiceGenerator.getService().sendForPreProcessing(preProcessingModel).enqueue(new Callback<ProcessedBodyResponse>() {
             @Override

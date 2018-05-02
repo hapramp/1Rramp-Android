@@ -4,8 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.hapramp.api.DataServer;
 import com.hapramp.main.HapRampMain;
+import com.hapramp.steem.models.Feed;
+import com.hapramp.steem.models.FeedResponse;
 
 /**
  * Created by Ankit on 1/21/2018.
@@ -40,31 +43,22 @@ public class CachePreference {
         editor.apply();
     }
 
-    public void setPostSynced(String segment){
-        editor.putBoolean("segment_"+segment,true);
-        editor.apply();
+    public boolean isFeedResponseCached() {
+        return preferences.getBoolean("feedCached", false);
     }
 
-    public Boolean isPostSynced(String segmentId){
-        return preferences.getBoolean("segment_"+segmentId,false);
+    public void cacheFeedResponse(FeedResponse feedResponse) {
+
+        if (feedResponse != null) {
+            editor.putString("feed_cache", new Gson().toJson(feedResponse));
+            editor.putBoolean("feedCached", true);
+            editor.apply();
+        }
+
     }
 
-    public boolean wasAllFeedCached() {
-        return preferences.getBoolean("feedCached",false);
-    }
-
-    public void setAllFeedCached(boolean cached){
-        editor.putBoolean("feedCached" , cached);
-        editor.apply();
-    }
-
-    public boolean wasCommunityFeedCached(String communityTag) {
-        return preferences.getBoolean("community_"+communityTag,false);
-    }
-
-    public void setCommunityFeedCached(String communityTag , boolean isCached){
-        editor.putBoolean("community_"+communityTag,isCached);
-        editor.apply();
+    public FeedResponse getCachedFeedResponse() {
+        return new Gson().fromJson(preferences.getString("feed_cache", ""), FeedResponse.class);
     }
 
 }

@@ -19,6 +19,7 @@ import com.hapramp.adapters.ProfileRecyclerAdapter;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.Feed;
+import com.hapramp.steem.models.FeedResponse;
 import com.hapramp.steem.models.user.Profile;
 import com.hapramp.steem.models.user.SteemUser;
 import com.hapramp.utils.ViewItemDecoration;
@@ -186,9 +187,9 @@ public class ProfileFragment extends Fragment {
 
         RetrofitServiceGenerator.getService()
                 .getPostsOfUser(username, POST_LIMIT)
-                .enqueue(new Callback<List<Feed>>() {
+                .enqueue(new Callback<FeedResponse>() {
                     @Override
-                    public void onResponse(Call<List<Feed>> call, Response<List<Feed>> response) {
+                    public void onResponse(Call<FeedResponse> call, Response<FeedResponse> response) {
                         if (response.isSuccessful()) {
                             bindProfilePosts(response.body());
                         } else {
@@ -197,7 +198,7 @@ public class ProfileFragment extends Fragment {
                     }
 
                     @Override
-                    public void onFailure(Call<List<Feed>> call, Throwable t) {
+                    public void onFailure(Call<FeedResponse> call, Throwable t) {
                         failedToFetchUserPosts();
                     }
                 });
@@ -208,11 +209,11 @@ public class ProfileFragment extends Fragment {
 
     }
 
-    private void bindProfilePosts(List<Feed> body) {
+    private void bindProfilePosts(FeedResponse body) {
 
-        Log.d("ProfileFragment", " posts " + body.size());
+        Log.d("ProfileFragment", " posts " + body.getFeeds().size());
         //Profile.fetchUserProfilesFor(body);
-        profilePostAdapter.setPosts(body);
+        profilePostAdapter.setPosts(body.getFeeds());
 
     }
 

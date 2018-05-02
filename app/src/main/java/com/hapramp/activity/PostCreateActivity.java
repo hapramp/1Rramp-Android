@@ -6,6 +6,8 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -22,11 +24,12 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.interfaces.PostCreateCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.FeedData;
+import com.hapramp.steem.FeedDataConstants;
 import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.PostConfirmationModel;
 import com.hapramp.steem.PostStructureModel;
@@ -36,8 +39,10 @@ import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.steem.models.data.FeedDataItemModel;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FontManager;
+import com.hapramp.utils.PixelUtils;
 import com.hapramp.views.post.PostCreateComponent;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -256,18 +261,19 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
         tags = postCreateComponent.getSelectedCommunityTags();
         //prepare post structure
         List<FeedDataItemModel> datas = new ArrayList<>();
-        datas.add(new FeedDataItemModel(postCreateComponent.getImageDownloadUrl(), FeedData.ContentType.IMAGE));
-        datas.add(new FeedDataItemModel(postCreateComponent.getContent(), FeedData.ContentType.TEXT));
-        postStructureModel = new PostStructureModel(datas, FeedData.FEED_TYPE_POST);
+        datas.add(new FeedDataItemModel(postCreateComponent.getImageDownloadUrl(), FeedDataConstants.ContentType.IMAGE));
+        datas.add(new FeedDataItemModel(postCreateComponent.getContent(), FeedDataConstants.ContentType.TEXT));
+        postStructureModel = new PostStructureModel(datas, FeedDataConstants.FEED_TYPE_POST);
 
     }
 
     //PUBLISHING SECTION
     private void sendPostToServerForProcessing(PostStructureModel content) {
 
-        PreProcessingModel preProcessingModel = new PreProcessingModel(full_permlink, content);
+        PreProcessingModel preProcessingModel = new PreProcessingModel(full_permlink, new Gson().toJson(content));
 
-        RetrofitServiceGenerator.getService().sendForPreProcessing(preProcessingModel).enqueue(new Callback<ProcessedBodyResponse>() {
+        RetrofitServiceGenerator.getService().sendForPreProcessing(preProcessingModel)
+                .enqueue(new Callback<ProcessedBodyResponse>() {
             @Override
             public void onResponse(Call<ProcessedBodyResponse> call, Response<ProcessedBodyResponse> response) {
                 if (response.isSuccessful()) {
@@ -387,11 +393,42 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
 
         if (requestCode == REQUEST_IMAGE_SELECTOR && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
             try {
-                postCreateComponent.setImageResource(MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData()));
+
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                postCreateComponent.setImageResource(bitmap);
+                logScreenDimesions(bitmap);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void logScreenDimesions(final Bitmap bitmap){
+
+        new Thread(){
+            @Override
+            public void run() {
+
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 40 /*ignored for PNG*/, bos);
+                byte[] bitmapdata = bos.toByteArray();
+
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+                BitmapFactory.decodeByteArray(bitmapdata,0,bitmapdata.length,options);
+                int imageHeight = options.outHeight;
+                int imageWidth = options.outWidth;
+
+                Log.d("DIMESION","height "+imageHeight);
+                Log.d("DIMESION","width "+imageWidth);
+
+            }
+        }.start();
+
+        Log.d("DIMESION","device width "+ PixelUtils.getWidth());
+        Log.d("DIMESION","device height "+ PixelUtils.getHeight());
+
     }
 
     @Override

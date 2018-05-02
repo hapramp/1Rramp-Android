@@ -4,9 +4,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.hapramp.R;
-import com.hapramp.steem.FeedData;
+import com.hapramp.steem.FeedDataConstants;
 import com.hapramp.steem.PostStructureModel;
-import com.hapramp.steem.models.data.Content;
 import com.hapramp.steem.models.data.FeedDataItemModel;
 import com.hapramp.views.renderer.RendererView;
 
@@ -27,7 +26,7 @@ public class PreviewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_preview_activity);
         ButterKnife.bind(this);
         ArrayList<FeedDataItemModel> feedDataItemModels = getIntent().getParcelableArrayListExtra("data");
-        renderView.render(new PostStructureModel(feedDataItemModels, FeedData.FEED_TYPE_ARTICLE));
+        renderView.render(new PostStructureModel(feedDataItemModels, FeedDataConstants.FEED_TYPE_ARTICLE));
 
     }
 

@@ -18,6 +18,7 @@ import com.hapramp.adapters.ProfileRecyclerAdapter;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.Feed;
+import com.hapramp.steem.models.FeedResponse;
 import com.hapramp.steem.models.user.Profile;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
@@ -146,9 +147,9 @@ public class ProfileActivity extends AppCompatActivity {
 
         RetrofitServiceGenerator.getService()
                 .getPostsOfUser(username, POST_LIMIT)
-                .enqueue(new Callback<List<Feed>>() {
+                .enqueue(new Callback<FeedResponse>() {
                     @Override
-                    public void onResponse(Call<List<Feed>> call, Response<List<Feed>> response) {
+                    public void onResponse(Call<FeedResponse> call, Response<FeedResponse> response) {
                         if (response.isSuccessful()) {
                             bindProfilePosts(response.body());
                         } else {
@@ -157,16 +158,16 @@ public class ProfileActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<List<Feed>> call, Throwable t) {
+                    public void onFailure(Call<FeedResponse> call, Throwable t) {
                         failedToFetchUserPosts();
                     }
                 });
 
     }
 
-    private void bindProfilePosts(List<Feed> body) {
+    private void bindProfilePosts(FeedResponse body) {
         //Profile.fetchUserProfilesFor(body);
-        profilePostAdapter.setPosts(body);
+        profilePostAdapter.setPosts(body.getFeeds());
     }
 
     private void failedToFetchUserPosts() {

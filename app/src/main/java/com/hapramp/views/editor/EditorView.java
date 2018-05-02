@@ -28,7 +28,7 @@ import com.hapramp.editor.models.EditorContent;
 import com.hapramp.editor.models.EditorTextStyle;
 import com.hapramp.editor.models.Node;
 import com.hapramp.models.PostJobModel;
-import com.hapramp.steem.FeedData;
+import com.hapramp.steem.FeedDataConstants;
 import com.hapramp.steem.models.data.FeedDataItemModel;
 
 import java.io.ByteArrayOutputStream;
@@ -262,13 +262,13 @@ public class EditorView extends FrameLayout implements TextHeaderView.HeadingCha
         //insert sub heading(if any)
         String sub_heading = subHeading.getText().toString().trim();
         if (sub_heading.length() > 0) {
-            feedDataItemModels.add(0, new FeedDataItemModel(sub_heading, FeedData.ContentType.H2));
+            feedDataItemModels.add(0, new FeedDataItemModel(sub_heading, FeedDataConstants.ContentType.H2));
         }
 
         //insert heading(if any)
         String _heading = heading.getText().toString().trim();
         if (_heading.length() > 0) {
-            feedDataItemModels.add(0, new FeedDataItemModel(_heading, FeedData.ContentType.H1));
+            feedDataItemModels.add(0, new FeedDataItemModel(_heading, FeedDataConstants.ContentType.H1));
         }
 
         return feedDataItemModels;

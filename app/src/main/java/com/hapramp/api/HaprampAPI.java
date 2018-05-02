@@ -37,6 +37,7 @@ import com.hapramp.steem.PostConfirmationModel;
 import com.hapramp.steem.PreProcessingModel;
 import com.hapramp.steem.ProcessedBodyResponse;
 import com.hapramp.steem.models.Feed;
+import com.hapramp.steem.models.FeedResponse;
 import com.hapramp.steem.models.user.SteemUser;
 import com.hapramp.youtube.YoutubeResultModel;
 
@@ -87,19 +88,19 @@ public interface HaprampAPI {
     Call<List<UserModel>> getAllUsersOnPlatform();
 
     @GET("feeds/user/{username}")
-    Call<List<Feed>> getUserFeeds(@Path("username") String username, @Query("limit") int limit);
+    Call<FeedResponse> getUserFeeds(@Path("username") String username, @Query("limit") int limit);
 
     @GET("feeds/blog/{username}")
-    Call<List<Feed>> getPostsOfUser(@Path("username") String username, @Query("limit") int limit);
+    Call<FeedResponse> getPostsOfUser(@Path("username") String username, @Query("limit") int limit);
 
     @GET("feeds/created/{tag}")
-    Call<List<Feed>> getLatestFeed(@Path("tag") String tag, @Query("limit") int limit);
+    Call<FeedResponse> getLatestFeed(@Path("tag") String tag, @Query("limit") int limit);
 
     @GET("feeds/hot/{tag}")
-    Call<List<Feed>> getHotFeed(@Path("tag") String tag, @Query("limit") int limit);
+    Call<FeedResponse> getHotFeed(@Path("tag") String tag, @Query("limit") int limit);
 
     @GET("feeds/trending/{tag}")
-    Call<List<Feed>> getTrendingFeed(@Path("tag") String tag, @Query("limit") int limit);
+    Call<FeedResponse> getTrendingFeed(@Path("tag") String tag, @Query("limit") int limit);
 
     @GET
     Call<SteemUser> getSteemUser(@Url String url);

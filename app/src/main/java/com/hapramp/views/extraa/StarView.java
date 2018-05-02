@@ -1,8 +1,10 @@
 package com.hapramp.views.extraa;
 
+import android.animation.LayoutTransition;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
+import android.support.annotation.Dimension;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -13,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,11 +31,11 @@ public class StarView extends FrameLayout {
     private static final long REVEAL_DELAY = 500;
     private static final float REVEAL_START_OFFSET = 84;
     private Context mContext;
-    private static final long HIDE_RATING_BAR_DELAY = 2000;
+    private static final long HIDE_RATING_BAR_DELAY = 4000;
     TextView starIndicator;
     TextView starInfo;
     RatingBar ratingBar;
-    LinearLayout ratingBarContainer;
+    RelativeLayout ratingBarContainer;
     TextView cancelRateBtn;
     TextView ratingError;
     ProgressBar ratingProgress;
@@ -45,7 +48,7 @@ public class StarView extends FrameLayout {
     };
     private Vote currentState;
     private Vote legacyState;
-    private boolean voteUnderProcess;
+   // private boolean voteUnderProcess;
     private onVoteUpdateCallback onVoteUpdateCallback;
 
     public StarView(@NonNull Context context) {
@@ -94,6 +97,7 @@ public class StarView extends FrameLayout {
         ratingError.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         starIndicator.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         cancelRateBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+        ratingBarContainer.getLayoutTransition().enableTransitionType(LayoutTransition.APPEARING);
         setRatingBarListener();
 
         mHandler = new Handler();
@@ -201,11 +205,11 @@ public class StarView extends FrameLayout {
     }
 
     public void onStarIndicatorTapped() {
-
-        if (voteUnderProcess) {
-            Toast.makeText(mContext, "Your previous vote is under process.", Toast.LENGTH_LONG).show();
-            return;
-        }
+//
+//        if (voteUnderProcess) {
+//            Toast.makeText(mContext, "Your previous vote is under process.", Toast.LENGTH_LONG).show();
+//            return;
+//        }
 
         if (currentState.iHaveVoted) {
             // cancel all my ratings
@@ -225,10 +229,10 @@ public class StarView extends FrameLayout {
 
     public void onStarIndicatorLongPressed() {
 
-        if (!voteUnderProcess) {
-            Toast.makeText(mContext, "Your previous vote is under process.", Toast.LENGTH_LONG).show();
-            return;
-        }
+//        if (!voteUnderProcess) {
+//            Toast.makeText(mContext, "Your previous vote is under process.", Toast.LENGTH_LONG).show();
+//            return;
+//        }
 
         if (currentState.iHaveVoted) {
             showRatingBar();
@@ -437,14 +441,14 @@ public class StarView extends FrameLayout {
     }
 
     public void castedVoteTemporarily() {
-        this.voteUnderProcess = true;
-        toast("Your vote is under process. We will let you know when its done!");
+     //   this.voteUnderProcess = true;
+      //  toast("Your vote is under process. We will let you know when its done!");
         showRatingProgress(false);
     }
 
     public void deletedVoteTemporarily() {
-        this.voteUnderProcess = true;
-        toast("Your vote is under process. We will let you know when its done!");
+     //   this.voteUnderProcess = true;
+     //   toast("Your vote is under process. We will let you know when its done!");
         showRatingProgress(false);
     }
 
@@ -452,8 +456,8 @@ public class StarView extends FrameLayout {
         // set new state as the legacy state
         this.legacyState = currentState;
         showRatingProgress(false);
-        toast("Your vote processed successfully!");
-        this.voteUnderProcess = false;
+    //    toast("Your vote processed successfully!");
+    //    this.voteUnderProcess = false;
 
     }
 
@@ -461,8 +465,8 @@ public class StarView extends FrameLayout {
         // set new state as the legacy state
         this.legacyState = currentState;
         showRatingProgress(false);
-        toast("Your vote processed successfully!");
-        this.voteUnderProcess = false;
+    //    toast("Your vote processed successfully!");
+     //   this.voteUnderProcess = false;
 
     }
 

@@ -78,11 +78,13 @@
         android:id="@+id/post_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_below="@+id/image_container"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="18sp"
-        android:visibility="gone" />
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:visibility="visible" />
 
     <TextView
         android:id="@+id/post_snippet"
@@ -183,11 +185,12 @@
         android:textSize="12sp" />
 
     <com.hapramp.views.extraa.StarView
+        android:animateLayoutChanges="true"
         android:id="@+id/starView"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_below="@+id/readMoreBtn"
         android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp" />
+        />
 
 </RelativeLayout>

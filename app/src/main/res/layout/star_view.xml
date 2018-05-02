@@ -2,16 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="48dp"
-    android:paddingEnd="8dp"
+    android:animateLayoutChanges="true"
+    android:background="@color/white"
     android:gravity="center_vertical">
 
 
     <TextView
         android:id="@+id/starIndicator"
-        android:layout_width="wrap_content"
-        android:layout_height="36dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_centerVertical="true"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:textColor="@color/Black54"
         android:paddingEnd="2dp"
         android:text=""
@@ -48,19 +49,17 @@
         android:layout_width="16dp"
         android:layout_height="16dp" />
 
-
-
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/ratingBarContainer"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/rating_bar_bg"
-        android:clickable="false"
+        android:animateLayoutChanges="true"
+        android:clickable="true"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:orientation="horizontal"
+        android:background="@color/white"
         android:visibility="gone">
 
         <RatingBar
@@ -75,6 +74,7 @@
             android:numStars="5"
             android:rating="0"
             android:stepSize="1"
+            android:layout_centerHorizontal="true"
             android:visibility="visible" />
 
         <TextView
@@ -84,13 +84,14 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_marginStart="8dp"
+            android:layout_alignParentEnd="true"
             android:background="?selectableItemBackgroundBorderless"
             android:gravity="center"
             android:text="| "
-            android:textColor="@color/Black38"
+            android:textColor="@color/Black12"
             android:textSize="24sp"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

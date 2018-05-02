@@ -4,23 +4,17 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
-import com.google.gson.Gson;
 import com.hapramp.api.RetrofitServiceGenerator;
-import com.hapramp.db.DatabaseHelper;
 import com.hapramp.interfaces.datatore_callback.ServiceWorkerCallback;
 import com.hapramp.preferences.CachePreference;
-import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
 import com.hapramp.steem.ServiceWorkerRequestParams;
 import com.hapramp.steem.models.Feed;
-import com.hapramp.steem.models.user.Profile;
+import com.hapramp.steem.models.FeedResponse;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.bittrade.libs.steemj.SteemJ;
-import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
-import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -29,22 +23,15 @@ public class ServiceWorker {
 
     private static final String TAG = ServiceWorker.class.getSimpleName();
     ServiceWorkerCallback serviceWorkerCallback;
-    private Context mContext;
-    private DatabaseHelper mDatabaseHelper;
     private Handler mHandler;
     private CachePreference mCachePreference;
-    private ServiceWorker serviceWorkerInstance;
-
     private ServiceWorkerRequestParams currentRequestParams;
 
     // setup all the deps
     public void init(Context context) {
         l("init()");
-        this.mContext = context;
         mCachePreference = CachePreference.getInstance();
-        mDatabaseHelper = new DatabaseHelper(context);
         mHandler = new Handler();
-
     }
 
     public void setServiceWorkerCallback(ServiceWorkerCallback serviceWorkerCallback) {
@@ -57,22 +44,19 @@ public class ServiceWorker {
 
         l("Requesting All Feeds : " + requestParams.getCommunityTag());
         this.currentRequestParams = requestParams;
-        // TODO: 2/28/2018
-        // 1 - check for the cache, if found return else report its absence
-        // TODO: 3/13/2018 cache should be update when data is cached
-        if (mCachePreference.wasAllFeedCached()) {
+        if (mCachePreference.isFeedResponseCached()) {
             l("Feed was cached");
             // read from databse and return
             new Thread() {
                 @Override
                 public void run() {
-                    final ArrayList<Feed> steemFeedModelArrayList = mDatabaseHelper.getAllFeeds();
+                    final FeedResponse cachedFeedResponse = mCachePreference.getCachedFeedResponse();
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             if (serviceWorkerCallback != null) {
                                 l("Returning from cache");
-                                serviceWorkerCallback.onLoadedFromCache(steemFeedModelArrayList);
+                                serviceWorkerCallback.onLoadedFromCache((ArrayList<Feed>) cachedFeedResponse.getFeeds());
                             }
                         }
                     });
@@ -104,22 +88,19 @@ public class ServiceWorker {
 
         this.currentRequestParams = requestParams;
         //check for cache
-        if (CachePreference.getInstance().wasCommunityFeedCached(requestParams.getCommunityTag())) {
-
-            // read from database and return with callback
-            // Read on Worker Thread
-
+        if (mCachePreference.isFeedResponseCached()) {
             new Thread() {
                 @Override
                 public void run() {
-                    final ArrayList<Feed> communityFeedList = mDatabaseHelper.getFeedsByCommunity(requestParams.getCommunityTag());
+                    final FeedResponse feedResponse = mCachePreference.getCachedFeedResponse();
                     //check for live request
                     if (isRequestLive(requestParams)) {
                         //call on main thread
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                serviceWorkerCallback.onLoadedFromCache(communityFeedList);
+                                List<Feed> filteredFeeds = FeedsFilter.filter(feedResponse.getFeeds(), currentRequestParams.getCommunityTag());
+                                serviceWorkerCallback.onLoadedFromCache((ArrayList<Feed>) filteredFeeds);
                             }
                         });
                     }
@@ -182,9 +163,9 @@ public class ServiceWorker {
         // 1 - call api for feeds
         RetrofitServiceGenerator.getService()
                 .getUserFeeds(feedRequestParams.getUsername(), feedRequestParams.getLimit())
-                .enqueue(new Callback<List<Feed>>() {
+                .enqueue(new Callback<FeedResponse>() {
                     @Override
-                    public void onResponse(Call<List<Feed>> call, final Response<List<Feed>> response) {
+                    public void onResponse(Call<FeedResponse> call, final Response<FeedResponse> response) {
 
                         //Profile.fetchUserProfilesFor(response.body());
 
@@ -200,8 +181,7 @@ public class ServiceWorker {
                                         @Override
                                         public void run() {
                                             l("Caching Feeds!");
-                                            mDatabaseHelper.insertFeeds((ArrayList<Feed>) response.body());
-
+                                            mCachePreference.cacheFeedResponse(response.body());
                                         }
                                     }.start();
 
@@ -210,7 +190,7 @@ public class ServiceWorker {
 
                                         l("Returning All Feeds");
                                         // return all feeds
-                                        serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body());
+                                        serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body().getFeeds());
 
                                     } else {
                                         // return community feeds
@@ -222,7 +202,12 @@ public class ServiceWorker {
                                                 mHandler.post(new Runnable() {
                                                     @Override
                                                     public void run() {
-                                                        serviceWorkerCallback.onFeedsFetched(mDatabaseHelper.getFeedsByCommunity(feedRequestParams.getCommunityTag()));
+
+                                                        List<Feed> filteredFeeds = FeedsFilter.filter(response.body().getFeeds(),
+                                                                currentRequestParams.getCommunityTag());
+
+                                                        serviceWorkerCallback.onLoadedFromCache((ArrayList<Feed>) filteredFeeds);
+
                                                     }
                                                 });
                                             }
@@ -231,7 +216,7 @@ public class ServiceWorker {
 
                                 } else {
                                     // report error
-                                    l("Error :(");
+                                    l("Error[fetchAllFeeds_onResponse]");
                                     serviceWorkerCallback.onFetchingFromServerFailed();
                                 }
                             }
@@ -239,8 +224,8 @@ public class ServiceWorker {
                     }
 
                     @Override
-                    public void onFailure(Call<List<Feed>> call, Throwable t) {
-                        l("Error : " + t.toString());
+                    public void onFailure(Call<FeedResponse> call, Throwable t) {
+                        l("Error[fetchAllFeeds_onFailure]" + t.toString());
                         if (serviceWorkerCallback != null) {
                             serviceWorkerCallback.onFetchingFromServerFailed();
                         }
@@ -259,9 +244,9 @@ public class ServiceWorker {
         }
 
         RetrofitServiceGenerator.getService().getTrendingFeed(serviceWorkerRequestParams.getCommunityTag(), serviceWorkerRequestParams.getLimit())
-                .enqueue(new Callback<List<Feed>>() {
+                .enqueue(new Callback<FeedResponse>() {
                     @Override
-                    public void onResponse(Call<List<Feed>> call, Response<List<Feed>> response) {
+                    public void onResponse(Call<FeedResponse> call, Response<FeedResponse> response) {
                         //Profile.fetchUserProfilesFor(response.body());
 
                         // check for life of request(whether other request has came and over-written on this)
@@ -272,7 +257,7 @@ public class ServiceWorker {
                                 if (response.isSuccessful()) {
                                     l("Returning All Feeds");
                                     // return all feeds
-                                    serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body());
+                                    serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body().getFeeds());
                                 } else {
                                     l("Error :(");
                                     serviceWorkerCallback.onFetchingFromServerFailed();
@@ -282,7 +267,7 @@ public class ServiceWorker {
                     }
 
                     @Override
-                    public void onFailure(Call<List<Feed>> call, Throwable t) {
+                    public void onFailure(Call<FeedResponse> call, Throwable t) {
                         l("Error :(");
                         serviceWorkerCallback.onFetchingFromServerFailed();
                     }
@@ -299,9 +284,9 @@ public class ServiceWorker {
         }
 
         RetrofitServiceGenerator.getService().getHotFeed(serviceWorkerRequestParams.getCommunityTag(), serviceWorkerRequestParams.getLimit())
-                .enqueue(new Callback<List<Feed>>() {
+                .enqueue(new Callback<FeedResponse>() {
                     @Override
-                    public void onResponse(Call<List<Feed>> call, Response<List<Feed>> response) {
+                    public void onResponse(Call<FeedResponse> call, Response<FeedResponse> response) {
 
                         //Profile.fetchUserProfilesFor(response.body());
                         // check for life of request(whether other request has came and over-written on this)
@@ -312,7 +297,7 @@ public class ServiceWorker {
                                 if (response.isSuccessful()) {
                                     l("Returning All Feeds");
                                     // return all feeds
-                                    serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body());
+                                    serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body().getFeeds());
                                 } else {
                                     l("Error :(");
                                     serviceWorkerCallback.onFetchingFromServerFailed();
@@ -322,7 +307,7 @@ public class ServiceWorker {
                     }
 
                     @Override
-                    public void onFailure(Call<List<Feed>> call, Throwable t) {
+                    public void onFailure(Call<FeedResponse> call, Throwable t) {
                         l("Error :(");
                         serviceWorkerCallback.onFetchingFromServerFailed();
                     }
@@ -339,9 +324,9 @@ public class ServiceWorker {
         }
 
         RetrofitServiceGenerator.getService().getLatestFeed(serviceWorkerRequestParams.getCommunityTag(), serviceWorkerRequestParams.getLimit())
-                .enqueue(new Callback<List<Feed>>() {
+                .enqueue(new Callback<FeedResponse>() {
                     @Override
-                    public void onResponse(Call<List<Feed>> call, Response<List<Feed>> response) {
+                    public void onResponse(Call<FeedResponse> call, Response<FeedResponse> response) {
                         //Profile.fetchUserProfilesFor(response.body());
 
                         // check for life of request(whether other request has came and over-written on this)
@@ -352,7 +337,7 @@ public class ServiceWorker {
                                 if (response.isSuccessful()) {
                                     l("Returning All Feeds");
                                     // return all feeds
-                                    serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body());
+                                    serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body().getFeeds());
                                 } else {
                                     l("Error :(");
                                     serviceWorkerCallback.onFetchingFromServerFailed();
@@ -362,7 +347,7 @@ public class ServiceWorker {
                     }
 
                     @Override
-                    public void onFailure(Call<List<Feed>> call, Throwable t) {
+                    public void onFailure(Call<FeedResponse> call, Throwable t) {
                         l("Error :(");
                         serviceWorkerCallback.onFetchingFromServerFailed();
                     }

@@ -1,7 +1,6 @@
 package com.hapramp;
 
 import com.google.gson.Gson;
-import com.hapramp.db.DatabaseHelper;
 import com.hapramp.steem.models.Feed;
 
 import org.junit.After;

@@ -1,6 +1,6 @@
 package com.hapramp.steem;
 
-public class FeedData {
+public class FeedDataConstants {
 
     public static final String FEED_TYPE_ARTICLE = "article";
     public static final String FEED_TYPE_POST = "post";
