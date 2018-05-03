@@ -41,13 +41,6 @@ public class CommunitiesUnitTest {
 
     @Test
     public void testMethod_doesCommunityExists() {
-        ///System.out.println(String.format("%1$s/%2$s","ankit","kumar"));
-        //true test
-        assert (Communities.doesCommunityExists("hapramp-art"));
-        assert (Communities.doesCommunityExists("hapramp-dance"));
-        //false test
-        assert (!Communities.doesCommunityExists("hapramp"));
-        assert (!Communities.doesCommunityExists("hapramp-test"));
     }
 
 

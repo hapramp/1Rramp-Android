@@ -472,7 +472,15 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         starView.voteProcessing();
 
         final int votePower = vote;
-       // Log.d("VoteTest", "voting with percent " + votePower);
+
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                starView.castedVoteTemporarily();
+            }
+        }, 500);
+
         new Thread() {
 
             @Override
@@ -521,6 +529,13 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
        // Log.d("VoteTest", "Deleting vote");
 
         starView.voteProcessing();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                starView.deletedVoteTemporarily();
+            }
+        }, 500);
 
         new Thread() {
 

@@ -39,14 +39,14 @@ public class SteemPostCreator {
     }
 
     @WorkerThread
-    public void createPost(final String body,final String title,final List<String> tags,final PostStructureModel postStructure,final String __permlink) {
+    public void createPost(final String body, final String title, final List<String> tags, final PostStructureModel postStructure, final String __permlink) {
 
         new Thread() {
             @Override
             public void run() {
 
                 SteemJ steemJ = SteemHelper.getSteemInstance();
-                if(steemJ==null){
+                if (steemJ == null) {
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -112,24 +112,44 @@ public class SteemPostCreator {
 
                     }
 
-                } catch (SteemCommunicationException e) {
+                } catch (final SteemCommunicationException e) {
                     e.printStackTrace();
                     if (steemPostCreatorCallback != null) {
-                        steemPostCreatorCallback.onPostCreationFailedOnSteem("Communication Error [" + e.toString() + "]");
+
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                steemPostCreatorCallback.onPostCreationFailedOnSteem("Communication Error [" + e.toString() + "]");
+                            }
+                        });
+
+
                     }
-                    Log.v("TEST", e.toString());
-                } catch (SteemResponseException e) {
+
+                } catch (final SteemResponseException e) {
+                    e.printStackTrace();
+
+                    if (steemPostCreatorCallback != null) {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                steemPostCreatorCallback.onPostCreationFailedOnSteem("Response Error [" + e.toString() + "]");
+                            }
+                        });
+
+                    }
+
+                } catch (final SteemInvalidTransactionException e) {
                     e.printStackTrace();
                     if (steemPostCreatorCallback != null) {
-                        steemPostCreatorCallback.onPostCreationFailedOnSteem("Response Error [" + e.toString() + "]");
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                steemPostCreatorCallback.onPostCreationFailedOnSteem("Transaction Error [" + e.toString() + "]");
+                            }
+                        });
+
                     }
-                    Log.v("TEST", e.toString());
-                } catch (SteemInvalidTransactionException e) {
-                    e.printStackTrace();
-                    if (steemPostCreatorCallback != null) {
-                        steemPostCreatorCallback.onPostCreationFailedOnSteem("Transaction Error [" + e.toString() + "]");
-                    }
-                    Log.v("TEST", e.toString());
                 }
 
             }
