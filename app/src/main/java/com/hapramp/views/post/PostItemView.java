@@ -191,9 +191,9 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         //load featured image and snippet for article | post
         String image_url = extractImageUrlForPost(content.data);
         String text = extractTextSnippetForPost(content.data);
-
-        postSnippet.setText(text);
-        ImageHandler.load(mContext, featuredImagePost, image_url);
+//
+//        postSnippet.setText(text);
+//        ImageHandler.load(mContext, featuredImagePost, image_url);
 
         bindPostContent(content.data);
 
@@ -539,6 +539,11 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     //=====================
 
     private void bindPostContent(List<FeedDataItemModel> data) {
+
+        //reset the visibility
+        if(featuredImagePost!=null){
+            featuredImagePost.setVisibility(GONE);
+        }
 
         //scan for feed content
         FeedRenderTypeModel feedRenderTypeModel = scanFeedContentsForRendering(data);

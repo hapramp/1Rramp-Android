@@ -38,6 +38,7 @@ public interface ServiceWorkerCallback {
     //something went wrong while fetching from server
     void onFetchingFromServerFailed();
 
+    void onNoDataAvailable();
 
     //=========================================
     // REFRESHING CALLBACK

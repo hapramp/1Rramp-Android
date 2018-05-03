@@ -99,8 +99,12 @@ public class ServiceWorker {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
+
                                 List<Feed> filteredFeeds = FeedsFilter.filter(feedResponse.getFeeds(), currentRequestParams.getCommunityTag());
-                                serviceWorkerCallback.onLoadedFromCache((ArrayList<Feed>) filteredFeeds, feedResponse.getLastAuthor(), feedResponse.getLastPermlink());
+                                if (filteredFeeds.size() > 0) {
+                                    serviceWorkerCallback.onLoadedFromCache((ArrayList<Feed>) filteredFeeds, feedResponse.getLastAuthor(), feedResponse.getLastPermlink());
+                                }
+
                             }
                         });
                     }
@@ -144,6 +148,7 @@ public class ServiceWorker {
 
                                 List<Feed> filteredFeeds = FeedsFilter.filter(response.body().getFeeds(), currentRequestParams.getCommunityTag());
                                 serviceWorkerCallback.onAppendableDataLoaded(filteredFeeds, response.body().getLastAuthor(), response.body().getLastPermlink());
+
 
                             }
                         } else {
@@ -238,10 +243,12 @@ public class ServiceWorker {
                                                     @Override
                                                     public void run() {
 
-                                                        List<Feed> filteredFeeds = FeedsFilter.filter(response.body().getFeeds(),
-                                                                currentRequestParams.getCommunityTag());
-
-                                                        serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) filteredFeeds, response.body().getLastAuthor(), response.body().getLastPermlink());
+                                                        List<Feed> filteredFeeds = FeedsFilter.filter(response.body().getFeeds(), currentRequestParams.getCommunityTag());
+                                                        if (filteredFeeds.size() > 0) {
+                                                            serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) filteredFeeds, response.body().getLastAuthor(), response.body().getLastPermlink());
+                                                        }else{
+                                                            serviceWorkerCallback.onNoDataAvailable();
+                                                        }
 
                                                     }
                                                 });
@@ -318,7 +325,7 @@ public class ServiceWorker {
             serviceWorkerCallback.onFetchingFromServer();
         }
 
-        RetrofitServiceGenerator.getService().getTrendingFeed(serviceWorkerRequestParams.getCommunityTag(), serviceWorkerRequestParams.getLimit() , serviceWorkerRequestParams.getLastAuthor(),serviceWorkerRequestParams.getLastPermlink())
+        RetrofitServiceGenerator.getService().getTrendingFeed(serviceWorkerRequestParams.getCommunityTag(), serviceWorkerRequestParams.getLimit(), serviceWorkerRequestParams.getLastAuthor(), serviceWorkerRequestParams.getLastPermlink())
                 .enqueue(new Callback<FeedResponse>() {
                     @Override
                     public void onResponse(Call<FeedResponse> call, Response<FeedResponse> response) {
@@ -393,7 +400,7 @@ public class ServiceWorker {
             serviceWorkerCallback.onFetchingFromServer();
         }
 
-        RetrofitServiceGenerator.getService().getHotFeed(serviceWorkerRequestParams.getCommunityTag(), serviceWorkerRequestParams.getLimit() , serviceWorkerRequestParams.getLastAuthor(),serviceWorkerRequestParams.getLastPermlink())
+        RetrofitServiceGenerator.getService().getHotFeed(serviceWorkerRequestParams.getCommunityTag(), serviceWorkerRequestParams.getLimit(), serviceWorkerRequestParams.getLastAuthor(), serviceWorkerRequestParams.getLastPermlink())
                 .enqueue(new Callback<FeedResponse>() {
                     @Override
                     public void onResponse(Call<FeedResponse> call, Response<FeedResponse> response) {
@@ -468,7 +475,7 @@ public class ServiceWorker {
             serviceWorkerCallback.onFetchingFromServer();
         }
 
-        RetrofitServiceGenerator.getService().getLatestFeed(serviceWorkerRequestParams.getCommunityTag(), serviceWorkerRequestParams.getLimit() , serviceWorkerRequestParams.getLastAuthor(),serviceWorkerRequestParams.getLastPermlink())
+        RetrofitServiceGenerator.getService().getLatestFeed(serviceWorkerRequestParams.getCommunityTag(), serviceWorkerRequestParams.getLimit(), serviceWorkerRequestParams.getLastAuthor(), serviceWorkerRequestParams.getLastPermlink())
                 .enqueue(new Callback<FeedResponse>() {
                     @Override
                     public void onResponse(Call<FeedResponse> call, Response<FeedResponse> response) {
@@ -494,6 +501,7 @@ public class ServiceWorker {
                 });
 
     }
+
     /*
      * Method to check if the request is live or overridden by other request
      * */
@@ -510,7 +518,5 @@ public class ServiceWorker {
     private void l(String msg) {
         Log.d(TAG, msg);
     }
-
-
 
 }

@@ -389,4 +389,14 @@ public class HomeFragment extends Fragment implements
         }
     }
 
+    @Override
+    public void onNoDataAvailable() {
+        if (feedListView != null) {
+            feedListView.onNoDataAvailable();
+        }
+        if(progressBarLoadingRecite!=null){
+            progressBarLoadingRecite.setVisibility(View.GONE);
+        }
+    }
+
 }

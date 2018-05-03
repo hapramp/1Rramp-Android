@@ -215,7 +215,9 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
             @Override
             public void onClick(View v) {
                 if (feedListViewListener != null) {
+                    Log.d("RetryButton","clicked");
                     feedListViewListener.onRetryFeedLoading();
+                    initialLoading();
                 }
             }
         });
@@ -265,6 +267,9 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
         // show shimmer
         setLoadingShimmerVisibility(true);
 
+        //reset list items
+        homeFeedsAdapter.resetList();
+
     }
 
     public void cachedFeedFetched(List<Feed> cachedFeeds) {
@@ -299,6 +304,21 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
         nopostMessageDetails.setText("No Previous Cached Feeds, Fetching From Server");
         // show refreshing
         showRefreshingLayout(true);
+
+    }
+
+    public void onNoDataAvailable(){
+
+        //hide recycler view
+        setFeedRecyclerViewVisibility(false);
+        //hide failed view
+        setFailedToLoadViewVisibility(false);
+        //show no feed loaded
+        setNoFeedLoadedViewVisibility(true);
+        //hide shimmer
+        setLoadingShimmerVisibility(false);
+        // show refreshing
+        showRefreshingLayout(false);
 
     }
 
@@ -350,7 +370,6 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
     public void failedToRefresh(String msg) {
 
         l("failedToRefresh");
-        // TODO: 2/12/2018 show error toast | if adapter has no posts already, then call failedToLoadInitial | diable swiperefresing views
 
         if (homeFeedsAdapter.getFeedsCount() == 0) {
             //hide recycler view
@@ -398,6 +417,7 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
 
     private void setLoadingShimmerVisibility(boolean show) {
 
+        Log.d("FeedLoadingShimmer","shown "+show);
         setViewVisibility(show, mockContainer);
         shimmerViewContainer.startShimmerAnimation();
 

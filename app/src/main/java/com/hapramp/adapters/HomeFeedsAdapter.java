@@ -149,8 +149,9 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         this.hasMoreToLoad = hasMoreToLoad;
     }
 
-    public void clearList() {
-
+    public void resetList() {
+        feeds = new ArrayList<>();
+        notifyDataSetChanged();
     }
 
     class FeedViewHolder extends RecyclerView.ViewHolder {
