@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 
-ext.firebaseVersion = '15.0.0'
+ext.firebaseVersionNew = '15.0.2'
+ext.firebaseVersionOld = '15.0.0'
 ext.buildToolVersion = '27.1.1'
 ext.supportLibVersion = '27.1.1'
 ext.multidexVersion = '1.0.3'
@@ -63,9 +64,9 @@ android {
 dependencies {
 
     //noinspection GradleCompatible
-    implementation "com.google.firebase:firebase-messaging:$firebaseVersion"
-    implementation "com.google.firebase:firebase-storage:$firebaseVersion"
-    implementation "com.google.firebase:firebase-auth:$firebaseVersion"
+    implementation "com.google.firebase:firebase-messaging:$firebaseVersionNew"
+    implementation "com.google.firebase:firebase-storage:$firebaseVersionNew"
+    implementation "com.google.firebase:firebase-auth:$firebaseVersionOld"
     implementation "com.android.support:multidex:$multidexVersion"
     implementation "com.android.support:appcompat-v7:$supportLibVersion"
     implementation "com.android.support:support-v4:$supportLibVersion"
@@ -78,7 +79,7 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glideVersion"
     implementation 'com.facebook.shimmer:shimmer:0.1.0@aar'
     implementation "org.apache.commons:commons-lang3:3.7"
-    implementation "com.google.android.gms:play-services-vision:$firebaseVersion"
+    implementation "com.google.android.gms:play-services-vision:$firebaseVersionOld"
     implementation "info.androidhive:barcode-reader:$barcodeReaderVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"
     testImplementation "junit:junit:$junitVersion"
