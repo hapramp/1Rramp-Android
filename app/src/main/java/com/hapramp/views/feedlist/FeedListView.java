@@ -302,9 +302,13 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
 
     }
 
-    public void feedRefreshing() {
+    public void feedRefreshing(boolean isManualRefresh) {
         l("feedRefreshing");
-        showRefreshingLayout(true);
+        if(isManualRefresh) {
+            showRefreshingLayout(true);
+        }else{
+
+        }
 
     }
 

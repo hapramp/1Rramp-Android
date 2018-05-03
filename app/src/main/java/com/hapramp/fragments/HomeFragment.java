@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -21,7 +22,6 @@ import com.hapramp.interfaces.LikePostCallback;
 import com.hapramp.interfaces.datatore_callback.ServiceWorkerCallback;
 import com.hapramp.logger.L;
 import com.hapramp.models.CommunityModel;
-import com.hapramp.models.response.PostResponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
 import com.hapramp.steem.CommunityListWrapper;
@@ -46,6 +46,8 @@ public class HomeFragment extends Fragment implements
     FeedListView feedListView;
     @BindView(R.id.sectionsRv)
     RecyclerView sectionsRv;
+    @BindView(R.id.progressBarLoadingRecite)
+    ProgressBar progressBarLoadingRecite;
 
     private Context mContext;
     private String currentSelectedTag = ALL;
@@ -111,10 +113,12 @@ public class HomeFragment extends Fragment implements
 
     private void bringBackCategorySection() {
         sectionsRv.animate().translationY(0);
+        progressBarLoadingRecite.animate().translationY(0);
     }
 
     private void hideCategorySection() {
         sectionsRv.animate().translationY(-sectionsRv.getMeasuredHeight());
+        progressBarLoadingRecite.animate().translationY(-sectionsRv.getMeasuredHeight());
     }
 
     private void initCategoryView() {
@@ -125,7 +129,7 @@ public class HomeFragment extends Fragment implements
 
         CommunityListWrapper cwr = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
         ArrayList<CommunityModel> communityModels = new ArrayList<>();
-        communityModels.add(0, new CommunityModel("", "", Communities.ALL, "", "All", 0));
+        communityModels.add(0, new CommunityModel("", Communities.IMAGE_URI_ALL, Communities.ALL, "", "All", 0));
         communityModels.addAll(cwr.getCommunityModels());
         categoryRecyclerAdapter.setCommunities(communityModels);
 
@@ -199,12 +203,10 @@ public class HomeFragment extends Fragment implements
 
     @Override
     public void onPostLiked(int postId) {
-        L.D.m("Home Fragment", "liked the post");
     }
 
     @Override
     public void onPostLikeError() {
-        L.D.m("Home Fragment", "unable to like the post");
     }
 
     //  CALLBACKS FROM FEED LIST VIEW
@@ -241,14 +243,17 @@ public class HomeFragment extends Fragment implements
     @Override
     public void onFetchingFromServer() {
         if (feedListView != null) {
-            feedListView.feedRefreshing();
+            feedListView.feedRefreshing(false);
+        }
+        if(progressBarLoadingRecite!=null){
+            progressBarLoadingRecite.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void onRefreshing() {
         if (feedListView != null) {
-            feedListView.feedRefreshing();
+            feedListView.feedRefreshing(false);
         }
     }
 
@@ -274,8 +279,6 @@ public class HomeFragment extends Fragment implements
     @Override
     public void onLoadedFromCache(ArrayList<Feed> cachedList, String lastAuthor, String lastPermlink) {
         if (feedListView != null) {
-            Log.d("Appendable", "[Cache]last author " + lastAuthor + " lastpermlink " + lastPermlink);
-            //enable reloading for communities
             if (currentSelectedTag.equals(Communities.ALL)) {
                 feedListView.setHasMoreToLoad(cachedList.size() == Constants.MAX_FEED_LOAD_LIMIT);
             } else {
@@ -292,8 +295,6 @@ public class HomeFragment extends Fragment implements
     public void onRefreshed(List<Feed> refreshedList, String lastAuthor, String lastPermlink) {
         if (feedListView != null) {
 
-            Log.d("Appendable", "[Refreshed]last author " + lastAuthor + " lastpermlink " + lastPermlink);
-
             if (currentSelectedTag.equals(Communities.ALL)) {
                 feedListView.setHasMoreToLoad(refreshedList.size() == Constants.MAX_FEED_LOAD_LIMIT);
             } else {
@@ -305,12 +306,18 @@ public class HomeFragment extends Fragment implements
             this.lastAuthor = lastAuthor;
             this.lastPermlink = lastPermlink;
         }
+        if(progressBarLoadingRecite!=null){
+            progressBarLoadingRecite.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void onRefreshFailed() {
         if (feedListView != null) {
             feedListView.failedToRefresh("");
+        }
+        if(progressBarLoadingRecite!=null){
+            progressBarLoadingRecite.setVisibility(View.GONE);
         }
     }
 
@@ -333,18 +340,22 @@ public class HomeFragment extends Fragment implements
             feedListView.loadedMoreFeeds(appendableList);
             this.lastAuthor = lastAuthor;
             this.lastPermlink = lastPermlink;
-            Log.d("Appendable", "[appendable]last author " + lastAuthor + " lastpermlink " + lastPermlink);
-            Log.d("Appendable", "feed loaded " + appendableList.size());
+        }
+
+        if(progressBarLoadingRecite!=null){
+            progressBarLoadingRecite.setVisibility(View.GONE);
         }
 
     }
 
     @Override
     public void onAppendableDataLoadingFailed() {
-        // TODO: 3/19/2018 needs to be implemented
-        Log.d("Appendable", "feed load failed");
+
         if (feedListView != null) {
             feedListView.failedToFetchAppendable();
+        }
+        if(progressBarLoadingRecite!=null){
+            progressBarLoadingRecite.setVisibility(View.GONE);
         }
     }
 
@@ -352,7 +363,6 @@ public class HomeFragment extends Fragment implements
     public void onFeedsFetched(ArrayList<Feed> feeds, String lastAuthor, String lastPermlink) {
 
         if (feedListView != null) {
-            Log.d("Appendable", "[fetched]last author " + lastAuthor + " lastpermlink " + lastPermlink);
             if (currentSelectedTag.equals(Communities.ALL)) {
                 feedListView.setHasMoreToLoad(feeds.size() == Constants.MAX_FEED_LOAD_LIMIT);
             } else {
@@ -361,14 +371,21 @@ public class HomeFragment extends Fragment implements
             feedListView.feedsRefreshed(feeds);
             this.lastAuthor = lastAuthor;
             this.lastPermlink = lastPermlink;
-
         }
+
+        if(progressBarLoadingRecite!=null){
+            progressBarLoadingRecite.setVisibility(View.GONE);
+        }
+
     }
 
     @Override
     public void onFetchingFromServerFailed() {
         if (feedListView != null) {
             feedListView.failedToRefresh("");
+        }
+        if(progressBarLoadingRecite!=null){
+            progressBarLoadingRecite.setVisibility(View.GONE);
         }
     }
 

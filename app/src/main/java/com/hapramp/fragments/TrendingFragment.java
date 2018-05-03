@@ -161,7 +161,7 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
     @Override
     public void onFetchingFromServer() {
         if (feedListView != null) {
-            feedListView.feedRefreshing();
+            feedListView.feedRefreshing(false);
         }
     }
 
@@ -182,7 +182,7 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
     @Override
     public void onRefreshing() {
         if (feedListView != null) {
-            feedListView.feedRefreshing();
+            feedListView.feedRefreshing(false);
         }
     }
 

@@ -161,7 +161,7 @@ public class NewFragment extends Fragment implements FeedListView.FeedListViewLi
     @Override
     public void onFetchingFromServer() {
         if (feedListView != null) {
-            feedListView.feedRefreshing();
+            feedListView.feedRefreshing(false);
         }
     }
 
@@ -182,7 +182,7 @@ public class NewFragment extends Fragment implements FeedListView.FeedListViewLi
     @Override
     public void onRefreshing() {
         if (feedListView != null) {
-            feedListView.feedRefreshing();
+            feedListView.feedRefreshing(false);
         }
     }
 

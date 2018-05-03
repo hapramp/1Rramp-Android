@@ -241,7 +241,7 @@ public class ServiceWorker {
                                                         List<Feed> filteredFeeds = FeedsFilter.filter(response.body().getFeeds(),
                                                                 currentRequestParams.getCommunityTag());
 
-                                                        serviceWorkerCallback.onLoadedFromCache((ArrayList<Feed>) filteredFeeds, response.body().getLastAuthor(), response.body().getLastPermlink());
+                                                        serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) filteredFeeds, response.body().getLastAuthor(), response.body().getLastPermlink());
 
                                                     }
                                                 });
@@ -309,7 +309,6 @@ public class ServiceWorker {
                 });
 
     }
-
 
     public void requestAppendableFeedForTrending(final ServiceWorkerRequestParams serviceWorkerRequestParams) {
 
