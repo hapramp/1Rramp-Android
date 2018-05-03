@@ -382,6 +382,9 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
 
     }
 
+    public void failedToFetchAppendable() {
+
+    }
     // view controllers
     private void setFeedRecyclerViewVisibility(boolean show) {
 
@@ -457,7 +460,6 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
         if (feedListViewListener != null) {
             feedListViewListener.onLoadMoreFeeds();
         }
-
     }
 
     private void l(String msg) {

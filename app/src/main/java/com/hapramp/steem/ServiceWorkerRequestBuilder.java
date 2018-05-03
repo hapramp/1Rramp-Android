@@ -1,6 +1,5 @@
 package com.hapramp.steem;
 
-import android.os.SystemClock;
 
 
 public class ServiceWorkerRequestBuilder {
@@ -10,6 +9,8 @@ public class ServiceWorkerRequestBuilder {
     private String subCategory;
     private String username;
     private int limit;
+    private String lastAuthor;
+    private String lastPermlink;
 
     public ServiceWorkerRequestBuilder() {
         this.requestId = (int) System.currentTimeMillis();
@@ -32,8 +33,18 @@ public class ServiceWorkerRequestBuilder {
         return this;
     }
 
+    public ServiceWorkerRequestBuilder setLastAuthor(String lastAuthor) {
+        this.lastAuthor = lastAuthor;
+        return this;
+    }
+
+    public ServiceWorkerRequestBuilder setLastPermlink(String lastPermlink) {
+        this.lastPermlink = lastPermlink;
+        return this;
+    }
+
     public ServiceWorkerRequestParams createRequestParam(){
-        return new ServiceWorkerRequestParams(requestId,communityTag,"",username,limit);
+        return new ServiceWorkerRequestParams(requestId,communityTag,"",username,limit , lastAuthor , lastPermlink);
     }
 
 }

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.ServiceWorkerRequestBuilder;
 import com.hapramp.steem.ServiceWorkerRequestParams;
 import com.hapramp.steem.models.Feed;
+import com.hapramp.utils.Constants;
 import com.hapramp.views.feedlist.FeedListView;
 
 import java.util.ArrayList;
@@ -46,7 +48,6 @@ public class HomeFragment extends Fragment implements
     RecyclerView sectionsRv;
 
     private Context mContext;
-    private PostResponse currentPostReponse;
     private String currentSelectedTag = ALL;
     private CategoryRecyclerAdapter categoryRecyclerAdapter;
     ServiceWorker serviceWorker;
@@ -54,6 +55,8 @@ public class HomeFragment extends Fragment implements
     private ServiceWorkerRequestParams serviceWorkerRequestParams;
     public static final String ALL = "all";
     private ServiceWorkerRequestBuilder serviceWorkerRequestParamsBuilder;
+    private String lastAuthor;
+    private String lastPermlink;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -82,7 +85,6 @@ public class HomeFragment extends Fragment implements
     @Override
     public void onPause() {
         super.onPause();
-        currentPostReponse = null;
     }
 
     @Override
@@ -147,7 +149,7 @@ public class HomeFragment extends Fragment implements
         serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
 
         serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(Communities.ALL)
-                .setLimit(100)
+                .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
                 .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
                 .createRequestParam();
 
@@ -160,7 +162,7 @@ public class HomeFragment extends Fragment implements
         serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
 
         serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(tag)
-                .setLimit(100)
+                .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
                 .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
                 .createRequestParam();
 
@@ -170,15 +172,16 @@ public class HomeFragment extends Fragment implements
 
     private void loadMore(String tag) {
 
-        //todo: implement after lazy loading is enabled
+        serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
 
-//        if (currentPostReponse == null)
-//            return;
-//
-//        if (currentPostReponse.next.length() == 0) {
-//            return;
-//        }
+        serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(tag)
+                .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
+                .setLastAuthor(lastAuthor)
+                .setLastPermlink(lastPermlink)
+                .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
+                .createRequestParam();
 
+        serviceWorker.requestAppendableFeed(serviceWorkerRequestParams);
 
     }
 
@@ -208,7 +211,7 @@ public class HomeFragment extends Fragment implements
 
     @Override
     public void onRetryFeedLoading() {
-        Toast.makeText(mContext,"Retrying loading...",Toast.LENGTH_LONG).show();
+        Toast.makeText(mContext, "Retrying loading...", Toast.LENGTH_LONG).show();
         fetchCommunityPosts(currentSelectedTag);
     }
 
@@ -269,16 +272,38 @@ public class HomeFragment extends Fragment implements
     }
 
     @Override
-    public void onLoadedFromCache(ArrayList<Feed> cachedList) {
+    public void onLoadedFromCache(ArrayList<Feed> cachedList, String lastAuthor, String lastPermlink) {
         if (feedListView != null) {
+            Log.d("Appendable", "[Cache]last author " + lastAuthor + " lastpermlink " + lastPermlink);
+            //enable reloading for communities
+            if (currentSelectedTag.equals(Communities.ALL)) {
+                feedListView.setHasMoreToLoad(cachedList.size() == Constants.MAX_FEED_LOAD_LIMIT);
+            } else {
+                feedListView.setHasMoreToLoad(cachedList.size() > 0);
+            }
+
             feedListView.cachedFeedFetched(cachedList);
+            this.lastAuthor = lastAuthor;
+            this.lastPermlink = lastPermlink;
         }
     }
 
     @Override
-    public void onRefreshed(List<Feed> refreshedList) {
+    public void onRefreshed(List<Feed> refreshedList, String lastAuthor, String lastPermlink) {
         if (feedListView != null) {
+
+            Log.d("Appendable", "[Refreshed]last author " + lastAuthor + " lastpermlink " + lastPermlink);
+
+            if (currentSelectedTag.equals(Communities.ALL)) {
+                feedListView.setHasMoreToLoad(refreshedList.size() == Constants.MAX_FEED_LOAD_LIMIT);
+            } else {
+                feedListView.setHasMoreToLoad(refreshedList.size() > 0);
+            }
+
             feedListView.feedsRefreshed(refreshedList);
+
+            this.lastAuthor = lastAuthor;
+            this.lastPermlink = lastPermlink;
         }
     }
 
@@ -295,19 +320,48 @@ public class HomeFragment extends Fragment implements
     }
 
     @Override
-    public void onAppendableDataLoaded(List<Feed> appendableList) {
-        //todo: needs to be implemented
+    public void onAppendableDataLoaded(List<Feed> appendableList, String lastAuthor, String lastPermlink) {
+
+        if (feedListView != null) {
+
+            if (currentSelectedTag.equals(Communities.ALL)) {
+                feedListView.setHasMoreToLoad(appendableList.size() == Constants.MAX_FEED_LOAD_LIMIT);
+            } else {
+                feedListView.setHasMoreToLoad(appendableList.size() > 0);
+            }
+
+            feedListView.loadedMoreFeeds(appendableList);
+            this.lastAuthor = lastAuthor;
+            this.lastPermlink = lastPermlink;
+            Log.d("Appendable", "[appendable]last author " + lastAuthor + " lastpermlink " + lastPermlink);
+            Log.d("Appendable", "feed loaded " + appendableList.size());
+        }
+
     }
 
     @Override
     public void onAppendableDataLoadingFailed() {
         // TODO: 3/19/2018 needs to be implemented
+        Log.d("Appendable", "feed load failed");
+        if (feedListView != null) {
+            feedListView.failedToFetchAppendable();
+        }
     }
 
     @Override
-    public void onFeedsFetched(ArrayList<Feed> feeds) {
+    public void onFeedsFetched(ArrayList<Feed> feeds, String lastAuthor, String lastPermlink) {
+
         if (feedListView != null) {
+            Log.d("Appendable", "[fetched]last author " + lastAuthor + " lastpermlink " + lastPermlink);
+            if (currentSelectedTag.equals(Communities.ALL)) {
+                feedListView.setHasMoreToLoad(feeds.size() == Constants.MAX_FEED_LOAD_LIMIT);
+            } else {
+                feedListView.setHasMoreToLoad(feeds.size() > 0);
+            }
             feedListView.feedsRefreshed(feeds);
+            this.lastAuthor = lastAuthor;
+            this.lastPermlink = lastPermlink;
+
         }
     }
 

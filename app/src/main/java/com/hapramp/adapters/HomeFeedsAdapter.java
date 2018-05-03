@@ -3,6 +3,7 @@ package com.hapramp.adapters;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,7 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private List<Feed> feeds;
     private int totalItemCount;
     private int lastVisibleItem;
-    private boolean isLoading;
+    private boolean isLoading = false;
     private int visibleThreshold = 2;
     private OnLoadMoreListener mOnLoadMoreListener;
 
@@ -46,6 +47,8 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                 totalItemCount = linearLayoutManager.getItemCount();
                 lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+
+                Log.d("FeedsAdapter","TotalItem:"+totalItemCount+" LastVisible:"+lastVisibleItem +" hasMoreToLoad "+hasMoreToLoad+" isLoading "+isLoading);
 
                 if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold) && hasMoreToLoad) {
 

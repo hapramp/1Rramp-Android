@@ -45,5 +45,6 @@ public class Constants {
     public static final java.lang.String EXTRAA_KEY_POST_AUTHOR = "postAuthor";
     public static final java.lang.String EXTRAA_KEY_POST_PERMLINK = "post_permlink";
     public static int PROFILE_DATA = 1011;
+    public static final int MAX_FEED_LOAD_LIMIT = 5;
 
 }

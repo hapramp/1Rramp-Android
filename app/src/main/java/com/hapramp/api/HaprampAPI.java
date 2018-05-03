@@ -90,6 +90,9 @@ public interface HaprampAPI {
     @GET("feeds/user/{username}")
     Call<FeedResponse> getUserFeeds(@Path("username") String username, @Query("limit") int limit);
 
+    @GET("feeds/user/{username}")
+    Call<FeedResponse> getUserFeeds(@Path("username") String username, @Query("limit") int limit,@Query("start_author") String lastAuthor,@Query("start_permlink") String lastPermlink);
+
     @GET("feeds/blog/{username}")
     Call<FeedResponse> getPostsOfUser(@Path("username") String username, @Query("limit") int limit);
 
@@ -208,6 +211,5 @@ public interface HaprampAPI {
 
     @POST("notifications/_mark_all_read")
     Call<NotificationResponse> markAsAllRead();
-
 
 }

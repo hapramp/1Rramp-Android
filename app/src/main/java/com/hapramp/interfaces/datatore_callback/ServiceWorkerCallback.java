@@ -22,7 +22,7 @@ public interface ServiceWorkerCallback {
     void onNoDataInCache();
 
     //cache data loaded
-    void onLoadedFromCache(ArrayList<Feed> cachedList);
+    void onLoadedFromCache(ArrayList<Feed> cachedList, String lastAuthor, String lastPermlink);
 
 
     //=========================================
@@ -33,7 +33,7 @@ public interface ServiceWorkerCallback {
     void onFetchingFromServer();
 
     // fetched from server
-    void onFeedsFetched(ArrayList<Feed> body);
+    void onFeedsFetched(ArrayList<Feed> body, String lastAuthor, String lastPermlink);
 
     //something went wrong while fetching from server
     void onFetchingFromServerFailed();
@@ -48,7 +48,7 @@ public interface ServiceWorkerCallback {
     void onRefreshing();
 
     // data refreshed from server
-    void onRefreshed(List<Feed> refreshedList);
+    void onRefreshed(List<Feed> refreshedList, String lastAuthor, String lastPermlink);
 
     //failed to refresh from server
     void onRefreshFailed();
@@ -64,7 +64,7 @@ public interface ServiceWorkerCallback {
     void onLoadingAppendableData();
 
     //loaded appendable data ( data on request for lazy loading)
-    void onAppendableDataLoaded(List<Feed> appendableList);
+    void onAppendableDataLoaded(List<Feed> appendableList, String lastAuthor, String lastPermlink);
 
     //failed to load appendable data
     void onAppendableDataLoadingFailed();

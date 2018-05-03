@@ -140,7 +140,7 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
     }
 
     @Override
-    public void onLoadedFromCache(ArrayList<Feed> cachedList) {
+    public void onLoadedFromCache(ArrayList<Feed> cachedList, String lastAuthor , String lastPermlink) {
         //NA
     }
 
@@ -152,7 +152,7 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
     }
 
     @Override
-    public void onFeedsFetched(ArrayList<Feed> body) {
+    public void onFeedsFetched(ArrayList<Feed> body, String lastAuthor , String lastPermlink) {
         if (feedListView != null) {
             feedListView.feedsRefreshed(body);
         }
@@ -173,7 +173,7 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
     }
 
     @Override
-    public void onRefreshed(List<Feed> refreshedList) {
+    public void onRefreshed(List<Feed> refreshedList, String lastAuthor , String lastPermlink) {
         if (feedListView != null) {
             feedListView.feedsRefreshed(refreshedList);
         }
@@ -192,7 +192,7 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
     }
 
     @Override
-    public void onAppendableDataLoaded(List<Feed> appendableList) {
+    public void onAppendableDataLoaded(List<Feed> appendableList, String lastAuthor , String lastPermlink) {
         //NA
     }
 

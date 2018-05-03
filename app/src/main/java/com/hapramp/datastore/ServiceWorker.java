@@ -56,7 +56,7 @@ public class ServiceWorker {
                         public void run() {
                             if (serviceWorkerCallback != null) {
                                 l("Returning from cache");
-                                serviceWorkerCallback.onLoadedFromCache((ArrayList<Feed>) cachedFeedResponse.getFeeds());
+                                serviceWorkerCallback.onLoadedFromCache((ArrayList<Feed>) cachedFeedResponse.getFeeds(), cachedFeedResponse.getLastAuthor(), cachedFeedResponse.getLastPermlink());
                             }
                         }
                     });
@@ -100,7 +100,7 @@ public class ServiceWorker {
                             @Override
                             public void run() {
                                 List<Feed> filteredFeeds = FeedsFilter.filter(feedResponse.getFeeds(), currentRequestParams.getCommunityTag());
-                                serviceWorkerCallback.onLoadedFromCache((ArrayList<Feed>) filteredFeeds);
+                                serviceWorkerCallback.onLoadedFromCache((ArrayList<Feed>) filteredFeeds, feedResponse.getLastAuthor(), feedResponse.getLastPermlink());
                             }
                         });
                     }
@@ -122,11 +122,46 @@ public class ServiceWorker {
     /*
      * Public method for fetching trailing feeds, these feeds are intermediate feeds and need not to be cached.
      * */
-    public void requestAppendableFeed(ServiceWorkerRequestParams requestParams) {
+    public void requestAppendableFeed(final ServiceWorkerRequestParams requestParams) {
         this.currentRequestParams = requestParams;
-
         // TODO: 2/28/2018
         // 1 - call api for feeds
+        RetrofitServiceGenerator.getService().getUserFeeds(
+                requestParams.getUsername(),
+                requestParams.getLimit(),
+                requestParams.getLastAuthor(),
+                requestParams.getLastPermlink()).enqueue(new Callback<FeedResponse>() {
+
+            @Override
+            public void onResponse(Call<FeedResponse> call, Response<FeedResponse> response) {
+
+                if (isRequestLive(requestParams)) {
+                    if (serviceWorkerCallback != null) {
+                        if (response.isSuccessful()) {
+                            if (!isRequestForCommunityFeed(requestParams)) {
+                                serviceWorkerCallback.onAppendableDataLoaded(response.body().getFeeds(), response.body().getLastAuthor(), response.body().getLastPermlink());
+                            } else {
+
+                                List<Feed> filteredFeeds = FeedsFilter.filter(response.body().getFeeds(), currentRequestParams.getCommunityTag());
+                                serviceWorkerCallback.onAppendableDataLoaded(filteredFeeds, response.body().getLastAuthor(), response.body().getLastPermlink());
+
+                            }
+                        } else {
+                            serviceWorkerCallback.onAppendableDataLoadingFailed();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FeedResponse> call, Throwable t) {
+                if (isRequestLive(requestParams)) {
+                    if (serviceWorkerCallback != null) {
+                        serviceWorkerCallback.onAppendableDataLoadingFailed();
+                    }
+                }
+            }
+        });
         // onSucess: isRequestLive() --> onAppendableDataFetched()
         // onFailed: isRequestLive() --> onAppendableFetchFailed()
 
@@ -190,7 +225,7 @@ public class ServiceWorker {
 
                                         l("Returning All Feeds");
                                         // return all feeds
-                                        serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body().getFeeds());
+                                        serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body().getFeeds(), response.body().getLastAuthor(), response.body().getLastPermlink());
 
                                     } else {
                                         // return community feeds
@@ -206,7 +241,7 @@ public class ServiceWorker {
                                                         List<Feed> filteredFeeds = FeedsFilter.filter(response.body().getFeeds(),
                                                                 currentRequestParams.getCommunityTag());
 
-                                                        serviceWorkerCallback.onLoadedFromCache((ArrayList<Feed>) filteredFeeds);
+                                                        serviceWorkerCallback.onLoadedFromCache((ArrayList<Feed>) filteredFeeds, response.body().getLastAuthor(), response.body().getLastPermlink());
 
                                                     }
                                                 });
@@ -257,7 +292,7 @@ public class ServiceWorker {
                                 if (response.isSuccessful()) {
                                     l("Returning All Feeds");
                                     // return all feeds
-                                    serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body().getFeeds());
+                                    serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body().getFeeds(), response.body().getLastAuthor(), response.body().getLastPermlink());
                                 } else {
                                     l("Error :(");
                                     serviceWorkerCallback.onFetchingFromServerFailed();
@@ -297,7 +332,7 @@ public class ServiceWorker {
                                 if (response.isSuccessful()) {
                                     l("Returning All Feeds");
                                     // return all feeds
-                                    serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body().getFeeds());
+                                    serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body().getFeeds(), response.body().getLastAuthor(), response.body().getLastPermlink());
                                 } else {
                                     l("Error :(");
                                     serviceWorkerCallback.onFetchingFromServerFailed();
@@ -337,7 +372,7 @@ public class ServiceWorker {
                                 if (response.isSuccessful()) {
                                     l("Returning All Feeds");
                                     // return all feeds
-                                    serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body().getFeeds());
+                                    serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body().getFeeds(), response.body().getLastAuthor(), response.body().getLastPermlink());
                                 } else {
                                     l("Error :(");
                                     serviceWorkerCallback.onFetchingFromServerFailed();
