@@ -16,6 +16,7 @@ import com.hapramp.steem.Communities;
 import com.hapramp.steem.ServiceWorkerRequestBuilder;
 import com.hapramp.steem.ServiceWorkerRequestParams;
 import com.hapramp.steem.models.Feed;
+import com.hapramp.utils.Constants;
 import com.hapramp.views.feedlist.FeedListView;
 
 import java.util.ArrayList;
@@ -37,6 +38,8 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
     private ServiceWorkerRequestBuilder serviceWorkerRequestParamsBuilder;
     private ServiceWorkerRequestParams serviceWorkerRequestParams;
     private ServiceWorker serviceWorker;
+    private String lastAuthor;
+    private String lastPermlink;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,7 +80,7 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
         serviceWorker.setServiceWorkerCallback(this);
         serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder()
                 .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
-                .setLimit(100);
+                .setLimit(Constants.MAX_FEED_LOAD_LIMIT);
 
     }
 
@@ -86,7 +89,7 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
         serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
 
         serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(Communities.TAG_HAPRAMP)
-                .setLimit(100)
+                .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
                 .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
                 .createRequestParam();
 
@@ -108,7 +111,18 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
 
     @Override
     public void onLoadMoreFeeds() {
-        //NA
+
+        serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
+
+        serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(Communities.TAG_HAPRAMP)
+                .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
+                .setLastAuthor(lastAuthor)
+                .setLastPermlink(lastPermlink)
+                .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
+                .createRequestParam();
+
+        serviceWorker.requestAppendableFeedForTrending(serviceWorkerRequestParams);
+
     }
 
     @Override
@@ -175,7 +189,10 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
     @Override
     public void onRefreshed(List<Feed> refreshedList, String lastAuthor , String lastPermlink) {
         if (feedListView != null) {
+            feedListView.setHasMoreToLoad(refreshedList.size() == Constants.MAX_FEED_LOAD_LIMIT);
             feedListView.feedsRefreshed(refreshedList);
+            this.lastAuthor = lastAuthor;
+            this.lastPermlink = lastPermlink;
         }
     }
 
@@ -193,7 +210,14 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
 
     @Override
     public void onAppendableDataLoaded(List<Feed> appendableList, String lastAuthor , String lastPermlink) {
-        //NA
+
+        if (feedListView != null) {
+            feedListView.setHasMoreToLoad(appendableList.size() == Constants.MAX_FEED_LOAD_LIMIT);
+            feedListView.loadedMoreFeeds(appendableList);
+            this.lastAuthor = lastAuthor;
+            this.lastPermlink = lastPermlink;
+        }
+
     }
 
     @Override

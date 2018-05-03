@@ -16,6 +16,7 @@ import com.hapramp.steem.Communities;
 import com.hapramp.steem.ServiceWorkerRequestBuilder;
 import com.hapramp.steem.ServiceWorkerRequestParams;
 import com.hapramp.steem.models.Feed;
+import com.hapramp.utils.Constants;
 import com.hapramp.views.feedlist.FeedListView;
 
 import java.util.ArrayList;
@@ -37,6 +38,8 @@ public class NewFragment extends Fragment implements FeedListView.FeedListViewLi
     private ServiceWorkerRequestBuilder serviceWorkerRequestParamsBuilder;
     private ServiceWorkerRequestParams serviceWorkerRequestParams;
     private ServiceWorker serviceWorker;
+    private String lastAuthor;
+    private String lastPermlink;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,7 +74,6 @@ public class NewFragment extends Fragment implements FeedListView.FeedListViewLi
     }
 
 
-
     private void prepareServiceWorker() {
 
         serviceWorker = new ServiceWorker();
@@ -79,7 +81,7 @@ public class NewFragment extends Fragment implements FeedListView.FeedListViewLi
         serviceWorker.setServiceWorkerCallback(this);
         serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder()
                 .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
-                .setLimit(100);
+                .setLimit(Constants.MAX_FEED_LOAD_LIMIT);
 
     }
 
@@ -88,7 +90,7 @@ public class NewFragment extends Fragment implements FeedListView.FeedListViewLi
         serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
 
         serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(Communities.TAG_HAPRAMP)
-                .setLimit(100)
+                .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
                 .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
                 .createRequestParam();
 
@@ -110,7 +112,17 @@ public class NewFragment extends Fragment implements FeedListView.FeedListViewLi
 
     @Override
     public void onLoadMoreFeeds() {
-        //NA
+
+        serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
+
+        serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(Communities.TAG_HAPRAMP)
+                .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
+                .setLastAuthor(lastAuthor)
+                .setLastPermlink(lastPermlink)
+                .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
+                .createRequestParam();
+
+        serviceWorker.requestAppendableFeedForLatest(serviceWorkerRequestParams);
     }
 
     @Override
@@ -142,7 +154,7 @@ public class NewFragment extends Fragment implements FeedListView.FeedListViewLi
     }
 
     @Override
-    public void onLoadedFromCache(ArrayList<Feed> cachedList, String lastAuthor , String lastPermlink) {
+    public void onLoadedFromCache(ArrayList<Feed> cachedList, String lastAuthor, String lastPermlink) {
         //NA
     }
 
@@ -154,7 +166,7 @@ public class NewFragment extends Fragment implements FeedListView.FeedListViewLi
     }
 
     @Override
-    public void onFeedsFetched(ArrayList<Feed> body, String lastAuthor , String lastPermlink) {
+    public void onFeedsFetched(ArrayList<Feed> body, String lastAuthor, String lastPermlink) {
         if (feedListView != null) {
             feedListView.feedsRefreshed(body);
         }
@@ -175,9 +187,12 @@ public class NewFragment extends Fragment implements FeedListView.FeedListViewLi
     }
 
     @Override
-    public void onRefreshed(List<Feed> refreshedList, String lastAuthor , String lastPermlink) {
+    public void onRefreshed(List<Feed> refreshedList, String lastAuthor, String lastPermlink) {
         if (feedListView != null) {
+            feedListView.setHasMoreToLoad(refreshedList.size() == Constants.MAX_FEED_LOAD_LIMIT);
             feedListView.feedsRefreshed(refreshedList);
+            this.lastAuthor = lastAuthor;
+            this.lastPermlink = lastPermlink;
         }
     }
 
@@ -194,8 +209,15 @@ public class NewFragment extends Fragment implements FeedListView.FeedListViewLi
     }
 
     @Override
-    public void onAppendableDataLoaded(List<Feed> appendableList, String lastAuthor , String lastPermlink) {
-        //NA
+    public void onAppendableDataLoaded(List<Feed> appendableList, String lastAuthor, String lastPermlink) {
+
+        if (feedListView != null) {
+            feedListView.setHasMoreToLoad(appendableList.size() == Constants.MAX_FEED_LOAD_LIMIT);
+            feedListView.loadedMoreFeeds(appendableList);
+            this.lastAuthor = lastAuthor;
+            this.lastPermlink = lastPermlink;
+        }
+
     }
 
     @Override

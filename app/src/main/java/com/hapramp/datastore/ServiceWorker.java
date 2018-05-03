@@ -310,6 +310,42 @@ public class ServiceWorker {
 
     }
 
+
+    public void requestAppendableFeedForTrending(final ServiceWorkerRequestParams serviceWorkerRequestParams) {
+
+        this.currentRequestParams = serviceWorkerRequestParams;
+
+        if (serviceWorkerCallback != null) {
+            serviceWorkerCallback.onFetchingFromServer();
+        }
+
+        RetrofitServiceGenerator.getService().getTrendingFeed(serviceWorkerRequestParams.getCommunityTag(), serviceWorkerRequestParams.getLimit() , serviceWorkerRequestParams.getLastAuthor(),serviceWorkerRequestParams.getLastPermlink())
+                .enqueue(new Callback<FeedResponse>() {
+                    @Override
+                    public void onResponse(Call<FeedResponse> call, Response<FeedResponse> response) {
+
+                        if (isRequestLive(serviceWorkerRequestParams)) {
+
+                            if (serviceWorkerCallback != null) {
+
+                                if (response.isSuccessful()) {
+
+                                    serviceWorkerCallback.onAppendableDataLoaded(response.body().getFeeds(), response.body().getLastAuthor(), response.body().getLastPermlink());
+                                } else {
+                                    serviceWorkerCallback.onAppendableDataLoadingFailed();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<FeedResponse> call, Throwable t) {
+                        serviceWorkerCallback.onFetchingFromServerFailed();
+                    }
+                });
+
+    }
+
     public void requestHotPosts(final ServiceWorkerRequestParams serviceWorkerRequestParams) {
 
         this.currentRequestParams = serviceWorkerRequestParams;
@@ -344,6 +380,41 @@ public class ServiceWorker {
                     @Override
                     public void onFailure(Call<FeedResponse> call, Throwable t) {
                         l("Error :(");
+                        serviceWorkerCallback.onFetchingFromServerFailed();
+                    }
+                });
+
+    }
+
+    public void requestAppendableFeedForHot(final ServiceWorkerRequestParams serviceWorkerRequestParams) {
+
+        this.currentRequestParams = serviceWorkerRequestParams;
+
+        if (serviceWorkerCallback != null) {
+            serviceWorkerCallback.onFetchingFromServer();
+        }
+
+        RetrofitServiceGenerator.getService().getHotFeed(serviceWorkerRequestParams.getCommunityTag(), serviceWorkerRequestParams.getLimit() , serviceWorkerRequestParams.getLastAuthor(),serviceWorkerRequestParams.getLastPermlink())
+                .enqueue(new Callback<FeedResponse>() {
+                    @Override
+                    public void onResponse(Call<FeedResponse> call, Response<FeedResponse> response) {
+
+                        if (isRequestLive(serviceWorkerRequestParams)) {
+
+                            if (serviceWorkerCallback != null) {
+
+                                if (response.isSuccessful()) {
+
+                                    serviceWorkerCallback.onAppendableDataLoaded(response.body().getFeeds(), response.body().getLastAuthor(), response.body().getLastPermlink());
+                                } else {
+                                    serviceWorkerCallback.onAppendableDataLoadingFailed();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<FeedResponse> call, Throwable t) {
                         serviceWorkerCallback.onFetchingFromServerFailed();
                     }
                 });
@@ -390,6 +461,40 @@ public class ServiceWorker {
 
     }
 
+    public void requestAppendableFeedForLatest(final ServiceWorkerRequestParams serviceWorkerRequestParams) {
+
+        this.currentRequestParams = serviceWorkerRequestParams;
+
+        if (serviceWorkerCallback != null) {
+            serviceWorkerCallback.onFetchingFromServer();
+        }
+
+        RetrofitServiceGenerator.getService().getLatestFeed(serviceWorkerRequestParams.getCommunityTag(), serviceWorkerRequestParams.getLimit() , serviceWorkerRequestParams.getLastAuthor(),serviceWorkerRequestParams.getLastPermlink())
+                .enqueue(new Callback<FeedResponse>() {
+                    @Override
+                    public void onResponse(Call<FeedResponse> call, Response<FeedResponse> response) {
+
+                        if (isRequestLive(serviceWorkerRequestParams)) {
+
+                            if (serviceWorkerCallback != null) {
+
+                                if (response.isSuccessful()) {
+
+                                    serviceWorkerCallback.onAppendableDataLoaded(response.body().getFeeds(), response.body().getLastAuthor(), response.body().getLastPermlink());
+                                } else {
+                                    serviceWorkerCallback.onAppendableDataLoadingFailed();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<FeedResponse> call, Throwable t) {
+                        serviceWorkerCallback.onFetchingFromServerFailed();
+                    }
+                });
+
+    }
     /*
      * Method to check if the request is live or overridden by other request
      * */
@@ -406,6 +511,7 @@ public class ServiceWorker {
     private void l(String msg) {
         Log.d(TAG, msg);
     }
+
 
 
 }

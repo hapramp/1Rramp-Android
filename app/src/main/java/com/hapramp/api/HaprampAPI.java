@@ -99,11 +99,21 @@ public interface HaprampAPI {
     @GET("feeds/created/{tag}")
     Call<FeedResponse> getLatestFeed(@Path("tag") String tag, @Query("limit") int limit);
 
+    @GET("feeds/created/{tag}")
+    Call<FeedResponse> getLatestFeed(@Path("tag") String tag, @Query("limit") int limit,@Query("start_author") String lastAuthor,@Query("start_permlink") String lastPermlink);
+
     @GET("feeds/hot/{tag}")
     Call<FeedResponse> getHotFeed(@Path("tag") String tag, @Query("limit") int limit);
 
+    @GET("feeds/hot/{tag}")
+    Call<FeedResponse> getHotFeed(@Path("tag") String tag, @Query("limit") int limit,@Query("start_author") String lastAuthor,@Query("start_permlink") String lastPermlink);
+
     @GET("feeds/trending/{tag}")
     Call<FeedResponse> getTrendingFeed(@Path("tag") String tag, @Query("limit") int limit);
+
+    @GET("feeds/trending/{tag}")
+    Call<FeedResponse> getTrendingFeed(@Path("tag") String tag, @Query("limit") int limit,@Query("start_author") String lastAuthor,@Query("start_permlink") String lastPermlink);
+
 
     @GET
     Call<SteemUser> getSteemUser(@Url String url);
@@ -211,5 +221,6 @@ public interface HaprampAPI {
 
     @POST("notifications/_mark_all_read")
     Call<NotificationResponse> markAsAllRead();
+
 
 }
