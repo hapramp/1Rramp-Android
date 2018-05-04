@@ -164,9 +164,11 @@ public class SteemPostCreator {
     }
 
     public interface SteemPostCreatorCallback {
+
         void onPostCreatedOnSteem();
 
         void onPostCreationFailedOnSteem(String msg);
+
     }
 
 }

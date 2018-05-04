@@ -173,22 +173,6 @@ public class ServiceWorker {
     }
 
     /*
-     * Public method for requesting refresh of feeds.
-     * Since the feeds are updated, caching is an obvious option here.
-     * INPUT: take #communityId for type of feed to refresh
-     * */
-    public void requestRefreshFeeds(ServiceWorkerRequestParams requestParams) {
-
-        this.currentRequestParams = requestParams;
-        // TODO: 2/28/2018
-        // 1 - call api for feeds
-        // onSucess: isRequestLive() --> onRefreshed()
-        // onFailed: isRequestLive() --> onRefreshFailed
-        // cache the refreshed feeds
-
-    }
-
-    /*
      * Private method to make a fresh feeds call to api server.
      * This method generally request the feed and cache them.
      * INPUT: take #communityId for type of feed to refresh (in future)
