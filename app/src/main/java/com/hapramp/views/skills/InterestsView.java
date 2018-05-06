@@ -9,12 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.hapramp.R;
-import com.hapramp.models.CommunityModel;
-import com.hapramp.models.response.UserModel;
+import com.hapramp.datamodels.CommunityModel;
 
 import java.util.List;
 

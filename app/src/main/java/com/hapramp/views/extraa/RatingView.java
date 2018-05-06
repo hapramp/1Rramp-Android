@@ -20,7 +20,7 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.VotePostCallback;
-import com.hapramp.models.requests.VoteRequestBody;
+import com.hapramp.datamodels.requests.VoteRequestBody;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.utils.FontManager;
 

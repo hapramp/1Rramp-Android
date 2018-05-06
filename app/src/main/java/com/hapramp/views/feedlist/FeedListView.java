@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.hapramp.R;
-import com.hapramp.adapters.HomeFeedsAdapter;
+import com.hapramp.ui.adapters.HomeFeedsAdapter;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.PixelUtils;

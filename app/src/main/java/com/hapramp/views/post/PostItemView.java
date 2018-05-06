@@ -20,11 +20,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
-import com.hapramp.activity.CommentsActivity;
-import com.hapramp.activity.DetailedActivity;
-import com.hapramp.activity.ProfileActivity;
-import com.hapramp.models.CommunityModel;
-import com.hapramp.models.FeedRenderTypeModel;
+import com.hapramp.ui.activity.CommentsActivity;
+import com.hapramp.ui.activity.DetailedActivity;
+import com.hapramp.ui.activity.ProfileActivity;
+import com.hapramp.datamodels.CommunityModel;
+import com.hapramp.datamodels.FeedRenderTypeModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
 import com.hapramp.steem.FeedDataConstants;

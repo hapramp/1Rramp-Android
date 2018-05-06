@@ -27,7 +27,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.hapramp.R;
-import com.hapramp.models.PostJobModel;
+import com.hapramp.datamodels.PostJobModel;
 
 import java.io.ByteArrayOutputStream;
 

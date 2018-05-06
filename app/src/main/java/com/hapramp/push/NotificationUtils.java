@@ -10,8 +10,8 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
 import com.hapramp.R;
-import com.hapramp.activity.NotificationsActivity;
-import com.hapramp.models.response.NotificationResponse;
+import com.hapramp.ui.activity.NotificationsActivity;
+import com.hapramp.datamodels.response.NotificationResponse;
 
 /**
  * Created by Ankit on 12/27/2017.

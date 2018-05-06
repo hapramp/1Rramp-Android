@@ -8,11 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.hapramp.R;
-import com.hapramp.models.CommunityModel;
+import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.views.post.WrapViewGroup;
 import com.hapramp.views.skills.CommunityItemView;
 

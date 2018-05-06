@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Black12"
-    tools:context="com.hapramp.fragments.HomeFragment">
+    tools:context=".ui.fragments.HomeFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/sectionsRv"

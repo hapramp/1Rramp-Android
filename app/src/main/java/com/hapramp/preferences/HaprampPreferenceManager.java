@@ -4,11 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.google.gson.Gson;
 import com.hapramp.api.DataServer;
 import com.hapramp.main.HapRampMain;
 import com.hapramp.logger.L;
-import com.hapramp.models.response.UserModel;
 import com.hapramp.utils.HashGenerator;
 
 /**

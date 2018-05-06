@@ -1,6 +1,6 @@
 package com.hapramp.interfaces;
 
-import com.hapramp.models.response.CommentsResponse;
+import com.hapramp.datamodels.response.CommentsResponse;
 import com.hapramp.steem.models.Feed;
 
 /**

@@ -1,6 +1,6 @@
 package com.hapramp.api;
 
-import com.hapramp.models.error.GeneralErrorModel;
+import com.hapramp.datamodels.error.GeneralErrorModel;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;

@@ -27,7 +27,7 @@ import com.hapramp.editor.EditorListener;
 import com.hapramp.editor.models.EditorContent;
 import com.hapramp.editor.models.EditorTextStyle;
 import com.hapramp.editor.models.Node;
-import com.hapramp.models.PostJobModel;
+import com.hapramp.datamodels.PostJobModel;
 import com.hapramp.steem.FeedDataConstants;
 import com.hapramp.steem.models.data.FeedDataItemModel;
 

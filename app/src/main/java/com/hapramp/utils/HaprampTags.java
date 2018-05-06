@@ -1,7 +1,7 @@
 package com.hapramp.utils;
 
 import com.google.gson.Gson;
-import com.hapramp.models.CommunityModel;
+import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
 

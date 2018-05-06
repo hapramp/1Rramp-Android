@@ -16,10 +16,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.LoginActivity"
+            android:name=".ui.activity.LoginActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.HomeActivity"
+            android:name=".ui.activity.HomeActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -28,28 +28,28 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.ProfileActivity"
+            android:name=".ui.activity.ProfileActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.DetailedActivity"
+            android:name=".ui.activity.DetailedActivity"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.PostCreateActivity"
+            android:name=".ui.activity.PostCreateActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.CreateArticleActivity"
+            android:name=".ui.activity.CreateArticleActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activity.NotificationsActivity"
+            android:name=".ui.activity.NotificationsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.InfoEditingActivity"
+            android:name=".ui.activity.InfoEditingActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activity.HowToEarnActivity"
+            android:name=".ui.activity.HowToEarnActivity"
             android:screenOrientation="portrait" />
 
         <service android:name=".services.HaprampFirebaseInstanceId">
@@ -64,13 +64,13 @@
         </service>
 
         <activity
-            android:name=".activity.ProfileEditActivity"
+            android:name=".ui.activity.ProfileEditActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.CommentsActivity"
+            android:name=".ui.activity.CommentsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.Splash"
+            android:name=".ui.activity.Splash"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
 
@@ -82,21 +82,21 @@
 
         </activity>
         <activity
-            android:name=".activity.QrScanningActivity"
+            android:name=".ui.activity.QrScanningActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.CommunitySelectionActivity"
+            android:name=".ui.activity.CommunitySelectionActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.UserSearchActivity"
+            android:name=".ui.activity.UserSearchActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.TestActivity"
+            android:name=".ui.activity.TestActivity"
             android:screenOrientation="portrait">
 
         </activity>
         <activity
-            android:name=".activity.PreviewActivity"
+            android:name=".ui.activity.PreviewActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".youtube.YoutubeVideoSelectorActivity" android:screenOrientation="portrait">
         </activity>

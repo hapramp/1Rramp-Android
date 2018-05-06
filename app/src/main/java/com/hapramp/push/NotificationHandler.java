@@ -8,7 +8,7 @@ import android.util.Log;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.hapramp.main.HapRampMain;
-import com.hapramp.models.response.NotificationResponse;
+import com.hapramp.datamodels.response.NotificationResponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.services.ForegroundCheck;
 import com.hapramp.utils.Constants;

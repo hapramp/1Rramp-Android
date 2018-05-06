@@ -59,17 +59,12 @@ public class SteemPostCreator {
                 try {
                     //author account of post
                     String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-                    Log.d("TEST", "Username " + username);
-                    Log.d("TEST", "permalink " + __permlink);
-
                     AccountName author = new AccountName(username);
                     Permlink permlink = new Permlink(__permlink);
-
                     boolean allowVotes = LocalConfig.ALLOW_VOTES;
                     boolean allowCurationRewards = LocalConfig.ALLOW_CURATION_REWARDS;
                     int percentSteemDollars = LocalConfig.PERCENT_STEEM_DOLLARS;
                     String jsonMetadata = new JsonMetaDataModel(tags, postStructure).getJson();
-
                     AccountName parentAuthor = null;  // new post
                     Permlink parentPermlink = new Permlink(LocalConfig.PARENT_PERMALINK);
                     CommentOperation commentOperation = new CommentOperation(parentAuthor, parentPermlink, author, permlink, title, body, jsonMetadata);
@@ -94,14 +89,11 @@ public class SteemPostCreator {
                     );
 
                     operations.add(commentOptionsOperation);
-
-                    // final commit
                     DynamicGlobalProperty globalProperties = steemJ.getDynamicGlobalProperties();
                     SignedTransaction signedTransaction = new SignedTransaction(globalProperties.getHeadBlockId(), operations, null);
                     signedTransaction.sign();
                     steemJ.broadcastTransaction(signedTransaction);
 
-                    //callback on main thread
                     if (steemPostCreatorCallback != null) {
                         mHandler.postDelayed(new Runnable() {
                             @Override

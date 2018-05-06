@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.hapramp.fragments.HapSkillSelectionDialogFragment">
+    tools:context=".ui.fragments.HapSkillSelectionDialogFragment">
 
     <TextView
         android:padding="16dp"

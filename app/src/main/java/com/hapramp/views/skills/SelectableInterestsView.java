@@ -11,7 +11,6 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.hapramp.R;
-import com.hapramp.models.response.UserModel;
 import com.hapramp.utils.SkillsUtils;
 
 import java.util.ArrayList;

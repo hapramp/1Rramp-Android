@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hapramp.R;
-import com.hapramp.activity.ProfileActivity;
+import com.hapramp.ui.activity.ProfileActivity;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.FollowApiObjectWrapper;
 import com.hapramp.steem.SteemHelper;

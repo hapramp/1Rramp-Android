@@ -9,18 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hapramp.R;
-import com.hapramp.api.URLS;
-import com.hapramp.models.CommunityModel;
+import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.utils.ImageHandler;
-import com.hapramp.utils.SkillsUtils;
-
-import static com.hapramp.utils.SkillsUtils.ART;
-import static com.hapramp.utils.SkillsUtils.DANCE;
-import static com.hapramp.utils.SkillsUtils.DRAMATICS;
-import static com.hapramp.utils.SkillsUtils.LITERATURE;
-import static com.hapramp.utils.SkillsUtils.MUSIC;
-import static com.hapramp.utils.SkillsUtils.PHOTOGRAPHY;
-import static com.hapramp.utils.SkillsUtils.TRAVEL;
 
 /**
  * Created by Ankit on 10/25/2017.

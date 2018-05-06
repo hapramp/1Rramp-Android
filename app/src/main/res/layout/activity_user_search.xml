@@ -4,6 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.hapramp.activity.UserSearchActivity">
+    tools:context=".ui.activity.UserSearchActivity">
 
 </android.support.constraint.ConstraintLayout>

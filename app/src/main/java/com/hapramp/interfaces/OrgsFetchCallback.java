@@ -1,6 +1,6 @@
 package com.hapramp.interfaces;
 
-import com.hapramp.models.response.OrgsResponse;
+import com.hapramp.datamodels.response.OrgsResponse;
 
 import java.util.List;
 

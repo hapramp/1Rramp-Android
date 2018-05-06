@@ -1,6 +1,6 @@
 package com.hapramp.interfaces;
 
-import com.hapramp.models.response.CompetitionResponse;
+import com.hapramp.datamodels.response.CompetitionResponse;
 
 import java.util.List;
 

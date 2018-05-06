@@ -1,6 +1,6 @@
 package com.hapramp.interfaces;
 
-import com.hapramp.models.response.CompetitionsPostReponse;
+import com.hapramp.datamodels.response.CompetitionsPostReponse;
 
 /**
  * Created by Ankit on 11/13/2017.

@@ -1,6 +1,6 @@
 package com.hapramp.interfaces;
 
-import com.hapramp.models.response.CommentCreateResponse;
+import com.hapramp.datamodels.response.CommentCreateResponse;
 
 /**
  * Created by Ankit on 11/13/2017.
