@@ -4,12 +4,8 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Typeface;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,38 +19,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.hapramp.R;
-import com.hapramp.api.DataServer;
-import com.hapramp.datamodels.requests.SteemLoginResponseModel;
-import com.hapramp.datamodels.requests.SteemSignupRequestModel;
-import com.hapramp.datamodels.response.SteemLoginRequestModel;
-import com.hapramp.datamodels.response.SteemSignUpResponseModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.CommunityListWrapper;
-import com.hapramp.steem.SteemHelper;
-import com.hapramp.ui.callbacks.LoginCallbacks;
-import com.hapramp.utils.ConnectionUtils;
-import com.hapramp.utils.ErrorCodes;
+import com.hapramp.ui.callbacks.login.LoginCallbacks;
 import com.hapramp.utils.FontManager;
-import com.hapramp.utils.HashGenerator;
 import com.hapramp.utils.PixelUtils;
 import com.hapramp.viewmodel.ConnectivityViewModel;
 import com.hapramp.viewmodel.LoginViewModel;
 
-import java.net.SocketTimeoutException;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import eu.bittrade.libs.steemj.base.models.AccountName;
-import eu.bittrade.libs.steemj.base.models.Permlink;
-import eu.bittrade.libs.steemj.base.models.operations.CommentOperation;
-import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
-import eu.bittrade.libs.steemj.exceptions.SteemInvalidTransactionException;
-import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity implements LoginCallbacks {
 

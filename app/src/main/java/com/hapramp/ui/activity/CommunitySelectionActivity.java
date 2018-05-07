@@ -1,29 +1,24 @@
 package com.hapramp.ui.activity;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
 import com.google.gson.Gson;
 import com.hapramp.R;
-import com.hapramp.api.DataServer;
 import com.hapramp.datamodels.CommunityModel;
-import com.hapramp.datamodels.CommunitySelectionServerUpdateBody;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
-import com.hapramp.steem.CommunitySelectionResponse;
+import com.hapramp.ui.callbacks.communityselection.CommunitySelectionPageCallback;
+import com.hapramp.viewmodel.CommunitySelectionPageViewModel;
 import com.hapramp.views.CommunitySelectionView;
-
-import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /*
 *  This activity is responsible for community selection by user.
@@ -32,16 +27,20 @@ import retrofit2.Response;
 *  After which decisions are taken.
 * */
 
-public class CommunitySelectionActivity extends BaseActivity {
+public class CommunitySelectionActivity extends BaseActivity implements CommunitySelectionPageCallback {
 
-    private List<String> communities;
-
-    @BindView(R.id.action_bar_title) TextView actionBarTitle;
-    @BindView(R.id.communitySelectionView) CommunitySelectionView communitySelectionView;
-    @BindView(R.id.toolbar_drop_shadow) FrameLayout toolbarDropShadow;
-    @BindView(R.id.communityContinueButton) TextView communityContinueButton;
+    @BindView(R.id.action_bar_title)
+    TextView actionBarTitle;
+    @BindView(R.id.communitySelectionView)
+    CommunitySelectionView communitySelectionView;
+    @BindView(R.id.toolbar_drop_shadow)
+    FrameLayout toolbarDropShadow;
+    @BindView(R.id.communityContinueButton)
+    TextView communityContinueButton;
 
     public static final String TAG = CommunitySelectionActivity.class.getSimpleName();
+    private CommunitySelectionPageViewModel communitySelectionPageViewModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,89 +54,42 @@ public class CommunitySelectionActivity extends BaseActivity {
 
     private void init() {
 
-        communities = new ArrayList<>();
+        communitySelectionPageViewModel = ViewModelProviders.of(this).get(CommunitySelectionPageViewModel.class);
+        communitySelectionPageViewModel.getCommunities(this).observe(this, new Observer<List<CommunityModel>>() {
+            @Override
+            public void onChanged(@Nullable List<CommunityModel> communityModels) {
+                communitySelectionView.setCommunityList(communityModels);
+                HaprampPreferenceManager.getInstance().saveAllCommunityListAsJson(new Gson().toJson(new CommunityListWrapper(communityModels)));
+            }
+        });
         communityContinueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                  updateServer();
+                communitySelectionPageViewModel.updateServer(communitySelectionView.getSelectionList());
             }
         });
-
-        fetchCommunities();
-
-    }
-
-    private void updateServer() {
-
-        CommunitySelectionServerUpdateBody body = new CommunitySelectionServerUpdateBody(communitySelectionView.getSelectionList());
-
-        DataServer.getService().updateCommunitySelections(body).enqueue(new Callback<CommunitySelectionResponse>() {
-            @Override
-            public void onResponse(Call<CommunitySelectionResponse> call, Response<CommunitySelectionResponse> response) {
-                if(response.isSuccessful()){
-                    onCommunityUpdated(response.body());
-                }else{
-                    onCommunityUpdateFailed(response.code()+"");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CommunitySelectionResponse> call, Throwable t) {
-                onCommunityUpdateFailed(t.toString());
-            }
-        });
-    }
-
-    private void onCommunityUpdateFailed(String errorMsg) {
-        toast("ERROR : "+errorMsg);
-    }
-
-    private void onCommunityUpdated(CommunitySelectionResponse body) {
-        toast("Community Updated!");
-        HaprampPreferenceManager.getInstance().saveUserSelectedCommunitiesAsJson(new Gson().toJson(new CommunityListWrapper(body.getCommunities())));
-        navigateToHome();
     }
 
     private void navigateToHome() {
-        Intent i = new Intent(this,HomeActivity.class);
+        Intent i = new Intent(this, HomeActivity.class);
         startActivity(i);
         finish();
-
     }
 
-    private void fetchCommunities() {
-
-        DataServer.getService().getCommunities()
-                .enqueue(new Callback<List<CommunityModel>>() {
-                    @Override
-                    public void onResponse(Call<List<CommunityModel>> call, Response<List<CommunityModel>> response) {
-                        if (response.isSuccessful()) {
-                            onCommunitiesFetched(response.body());
-                        } else {
-                            onCommunitiesFetchFailed("" + response.code());
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<CommunityModel>> call, Throwable t) {
-                        onCommunitiesFetchFailed(t.toString());
-                    }
-                });
-
+    @Override
+    public void onCommunityFetchFailed() {
+        toast(getString(R.string.failed_to_fetch_communities));
     }
 
-    private void onCommunitiesFetchFailed(String msg) {
-        toast("ERROR: "+msg);
+    @Override
+    public void onCommunityUpdated(List<CommunityModel> selectedCommunities) {
+        toast(getString(R.string.community_updated));
+        HaprampPreferenceManager.getInstance().saveUserSelectedCommunitiesAsJson(new Gson().toJson(new CommunityListWrapper(selectedCommunities)));
+        navigateToHome();
     }
 
-    private void onCommunitiesFetched(List<CommunityModel> body) {
-
-        communitySelectionView.setCommunityList(body);
-        HaprampPreferenceManager.getInstance().saveAllCommunityListAsJson(new Gson().toJson(new CommunityListWrapper(body)));
-
+    @Override
+    public void onCommunityUpdateFailed() {
+        toast(getString(R.string.failed_to_update_communities));
     }
-
-
-
-
 }

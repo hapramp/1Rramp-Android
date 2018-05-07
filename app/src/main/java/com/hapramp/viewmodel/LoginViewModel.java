@@ -3,7 +3,7 @@ package com.hapramp.viewmodel;
 import android.arch.lifecycle.ViewModel;
 
 import com.hapramp.model.LoginManager;
-import com.hapramp.ui.callbacks.LoginCallbacks;
+import com.hapramp.ui.callbacks.login.LoginCallbacks;
 
 /**
  * Created by Ankit on 5/6/2018.

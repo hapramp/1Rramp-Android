@@ -9,7 +9,7 @@ import com.hapramp.datamodels.response.SteemSignUpResponseModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.SteemHelper;
-import com.hapramp.ui.callbacks.LoginCallbacks;
+import com.hapramp.ui.callbacks.login.LoginCallbacks;
 import com.hapramp.utils.ErrorCodes;
 import com.hapramp.utils.HashGenerator;
 

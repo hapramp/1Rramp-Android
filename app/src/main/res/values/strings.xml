@@ -46,5 +46,8 @@
     <string name="invalid_credentials">Invalid Credentials</string>
     <string name="singup_issue">Something Went Wrong While Signing Up</string>
     <string name="cannot_read_qr_code">Cannot Read QR</string>
+    <string name="failed_to_update_communities">Failed to update communities</string>
+    <string name="community_updated">Community Updated!</string>
+    <string name="failed_to_fetch_communities">Failed to fetch communities</string>
 
 </resources>
