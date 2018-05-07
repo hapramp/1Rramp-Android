@@ -1,4 +1,4 @@
-package com.hapramp.model;
+package com.hapramp.model.login;
 
 import com.google.gson.Gson;
 import com.hapramp.api.DataServer;

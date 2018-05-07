@@ -1,4 +1,4 @@
-package com.hapramp.viewmodel;
+package com.hapramp.viewmodel.communityselectionpage;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
@@ -28,15 +28,12 @@ public class CommunitySelectionPageViewModel extends ViewModel {
         if (communities == null) {
             communities = new MutableLiveData<>();
         }
-
         this.communitySelectionPageCallback = communitySelectionPageCallback;
         fetchCommunities();
         return communities;
-
     }
 
     private void fetchCommunities() {
-
         DataServer.getService().getCommunities()
                 .enqueue(new Callback<List<CommunityModel>>() {
                     @Override
@@ -47,19 +44,15 @@ public class CommunitySelectionPageViewModel extends ViewModel {
                             communitySelectionPageCallback.onCommunityFetchFailed();
                         }
                     }
-
                     @Override
                     public void onFailure(Call<List<CommunityModel>> call, Throwable t) {
                         communitySelectionPageCallback.onCommunityFetchFailed();
                     }
                 });
-
     }
 
     public void updateServer(List<Integer> selected) {
-
         CommunitySelectionServerUpdateBody body = new CommunitySelectionServerUpdateBody(selected);
-
         DataServer.getService().updateCommunitySelections(body).enqueue(new Callback<CommunitySelectionResponse>() {
             @Override
             public void onResponse(Call<CommunitySelectionResponse> call, Response<CommunitySelectionResponse> response) {
@@ -69,12 +62,10 @@ public class CommunitySelectionPageViewModel extends ViewModel {
                     communitySelectionPageCallback.onCommunityUpdateFailed();
                 }
             }
-
             @Override
             public void onFailure(Call<CommunitySelectionResponse> call, Throwable t) {
                 communitySelectionPageCallback.onCommunityUpdateFailed();
             }
         });
     }
-
 }

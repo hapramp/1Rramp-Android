@@ -14,7 +14,7 @@ import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.ui.callbacks.communityselection.CommunitySelectionPageCallback;
-import com.hapramp.viewmodel.CommunitySelectionPageViewModel;
+import com.hapramp.viewmodel.communityselectionpage.CommunitySelectionPageViewModel;
 import com.hapramp.views.CommunitySelectionView;
 import java.util.List;
 import butterknife.BindView;
@@ -41,19 +41,15 @@ public class CommunitySelectionActivity extends BaseActivity implements Communit
     public static final String TAG = CommunitySelectionActivity.class.getSimpleName();
     private CommunitySelectionPageViewModel communitySelectionPageViewModel;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_community_selection);
         ButterKnife.bind(this);
         init();
-
     }
 
     private void init() {
-
         communitySelectionPageViewModel = ViewModelProviders.of(this).get(CommunitySelectionPageViewModel.class);
         communitySelectionPageViewModel.getCommunities(this).observe(this, new Observer<List<CommunityModel>>() {
             @Override

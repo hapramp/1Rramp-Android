@@ -1,4 +1,4 @@
-package com.hapramp.viewmodel;
+package com.hapramp.viewmodel.common;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;

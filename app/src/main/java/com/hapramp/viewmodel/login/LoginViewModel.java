@@ -1,8 +1,8 @@
-package com.hapramp.viewmodel;
+package com.hapramp.viewmodel.login;
 
 import android.arch.lifecycle.ViewModel;
 
-import com.hapramp.model.LoginManager;
+import com.hapramp.model.login.LoginManager;
 import com.hapramp.ui.callbacks.login.LoginCallbacks;
 
 /**

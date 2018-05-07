@@ -24,8 +24,8 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.ui.callbacks.login.LoginCallbacks;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.PixelUtils;
-import com.hapramp.viewmodel.ConnectivityViewModel;
-import com.hapramp.viewmodel.LoginViewModel;
+import com.hapramp.viewmodel.common.ConnectivityViewModel;
+import com.hapramp.viewmodel.login.LoginViewModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
