@@ -145,6 +145,9 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
         try {
             wantTopSpace = typedArray.getBoolean(R.styleable.FeedListView_wantTopSpaceOffset, false);
             wantBottomSpace = typedArray.getBoolean(R.styleable.FeedListView_wantBottomSpaceOffset, false);
+            topOffset = typedArray.getInt(R.styleable.FeedListView_topOffset, 108);
+            bottomOffset = typedArray.getInt(R.styleable.FeedListView_bottomOffset, 0);
+
         } finally {
             typedArray.recycle();
         }

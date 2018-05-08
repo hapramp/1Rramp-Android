@@ -60,8 +60,6 @@ public class HotFragment extends Fragment implements FeedListView.FeedListViewLi
 
         feedListView.setFeedListViewListener(this);
         feedListView.initialLoading();
-        feedListView.setTopMarginForShimmer(16);
-        feedListView.setTopMarginForRecyclerView(16);
         fetchPosts();
 
     }
