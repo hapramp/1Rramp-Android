@@ -182,4 +182,7 @@ public class PostCreateComponent extends FrameLayout implements PostCategoryView
 
     }
 
+    public void setImageUri(Uri thumb_path) {
+        postImageView.setImageUri(thumb_path);
+    }
 }

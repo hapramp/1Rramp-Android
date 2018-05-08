@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -376,7 +377,7 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
 
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                 postCreateComponent.setImageResource(bitmap);
-                logScreenDimesions(bitmap);
+                //logScreenDimesions(bitmap);
 
             } catch (IOException e) {
                 e.printStackTrace();

@@ -23,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -36,6 +37,7 @@ import com.hapramp.utils.ImageHandler;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -134,6 +136,7 @@ public class PostImageView extends FrameLayout {
         image.setImageBitmap(bitmap);
         informationTv.setVisibility(VISIBLE);
         informationTv.setText("Processing...");
+
         new Thread() {
             @Override
             public void run() {
@@ -141,18 +144,14 @@ public class PostImageView extends FrameLayout {
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 40, stream);
                 final byte[] byteArray = stream.toByteArray();
-                final Bitmap decoded = BitmapFactory.decodeStream(new ByteArrayInputStream(byteArray));
 
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        image.setImageBitmap(decoded);
-                    }
-                });
-
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
+                        Glide.with(mContext)
+                                .load(byteArray)
+                                .asBitmap()
+                                .into(image);
                         if (mainView.getVisibility() == View.VISIBLE) {
                             startUploading(byteArray);
                         }
@@ -183,10 +182,12 @@ public class PostImageView extends FrameLayout {
             @Override
             public void onAnimationStart(Animation animation) {
             }
+
             @Override
             public void onAnimationEnd(Animation animation) {
                 mainView.setVisibility(GONE);
             }
+
             @Override
             public void onAnimationRepeat(Animation animation) {
             }
@@ -270,7 +271,9 @@ public class PostImageView extends FrameLayout {
     }
 
     public void setImageUri(Uri uri) {
-        ImageHandler.load(mContext,image,uri.toString());
+        Glide.with(mContext)
+                .load(uri)
+                .into(image);
     }
 
 }
