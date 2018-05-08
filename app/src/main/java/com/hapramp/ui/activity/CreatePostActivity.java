@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -39,6 +40,7 @@ import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.steem.models.data.FeedDataItemModel;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FontManager;
+import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.PixelUtils;
 import com.hapramp.views.post.PostCreateComponent;
 
@@ -53,7 +55,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PostCreateActivity extends AppCompatActivity implements PostCreateCallback, SteemPostCreator.SteemPostCreatorCallback {
+public class CreatePostActivity extends AppCompatActivity implements PostCreateCallback, SteemPostCreator.SteemPostCreatorCallback {
 
     private static final int REQUEST_IMAGE_SELECTOR = 101;
     @BindView(R.id.closeBtn)
@@ -112,7 +114,6 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
         showExistAlert();
     }
 
-
     private void showExistAlert() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
@@ -129,26 +130,6 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
         builder.show();
 
     }
-
-    //
-//    private void loadDraft() {
-//
-////        //load content
-////        content.setText(HaprampPreferenceManager.getInstance().getPostDraft());
-////        //load image
-////        if (HaprampPreferenceManager.getInstance().getPostMediaDraft().length() > 0) {
-////            loadImageIntoView(HaprampPreferenceManager.getInstance().getPostMediaDraft());
-////        }
-//
-//    }
-//
-//    private void clearDraft() {
-//        // clear post content
-//        HaprampPreferenceManager.getInstance().savePostDraft("");
-//        // clear image draft
-//        HaprampPreferenceManager.getInstance().savePostMediaDraft("");
-//
-//    }
 
     private void init() {
 
@@ -211,8 +192,8 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
     private void openGallery() {
 
         try {
-            if (ActivityCompat.checkSelfPermission(PostCreateActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(PostCreateActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_SELECTOR);
+            if (ActivityCompat.checkSelfPermission(CreatePostActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(CreatePostActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_SELECTOR);
             } else {
                 Intent intent = new Intent();
                 intent.setType("image/*");
@@ -254,7 +235,6 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
 
         generated_permalink = PermlinkGenerator.getPermlink();
         full_permlink = HaprampPreferenceManager.getInstance().getCurrentSteemUsername() + "/" + generated_permalink;
-        Log.d("TEST", "Full Permlink " + full_permlink);
         //prepare title
         title = "";
         //prepare tags
@@ -410,18 +390,7 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
             @Override
             public void run() {
 
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 40 /*ignored for PNG*/, bos);
-                byte[] bitmapdata = bos.toByteArray();
-
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = true;
-                BitmapFactory.decodeByteArray(bitmapdata,0,bitmapdata.length,options);
-                int imageHeight = options.outHeight;
-                int imageWidth = options.outWidth;
-
-                Log.d("DIMESION","height "+imageHeight);
-                Log.d("DIMESION","width "+imageWidth);
+                ImageHandler.decodeSampledBitmap(bitmap);
 
             }
         }.start();
@@ -459,7 +428,7 @@ public class PostCreateActivity extends AppCompatActivity implements PostCreateC
     public void onPostCreationFailedOnSteem(String msg) {
         toast(msg);
         showPublishingProgressDialog(false, "");
-        Log.d(PostCreateActivity.class.getSimpleName(), msg);
+        Log.d(CreatePostActivity.class.getSimpleName(), msg);
     }
 
     private void close(){

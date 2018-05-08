@@ -579,7 +579,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
 
     @Override
     public void onCreatePostButtonClicked() {
-        Intent intent = new Intent(this, PostCreateActivity.class);
+        Intent intent = new Intent(this, CreatePostActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_up_enter,R.anim.slide_up_exit);
     }

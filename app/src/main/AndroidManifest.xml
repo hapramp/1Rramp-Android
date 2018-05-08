@@ -14,6 +14,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:largeHeap="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.activity.LoginActivity"
@@ -35,7 +36,7 @@
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activity.PostCreateActivity"
+            android:name=".ui.activity.CreatePostActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.CreateArticleActivity"

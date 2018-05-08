@@ -1,9 +1,13 @@
 package com.hapramp.views.post;
 
+import android.app.Activity;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -28,7 +32,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.hapramp.R;
 import com.hapramp.datamodels.PostJobModel;
+import com.hapramp.utils.ImageHandler;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 import butterknife.BindView;
@@ -82,6 +88,7 @@ public class PostImageView extends FrameLayout {
         mHandler = new Handler();
         attachListeners();
         invalidateView();
+
     }
 
     private void attachListeners() {
@@ -123,47 +130,46 @@ public class PostImageView extends FrameLayout {
     public void setImageSource(final Bitmap bitmap) {
 
         invalidateView();
-
         mainView.setVisibility(VISIBLE);
         image.setImageBitmap(bitmap);
-        // set status
         informationTv.setVisibility(VISIBLE);
         informationTv.setText("Processing...");
-
         new Thread() {
             @Override
             public void run() {
+
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 25, stream);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 40, stream);
                 final byte[] byteArray = stream.toByteArray();
+                final Bitmap decoded = BitmapFactory.decodeStream(new ByteArrayInputStream(byteArray));
+
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        // check for visibility
-                        if (mainView.getVisibility() == View.VISIBLE) {
-                            startUploading(byteArray);
-                        }
-
+                        image.setImageBitmap(decoded);
                     }
                 });
 
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mainView.getVisibility() == View.VISIBLE) {
+                            startUploading(byteArray);
+                        }
+                    }
+                });
             }
-
         }.start();
-
     }
 
     private void invalidateView() {
-        //set Progress to 0
         progressBar.setVisibility(VISIBLE);
         progressBar.setProgress(0);
         pauseResumeBtn.setVisibility(GONE);
         informationTv.setVisibility(GONE);
-
     }
 
     public void scaleAndHideMainView() {
-
         Animation anim = new ScaleAnimation(
                 1f, 1f, // Start and end values for the X axis scaling
                 1f, 0f, // Start and end values for the Y axis scaling
@@ -176,21 +182,15 @@ public class PostImageView extends FrameLayout {
         anim.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-
             }
-
             @Override
             public void onAnimationEnd(Animation animation) {
                 mainView.setVisibility(GONE);
             }
-
             @Override
             public void onAnimationRepeat(Animation animation) {
-
             }
         });
-
-
     }
 
     private void startUploading(byte[] bytes) {
@@ -260,7 +260,6 @@ public class PostImageView extends FrameLayout {
     }
 
     private void showAndhideActionContainer() {
-
         actionContainer.setVisibility(VISIBLE);
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -268,7 +267,10 @@ public class PostImageView extends FrameLayout {
                 actionContainer.setVisibility(GONE);
             }
         }, 2000);
+    }
 
+    public void setImageUri(Uri uri) {
+        ImageHandler.load(mContext,image,uri.toString());
     }
 
 }

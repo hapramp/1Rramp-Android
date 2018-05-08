@@ -190,7 +190,9 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     }
 
     private void fetchComments() {
-        replyFetcher.requestReplyForPost(post.author, post.permlink);
+        if(ConnectionUtils.isConnected(this)) {
+            replyFetcher.requestReplyForPost(post.author, post.permlink);
+        }
     }
 
     @Override

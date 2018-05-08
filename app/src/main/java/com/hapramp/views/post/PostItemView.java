@@ -185,16 +185,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
                 String.format(mContext.getResources().getString(R.string.post_subtitle_format),
                         MomentsUtils.getFormattedTime(feed.created)));
 
-        // classify the type of content
         Content content = feed.jsonMetadata.content;
-
-        //load featured image and snippet for article | post
-        String image_url = extractImageUrlForPost(content.data);
-        String text = extractTextSnippetForPost(content.data);
-//
-//        postSnippet.setText(text);
-//        ImageHandler.load(mContext, featuredImagePost, image_url);
-
         bindPostContent(content.data);
 
         if (content.type.equals(Constants.CONTENT_TYPE_POST)) {
@@ -212,7 +203,9 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         ImageHandler.loadCircularImage(mContext, feedOwnerPic, String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format), feed.author));
 
         bindVotes(feed.activeVotes, feed.permlink);
-        replyFetcher.requestReplyForPost(feed.author, feed.permlink);
+        if(ConnectionUtils.isConnected(mContext)) {
+            replyFetcher.requestReplyForPost(feed.author, feed.permlink);
+        }
         attachListenersOnStarView();
         attachListerOnAuthorHeader();
 
@@ -791,5 +784,6 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     public void onReplyFetchError() {
 
     }
+
 }
 
