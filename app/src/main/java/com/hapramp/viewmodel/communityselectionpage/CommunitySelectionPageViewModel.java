@@ -27,9 +27,9 @@ public class CommunitySelectionPageViewModel extends ViewModel {
     public MutableLiveData<List<CommunityModel>> getCommunities(CommunitySelectionPageCallback communitySelectionPageCallback) {
         if (communities == null) {
             communities = new MutableLiveData<>();
+            fetchCommunities();
         }
         this.communitySelectionPageCallback = communitySelectionPageCallback;
-        fetchCommunities();
         return communities;
     }
 
