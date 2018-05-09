@@ -1,11 +1,14 @@
 package com.hapramp.datamodels;
 
+import android.arch.persistence.room.Entity;
+
 /**
  * Created by Ankit on 12/13/2017.
  */
 
 public class CommentModel {
 
+    public String postPermlink;
     public String commentId;
     public String userId;
     public String userDpUrl;
@@ -20,6 +23,14 @@ public class CommentModel {
         this.userName = userName;
         this.comment = comment;
         this.commentTime = commentTime;
+    }
+
+    public String getPostPermlink() {
+        return postPermlink;
+    }
+
+    public void setPostPermlink(String postPermlink) {
+        this.postPermlink = postPermlink;
     }
 
     public String getCommentId() {

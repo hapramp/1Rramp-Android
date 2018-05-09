@@ -118,6 +118,15 @@ public class HaprampPreferenceManager {
 
     }
 
+    public void setCommentCount(String permlink , int count){
+        editor.putInt("comment_count_"+permlink,count);
+        editor.apply();
+    }
+
+    public int getCommentCount(String permlink){
+        return preferences.getInt("comment_count_"+permlink,0);
+    }
+
     public String getUserSelectedCommunityAsJson() {
 
         return preferences.getString("userSelectedCommunity", "");

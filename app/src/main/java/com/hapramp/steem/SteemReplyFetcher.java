@@ -53,15 +53,10 @@ public class SteemReplyFetcher {
                 final AccountName authorAccount = new AccountName(authorOfPost);
 
                 try {
-
                     final List<Discussion> discussions = steemJ.getContentReplies(authorAccount, new Permlink(permlink));
-
-//                    Log.d(TAG,"replies fetched");
-
                     final List<SteemCommentModel> contentCommentModels = new ArrayList<>();
                     for (int i = 0; i < discussions.size(); i++) {
                         Discussion discussion = discussions.get(i);
-                        //Profile _p = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserProfile(discussion.getAuthor().getName()), Profile.class);
                         contentCommentModels.add(new SteemCommentModel(
                                 discussion.getAuthor().getName(),
                                 discussion.getBody(),
@@ -69,8 +64,6 @@ public class SteemReplyFetcher {
                                 ""
                         ));
                     }
-
-
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {

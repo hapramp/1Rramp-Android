@@ -207,6 +207,8 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         ImageHandler.loadCircularImage(mContext, feedOwnerPic, String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format), feed.author));
 
         bindVotes(feed.activeVotes, feed.permlink);
+        //load from cache
+        setCommentCount(HaprampPreferenceManager.getInstance().getCommentCount(mFeed.permlink));
         if(ConnectionUtils.isConnected(mContext)) {
             replyFetcher.requestReplyForPost(feed.author, feed.permlink);
         }
@@ -808,6 +810,9 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
 
     @Override
     public void onReplyFetched(List<SteemCommentModel> replies) {
+
+        HaprampPreferenceManager.getInstance().setCommentCount(mFeed.permlink,replies.size());
+
         setCommentCount(replies.size());
     }
 

@@ -1,13 +1,20 @@
 package com.hapramp.steem;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
  * Created by Ankit on 4/15/2018.
  */
+
+@Entity(tableName = "comments")
 public class SteemCommentModel implements Parcelable {
 
+    @PrimaryKey(autoGenerate = true)
+    public int id = 0;
+    public String postPermlink;
     public String commentAuthor;
     public String comment;
     public String createdAt;
@@ -51,6 +58,14 @@ public class SteemCommentModel implements Parcelable {
         this.comment = comment;
         this.createdAt = createdAt;
         this.commentAuthorImageUri = commentAuthorImageUri;
+    }
+
+    public String getPostPermlink() {
+        return postPermlink;
+    }
+
+    public void setPostPermlink(String postPermlink) {
+        this.postPermlink = postPermlink;
     }
 
     public String getCommentAuthor() {

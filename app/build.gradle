@@ -14,6 +14,8 @@ ext.steemVersion = '0.4.3'
 ext.junitVersion = '4.12'
 ext.roboelectricVersion = '3.0'
 ext.barcodeReaderVersion = '1.1.5'
+ext.roomVersion = '1.0.0'
+ext.archLifecycleVersion = '1.1.0'
 
 android {
 
@@ -85,6 +87,11 @@ dependencies {
     testImplementation "junit:junit:$junitVersion"
     testImplementation "org.robolectric:robolectric:$roboelectricVersion"
     testImplementation "org.robolectric:shadows-multidex:$roboelectricVersion"
+
+    // Room components
+    implementation "android.arch.persistence.room:runtime:$roomVersion"
+    annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
+    androidTestImplementation "android.arch.persistence.room:testing:$roomVersion"
 
     implementation "android.arch.lifecycle:extensions:1.1.1"
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"

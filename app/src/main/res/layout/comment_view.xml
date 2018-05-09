@@ -8,7 +8,6 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:layout_toStartOf="@+id/popupMenuDots"
         android:id="@+id/commentMetaHolder"
         android:gravity="center_vertical"
         android:orientation="horizontal"

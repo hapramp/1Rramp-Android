@@ -1,6 +1,8 @@
 package com.hapramp.ui.activity;
 
 import android.app.ProgressDialog;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,18 +32,20 @@ import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.ViewItemDecoration;
+import com.hapramp.viewmodel.comments.CommentsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import eu.bittrade.libs.steemj.apis.database.models.state.Comment;
 
 /**
  * Created by Ankit on 2/9/2018.
  */
 
-public class CommentsActivity extends AppCompatActivity implements SteemCommentCreator.SteemCommentCreateCallback, SteemReplyFetcher.SteemReplyFetchCallback {
+public class CommentsActivity extends AppCompatActivity implements SteemCommentCreator.SteemCommentCreateCallback {
 
     @BindView(R.id.backBtn)
     TextView backBtn;
@@ -73,8 +78,7 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
     private String postAuthor;
     private String postPermlink;
     private SteemCommentCreator steemCommentCreator;
-    private SteemReplyFetcher replyFetcher;
-    private Profile myProfile;
+    private CommentsViewModel commentsViewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -91,9 +95,7 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
 
         steemCommentCreator = new SteemCommentCreator();
         steemCommentCreator.setSteemCommentCreateCallback(this);
-        replyFetcher = new SteemReplyFetcher();
-        replyFetcher.setSteemReplyFetchCallback(this);
-
+        commentsViewModel = ViewModelProviders.of(this).get(CommentsViewModel.class);
 
         commentsList = getIntent().getExtras().getParcelableArrayList(Constants.EXTRAA_KEY_COMMENTS);
         postAuthor = getIntent().getExtras().getString(Constants.EXTRAA_KEY_POST_AUTHOR, "");
@@ -115,17 +117,20 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
         commentsRecyclerView.addItemDecoration(viewItemDecoration);
         commentsRecyclerView.setAdapter(commentsAdapter);
 
-        if (commentsList.size() == 0) {
-            refetchComments();
-        } else {
+        if (commentsList.size() > 0) {
             commentLoadingProgressBar.setVisibility(View.GONE);
             commentsAdapter.addComments(commentsList);
         }
 
-    }
+        commentsViewModel.getSteemComments(postAuthor, postPermlink).observeForever(new Observer<List<SteemCommentModel>>() {
+            @Override
+            public void onChanged(@Nullable List<SteemCommentModel> steemCommentModels) {
+                commentLoadingProgressBar.setVisibility(View.GONE);
+                Log.d("RoomData","received "+steemCommentModels.size());
+                commentsAdapter.addComments((ArrayList<SteemCommentModel>) steemCommentModels);
+            }
+        });
 
-    private void refetchComments() {
-        replyFetcher.requestReplyForPost(postAuthor, postPermlink);
     }
 
     private void attachListeners() {
@@ -155,15 +160,16 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
             steemCommentCreator.createComment(cmnt, postAuthor, postPermlink);
         } else {
             Toast.makeText(this, "Comment Too Short!!", Toast.LENGTH_LONG).show();
+            return;
         }
 
-        //add the comment to view instantly
-        String image_uri = "";
-        if (myProfile != null) {
-            image_uri = myProfile.getProfileImage();
-        }
-        SteemCommentModel steemCommentModel = new SteemCommentModel(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(), cmnt, MomentsUtils.getCurrentTime(), image_uri);
-        commentsAdapter.addSingleComment(steemCommentModel);
+        SteemCommentModel steemCommentModel = new SteemCommentModel(
+                HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
+                cmnt, MomentsUtils.getCurrentTime(),
+                String.format(getResources().getString(R.string.steem_user_profile_pic_format),
+                        HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
+
+        commentsViewModel.addComments(steemCommentModel, postPermlink);
 
     }
 
@@ -197,22 +203,6 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
         if (progressDialog != null) {
             progressDialog.dismiss();
         }
-
-    }
-
-    @Override
-    public void onReplyFetching() {
-
-    }
-
-    @Override
-    public void onReplyFetched(List<SteemCommentModel> replies) {
-        commentLoadingProgressBar.setVisibility(View.GONE);
-        commentsAdapter.addComments(commentsList);
-    }
-
-    @Override
-    public void onReplyFetchError() {
 
     }
 }

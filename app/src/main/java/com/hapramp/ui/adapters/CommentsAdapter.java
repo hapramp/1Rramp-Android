@@ -93,10 +93,8 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
     }
 
     public void addComments(ArrayList<SteemCommentModel> comments) {
-
-        commentsList.addAll(comments);
-        notifyItemInserted(commentsList.size() - comments.size() - 1);
-
+        commentsList = comments;
+        notifyDataSetChanged();
     }
 
     public void addSingleComment(SteemCommentModel steemCommentModel) {
