@@ -2,11 +2,13 @@ package com.hapramp.ui.fragments;
 
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +29,7 @@ import com.hapramp.steem.ServiceWorkerRequestBuilder;
 import com.hapramp.steem.ServiceWorkerRequestParams;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.utils.Constants;
+import com.hapramp.utils.ShadowUtils;
 import com.hapramp.views.feedlist.FeedListView;
 
 import java.util.ArrayList;
@@ -124,6 +127,8 @@ public class HomeFragment extends Fragment implements
         categoryRecyclerAdapter = new CategoryRecyclerAdapter(mContext, this);
         sectionsRv.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         sectionsRv.setAdapter(categoryRecyclerAdapter);
+        Drawable drawable = ShadowUtils.generateBackgroundWithShadow(sectionsRv, R.color.white,R.dimen.communitybar_shadow_radius ,R.color.Black12,R.dimen.communitybar_shadow_elevation, Gravity.BOTTOM);
+        sectionsRv.setBackground(drawable);
 
         CommunityListWrapper cwr = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
         ArrayList<CommunityModel> communityModels = new ArrayList<>();
