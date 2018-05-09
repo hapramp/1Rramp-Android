@@ -44,6 +44,7 @@ import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
+import com.hapramp.utils.ShareUtils;
 import com.hapramp.views.comments.CommentView;
 import com.hapramp.views.extraa.StarView;
 import com.hapramp.views.renderer.RendererView;
@@ -265,6 +266,13 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
             @Override
             public void onClick(View v) {
                 navigateToCommentsPage();
+            }
+        });
+
+        shareBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShareUtils.shareMixedContent(DetailedActivity.this,post);
             }
         });
 

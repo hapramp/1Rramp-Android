@@ -10,11 +10,14 @@ import android.support.annotation.Nullable;
 import android.text.Layout;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +43,7 @@ import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
+import com.hapramp.utils.ShareUtils;
 import com.hapramp.views.extraa.StarView;
 
 import java.util.ArrayList;
@@ -208,7 +212,16 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         }
         attachListenersOnStarView();
         attachListerOnAuthorHeader();
+        attachListenerForOverlowIcon();
+    }
 
+    private void attachListenerForOverlowIcon() {
+        popupMenuDots.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopup();
+            }
+        });
     }
 
     private void attachListerOnAuthorHeader() {
@@ -768,6 +781,24 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
 
     public void setPostData(Feed postData) {
         bind(postData);
+    }
+
+    private void showPopup(){
+
+        ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(getContext(), R.style.PopupMenuOverlapAnchor);
+        PopupMenu popup = new PopupMenu(contextThemeWrapper,popupMenuDots);
+        //Inflating the Popup using xml file
+        popup.getMenuInflater().inflate(R.menu.popup_post, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                ShareUtils.shareMixedContent(mContext,mFeed);
+                return true;
+            }
+        });
+
+        popup.show();
+
     }
 
     @Override

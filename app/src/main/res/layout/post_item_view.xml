@@ -43,6 +43,8 @@
         android:id="@+id/popupMenuDots"
         android:layout_width="48dp"
         android:layout_height="64dp"
+        android:clickable="true"
+        android:focusable="true"
         android:layout_alignParentEnd="true"
         android:background="?selectableItemBackgroundBorderless"
         android:gravity="center"
