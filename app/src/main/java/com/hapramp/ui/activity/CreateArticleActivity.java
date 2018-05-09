@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -99,6 +100,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     private ArrayList<String> tags;
     private PostStructureModel postStructureModel;
     private String generated_permalink;
+    private String permlink_with_username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -197,6 +199,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
             if (show) {
                 progressDialog.setTitle("Article Upload");
                 progressDialog.setMessage(msg);
+                progressDialog.setCancelable(false);
                 progressDialog.setIndeterminate(true);
                 progressDialog.show();
             } else {
@@ -290,7 +293,8 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     private void sendPostToServerForProcessing(PostStructureModel content) {
 
         generated_permalink = PermlinkGenerator.getPermlink();
-        PreProcessingModel preProcessingModel = new PreProcessingModel(generated_permalink, new Gson().toJson(content));
+        permlink_with_username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername()+"/"+generated_permalink;
+        PreProcessingModel preProcessingModel = new PreProcessingModel(permlink_with_username, new Gson().toJson(content));
 
         RetrofitServiceGenerator.getService().sendForPreProcessing(preProcessingModel).enqueue(new Callback<ProcessedBodyResponse>() {
             @Override
@@ -324,18 +328,13 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     private void confirmServerForPostCreation() {
 
         showPublishingProgressDialog(true, "Sending Confirmation to Server...");
-
-        String full_permlink = HaprampPreferenceManager.getInstance().getCurrentSteemUsername() + "/" + generated_permalink;
-
         RetrofitServiceGenerator.getService()
-                .sendPostCreationConfirmation(new PostConfirmationModel(full_permlink))
+                .sendPostCreationConfirmation(new PostConfirmationModel(permlink_with_username))
                 .enqueue(new Callback<ProcessedBodyResponse>() {
                     @Override
                     public void onResponse(Call<ProcessedBodyResponse> call, Response<ProcessedBodyResponse> response) {
                         if (response.isSuccessful()) {
-                            toast("Server Confirmed!");
-                            showPublishingProgressDialog(false, "");
-                            close();
+                            serverConfirmed();
                         } else {
                             toast("Failed to Confirm Server!");
                             showPublishingProgressDialog(false, "");
@@ -351,12 +350,17 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
 
     }
 
-    private String getMediaUri() {
-        String mediaUri = featuredImageAdapter.getSelectedFeaturedImageUrl();
-        if (mediaUri == null) {
-            return "";
-        }
-        return featuredImageAdapter.getSelectedFeaturedImageUrl();
+    private void serverConfirmed() {
+
+        toast("Your post is live now.");
+        showPublishingProgressDialog(false, "");
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                finish();
+            }
+        }, 1000);
+
     }
 
     private void showMetaData(boolean show) {
@@ -390,7 +394,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
 
     @Override
     public void onPostCreatedOnSteem() {
-        toast("Post Created on Blockchain");
+        toast("Your post will take few seconds to appear");
         showPublishingProgressDialog(false, "");
         // send confirmation to server
         confirmServerForPostCreation();

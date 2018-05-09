@@ -2,6 +2,8 @@ package com.hapramp.steem;
 
 import android.util.Log;
 
+import com.hapramp.preferences.HaprampPreferenceManager;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -20,8 +22,6 @@ public class PermlinkGenerator {
         StringBuilder builder = new StringBuilder()
                 .append(random())
                 .append(getCurrentTimeStamp());
-        Log.d("TEST", "Permalink " + builder.toString());
-
         return builder.toString();
 
     }

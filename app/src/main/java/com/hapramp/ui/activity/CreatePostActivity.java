@@ -83,8 +83,8 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
     private List<String> tags;
     private String title;
     private String generated_permalink;
-    private String full_permlink;
     private SteemPostCreator steemPostCreator;
+    private String permlink_with_username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -235,7 +235,7 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
     private void preparePost() {
 
         generated_permalink = PermlinkGenerator.getPermlink();
-        full_permlink = HaprampPreferenceManager.getInstance().getCurrentSteemUsername() + "/" + generated_permalink;
+        permlink_with_username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername()+"/"+generated_permalink;
         //prepare title
         title = "";
         //prepare tags
@@ -251,7 +251,7 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
     //PUBLISHING SECTION
     private void sendPostToServerForProcessing(PostStructureModel content) {
 
-        PreProcessingModel preProcessingModel = new PreProcessingModel(full_permlink, new Gson().toJson(content));
+        PreProcessingModel preProcessingModel = new PreProcessingModel(permlink_with_username, new Gson().toJson(content));
 
         RetrofitServiceGenerator.getService().sendForPreProcessing(preProcessingModel)
                 .enqueue(new Callback<ProcessedBodyResponse>() {
@@ -287,7 +287,7 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
         showPublishingProgressDialog(true, "Sending Confirmation to Server...");
 
         RetrofitServiceGenerator.getService()
-                .sendPostCreationConfirmation(new PostConfirmationModel(full_permlink))
+                .sendPostCreationConfirmation(new PostConfirmationModel(permlink_with_username))
                 .enqueue(new Callback<ProcessedBodyResponse>() {
                     @Override
                     public void onResponse(Call<ProcessedBodyResponse> call, Response<ProcessedBodyResponse> response) {

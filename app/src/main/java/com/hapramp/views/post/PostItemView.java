@@ -551,6 +551,9 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         //reset the visibility
         if(featuredImagePost!=null){
             featuredImagePost.setVisibility(GONE);
+            youtubeIndicator.setVisibility(GONE);
+            postTitle.setVisibility(GONE);
+            postSnippet.setVisibility(GONE);
         }
 
         //scan for feed content
@@ -578,7 +581,6 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         if (feedRenderTypeModel.isTitleSet) {
             //set title
             if (postTitle != null) {
-                youtubeIndicator.setVisibility(GONE);
                 postTitle.setVisibility(VISIBLE);
                 postTitle.setText(feedRenderTypeModel.title);
             }
@@ -587,7 +589,6 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         if (feedRenderTypeModel.hasContent) {
             //bind content
             if (postSnippet != null) {
-                youtubeIndicator.setVisibility(GONE);
                 postSnippet.setVisibility(VISIBLE);
                 postSnippet.setText(feedRenderTypeModel.text);
             }
