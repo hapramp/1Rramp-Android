@@ -48,7 +48,7 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 totalItemCount = linearLayoutManager.getItemCount();
                 lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
 
-                Log.d("FeedsAdapter","TotalItem:"+totalItemCount+" LastVisible:"+lastVisibleItem +" hasMoreToLoad "+hasMoreToLoad+" isLoading "+isLoading);
+                Log.d("FeedsAdapter", "TotalItem:" + totalItemCount + " LastVisible:" + lastVisibleItem + " hasMoreToLoad " + hasMoreToLoad + " isLoading " + isLoading);
 
                 if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold) && hasMoreToLoad) {
 
@@ -103,35 +103,23 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         RecyclerView.ViewHolder viewHolder = null;
-
         if (viewType == VIEW_TYPE_FEED) {
-
             viewHolder = new FeedViewHolder(new PostItemView(mContext));
-
         } else if (viewType == VIEW_TYPE_LOADING) {
-
             View _v = LayoutInflater.from(mContext).inflate(R.layout.feed_load_more_item, null);
             viewHolder = new LoadMoreViewHolder(_v);
-
         }
-
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
         if (holder instanceof FeedViewHolder) {
-
             ((FeedViewHolder) holder).bind(feeds.get(position));
-
         } else if (holder instanceof LoadMoreViewHolder) {
             ((LoadMoreViewHolder) holder).startSimmer();
-
         }
-
     }
 
     @Override
@@ -141,7 +129,7 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     }
 
-    public int getFeedsCount(){
+    public int getFeedsCount() {
         return feeds.size();
     }
 
@@ -155,7 +143,6 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     class FeedViewHolder extends RecyclerView.ViewHolder {
-
         PostItemView postItemView;
 
         public FeedViewHolder(View itemView) {
@@ -170,21 +157,15 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     class LoadMoreViewHolder extends RecyclerView.ViewHolder {
-
         ShimmerFrameLayout shimmerFrameLayout;
 
         public LoadMoreViewHolder(View itemView) {
             super(itemView);
-
             shimmerFrameLayout = itemView.findViewById(R.id.shimmer_view_container);
-
         }
 
         public void startSimmer() {
-
             shimmerFrameLayout.setVisibility(View.VISIBLE);
-            shimmerFrameLayout.startShimmerAnimation();
-
         }
 
         public void hideView() {
@@ -196,5 +177,4 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public interface OnLoadMoreListener {
         void onLoadMore();
     }
-
 }

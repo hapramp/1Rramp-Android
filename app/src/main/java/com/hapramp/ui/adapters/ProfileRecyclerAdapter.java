@@ -1,11 +1,13 @@
 package com.hapramp.ui.adapters;
 
 import android.content.Context;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.hapramp.steem.models.Feed;
+import com.hapramp.ui.callbacks.ProfilePostDiffCallback;
 import com.hapramp.views.post.PostItemView;
 import com.hapramp.views.profile.ProfileHeaderView;
 
@@ -21,11 +23,9 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private final int VIEW_TYPE_ITEM = 2;
     private final int VIEW_TYPE_PROFILE_HEADER = 1;
     private final String mUsername;
-
     public Context mContext;
     private int s;
     private List<Feed> feeds;
-    private int totalFeedsCount = 0;
     private boolean profileHeaderInitialized;
 
     public ProfileRecyclerAdapter(Context mContext , String username) {
@@ -35,21 +35,32 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     public void setPosts(List<Feed> newPosts) {
+//        final ProfilePostDiffCallback diffCallback = new ProfilePostDiffCallback(this.feeds,newPosts);
+//        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+//        feeds.clear();
+//        feeds.addAll(newPosts);
+//        diffResult.dispatchUpdatesTo(this);
         feeds = newPosts;
-        totalFeedsCount = feeds.size();
-        notifyDataSetChanged();
+        notifyItemRangeChanged(1,newPosts.size()-1);
+    }
+
+    public void appendPost(List<Feed> appendable){
+//        final ProfilePostDiffCallback diffCallback = new ProfilePostDiffCallback(this.feeds,appendable);
+//        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+//        feeds.addAll(appendable);
+//        diffResult.dispatchUpdatesTo(this);
+        int oldSize = appendable.size();
+        feeds.addAll(appendable);
+        notifyItemRangeChanged(oldSize,feeds.size()-1);
     }
 
     @Override
     public int getItemViewType(int position) {
-
         if (position == 0) {
             return VIEW_TYPE_PROFILE_HEADER;
         } else {
             return VIEW_TYPE_ITEM;
         }
-
-
     }
 
     @Override
@@ -68,9 +79,7 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             viewHolder = new ProfileHeaderViewHolder(view);
 
         }
-
         return viewHolder;
-
     }
 
     @Override

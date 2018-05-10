@@ -59,11 +59,9 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
         feedListView.setFeedListViewListener(this);
         feedListView.initialLoading();
         fetchPosts();
-
     }
 
     @Override

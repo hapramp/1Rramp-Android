@@ -93,6 +93,9 @@ public interface HaprampAPI {
     @GET("feeds/blog/{username}")
     Call<FeedResponse> getPostsOfUser(@Path("username") String username, @Query("limit") int limit);
 
+    @GET("feeds/blog/{username}")
+    Call<FeedResponse> getPostsOfUser(@Path("username") String username, @Query("limit") int limit,@Query("start_author") String lastAuthor,@Query("start_permlink") String lastPermlink);
+
     @GET("feeds/created/{tag}")
     Call<FeedResponse> getLatestFeed(@Path("tag") String tag, @Query("limit") int limit);
 

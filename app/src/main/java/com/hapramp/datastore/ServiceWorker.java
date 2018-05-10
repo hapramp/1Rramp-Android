@@ -399,8 +399,86 @@ public class ServiceWorker {
         if (serviceWorkerCallback != null) {
             serviceWorkerCallback.onFetchingFromServer();
         }
-
         RetrofitServiceGenerator.getService().getLatestFeed(serviceWorkerRequestParams.getCommunityTag(), serviceWorkerRequestParams.getLimit(), serviceWorkerRequestParams.getLastAuthor(), serviceWorkerRequestParams.getLastPermlink())
+                .enqueue(new Callback<FeedResponse>() {
+                    @Override
+                    public void onResponse(Call<FeedResponse> call, Response<FeedResponse> response) {
+                        if (isRequestLive(serviceWorkerRequestParams)) {
+                            if (serviceWorkerCallback != null) {
+                                if (response.isSuccessful()) {
+                                    serviceWorkerCallback.onAppendableDataLoaded(response.body().getFeeds(), response.body().getLastAuthor(), response.body().getLastPermlink());
+                                } else {
+                                    serviceWorkerCallback.onAppendableDataLoadingFailed();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<FeedResponse> call, Throwable t) {
+                        serviceWorkerCallback.onFetchingFromServerFailed();
+                    }
+                });
+    }
+
+    public void requestProfilePosts(final ServiceWorkerRequestParams serviceWorkerRequestParams) {
+        this.currentRequestParams = serviceWorkerRequestParams;
+        if (serviceWorkerCallback != null) {
+            serviceWorkerCallback.onFetchingFromServer();
+        }
+        if (mCachePreference.isProfilePostCached(serviceWorkerRequestParams.getUsername())) {
+            new Thread() {
+                @Override
+                public void run() {
+                    final FeedResponse cfr = mCachePreference.getProfileCachedPost(serviceWorkerRequestParams.getUsername());
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (serviceWorkerCallback != null) {
+                                if (cfr != null) {
+                                    serviceWorkerCallback.onLoadedFromCache((ArrayList<Feed>) cfr.getFeeds(), cfr.getLastAuthor(), cfr.getLastPermlink());
+                                }
+                            }
+                        }
+                    },DELAY_IN_CACHE_RESPONSE);
+                }
+            }.start();
+        }
+        RetrofitServiceGenerator.getService().getPostsOfUser(serviceWorkerRequestParams.getUsername(), serviceWorkerRequestParams.getLimit())
+                .enqueue(new Callback<FeedResponse>() {
+                    @Override
+                    public void onResponse(Call<FeedResponse> call, final Response<FeedResponse> response) {
+                        if (isRequestLive(serviceWorkerRequestParams)) {
+                            if (serviceWorkerCallback != null) {
+                                if (response.isSuccessful()) {
+                                    new Thread() {
+                                        @Override
+                                        public void run() {
+                                            mCachePreference.saveProfileCacheAsJson(serviceWorkerRequestParams.getUsername(),new Gson().toJson(response.body()));
+                                            mCachePreference.setProfilePostCached(serviceWorkerRequestParams.getUsername(),true);
+                                        }
+                                    }.start();
+                                    serviceWorkerCallback.onFeedsFetched((ArrayList<Feed>) response.body().getFeeds(), response.body().getLastAuthor(), response.body().getLastPermlink());
+                                } else {
+                                    serviceWorkerCallback.onFetchingFromServerFailed();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<FeedResponse> call, Throwable t) {
+                        serviceWorkerCallback.onFetchingFromServerFailed();
+                    }
+                });
+    }
+
+    public void requestAppendableProfilePosts(final ServiceWorkerRequestParams serviceWorkerRequestParams){
+        this.currentRequestParams = serviceWorkerRequestParams;
+        if (serviceWorkerCallback != null) {
+            serviceWorkerCallback.onFetchingFromServer();
+        }
+        RetrofitServiceGenerator.getService().getPostsOfUser(serviceWorkerRequestParams.getUsername(), serviceWorkerRequestParams.getLimit(), serviceWorkerRequestParams.getLastAuthor(), serviceWorkerRequestParams.getLastPermlink())
                 .enqueue(new Callback<FeedResponse>() {
                     @Override
                     public void onResponse(Call<FeedResponse> call, Response<FeedResponse> response) {
@@ -429,5 +507,6 @@ public class ServiceWorker {
     private boolean isRequestForCommunityFeed(ServiceWorkerRequestParams serviceWorkerRequestParams) {
         return !serviceWorkerRequestParams.getCommunityTag().equals(Communities.ALL);
     }
+
 
 }

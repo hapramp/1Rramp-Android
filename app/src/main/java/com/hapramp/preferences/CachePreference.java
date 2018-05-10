@@ -127,6 +127,25 @@ public class CachePreference {
         return preferences.getBoolean("latest_cached", false);
     }
 
+    public void setProfilePostCached(String username ,boolean cached){
+        editor.putBoolean("is_profile_cached_for_"+username,cached);
+        editor.apply();
+    }
 
+    public boolean isProfilePostCached(String username){
+        return preferences.getBoolean("is_profile_cached_for_"+username,false);
+    }
 
+    public void saveProfileCacheAsJson(String username , String json) {
+        editor.putString("profilePost_"+username,json);
+        editor.apply();
+    }
+
+    public FeedResponse getProfileCachedPost(String username){
+        String json = preferences.getString("profilePost_"+username,null);
+        if(json!=null){
+            return new Gson().fromJson(json,FeedResponse.class);
+        }
+        return null;
+    }
 }

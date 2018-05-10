@@ -14,12 +14,22 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.hapramp.R;
+import com.hapramp.datastore.ServiceWorker;
+import com.hapramp.interfaces.datatore_callback.ServiceWorkerCallback;
+import com.hapramp.steem.Communities;
+import com.hapramp.steem.ServiceWorkerRequestBuilder;
+import com.hapramp.steem.ServiceWorkerRequestParams;
+import com.hapramp.steem.models.Feed;
 import com.hapramp.ui.adapters.ProfileRecyclerAdapter;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.FeedResponse;
 import com.hapramp.steem.models.user.Profile;
+import com.hapramp.utils.Constants;
 import com.hapramp.utils.ViewItemDecoration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,22 +38,22 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements ServiceWorkerCallback {
 
-
-    private static final int POST_LIMIT = 100;
     @BindView(R.id.profilePostRv)
     RecyclerView profilePostRv;
-
     private Context mContext;
     private ProfileRecyclerAdapter profilePostAdapter;
     private ViewItemDecoration viewItemDecoration;
     private Unbinder unbinder;
     private LinearLayoutManager llm;
-
     private String username;
-
     private static final String TAG = ProfileFragment.class.getSimpleName();
+    private ServiceWorker serviceWorker;
+    private ServiceWorkerRequestBuilder serviceWorkerRequestParamsBuilder;
+    private ServiceWorkerRequestParams serviceWorkerRequestParams;
+    private String lastAuthor;
+    private String lastPermlink;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -75,9 +85,54 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         unbinder = ButterKnife.bind(this, view);
         init();
-        fetchUserProfilePosts();
+        fetchPosts();
         return view;
 
+    }
+
+    private void init() {
+        profilePostAdapter = new ProfileRecyclerAdapter(mContext, HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
+        Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
+        viewItemDecoration = new ViewItemDecoration(drawable);
+        viewItemDecoration.setWantTopOffset(false, 0);
+        profilePostRv.addItemDecoration(viewItemDecoration);
+        llm = new LinearLayoutManager(mContext);
+        profilePostRv.setLayoutManager(llm);
+        profilePostRv.setAdapter(profilePostAdapter);
+        setScrollListener();
+        prepareServiceWorker();
+        fetchPosts();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.mContext = context;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+
+    private void prepareServiceWorker() {
+        serviceWorker = new ServiceWorker();
+        serviceWorker.init(getActivity());
+        serviceWorker.setServiceWorkerCallback(this);
+        serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder()
+                .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
+                .setLimit(Constants.MAX_FEED_LOAD_LIMIT);
+    }
+
+    private void fetchPosts() {
+        serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
+        serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(Communities.TAG_HAPRAMP)
+                .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
+                .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
+                .createRequestParam();
+        serviceWorker.requestProfilePosts(serviceWorkerRequestParams);
     }
 
     public void reloadPosts() {
@@ -85,8 +140,86 @@ public class ProfileFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onLoadingFromCache() {
+
+    }
+
+    @Override
+    public void onCacheLoadFailed() {
+
+    }
+
+    @Override
+    public void onNoDataInCache() {
+
+    }
+
+    @Override
+    public void onLoadedFromCache(ArrayList<Feed> cachedList, String lastAuthor, String lastPermlink) {
+        if(profilePostAdapter!=null) {
+            profilePostAdapter.setPosts(cachedList);
+        }
+    }
+
+    @Override
+    public void onFetchingFromServer() {
+
+    }
+
+    @Override
+    public void onFeedsFetched(ArrayList<Feed> fetchedFeeds, String lastAuthor, String lastPermlink) {
+        if(profilePostAdapter!=null) {
+            profilePostAdapter.setPosts(fetchedFeeds);
+            this.lastAuthor = lastAuthor;
+            this.lastPermlink = lastPermlink;
+        }
+    }
+
+    @Override
+    public void onFetchingFromServerFailed() {
+
+    }
+
+    @Override
+    public void onNoDataAvailable() {
+
+    }
+
+    @Override
+    public void onRefreshing() {
+
+    }
+
+    @Override
+    public void onRefreshed(List<Feed> refreshedList, String lastAuthor, String lastPermlink) {
+        if(profilePostAdapter!=null) {
+            profilePostAdapter.setPosts(refreshedList);
+            this.lastAuthor = lastAuthor;
+            this.lastPermlink = lastPermlink;
+        }
+    }
+
+    @Override
+    public void onRefreshFailed() {
+
+    }
+
+    @Override
+    public void onLoadingAppendableData() {
+
+    }
+
+    @Override
+    public void onAppendableDataLoaded(List<Feed> appendableList, String lastAuthor, String lastPermlink) {
+        if(profilePostAdapter!=null) {
+            profilePostAdapter.appendPost(appendableList);
+            this.lastAuthor = lastAuthor;
+            this.lastPermlink = lastPermlink;
+        }
+    }
+
+    @Override
+    public void onAppendableDataLoadingFailed() {
 
     }
 
@@ -113,103 +246,22 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setScrollListener() {
-
         profilePostRv.addOnScrollListener(new EndlessOnScrollListener(llm) {
             @Override
             public void onScrolledToEnd() {
                 loadMore();
             }
         });
-
     }
 
     private void loadMore() {
-
-//        try {
-//            if (currentPostReponse.next.length() == 0) {
-//                return;
-//            }
-//
-//            fetchUserProfilePosts(currentPostReponse.next);
-//
-//        }catch (Exception e){
-//
-//            Log.d("ProfileFragment",e.toString());
-//
-//        }
-
+        serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
+        serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder
+                .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
+                .setLastAuthor(lastAuthor)
+                .setLastPermlink(lastPermlink)
+                .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
+                .createRequestParam();
+        serviceWorker.requestAppendableProfilePosts(serviceWorkerRequestParams);
     }
-
-    private void init() {
-
-        profilePostAdapter = new ProfileRecyclerAdapter(mContext, HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
-        Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
-        viewItemDecoration = new ViewItemDecoration(drawable);
-        viewItemDecoration.setWantTopOffset(false, 0);
-        profilePostRv.addItemDecoration(viewItemDecoration);
-        llm = new LinearLayoutManager(mContext);
-        profilePostRv.setLayoutManager(llm);
-        profilePostRv.setAdapter(profilePostAdapter);
-        setScrollListener();
-
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        this.mContext = context;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
-
-    private void fetchUserProfilePosts() {
-
-        Log.d("ProfilePost", Profile.getDefaultProfileAsJson());
-
-        RetrofitServiceGenerator.getService()
-                .getPostsOfUser(username, POST_LIMIT)
-                .enqueue(new Callback<FeedResponse>() {
-                    @Override
-                    public void onResponse(Call<FeedResponse> call, Response<FeedResponse> response) {
-                        if (response.isSuccessful()) {
-                            bindProfilePosts(response.body());
-                        } else {
-                            failedToFetchUserPosts();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<FeedResponse> call, Throwable t) {
-                        failedToFetchUserPosts();
-                    }
-                });
-
-    }
-
-    private void failedToFetchUserPosts() {
-
-    }
-
-    private void bindProfilePosts(FeedResponse body) {
-
-        Log.d("ProfileFragment", " posts " + body.getFeeds().size());
-        //Profile.fetchUserProfilesFor(body);
-        profilePostAdapter.setPosts(body.getFeeds());
-
-    }
-
 }
