@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hapramp.R;
@@ -22,6 +23,7 @@ import com.hapramp.ui.adapters.ViewPagerAdapter;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.search.SearchManager;
 import com.hapramp.steem.FollowApiObjectWrapper;
+import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FontManager;
 
 import java.util.ArrayList;
@@ -208,13 +210,14 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
     }
 
     private void fetchSuggestions(String query) {
-
         if (suggestionsContainer != null) {
             suggestionsContainer.setVisibility(View.VISIBLE);
         }
-
-        searchManager.requestSuggestionsFor(query);
-
+        if (ConnectionUtils.isConnected(UserSearchActivity.this)) {
+            searchManager.requestSuggestionsFor(query);
+        } else {
+            Toast.makeText(this, "No Connectivity", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void fetchFollowingsAndCache() {
@@ -230,13 +233,12 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
             @Override
             public void run() {
                 try {
-
-                    SteemJ steemJ = new SteemJ();
-                    List<FollowApiObject> followApiObjects = steemJ.getFollowing(new AccountName(follower), new AccountName(startFollower), followType, limit);
-                    //Log.d(TAG,"Followings : "+followApiObjects.toString());
-                    HaprampPreferenceManager.getInstance().saveCurrentUserFollowingsAsJson(new Gson().toJson(new FollowApiObjectWrapper(followApiObjects)));
-                    onPrepared();
-
+                    if (ConnectionUtils.isConnected(UserSearchActivity.this)) {
+                        SteemJ steemJ = new SteemJ();
+                        List<FollowApiObject> followApiObjects = steemJ.getFollowing(new AccountName(follower), new AccountName(startFollower), followType, limit);
+                        HaprampPreferenceManager.getInstance().saveCurrentUserFollowingsAsJson(new Gson().toJson(new FollowApiObjectWrapper(followApiObjects)));
+                        onPrepared();
+                    }
                 } catch (SteemCommunicationException e) {
                     e.printStackTrace();
                 } catch (SteemResponseException e) {
@@ -249,32 +251,10 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
 
     @Override
     public void onPreparing() {
-
-//        mHandler.post(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//                suggestionsListView.setVisibility(View.GONE);
-//                messagePanel.setVisibility(View.VISIBLE);
-//                suggestionsProgressBar.setVisibility(View.VISIBLE);
-//                messagePanel.setText("Preparing...");
-//
-//            }
-//        });
     }
 
     @Override
     public void onPrepared() {
-//
-//        mHandler.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                suggestionsListView.setVisibility(View.GONE);
-//                messagePanel.setVisibility(View.VISIBLE);
-//                suggestionsProgressBar.setVisibility(View.GONE);
-//                messagePanel.setText("Ready For Search!!");
-//            }
-//        });
     }
 
     @Override
@@ -304,8 +284,6 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
                 suggestionsListView.setVisibility(View.VISIBLE);
                 messagePanel.setVisibility(View.GONE);
                 suggestionsProgressBar.setVisibility(View.GONE);
-                // countTv.setVisibility(View.VISIBLE);
-                // countTv.setText(suggestions.size() + " Result Found!");
                 adapter.setUsernames(suggestions);
             }
         });

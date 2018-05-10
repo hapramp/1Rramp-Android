@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.hapramp.ui.fragments.HotFragment;
-import com.hapramp.ui.fragments.NewFragment;
+import com.hapramp.ui.fragments.LatestFragment;
 import com.hapramp.ui.fragments.TrendingFragment;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
         super(fm);
         fragments.add(new TrendingFragment());
-        fragments.add(new NewFragment());
+        fragments.add(new LatestFragment());
         fragments.add(new HotFragment());
         titles.add("Trending");
         titles.add("New");

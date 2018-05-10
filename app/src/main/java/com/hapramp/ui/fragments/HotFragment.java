@@ -155,7 +155,11 @@ public class HotFragment extends Fragment implements FeedListView.FeedListViewLi
 
     @Override
     public void onLoadedFromCache(ArrayList<Feed> cachedList, String lastAuthor , String lastPermlink) {
-        //NA
+        if (feedListView != null) {
+            feedListView.cachedFeedFetched(cachedList);
+            this.lastAuthor = lastAuthor;
+            this.lastPermlink = lastPermlink;
+        }
     }
 
     @Override

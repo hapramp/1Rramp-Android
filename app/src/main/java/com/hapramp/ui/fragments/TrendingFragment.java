@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,27 +73,21 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
 
 
     private void prepareServiceWorker() {
-
         serviceWorker = new ServiceWorker();
         serviceWorker.init(getActivity());
         serviceWorker.setServiceWorkerCallback(this);
         serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder()
                 .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
                 .setLimit(Constants.MAX_FEED_LOAD_LIMIT);
-
     }
 
     private void fetchPosts() {
-
         serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
-
         serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(Communities.TAG_HAPRAMP)
                 .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
                 .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
                 .createRequestParam();
-
         serviceWorker.requestTrendingPosts(serviceWorkerRequestParams);
-
     }
 
 
@@ -153,7 +148,11 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
 
     @Override
     public void onLoadedFromCache(ArrayList<Feed> cachedList, String lastAuthor , String lastPermlink) {
-        //NA
+        if (feedListView != null) {
+            feedListView.cachedFeedFetched(cachedList);
+            this.lastAuthor = lastAuthor;
+            this.lastPermlink = lastPermlink;
+        }
     }
 
     @Override

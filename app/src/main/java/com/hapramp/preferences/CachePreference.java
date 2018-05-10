@@ -61,4 +61,72 @@ public class CachePreference {
         return new Gson().fromJson(preferences.getString("feed_cache", ""), FeedResponse.class);
     }
 
+    public void saveTrendingCacheAsJson(String json){
+        editor.putString("trending_cache_feeds",json);
+        editor.apply();
+    }
+
+    public FeedResponse getTrendingFeedResponseFromCache(){
+        String json = preferences.getString("trending_cache_feeds",null);
+        if (json != null) {
+            return new Gson().fromJson(json,FeedResponse.class);
+        }
+        return null;
+    }
+
+    public void setTrendingCached(boolean cached) {
+        editor.putBoolean("trending_cached", cached);
+        editor.apply();
+    }
+
+    public boolean isTrendingCached() {
+        return preferences.getBoolean("trending_cached", false);
+    }
+
+    public void saveHotCacheAsJson(String json){
+        editor.putString("hot_cache_feeds",json);
+        editor.apply();
+    }
+
+    public FeedResponse getHotFeedResponseFromCache(){
+        String json = preferences.getString("hot_cache_feeds",null);
+        if (json != null) {
+            return new Gson().fromJson(json,FeedResponse.class);
+        }
+        return null;
+    }
+
+    public void setHotCached(boolean hotCached) {
+        editor.putBoolean("hot_cached", hotCached);
+        editor.apply();
+    }
+
+    public boolean isHotCached() {
+        return preferences.getBoolean("hot_cached", false);
+    }
+
+    public void saveLatestCacheAsJson(String json){
+        editor.putString("latest_cache_feeds",json);
+        editor.apply();
+    }
+
+    public FeedResponse getLatestFeedResponseFromCache(){
+        String json = preferences.getString("latest_cache_feeds",null);
+        if (json != null) {
+            return new Gson().fromJson(json,FeedResponse.class);
+        }
+        return null;
+    }
+
+    public void setLatestCached(boolean latestCached) {
+        editor.putBoolean("latest_cached", latestCached);
+        editor.apply();
+    }
+
+    public boolean isLatestCached() {
+        return preferences.getBoolean("latest_cached", false);
+    }
+
+
+
 }

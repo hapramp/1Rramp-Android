@@ -30,7 +30,7 @@ import butterknife.Unbinder;
  * Created by Ankit on 4/14/2018.
  */
 
-public class NewFragment extends Fragment implements FeedListView.FeedListViewListener, ServiceWorkerCallback {
+public class LatestFragment extends Fragment implements FeedListView.FeedListViewListener, ServiceWorkerCallback {
 
     @BindView(R.id.feedListView)
     FeedListView feedListView;
@@ -153,7 +153,11 @@ public class NewFragment extends Fragment implements FeedListView.FeedListViewLi
 
     @Override
     public void onLoadedFromCache(ArrayList<Feed> cachedList, String lastAuthor, String lastPermlink) {
-        //NA
+        if (feedListView != null) {
+            feedListView.cachedFeedFetched(cachedList);
+            this.lastAuthor = lastAuthor;
+            this.lastPermlink = lastPermlink;
+        }
     }
 
     @Override
