@@ -45,6 +45,7 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         prepareServiceWorker();
     }
 

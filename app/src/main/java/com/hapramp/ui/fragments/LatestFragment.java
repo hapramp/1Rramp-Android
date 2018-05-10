@@ -44,6 +44,7 @@ public class LatestFragment extends Fragment implements FeedListView.FeedListVie
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         prepareServiceWorker();
     }
 
