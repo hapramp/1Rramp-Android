@@ -87,7 +87,6 @@ public class ProfileFragment extends Fragment implements ServiceWorkerCallback {
         init();
         fetchPosts();
         return view;
-
     }
 
     private void init() {
@@ -116,27 +115,32 @@ public class ProfileFragment extends Fragment implements ServiceWorkerCallback {
         unbinder.unbind();
     }
 
-
     private void prepareServiceWorker() {
         serviceWorker = new ServiceWorker();
         serviceWorker.init(getActivity());
         serviceWorker.setServiceWorkerCallback(this);
-        serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder()
-                .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
-                .setLimit(Constants.MAX_FEED_LOAD_LIMIT);
     }
 
     private void fetchPosts() {
         serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
-        serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(Communities.TAG_HAPRAMP)
-                .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
+        serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder
                 .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
+                .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
                 .createRequestParam();
         serviceWorker.requestProfilePosts(serviceWorkerRequestParams);
     }
 
-    public void reloadPosts() {
+    private void loadMore() {
+        serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
+        serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder
+                .setLastAuthor(lastAuthor)
+                .setLastPermlink(lastPermlink)
+                .createRequestParam();
+        serviceWorker.requestAppendableProfilePosts(serviceWorkerRequestParams);
+    }
 
+    public void reloadPosts() {
+        fetchPosts();
     }
 
     @Override
@@ -156,7 +160,7 @@ public class ProfileFragment extends Fragment implements ServiceWorkerCallback {
 
     @Override
     public void onLoadedFromCache(ArrayList<Feed> cachedList, String lastAuthor, String lastPermlink) {
-        if(profilePostAdapter!=null) {
+        if (profilePostAdapter != null) {
             profilePostAdapter.setPosts(cachedList);
         }
     }
@@ -168,7 +172,7 @@ public class ProfileFragment extends Fragment implements ServiceWorkerCallback {
 
     @Override
     public void onFeedsFetched(ArrayList<Feed> fetchedFeeds, String lastAuthor, String lastPermlink) {
-        if(profilePostAdapter!=null) {
+        if (profilePostAdapter != null) {
             profilePostAdapter.setPosts(fetchedFeeds);
             this.lastAuthor = lastAuthor;
             this.lastPermlink = lastPermlink;
@@ -192,7 +196,7 @@ public class ProfileFragment extends Fragment implements ServiceWorkerCallback {
 
     @Override
     public void onRefreshed(List<Feed> refreshedList, String lastAuthor, String lastPermlink) {
-        if(profilePostAdapter!=null) {
+        if (profilePostAdapter != null) {
             profilePostAdapter.setPosts(refreshedList);
             this.lastAuthor = lastAuthor;
             this.lastPermlink = lastPermlink;
@@ -211,7 +215,7 @@ public class ProfileFragment extends Fragment implements ServiceWorkerCallback {
 
     @Override
     public void onAppendableDataLoaded(List<Feed> appendableList, String lastAuthor, String lastPermlink) {
-        if(profilePostAdapter!=null) {
+        if (profilePostAdapter != null) {
             profilePostAdapter.appendPost(appendableList);
             this.lastAuthor = lastAuthor;
             this.lastPermlink = lastPermlink;
@@ -252,16 +256,5 @@ public class ProfileFragment extends Fragment implements ServiceWorkerCallback {
                 loadMore();
             }
         });
-    }
-
-    private void loadMore() {
-        serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
-        serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder
-                .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
-                .setLastAuthor(lastAuthor)
-                .setLastPermlink(lastPermlink)
-                .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
-                .createRequestParam();
-        serviceWorker.requestAppendableProfilePosts(serviceWorkerRequestParams);
     }
 }
