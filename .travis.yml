@@ -65,7 +65,7 @@ deploy:
   skip_cleanup: true
   on:
     repo: hapramp/Hapramp-Android
-    tags: true
+    tags: false
     all_branches: true
   api_key:
     secure: x5n3DxJFNZAPaCbPHDIAFdvp4veVrACqAdf+yYRjtZTMplVa0hnTYJS+clmW1bq0kUwHElTAtcmSrKp+fPfVRHLS6e6g/uIO/RgLYkcvUPsG/p9GfBCrGtKRQ2RLmTDcaMXdMHuy5rhqiIe7bk2vlG74zegtGAo5vlhhPjSrQrJCcsCRsTjIvo0TnoG0oibPXCLScNFKmQRJsr4PONKpsOJzqCz60Anb31BdlXEjP2Gm/nK7QEiEx8banjjWuWm34qWCmRXbvKgmyNzp0VKEMg7eJixQdud+sLiffXQ3H4xLhlawwIsKX8vavwGVwZ7I7mfEIhesy11xNAJn40airTarubCElWBjItLXl6tMImmcmXxGA19PJwYwMCqvmiok9BRqvBLCiTn9VgdmuLc5kv1t19WdVtXdXq/1lYo2hBFnk791CmAuEyBWaDjFtyhVm44L2YbUFBcnZ1laSPL9ng7pjaWD9iRow9V08OQI97/BCV442TeOllLNq5lpWVshQeSQCXKDtF0GLi2Ew0fxlKdbPun/Q5GJ2Rz20lAs7+yXpCLQqoGwLPAI4hMq0Jux5rjpN7YpQ6+DZhpBfYsMxHWxmkHaBiyb5mnCcMLU7yFBjGZs8dCECA/etQdwTcpxhermHO3ogxUaw7yM5s1puRA7245umbmeI9pFk1JnuaM=

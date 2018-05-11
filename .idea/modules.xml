@@ -5,15 +5,10 @@
       <module fileurl="file://F:\Android Corner\Projects\Hapramp-Android\HapRamp.iml" filepath="F:\Android Corner\Projects\Hapramp-Android\HapRamp.iml" />
       <module fileurl="file://$PROJECT_DIR$/Hapramp-Android.iml" filepath="$PROJECT_DIR$/Hapramp-Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://F:\Android Corner\Projects\Hapramp-Android\app\app.iml" filepath="F:\Android Corner\Projects\Hapramp-Android\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/hapramp-editor/hapramp-editor.iml" filepath="$PROJECT_DIR$/hapramp-editor/hapramp-editor.iml" />
-      <module fileurl="file://F:\Android Corner\Projects\Hapramp-Android\hapramp-editor\hapramp-editor.iml" filepath="F:\Android Corner\Projects\Hapramp-Android\hapramp-editor\hapramp-editor.iml" />
       <module fileurl="file://$PROJECT_DIR$/search/search.iml" filepath="$PROJECT_DIR$/search/search.iml" />
-      <module fileurl="file://F:\Android Corner\Projects\Hapramp-Android\search\search.iml" filepath="F:\Android Corner\Projects\Hapramp-Android\search\search.iml" />
       <module fileurl="file://$PROJECT_DIR$/steem/steem.iml" filepath="$PROJECT_DIR$/steem/steem.iml" />
-      <module fileurl="file://F:\Android Corner\Projects\Hapramp-Android\steem\steem.iml" filepath="F:\Android Corner\Projects\Hapramp-Android\steem\steem.iml" />
       <module fileurl="file://$PROJECT_DIR$/youtube_player/youtube_player.iml" filepath="$PROJECT_DIR$/youtube_player/youtube_player.iml" />
-      <module fileurl="file://F:\Android Corner\Projects\Hapramp-Android\youtube_player\youtube_player.iml" filepath="F:\Android Corner\Projects\Hapramp-Android\youtube_player\youtube_player.iml" />
     </modules>
   </component>
 </project>
