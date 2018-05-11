@@ -58,9 +58,7 @@ before_deploy:
 - storepass $storepass -keypass $keypass app-release-unsigned.apk ExampleKeystoreAlias
 - jarsigner -verify app-release-unsigned.apk
 - "${ANDROID_HOME}/build-tools/24.0.2/zipalign -v 4 app-release-unsigned.apk Hapramp.apk"
-- git config --local user.name "YOUR GIT USER NAME"
-- git config --local user.email "YOUR GIT USER EMAIL"
-- git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
+
 deploy:
   provider: releases
   file: Hapramp.apk
