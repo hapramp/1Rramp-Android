@@ -56,8 +56,8 @@ before_deploy:
 - cp $TRAVIS_BUILD_DIR/hapramp.jks $HOME
 - cd app/build/outputs/apk/release/
 - ls
-- jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $HOME/hapramp.jks -storepass $storepass -keypass $keypass app-release-unsigned.apk $keyalias
-- jarsigner -verify app-release-unsigned.apk
+- jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $HOME/hapramp.jks -storepass $storepass -keypass $keypass app-release.apk $keyalias
+- jarsigner -verify app-release.apk
 - "${ANDROID_HOME}/build-tools/27.0.3/zipalign -v 4 app-release-unsigned.apk Hapramp.apk"
 deploy:
   provider: releases
