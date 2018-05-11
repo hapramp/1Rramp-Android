@@ -31,6 +31,9 @@ android {
         // for debug version, default signing will work
         debug {}
         release {
+            keyAlias 'hapramp-and'
+            keyPassword 'hapramp'
+            storePassword 'hapramp'
             storeFile file("$rootDir\\hapramp.jks")
         }
     }
