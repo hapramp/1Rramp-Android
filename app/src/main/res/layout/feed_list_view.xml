@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:animateLayoutChanges="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:visibility="visible"
+        layout="@layout/load_more_progress_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+    <include
+        android:layout_centerVertical="true"
+        android:visibility="gone"
+        layout="@layout/no_post_available_message_view"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:visibility="visible"
+        android:animateLayoutChanges="true"
+        android:id="@+id/feedRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/feedRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <TextView
+        android:visibility="gone"
+        android:background="@drawable/move_to_top_button_bg"
+        android:textSize="24sp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/moveToTop"
+        android:text=""
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:layout_width="36dp"
+        android:layout_height="36dp" />
+
+    <include
+        android:layout_centerVertical="true"
+        android:visibility="gone"
+        layout="@layout/failed_load_view"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        />
+
+</RelativeLayout>

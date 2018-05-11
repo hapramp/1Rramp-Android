@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.hapramp">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.hapramp.permission.C2D_MESSAGE" />
+
+    <application
+        android:name=".main.HapRampMain"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:largeHeap="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".ui.activity.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.HomeActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.activity.ProfileActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.DetailedActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.CreatePostActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.CreateArticleActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.activity.NotificationsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.InfoEditingActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.activity.HowToEarnActivity"
+            android:screenOrientation="portrait" />
+
+        <service android:name=".services.HaprampFirebaseInstanceId">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".services.HapramapPushService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name=".ui.activity.ProfileEditActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.CommentsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.Splash"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+        <activity
+            android:name=".ui.activity.QrScanningActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.CommunitySelectionActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.UserSearchActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.TestActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity
+            android:name=".ui.activity.PreviewActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".youtube.YoutubeVideoSelectorActivity" android:screenOrientation="portrait">
+        </activity>
+    </application>
+
+</manifest>

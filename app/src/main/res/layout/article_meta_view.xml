@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/metaView"
+    android:visibility="gone"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <RelativeLayout
+        android:id="@+id/meta_toolbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="#ffffff">
+
+        <TextView
+            android:id="@+id/backBtnFromArticleMeta"
+            android:layout_width="?actionBarSize"
+            android:layout_height="?actionBarSize"
+            android:background="?selectableItemBackgroundBorderless"
+            android:gravity="center"
+            android:text=""
+            android:textSize="24sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:layout_toRightOf="@+id/backBtnFromArticleMeta"
+            android:text="Add Meta"
+            android:textSize="18sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/publishButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/light_btn_bg"
+            android:gravity="center"
+            android:paddingBottom="6dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="6dp"
+            android:text="PUBLISH"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp" />
+
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/meta_toolbar_container"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:id="@+id/skills_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff">
+
+            <TextView
+                android:id="@+id/featured_image_caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:padding="8dp"
+                android:text="Select Featured Image"
+                android:textColor="@color/Black38"
+                android:textSize="14sp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/featured_image_selectorRV"
+                android:layout_width="match_parent"
+                android:layout_height="84dp"
+                android:layout_below="@+id/featured_image_caption"
+                android:layout_marginStart="8dp" />
+
+            <TextView
+                android:id="@+id/community_caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/featured_image_selectorRV"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Community"
+                android:textColor="@color/Black38"
+                android:textSize="14sp" />
+
+            <com.hapramp.views.post.PostCategoryView
+                android:id="@+id/articleCategoryView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/community_caption"
+                android:padding="8dp" />
+
+            <TextView
+                android:id="@+id/tagsCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/articleCategoryView"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Hashtags(Press space to enter)"
+                android:textColor="@color/Black38" />
+
+            <com.hapramp.views.hashtag.CustomHashTagInput
+                android:animateLayoutChanges="true"
+                android:id="@+id/tagsInputBox"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_below="@+id/tagsCaption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/meta_toolbar_container"
+        android:background="@drawable/toolbar_shadow" />
+
+</RelativeLayout>

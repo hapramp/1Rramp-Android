@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.activity.HomeActivity">
+
+    <RelativeLayout
+        android:id="@+id/action_bar_container"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="#ffffff">
+
+        <TextView
+            android:id="@+id/search_icon"
+            android:layout_width="?actionBarSize"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:gravity="center"
+            android:text=""
+            android:textSize="24sp" />
+
+        <ImageView
+            android:clickable="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:id="@+id/haprampIcon"
+            android:layout_width="?actionBarSize"
+            android:layout_height="?actionBarSize"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="16dp"
+            android:src="@drawable/hapramp_logo_trans" />
+
+        <RelativeLayout
+            android:id="@+id/notification_container"
+            android:layout_width="?actionBarSize"
+            android:layout_height="?actionBarSize"
+            android:layout_alignParentEnd="true">
+
+            <TextView
+                android:id="@+id/notification_icon"
+                android:layout_width="?actionBarSize"
+                android:layout_height="?actionBarSize"
+                android:clickable="true"
+                android:gravity="center"
+                android:text=""
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/notification_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/notification_badge_count"
+                android:paddingEnd="4dp"
+                android:paddingStart="4dp"
+                android:text=""
+                android:textColor="#ffffff"
+                android:textSize="12sp"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/contentPlaceHolder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/action_bar_container" />
+
+    <FrameLayout
+        android:id="@+id/toolbar_drop_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/action_bar_container"
+        android:background="@drawable/toolbar_shadow" />
+
+    <TextView
+        android:layout_below="@+id/toolbar_drop_shadow"
+        android:id="@+id/postUploadStatus"
+        android:background="#e3ffffff"
+        android:padding="2dp"
+        android:visibility="gone"
+        android:lines="1"
+        android:ellipsize="end"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <include layout="@layout/home_bottom_bar" />
+
+    <com.hapramp.views.extraa.CreateButtonView
+        android:id="@+id/createNewBtn"
+        android:layout_below="@+id/action_bar_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+
+</RelativeLayout>

@@ -1,0 +1,32 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <com.hapramp.views.feedlist.FeedListView
+        xmlns:customNS="http://schemas.android.com/apk/res/com.hapramp"
+        android:id="@+id/feedListView"
+        android:layout_width="match_parent"
+        customNS:wantTopSpaceOffset="true"
+        customNS:topOffset="108"
+        android:layout_height="match_parent"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/sectionsRv"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="#ffffff" />
+
+    <ProgressBar
+        android:id="@+id/progressBarLoadingRecite"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:indeterminate="true"
+        android:layout_below="@+id/sectionsRv"
+        android:layout_width="match_parent"
+        android:padding="0dp"
+        android:visibility="gone"
+        android:layout_height="12dp"/>
+
+
+</RelativeLayout>

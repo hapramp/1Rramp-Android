@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "574002232827",
+    "firebase_url": "https://hapramp-625c8.firebaseio.com",
+    "project_id": "hapramp-625c8",
+    "storage_bucket": "hapramp-625c8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:574002232827:android:4adf09330c1e7d58",
+        "android_client_info": {
+          "package_name": "com.hapramp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "574002232827-5uerglr4nfbneb5aljoih591893o6f19.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hapramp",
+            "certificate_hash": "7e1a29ecd7b6db91e67e44dbfe6ecec04a6de15c"
+          }
+        },
+        {
+          "client_id": "574002232827-bjtftpo4t07akdnlvnsmbt02ssqgnlsg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVUoUB41eL2GS_ERrG5bAfrjr1bukCu2g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "574002232827-bjtftpo4t07akdnlvnsmbt02ssqgnlsg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_margin="8dp"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_centerHorizontal="true"
+        android:id="@+id/skills_bg_image"
+        android:layout_width="54dp"
+        android:layout_height="48dp" />
+
+    <TextView
+        android:visibility="visible"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/skill_selection_overlat"
+        android:text=""
+        android:gravity="center"
+        android:textSize="36sp"
+        android:textColor="#ffffff"
+        android:id="@+id/skill_selection_overlay"
+        android:layout_width="48dp"
+        android:layout_height="48dp" />
+
+    <TextView
+        android:id="@+id/skill_title"
+        android:padding="8dp"
+        android:textSize="10sp"
+        android:textColor="@color/Black87"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/skills_bg_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

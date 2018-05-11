@@ -1,0 +1,10 @@
+apply plugin: 'java-library'
+ext.gsonVersion = '2.8.2'
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "com.google.code.gson:gson:$gsonVersion"
+    implementation project(path: ':steem')
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"

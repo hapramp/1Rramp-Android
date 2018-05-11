@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside" />
+
+    <RelativeLayout
+        android:padding="8dp"
+        android:background="#90767676"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:id="@+id/actionContainer">
+
+        <TextView
+            android:textColor="@color/white"
+            android:layout_centerVertical="true"
+            android:id="@+id/informationTv"
+            android:text="Processing..."
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:textSize="16sp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="@color/white"
+            android:background="@drawable/filled_btn_bg"
+            android:id="@+id/removeBtn"
+            android:text="Remove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/removeBtn"
+            android:textSize="16sp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:layout_marginEnd="8dp"
+            android:textColor="@color/white"
+            android:background="@drawable/filled_btn_bg"
+            android:id="@+id/pauseResumeBtn"
+            android:text="Pause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+
+    </RelativeLayout>
+
+    <ProgressBar
+        android:layout_below="@+id/actionContainer"
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:max="100"
+        android:progress="60"
+        android:layout_height="4dp"
+        />
+
+
+</RelativeLayout>

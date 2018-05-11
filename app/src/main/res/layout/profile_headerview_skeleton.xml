@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.facebook.shimmer.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/shimmer_view_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
+
+        <RelativeLayout
+            android:id="@+id/profile_header_container_mock"
+            android:layout_width="match_parent"
+            android:layout_height="228dp">
+
+            <View
+                android:id="@+id/user_cover_pic_mock"
+                android:layout_width="match_parent"
+                android:layout_height="172dp"
+                android:background="@color/Black12" />
+
+            <FrameLayout
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true">
+
+                <View
+                    android:id="@+id/profile_pic"
+                    android:layout_width="108dp"
+                    android:layout_height="108dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/profile_pic_mock" />
+
+
+            </FrameLayout>
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/profile_user_name_container"
+            android:layout_width="72dp"
+            android:layout_height="14dp"
+            android:layout_below="@+id/profile_header_container_mock"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="8dp"
+            android:background="@color/Black12" />
+
+        <View
+            android:id="@+id/edit_btn"
+            android:layout_width="96dp"
+            android:layout_height="24dp"
+            android:layout_below="@+id/profile_user_name_container"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/community_mock_bg"
+            android:clickable="true"
+            android:paddingBottom="6dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="6dp"
+            android:textColor="@color/Black38"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:visibility="visible" />
+
+        <View
+            android:id="@+id/bio1"
+            android:layout_width="match_parent"
+            android:layout_height="12dp"
+            android:layout_below="@+id/profile_user_name_container"
+            android:layout_marginEnd="18dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="48dp"
+            android:background="@color/Black12"
+            android:lineSpacingExtra="2dp" />
+
+        <View
+            android:id="@+id/bio"
+            android:layout_width="match_parent"
+            android:layout_height="12dp"
+            android:layout_below="@+id/bio1"
+            android:layout_marginBottom="18dp"
+            android:layout_marginEnd="18dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="2dp"
+            android:background="@color/Black12" />
+
+        <FrameLayout
+            android:id="@+id/divider_top"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/bio"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@color/Black12" />
+
+        <LinearLayout
+            android:id="@+id/post_stats"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_below="@+id/bio"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:layout_weight="1"
+                android:background="@drawable/community_mock_bg"
+                android:gravity="center" />
+
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:layout_weight="1"
+                android:background="@drawable/community_mock_bg"
+                android:gravity="center" />
+
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:layout_weight="1"
+                android:background="@drawable/community_mock_bg"
+                android:gravity="center" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/divider_bottom_mock"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/post_stats"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@color/Black12" />
+
+        <View
+            android:id="@+id/interestCaptionMock"
+            android:layout_width="64dp"
+            android:layout_height="12dp"
+            android:layout_below="@+id/divider_bottom_mock"
+            android:layout_marginBottom="12sp"
+            android:layout_marginEnd="18sp"
+            android:layout_marginStart="24sp"
+            android:layout_marginTop="18sp"
+            android:background="@color/Black12"
+            android:gravity="center_vertical" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_below="@+id/interestCaptionMock"
+            android:orientation="horizontal"
+            android:paddingEnd="24dp"
+            android:paddingStart="24dp"
+            android:paddingTop="8dp">
+
+
+            <View
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/user_pic_moc_bg" />
+
+            <View
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="24dp"
+                android:background="@drawable/user_pic_moc_bg" />
+
+            <View
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="24dp"
+                android:background="@drawable/user_pic_moc_bg" />
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+</com.facebook.shimmer.ShimmerFrameLayout>

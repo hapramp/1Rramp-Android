@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:background="@drawable/filled_btn_bg"
+    android:layout_height="48dp">
+
+    <TextView
+        android:id="@+id/skill_title"
+        android:textColor="#ffffff"
+        android:gravity="center"
+        android:padding="8dp"
+        android:textSize="16sp"
+        android:text="Art Photography"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:clickable="true"
+        android:background="@drawable/skills_cancel_btn"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:layout_margin="2dp"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/skill_title"
+        android:text=""
+        android:id="@+id/cancelBtn"
+        android:layout_width="46dp"
+        android:layout_height="46dp" />
+
+</RelativeLayout>

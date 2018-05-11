@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/HapRamp.iml" filepath="$PROJECT_DIR$/HapRamp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hapramp-editor/hapramp-editor.iml" filepath="$PROJECT_DIR$/hapramp-editor/hapramp-editor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/search/search.iml" filepath="$PROJECT_DIR$/search/search.iml" />
+      <module fileurl="file://$PROJECT_DIR$/steem/steem.iml" filepath="$PROJECT_DIR$/steem/steem.iml" />
+      <module fileurl="file://$PROJECT_DIR$/youtube_player/youtube_player.iml" filepath="$PROJECT_DIR$/youtube_player/youtube_player.iml" />
+    </modules>
+  </component>
+</project>

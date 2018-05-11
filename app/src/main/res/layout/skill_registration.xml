@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:background="#ffffff"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?selectableItemBackgroundBorderless"
+        android:id="@+id/backBtn"
+        android:text=""
+        android:gravity="center"
+        android:textSize="24sp"
+        android:layout_width="48dp"
+        android:layout_height="?actionBarSize" />
+
+    <TextView
+        android:id="@+id/action_bar_title"
+        android:padding="8dp"
+        android:textColor="@color/Black54"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:text="PICK YOUR SKILLS"
+        android:layout_width="wrap_content"
+        android:layout_height="?actionBarSize" />
+
+    <com.hapramp.views.skills.SelectableInterestsView
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/communityContinueButton"
+        android:layout_below="@+id/action_bar_title"
+        android:id="@+id/skillsGridView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"/>
+
+
+    <FrameLayout
+        android:id="@+id/toolbar_drop_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/action_bar_title"
+        android:background="@drawable/toolbar_shadow" />
+
+    <TextView
+        android:id="@+id/skills_continueBtn"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/filled_btn_bg"
+        android:textColor="@color/colorAccent"
+        android:text="CONTINUE"
+        android:layout_margin="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingLeft="48dp"
+        android:paddingRight="48dp"
+        android:textSize="16sp"
+        android:elevation="2dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

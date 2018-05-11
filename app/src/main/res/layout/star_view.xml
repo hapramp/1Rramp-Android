@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="48dp"
+    android:animateLayoutChanges="true"
+    android:background="@color/white"
+    android:gravity="center_vertical">
+
+
+    <TextView
+        android:id="@+id/starIndicator"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:textColor="@color/Black54"
+        android:paddingEnd="2dp"
+        android:text=""
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/starInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/starIndicator"
+        android:gravity="center_vertical"
+        android:text=""
+        android:textSize="12sp"
+        android:textColor="@color/Black54" />
+
+    <TextView
+        android:id="@+id/ratingError"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/starIndicator"
+        android:gravity="center_vertical"
+        android:text=""
+        android:visibility="gone"
+        android:textSize="20sp"
+        android:textColor="@color/Black54" />
+
+    <ProgressBar
+        android:id="@+id/ratingProgress"
+        android:visibility="gone"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/starIndicator"
+        android:layout_width="16dp"
+        android:layout_height="16dp" />
+
+    <RelativeLayout
+        android:id="@+id/ratingBarContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:clickable="true"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:background="@color/white"
+        android:visibility="gone">
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            style="?android:attr/ratingBarStyleIndicator"
+            android:isIndicator="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:numStars="5"
+            android:rating="0"
+            android:stepSize="1"
+            android:layout_centerHorizontal="true"
+            android:visibility="visible" />
+
+        <TextView
+            android:clickable="true"
+            android:focusable="true"
+            android:id="@+id/cancelBtn"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="8dp"
+            android:layout_alignParentEnd="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:gravity="center"
+            android:text="| "
+            android:textColor="@color/Black12"
+            android:textSize="24sp"
+            android:visibility="visible" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:clickable="true"
+    android:id="@+id/failedToLoadViewContainer"
+    android:layout_height="match_parent"
+    android:padding="8dp"
+    >
+
+    <RelativeLayout
+        android:id="@+id/failed_message_card_container"
+        android:background="@drawable/feed_list_view_asset_card_bg"
+        android:layout_margin="8dp"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <TextView
+        android:text=""
+        android:textSize="48sp"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/sad_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/failed_message_title"
+        android:text="Failed To Load"
+        android:textStyle="bold"
+        android:textColor="@color/Black54"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/sad_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:text="Something went wrong "
+        android:textSize="12sp"
+        android:gravity="center"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_below="@+id/failed_message_title"
+        android:id="@+id/failed_message_details"
+        android:textColor="@color/Black38"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/retryFeedLoadingBtn"
+        android:clickable="true"
+        android:focusable="true"
+        android:enabled="true"
+        android:layout_below="@+id/failed_message_card_container"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:background="@drawable/filled_btn_bg"
+        android:text="RETRY"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

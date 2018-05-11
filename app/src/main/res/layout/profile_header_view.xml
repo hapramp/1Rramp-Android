@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:animateLayoutChanges="true"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/profile_header_view_real"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffff"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:id="@+id/profile_header_container"
+            android:layout_width="match_parent"
+            android:layout_height="228dp">
+
+            <ImageView
+                android:id="@+id/profile_wall_pic"
+                android:layout_width="match_parent"
+                android:layout_height="172dp"
+                android:scaleType="fitXY" />
+
+            <FrameLayout
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true">
+
+                <ImageView
+                    android:id="@+id/profile_pic"
+                    android:layout_width="108dp"
+                    android:layout_height="108dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/profile_image_bg" />
+
+
+            </FrameLayout>
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/profile_user_name_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profile_header_container"
+            android:gravity="center_horizontal"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/usernameTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/hapname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/usernameTv"
+                android:text="ankit Kumar"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/edit_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profile_user_name_container"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/edit_profile_bg"
+            android:clickable="true"
+            android:paddingBottom="6dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="6dp"
+            android:text="EDIT PROFILE"
+            android:textColor="@color/Black38"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/follow_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profile_user_name_container"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/follow_btn_bg"
+            android:clickable="true"
+            android:paddingBottom="4dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="4dp"
+            android:text="Follow"
+            android:textColor="#ffffff"
+            android:textSize="16dp"
+            android:visibility="visible" />
+
+        <ProgressBar
+            android:id="@+id/followUnfollowProgress"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/profile_user_name_container"
+            android:layout_marginTop="12dp"
+            android:visibility="gone"
+            android:layout_width="24dp"
+            android:layout_height="24dp" />
+
+
+        <TextView
+            android:id="@+id/bio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profile_user_name_container"
+            android:layout_marginBottom="18dp"
+            android:layout_marginEnd="18dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="48dp"
+            android:hint="Your Bio Here..."
+            android:lineSpacingExtra="2dp"
+            android:textColor="@color/Black54"
+            android:textColorHint="@color/Black38"
+            android:textSize="14sp"
+            android:textStyle="italic" />
+
+        <FrameLayout
+            android:id="@+id/divider_top"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/bio"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@color/Black12" />
+
+        <LinearLayout
+            android:id="@+id/post_stats"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/bio"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/post_counts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="16dp"
+                android:text="0 Posts"
+                android:textColor="@color/Black38"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/followers_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/post_counts"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="16dp"
+                android:text="0 Followers"
+                android:textColor="@color/Black38"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/followings_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/followers_count"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="16dp"
+                android:text="0 Followings"
+                android:textColor="@color/Black38"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/divider_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/post_stats"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@color/Black12" />
+
+        <TextView
+            android:id="@+id/interestCaption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/divider_bottom"
+            android:gravity="center_vertical"
+            android:paddingBottom="12sp"
+            android:paddingEnd="18sp"
+            android:paddingStart="24sp"
+            android:paddingTop="18sp"
+            android:text="Interests"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp" />
+
+        <com.hapramp.views.skills.InterestsView
+            android:id="@+id/interestsView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/interestCaption"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="16dp" />
+
+        <TextView
+            android:id="@+id/postsCaption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/interestsView"
+            android:background="@color/LightBlack"
+            android:paddingBottom="18dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="28dp"
+            android:text="POSTS"
+            android:textColor="@color/Black54"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+    <!---->
+    <include layout="@layout/profile_headerview_skeleton" />
+
+</FrameLayout>

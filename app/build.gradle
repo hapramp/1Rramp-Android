@@ -1,0 +1,103 @@
+apply plugin: 'com.android.application'
+
+ext.firebaseVersionNew = '15.0.2'
+ext.firebaseVersionOld = '15.0.0'
+ext.buildToolVersion = '27.1.1'
+ext.supportLibVersion = '27.1.1'
+ext.multidexVersion = '1.0.3'
+ext.butterknifeVersion = '8.8.1'
+ext.gsonVersion = '2.8.2'
+ext.retrofitVersion = '2.3.0'
+ext.loggingInterceptorVersion = '3.4.0'
+ext.glideVersion = '3.8.0'
+ext.steemVersion = '0.4.3'
+ext.junitVersion = '4.12'
+ext.roboelectricVersion = '3.0'
+ext.barcodeReaderVersion = '1.1.5'
+ext.roomVersion = '1.0.0'
+ext.archLifecycleVersion = '1.1.0'
+
+android {
+
+    compileSdkVersion 27
+    buildToolsVersion "$buildToolsVersion"
+
+    lintOptions {
+        checkReleaseBuilds true
+        abortOnError false
+    }
+
+    signingConfigs {
+        // for debug version, default signing will work
+        debug {}
+        release {
+            storeFile file("$rootDir\\hapramp.jks")
+        }
+    }
+
+    buildTypes {
+        release {
+//            minifyEnabled true
+//            shrinkResources true
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+
+        debug {}
+    }
+
+    defaultConfig {
+
+        applicationId "com.hapramp"
+        minSdkVersion 19
+        targetSdkVersion 27
+        versionCode 5
+        versionName "0.0.4"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+
+    }
+
+}
+
+dependencies {
+
+    //noinspection GradleCompatible
+    implementation "com.google.firebase:firebase-messaging:$firebaseVersionNew"
+    implementation "com.google.firebase:firebase-storage:$firebaseVersionNew"
+    implementation "com.google.firebase:firebase-auth:$firebaseVersionOld"
+    implementation "com.android.support:multidex:$multidexVersion"
+    implementation "com.android.support:appcompat-v7:$supportLibVersion"
+    implementation "com.android.support:support-v4:$supportLibVersion"
+    implementation "com.android.support:design:$supportLibVersion"
+    implementation "com.jakewharton:butterknife:$butterknifeVersion"
+    implementation "com.google.code.gson:gson:$gsonVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$loggingInterceptorVersion"
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation "com.github.bumptech.glide:glide:$glideVersion"
+    implementation 'com.facebook.shimmer:shimmer:0.1.0@aar'
+    implementation "org.apache.commons:commons-lang3:3.7"
+    implementation "com.google.android.gms:play-services-vision:$firebaseVersionOld"
+    implementation "info.androidhive:barcode-reader:$barcodeReaderVersion"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"
+    testImplementation "junit:junit:$junitVersion"
+    testImplementation "org.robolectric:robolectric:$roboelectricVersion"
+    testImplementation "org.robolectric:shadows-multidex:$roboelectricVersion"
+
+    // Room components
+    implementation "android.arch.persistence.room:runtime:$roomVersion"
+    annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
+    androidTestImplementation "android.arch.persistence.room:testing:$roomVersion"
+
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':steem')
+    implementation project(':search')
+    implementation project(':hapramp-editor')
+    implementation project(':youtube_player')
+}
+
+apply plugin: 'com.google.gms.google-services'

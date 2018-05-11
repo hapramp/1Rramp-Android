@@ -1,0 +1,102 @@
+image: openjdk:8-jdk
+
+stages:
+  - build
+  - test
+  - package
+
+
+####################################################################################################
+# BUILD
+#
+.build_template: &build_template_def
+  stage: build
+  artifacts:
+    expire_in: 4 hours
+    paths:
+    - app/build/outputs/
+    - .android/
+
+  before_script:
+    # Extract the SDK version that we're building against
+    - export ANDROID_COMPILE_SDK=`egrep '^[[:blank:]]+compileSdkVersion'  app/build.gradle | awk '{print $2}'`
+
+    # Explict output for logging purpose only
+    - echo $ANDROID_SDK_TOOLS
+    - echo $ANDROID_COMPILE_SDK
+
+    # Fetch the specified SDK tools version to build with
+    - wget --quiet --output-document=/tmp/sdk-tools-linux.zip https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip
+    - unzip /tmp/sdk-tools-linux.zip -d .android
+
+    # Set up environment variables
+    - export ANDROID_HOME=$PWD/.android
+    - export PATH=$PATH:$PWD/.android/platform-tools/
+
+    # Install platform tools and Android SDK for the compile target
+    - echo y | .android/tools/bin/sdkmanager "platforms;android-27"
+
+    - chmod +x ./gradlew
+
+build_debug:
+  <<: *build_template_def
+  only:
+    - steem
+
+  script:
+    - ./gradlew assembleDebug
+
+
+####################################################################################################
+# UNIT TESTING
+#
+
+unit_test:
+  stage: test
+  only:
+    - steem
+
+  before_script:
+    - export ANDROID_HOME=$PWD/.android
+    - export PATH=$PATH:$PWD/.android/platform-tools/
+     # Install platform tools and Android SDK for the compile target
+    - echo y | .android/tools/bin/sdkmanager "platforms;android-27"
+
+    - chmod +x ./gradlew
+
+  script:
+    - ./gradlew test
+
+
+####################################################################################################
+# PACKAGE APK FOR DOWNLOADING
+#
+
+.package_template: &package_template_def
+  before_script:
+    - export VERSION_NAME=`egrep '^[[:blank:]]+versionName[[:blank:]]'  app/build.gradle | awk '{print $2}' | sed s/\"//g`
+    - export VERSION_CODE=`egrep '^[[:blank:]]+versionCode[[:blank:]]'  app/build.gradle | awk '{print $2}'`
+    - mkdir -p deliverables
+
+    # Store some information about the build
+    - touch ./deliverables/info.txt
+    - echo "Build date          $(date)"                >> ./deliverables/info.txt
+    - echo "App version name    ${VERSION_NAME}"        >> ./deliverables/info.txt
+    - echo "App version code    ${VERSION_CODE}"        >> ./deliverables/info.txt
+    - echo "Git branch          ${CI_COMMIT_REF_NAME}"  >> ./deliverables/info.txt
+    - echo "Git commit          ${CI_COMMIT_SHA}"       >> ./deliverables/info.txt
+    - echo "Gitlab pipeline     ${CI_PIPELINE_ID}"      >> ./deliverables/info.txt
+
+
+package_develop:
+  <<: *package_template_def
+  stage: package
+  environment: Development
+  only:
+    - steem
+  script:
+    - mv app/build/outputs/apk/debug/app-debug.apk ./deliverables/Hapramp-v$VERSION_NAME-$VERSION_CODE-debug.apk
+  artifacts:
+    expire_in: 3 days
+    paths:
+    - deliverables
