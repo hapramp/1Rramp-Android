@@ -2,13 +2,12 @@ language: android
 sudo: required
 jdk: oraclejdk8
 before_cache:
-  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+- rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
-# var
 env:
   global:
   - ANDROID_API=27
@@ -36,28 +35,32 @@ android:
   - android-sdk-license-.+
   - google-gdk-license-.+
 before_install:
-  - openssl aes-256-cbc -K $encrypted_f7d6497b3355_key -iv $encrypted_f7d6497b3355_iv -in hapramp.jks.enc -out hapramp.jks -d
-  - mkdir "$ANDROID_HOME/licenses" || true
-  - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
-  - echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
-  - echo y | sdkmanager "platforms;android-27"
-  - echo y | sdkmanager "build-tools;27.0.3"
-  - chmod +x gradlew
-  - "./gradlew dependencies || true"
+- openssl aes-256-cbc -K $encrypted_f7d6497b3355_key -iv $encrypted_f7d6497b3355_iv
+  -in hapramp.jks.enc -out hapramp.jks -d
+- mkdir "$ANDROID_HOME/licenses" || true
+- echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
+- echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
+- echo y | sdkmanager "platforms;android-27"
+- echo y | sdkmanager "build-tools;27.0.3"
+- chmod +x gradlew
+- "./gradlew dependencies || true"
 before_script:
-  - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
-  - emulator -avd test -no-skin -no-audio -no-window &
-  - android-wait-for-emulator
-  - adb shell input keyevent 82 &
+- echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
+- emulator -avd test -no-skin -no-audio -no-window &
+- android-wait-for-emulator
+- adb shell input keyevent 82 &
 script:
-  - "./gradlew clean build connectedCheck -PdisablePreDex --stacktrace"
+- "./gradlew clean build connectedCheck -PdisablePreDex --stacktrace"
 before_deploy:
-  - cp $TRAVIS_BUILD_DIR/hapramp.jks $HOME
-  - cd app/build/outputs/apk/
-  - jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $HOME/hapramp.jks
-    -storepass $storepass -keypass $keypass app-release-unsigned.apk ExampleKeystoreAlias
-  - jarsigner -verify app-release-unsigned.apk
-  - "${ANDROID_HOME}/build-tools/24.0.2/zipalign -v 4 app-release-unsigned.apk Hapramp.apk"
+- cp $TRAVIS_BUILD_DIR/hapramp.jks $HOME
+- cd app/build/outputs/apk/
+- jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $HOME/hapramp.jks
+- storepass $storepass -keypass $keypass app-release-unsigned.apk ExampleKeystoreAlias
+- jarsigner -verify app-release-unsigned.apk
+- "${ANDROID_HOME}/build-tools/24.0.2/zipalign -v 4 app-release-unsigned.apk Hapramp.apk"
+- git config --local user.name "YOUR GIT USER NAME"
+- git config --local user.email "YOUR GIT USER EMAIL"
+- git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
 deploy:
   provider: releases
   file: Hapramp.apk
@@ -66,6 +69,9 @@ deploy:
     repo: hapramp/Hapramp-Android
     tags: true
     all_branches: true
-    jdk: oraclejdk8
   api_key:
     secure: x5n3DxJFNZAPaCbPHDIAFdvp4veVrACqAdf+yYRjtZTMplVa0hnTYJS+clmW1bq0kUwHElTAtcmSrKp+fPfVRHLS6e6g/uIO/RgLYkcvUPsG/p9GfBCrGtKRQ2RLmTDcaMXdMHuy5rhqiIe7bk2vlG74zegtGAo5vlhhPjSrQrJCcsCRsTjIvo0TnoG0oibPXCLScNFKmQRJsr4PONKpsOJzqCz60Anb31BdlXEjP2Gm/nK7QEiEx8banjjWuWm34qWCmRXbvKgmyNzp0VKEMg7eJixQdud+sLiffXQ3H4xLhlawwIsKX8vavwGVwZ7I7mfEIhesy11xNAJn40airTarubCElWBjItLXl6tMImmcmXxGA19PJwYwMCqvmiok9BRqvBLCiTn9VgdmuLc5kv1t19WdVtXdXq/1lYo2hBFnk791CmAuEyBWaDjFtyhVm44L2YbUFBcnZ1laSPL9ng7pjaWD9iRow9V08OQI97/BCV442TeOllLNq5lpWVshQeSQCXKDtF0GLi2Ew0fxlKdbPun/Q5GJ2Rz20lAs7+yXpCLQqoGwLPAI4hMq0Jux5rjpN7YpQ6+DZhpBfYsMxHWxmkHaBiyb5mnCcMLU7yFBjGZs8dCECA/etQdwTcpxhermHO3ogxUaw7yM5s1puRA7245umbmeI9pFk1JnuaM=
+  password:
+    secure: cGRnAZ228DE+HvhB1h9AvrPGhHhudt6L++Y7CLQmy9RnKjl4mrrVM5BCJu/X/gc7Wmlz72hAx4z7h/0wv2+Q4KmO7NuctlQMZouCfC1lWi1Q1ZBKnLzvdXUfLgjBNbihAl75yoNhS1dhj6+DaC3YR/DRUHNXTMY+kxGAPNnXQxA+B2K019KVD3NpaOyljWFboz8j/8BZc1R1G+KqL5DsSFIlmadpmFs55g6v4gZurQYi9hdMeaUpf2KJk/tsAfebdtLbsRJnYKeHx3Z6q5Pe9g2WYOQyC1w/24rUchcs2nGPZ0d20R5krf7CDQS3D9ctUQnlHwzQaJk3pp/zwfWH8VbY8gLYJwb/TODqHKzGuaapcxGxLNMXvNWZ8mWsolXsMFeqPJLUPc0N5IzXtzKLn3WHMX6E6/hbOrHrb1ooQsMsjR2qsfdc/qItuFPbjv53aLE/AhfImSox3tfvr3Or0lGr2gBXlc3DwLmws/9u2iJzxSrmkSxNf8P+gHawi1CPIylbJQAv98TFyad7fiD/zOY54EulYylxNmbJr+OB3cyX6HIsPO+rnBHneQscZ54gku/ESYzyNsvmcgWynYkISFxSNjOw0x68+zO4b24oagq46qogS9Yl4Q7WAoMungZygfj0lAmOOK+xcQlRMGtTPUenMcQbn0MtgkvkZWgZW0Q=
+  user:
+    secure: L8zlyQIEMExiZvD3cY00y/lUf39nISGnXyyhFCIcgObuSpTZcgiUw9WN5tn4ghkqRmXLBWaO5LroIbxL5RXbz0q6orOOXUqGAB1qJDL1NZVVXQ/3jDMEIGkwInyvaii34xhTByJQ7T57Rm2IDXROXjH7ck4kvWIYjoAZ5QPhvI4HvzrL09PoU8rtWOk7CUPHek/L4n0RMmNDgN3lTg254ngZTy+vCQB2esI57KqgoCkZYEmkla7ADrv/jjzI3R1UIvoLNBXKd0HEMLqhCul5XmRT0jfg0nmIvx+lUTeTRNJ7wF+6xAZwklouWE23WXafjqxOZXO+/NGg3yddlB0b90fosRFqkn0FdZ8B7+asdBPN/ow7fwsS+wuraZmOkWTgKi4WkAjTpEyWvXSLzDbjG+gheJmjbKCRnrSc5PA8Xg5LK5qHdaJC76ByrcRMW7IfQKTnSPtBtNx82AoeN8+nwng9LAxS47/RElv0MtwacOGDqoVZ3mwSKaxvUDs52F7YCHIvdf8ieosmDL2SsZoBex91oJoXDWPGPWwRP47DQpp7ikagCn7KmmVgY3VYyCefwRCzuzgEgWkASqbTMozz8E2gN9LEAIUMkfSWtvccLA2mrZunvIDaaN5oZKSTJQz/9kBiCmcGzJLxkwN5ta1dFyF4rKF+bxro7FrZmai/bdo=
