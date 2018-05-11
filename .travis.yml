@@ -55,10 +55,13 @@ script:
 before_deploy:
 - cp $TRAVIS_BUILD_DIR/hapramp.jks $HOME
 - cd app/build/outputs/apk/
-- jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $HOME/hapramp.jks
-  -storepass $storepass -keypass $keypass app-release-unsigned.apk $keyalias
+- ls
+- echo $storepass
+- echo $keypass
+- echo $keyalias
+- jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $HOME/hapramp.jks -storepass $storepass -keypass $keypass app-release-unsigned.apk $keyalias
 - jarsigner -verify app-release-unsigned.apk
-- "${ANDROID_HOME}/build-tools/24.0.2/zipalign -v 4 app-release-unsigned.apk Hapramp.apk"
+- "${ANDROID_HOME}/build-tools/27.0.3/zipalign -v 4 app-release-unsigned.apk Hapramp.apk"
 deploy:
   provider: releases
   file: Hapramp.apk
