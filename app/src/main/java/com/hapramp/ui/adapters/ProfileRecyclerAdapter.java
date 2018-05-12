@@ -1,16 +1,12 @@
 package com.hapramp.ui.adapters;
 
 import android.content.Context;
-import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.hapramp.steem.models.Feed;
-import com.hapramp.ui.callbacks.ProfilePostDiffCallback;
 import com.hapramp.views.post.PostItemView;
 import com.hapramp.views.profile.ProfileHeaderView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,11 +31,6 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     public void setPosts(List<Feed> newPosts) {
-//        final ProfilePostDiffCallback diffCallback = new ProfilePostDiffCallback(this.feeds,newPosts);
-//        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
-//        feeds.clear();
-//        feeds.addAll(newPosts);
-//        diffResult.dispatchUpdatesTo(this);
         feeds = newPosts;
         notifyItemRangeChanged(1,newPosts.size()-1);
     }
