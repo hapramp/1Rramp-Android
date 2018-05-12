@@ -8,12 +8,15 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.ui.callbacks.communityselection.CommunitySelectionPageCallback;
+import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.viewmodel.communityselectionpage.CommunitySelectionPageViewModel;
 import com.hapramp.views.CommunitySelectionView;
 import java.util.List;
@@ -50,6 +53,7 @@ public class CommunitySelectionActivity extends BaseActivity implements Communit
     }
 
     private void init() {
+        Crashlytics.setString(CrashReporterKeys.UI_ACTION,"community selection init");
         communitySelectionPageViewModel = ViewModelProviders.of(this).get(CommunitySelectionPageViewModel.class);
         communitySelectionPageViewModel.getCommunities(this).observe(this, new Observer<List<CommunityModel>>() {
             @Override

@@ -19,9 +19,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.ui.callbacks.login.LoginCallbacks;
+import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.PixelUtils;
 import com.hapramp.viewmodel.common.ConnectivityViewModel;
@@ -82,6 +84,7 @@ public class LoginActivity extends AppCompatActivity implements LoginCallbacks {
     }
 
     private void init() {
+        Crashlytics.setString(CrashReporterKeys.UI_ACTION,"login init");
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         Typeface typeface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
         lockIcon.setTypeface(typeface);

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
 import com.hapramp.datastore.ServiceWorker;
 import com.hapramp.interfaces.datatore_callback.ServiceWorkerCallback;
@@ -18,6 +19,7 @@ import com.hapramp.steem.ServiceWorkerRequestBuilder;
 import com.hapramp.steem.ServiceWorkerRequestParams;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.utils.Constants;
+import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.views.feedlist.FeedListView;
 
 import java.util.ArrayList;
@@ -45,6 +47,7 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Crashlytics.setString(CrashReporterKeys.UI_ACTION,"trending fragment");
         setRetainInstance(true);
         prepareServiceWorker();
     }

@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
 import com.hapramp.datastore.ServiceWorker;
 import com.hapramp.interfaces.datatore_callback.ServiceWorkerCallback;
@@ -26,6 +27,7 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.FeedResponse;
 import com.hapramp.steem.models.user.Profile;
 import com.hapramp.utils.Constants;
+import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.utils.ViewItemDecoration;
 
 import java.util.ArrayList;
@@ -56,7 +58,7 @@ public class ProfileFragment extends Fragment implements ServiceWorkerCallback {
     private String lastPermlink;
 
     public ProfileFragment() {
-        // Required empty public constructor
+        Crashlytics.setString(CrashReporterKeys.UI_ACTION,"profile fragment");
     }
 
 

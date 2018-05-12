@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.api.RetrofitServiceGenerator;
@@ -34,6 +35,7 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.models.user.SteemUser;
 import com.hapramp.utils.Constants;
+import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.utils.FontManager;
 import com.hapramp.views.extraa.CreateButtonView;
 
@@ -223,14 +225,14 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     }
 
     private void initObjects() {
-
+        Crashlytics.setString(CrashReporterKeys.UI_ACTION,"home init");
+        Crashlytics.setUserIdentifier(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
         fragmentManager = getSupportFragmentManager();
         homeFragment = new HomeFragment();
         profileFragment = new ProfileFragment();
         settingsFragment = new SettingsFragment();
         earningFragment = new EarningFragment();
         progressDialog = new ProgressDialog(this);
-
     }
 
     private void setNotifications() {

@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
 
+ext.crashlyticsVersion = '2.9.1'
 ext.firebaseVersionNew = '15.0.2'
 ext.firebaseVersionOld = '15.0.0'
 ext.buildToolVersion = '27.1.1'
@@ -18,39 +20,17 @@ ext.roomVersion = '1.0.0'
 ext.archLifecycleVersion = '1.1.0'
 
 android {
-
     compileSdkVersion 27
     buildToolsVersion "$buildToolsVersion"
-
     lintOptions {
         checkReleaseBuilds true
         abortOnError false
     }
-
     signingConfigs {
-        // for debug version, default signing will work
         debug {}
-        release {
-            keyAlias 'hapramp-and'
-            keyPassword 'hapramp'
-            storePassword 'hapramp'
-            storeFile file("$rootDir\\hapramp.jks")
-        }
+        release {}
     }
-
-    buildTypes {
-        release {
-//            minifyEnabled true
-//            shrinkResources true
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
-        }
-
-        debug {}
-    }
-
     defaultConfig {
-
         applicationId "com.hapramp"
         minSdkVersion 19
         targetSdkVersion 27
@@ -58,14 +38,10 @@ android {
         versionName "0.0.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
-
     }
-
 }
-
 dependencies {
-
-    //noinspection GradleCompatible
+    implementation "com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion"
     implementation "com.google.firebase:firebase-messaging:$firebaseVersionNew"
     implementation "com.google.firebase:firebase-storage:$firebaseVersionNew"
     implementation "com.google.firebase:firebase-auth:$firebaseVersionOld"
@@ -87,15 +63,11 @@ dependencies {
     testImplementation "junit:junit:$junitVersion"
     testImplementation "org.robolectric:robolectric:$roboelectricVersion"
     testImplementation "org.robolectric:shadows-multidex:$roboelectricVersion"
-
-    // Room components
     implementation "android.arch.persistence.room:runtime:$roomVersion"
     annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
     androidTestImplementation "android.arch.persistence.room:testing:$roomVersion"
-
     implementation "android.arch.lifecycle:extensions:1.1.1"
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
-
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':steem')
     implementation project(':search')

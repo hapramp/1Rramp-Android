@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.ui.adapters.CategoryRecyclerAdapter;
@@ -29,6 +30,7 @@ import com.hapramp.steem.ServiceWorkerRequestBuilder;
 import com.hapramp.steem.ServiceWorkerRequestParams;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.utils.Constants;
+import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.utils.ShadowUtils;
 import com.hapramp.views.feedlist.FeedListView;
 
@@ -62,27 +64,22 @@ public class HomeFragment extends Fragment implements
     private String lastPermlink;
 
     public HomeFragment() {
-        // Required empty public constructor
+        Crashlytics.setString(CrashReporterKeys.UI_ACTION,"home fragment");
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         prepareServiceWorker();
-        //  serviceWorker.requestFeeds(serviceWorkerRequestParams);
-
     }
 
     private void prepareServiceWorker() {
-
         serviceWorker = new ServiceWorker();
         serviceWorker.init(getActivity());
         serviceWorker.setServiceWorkerCallback(this);
         serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder()
                 .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
                 .setLimit(100);
-
     }
 
     @Override
@@ -93,23 +90,19 @@ public class HomeFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         unbinder = ButterKnife.bind(this, view);
         initCategoryView();
         return view;
-
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         feedListView.setFeedListViewListener(this);
         feedListView.initialLoading();
         feedListView.setTopMarginForShimmer(104);
         fetchAllPosts();
-
     }
 
     private void bringBackCategorySection() {
@@ -123,24 +116,20 @@ public class HomeFragment extends Fragment implements
     }
 
     private void initCategoryView() {
-
         categoryRecyclerAdapter = new CategoryRecyclerAdapter(mContext, this);
         sectionsRv.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         sectionsRv.setAdapter(categoryRecyclerAdapter);
         Drawable drawable = ShadowUtils.generateBackgroundWithShadow(sectionsRv, R.color.white,R.dimen.communitybar_shadow_radius ,R.color.Black12,R.dimen.communitybar_shadow_elevation, Gravity.BOTTOM);
         sectionsRv.setBackground(drawable);
-
         CommunityListWrapper cwr = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
         ArrayList<CommunityModel> communityModels = new ArrayList<>();
         communityModels.add(0, new CommunityModel("", Communities.IMAGE_URI_ALL, Communities.ALL, "", "All", 0));
         communityModels.addAll(cwr.getCommunityModels());
         categoryRecyclerAdapter.setCommunities(communityModels);
-
     }
 
     @Override
     public void onCategoryClicked(String tag) {
-
         feedListView.initialLoading();
         currentSelectedTag = tag;
         if (tag.equals(Communities.ALL)) {
@@ -148,7 +137,6 @@ public class HomeFragment extends Fragment implements
         } else {
             fetchCommunityPosts(tag);
         }
-
     }
 
     private void fetchAllPosts() {
