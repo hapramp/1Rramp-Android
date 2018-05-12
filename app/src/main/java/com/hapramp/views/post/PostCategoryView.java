@@ -51,11 +51,10 @@ public class PostCategoryView extends FrameLayout {
     }
 
     private void init() {
-
         View view = LayoutInflater.from(mContext).inflate(R.layout.community_view_container, this);
         rootView = view.findViewById(R.id.viewWrapper);
         selectedTags = new ArrayList<>();
-
+        selectedTags.add(Communities.TAG_HAPRAMP);
     }
 
     private void addViews() {
@@ -77,12 +76,9 @@ public class PostCategoryView extends FrameLayout {
                             Toast.makeText(mContext, "Maximum 3 Skills", Toast.LENGTH_LONG).show();
                         } else {
                             view.setSelected(true);
-                         //   Log.d("PostCategoryView","selecting : "+view.getTag());
                             selectedTags.add((String) view.getTag());
                         }
                     } else {
-                        // de-select it
-                       // Log.d("PostCategoryView","de-selecting : "+view.getTag());
                         view.setSelected(false);
                         selectedTags.remove(index);
                     }
@@ -103,8 +99,6 @@ public class PostCategoryView extends FrameLayout {
     }
 
     public List<String> getSelectedTags() {
-
-        selectedTags.add(Communities.TAG_HAPRAMP); //communites should be added by default
         return selectedTags;
     }
 

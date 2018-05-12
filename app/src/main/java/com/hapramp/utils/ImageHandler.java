@@ -31,7 +31,6 @@ import java.io.ByteArrayOutputStream;
 public class ImageHandler {
 
     public static void load(Context context, ImageView target, String _uri) {
-
        Glide.with(context)
                .load(_uri)
                .listener(new RequestListener<String, GlideDrawable>() {
@@ -39,7 +38,6 @@ public class ImageHandler {
                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                        return false;
                    }
-
                    @Override
                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
                        GlideDrawableImageViewTarget glideTarget = (GlideDrawableImageViewTarget) target;
@@ -55,13 +53,10 @@ public class ImageHandler {
                })
                .diskCacheStrategy(DiskCacheStrategy.RESULT)
                .into(target);
-
     }
 
     public static void loadSmaller(Context context,ImageView imageView, String _uri){
-
        try {
-
             Glide.with(context)
                     .load(_uri)
                     .override(PixelUtils.dpToPx(72), PixelUtils.dpToPx(72))
@@ -70,15 +65,11 @@ public class ImageHandler {
                     .into(imageView);
 
         }catch (IllegalArgumentException e){
-
        }
-
     }
 
     public static void loadCircularImage(final Context context, final ImageView imageView, String url) {
-
         try{
-
             Glide.with(context)
                     .load(url)
                     .asBitmap()
@@ -86,72 +77,12 @@ public class ImageHandler {
                     .into(new BitmapImageViewTarget(imageView) {
                         @Override
                         protected void setResource(Bitmap resource) {
-
                             RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(context.getResources(), resource);
                             circularBitmapDrawable.setCircular(true);
                             imageView.setImageDrawable(circularBitmapDrawable);
-
                         }
                     });
-
         }catch (IllegalArgumentException e){
-
         }
-
     }
-
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) >= reqHeight
-                    && (halfWidth / inSampleSize) >= reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize + 1;
-    }
-
-    public static Bitmap decodeSampledBitmap(Bitmap bitmap) {
-
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100 /*ignored for PNG*/, bos);
-        byte[] bitmapdata = bos.toByteArray();
-        // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeByteArray(bitmapdata,0,bitmapdata.length,options);
-
-        int imageHeight = options.outHeight;
-        int imageWidth = options.outWidth;
-        Log.d("DIMENSION","height "+options.outHeight);
-        Log.d("DIMENSION","width "+options.outWidth);
-
-        int deviceWidth = PixelUtils.getWidth();
-        int reqWidth = deviceWidth;
-        int reqHeight = (imageHeight*deviceWidth)/imageWidth;
-        // Calculate inSampleSize
-        Log.d("DIMENSION","req height "+options.outHeight);
-        Log.d("DIMENSION","req width "+options.outWidth);
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-        Bitmap sampledBitmap = BitmapFactory.decodeByteArray(bitmapdata,0,bitmapdata.length,options);
-        Log.d("DIMENSION","[d] height "+options.outHeight);
-        Log.d("DIMENSION","[d] width "+options.outWidth);
-
-        return sampledBitmap;
-
-    }
-
 }

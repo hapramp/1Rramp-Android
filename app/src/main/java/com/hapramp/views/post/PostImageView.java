@@ -131,6 +131,9 @@ public class PostImageView extends FrameLayout {
 
     public void setImageSource(final Bitmap bitmap) {
 
+        if(bitmap==null)
+            return;
+
         invalidateView();
         mainView.setVisibility(VISIBLE);
         image.setImageBitmap(bitmap);

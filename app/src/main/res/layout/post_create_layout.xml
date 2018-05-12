@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <RelativeLayout
         android:id="@+id/post_header_container"
         android:layout_width="match_parent"
@@ -56,44 +55,76 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/post_header_container">
+        android:layout_below="@+id/post_header_container"
+        android:orientation="vertical">
 
         <com.hapramp.views.post.PostImageView
-            android:visibility="gone"
             android:id="@+id/postImageView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            />
+            android:visibility="gone" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
+        <RelativeLayout
+            android:visibility="gone"
+            android:id="@+id/youtube_item_container"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <EditText
-                android:id="@+id/content"
+            <ImageView
+                android:id="@+id/youtube_thumbnailIv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/post_editor_bg"
-                android:gravity="top"
-                android:hint="Write something..."
-                android:textColorHint="@color/Black38"
-                android:maxLength="140"
-                android:minHeight="100dp"
-                android:padding="16dp"
-                android:textColor="@color/Black87"
-                android:textSize="14sp" />
+                android:adjustViewBounds="true" />
 
-        </FrameLayout>
+            <ImageView
+                android:id="@+id/youtube_indicator"
+                android:layout_width="64dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ytb" />
+
+            <TextView
+                android:id="@+id/btn_remove"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/remove_video_bg"
+                android:clickable="true"
+                android:textSize="12sp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:textColor="#ffffff"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Remove" />
+
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/post_editor_bg"
+            android:gravity="top"
+            android:hint="Write something..."
+            android:maxLength="140"
+            android:minHeight="100dp"
+            android:padding="16dp"
+            android:textColor="@color/Black87"
+            android:textColorHint="@color/Black38"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/category_caption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="Select Category"
             android:textColor="@color/Black54"

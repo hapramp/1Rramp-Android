@@ -29,7 +29,7 @@ public class YoutubeInsertButtonView extends FrameLayout {
     @BindView(R.id.divider_btn)
     TextView youtubeBtn;
     Context mContext;
-    public static int YOUTUBE_RESULT_REQUEST = 101;
+    public static int YOUTUBE_RESULT_REQUEST = 102;
 
 
     public YoutubeInsertButtonView(@NonNull Context context) {
@@ -64,10 +64,8 @@ public class YoutubeInsertButtonView extends FrameLayout {
     }
 
     private void startYoutubeSelectionActivity() {
-
         Intent youtubeIntent = new Intent(mContext, YoutubeVideoSelectorActivity.class);
         ((AppCompatActivity) mContext).startActivityForResult(youtubeIntent, YOUTUBE_RESULT_REQUEST);
-
     }
 
 }

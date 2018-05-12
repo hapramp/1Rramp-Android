@@ -64,8 +64,6 @@ public class EditorView extends FrameLayout implements TextHeaderView.HeadingCha
     BulletsView bulletsControl;
     @BindView(R.id.link_view)
     LinkView linkView;
-    @BindView(R.id.paragraph_divider_view)
-    YoutubeInsertButtonView paragraphDividerView;
     @BindView(R.id.image_insertBtn)
     ImageInsertView imageInsertBtn;
     @BindView(R.id.heading)
@@ -114,16 +112,11 @@ public class EditorView extends FrameLayout implements TextHeaderView.HeadingCha
         editor.setEditorListener(new EditorListener() {
             @Override
             public void onTextChanged(EditText editText, Editable text) {
-                // Toast.makeText(EditorTestActivity.this, text, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onUpload(Bitmap image, String uuid) {
-
                 uploadImage(image, uuid);
-                //do your upload image operations here, once done, call onImageUploadComplete and pass the url and uuid as reference.
-                //editor.onImageUploadComplete("http://www.videogamesblogger.com/wp-content/uploads/2015/08/metal-gear-solid-5-the-phantom-pain-cheats-640x325.jpg",uuid);
-                // editor.onImageUploadFailed(uuid);
             }
         });
 

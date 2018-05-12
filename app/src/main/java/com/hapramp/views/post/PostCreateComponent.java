@@ -22,6 +22,8 @@ import com.hapramp.R;
 import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
+import com.hapramp.steem.FeedDataConstants;
+import com.hapramp.steem.models.data.FeedDataItemModel;
 import com.hapramp.steem.models.user.SteemUser;
 import com.hapramp.utils.ImageHandler;
 
@@ -62,7 +64,16 @@ public class PostCreateComponent extends FrameLayout implements PostCategoryView
     TextView categoryCaption;
     @BindView(R.id.postCategoryView)
     PostCategoryView postCategoryView;
+    @BindView(R.id.youtube_thumbnailIv)
+    ImageView youtubeThumbnailIv;
+    @BindView(R.id.youtube_indicator)
+    ImageView youtubeIndicator;
+    @BindView(R.id.youtube_item_container)
+    RelativeLayout youtubeItemContainer;
+    @BindView(R.id.btn_remove)
+    TextView btnRemove;
     private Context mContext;
+    private String youtubeId = null;
 
     public PostCreateComponent(@NonNull Context context) {
         super(context);
@@ -82,47 +93,57 @@ public class PostCreateComponent extends FrameLayout implements PostCategoryView
     private void init(Context context) {
         this.mContext = context;
         View view = LayoutInflater.from(context).inflate(R.layout.post_create_layout, this);
-        ButterKnife.bind(this,view);
+        ButterKnife.bind(this, view);
         postCategoryView.initCategory();
         postCategoryView.setCommunitySelectionChangeListener(this);
-        //load post creator pic
         SteemUser steemUser = new Gson().fromJson(HaprampPreferenceManager.getInstance().getCurrentUserInfoAsJson(), SteemUser.class);
         String pic_url = steemUser
                 .getUser()
                 .getJsonMetadata()
                 .getProfile()
                 .getProfileImage();
-
-        ImageHandler.loadCircularImage(context,postCreatorPic,pic_url);
+        ImageHandler.loadCircularImage(context, postCreatorPic, pic_url);
         postCreatorTitle.setText(steemUser.getUser().getJsonMetadata().getProfile().getName());
-
+        btnRemove.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                youtubeId = null;
+                youtubeItemContainer.setVisibility(GONE);
+            }
+        });
     }
 
+    public void setYoutubeThumbnail(String videoId) {
+        youtubeItemContainer.setVisibility(VISIBLE);
+        this.youtubeId = videoId;
+        postImageView.scaleAndHideMainView();
+        ImageHandler.load(mContext, youtubeThumbnailIv, getYoutubeThumbnailUrl(videoId));
+    }
 
-    public void setImageResource(final Bitmap bitmap){
+    private String getYoutubeThumbnailUrl(String videoKey) {
+        return String.format("https://i.ytimg.com/vi/%s/hqdefault.jpg", videoKey);
+    }
+
+    public void setImageResource(final Bitmap bitmap) {
         postImageView.setImageSource(bitmap);
+        youtubeId = null;
+        youtubeItemContainer.setVisibility(GONE);
     }
 
-    public String getImageDownloadUrl(){
-        return postImageView.getDownloadUrl();
-    }
-
-    public List<String> getSelectedCommunityTags(){
+    public List<String> getSelectedCommunityTags() {
         return postCategoryView.getSelectedTags();
     }
 
-    public String getContent(){
-        return content.getText().toString();
+    public String getContent() {
+        return content.getText().toString().trim();
     }
 
     @Override
     public void onCommunitySelectionChanged(List<String> communities) {
-        // invalidate community lists
         setCommunities(communities);
     }
 
     private void setCommunities(List<String> communities) {
-        // community name + community color
         List<CommunityModel> cm = new ArrayList<>();
         for (int i = 0; i < communities.size(); i++) {
             if (Communities.doesCommunityExists(communities.get(i))) {
@@ -133,37 +154,26 @@ public class PostCreateComponent extends FrameLayout implements PostCategoryView
                 ));
             }
         }
-
         addCommunitiesToLayout(cm);
-
     }
 
     private void addCommunitiesToLayout(List<CommunityModel> cms) {
-
         int size = cms.size();
         resetVisibility();
         if (size > 0) {
-            //first skill
             club1.setVisibility(VISIBLE);
-
             club1.setText(cms.get(0).getmName());
             club1.getBackground().setColorFilter(
                     Color.parseColor(cms.get(0).getmColor()),
                     PorterDuff.Mode.SRC_ATOP);
-
             if (size > 1) {
-                // second skills
                 club2.setVisibility(VISIBLE);
-
                 club2.setText(cms.get(1).getmName());
                 club2.getBackground().setColorFilter(
                         Color.parseColor(cms.get(1).getmColor()),
                         PorterDuff.Mode.SRC_ATOP);
-
                 if (size > 2) {
-                    // third skills
                     club3.setVisibility(VISIBLE);
-
                     club3.setText(cms.get(2).getmName());
                     club3.getBackground().setColorFilter(
                             Color.parseColor(cms.get(2).getmColor()),
@@ -171,18 +181,28 @@ public class PostCreateComponent extends FrameLayout implements PostCategoryView
                 }
             }
         }
-
     }
 
     private void resetVisibility() {
-
         club1.setVisibility(GONE);
         club2.setVisibility(GONE);
         club3.setVisibility(GONE);
-
     }
 
-    public void setImageUri(Uri thumb_path) {
-        postImageView.setImageUri(thumb_path);
+    public List<FeedDataItemModel> getDataList() {
+        List<FeedDataItemModel> datas = new ArrayList<>();
+        if (postImageView.getDownloadUrl() != null && youtubeId == null) {
+            datas.add(new FeedDataItemModel(postImageView.getDownloadUrl(), FeedDataConstants.ContentType.IMAGE));
+        } else if (youtubeId != null) {
+            datas.add(new FeedDataItemModel(youtubeId, FeedDataConstants.ContentType.YOUTUBE));
+        }
+        if (getContent().length() > 0) {
+            datas.add(new FeedDataItemModel(getContent(), FeedDataConstants.ContentType.TEXT));
+        }
+        return datas;
+    }
+
+    public boolean isValidContent() {
+        return getContent().length() > 0 && (postImageView.getDownloadUrl() != null || youtubeId != null);
     }
 }

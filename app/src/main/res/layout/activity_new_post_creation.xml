@@ -86,23 +86,13 @@
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/audioBtn"
+            android:id="@+id/youtubeBtn"
             android:layout_width="?actionBarSize"
             android:layout_height="?actionBarSize"
+            android:background="?selectableItemBackgroundBorderless"
             android:layout_toEndOf="@+id/photosBtn"
-            android:background="?selectableItemBackgroundBorderless"
             android:gravity="center"
-            android:text=""
-            android:textSize="24sp" />
-
-        <TextView
-            android:id="@+id/videoBtn"
-            android:layout_width="?actionBarSize"
-            android:layout_height="?actionBarSize"
-            android:layout_toEndOf="@id/audioBtn"
-            android:background="?selectableItemBackgroundBorderless"
-            android:gravity="center"
-            android:text=""
+            android:text=""
             android:textSize="24sp" />
 
     </RelativeLayout>

@@ -52,7 +52,6 @@ public class YoutubeVideoSelectorActivity extends AppCompatActivity implements Y
     FrameLayout toolbarDropShadow;
     @BindView(R.id.suggestionsProgressBar)
     ProgressBar suggestionsProgressBar;
-
     private YoutubeResultAdapter resultAdapter;
     private YoutubeSuggestionsHelper youtubeSuggestionsHelper;
     private ArrayList<String> suggestions;
@@ -60,21 +59,17 @@ public class YoutubeVideoSelectorActivity extends AppCompatActivity implements Y
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_youtube_video_selector);
         ButterKnife.bind(this);
         init();
         attachListener();
-
     }
 
     private void init() {
-
         resultAdapter = new YoutubeResultAdapter(this);
         youtubeResultsRv.setLayoutManager(new LinearLayoutManager(this));
         youtubeResultsRv.setAdapter(resultAdapter);
-
         backBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         searchBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         youtubeSuggestionsHelper = YoutubeSuggestionsHelper.getInstance(this);
@@ -82,12 +77,10 @@ public class YoutubeVideoSelectorActivity extends AppCompatActivity implements Y
     }
 
     public void sendResultBackToParent(String videoId) {
-
         Intent resultIntent = new Intent();
         resultIntent.putExtra(EXTRA_VIDEO_KEY, videoId);
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
-
     }
 
     private void fetchSuggestions(String query) {
@@ -95,11 +88,9 @@ public class YoutubeVideoSelectorActivity extends AppCompatActivity implements Y
     }
 
     private void close() {
-
         Intent resultIntent = new Intent();
         setResult(Activity.RESULT_CANCELED, resultIntent);
         finish();
-
     }
 
     private void attachListener() {
@@ -114,7 +105,6 @@ public class YoutubeVideoSelectorActivity extends AppCompatActivity implements Y
         searchInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
@@ -124,22 +114,18 @@ public class YoutubeVideoSelectorActivity extends AppCompatActivity implements Y
                     fetchSuggestions(q);
                 }
             }
-
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
 
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 String searchTerm = searchInput.getText().toString();
                 if (searchTerm.length() >= 0) {
                     getResultsFor(searchTerm);
                 }
-
             }
         });
 
@@ -163,9 +149,7 @@ public class YoutubeVideoSelectorActivity extends AppCompatActivity implements Y
                 return false;
             }
         });
-
         resultAdapter.setVideoItemClickListener(this);
-
     }
 
     @Override
@@ -174,11 +158,9 @@ public class YoutubeVideoSelectorActivity extends AppCompatActivity implements Y
     }
 
     private void getResultsFor(String term) {
-
         showProgressBar();
         hideYoutubeSuggestions();
         hideYoutubeResults();
-
         String url = "http://api.anyaudio.in/api/v1/search?q=" + term;
         RetrofitServiceGenerator.getService().getYoutubeResults(url).enqueue(new Callback<YoutubeResultModel>() {
             @Override
@@ -189,13 +171,11 @@ public class YoutubeVideoSelectorActivity extends AppCompatActivity implements Y
                     hideProgressBar();
                 }
             }
-
             @Override
             public void onFailure(Call<YoutubeResultModel> call, Throwable t) {
                 hideProgressBar();
             }
         });
-
     }
 
     private void bindSuggestions(ArrayList<String> suggestions) {
@@ -246,34 +226,22 @@ public class YoutubeVideoSelectorActivity extends AppCompatActivity implements Y
 
     @Override
     public void onFetching() {
-        //hide recycler view
         hideYoutubeResults();
-        //hide suggestions list view
         hideYoutubeSuggestions();
-        //show progress
         showProgressBar();
-
     }
 
     @Override
     public void onSuggestionsFetched(ArrayList<String> suggestions) {
-        //show suggestion listview
         showYoutubeSuggestions();
-        //hide recycler view
         hideYoutubeResults();
-        //hide progress
         hideProgressBar();
-
-        //store data
         this.suggestions = suggestions;
-        //set data
         bindSuggestions(suggestions);
-
     }
 
     @Override
     public void onClicked(String video_id) {
         sendResultBackToParent(video_id);
     }
-
 }
