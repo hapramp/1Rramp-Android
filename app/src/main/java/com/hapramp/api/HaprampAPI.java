@@ -70,7 +70,12 @@ public interface HaprampAPI {
     Call<ProcessedBodyResponse> sendForPreProcessing(@Body PreProcessingModel preProcessingModel);
 
     @POST("posts/_confirm")
-    Call<ProcessedBodyResponse> sendPostCreationConfirmation(@Body PostConfirmationModel postConfirmationModel);
+    Call<ConfirmationResponse> sendPostCreationConfirmation(@Body PostConfirmationModel postConfirmationModel);
+
+    @POST("posts/comments/_notify")
+    Call<ConfirmationResponse> notifyCommentOnPost(@Body PostConfirmationModel postConfirmationModel);
+
+
 
     @POST
     Call<FollowingsResponse> getFollowings(@Url String url, @Body RequestBody requestBody);
