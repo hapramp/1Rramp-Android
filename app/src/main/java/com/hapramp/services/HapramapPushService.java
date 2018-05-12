@@ -28,7 +28,6 @@ public class HapramapPushService extends FirebaseMessagingService {
         }
 
         NotificationHandler.handleNotification(remoteMessage,this);
-        // Check if message contains a data payload.
 
     }
 

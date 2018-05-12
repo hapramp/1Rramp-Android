@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hapramp.R;
+import com.hapramp.datamodels.response.ConfirmationResponse;
 import com.hapramp.ui.adapters.FeaturedImageAdapter;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.editor.Editor;
@@ -330,9 +331,9 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
         showPublishingProgressDialog(true, "Sending Confirmation to Server...");
         RetrofitServiceGenerator.getService()
                 .sendPostCreationConfirmation(new PostConfirmationModel(permlink_with_username))
-                .enqueue(new Callback<ProcessedBodyResponse>() {
+                .enqueue(new Callback<ConfirmationResponse>() {
                     @Override
-                    public void onResponse(Call<ProcessedBodyResponse> call, Response<ProcessedBodyResponse> response) {
+                    public void onResponse(Call<ConfirmationResponse> call, Response<ConfirmationResponse> response) {
                         if (response.isSuccessful()) {
                             serverConfirmed();
                         } else {
@@ -342,7 +343,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
                     }
 
                     @Override
-                    public void onFailure(Call<ProcessedBodyResponse> call, Throwable t) {
+                    public void onFailure(Call<ConfirmationResponse> call, Throwable t) {
                         toast("Something went wrong (" + t.toString() + ")");
                         showPublishingProgressDialog(false, "");
                     }

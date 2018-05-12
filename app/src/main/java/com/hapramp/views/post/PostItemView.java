@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
+import com.hapramp.push.Notifyer;
 import com.hapramp.ui.activity.CommentsActivity;
 import com.hapramp.ui.activity.DetailedActivity;
 import com.hapramp.ui.activity.ProfileActivity;
@@ -339,15 +340,8 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         return false;
     }
 
-    /*
-    *  author of the vote: author of the pose
-    *  votePower: 0 for 1-2 ratte
-    *  votePower: 100 for 3-5 rate
-    * */
     private void performVoteOnSteem(final int vote) {
-
         starView.voteProcessing();
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -355,45 +349,33 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
             }
         }, 500);
 
-        final int votePower = vote;
-        Log.d("VoteTest", "voting with percent " + votePower);
         new Thread() {
-
             @Override
             public void run() {
                 try {
-
                     AccountName voteFor = new AccountName(getAuthor());
                     AccountName voter = new AccountName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
                     SteemJ steemJ = SteemHelper.getSteemInstance();
-
-                    steemJ.vote(voter, voteFor, new Permlink(getPermlinkAsString()), (short) votePower);
-                    //callback for success
+                    steemJ.vote(voter, voteFor, new Permlink(getFullPermlinkAsString()), (short) vote);
+                    Notifyer.notifyVote(getFullPermlinkAsString(),vote);
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            l("Sending Vote to App server");
                             castingVoteSuccess();
                         }
                     });
-
                 } catch (SteemCommunicationException e) {
                     e.printStackTrace();
-                    Log.d("VoteTest", "error " + e.toString());
                     mHandler.post(steemCastingVoteExceptionRunnable);
                 } catch (SteemResponseException e) {
                     e.printStackTrace();
-                    Log.d("VoteTest", "error " + e.toString());
                     mHandler.post(steemCastingVoteExceptionRunnable);
                 } catch (SteemInvalidTransactionException e) {
                     e.printStackTrace();
-                    Log.d("VoteTest", "error " + e.toString());
                     mHandler.post(steemCastingVoteExceptionRunnable);
                 }
-
             }
         }.start();
-
     }
 
     /*
@@ -419,34 +401,25 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
             @Override
             public void run() {
                 try {
-
                     AccountName voteFor = new AccountName(getAuthor());
                     AccountName voter = new AccountName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
                     SteemJ steemJ = SteemHelper.getSteemInstance();
                     steemJ.cancelVote(voter, voteFor, new Permlink(getPermlinkAsString()));
-                    l("Deleted Vote on Steem");
-                    Log.d("VoteTest", "Deleted Vote");
-
-                    //callback for success
+                    Notifyer.notifyVote(getFullPermlinkAsString(),0);
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             voteDeleteSuccess();
                         }
                     });
-
                 } catch (SteemCommunicationException e) {
                     e.printStackTrace();
-                    Log.d("VoteTest", "Deleting vote error " + e.toString());
-
                     mHandler.post(steemCancellingVoteExceptionRunnable);
                 } catch (SteemResponseException e) {
                     e.printStackTrace();
-                    Log.d("VoteTest", "Deleting vote error " + e.toString());
                     mHandler.post(steemCancellingVoteExceptionRunnable);
                 } catch (SteemInvalidTransactionException e) {
                     e.printStackTrace();
-                    Log.d("VoteTest", "Deleting vote error " + e.toString());
                     mHandler.post(steemCancellingVoteExceptionRunnable);
                 }
 

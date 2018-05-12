@@ -5,6 +5,7 @@ import android.support.annotation.WorkerThread;
 import android.util.Log;
 
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.push.Notifyer;
 
 import eu.bittrade.libs.steemj.SteemJ;
 import eu.bittrade.libs.steemj.base.models.AccountName;
@@ -20,58 +21,43 @@ import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 
 public class SteemCommentCreator {
 
-    private static final String TAG = SteemCommentCreator.class.getSimpleName();
     private Handler mHandler;
-
     public SteemCommentCreator() {
         this.mHandler = new Handler();
     }
 
     @WorkerThread
     public void createComment(final String comment, final String commentOnUser, final String __permlink) {
-
         if (steemCommentCreateCallback != null) {
             steemCommentCreateCallback.onCommentCreateProcessing();
         }
-
-        Log.d(TAG, "Creating Comment");
-
         new Thread() {
             @Override
             public void run() {
-
                 final SteemJ steemJ = SteemHelper.getSteemInstance();
                 if (steemJ == null) {
                     mHandler.post(commentCreateFailedRunnable);
                     return;
                 }
-
                 final AccountName commenter = new AccountName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
                 final AccountName commentOnUserAccount = new AccountName(commentOnUser);
                 final String[] tags = {"hapramp"};
 
                 try {
-                    CommentOperation commentOperation = steemJ.createComment(commenter, commentOnUserAccount, new Permlink(__permlink), comment, tags);
-                    //if (commentOperation.getPermlink() != null) {
-                    Log.d(TAG, "Comment created " + commentOperation.getPermlink());
+                    steemJ.createComment(commenter, commentOnUserAccount, new Permlink(__permlink), comment, tags);
+                    Notifyer.notifyComment(__permlink);
                     mHandler.post(commentCreatedRunnable);
-                    // }
                 } catch (SteemCommunicationException e) {
-                    Log.d(TAG, e.toString());
                     mHandler.post(commentCreateFailedRunnable);
                 } catch (SteemResponseException e) {
-                    Log.d(TAG, e.toString());
                     mHandler.post(commentCreateFailedRunnable);
                     e.printStackTrace();
                 } catch (SteemInvalidTransactionException e) {
-                    Log.d(TAG, e.toString());
                     mHandler.post(commentCreateFailedRunnable);
                     e.printStackTrace();
                 }
-
             }
         }.start();
-
     }
 
     private Runnable commentCreatedRunnable = new Runnable() {
@@ -100,9 +86,7 @@ public class SteemCommentCreator {
 
     public interface SteemCommentCreateCallback {
         void onCommentCreateProcessing();
-
         void onCommentCreated();
-
         void onCommentCreateFailed();
     }
 }

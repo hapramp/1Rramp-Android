@@ -17,6 +17,7 @@ import com.hapramp.datamodels.requests.UserUpdateModel;
 import com.hapramp.datamodels.response.CommentCreateResponse;
 import com.hapramp.datamodels.response.CommentsResponse;
 import com.hapramp.datamodels.response.CompetitionResponse;
+import com.hapramp.datamodels.response.ConfirmationResponse;
 import com.hapramp.datamodels.response.CreateUserReponse;
 import com.hapramp.datamodels.response.FetchUserResponse;
 import com.hapramp.datamodels.response.NotificationResponse;
@@ -29,7 +30,6 @@ import com.hapramp.datamodels.response.UpdateUserResponse;
 import com.hapramp.datamodels.response.UserModel;
 import com.hapramp.datamodels.response.UserStatsModel;
 import com.hapramp.steem.CommunitySelectionResponse;
-import com.hapramp.steem.FollowingsResponse;
 import com.hapramp.steem.PostConfirmationModel;
 import com.hapramp.steem.PreProcessingModel;
 import com.hapramp.steem.ProcessedBodyResponse;
@@ -40,7 +40,6 @@ import com.hapramp.youtube.YoutubeResultModel;
 
 import java.util.List;
 
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -73,21 +72,16 @@ public interface HaprampAPI {
     Call<ConfirmationResponse> sendPostCreationConfirmation(@Body PostConfirmationModel postConfirmationModel);
 
     @POST("posts/comments/_notify")
-    Call<ConfirmationResponse> notifyCommentOnPost(@Body PostConfirmationModel postConfirmationModel);
+    Call<ConfirmationResponse> notifyCommentOnPost(@Query("permlink") String permlink);
 
-
-
-    @POST
-    Call<FollowingsResponse> getFollowings(@Url String url, @Body RequestBody requestBody);
+    @POST("posts/votes/_notify")
+    Call<ConfirmationResponse> notifyVoteOnPost(@Body VoteRequestBody voteRequestBody,@Query("permlink") String permlink);
 
     @GET("communities")
     Call<List<CommunityModel>> getCommunities();
 
     @PUT("users/communities")
     Call<CommunitySelectionResponse> updateCommunitySelections(@Body CommunitySelectionServerUpdateBody body);
-
-    @GET("users")
-    Call<List<UserModel>> getAllUsersOnPlatform();
 
     @GET("feeds/user/{username}")
     Call<FeedResponse> getUserFeeds(@Path("username") String username, @Query("limit") int limit);
@@ -119,28 +113,14 @@ public interface HaprampAPI {
     @GET("feeds/trending/{tag}")
     Call<FeedResponse> getTrendingFeed(@Path("tag") String tag, @Query("limit") int limit,@Query("start_author") String lastAuthor,@Query("start_permlink") String lastPermlink);
 
-
     @GET
     Call<SteemUser> getSteemUser(@Url String url);
-
-    @GET("posts/votes")
-    Call<List<VoteModel>> getPostVotes(@Query("permlink") String permlink);
-
-    @POST("posts/votes")
-    Call<VoteStatus> castVote(@Query("permlink") String permlink, @Body VoteRequestBody voteRequestBody);
-
-    @DELETE("posts/votes")
-    Call<VoteStatus> deleteVote(@Query("permlink") String permlink);
 
     @GET("users/usernames/{username}")
     Call<UserModel> getUserFromUsername(@Path("username") String username);
 
     @GET
     Call<YoutubeResultModel> getYoutubeResults(@Url String url);
-
-
-
-
 
     @POST("users")
     Call<CreateUserReponse> createUser(@Body CreateUserRequest userRequestModel);
@@ -150,6 +130,9 @@ public interface HaprampAPI {
 
     @GET("users/user")
     Call<FetchUserResponse> getUserFromToken();
+
+    @PUT("users/user")
+    Call<DeviceRegistrationReponse> updateUserDeviceId(@Body DeviceId deviceId);
 
     @PUT("users/{user_id}")
     Call<UpdateUserResponse> updateOrg(@Path("user_id") String userID, @Body UserUpdateModel user);

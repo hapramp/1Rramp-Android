@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.api.RetrofitServiceGenerator;
+import com.hapramp.push.Notifyer;
 import com.hapramp.ui.fragments.EarningFragment;
 import com.hapramp.ui.fragments.HomeFragment;
 import com.hapramp.ui.fragments.ProfileFragment;
@@ -114,15 +115,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     private NotificationUpdateReceiver notificationUpdateReceiver;
     private boolean isReceiverRegistered;
 
-    private final Runnable hideStatus = new Runnable() {
-        @Override
-        public void run() {
-            postUploadStatus.setVisibility(View.GONE);
-        }
-    };
-
-    private Handler mHandler = new Handler();
-
     private class NotificationUpdateReceiver extends BroadcastReceiver {
 
         @Override
@@ -135,12 +127,9 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
 
         @Override
         public void onReceive(Context context, Intent intent) {
-
             if (profileFragment.isAdded())
                 profileFragment.reloadPosts();
-
         }
-
     }
 
     @Override
@@ -154,18 +143,16 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
         attachListeners();
         postUploadReceiver = new PostUploadReceiver();
         notificationUpdateReceiver = new NotificationUpdateReceiver();
-//        if (!HaprampPreferenceManager.getInstance().isUserInfoAvailable()) {
         fetchCompleteUserInfo();
-
-//        } else {
+        updateDeviceId();
         transactFragment(FRAGMENT_HOME);
-        // }
-
     }
 
-    //initialize preference with community data pairs
-    private void cacheCommunitiesList() {
+    private void updateDeviceId() {
+        Notifyer.updateDeviceToken();
+    }
 
+    private void cacheCommunitiesList() {
         CommunityListWrapper communityListWrapper = new Gson().fromJson(HaprampPreferenceManager.getInstance().getAllCommunityAsJson(), CommunityListWrapper.class);
         List<CommunityModel> communities = communityListWrapper.getCommunityModels();
         for (int i = 0; i < communities.size(); i++) {
@@ -175,7 +162,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     }
 
     private void syncCommunities() {
-
         RetrofitServiceGenerator.getService().getCommunities().enqueue(new Callback<List<CommunityModel>>() {
             @Override
             public void onResponse(Call<List<CommunityModel>> call, Response<List<CommunityModel>> response) {
@@ -187,28 +173,19 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
 
             @Override
             public void onFailure(Call<List<CommunityModel>> call, Throwable t) {
-
             }
         });
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
         if (!isReceiverRegistered) {
             registerReceiver(postUploadReceiver, new IntentFilter(Constants.ACTION_POST_UPLOAD));
             registerReceiver(notificationUpdateReceiver, new IntentFilter(Constants.ACTION_NOTIFICATION_UPDATE));
             isReceiverRegistered = true;
         }
-
-        //update notifications
         setNotifications();
-//        String deviceName = android.os.Build.MODEL;
-//        String deviceMan = android.os.Build.MANUFACTURER;
-//        Log.d("Firebase", "Device "+deviceName+" Man: "+deviceMan);
-
     }
 
     @Override

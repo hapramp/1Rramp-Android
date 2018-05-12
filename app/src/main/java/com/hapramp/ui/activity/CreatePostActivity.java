@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.api.RetrofitServiceGenerator;
+import com.hapramp.datamodels.response.ConfirmationResponse;
 import com.hapramp.interfaces.PostCreateCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.FeedDataConstants;
@@ -288,9 +289,9 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
 
         RetrofitServiceGenerator.getService()
                 .sendPostCreationConfirmation(new PostConfirmationModel(permlink_with_username))
-                .enqueue(new Callback<ProcessedBodyResponse>() {
+                .enqueue(new Callback<ConfirmationResponse>() {
                     @Override
-                    public void onResponse(Call<ProcessedBodyResponse> call, Response<ProcessedBodyResponse> response) {
+                    public void onResponse(Call<ConfirmationResponse> call, Response<ConfirmationResponse> response) {
                         if (response.isSuccessful()) {
                             serverConfirmed();
                         } else {
@@ -300,12 +301,11 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
                     }
 
                     @Override
-                    public void onFailure(Call<ProcessedBodyResponse> call, Throwable t) {
+                    public void onFailure(Call<ConfirmationResponse> call, Throwable t) {
                         toast("Something went wrong (" + t.toString() + ")");
                         showPublishingProgressDialog(false, "");
                     }
                 });
-
     }
 
     private void serverConfirmed() {

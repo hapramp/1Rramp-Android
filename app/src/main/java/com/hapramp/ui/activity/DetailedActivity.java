@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.push.Notifyer;
 import com.hapramp.steem.Communities;
 import com.hapramp.steem.PostStructureModel;
 import com.hapramp.steem.SteemCommentCreator;
@@ -68,7 +69,7 @@ import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 
 import static android.view.View.VISIBLE;
 
-public class DetailedActivity extends AppCompatActivity implements SteemCommentCreator.SteemCommentCreateCallback{
+public class DetailedActivity extends AppCompatActivity implements SteemCommentCreator.SteemCommentCreateCallback {
 
 
     @BindView(R.id.closeBtn)
@@ -280,13 +281,13 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     }
 
     private void postComment() {
-
         String cmnt = commentInputBox.getText().toString().trim();
         commentInputBox.setText("");
         if (cmnt.length() > 2) {
             steemCommentCreator.createComment(cmnt, post.author, post.permlink);
         } else {
             Toast.makeText(this, "Comment Too Short!!", Toast.LENGTH_LONG).show();
+            return;
         }
 
         SteemCommentModel steemCommentModel = new SteemCommentModel(
@@ -459,74 +460,45 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         return false;
     }
 
-    /*
-    *  author of the vote: author of the pose
-    *  votePower: 0 for 1-2 ratte
-    *  votePower: 100 for 3-5 rate
-    * */
     private void performVoteOnSteem(final int vote) {
-
         starView.voteProcessing();
-
-        final int votePower = vote;
-
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 starView.castedVoteTemporarily();
             }
         }, 500);
-
         new Thread() {
-
             @Override
             public void run() {
                 try {
-
                     AccountName voteFor = new AccountName(post.author);
                     AccountName voter = new AccountName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
                     SteemJ steemJ = SteemHelper.getSteemInstance();
-
-                    steemJ.vote(voter, voteFor, new Permlink(post.permlink), (short) votePower);
-                    //     Log.d("VoteTest", "voted " + votePower);
-                    //callback for success
+                    steemJ.vote(voter, voteFor, new Permlink(post.permlink), (short) vote);
+                    Notifyer.notifyVote(post.permlink, vote);
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             castingVoteSuccess();
                         }
                     });
-
                 } catch (SteemCommunicationException e) {
                     e.printStackTrace();
-                    //    Log.d("VoteTest", "error " + e.toString());
                     mHandler.post(steemCastingVoteExceptionRunnable);
                 } catch (SteemResponseException e) {
                     e.printStackTrace();
-                    //   Log.d("VoteTest", "error " + e.toString());
                     mHandler.post(steemCastingVoteExceptionRunnable);
                 } catch (SteemInvalidTransactionException e) {
                     e.printStackTrace();
-                    //  Log.d("VoteTest", "error " + e.toString());
                     mHandler.post(steemCastingVoteExceptionRunnable);
                 }
-
             }
         }.start();
-
     }
 
-    /*
-      *  author of the vote: author of the pose
-      *  cancel vote
-      * */
     private void deleteVoteOnSteem() {
-
-        // Log.d("VoteTest", "Deleting vote");
-
         starView.voteProcessing();
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -535,43 +507,32 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         }, 500);
 
         new Thread() {
-
             @Override
             public void run() {
                 try {
-
                     AccountName voteFor = new AccountName(post.author);
                     AccountName voter = new AccountName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
                     SteemJ steemJ = SteemHelper.getSteemInstance();
                     steemJ.cancelVote(voter, voteFor, new Permlink(post.permlink));
-                    //     Log.d("VoteTest", "Deleted Vote");
-
-                    //callback for success
+                    Notifyer.notifyVote(post.permlink, 0);
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             voteDeleteSuccess();
                         }
                     });
-
                 } catch (SteemCommunicationException e) {
                     e.printStackTrace();
-                    //   Log.d("VoteTest", "Deleting vote error " + e.toString());
-
                     mHandler.post(steemCancellingVoteExceptionRunnable);
                 } catch (SteemResponseException e) {
                     e.printStackTrace();
-                    //   Log.d("VoteTest", "Deleting vote error " + e.toString());
                     mHandler.post(steemCancellingVoteExceptionRunnable);
                 } catch (SteemInvalidTransactionException e) {
                     e.printStackTrace();
-                    //   Log.d("VoteTest", "Deleting vote error " + e.toString());
                     mHandler.post(steemCancellingVoteExceptionRunnable);
                 }
-
             }
         }.start();
-
     }
 
     private void castingVoteFailed() {
@@ -719,16 +680,6 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
                         ViewGroup.LayoutParams.WRAP_CONTENT));
 
     }
-//
-//    private void includeNewComment(SteemCommentModel steemCommentModel) {
-//        //add this to top of existing list
-//        comments.add(0, steemCommentModel);
-//        //invalidate the comments view
-//        addAllCommentsToView(comments);
-//        //update comment count
-//        setCommentCount(comments.size());
-//
-//    }
 
     private void showPopUp(View v, final int post_id, final int position) {
 
