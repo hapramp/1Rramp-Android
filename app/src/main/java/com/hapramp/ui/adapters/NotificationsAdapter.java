@@ -11,6 +11,7 @@ import com.hapramp.R;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.MarkAsReadNotificationCallback;
 import com.hapramp.datamodels.response.NotificationResponse;
+import com.hapramp.push.NotificationPayloadModel;
 import com.hapramp.utils.MomentsUtils;
 
 import java.util.List;
@@ -24,14 +25,14 @@ import butterknife.ButterKnife;
 
 public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdapter.NotificationViewHolder> implements MarkAsReadNotificationCallback {
 
-    List<NotificationResponse.Notification> notifications;
+    List<NotificationPayloadModel> notifications;
     private Context mContext;
 
     public NotificationsAdapter(Context mContext) {
         this.mContext = mContext;
     }
 
-    public void setNotifications(List<NotificationResponse.Notification> notifications) {
+    public void setNotifications(List<NotificationPayloadModel> notifications) {
         this.notifications = notifications;
         notifyDataSetChanged();
     }
@@ -56,8 +57,8 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     }
 
     public void markAllRead() {
-        for (NotificationResponse.Notification n:notifications){
-            n.is_read = true;
+        for (NotificationPayloadModel n:notifications){
+            n.setIsRead(true);
         }
         notifyDataSetChanged();
     }
@@ -77,18 +78,18 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
             ButterKnife.bind(this,itemView);
         }
 
-        public void bind(final NotificationResponse.Notification notification , final NotificationsAdapter adapter){
+        public void bind(final NotificationPayloadModel notification , final NotificationsAdapter adapter){
 
-            notificationContent.setText(notification.content);
-            moment.setText(MomentsUtils.getFormattedTime(notification.created_at));
-            if(notification.is_read){
+            notificationContent.setText(notification.getContent());
+            moment.setText(MomentsUtils.getFormattedTime(notification.getCreatedAt()));
+            if(notification.getIsRead()){
                 markAsRead.setVisibility(View.GONE);
             }else{
                 markAsRead.setVisibility(View.VISIBLE);
                 markAsRead.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        adapter.markAsRead(notification.id,getAdapterPosition());
+                        adapter.markAsRead(notification.getId(),getAdapterPosition());
                     }
                 });
             }
@@ -103,7 +104,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 
     @Override
     public void onNotificationMarkedAsRead(int pos) {
-        notifications.get(pos).is_read = true;
+        notifications.get(pos).setIsRead(true);
         notifyItemChanged(pos);
     }
 

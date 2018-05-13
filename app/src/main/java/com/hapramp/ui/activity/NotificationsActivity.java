@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
+import com.hapramp.push.NotificationPayloadModel;
 import com.hapramp.ui.adapters.NotificationsAdapter;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.MarkallAsReadNotificationCallback;
@@ -91,7 +92,7 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
 
     }
 
-    private void bindNotifications(List<NotificationResponse.Notification> list) {
+    private void bindNotifications(List<NotificationPayloadModel> list) {
 
         if (list.size() == 0) {
             notificationsMsg.setVisibility(View.VISIBLE);
@@ -100,8 +101,8 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
             notificationsAdapter.setNotifications(list);
 
             int unread_count = 0;
-            for (NotificationResponse.Notification n :list) {
-                unread_count+= n.is_read?0:1;
+            for (NotificationPayloadModel n :list) {
+                unread_count+= n.getIsRead()?0:1;
             }
             if(unread_count>0){
 

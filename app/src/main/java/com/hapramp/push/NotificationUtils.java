@@ -20,7 +20,7 @@ import com.hapramp.datamodels.response.NotificationResponse;
 // Issues: https://docs.telerik.com/platform/knowledge-base/troubleshooting/troubleshooting-cannot-receive-push-notifications-on-android-when-the-app-is-closed
 public class NotificationUtils {
 
-    public static void showNotification(Context mContext, NotificationResponse.Notification notificationObject){
+    public static void showNotification(Context mContext, NotificationPayloadModel notificationObject){
 
         Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         final int icon = R.mipmap.ic_launcher;
@@ -40,15 +40,15 @@ public class NotificationUtils {
         Notification notification;
         notification = mBuilder
                 .setSmallIcon(icon)
-                .setTicker(notificationObject.content)
+                .setTicker(notificationObject.getContent())
                 .setWhen(0)
                 .setAutoCancel(true)
                 .setSound(uri)
                 .setColor(mContext.getResources().getColor(R.color.colorAccent))
                 .setContentTitle("Hapramp")
-                .setContentText(notificationObject.content)
+                .setContentText(notificationObject.getContent())
                 .setContentIntent(resultPendingIntent)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(notificationObject.content))
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(notificationObject.getContent()))
                 .build();
 
         NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);

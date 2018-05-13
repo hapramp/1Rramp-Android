@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
 import com.hapramp.main.HapRampMain;
 import com.hapramp.datamodels.response.NotificationResponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -21,21 +22,12 @@ import java.util.Map;
 
 public class NotificationHandler {
 
-    private static Map<String, String> map;
+    private static NotificationPayloadModel notificationPayloadModel;
 
     public static void handleNotification(RemoteMessage remoteMessage, Context context) {
         //this is called when app is backgrounded
 
-        map = remoteMessage.getData();
-        final NotificationResponse.Notification notificationObject = new NotificationResponse.Notification(
-                Integer.valueOf(map.get("id")),
-                map.get("content"),
-                map.get("created_at"),
-                Integer.valueOf(map.get("user_id")),
-                Integer.valueOf(map.get("actor_id")),
-                map.get("action"),
-                map.get("arg1"),
-                Boolean.valueOf(map.get("is_read")));
+       notificationPayloadModel = new Gson().fromJson(remoteMessage.getData().get("data"),NotificationPayloadModel.class);
 
         if (new ForegroundCheck().isForeground(context)) {
             Log.d("Firebase", "app is in foreground");
@@ -48,7 +40,7 @@ public class NotificationHandler {
             });
         } else {
             Log.d("Firebase", "app is in background");
-            NotificationUtils.showNotification(context, notificationObject);
+            NotificationUtils.showNotification(context, notificationPayloadModel);
         }
     }
 
