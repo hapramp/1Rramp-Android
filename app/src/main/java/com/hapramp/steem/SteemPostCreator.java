@@ -3,6 +3,7 @@ package com.hapramp.steem;
 import android.os.Handler;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
+import android.util.TimeUtils;
 
 import com.hapramp.preferences.HaprampPreferenceManager;
 
@@ -89,6 +90,7 @@ public class SteemPostCreator {
                             @Override
                             public void run() {
                                 steemPostCreatorCallback.onPostCreatedOnSteem();
+                                HaprampPreferenceManager.getInstance().setLastPostCreatedAt(System.currentTimeMillis());
                             }
                         }, 1000);
                     }

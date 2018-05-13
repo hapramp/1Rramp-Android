@@ -8,6 +8,7 @@ import com.hapramp.api.DataServer;
 import com.hapramp.main.HapRampMain;
 import com.hapramp.logger.L;
 import com.hapramp.utils.HashGenerator;
+import com.hapramp.utils.MomentsUtils;
 
 /**
  * Created by Ankit on 5/15/2017.
@@ -290,4 +291,12 @@ public class HaprampPreferenceManager {
         return  preferences.getString("current_user_followings","");
     }
 
+    public void setLastPostCreatedAt(long timeMillis) {
+        editor.putLong("last_created_at",timeMillis);
+        editor.apply();
+    }
+
+    public long getLastPostCreatedAt(){
+        return preferences.getLong("last_created_at",0);
+    }
 }

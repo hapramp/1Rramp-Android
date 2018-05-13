@@ -11,9 +11,11 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hapramp.R;
 import com.hapramp.utils.FontManager;
+import com.hapramp.utils.MomentsUtils;
 
 /**
  * Created by Ankit on 12/19/2017.
@@ -75,13 +77,16 @@ public class CreateButtonView extends FrameLayout {
             @Override
             public void onClick(View v) {
 
-                if (isFloating) {
-                    // hide
-                    hideFloatingButton();
-                } else {
-                    showFloatingButtons();
+                if(MomentsUtils.isAllowedToCreatePost()) {
+                    if (isFloating) {
+                        // hide
+                        hideFloatingButton();
+                    } else {
+                        showFloatingButtons();
+                    }
+                }else{
+                    Toast.makeText(mContext,"You can create your item "+MomentsUtils.getTimeLeft(),Toast.LENGTH_LONG).show();
                 }
-
             }
         });
 
