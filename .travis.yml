@@ -68,7 +68,7 @@ script:
 #    repo: hapramp/Hapramp-Android
 #    tags: false
 #    all_branches: true
-#  access_token: $GITHUB_TOKEN
+#  api_key: $GITHUB_TOKEN
 #  password:
 #    secure: cGRnAZ228DE+HvhB1h9AvrPGhHhudt6L++Y7CLQmy9RnKjl4mrrVM5BCJu/X/gc7Wmlz72hAx4z7h/0wv2+Q4KmO7NuctlQMZouCfC1lWi1Q1ZBKnLzvdXUfLgjBNbihAl75yoNhS1dhj6+DaC3YR/DRUHNXTMY+kxGAPNnXQxA+B2K019KVD3NpaOyljWFboz8j/8BZc1R1G+KqL5DsSFIlmadpmFs55g6v4gZurQYi9hdMeaUpf2KJk/tsAfebdtLbsRJnYKeHx3Z6q5Pe9g2WYOQyC1w/24rUchcs2nGPZ0d20R5krf7CDQS3D9ctUQnlHwzQaJk3pp/zwfWH8VbY8gLYJwb/TODqHKzGuaapcxGxLNMXvNWZ8mWsolXsMFeqPJLUPc0N5IzXtzKLn3WHMX6E6/hbOrHrb1ooQsMsjR2qsfdc/qItuFPbjv53aLE/AhfImSox3tfvr3Or0lGr2gBXlc3DwLmws/9u2iJzxSrmkSxNf8P+gHawi1CPIylbJQAv98TFyad7fiD/zOY54EulYylxNmbJr+OB3cyX6HIsPO+rnBHneQscZ54gku/ESYzyNsvmcgWynYkISFxSNjOw0x68+zO4b24oagq46qogS9Yl4Q7WAoMungZygfj0lAmOOK+xcQlRMGtTPUenMcQbn0MtgkvkZWgZW0Q=
 #  user:

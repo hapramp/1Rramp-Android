@@ -26,6 +26,7 @@ android {
         checkReleaseBuilds true
         abortOnError false
     }
+
     signingConfigs {
         debug {}
         release {}
@@ -38,6 +39,12 @@ android {
         versionName "0.0.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+    }
+    buildTypes {
+        debug{}
+        release {
+
+        }
     }
 }
 dependencies {
