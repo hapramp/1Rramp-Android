@@ -43,6 +43,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
+            android:parentActivityName=".ui.activity.HomeActivity"
             android:name=".ui.activity.NotificationsActivity"
             android:screenOrientation="portrait" />
         <activity

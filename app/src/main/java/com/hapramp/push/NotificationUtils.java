@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
 import com.hapramp.R;
+import com.hapramp.ui.activity.HomeActivity;
 import com.hapramp.ui.activity.NotificationsActivity;
 import com.hapramp.datamodels.response.NotificationResponse;
 
@@ -24,15 +25,19 @@ public class NotificationUtils {
 
         Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         final int icon = R.mipmap.ic_launcher;
+        Intent backIntent = new Intent(mContext, HomeActivity.class);
+        backIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Intent notificationIntent = new Intent(mContext, NotificationsActivity.class);
 
-        final PendingIntent resultPendingIntent =
-                PendingIntent.getActivity(
-                        mContext,
-                        0,
-                        notificationIntent,
-                        PendingIntent.FLAG_CANCEL_CURRENT
-                );
+        final PendingIntent pendingIntent = PendingIntent.getActivities(mContext,121,new Intent[]{backIntent,notificationIntent},PendingIntent.FLAG_ONE_SHOT);
+
+//        final PendingIntent resultPendingIntent =
+//                PendingIntent.getActivity(
+//                        mContext,
+//                        0,
+//                        notificationIntent,
+//                        PendingIntent.FLAG_CANCEL_CURRENT
+//                );
 
         final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
                 mContext);
@@ -47,7 +52,7 @@ public class NotificationUtils {
                 .setColor(mContext.getResources().getColor(R.color.colorAccent))
                 .setContentTitle("Hapramp")
                 .setContentText(notificationObject.getContent())
-                .setContentIntent(resultPendingIntent)
+                .setContentIntent(pendingIntent)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(notificationObject.getContent()))
                 .build();
 

@@ -1,53 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="#ffffff"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp"
+    android:background="#ffffff">
 
 
     <TextView
         android:id="@+id/notification_content"
-        android:textColor="@color/Black87"
-        android:padding="4dp"
-        android:textSize="16sp"
-        android:layout_toStartOf="@+id/markAsRead"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@+id/markAsRead"
+        android:padding="4dp"
+        android:textColor="@color/Black87"
+        android:textSize="16sp" />
 
     <TextView
-        android:visibility="gone"
         android:id="@+id/markAsRead"
-        android:text="Mark Read"
-        android:textColor="@color/colorPrimary"
-        android:textSize="14sp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:background="@drawable/light_btn_bg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:paddingBottom="4dp"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:text="Mark Read"
+        android:textColor="@color/colorPrimary"
+        android:textSize="14sp"
+        android:visibility="gone" />
 
     <TextView
-        android:paddingTop="4dp"
-        android:paddingBottom="8dp"
-        android:paddingStart="4dp"
-        android:paddingEnd="4dp"
         android:id="@+id/moment"
-        android:textSize="14sp"
-        android:layout_below="@+id/notification_content"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/notification_content"
+        android:paddingBottom="8dp"
+        android:paddingEnd="4dp"
+        android:paddingStart="4dp"
+        android:paddingTop="4dp"
+        android:textSize="14sp" />
 
 
     <FrameLayout
         android:id="@+id/toolbar_drop_shadow"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-       android:layout_alignParentBottom="true"
+        android:layout_alignParentBottom="true"
         android:background="@drawable/toolbar_shadow" />
 
 </RelativeLayout>
