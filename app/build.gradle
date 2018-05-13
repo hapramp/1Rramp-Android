@@ -4,7 +4,7 @@ apply plugin: 'io.fabric'
 ext.crashlyticsVersion = '2.9.1'
 ext.firebaseVersionNew = '15.0.2'
 ext.firebaseVersionOld = '15.0.0'
-ext.buildToolVersion = '27.1.1'
+ext.buildToolVersion = '27.0.3'
 ext.supportLibVersion = '27.1.1'
 ext.multidexVersion = '1.0.3'
 ext.butterknifeVersion = '8.8.1'
@@ -19,6 +19,10 @@ ext.barcodeReaderVersion = '1.1.5'
 ext.roomVersion = '1.0.0'
 ext.archLifecycleVersion = '1.1.0'
 
+def keystorePropsFile = rootProject.file("config.properties")
+def keystoreProps = new Properties()
+keystoreProps.load(new FileInputStream(keystorePropsFile))
+
 android {
     compileSdkVersion 27
     buildToolsVersion "$buildToolsVersion"
@@ -29,7 +33,12 @@ android {
 
     signingConfigs {
         debug {}
-        release {}
+        release {
+            keyAlias keystoreProps['keyAlias']
+            keyPassword keystoreProps['keyPassword']
+            storeFile file(keystoreProps['storeFile'])
+            storePassword keystoreProps['storePassword']
+        }
     }
     defaultConfig {
         applicationId "com.hapramp"
@@ -43,7 +52,7 @@ android {
     buildTypes {
         debug{}
         release {
-
+            signingConfig signingConfigs.release
         }
     }
 }

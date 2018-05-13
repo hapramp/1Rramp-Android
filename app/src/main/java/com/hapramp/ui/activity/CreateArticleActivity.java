@@ -272,36 +272,30 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     }
 
     private void publishArticle() {
-
-        //prepare title
         title = "";
-        //prepare tags
         tags = (ArrayList<String>) articleCategoryView.getSelectedTags();
+        if (articleCategoryView.getSelectedTags().size() == 1) {
+            toast("Select Atleast One Category");
+            return;
+        }
         includeCustomTags(tags);
-        //prepare post structure
         List<FeedDataItemModel> datas = editorView.getDataItemList();
         postStructureModel = new PostStructureModel(datas, FeedDataConstants.FEED_TYPE_ARTICLE);
-
         sendPostToServerForProcessing(postStructureModel);
-
     }
 
     private void includeCustomTags(ArrayList<String> tags) {
         tags.addAll(tagsInputBox.getHashTags());
     }
 
-    //PUBLISHING SECTION
     private void sendPostToServerForProcessing(PostStructureModel content) {
-
         generated_permalink = PermlinkGenerator.getPermlink();
         permlink_with_username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername()+"/"+generated_permalink;
         PreProcessingModel preProcessingModel = new PreProcessingModel(permlink_with_username, new Gson().toJson(content));
-
         RetrofitServiceGenerator.getService().sendForPreProcessing(preProcessingModel).enqueue(new Callback<ProcessedBodyResponse>() {
             @Override
             public void onResponse(Call<ProcessedBodyResponse> call, Response<ProcessedBodyResponse> response) {
                 if (response.isSuccessful()) {
-                    // send to blockchain
                     sendPostToSteemBlockChain(response.body().getmBody());
                 } else {
                     toast("Something went wrong while pre-processing...");

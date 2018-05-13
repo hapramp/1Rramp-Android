@@ -38,8 +38,6 @@ public class NotificationHandler {
                 Boolean.valueOf(map.get("is_read")));
 
         if (new ForegroundCheck().isForeground(context)) {
-            // if foreground
-            // update the notification in shared pref
             Log.d("Firebase", "app is in foreground");
             HaprampPreferenceManager.getInstance().incrementUnreadNotifications();
             new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -49,14 +47,9 @@ public class NotificationHandler {
                 }
             });
         } else {
-            // generate a notification and add it to system tray
-
             Log.d("Firebase", "app is in background");
-
             NotificationUtils.showNotification(context, notificationObject);
-
         }
-
     }
 
     private static void sendBroadcast() {

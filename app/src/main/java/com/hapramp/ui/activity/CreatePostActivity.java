@@ -183,7 +183,7 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
             return;
         }
 
-        if (postCreateComponent.getSelectedCommunityTags().size() == 0) {
+        if (postCreateComponent.getSelectedCommunityTags().size() == 1) {
             toast("Select Atleast One Category");
             return;
         }

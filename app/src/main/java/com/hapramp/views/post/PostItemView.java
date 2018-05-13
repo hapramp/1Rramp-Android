@@ -356,7 +356,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
                     AccountName voteFor = new AccountName(getAuthor());
                     AccountName voter = new AccountName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
                     SteemJ steemJ = SteemHelper.getSteemInstance();
-                    steemJ.vote(voter, voteFor, new Permlink(getFullPermlinkAsString()), (short) vote);
+                    steemJ.vote(voter, voteFor, new Permlink(getPermlinkAsString()), (short) vote);
                     Notifyer.notifyVote(getFullPermlinkAsString(),vote);
                     mHandler.post(new Runnable() {
                         @Override

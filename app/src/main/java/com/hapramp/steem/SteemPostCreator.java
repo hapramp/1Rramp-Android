@@ -31,20 +31,15 @@ import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
  */
 
 public class SteemPostCreator {
-
     private Handler mHandler;
-
     public SteemPostCreator() {
         this.mHandler = new Handler();
     }
-
     @WorkerThread
     public void createPost(final String body, final String title, final List<String> tags, final PostStructureModel postStructure, final String __permlink) {
-
         new Thread() {
             @Override
             public void run() {
-
                 SteemJ steemJ = SteemHelper.getSteemInstance();
                 if (steemJ == null) {
                     mHandler.post(new Runnable() {
@@ -55,9 +50,7 @@ public class SteemPostCreator {
                     });
                     return;
                 }
-
                 try {
-                    //author account of post
                     String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
                     AccountName author = new AccountName(username);
                     Permlink permlink = new Permlink(__permlink);
@@ -65,7 +58,7 @@ public class SteemPostCreator {
                     boolean allowCurationRewards = LocalConfig.ALLOW_CURATION_REWARDS;
                     int percentSteemDollars = LocalConfig.PERCENT_STEEM_DOLLARS;
                     String jsonMetadata = new JsonMetaDataModel(tags, postStructure).getJson();
-                    AccountName parentAuthor = null;  // new post
+                    AccountName parentAuthor = null;
                     Permlink parentPermlink = new Permlink(LocalConfig.PARENT_PERMALINK);
                     CommentOperation commentOperation = new CommentOperation(parentAuthor, parentPermlink, author, permlink, title, body, jsonMetadata);
                     ArrayList<Operation> operations = new ArrayList<>();
@@ -77,7 +70,6 @@ public class SteemPostCreator {
                     commentPayoutBeneficiaries.setBeneficiaries(beneficiaryRouteTypes);
                     ArrayList<CommentOptionsExtension> commentOptionsExtensions = new ArrayList<>();
                     commentOptionsExtensions.add(commentPayoutBeneficiaries);
-
                     CommentOptionsOperation commentOptionsOperation = new CommentOptionsOperation(
                             author,
                             permlink,
@@ -87,66 +79,54 @@ public class SteemPostCreator {
                             allowCurationRewards,
                             commentOptionsExtensions
                     );
-
                     operations.add(commentOptionsOperation);
                     DynamicGlobalProperty globalProperties = steemJ.getDynamicGlobalProperties();
                     SignedTransaction signedTransaction = new SignedTransaction(globalProperties.getHeadBlockId(), operations, null);
                     signedTransaction.sign();
                     steemJ.broadcastTransaction(signedTransaction);
-
                     if (steemPostCreatorCallback != null) {
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 steemPostCreatorCallback.onPostCreatedOnSteem();
                             }
-                        }, 2000);
-
+                        }, 1000);
                     }
-
                 } catch (final SteemCommunicationException e) {
                     e.printStackTrace();
                     if (steemPostCreatorCallback != null) {
-
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                steemPostCreatorCallback.onPostCreationFailedOnSteem("Communication Error [" + e.toString() + "]");
+                                steemPostCreatorCallback.onPostCreationFailedOnSteem(e.getMessage());
                             }
                         });
-
-
                     }
-
                 } catch (final SteemResponseException e) {
                     e.printStackTrace();
-
                     if (steemPostCreatorCallback != null) {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                steemPostCreatorCallback.onPostCreationFailedOnSteem("Response Error [" + e.toString() + "]");
+                                if(e.getCode()==-32000) {
+                                    steemPostCreatorCallback.onPostCreationFailedOnSteem("You can create only 1 post per 5 minute.");
+                                }
                             }
                         });
-
                     }
-
                 } catch (final SteemInvalidTransactionException e) {
                     e.printStackTrace();
                     if (steemPostCreatorCallback != null) {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                steemPostCreatorCallback.onPostCreationFailedOnSteem("Transaction Error [" + e.toString() + "]");
+                                steemPostCreatorCallback.onPostCreationFailedOnSteem(e.getMessage());
                             }
                         });
-
                     }
                 }
-
             }
         }.start();
-
     }
 
     private SteemPostCreatorCallback steemPostCreatorCallback;

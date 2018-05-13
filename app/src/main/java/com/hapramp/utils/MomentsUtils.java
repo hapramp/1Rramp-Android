@@ -2,6 +2,8 @@ package com.hapramp.utils;
 
 import android.text.format.DateUtils;
 
+import com.hapramp.main.HapRampMain;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -17,31 +19,23 @@ public class MomentsUtils {
 
     //2018-03-08T11:38:48
     public static String getFormattedTime(String timeStamp){
-        Calendar cal = Calendar.getInstance();
-        TimeZone tz = cal.getTimeZone();
-
-        String formattedTime  = "";
-        timeStamp = timeStamp.replace('T','-');
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss",Locale.US);
-        sdf.setTimeZone(tz);
-
         try {
-            Date mDate = sdf.parse(timeStamp);
-            long timeInMilliseconds = mDate.getTime();
-            formattedTime = DateUtils.getRelativeTimeSpanString(timeInMilliseconds).toString();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
+            long _time = dateFormat.parse(timeStamp).getTime();
+            //minResolution: SECONDS_IN_MILLIS
+            //transitionResolution: YEAR_IN_MILLIS
+            return DateUtils.getRelativeDateTimeString(HapRampMain.getContext(),_time,DateUtils.MINUTE_IN_MILLIS,DateUtils.YEAR_IN_MILLIS,DateUtils.FORMAT_ABBREV_RELATIVE).toString();
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-        return formattedTime;
+        return "";
     }
 
     public static String getCurrentTime() {
-
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
-        String date = df.format(c.getTime());
-        return date;
-
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
+        return dateFormat.format(calendar.getTime());
     }
 }
