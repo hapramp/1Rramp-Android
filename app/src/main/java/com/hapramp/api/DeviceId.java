@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class DeviceId {
-    @SerializedName("deviceID")
+    @SerializedName("device_id")
     public String deviceId;
 
     public DeviceId(String deviceId) {
