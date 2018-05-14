@@ -35,6 +35,7 @@ import com.hapramp.steem.PreProcessingModel;
 import com.hapramp.steem.ProcessedBodyResponse;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.FeedResponse;
+import com.hapramp.steem.models.FeedWrapper;
 import com.hapramp.steem.models.user.SteemUser;
 import com.hapramp.youtube.YoutubeResultModel;
 
@@ -85,6 +86,9 @@ public interface HaprampAPI {
 
     @GET("feeds/user/{username}")
     Call<FeedResponse> getUserFeeds(@Path("username") String username, @Query("limit") int limit);
+
+    @GET
+    Call<FeedWrapper> getFeedFromSteem(@Url String url);
 
     @GET("feeds/user/{username}")
     Call<FeedResponse> getUserFeeds(@Path("username") String username, @Query("limit") int limit,@Query("start_author") String lastAuthor,@Query("start_permlink") String lastPermlink);

@@ -73,6 +73,7 @@ public class ImageHandler {
             Glide.with(context)
                     .load(url)
                     .asBitmap()
+                    .placeholder(R.drawable.profile)
                     .centerCrop()
                     .into(new BitmapImageViewTarget(imageView) {
                         @Override

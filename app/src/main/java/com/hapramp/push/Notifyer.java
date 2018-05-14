@@ -20,6 +20,8 @@ import retrofit2.Response;
 public class Notifyer {
 
     public static void notifyVote(String permlink, int vote) {
+        if(vote==0)
+            return;
         vote = vote/2000;
         RetrofitServiceGenerator.getService().notifyVoteOnPost(new VoteRequestBody(vote), permlink)
                 .enqueue(new Callback<ConfirmationResponse>() {

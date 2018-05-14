@@ -23,7 +23,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
+import com.hapramp.api.RetrofitServiceGenerator;
+import com.hapramp.api.URLS;
 import com.hapramp.push.Notifyer;
+import com.hapramp.steem.models.FeedWrapper;
 import com.hapramp.ui.activity.CommentsActivity;
 import com.hapramp.ui.activity.DetailedActivity;
 import com.hapramp.ui.activity.ProfileActivity;
@@ -58,6 +61,9 @@ import eu.bittrade.libs.steemj.base.models.Permlink;
 import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
 import eu.bittrade.libs.steemj.exceptions.SteemInvalidTransactionException;
 import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Ankit on 12/30/2017.
@@ -203,7 +209,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
             checkEllipseAndInvalidateReadMoreButton(postSnippet, readMoreBtn);
         }
 
-        setSteemEarnings(feed.totalPayoutValue);
+        setSteemEarnings(feed.pendingPayoutValue);
         setCommunities(feed.jsonMetadata.tags);
         ImageHandler.loadCircularImage(mContext, feedOwnerPic, String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format), feed.author));
 
@@ -383,21 +389,14 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
       *  cancel vote
       * */
     private void deleteVoteOnSteem() {
-
-        Log.d("VoteTest", "Deleting vote");
-
         starView.voteProcessing();
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 starView.deletedVoteTemporarily();
             }
         }, 500);
-
-
         new Thread() {
-
             @Override
             public void run() {
                 try {
@@ -405,7 +404,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
                     AccountName voter = new AccountName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
                     SteemJ steemJ = SteemHelper.getSteemInstance();
                     steemJ.cancelVote(voter, voteFor, new Permlink(getPermlinkAsString()));
-                    Notifyer.notifyVote(getFullPermlinkAsString(),0);
+                    Notifyer.notifyVote(getFullPermlinkAsString(), 0);
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -422,10 +421,8 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
                     e.printStackTrace();
                     mHandler.post(steemCancellingVoteExceptionRunnable);
                 }
-
             }
         }.start();
-
     }
 
     private void castingVoteFailed() {
@@ -438,6 +435,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         if (starView != null) {
             starView.castedVoteSuccessfully();
         }
+        fetchUpdatedBalance();
     }
 
     private void voteDeleteFailed() {
@@ -450,12 +448,12 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         if (starView != null) {
             starView.deletedVoteSuccessfully();
         }
+        fetchUpdatedBalance();
     }
 
     private void l(String msg) {
         Log.d(TAG, msg);
     }
-
 
     private Runnable steemCastingVoteExceptionRunnable = new Runnable() {
         @Override
@@ -470,54 +468,6 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
             voteDeleteFailed();
         }
     };
-
-    ///================================================================================
-    // Ends Vote part
-
-
-    private String extractTitleForArticle(List<FeedDataItemModel> data) {
-        //return first h1 type text
-        for (int i = 0; i < data.size(); i++) {
-            if (data.get(i).type.equals(FeedDataConstants.ContentType.H1)) {
-                return data.get(i).content;
-            }
-
-            //check also for h2
-            if (data.get(i).type.equals(FeedDataConstants.ContentType.H2)) {
-                return data.get(i).content;
-            }
-
-        }
-        return "";
-    }
-
-    private String extractTextSnippetForPost(List<FeedDataItemModel> data) {
-
-        //return first text type
-        for (int i = 0; i < data.size(); i++) {
-            if (data.get(i).type.equals(FeedDataConstants.ContentType.TEXT)) {
-                return data.get(i).content;
-            }
-        }
-        return "";
-
-    }
-
-    private String extractImageUrlForPost(List<FeedDataItemModel> data) {
-
-        //return first image type
-        for (int i = 0; i < data.size(); i++) {
-            if (data.get(i).type.equals(FeedDataConstants.ContentType.IMAGE)) {
-                return data.get(i).content;
-            }
-        }
-        return "";
-
-    }
-
-    //=====================
-    // CONTENT TYPE BINDING
-    //=====================
 
     private void bindPostContent(List<FeedDataItemModel> data) {
 
@@ -567,6 +517,23 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
             }
         }
 
+    }
+
+    private void fetchUpdatedBalance(){
+        String url = String.format(URLS.STEEM_FEED_URL,mFeed.url);
+        RetrofitServiceGenerator.getService().getFeedFromSteem(url).enqueue(new Callback<FeedWrapper>() {
+            @Override
+            public void onResponse(Call<FeedWrapper> call, Response<FeedWrapper> response) {
+                if(response.isSuccessful()){
+                    setSteemEarnings(response.body().getFeed().pendingPayoutValue);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FeedWrapper> call, Throwable t) {
+
+            }
+        });
     }
 
     private FeedRenderTypeModel scanFeedContentsForRendering(List<FeedDataItemModel> data) {
@@ -669,8 +636,9 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     }
 
     private void setSteemEarnings(String payout) {
-        //double
-        hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), payout.substring(0, payout.indexOf(' '))));
+        if(hapcoinsCount!=null) {
+            hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), payout.substring(0, payout.indexOf(' '))));
+        }
     }
 
     private void setCommentCount(int count) {
