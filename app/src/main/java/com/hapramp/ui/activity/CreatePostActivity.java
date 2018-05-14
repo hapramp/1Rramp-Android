@@ -38,6 +38,7 @@ import com.hapramp.steem.ProcessedBodyResponse;
 import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.steem.models.data.FeedDataItemModel;
 import com.hapramp.utils.ConnectionUtils;
+import com.hapramp.utils.FilePathUtils;
 import com.hapramp.utils.FontManager;
 import com.hapramp.views.post.PostCreateComponent;
 import com.hapramp.youtube.YoutubeVideoSelectorActivity;
@@ -329,7 +330,8 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
         if (requestCode == REQUEST_IMAGE_SELECTOR && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                postCreateComponent.setImageResource(bitmap);
+                String realPath = FilePathUtils.getPath(this, data.getData());
+                postCreateComponent.setImageResource(bitmap,realPath);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -341,6 +343,7 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
             insertYoutube(videoId);
         }
     }
+
 
     private void insertYoutube(String videoId) {
         postCreateComponent.setYoutubeThumbnail(videoId);

@@ -39,6 +39,7 @@ import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.steem.models.data.FeedDataItemModel;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FeaturedImageItemDecorator;
+import com.hapramp.utils.FilePathUtils;
 import com.hapramp.utils.FontManager;
 import com.hapramp.views.editor.EditorView;
 import com.hapramp.views.hashtag.CustomHashTagInput;
@@ -156,26 +157,25 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == editor.PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
-            Uri uri = data.getData();
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                editor.insertImage(bitmap);
-
-            } catch (IOException e) {
-                e.printStackTrace();
+        if (requestCode == editor.PICK_IMAGE_REQUEST) {
+            if (resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+                Uri uri = data.getData();
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                    String filePath = FilePathUtils.getPath(this, uri);
+                    editor.insertImage(bitmap, filePath);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else if (requestCode == YOUTUBE_RESULT_REQUEST) {
+            if (resultCode == Activity.RESULT_OK) {
+                String videoId = data.getStringExtra(YoutubeVideoSelectorActivity.EXTRA_VIDEO_KEY);
+                editorView.insertYoutube(videoId);
+            } else {
+                Toast.makeText(this, "No Video Selected!", Toast.LENGTH_SHORT).show();
             }
         }
-
-        if (requestCode == YOUTUBE_RESULT_REQUEST && resultCode == Activity.RESULT_OK) {
-
-            String videoId = data.getStringExtra(YoutubeVideoSelectorActivity.EXTRA_VIDEO_KEY);
-            editorView.insertYoutube(videoId);
-
-        } else {
-            Toast.makeText(this, "No Video Selected!", Toast.LENGTH_SHORT).show();
-        }
-
     }
 
     private void init() {
@@ -290,7 +290,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
 
     private void sendPostToServerForProcessing(PostStructureModel content) {
         generated_permalink = PermlinkGenerator.getPermlink();
-        permlink_with_username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername()+"/"+generated_permalink;
+        permlink_with_username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername() + "/" + generated_permalink;
         PreProcessingModel preProcessingModel = new PreProcessingModel(permlink_with_username, new Gson().toJson(content));
         RetrofitServiceGenerator.getService().sendForPreProcessing(preProcessingModel).enqueue(new Callback<ProcessedBodyResponse>() {
             @Override

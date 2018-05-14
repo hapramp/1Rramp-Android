@@ -20,6 +20,7 @@ import com.hapramp.datamodels.response.CompetitionResponse;
 import com.hapramp.datamodels.response.ConfirmationResponse;
 import com.hapramp.datamodels.response.CreateUserReponse;
 import com.hapramp.datamodels.response.FetchUserResponse;
+import com.hapramp.datamodels.response.FileUploadReponse;
 import com.hapramp.datamodels.response.NotificationResponse;
 import com.hapramp.datamodels.response.OrgsResponse;
 import com.hapramp.datamodels.response.PostResponse;
@@ -41,12 +42,15 @@ import com.hapramp.youtube.YoutubeResultModel;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Url;
@@ -140,6 +144,10 @@ public interface HaprampAPI {
 
     @PUT("users/{user_id}")
     Call<UpdateUserResponse> updateOrg(@Path("user_id") String userID, @Body UserUpdateModel user);
+
+    @Multipart
+    @POST("upload")
+    Call<FileUploadReponse> uploadFile(@Part MultipartBody.Part file);
 
     @PUT("users/skills")
     Call<SkillsUpdateResponse> setSkills(@Body SkillsUpdateBody skillsUpdateBody);

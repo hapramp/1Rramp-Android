@@ -22,6 +22,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.hapramp.R;
+import com.hapramp.api.RetrofitServiceGenerator;
+import com.hapramp.datamodels.response.FileUploadReponse;
 import com.hapramp.editor.Editor;
 import com.hapramp.editor.EditorListener;
 import com.hapramp.editor.models.EditorContent;
@@ -32,11 +34,18 @@ import com.hapramp.steem.FeedDataConstants;
 import com.hapramp.steem.models.data.FeedDataItemModel;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.hapramp.editor.models.EditorTextStyle.H1;
 import static com.hapramp.editor.models.EditorTextStyle.H2;
@@ -115,62 +124,28 @@ public class EditorView extends FrameLayout implements TextHeaderView.HeadingCha
             }
 
             @Override
-            public void onUpload(Bitmap image, String uuid) {
-                uploadImage(image, uuid);
+            public void onUpload(String filePath, String uuid) {
+                startUploading(filePath,uuid);
             }
         });
 
     }
 
-    private void uploadImage(final Bitmap image, final String uuid) {
+    private void startUploading(String filePath , final String uuid) {
 
-        final Handler mHandler = new Handler();
-
-        new Thread() {
+        File file = new File(filePath);
+        final RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("upload", file.getName(), requestFile);
+        RetrofitServiceGenerator.getService().uploadFile(body).enqueue(new Callback<FileUploadReponse>() {
             @Override
-            public void run() {
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                image.compress(Bitmap.CompressFormat.JPEG, 25, stream);
-                final byte[] byteArray = stream.toByteArray();
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        uploadMedia(byteArray, uuid);
-                    }
-                });
-
-            }
-
-        }.start();
-
-    }
-
-    private void uploadMedia(byte[] bytes, final String uuid) {
-
-        Log.d("EditorView", "Uploading Media");
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
-        StorageReference ref =
-                storageRef
-                        .child("article_images")
-                        .child(PostJobModel.getMediaLocation());
-
-        final UploadTask uploadTask = ref.putBytes(bytes);
-        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                editor.onImageUploadComplete(downloadUrl.toString(), uuid);
-                if (onImageUploadListener != null) {
-                    onImageUploadListener.onImageUploaded(downloadUrl.toString());
+            public void onResponse(Call<FileUploadReponse> call, Response<FileUploadReponse> response) {
+                if (response.isSuccessful()) {
+                    editor.onImageUploadComplete(response.body().getDownloadUrl(),uuid);
                 }
             }
-        });
 
-        uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onFailure(@NonNull Exception e) {
-                editor.onImageUploadFailed(uuid);
+            public void onFailure(Call<FileUploadReponse> call, Throwable t) {
             }
         });
     }

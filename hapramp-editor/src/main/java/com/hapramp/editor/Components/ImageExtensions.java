@@ -72,7 +72,7 @@ public class ImageExtensions {
         ((Activity) editorCore.getContext()).startActivityForResult(Intent.createChooser(intent, "Select an image"), editorCore.PICK_IMAGE_REQUEST);
     }
 
-    public void insertImage(Bitmap image, int index, String subTitle) {
+    public void insertImage(Bitmap image,String filePath, int index, String subTitle) {
         // Render(getStateFromString());
         final View childLayout = ((Activity) editorCore.getContext()).getLayoutInflater().inflate(this.editorImageLayout, null);
 
@@ -105,7 +105,7 @@ public class ImageExtensions {
             lblStatus.setVisibility(View.VISIBLE);
             BindEvents(childLayout);
             childLayout.findViewById(R.id.progress).setVisibility(View.VISIBLE);
-            editorCore.getEditorListener().onUpload(image, uuid);
+            editorCore.getEditorListener().onUpload(filePath, uuid);
         } else {
             desc.setEnabled(false);
             lblStatus.setVisibility(View.GONE);
@@ -235,7 +235,7 @@ public class ImageExtensions {
         }
 
         protected void onPostExecute(Bitmap result) {
-            insertImage(result, this.InsertIndex, subTitle);
+            insertImage(result,"", this.InsertIndex, subTitle);
         }
     }
 

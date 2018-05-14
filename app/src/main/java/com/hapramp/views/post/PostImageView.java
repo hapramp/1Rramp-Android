@@ -1,13 +1,8 @@
 package com.hapramp.views.post;
 
-import android.app.Activity;
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -23,24 +18,20 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnPausedListener;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.hapramp.R;
-import com.hapramp.datamodels.PostJobModel;
-import com.hapramp.utils.ImageHandler;
+import com.hapramp.api.RetrofitServiceGenerator;
+import com.hapramp.datamodels.response.FileUploadReponse;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Ankit on 2/5/2018.
@@ -52,20 +43,14 @@ public class PostImageView extends FrameLayout {
     ImageView image;
     @BindView(R.id.informationTv)
     TextView informationTv;
-    @BindView(R.id.removeBtn)
-    TextView removeBtn;
-    @BindView(R.id.pauseResumeBtn)
-    TextView pauseResumeBtn;
     @BindView(R.id.actionContainer)
     RelativeLayout actionContainer;
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
-    private Context mContext;
-    private Handler mHandler;
+    @BindView(R.id.removeBtn)
+    TextView removeBtn;
     private View mainView;
-    private Uri downloadUrl;
-    private boolean isUploadPaused;
-    private UploadTask uploadTask;
+    private String downloadUrl;
 
     public PostImageView(@NonNull Context context) {
         super(context);
@@ -83,18 +68,13 @@ public class PostImageView extends FrameLayout {
     }
 
     private void init(Context context) {
-
-        this.mContext = context;
         mainView = LayoutInflater.from(context).inflate(R.layout.post_image_view, this);
         ButterKnife.bind(this, mainView);
-        mHandler = new Handler();
         attachListeners();
         invalidateView();
-
     }
 
     private void attachListeners() {
-
         image.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,71 +83,27 @@ public class PostImageView extends FrameLayout {
                 }
             }
         });
-
         removeBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 scaleAndHideMainView();
-                downloadUrl = null;
-            }
-        });
-
-        pauseResumeBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isUploadPaused) {
-                    // resume
-                    pauseResumeBtn.setText("Pause");
-                    uploadTask.resume();
-                    isUploadPaused = false;
-                } else { // upload is in progress
-                    pauseResumeBtn.setText("Resume");
-                    uploadTask.pause();
-                    isUploadPaused = true;
-                }
             }
         });
     }
 
-    public void setImageSource(final Bitmap bitmap) {
-
-        if(bitmap==null)
+    public void setImageSource(final Bitmap bitmap, String filePath) {
+        if (bitmap == null)
             return;
-
         invalidateView();
         mainView.setVisibility(VISIBLE);
         image.setImageBitmap(bitmap);
         informationTv.setVisibility(VISIBLE);
         informationTv.setText("Processing...");
-
-        new Thread() {
-            @Override
-            public void run() {
-
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 40, stream);
-                final byte[] byteArray = stream.toByteArray();
-
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Glide.with(mContext)
-                                .load(byteArray)
-                                .asBitmap()
-                                .into(image);
-                        if (mainView.getVisibility() == View.VISIBLE) {
-                            startUploading(byteArray);
-                        }
-                    }
-                });
-            }
-        }.start();
+        startUploading(filePath);
     }
 
     private void invalidateView() {
         progressBar.setVisibility(VISIBLE);
-        progressBar.setProgress(0);
-        pauseResumeBtn.setVisibility(GONE);
         informationTv.setVisibility(GONE);
     }
 
@@ -197,70 +133,37 @@ public class PostImageView extends FrameLayout {
         });
     }
 
-    private void startUploading(byte[] bytes) {
+    private void startUploading(String filePath) {
 
-        Log.d("EditorView", "Uploading Media");
-
-        //enable pause listener
-        pauseResumeBtn.setVisibility(VISIBLE);
-
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
-        StorageReference ref =
-                storageRef
-                        .child("post_images")
-                        .child(PostJobModel.getMediaLocation());
-
-        uploadTask = ref.putBytes(bytes);
-        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        File file = new File(filePath);
+        final RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("upload", file.getName(), requestFile);
+        RetrofitServiceGenerator.getService().uploadFile(body).enqueue(new Callback<FileUploadReponse>() {
             @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+            public void onResponse(Call<FileUploadReponse> call, Response<FileUploadReponse> response) {
+                if (response.isSuccessful()) {
+                    downloadUrl = response.body().getDownloadUrl();
+                    progressBar.setVisibility(GONE);
+                    informationTv.setText("Uploaded");
+                    showAndhideActionContainer();
+                } else {
+                    informationTv.setText("Error");
+                    downloadUrl = null;
+                    progressBar.setVisibility(GONE);
+                }
+            }
 
-                downloadUrl = taskSnapshot.getDownloadUrl();
-                // remove pause button
-                pauseResumeBtn.setVisibility(GONE);
-                // remove progress bar
+            @Override
+            public void onFailure(Call<FileUploadReponse> call, Throwable t) {
+                informationTv.setText("Error");
                 progressBar.setVisibility(GONE);
-                informationTv.setText("Uploaded");
-                showAndhideActionContainer();
-
-            }
-        });
-
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                informationTv.setText("Failed !!!");
-                //TODO: enable retry button
-            }
-        });
-
-        uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-
-                int progress = (int) ((100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
-                informationTv.setText("Uploading " + progress + " %");
-                progressBar.setProgress(progress);
-
-            }
-        });
-
-        uploadTask.addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
-                informationTv.setText("Paused");
+                downloadUrl = null;
             }
         });
     }
 
     public String getDownloadUrl() {
-        if (downloadUrl != null) {
-            return downloadUrl.toString();
-        } else {
-            return null;
-        }
-
+        return downloadUrl;
     }
 
     private void showAndhideActionContainer() {
@@ -272,11 +175,4 @@ public class PostImageView extends FrameLayout {
             }
         }, 2000);
     }
-
-    public void setImageUri(Uri uri) {
-        Glide.with(mContext)
-                .load(uri)
-                .into(image);
-    }
-
 }

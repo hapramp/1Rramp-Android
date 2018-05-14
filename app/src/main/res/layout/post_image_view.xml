@@ -28,22 +28,7 @@
 
         <TextView
             android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
-            android:textSize="16sp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textColor="@color/white"
-            android:background="@drawable/filled_btn_bg"
-            android:id="@+id/removeBtn"
-            android:text="Remove"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/removeBtn"
+           android:layout_alignParentEnd="true"
             android:textSize="16sp"
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
@@ -52,12 +37,10 @@
             android:layout_marginEnd="8dp"
             android:textColor="@color/white"
             android:background="@drawable/filled_btn_bg"
-            android:id="@+id/pauseResumeBtn"
-            android:text="Pause"
+            android:id="@+id/removeBtn"
+            android:text="Remove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-
-
 
     </RelativeLayout>
 
@@ -65,10 +48,9 @@
         android:layout_below="@+id/actionContainer"
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
+        android:indeterminate="true"
         android:layout_width="match_parent"
-        android:max="100"
-        android:progress="60"
-        android:layout_height="4dp"
+        android:layout_height="8dp"
         />
 
 

@@ -124,8 +124,8 @@ public class PostCreateComponent extends FrameLayout implements PostCategoryView
         return String.format("https://i.ytimg.com/vi/%s/hqdefault.jpg", videoKey);
     }
 
-    public void setImageResource(final Bitmap bitmap) {
-        postImageView.setImageSource(bitmap);
+    public void setImageResource(final Bitmap bitmap , String filePath) {
+        postImageView.setImageSource(bitmap,filePath);
         youtubeId = null;
         youtubeItemContainer.setVisibility(GONE);
     }

@@ -10,5 +10,5 @@ import android.widget.EditText;
 
 public interface EditorListener{
     void onTextChanged(EditText editText, Editable text);
-    void onUpload(Bitmap image, String uuid);
+    void onUpload(String filePath, String uuid);
 }

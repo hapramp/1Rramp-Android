@@ -115,10 +115,11 @@ public class Editor extends EditorCore {
 
     /**
      * size in sp
+     *
      * @param size
      */
     public void setH1TextSize(int size) {
-       // getInputExtensions().setH1TextSize(size);
+        // getInputExtensions().setH1TextSize(size);
     }
 
     public int getH2TextSize() {
@@ -127,6 +128,7 @@ public class Editor extends EditorCore {
 
     /**
      * size in sp
+     *
      * @param size
      */
     public void setH2TextSize(int size) {
@@ -139,6 +141,7 @@ public class Editor extends EditorCore {
 
     /**
      * size in sp
+     *
      * @param size
      */
     public void setH3TextSize(int size) {
@@ -147,10 +150,11 @@ public class Editor extends EditorCore {
 
     /**
      * size in sp
+     *
      * @param size
      */
-    public void setNormalTextSize(int size){
-       // getInputExtensions().setNormalTextSize(size);
+    public void setNormalTextSize(int size) {
+        // getInputExtensions().setNormalTextSize(size);
     }
 
     /**
@@ -163,11 +167,11 @@ public class Editor extends EditorCore {
         getInputExtensions().setFontFace(StringResource);
     }
 
-    public Typeface getNormalFontTypeface(){
+    public Typeface getNormalFontTypeface() {
         return Typeface.create(getInputExtensions().getFontFace(), Typeface.NORMAL);
     }
 
-    public Typeface getBoldFontTypeface(){
+    public Typeface getBoldFontTypeface() {
         return Typeface.create(getInputExtensions().getFontFace(), Typeface.BOLD);
     }
 
@@ -252,11 +256,11 @@ public class Editor extends EditorCore {
         getImageExtensions().openImageGallery();
     }
 
-    public void insertImage(Bitmap bitmap) {
-        getImageExtensions().insertImage(bitmap, -1,null);
+    public void insertImage(Bitmap bitmap, String filePath) {
+        getImageExtensions().insertImage(bitmap, filePath, -1, null);
     }
 
-    public void insertYoutubeVideo(String videoId){
+    public void insertYoutubeVideo(String videoId) {
         getYoutubeExtension().insertYoutubeVideo(videoId);
     }
 
@@ -267,6 +271,7 @@ public class Editor extends EditorCore {
     public void onImageUploadFailed(String imageId) {
         getImageExtensions().onPostUpload(null, imageId);
     }
+
     /*
      *
      *List Item extension
