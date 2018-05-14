@@ -19,9 +19,9 @@ ext.barcodeReaderVersion = '1.1.5'
 ext.roomVersion = '1.0.0'
 ext.archLifecycleVersion = '1.1.0'
 
-def keystorePropsFile = rootProject.file("config.properties")
-def keystoreProps = new Properties()
-keystoreProps.load(new FileInputStream(keystorePropsFile))
+//def keystorePropsFile = rootProject.file("config.properties")
+//def keystoreProps = new Properties()
+//keystoreProps.load(new FileInputStream(keystorePropsFile))
 
 android {
     compileSdkVersion 27
@@ -34,10 +34,10 @@ android {
     signingConfigs {
         debug {}
         release {
-            keyAlias keystoreProps['keyAlias']
-            keyPassword keystoreProps['keyPassword']
-            storeFile file(keystoreProps['storeFile'])
-            storePassword keystoreProps['storePassword']
+//            keyAlias keystoreProps['keyAlias']
+//            keyPassword keystoreProps['keyPassword']
+//            storeFile file(keystoreProps['storeFile'])
+//            storePassword keystoreProps['storePassword']
         }
     }
     defaultConfig {

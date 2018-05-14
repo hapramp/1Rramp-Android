@@ -24,7 +24,7 @@ public class NotificationUtils {
     public static void showNotification(Context mContext, NotificationPayloadModel notificationObject){
 
         Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        final int icon = R.mipmap.ic_launcher;
+        final int icon = R.mipmap.hapramp_logo;
         Intent backIntent = new Intent(mContext, HomeActivity.class);
         backIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Intent notificationIntent = new Intent(mContext, NotificationsActivity.class);

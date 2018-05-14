@@ -1,139 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:fillViewport="true"
     android:layout_height="match_parent">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <RelativeLayout
-            android:id="@+id/topBar"
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            android:elevation="4dp">
-
-            <TextView
-                android:id="@+id/closeBtn"
-                android:layout_width="?actionBarSize"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text=""
-                android:textColor="#fb282828"
-                android:textSize="24sp" />
-
-            <TextView
-                android:id="@+id/popupMenu"
-                android:layout_width="?actionBarSize"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:gravity="center"
-                android:text=""
-                android:textColor="#fb282828"
-                android:textSize="24sp" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/topBar">
-
-            <ImageView
-                android:id="@+id/author_pic"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:background="#009988"
-                />
-
-            <TextView
-                android:id="@+id/author_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/author_pic"
-                android:text="Ankit Kumar"
-                android:textColor="#414141" />
-
-            <TextView
-                android:id="@+id/auther_username_with_ago"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/author_name"
-                android:layout_toRightOf="@+id/author_pic"
-                android:text="\@bxute | 1 day ago" />
-
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/story_featured_pic"
-                android:layout_width="match_parent"
-                android:layout_height="196dp"
-                android:layout_below="@+id/author_pic"
-                android:background="#f55d5d" />
-
-            <TextView
-                android:id="@+id/likeBtn"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_below="@+id/story_featured_pic"
-                android:text="" />
-
-            <TextView
-                android:id="@+id/voteCount"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_below="@+id/story_featured_pic"
-                android:layout_toRightOf="@id/likeBtn" />
-
-
-            <TextView
-                android:id="@+id/commentBtn"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_below="@+id/story_featured_pic"
-                android:layout_toRightOf="@+id/voteCount"
-                android:text="" />
-
-            <TextView
-                android:id="@+id/commentCount"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_below="@+id/story_featured_pic"
-                android:layout_toRightOf="@id/commentBtn" />
-
-
-            <TextView
-                android:id="@+id/shareBtn"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_below="@+id/story_featured_pic"
-                android:layout_toRightOf="@+id/commentCount"
-                android:text="" />
-
-            <TextView
-                android:id="@+id/shareCount"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_below="@+id/story_featured_pic"
-                android:layout_toRightOf="@id/shareBtn" />
-
-            <TextView
-                android:id="@+id/story_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/likeBtn"
-                android:padding="16dp"
-                android:text="story" />
-
-            <TextView
-                android:id="@+id/tags"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/story_content"
-                android:text="#love #blues" />
-
-        </RelativeLayout>
-
-    </RelativeLayout>
-
-</ScrollView>
+    <TextView
+        android:id="@+id/A"
+        android:text="A"
+        android:gravity="center"
+        android:textSize="36sp"
+        android:textColor="#ffffff"
+        android:background="#009988"
+        android:layout_width="56dp"
+        android:layout_height="56dp" />
+    <TextView
+        android:id="@+id/B"
+        android:text="B"
+        android:gravity="center"
+        android:textSize="36sp"
+        android:textColor="#ffffff"
+        android:background="#89060c"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_toEndOf="@+id/A"
+        />
+    <TextView
+        android:id="@+id/C"
+        android:text="C"
+        android:gravity="center"
+        android:textSize="36sp"
+        android:textColor="#ffffff"
+        android:background="#a30b78"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_below="@+id/A"
+        />
+    <TextView
+        android:id="@+id/D"
+        android:text="D"
+        android:gravity="center"
+        android:textSize="36sp"
+        android:textColor="#ffffff"
+        android:background="#700ba3"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentEnd="true"
+        />
+    <TextView
+        android:id="@+id/E"
+        android:text="E"
+        android:gravity="center"
+        android:textSize="36sp"
+        android:textColor="#ffffff"
+        android:background="#310ba3"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        />
+    <TextView
+        android:id="@+id/F"
+        android:text="F"
+        android:gravity="center"
+        android:textSize="36sp"
+        android:textColor="#ffffff"
+        android:background="#087b97"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        />
+    <TextView
+        android:id="@+id/G"
+        android:text="G"
+        android:gravity="center"
+        android:textSize="36sp"
+        android:textColor="#ffffff"
+        android:background="#0ba310"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_centerInParent="true"
+        />
+    <TextView
+        android:text="Hello Rukayat"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</RelativeLayout>
