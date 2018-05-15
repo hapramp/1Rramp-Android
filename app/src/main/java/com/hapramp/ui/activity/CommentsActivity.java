@@ -92,7 +92,6 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
     }
 
     private void init() {
-
         steemCommentCreator = new SteemCommentCreator();
         steemCommentCreator.setSteemCommentCreateCallback(this);
         commentsViewModel = ViewModelProviders.of(this).get(CommentsViewModel.class);
@@ -111,7 +110,6 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
         viewItemDecoration.setWantTopOffset(false, 0);
         commentsRecyclerView.addItemDecoration(viewItemDecoration);
         commentsRecyclerView.setAdapter(commentsAdapter);
-
         if (commentsList.size() > 0) {
             commentLoadingProgressBar.setVisibility(View.GONE);
             commentsAdapter.addComments(commentsList);

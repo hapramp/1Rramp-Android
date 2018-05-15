@@ -22,23 +22,12 @@ import com.hapramp.datamodels.response.NotificationResponse;
 public class NotificationUtils {
 
     public static void showNotification(Context mContext, NotificationPayloadModel notificationObject){
-
         Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         final int icon = R.mipmap.hapramp_logo;
         Intent backIntent = new Intent(mContext, HomeActivity.class);
         backIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Intent notificationIntent = new Intent(mContext, NotificationsActivity.class);
-
         final PendingIntent pendingIntent = PendingIntent.getActivities(mContext,121,new Intent[]{backIntent,notificationIntent},PendingIntent.FLAG_ONE_SHOT);
-
-//        final PendingIntent resultPendingIntent =
-//                PendingIntent.getActivity(
-//                        mContext,
-//                        0,
-//                        notificationIntent,
-//                        PendingIntent.FLAG_CANCEL_CURRENT
-//                );
-
         final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
                 mContext);
 
@@ -55,7 +44,6 @@ public class NotificationUtils {
                 .setContentIntent(pendingIntent)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(notificationObject.getContent()))
                 .build();
-
         NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(100, notification);
     }

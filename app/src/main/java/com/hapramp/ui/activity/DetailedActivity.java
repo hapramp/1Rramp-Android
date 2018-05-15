@@ -132,13 +132,11 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     RelativeLayout postMetaContainer;
     @BindView(R.id.hashtags)
     TextView hashtagsTv;
-    private String currentCommentUrl;
     private Handler mHandler;
     private Feed post;
     private ProgressDialog progressDialog;
     private SteemCommentCreator steemCommentCreator;
     private List<SteemCommentModel> comments = new ArrayList<>();
-    private Profile myProfile;
     private CommentsViewModel commentsViewModel;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -154,20 +152,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_DETAILED_POST,null);
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        Log.d("TAG", "onNew Intent...");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
-
     private void init() {
-
         mHandler = new Handler();
         steemCommentCreator = new SteemCommentCreator();
         commentsViewModel = ViewModelProviders.of(this).get(CommentsViewModel.class);
@@ -183,78 +168,64 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     }
 
     private void collectExtras() {
-
         post = getIntent().getExtras().getParcelable(Constants.EXTRAA_KEY_POST_DATA);
-        currentCommentUrl = String.format(getResources().getString(R.string.commentUrl), Long.valueOf(post.id));
         progressDialog = new ProgressDialog(this);
-
     }
 
     private void attachListener() {
-
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-
         starView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 starView.onStarIndicatorTapped();
             }
         });
-
         moreCommentsCaption.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 navigateToCommentsPage();
             }
         });
-
         sendCommentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 postComment();
             }
         });
-
         commentCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 navigateToCommentsPage();
             }
         });
-
         commentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 navigateToCommentsPage();
             }
         });
-
         shareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ShareUtils.shareMixedContent(DetailedActivity.this, post);
             }
         });
-
         overflowBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showPopup();
             }
         });
-
     }
 
     private void showPopup() {
-
         ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(this, R.style.PopupMenuOverlapAnchor);
         PopupMenu popup = new PopupMenu(contextThemeWrapper, overflowBtn);
-        //Inflating the Popup using xml file
         popup.getMenuInflater().inflate(R.menu.popup_post, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -263,19 +234,15 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
                 return true;
             }
         });
-
         popup.show();
-
     }
 
     private void navigateToCommentsPage() {
-
         Intent intent = new Intent(DetailedActivity.this, CommentsActivity.class);
         intent.putExtra(Constants.EXTRAA_KEY_POST_AUTHOR, post.author);
         intent.putExtra(Constants.EXTRAA_KEY_POST_PERMLINK, post.permlink);
         intent.putParcelableArrayListExtra(Constants.EXTRAA_KEY_COMMENTS, (ArrayList<SteemCommentModel>) comments);
         startActivity(intent);
-
     }
 
     private void postComment() {
@@ -298,20 +265,16 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
 
     @Override
     public void onCommentCreateProcessing() {
-        // showProgress("Posting Your Comment...");
     }
 
     @Override
     public void onCommentCreated() {
         hideProgress();
-        //add to current view
-        // Toast.makeText(this, "Comment Created", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onCommentCreateFailed() {
         hideProgress();
-        //  Toast.makeText(this, "Comment Operation Failed", Toast.LENGTH_LONG).show();
     }
 
     private void showProgress(String msg) {
@@ -321,51 +284,36 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     }
 
     private void hideProgress() {
-
         if (progressDialog != null) {
             progressDialog.dismiss();
         }
-
     }
 
     private void setTypefaces() {
-
         Typeface t = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
         closeBtn.setTypeface(t);
         overflowBtn.setTypeface(t);
         commentBtn.setTypeface(t);
         hapcoinBtn.setTypeface(t);
         sendCommentButton.setTypeface(t);
-
     }
 
     private void bindPostValues() {
-
-
         ImageHandler.loadCircularImage(this, feedOwnerPic, String.format(getResources().getString(R.string.steem_user_profile_pic_format), post.author));
-
         feedOwnerTitle.setText(post.author);
         feedOwnerSubtitle.setText(
                 String.format(getResources().getString(R.string.post_subtitle_format),
                         MomentsUtils.getFormattedTime(post.created)));
-
         setCommunities(post.jsonMetadata.tags);
         PostStructureModel postStructureModel = new PostStructureModel(post.jsonMetadata.content.getData(), post.jsonMetadata.getContent().type);
         renderView.render(postStructureModel);
-
         ImageHandler.loadCircularImage(this, commentCreaterAvatar, String.format(getResources().getString(R.string.steem_user_profile_pic_format), HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
-
         setSteemEarnings(post.totalPayoutValue);
         bindVotes(post.activeVotes, post.permlink);
         attachListenersOnStarView();
-
     }
 
-    //==================================================================================
-    // Vote part begins
-
     private void attachListenersOnStarView() {
-
         starView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -388,16 +336,13 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
                 return true;
             }
         });
-
     }
 
     private void bindVotes(List<ActiveVote> votes, String permlink) {
-
         long votePercentSum = getVotePercentSum(votes);
         boolean amIVoted = checkForMyVote(votes);
         long myVotePercent = amIVoted ? getMyVotePercent(votes) : 0;
         long totalVotes = getNonZeroVoters(votes);
-
         starView.setVoteState(
                 new StarView.Vote(
                         amIVoted,
@@ -410,14 +355,11 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
                     public void onVoted(String full_permlink, int _vote) {
                         performVoteOnSteem(_vote);
                     }
-
                     @Override
                     public void onVoteDeleted(String full_permlink) {
                         deleteVoteOnSteem();
                     }
                 });
-
-
     }
 
     private long getNonZeroVoters(List<ActiveVote> votes) {
@@ -501,7 +443,6 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
                 starView.deletedVoteTemporarily();
             }
         }, 500);
-
         new Thread() {
             @Override
             public void run() {
@@ -535,28 +476,24 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         if (starView != null) {
             starView.failedToCastVote();
         }
-        // Toast.makeText(this, "FAILED : Vote Casting", Toast.LENGTH_LONG).show();
     }
 
     private void castingVoteSuccess() {
         if (starView != null) {
             starView.castedVoteSuccessfully();
         }
-        //  Toast.makeText(this, "SUCCESS : Vote Casting", Toast.LENGTH_LONG).show();
     }
 
     private void voteDeleteFailed() {
         if (starView != null) {
             starView.failedToDeleteVoteFromServer();
         }
-        //   Toast.makeText(this, "FAILED : Vote Delete", Toast.LENGTH_LONG).show();
     }
 
     private void voteDeleteSuccess() {
         if (starView != null) {
             starView.deletedVoteSuccessfully();
         }
-        //  Toast.makeText(this, "SUCCESS : Vote Deleted", Toast.LENGTH_LONG).show();
     }
 
     private Runnable steemCastingVoteExceptionRunnable = new Runnable() {
@@ -573,15 +510,9 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         }
     };
 
-    // Ends Vote part
-    // ================================================================================
-
-
     private void setCommunities(List<String> communities) {
-        // community name + community color
         List<CommunityModel> cm = new ArrayList<>();
         StringBuilder hashtags = new StringBuilder();
-
         for (int i = 0; i < communities.size(); i++) {
             if (Communities.doesCommunityExists(communities.get(i))) {
                 cm.add(new CommunityModel("", "", communities.get(i),
@@ -595,37 +526,26 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
                         .append(" ");
             }
         }
-
         addCommunitiesToLayout(cm);
         hashtagsTv.setText(hashtags);
-
     }
 
     private void addCommunitiesToLayout(List<CommunityModel> cms) {
-
         int size = cms.size();
         if (size > 0) {
-            //first skill
             club1.setVisibility(VISIBLE);
-
             club1.setText(cms.get(0).getmName());
             club1.getBackground().setColorFilter(
                     Color.parseColor(cms.get(0).getmColor()),
                     PorterDuff.Mode.SRC_ATOP);
-
             if (size > 1) {
-                // second skills
                 club2.setVisibility(VISIBLE);
-
                 club2.setText(cms.get(1).getmName());
                 club2.getBackground().setColorFilter(
                         Color.parseColor(cms.get(1).getmColor()),
                         PorterDuff.Mode.SRC_ATOP);
-
                 if (size > 2) {
-                    // third skills
                     club3.setVisibility(VISIBLE);
-
                     club3.setText(cms.get(2).getmName());
                     club3.getBackground().setColorFilter(
                             Color.parseColor(cms.get(2).getmColor()),
@@ -633,7 +553,6 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
                 }
             }
         }
-
     }
 
     private void setSteemEarnings(String payout) {
@@ -645,40 +564,31 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     }
 
     private void addAllCommentsToView(List<SteemCommentModel> discussions) {
-
-        //clear the view first
         commentsViewContainer.removeAllViews();
         int commentCount = discussions.size();
         commentLoadingProgressBar.setVisibility(View.GONE);
         if (commentCount == 0) {
             emptyCommentsCaption.setVisibility(VISIBLE);
         }
-
         int range = commentCount > 3 ? 3 : discussions.size();
-
         for (int i = 0; i < range; i++) {
             addCommentToView(discussions.get(i), i);
         }
-
         if (commentCount > 3) {
             moreCommentsCaption.setVisibility(VISIBLE);
         }
-
     }
 
     private void addCommentToView(SteemCommentModel steemCommentModel, int index) {
-
         CommentView view = new CommentView(this);
         view.setComment(steemCommentModel);
         commentsViewContainer.addView(view, index,
                 new ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT));
-
     }
 
     private void showPopUp(View v, final int post_id, final int position) {
-
         final PopupMenu popupMenu = new PopupMenu(this, v);
         popupMenu.getMenuInflater().inflate(R.menu.post_item_menu, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -688,15 +598,10 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
                 return true;
             }
         });
-
-        Log.d("POP", "show PopUp");
-
         popupMenu.show();
-
     }
 
     private void showAlertDialogForDelete(final int post_id, final int position) {
-
         new AlertDialog.Builder(this)
                 .setTitle("Post Delete")
                 .setMessage("Delete This Post")
@@ -710,12 +615,8 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
                 .setNegativeButton("Cancel",
                         null)
                 .show();
-
-
     }
 
     private void requestPostDelete(int post_id, int pos) {
-        // DataServer.deletePost(String.valueOf(post_id), pos, this);
     }
-
 }
