@@ -1,5 +1,7 @@
 package com.hapramp.ui.fragments;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +12,8 @@ import android.view.ViewGroup;
 
 import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
+import com.hapramp.analytics.AnalyticsParams;
+import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.datastore.ServiceWorker;
 import com.hapramp.interfaces.datatore_callback.ServiceWorkerCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -62,11 +66,15 @@ public class LatestFragment extends Fragment implements FeedListView.FeedListVie
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
         feedListView.setFeedListViewListener(this);
         feedListView.initialLoading();
         fetchPosts();
+    }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        AnalyticsUtil.getInstance(getActivity()).setCurrentScreen((Activity) context, AnalyticsParams.SCREEN_NEW,null);
     }
 
     @Override
@@ -77,30 +85,22 @@ public class LatestFragment extends Fragment implements FeedListView.FeedListVie
 
 
     private void prepareServiceWorker() {
-
         serviceWorker = new ServiceWorker();
         serviceWorker.init(getActivity());
         serviceWorker.setServiceWorkerCallback(this);
         serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder()
                 .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
                 .setLimit(Constants.MAX_FEED_LOAD_LIMIT);
-
     }
 
     private void fetchPosts() {
-
         serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
-
         serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(Communities.TAG_HAPRAMP)
                 .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
                 .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
                 .createRequestParam();
-
         serviceWorker.requestLatestPosts(serviceWorkerRequestParams);
-
     }
-
-
     //FEEDLIST CALLBACKS
     @Override
     public void onRetryFeedLoading() {
@@ -114,16 +114,13 @@ public class LatestFragment extends Fragment implements FeedListView.FeedListVie
 
     @Override
     public void onLoadMoreFeeds() {
-
         serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
-
         serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(Communities.TAG_HAPRAMP)
                 .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
                 .setLastAuthor(lastAuthor)
                 .setLastPermlink(lastPermlink)
                 .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
                 .createRequestParam();
-
         serviceWorker.requestAppendableFeedForLatest(serviceWorkerRequestParams);
     }
 
@@ -205,6 +202,7 @@ public class LatestFragment extends Fragment implements FeedListView.FeedListVie
             this.lastAuthor = lastAuthor;
             this.lastPermlink = lastPermlink;
         }
+        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_BROWSE_NEW);
     }
 
     @Override

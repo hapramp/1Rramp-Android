@@ -1,5 +1,6 @@
 package com.hapramp.ui.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -15,6 +16,8 @@ import android.view.ViewGroup;
 
 import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
+import com.hapramp.analytics.AnalyticsParams;
+import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.datastore.ServiceWorker;
 import com.hapramp.interfaces.datatore_callback.ServiceWorkerCallback;
 import com.hapramp.steem.Communities;
@@ -41,7 +44,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ProfileFragment extends Fragment implements ServiceWorkerCallback {
-
     @BindView(R.id.profilePostRv)
     RecyclerView profilePostRv;
     private Context mContext;
@@ -56,11 +58,9 @@ public class ProfileFragment extends Fragment implements ServiceWorkerCallback {
     private ServiceWorkerRequestParams serviceWorkerRequestParams;
     private String lastAuthor;
     private String lastPermlink;
-
     public ProfileFragment() {
         Crashlytics.setString(CrashReporterKeys.UI_ACTION,"profile fragment");
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -109,6 +109,7 @@ public class ProfileFragment extends Fragment implements ServiceWorkerCallback {
     public void onAttach(Context context) {
         super.onAttach(context);
         this.mContext = context;
+        AnalyticsUtil.getInstance(getActivity()).setCurrentScreen((Activity) mContext, AnalyticsParams.SCREEN_SELF_PROFILE,null);
     }
 
     @Override
@@ -203,6 +204,7 @@ public class ProfileFragment extends Fragment implements ServiceWorkerCallback {
             this.lastAuthor = lastAuthor;
             this.lastPermlink = lastPermlink;
         }
+        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_BROWSE_SELF_POST);
     }
 
     @Override

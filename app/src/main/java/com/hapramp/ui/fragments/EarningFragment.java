@@ -1,6 +1,8 @@
 package com.hapramp.ui.fragments;
 
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +14,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
+import com.hapramp.analytics.AnalyticsParams;
+import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.ui.activity.HowToEarnActivity;
 import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.UserStatsCallback;
@@ -25,8 +29,6 @@ import butterknife.Unbinder;
 
 
 public class EarningFragment extends Fragment implements UserStatsCallback {
-
-
     @BindView(R.id.post_created_count)
     TextView postCreatedCount;
     @BindView(R.id.post_created_text)
@@ -48,10 +50,8 @@ public class EarningFragment extends Fragment implements UserStatsCallback {
     TextView postCreatedIcon;
     @BindView(R.id.post_rated_icon)
     TextView postRatedIcon;
-
     private static String userId;
     public EarningFragment() {
-        // Required empty public constructor
     }
 
 
@@ -91,6 +91,13 @@ public class EarningFragment extends Fragment implements UserStatsCallback {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        AnalyticsUtil.getInstance(getActivity()).setCurrentScreen((Activity) context, AnalyticsParams.SCREEN_EARNING,null);
+        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_BROWSE_EARNINGS);
     }
 
     @Override

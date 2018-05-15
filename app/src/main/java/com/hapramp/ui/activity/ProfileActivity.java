@@ -13,6 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
+import com.hapramp.analytics.AnalyticsParams;
+import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.datastore.ServiceWorker;
 import com.hapramp.interfaces.datatore_callback.ServiceWorkerCallback;
 import com.hapramp.steem.Communities;
@@ -39,14 +41,11 @@ import retrofit2.Response;
 
 // Activity for User Profile
 public class ProfileActivity extends AppCompatActivity implements ServiceWorkerCallback {
-
-
     private static final int POST_LIMIT = 100;
     @BindView(R.id.closeBtn) TextView closeBtn;
     @BindView(R.id.toolbar_container) RelativeLayout toolbarContainer;
     @BindView(R.id.profilePostRv) RecyclerView profilePostRv;
     @BindView(R.id.profile_user_name) TextView profileUserName;
-
     private String username;
     private ProfileRecyclerAdapter profilePostAdapter;
     private ViewItemDecoration viewItemDecoration;
@@ -56,7 +55,6 @@ public class ProfileActivity extends AppCompatActivity implements ServiceWorkerC
     private ServiceWorkerRequestParams serviceWorkerRequestParams;
     private String lastAuthor;
     private String lastPermlink;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +64,7 @@ public class ProfileActivity extends AppCompatActivity implements ServiceWorkerC
         attachListeners();
         prepareServiceWorker();
         fetchPosts();
+        AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_PROFILE,null);
     }
 
     public abstract class EndlessOnScrollListener extends RecyclerView.OnScrollListener {

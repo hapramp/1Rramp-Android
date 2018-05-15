@@ -1,6 +1,7 @@
 package com.hapramp.ui.fragments;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -18,6 +19,8 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.hapramp.R;
+import com.hapramp.analytics.AnalyticsParams;
+import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.ui.adapters.CategoryRecyclerAdapter;
 import com.hapramp.datastore.ServiceWorker;
 import com.hapramp.interfaces.LikePostCallback;
@@ -44,14 +47,12 @@ import butterknife.Unbinder;
 
 public class HomeFragment extends Fragment implements
         CategoryRecyclerAdapter.OnCategoryItemClickListener, LikePostCallback, FeedListView.FeedListViewListener, ServiceWorkerCallback {
-
     @BindView(R.id.feedListView)
     FeedListView feedListView;
     @BindView(R.id.sectionsRv)
     RecyclerView sectionsRv;
     @BindView(R.id.progressBarLoadingRecite)
     ProgressBar progressBarLoadingRecite;
-
     private Context mContext;
     private String currentSelectedTag = ALL;
     private CategoryRecyclerAdapter categoryRecyclerAdapter;
@@ -137,6 +138,7 @@ public class HomeFragment extends Fragment implements
         } else {
             fetchCommunityPosts(tag);
         }
+        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_BROWSE_HOME);
     }
 
     private void fetchAllPosts() {
@@ -178,6 +180,12 @@ public class HomeFragment extends Fragment implements
 
         serviceWorker.requestAppendableFeed(serviceWorkerRequestParams);
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        AnalyticsUtil.getInstance(mContext).setCurrentScreen((Activity) mContext, AnalyticsParams.SCREEN_HOME,null);
     }
 
     @Override

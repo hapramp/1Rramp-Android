@@ -21,6 +21,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
+import com.hapramp.analytics.AnalyticsParams;
+import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.YoutubeSuggestionsHelper;
@@ -64,6 +66,7 @@ public class YoutubeVideoSelectorActivity extends AppCompatActivity implements Y
         ButterKnife.bind(this);
         init();
         attachListener();
+        AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_YOUTUBE_SEARCH,null);
     }
 
     private void init() {
@@ -94,14 +97,12 @@ public class YoutubeVideoSelectorActivity extends AppCompatActivity implements Y
     }
 
     private void attachListener() {
-
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 close();
             }
         });
-
         searchInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -186,6 +187,7 @@ public class YoutubeVideoSelectorActivity extends AppCompatActivity implements Y
         hideProgressBar();
         showYoutubeResults();
         resultAdapter.setYoutubeResults(results);
+        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_SEARCH_YOUTUBE);
     }
 
     private void hideProgressBar() {

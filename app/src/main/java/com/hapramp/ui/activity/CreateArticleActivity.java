@@ -23,6 +23,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hapramp.R;
+import com.hapramp.analytics.AnalyticsParams;
+import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.datamodels.response.ConfirmationResponse;
 import com.hapramp.ui.adapters.FeaturedImageAdapter;
 import com.hapramp.api.RetrofitServiceGenerator;
@@ -96,7 +98,6 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     private ArrayList<FeaturedImageSelectionModel> insertedImages;
     private ProgressDialog progressDialog;
     private Dialog dialog;
-
     FeaturedImageAdapter featuredImageAdapter;
     private String title;
     private ArrayList<String> tags;
@@ -106,13 +107,13 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_article);
         ButterKnife.bind(this);
         init();
         attachListeners();
-
+        AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_BLOG_CREATION,null);
+        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_OPENS_ARTICLE_CREATE);
     }
 
     @Override
@@ -349,6 +350,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
 
         toast("Your post is live now.");
         showPublishingProgressDialog(false, "");
+        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_ARTICLE);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

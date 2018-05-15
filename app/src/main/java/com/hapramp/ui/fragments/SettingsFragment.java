@@ -1,5 +1,6 @@
 package com.hapramp.ui.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
+import com.hapramp.analytics.AnalyticsParams;
+import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.ui.activity.LoginActivity;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.FontManager;
@@ -24,16 +27,13 @@ import butterknife.Unbinder;
 
 
 public class SettingsFragment extends Fragment {
-
     @BindView(R.id.logoutIcon)
     TextView logoutIcon;
     Unbinder unbinder;
     @BindView(R.id.logoutContainer)
     LinearLayout logoutContainer;
     private Context mContext;
-
     public SettingsFragment() {
-        // Required empty public constructor
     }
 
 
@@ -66,6 +66,7 @@ public class SettingsFragment extends Fragment {
 
     private void logout() {
         //clear preferences
+        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_LOGOUT);
         HaprampPreferenceManager.getInstance().clearPreferences();
         Intent intent = new Intent(mContext, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -91,6 +92,7 @@ public class SettingsFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         this.mContext = context;
+        AnalyticsUtil.getInstance(getActivity()).setCurrentScreen((Activity) context, AnalyticsParams.SCREEN_SETTINGS,null);
     }
 
     @Override

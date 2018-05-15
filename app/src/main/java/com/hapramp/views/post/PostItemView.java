@@ -23,6 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
+import com.hapramp.analytics.AnalyticsParams;
+import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.api.URLS;
 import com.hapramp.push.Notifyer;
@@ -348,6 +350,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
 
     private void performVoteOnSteem(final int vote) {
         starView.voteProcessing();
+        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_VOTE);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

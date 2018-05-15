@@ -1,5 +1,6 @@
 package com.hapramp.ui.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +11,8 @@ import android.view.ViewGroup;
 
 import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
+import com.hapramp.analytics.AnalyticsParams;
+import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.datastore.ServiceWorker;
 import com.hapramp.interfaces.datatore_callback.ServiceWorkerCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -33,7 +36,6 @@ import butterknife.Unbinder;
  */
 
 public class HotFragment extends Fragment implements FeedListView.FeedListViewListener, ServiceWorkerCallback {
-
     @BindView(R.id.feedListView)
     FeedListView feedListView;
     private Unbinder unbinder;
@@ -61,13 +63,16 @@ public class HotFragment extends Fragment implements FeedListView.FeedListViewLi
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
         feedListView.setFeedListViewListener(this);
         feedListView.initialLoading();
         fetchPosts();
-
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        AnalyticsUtil.getInstance(getActivity()).setCurrentScreen(getActivity(), AnalyticsParams.SCREEN_HOT,null);
+    }
 
     @Override
     public void onDestroyView() {
@@ -78,27 +83,21 @@ public class HotFragment extends Fragment implements FeedListView.FeedListViewLi
 
 
     private void prepareServiceWorker() {
-
         serviceWorker = new ServiceWorker();
         serviceWorker.init(getActivity());
         serviceWorker.setServiceWorkerCallback(this);
         serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder()
                 .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
                 .setLimit(Constants.MAX_FEED_LOAD_LIMIT);
-
     }
 
     private void fetchPosts() {
-
         serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
-
         serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(Communities.TAG_HAPRAMP)
                 .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
                 .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
                 .createRequestParam();
-
         serviceWorker.requestHotPosts(serviceWorkerRequestParams);
-
     }
 
 
@@ -115,18 +114,14 @@ public class HotFragment extends Fragment implements FeedListView.FeedListViewLi
 
     @Override
     public void onLoadMoreFeeds() {
-
         serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
-
         serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(Communities.TAG_HAPRAMP)
                 .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
                 .setLastAuthor(lastAuthor)
                 .setLastPermlink(lastPermlink)
                 .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
                 .createRequestParam();
-
         serviceWorker.requestAppendableFeedForHot(serviceWorkerRequestParams);
-
     }
 
     @Override
@@ -207,6 +202,7 @@ public class HotFragment extends Fragment implements FeedListView.FeedListViewLi
             this.lastAuthor = lastAuthor;
             this.lastPermlink = lastPermlink;
         }
+        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_BROWSE_HOT);
     }
 
     @Override
@@ -223,14 +219,12 @@ public class HotFragment extends Fragment implements FeedListView.FeedListViewLi
 
     @Override
     public void onAppendableDataLoaded(List<Feed> appendableList, String lastAuthor , String lastPermlink) {
-
         if (feedListView != null) {
             feedListView.setHasMoreToLoad(appendableList.size() == Constants.MAX_FEED_LOAD_LIMIT);
             feedListView.loadedMoreFeeds(appendableList);
             this.lastAuthor = lastAuthor;
             this.lastPermlink = lastPermlink;
         }
-
     }
 
     @Override

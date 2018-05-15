@@ -14,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
+import com.hapramp.analytics.AnalyticsParams;
+import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.MomentsUtils;
 
@@ -76,7 +78,7 @@ public class CreateButtonView extends FrameLayout {
         plusBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CLICKS_CREATE_BUTTON);
                 if(MomentsUtils.isAllowedToCreatePost()) {
                     if (isFloating) {
                         // hide

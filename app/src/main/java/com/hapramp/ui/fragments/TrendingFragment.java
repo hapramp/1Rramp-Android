@@ -1,5 +1,7 @@
 package com.hapramp.ui.fragments;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +13,8 @@ import android.view.ViewGroup;
 
 import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
+import com.hapramp.analytics.AnalyticsParams;
+import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.datastore.ServiceWorker;
 import com.hapramp.interfaces.datatore_callback.ServiceWorkerCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -34,7 +38,6 @@ import butterknife.Unbinder;
  */
 
 public class TrendingFragment extends Fragment implements FeedListView.FeedListViewListener, ServiceWorkerCallback {
-
     @BindView(R.id.feedListView)
     FeedListView feedListView;
     Unbinder unbinder;
@@ -65,6 +68,12 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
         feedListView.setFeedListViewListener(this);
         feedListView.initialLoading();
         fetchPosts();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        AnalyticsUtil.getInstance(getActivity()).setCurrentScreen((Activity) context, AnalyticsParams.SCREEN_TRENDING,null);
     }
 
     @Override
@@ -198,6 +207,7 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
             this.lastAuthor = lastAuthor;
             this.lastPermlink = lastPermlink;
         }
+        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_BROWSE_TRENDING);
     }
 
     @Override

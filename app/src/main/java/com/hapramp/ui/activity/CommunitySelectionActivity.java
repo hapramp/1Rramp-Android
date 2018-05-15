@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.hapramp.R;
+import com.hapramp.analytics.AnalyticsParams;
+import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
@@ -31,7 +33,6 @@ import butterknife.ButterKnife;
 * */
 
 public class CommunitySelectionActivity extends BaseActivity implements CommunitySelectionPageCallback {
-
     @BindView(R.id.action_bar_title)
     TextView actionBarTitle;
     @BindView(R.id.communitySelectionView)
@@ -40,9 +41,15 @@ public class CommunitySelectionActivity extends BaseActivity implements Communit
     FrameLayout toolbarDropShadow;
     @BindView(R.id.communityContinueButton)
     TextView communityContinueButton;
-
     public static final String TAG = CommunitySelectionActivity.class.getSimpleName();
     private CommunitySelectionPageViewModel communitySelectionPageViewModel;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_COMMUNITY,null);
+        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_COMMUNITY_SELECTION);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

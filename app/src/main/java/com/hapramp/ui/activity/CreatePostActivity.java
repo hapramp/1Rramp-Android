@@ -22,9 +22,10 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.gson.Gson;
 import com.hapramp.R;
+import com.hapramp.analytics.AnalyticsParams;
+import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datamodels.response.ConfirmationResponse;
 import com.hapramp.interfaces.PostCreateCallback;
@@ -42,16 +43,13 @@ import com.hapramp.utils.FilePathUtils;
 import com.hapramp.utils.FontManager;
 import com.hapramp.views.post.PostCreateComponent;
 import com.hapramp.youtube.YoutubeVideoSelectorActivity;
-
 import java.io.IOException;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 import static com.hapramp.views.editor.YoutubeInsertButtonView.YOUTUBE_RESULT_REQUEST;
 
 public class CreatePostActivity extends AppCompatActivity implements PostCreateCallback, SteemPostCreator.SteemPostCreatorCallback {
@@ -89,6 +87,8 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
         init();
         initProgressDialog();
         attachListener();
+        AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_POST_CREATION,null);
+        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_OPENS_POST_CREATE);
     }
 
     @Override
@@ -267,6 +267,7 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
     private void serverConfirmed() {
         toast("Your post is live now.");
         showPublishingProgressDialog(false, "");
+        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_POST);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

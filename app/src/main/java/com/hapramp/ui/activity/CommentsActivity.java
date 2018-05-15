@@ -21,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
+import com.hapramp.analytics.AnalyticsParams;
+import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.ui.adapters.CommentsAdapter;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.SteemCommentCreator;
@@ -46,7 +48,6 @@ import eu.bittrade.libs.steemj.apis.database.models.state.Comment;
  */
 
 public class CommentsActivity extends AppCompatActivity implements SteemCommentCreator.SteemCommentCreateCallback {
-
     @BindView(R.id.backBtn)
     TextView backBtn;
     @BindView(R.id.toolbar_container)
@@ -82,13 +83,12 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.comments_screen);
         ButterKnife.bind(this);
         init();
         attachListeners();
-
+        AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_COMMENT_PAGE, null);
     }
 
     private void init() {
@@ -96,21 +96,16 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
         steemCommentCreator = new SteemCommentCreator();
         steemCommentCreator.setSteemCommentCreateCallback(this);
         commentsViewModel = ViewModelProviders.of(this).get(CommentsViewModel.class);
-
         commentsList = getIntent().getExtras().getParcelableArrayList(Constants.EXTRAA_KEY_COMMENTS);
         postAuthor = getIntent().getExtras().getString(Constants.EXTRAA_KEY_POST_AUTHOR, "");
         postPermlink = getIntent().getExtras().getString(Constants.EXTRAA_KEY_POST_PERMLINK, "");
-
         progressDialog = new ProgressDialog(this);
         typeface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
         backBtn.setTypeface(typeface);
         sendButton.setTypeface(typeface);
-
         ImageHandler.loadCircularImage(this, commentCreaterAvatar, String.format(getResources().getString(R.string.steem_user_profile_pic_format), HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
-
         commentsAdapter = new CommentsAdapter(this);
         commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         Drawable drawable = ContextCompat.getDrawable(this, R.drawable.comment_item_divider_view);
         viewItemDecoration = new ViewItemDecoration(drawable);
         viewItemDecoration.setWantTopOffset(false, 0);
@@ -126,7 +121,7 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
             @Override
             public void onChanged(@Nullable List<SteemCommentModel> steemCommentModels) {
                 commentLoadingProgressBar.setVisibility(View.GONE);
-                Log.d("RoomData","received "+steemCommentModels.size());
+                Log.d("RoomData", "received " + steemCommentModels.size());
                 commentsAdapter.addComments((ArrayList<SteemCommentModel>) steemCommentModels);
             }
         });
@@ -134,7 +129,6 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
     }
 
     private void attachListeners() {
-
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,7 +147,6 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
     // Comments part
 
     private void postComment() {
-
         String cmnt = commentInputBox.getText().toString().trim();
         commentInputBox.setText("");
         if (cmnt.length() > 2) {
@@ -168,9 +161,8 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
                 cmnt, MomentsUtils.getCurrentTime(),
                 String.format(getResources().getString(R.string.steem_user_profile_pic_format),
                         HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
-
+        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_COMMENT);
         commentsViewModel.addComments(steemCommentModel, postPermlink);
-
     }
 
 

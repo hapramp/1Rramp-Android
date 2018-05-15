@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.google.android.gms.vision.barcode.Barcode;
 import com.hapramp.R;
+import com.hapramp.analytics.AnalyticsParams;
+import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.utils.FontManager;
 
 import java.util.List;
@@ -32,7 +34,6 @@ public class QrScanningActivity extends AppCompatActivity implements BarcodeRead
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_scanning);
         ButterKnife.bind(this);
@@ -48,14 +49,12 @@ public class QrScanningActivity extends AppCompatActivity implements BarcodeRead
 
     @Override
     public void onScanned(Barcode barcode) {
-
-        // playing barcode reader beep sound
         barcodeReader.playBeep();
         Intent data = new Intent();
         data.putExtra(EXTRAA_PPK, barcode.displayValue);
         setResult(RESULT_OK, data);
+        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_SCAN);
         finish();
-
     }
 
     @Override

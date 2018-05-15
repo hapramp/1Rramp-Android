@@ -57,6 +57,7 @@ android {
     }
 }
 dependencies {
+    implementation "com.google.firebase:firebase-core:$firebaseVersionNew"
     implementation "com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion"
     implementation "com.google.firebase:firebase-messaging:$firebaseVersionNew"
     implementation "com.google.firebase:firebase-storage:$firebaseVersionNew"

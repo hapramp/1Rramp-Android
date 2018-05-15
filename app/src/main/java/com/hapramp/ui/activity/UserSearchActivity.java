@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hapramp.R;
+import com.hapramp.analytics.AnalyticsParams;
+import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.ui.adapters.UserSuggestionListAdapter;
 import com.hapramp.ui.adapters.ViewPagerAdapter;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -39,10 +41,8 @@ import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
 import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 
 public class UserSearchActivity extends AppCompatActivity implements SearchManager.SearchListener {
-
     public static final String TAG = UserSearchActivity.class.getSimpleName();
     private static boolean SEARCH_MODE = false;
-
     @BindView(R.id.backBtn)
     TextView backBtn;
     @BindView(R.id.searchInput)
@@ -82,6 +82,7 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
         attachListener();
         initSearchManager();
         fetchFollowingsAndCache();
+        AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_USER_SEARCH,null);
     }
 
     @Override
@@ -91,10 +92,7 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
     }
 
     private void initView() {
-
-        //set up view pager
         setupViewPager(viewpager);
-        //set up tabs
         tabs.setupWithViewPager(viewpager);
         tabs.setSelectedTabIndicatorHeight((int) (2 * getResources().getDisplayMetrics().density));
         adapter = new UserSuggestionListAdapter(this);
@@ -102,7 +100,6 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
         mHandler = new Handler();
         backBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         searchBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -141,13 +138,11 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 String searchTerm = searchInput.getText().toString();
                 if (searchTerm.length() >= 0) {
                     fetchSuggestions(searchTerm);
                     setSearchMode();
                 }
-
             }
         });
 
@@ -161,39 +156,29 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
                 }
             }
         });
-
     }
 
     private void setSearchMode() {
-
         SEARCH_MODE = true;
-
-        // show suggestion
         if (suggestionsContainer != null) {
             suggestionsContainer.setVisibility(View.VISIBLE);
         }
-
         //change back icon to cross
         if (backBtn != null) {
             backBtn.setText(closeSearchTextIcon);
         }
-
     }
 
     private void setBrowseMode() {
-
         SEARCH_MODE = false;
-
         // hide suggestion
         if (suggestionsContainer != null) {
             suggestionsContainer.setVisibility(View.GONE);
         }
-
         //clear search view
         if (searchInput != null) {
             searchInput.setText("");
         }
-
         //change cross icon to back
         if (backBtn != null) {
             backBtn.setText(backTextIcon);
@@ -218,6 +203,8 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
         } else {
             Toast.makeText(this, "No Connectivity", Toast.LENGTH_LONG).show();
         }
+
+        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_SEARCH_USER);
     }
 
     private void fetchFollowingsAndCache() {

@@ -21,6 +21,8 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
+import com.hapramp.analytics.AnalyticsParams;
+import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.ui.callbacks.login.LoginCallbacks;
 import com.hapramp.utils.CrashReporterKeys;
@@ -33,11 +35,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class LoginActivity extends AppCompatActivity implements LoginCallbacks {
-
-
     public static final String TAG = LoginActivity.class.getSimpleName();
     private static final int QR_CODE_REQUEST_CODE = 109;
-
     @BindView(R.id.user_icon)
     TextView userIcon;
     @BindView(R.id.usernameTv)
@@ -56,12 +55,17 @@ public class LoginActivity extends AppCompatActivity implements LoginCallbacks {
     TextView helpBtn;
     @BindView(R.id.connectivityText)
     TextView connectivityText;
-
     ProgressDialog progressDialog;
     private String mUsername;
     private String mPPk;
     private ConnectivityViewModel connectivityViewModel;
     private LoginViewModel loginViewModel;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        AnalyticsUtil.getInstance(this).setCurrentScreen(this,AnalyticsParams.SCREEN_LOGIN,null);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,6 +162,7 @@ public class LoginActivity extends AppCompatActivity implements LoginCallbacks {
         mUsername = usernameEt.getText().toString();
         mPPk = privatePostingKeyEt.getText().toString();
         loginViewModel.attemptLogin(mUsername, mPPk, this);
+        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_LOGIN);
     }
 
 

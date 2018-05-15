@@ -48,8 +48,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity implements CreateButtonView.ItemClickListener {
-
-
     @BindView(R.id.search_icon)
     TextView searchIcon;
     @BindView(R.id.bottomBar_home)
@@ -70,7 +68,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     RelativeLayout notificationContainer;
     @BindView(R.id.action_bar_container)
     RelativeLayout actionBarContainer;
-
     @BindView(R.id.contentPlaceHolder)
     FrameLayout contentPlaceHolder;
     @BindView(R.id.bottomBar_home_text)
@@ -81,7 +78,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     TextView bottomBarProfileText;
     @BindView(R.id.bottomBar_settings_text)
     TextView bottomBarSettingsText;
-
     private final int BOTTOM_MENU_HOME = 7;
     private final int BOTTOM_MENU_COMP = 8;
     private final int BOTTOM_MENU_PROFILE = 9;
@@ -98,13 +94,11 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     @BindView(R.id.haprampIcon)
     ImageView haprampIcon;
     private int lastMenuSelection = BOTTOM_MENU_HOME;
-
     private final int FRAGMENT_HOME = 12;
     private final int FRAGMENT_COMPETITION = 13;
     private final int FRAGMENT_PROFILE = 14;
     private final int FRAGMENT_SETTINGS = 15;
     private final int FRAGMENT_EARNINGS = 16;
-
     private Fragment currentVisibleFragment;
     private Typeface materialTypface;
     private FragmentManager fragmentManager;
@@ -236,7 +230,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     }
 
     private void setNotifications() {
-
         int count = HaprampPreferenceManager.getInstance().getUnreadNotifications();
         if (count > 0) {
             notificationCount.setVisibility(View.VISIBLE);

@@ -32,6 +32,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
+import com.hapramp.analytics.AnalyticsParams;
+import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.push.Notifyer;
@@ -70,8 +72,6 @@ import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 import static android.view.View.VISIBLE;
 
 public class DetailedActivity extends AppCompatActivity implements SteemCommentCreator.SteemCommentCreateCallback {
-
-
     @BindView(R.id.closeBtn)
     TextView closeBtn;
     @BindView(R.id.overflowBtn)
@@ -140,12 +140,10 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     private List<SteemCommentModel> comments = new ArrayList<>();
     private Profile myProfile;
     private CommentsViewModel commentsViewModel;
-
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_details_post);
         ButterKnife.bind(this);
         collectExtras();
@@ -153,7 +151,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         setTypefaces();
         bindPostValues();
         attachListener();
-
+        AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_DETAILED_POST,null);
     }
 
     @Override
@@ -289,15 +287,13 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
             Toast.makeText(this, "Comment Too Short!!", Toast.LENGTH_LONG).show();
             return;
         }
-
         SteemCommentModel steemCommentModel = new SteemCommentModel(
                 HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
                 cmnt, MomentsUtils.getCurrentTime(),
                 String.format(getResources().getString(R.string.steem_user_profile_pic_format),
                         HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
-
+        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_COMMENT);
         commentsViewModel.addComments(steemCommentModel, post.permlink);
-
     }
 
     @Override

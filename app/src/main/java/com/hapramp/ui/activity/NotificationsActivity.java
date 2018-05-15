@@ -14,6 +14,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
+import com.hapramp.analytics.AnalyticsParams;
+import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.push.NotificationPayloadModel;
 import com.hapramp.ui.adapters.NotificationsAdapter;
 import com.hapramp.api.DataServer;
@@ -30,7 +32,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class NotificationsActivity extends AppCompatActivity implements NotificationCallback, MarkallAsReadNotificationCallback {
-
     @BindView(R.id.backBtn)
     TextView backBtn;
     @BindView(R.id.notificationsMsg)
@@ -46,7 +47,6 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
     @BindView(R.id.toolbar_container)
     RelativeLayout toolbarContainer;
     private Typeface materialTypeface;
-
     private NotificationsAdapter notificationsAdapter;
     private int start = 1;
     private int limit = 20;
@@ -55,12 +55,12 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_notifications);
         ButterKnife.bind(this);
         init();
         fetchNotification();
-
+        AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_NOTIFICATION,null);
+        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_OPENS_NOTIFICATION);
     }
 
     @Override

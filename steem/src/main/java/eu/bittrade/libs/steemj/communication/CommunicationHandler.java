@@ -114,11 +114,6 @@ public class CommunicationHandler {
             Pair<URI, Boolean> endpoint = SteemJConfig.getInstance().getNextEndpointURI(numberOfConnectionTries++);
             JsonRPCResponse rawJsonResponse = client.invokeAndReadResponse(requestObject, endpoint.getLeft(),
                     endpoint.getRight());
-            LOGGER.debug("Received {} ", rawJsonResponse);
-            System.out.println("====================================");
-            System.out.println("Response "+rawJsonResponse.toString());
-            System.out.println("====================================");
-
             if (rawJsonResponse.isError()) {
                 throw rawJsonResponse.handleError(requestObject.getId());
             } else {
