@@ -23,8 +23,7 @@ public class AnalyticsUtil {
     public static void logEvent(String event) {
         Bundle bundle = new Bundle();
         bundle.putString("hapramp_event", event);
-        Log.d("LoggingEvent","cnt:"+HapRampMain.getContext()+" event:"+event);
-        getInstance(HapRampMain.getContext()).logEvent("hapramp_event_bundle", bundle);
+        getInstance(HapRampMain.getContext()).logEvent("Event:"+event, bundle);
     }
 
 }
