@@ -82,7 +82,7 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
         attachListener();
         initSearchManager();
         fetchFollowingsAndCache();
-        AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_USER_SEARCH,null);
+        AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_USER_SEARCH, null);
     }
 
     @Override
@@ -255,19 +255,16 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
                 messagePanel.setText("Searching...");
             }
         });
-
     }
 
     @Override
     public void onSearched(final ArrayList<String> suggestions) {
-
-        if (suggestionsContainer != null) {
-            suggestionsContainer.setVisibility(View.VISIBLE);
-        }
-
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                if (suggestionsContainer != null) {
+                    suggestionsContainer.setVisibility(View.VISIBLE);
+                }
                 suggestionsListView.setVisibility(View.VISIBLE);
                 messagePanel.setVisibility(View.GONE);
                 suggestionsProgressBar.setVisibility(View.GONE);
@@ -275,5 +272,4 @@ public class UserSearchActivity extends AppCompatActivity implements SearchManag
             }
         });
     }
-
 }

@@ -151,8 +151,8 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details_post);
         ButterKnife.bind(this);
-        collectExtras();
         init();
+        collectExtras();
         setTypefaces();
         attachListener();
         AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_DETAILED_POST, null);
