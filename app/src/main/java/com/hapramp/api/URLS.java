@@ -14,5 +14,6 @@ public class URLS {
     public static final String URL_MUSIC = "https://user-images.githubusercontent.com/10809719/34512687-e7b79b16-f089-11e7-91da-fbf201d48711.png";
     public static final String URL_PHOTO = "https://user-images.githubusercontent.com/10809719/34512699-fa7bf47c-f089-11e7-810b-b43e837aaffe.png";
     public static final String URL_TRAVEL = "https://user-images.githubusercontent.com/10809719/34512768-588ae082-f08a-11e7-911a-580d2619618e.png";
-    public static final String STEEM_FEED_URL = "https://steemit.com%s.json";
+    public static final String STEEM_USER_FEED_URL = "https://steemit.com%s.json";
+    public static final String STEEM_CURATION_FEED_URL = "https://steemit.com/curation/@%s.json";
 }

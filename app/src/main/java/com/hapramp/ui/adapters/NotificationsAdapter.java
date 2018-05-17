@@ -1,6 +1,7 @@
 package com.hapramp.ui.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,8 @@ import com.hapramp.api.DataServer;
 import com.hapramp.interfaces.MarkAsReadNotificationCallback;
 import com.hapramp.datamodels.response.NotificationResponse;
 import com.hapramp.push.NotificationPayloadModel;
+import com.hapramp.ui.activity.DetailedActivity;
+import com.hapramp.utils.Constants;
 import com.hapramp.utils.MomentsUtils;
 
 import java.util.List;
@@ -48,7 +51,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 
     @Override
     public void onBindViewHolder(NotificationViewHolder holder, int position) {
-        holder.bind(notifications.get(position),this);
+        holder.bind(mContext, notifications.get(position),this);
     }
 
     @Override
@@ -78,7 +81,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
             ButterKnife.bind(this,itemView);
         }
 
-        public void bind(final NotificationPayloadModel notification , final NotificationsAdapter adapter){
+        public void bind(final Context context, final NotificationPayloadModel notification , final NotificationsAdapter adapter){
 
             notificationContent.setText(notification.getContent());
             moment.setText(MomentsUtils.getFormattedTime(notification.getCreatedAt()));
@@ -93,6 +96,15 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
                     }
                 });
             }
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent notificationIntent = new Intent(mContext, DetailedActivity.class);
+                    notificationIntent.putExtra(Constants.EXTRAA_KEY_POST_PERMLINK, notification.getArg1());
+                    context.startActivity(notificationIntent);
+                }
+            });
         }
 
     }

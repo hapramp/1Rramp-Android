@@ -16,7 +16,6 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.widget.Space;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,6 +33,8 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.api.RetrofitServiceGenerator;
+import com.hapramp.api.URLS;
 import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.push.Notifyer;
@@ -42,10 +43,9 @@ import com.hapramp.steem.PostStructureModel;
 import com.hapramp.steem.SteemCommentCreator;
 import com.hapramp.steem.SteemCommentModel;
 import com.hapramp.steem.SteemHelper;
-import com.hapramp.steem.SteemReplyFetcher;
 import com.hapramp.steem.models.Feed;
+import com.hapramp.steem.models.FeedWrapper;
 import com.hapramp.steem.models.data.ActiveVote;
-import com.hapramp.steem.models.user.Profile;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
@@ -68,6 +68,9 @@ import eu.bittrade.libs.steemj.base.models.Permlink;
 import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
 import eu.bittrade.libs.steemj.exceptions.SteemInvalidTransactionException;
 import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.view.View.VISIBLE;
 
@@ -132,12 +135,16 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     RelativeLayout postMetaContainer;
     @BindView(R.id.hashtags)
     TextView hashtagsTv;
+    @BindView(R.id.details_activity_cover)
+    View detailsActivityCover;
     private Handler mHandler;
     private Feed post;
     private ProgressDialog progressDialog;
     private SteemCommentCreator steemCommentCreator;
     private List<SteemCommentModel> comments = new ArrayList<>();
     private CommentsViewModel commentsViewModel;
+    private String posturl;
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,9 +154,8 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         collectExtras();
         init();
         setTypefaces();
-        bindPostValues();
         attachListener();
-        AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_DETAILED_POST,null);
+        AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_DETAILED_POST, null);
     }
 
     private void init() {
@@ -157,19 +163,34 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         steemCommentCreator = new SteemCommentCreator();
         commentsViewModel = ViewModelProviders.of(this).get(CommentsViewModel.class);
         steemCommentCreator.setSteemCommentCreateCallback(this);
-        commentsViewModel.getSteemComments(post.author, post.permlink).observeForever(new Observer<List<SteemCommentModel>>() {
-            @Override
-            public void onChanged(@Nullable List<SteemCommentModel> steemCommentModels) {
-                commentLoadingProgressBar.setVisibility(View.GONE);
-                setCommentCount(steemCommentModels.size());
-                addAllCommentsToView(steemCommentModels);
-            }
-        });
+        progressDialog = new ProgressDialog(this);
     }
 
     private void collectExtras() {
-        post = getIntent().getExtras().getParcelable(Constants.EXTRAA_KEY_POST_DATA);
-        progressDialog = new ProgressDialog(this);
+        posturl = getIntent().getExtras().getString(Constants.EXTRAA_KEY_POST_PERMLINK, null);
+        if (posturl != null) {
+              fetchPost(posturl);
+        } else {
+            post = getIntent().getExtras().getParcelable(Constants.EXTRAA_KEY_POST_DATA);
+            bindPostValues();
+        }
+    }
+
+    private void fetchPost(String posturl) {
+        RetrofitServiceGenerator.getService().getFeedFromSteem(String.format(URLS.STEEM_CURATION_FEED_URL,posturl)).enqueue(new Callback<FeedWrapper>() {
+            @Override
+            public void onResponse(Call<FeedWrapper> call, Response<FeedWrapper> response) {
+                if(response.isSuccessful()){
+                    post = response.body().feed;
+                    bindPostValues();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FeedWrapper> call, Throwable t) {
+
+            }
+        });
     }
 
     private void attachListener() {
@@ -299,6 +320,15 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     }
 
     private void bindPostValues() {
+        detailsActivityCover.setVisibility(View.GONE);
+        commentsViewModel.getSteemComments(post.author, post.permlink).observeForever(new Observer<List<SteemCommentModel>>() {
+            @Override
+            public void onChanged(@Nullable List<SteemCommentModel> steemCommentModels) {
+                commentLoadingProgressBar.setVisibility(View.GONE);
+                setCommentCount(steemCommentModels.size());
+                addAllCommentsToView(steemCommentModels);
+            }
+        });
         ImageHandler.loadCircularImage(this, feedOwnerPic, String.format(getResources().getString(R.string.steem_user_profile_pic_format), post.author));
         feedOwnerTitle.setText(post.author);
         feedOwnerSubtitle.setText(
@@ -355,6 +385,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
                     public void onVoted(String full_permlink, int _vote) {
                         performVoteOnSteem(_vote);
                     }
+
                     @Override
                     public void onVoteDeleted(String full_permlink) {
                         deleteVoteOnSteem();

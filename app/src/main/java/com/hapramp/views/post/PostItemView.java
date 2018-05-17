@@ -523,7 +523,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     }
 
     private void fetchUpdatedBalance(){
-        String url = String.format(URLS.STEEM_FEED_URL,mFeed.url);
+        String url = String.format(URLS.STEEM_USER_FEED_URL,mFeed.url);
         RetrofitServiceGenerator.getService().getFeedFromSteem(url).enqueue(new Callback<FeedWrapper>() {
             @Override
             public void onResponse(Call<FeedWrapper> call, Response<FeedWrapper> response) {

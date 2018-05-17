@@ -10,9 +10,11 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
 import com.hapramp.R;
+import com.hapramp.ui.activity.DetailedActivity;
 import com.hapramp.ui.activity.HomeActivity;
 import com.hapramp.ui.activity.NotificationsActivity;
 import com.hapramp.datamodels.response.NotificationResponse;
+import com.hapramp.utils.Constants;
 
 /**
  * Created by Ankit on 12/27/2017.
@@ -21,12 +23,21 @@ import com.hapramp.datamodels.response.NotificationResponse;
 // Issues: https://docs.telerik.com/platform/knowledge-base/troubleshooting/troubleshooting-cannot-receive-push-notifications-on-android-when-the-app-is-closed
 public class NotificationUtils {
 
+    private static Intent notificationIntent;
+
     public static void showNotification(Context mContext, NotificationPayloadModel notificationObject){
         Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         final int icon = R.mipmap.hapramp_logo;
         Intent backIntent = new Intent(mContext, HomeActivity.class);
         backIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Intent notificationIntent = new Intent(mContext, NotificationsActivity.class);
+
+        if(notificationObject.getAction().equals("comment") || notificationObject.getAction().equals("vote")) {
+            notificationIntent = new Intent(mContext, DetailedActivity.class);
+            notificationIntent.putExtra(Constants.EXTRAA_KEY_POST_PERMLINK, notificationObject.getArg1());
+        }else{
+            notificationIntent = new Intent(mContext, NotificationsActivity.class);
+        }
+
         final PendingIntent pendingIntent = PendingIntent.getActivities(mContext,121,new Intent[]{backIntent,notificationIntent},PendingIntent.FLAG_ONE_SHOT);
         final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
                 mContext);
