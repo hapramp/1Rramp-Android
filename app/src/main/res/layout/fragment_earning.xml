@@ -5,144 +5,57 @@
     android:background="#ffffff"
     tools:context=".ui.fragments.EarningFragment">
 
-
-    <LinearLayout
-        android:id="@+id/topWrapper"
-        android:elevation="1dp"
-        android:layout_margin="16dp"
-        android:paddingBottom="16dp"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/earning_fragment_item_bg"
-        >
-
-        <FrameLayout
-            android:layout_marginEnd="8dp"
-            android:layout_width="120dp"
-            android:layout_height="120dp">
-
-            <TextView
-                android:id="@+id/post_created_icon"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="22dp"
-                android:background="@drawable/haptrofies_text_badge"
-                android:gravity="center"
-                android:text=""
-                android:textColor="#ffffff"
-                android:textSize="36sp" />
-
-            <TextView
-                android:id="@+id/post_created_count"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:textColor="@color/Black54"
-                android:layout_gravity="center_vertical|end"
-                android:background="@drawable/haptrofies_count_badges"
-                android:gravity="center"
-                android:text="" />
-
-            <TextView
-                android:id="@+id/post_created_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:gravity="center_horizontal"
-                android:text="0 Posts Created"
-                android:textColor="#333333" />
-
-        </FrameLayout>
-
-
-        <FrameLayout
-
-            android:layout_marginStart="8dp"
-            android:layout_width="120dp"
-            android:layout_height="120dp">
-
-            <TextView
-                android:id="@+id/post_rated_icon"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="22dp"
-                android:background="@drawable/hapcoins_text_badge"
-                android:gravity="center"
-                android:text=""
-                android:textColor="#71690C"
-                android:textSize="36sp" />
-
-            <TextView
-                android:id="@+id/post_rated_count"
-                android:layout_width="36dp"
-                android:textColor="@color/Black54"
-                android:layout_height="36dp"
-                android:layout_gravity="center_vertical|end"
-                android:background="@drawable/hapcoins_count_badge"
-                android:gravity="center"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/post_rated_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:gravity="center_horizontal"
-                android:text="0 Posts Rated"
-                android:textColor="#333333" />
-
-        </FrameLayout>
-
-    </LinearLayout>
-
     <RelativeLayout
-        android:elevation="2dp"
-        android:id="@+id/bottomWrapper"
-        android:layout_margin="16dp"
-        android:paddingStart="56dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:layout_below="@+id/topWrapper"
+        android:id="@+id/steemBalanceWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/earning_fragment_item_bg">
+        android:layout_margin="16dp"
+        android:background="@drawable/earning_fragment_item_bg"
+        android:elevation="2dp"
+        android:paddingBottom="16dp"
+        android:paddingStart="56dp"
+        android:paddingTop="16dp">
 
         <TextView
-            android:id="@+id/earned_badge"
-            android:background="@drawable/earning_fragment_earned_bg"
-            android:gravity="center"
-            android:textColor="#ffffff"
-            android:textSize="20sp"
-            android:layout_width="84dp"
-            android:layout_height="84dp" />
-
-
-        <LinearLayout
-            android:layout_marginStart="16dp"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@+id/earned_badge"
-            android:orientation="vertical"
+            android:id="@+id/steem_balance_label"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="36dp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:text="Steem Balance : "
+            android:textColor="@color/Black87"
+            android:textSize="16sp" />
 
-            <TextView
-                android:layout_alignBaseline="@+id/earned_badge"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:text="Earned"
-                android:textColor="@color/colorPrimary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/steem_balance"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:gravity="center"
+            android:layout_toEndOf="@+id/steem_balance_label"
+            android:text=""
+            android:textSize="14sp" />
 
-            <TextView
-                android:clickable="true"
-                android:background="?selectableItemBackgroundBorderless"
-                android:id="@+id/how_to_redeem"
-                android:text="How to redeem?"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
 
-        </LinearLayout>
+        <TextView
+            android:id="@+id/steem_power_label"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_below="@+id/steem_balance_label"
+            android:text="Steem Power : "
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="@color/Black87"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/steem_power"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:gravity="center"
+            android:layout_below="@+id/steem_balance"
+            android:layout_toEndOf="@+id/steem_balance_label"
+            android:text=""
+            android:textSize="14sp" />
 
     </RelativeLayout>
 

@@ -655,20 +655,20 @@ public class SteemJ {
         return communicationHandler.performRequest(requestObject, ExtendedAccount.class);
     }
 
-    public List<ExtendedAccount> getUserProfiles(List<String> usernames) throws SteemCommunicationException, SteemResponseException {
+    public ExtendedAccount getUserAccount(String username) throws SteemCommunicationException, SteemResponseException {
         JsonRPCRequest requestObject = new JsonRPCRequest();
         requestObject.setSteemApi(SteemApiType.DATABASE_API);
         requestObject.setApiMethod(RequestMethods.GET_ACCOUNTS);
-        int size = usernames.size();
         // The API expects an array of arrays here.
-        String[] innerParameters = new String[size];
-        for (int i = 0; i < size; i++) {
-            innerParameters[i] = usernames.get(i);
-        }
+        String[] innerParameters = new String[1];
+        innerParameters[0] = username;
         String[][] parameters = {innerParameters};
         requestObject.setAdditionalParameters(parameters);
-        return communicationHandler.performRequest(requestObject, ExtendedAccount.class);
-
+        List<ExtendedAccount> accounts = communicationHandler.performRequest(requestObject, ExtendedAccount.class);
+        if(accounts.size()>0){
+            return accounts.get(0);
+        }
+        return null;
     }
 
     /**

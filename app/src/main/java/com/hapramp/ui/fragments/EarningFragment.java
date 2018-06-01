@@ -1,57 +1,42 @@
 package com.hapramp.ui.fragments;
 
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
-import com.hapramp.analytics.AnalyticsParams;
-import com.hapramp.analytics.AnalyticsUtil;
-import com.hapramp.ui.activity.HowToEarnActivity;
-import com.hapramp.api.DataServer;
-import com.hapramp.interfaces.UserStatsCallback;
-import com.hapramp.datamodels.response.UserStatsModel;
-import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.utils.FontManager;
+import com.hapramp.steem.SteemPowerHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public class EarningFragment extends Fragment implements UserStatsCallback {
-    @BindView(R.id.post_created_count)
-    TextView postCreatedCount;
-    @BindView(R.id.post_created_text)
-    TextView postCreatedText;
-    @BindView(R.id.post_rated_count)
-    TextView postRatedCount;
-    @BindView(R.id.post_rated_text)
-    TextView postRatedText;
-    @BindView(R.id.topWrapper)
-    LinearLayout topWrapper;
-    @BindView(R.id.earned_badge)
-    TextView earnedBadge;
-    @BindView(R.id.how_to_redeem)
-    TextView howToRedeem;
-    @BindView(R.id.bottomWrapper)
-    RelativeLayout bottomWrapper;
+public class EarningFragment extends Fragment implements SteemPowerHelper.SteemPowerCallback {
+
+
+    @BindView(R.id.steem_balance_label)
+    TextView steemBalanceLabel;
+    @BindView(R.id.steem_balance)
+    TextView steemBalanceTv;
+    @BindView(R.id.steemBalanceWrapper)
+    RelativeLayout steemBalanceWrapper;
     Unbinder unbinder;
-    @BindView(R.id.post_created_icon)
-    TextView postCreatedIcon;
-    @BindView(R.id.post_rated_icon)
-    TextView postRatedIcon;
-    private static String userId;
+    @BindView(R.id.steem_power_label)
+    TextView steemPowerLabel;
+    @BindView(R.id.steem_power)
+    TextView steemPowerTv;
+
+    private Handler mHandler;
+
     public EarningFragment() {
+        mHandler = new Handler();
     }
 
 
@@ -61,66 +46,47 @@ public class EarningFragment extends Fragment implements UserStatsCallback {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_earning, container, false);
         unbinder = ButterKnife.bind(this, view);
-        init();
+        requestInfo();
         return view;
     }
 
-    private void init() {
-        postCreatedIcon.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-        postRatedIcon.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-        howToRedeem.setOnClickListener(new View.OnClickListener() {
+    private void requestInfo() {
+        SteemPowerHelper.requestSteemUserEarningInfo(this);
+    }
+
+    //called on worker-thread. Any UI update should be performed via Handlers
+    @Override
+    public void onSteemPowerFetched(final float _steemPower) {
+        mHandler.post(new Runnable() {
             @Override
-            public void onClick(View v) {
-                showHowToRedeemPage();
+            public void run() {
+                steemPowerTv.setText(String.format("%s STEEM", String.valueOf(_steemPower)));
             }
         });
-        userId = HaprampPreferenceManager.getInstance().getUserId();
-        fetchUserStats();
     }
 
-    private void showHowToRedeemPage() {
-        Intent intent = new Intent(getActivity(), HowToEarnActivity.class);
-        startActivity(intent);
+
+    //called on worker-thread. Any UI update should be performed via Handlers
+    @Override
+    public void onSteemBalance(final float balance) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                steemBalanceTv.setText(String.format("%s SBD", String.valueOf(balance)));
+            }
+        });
     }
 
-    private void fetchUserStats(){
-        DataServer.getUserStats(userId,this);
+
+    //called on worker-thread. Any UI update should be performed via Handlers
+    @Override
+    public void onSteemPowerFetchFailed() {
+
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        AnalyticsUtil.getInstance(getActivity()).setCurrentScreen((Activity) context, AnalyticsParams.SCREEN_EARNING,null);
-        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_BROWSE_EARNINGS);
-    }
-
-    @Override
-    public void onUserStatsFetched(UserStatsModel stats) {
-        bindStats(stats);
-    }
-
-    private void bindStats(UserStatsModel stats) {
-        try {
-            postCreatedCount.setText(String.valueOf(stats.posts));
-            postRatedCount.setText(String.valueOf(stats.rated));
-            postCreatedText.setText(String.format(getResources().getString(R.string.post_created),stats.posts));
-            earnedBadge.setText(String.format(getResources().getString(R.string.earnedHapcoins), stats.hapcoins));
-            postRatedText.setText(String.format(getResources().getString(R.string.post_rated),stats.rated));
-
-        }catch (NullPointerException e){
-            // not handled
-        }
-
-    }
-
-    @Override
-    public void onUserStatsFetchError() {
-
     }
 }

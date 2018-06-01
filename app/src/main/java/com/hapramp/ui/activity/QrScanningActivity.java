@@ -42,19 +42,14 @@ public class QrScanningActivity extends AppCompatActivity implements BarcodeRead
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+               finish();
             }
         });
     }
 
     @Override
     public void onScanned(Barcode barcode) {
-        barcodeReader.playBeep();
-        Intent data = new Intent();
-        data.putExtra(EXTRAA_PPK, barcode.displayValue);
-        setResult(RESULT_OK, data);
-        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_SCAN);
-        finish();
+        onScannedBarCode(barcode);
     }
 
     @Override
@@ -75,6 +70,15 @@ public class QrScanningActivity extends AppCompatActivity implements BarcodeRead
     @Override
     public void onCameraPermissionDenied() {
 
+    }
+
+    private void onScannedBarCode(Barcode barcode){
+        barcodeReader.playBeep();
+        Intent data = new Intent();
+        data.putExtra(EXTRAA_PPK, barcode.displayValue);
+        setResult(RESULT_OK, data);
+        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_SCAN);
+        finish();
     }
 
 }
