@@ -87,7 +87,20 @@ float userVestingShare = extendedAccount.getVestingShares().getAmount();
 
 ```
 
-At the end we can apply the formulae for calculating STEEM Power to get it.
+At the end we can apply the formulae for calculating STEEM Power.
+
+A helper method that returns STEEM Power:
+```
+ private static float calculateSteemPower(DynamicGlobalProperty dynamicGlobalProperty, ExtendedAccount extendedAccount) {
+        float totalVestingShares = dynamicGlobalProperty.getTotalVestingShares().getAmount();
+        float totalVestingFundSteem = dynamicGlobalProperty.getTotalVestingFundSteem().getAmount();
+        float userVestingShare = extendedAccount.getVestingShares().getAmount();
+        return ((totalVestingFundSteem * userVestingShare) / totalVestingShares);
+    }
+
+```
+
+Parameters to this function is from api call made earlier in the above section.
 
 #### GitHub Account
 https://github.com/bxute
