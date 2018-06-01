@@ -17,7 +17,6 @@ public class SteemPowerHelper {
         new Thread() {
             @Override
             public void run() {
-
                 SteemJ steemJ = SteemHelper.getSteemInstance();
                 try {
                     DynamicGlobalProperty dynamicGlobalProperty = steemJ.getDynamicGlobalProperties();
