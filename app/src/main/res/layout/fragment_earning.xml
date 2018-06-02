@@ -13,7 +13,7 @@
         android:background="@drawable/earning_fragment_item_bg"
         android:elevation="2dp"
         android:paddingBottom="16dp"
-        android:paddingStart="56dp"
+        android:paddingStart="16dp"
         android:paddingTop="16dp">
 
         <TextView

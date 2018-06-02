@@ -60,7 +60,9 @@ public class EarningFragment extends Fragment implements SteemPowerHelper.SteemP
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                steemPowerTv.setText(String.format("%s STEEM", String.valueOf(_steemPower)));
+                if (steemPowerTv != null) {
+                    steemPowerTv.setText(String.format("%s STEEM", String.valueOf(_steemPower)));
+                }
             }
         });
     }
@@ -72,7 +74,9 @@ public class EarningFragment extends Fragment implements SteemPowerHelper.SteemP
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                steemBalanceTv.setText(String.format("%s SBD", String.valueOf(balance)));
+                if (steemBalanceTv != null) {
+                    steemBalanceTv.setText(String.format("%s SBD", String.valueOf(balance)));
+                }
             }
         });
     }
