@@ -72,8 +72,6 @@ import retrofit2.Response;
  */
 
 public class PostItemView extends FrameLayout implements SteemReplyFetcher.SteemReplyFetchCallback {
-
-
     public static final String TAG = PostItemView.class.getSimpleName();
     @BindView(R.id.feed_owner_pic)
     ImageView feedOwnerPic;
@@ -111,8 +109,6 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     ImageView youtubeIndicator;
     @BindView(R.id.image_container)
     RelativeLayout imageContainer;
-
-
     private Context mContext;
     private Feed mFeed;
     private Handler mHandler;
@@ -134,7 +130,6 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     }
 
     private void init(Context context) {
-
         this.mContext = context;
         replyFetcher = new SteemReplyFetcher();
         replyFetcher.setSteemReplyFetchCallback(this);
@@ -144,50 +139,42 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         commentBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         popupMenuDots.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
         mHandler = new Handler();
-
         commentBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 navigateToDetailsPage();
             }
         });
-
         featuredImagePost.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 navigateToDetailsPage();
             }
         });
-
         commentCount.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 navigateToDetailsPage();
             }
         });
-
         readMoreBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 navigateToDetailsPage();
             }
         });
-
         postSnippet.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 navigateToDetailsPage();
             }
         });
-
     }
 
     private void navigateToDetailsPage() {
-
         Intent detailsIntent = new Intent(mContext, DetailedActivity.class);
         detailsIntent.putExtra(Constants.EXTRAA_KEY_POST_DATA, mFeed);
         mContext.startActivity(detailsIntent);
-
     }
 
     private void bind(final Feed feed) {
@@ -206,15 +193,12 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
             postTitle.setVisibility(GONE);
             // hide read more
             readMoreBtn.setVisibility(GONE);
-
         } else if (content.type.equals(Constants.CONTENT_TYPE_ARTICLE)) {
             checkEllipseAndInvalidateReadMoreButton(postSnippet, readMoreBtn);
         }
-
         setSteemEarnings(feed.pendingPayoutValue);
         setCommunities(feed.jsonMetadata.tags);
         ImageHandler.loadCircularImage(mContext, feedOwnerPic, String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format), feed.author));
-
         bindVotes(feed.activeVotes, feed.permlink);
         //load from cache
         setCommentCount(HaprampPreferenceManager.getInstance().getCommentCount(mFeed.permlink));
@@ -236,28 +220,21 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     }
 
     private void attachListerOnAuthorHeader() {
-
         feedOwnerPic.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 navigateToUserProfile();
             }
         });
-
         feedOwnerTitle.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 navigateToUserProfile();
             }
         });
-
     }
 
-    //==================================================================================
-    // Vote part begins
-
     private void attachListenersOnStarView() {
-
         starView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -280,16 +257,13 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
                 return true;
             }
         });
-
     }
 
     private void bindVotes(List<ActiveVote> votes, String permlink) {
-
         long votePercentSum = getVotePercentSum(votes);
         boolean amIVoted = checkForMyVote(votes);
         long myVotePercent = amIVoted ? getMyVotePercent(votes) : 0;
         long totalVotes = getNonZeroVoters(votes);
-
         starView.setVoteState(
                 new StarView.Vote(
                         amIVoted,
@@ -308,8 +282,6 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
                         deleteVoteOnSteem();
                     }
                 });
-
-
     }
 
     private long getNonZeroVoters(List<ActiveVote> votes) {
@@ -454,10 +426,6 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         fetchUpdatedBalance();
     }
 
-    private void l(String msg) {
-        Log.d(TAG, msg);
-    }
-
     private Runnable steemCastingVoteExceptionRunnable = new Runnable() {
         @Override
         public void run() {
@@ -473,7 +441,6 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     };
 
     private void bindPostContent(List<FeedDataItemModel> data) {
-
         //reset the visibility
         if(featuredImagePost!=null){
             featuredImagePost.setVisibility(GONE);
@@ -481,7 +448,6 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
             postTitle.setVisibility(GONE);
             postSnippet.setVisibility(GONE);
         }
-
         //scan for feed content
         FeedRenderTypeModel feedRenderTypeModel = scanFeedContentsForRendering(data);
         //check for image
@@ -501,7 +467,6 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
                 featuredImagePost.setVisibility(VISIBLE);
                 ImageHandler.load(mContext, featuredImagePost, feedRenderTypeModel.firstVideoUrl);
             }
-
         }
 
         if (feedRenderTypeModel.isTitleSet) {
@@ -519,7 +484,6 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
                 postSnippet.setText(feedRenderTypeModel.text);
             }
         }
-
     }
 
     private void fetchUpdatedBalance(){
@@ -534,34 +498,22 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
 
             @Override
             public void onFailure(Call<FeedWrapper> call, Throwable t) {
-
             }
         });
     }
 
     private FeedRenderTypeModel scanFeedContentsForRendering(List<FeedDataItemModel> data) {
-
         FeedRenderTypeModel feedRenderTypeModel = new FeedRenderTypeModel();
-
         //iterate through all the content
         for (int i = 0; i < data.size(); i++) {
-
-            //for image
             if (data.get(i).type.equals(FeedDataConstants.ContentType.IMAGE)) {
-
-                //neither video or image is detected prior
                 if (!feedRenderTypeModel.isFirstMediaImage && !feedRenderTypeModel.isFirstMediaVideo) {
-                    //set media
                     feedRenderTypeModel.setFirstImageUrl(data.get(i).content);
                     feedRenderTypeModel.setFirstMediaImage(true);
                 }
-
             }
 
-            //for youtube
             if (data.get(i).type.equals(FeedDataConstants.ContentType.YOUTUBE)) {
-
-                //neither video or image is detected prior
                 if (!feedRenderTypeModel.isFirstMediaImage && !feedRenderTypeModel.isFirstMediaVideo) {
                     //set media
                     feedRenderTypeModel.setFirstVideoId(data.get(i).content);
@@ -569,28 +521,16 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
                 }
 
             }
-
-            //accumulate text
             if (data.get(i).type.equals(FeedDataConstants.ContentType.TEXT) || data.get(i).type.equals(FeedDataConstants.ContentType.H2) || data.get(i).type.equals(FeedDataConstants.ContentType.H3)) {
-
                 feedRenderTypeModel
                         .appendText(data.get(i).getContent());
-
             }
-
-            //check for heading
             if (data.get(i).type.equals(FeedDataConstants.ContentType.H1)) {
-
                 if (!feedRenderTypeModel.isTitleSet)
                     feedRenderTypeModel.setTitle(data.get(i).getContent());
-
             }
-
         }
-
-        Log.d("PostItemView", "scanned Model : " + feedRenderTypeModel.toString());
         return feedRenderTypeModel;
-
     }
 
     public String getAuthor() {
@@ -606,25 +546,19 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     }
 
     private boolean isContentEllipsised(TextView textView) {
-
         Layout layout = textView.getLayout();
-        // Log.d("PostItemView", "layout:" + layout);
         if (layout != null) {
             int lineCount = layout.getLineCount();
-            //  Log.d("PostItemView", "lines:" + lineCount);
             for (int i = 0; i < lineCount; i++) {
-                //  Log.d("PostItemView", "Ellipse Count" + layout.getEllipsisCount(i) + " MaxLines:" + TextViewCompat.getMaxLines(textView));
                 if (layout.getEllipsisCount(i) > 0) {
                     return true;
                 }
             }
         }
         return false;
-
     }
 
     private void checkEllipseAndInvalidateReadMoreButton(final TextView target, final TextView readMoreBtn) {
-
         ViewTreeObserver vto = target.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -645,7 +579,6 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     }
 
     private void setCommentCount(int count) {
-
         commentCount.setText(String.format(getResources().getString(R.string.comment_format), count));
     }
 
@@ -661,37 +594,26 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
                 ));
             }
         }
-
         addCommunitiesToLayout(cm);
-
     }
 
     private void addCommunitiesToLayout(List<CommunityModel> cms) {
-
         int size = cms.size();
         resetVisibility();
         if (size > 0) {
-            //first skill
             club1.setVisibility(VISIBLE);
-
             club1.setText(cms.get(0).getmName().toUpperCase());
             club1.getBackground().setColorFilter(
                     Color.parseColor(cms.get(0).getmColor()),
                     PorterDuff.Mode.SRC_ATOP);
-
             if (size > 1) {
-                // second skills
                 club2.setVisibility(VISIBLE);
-
                 club2.setText(cms.get(1).getmName().toUpperCase());
                 club2.getBackground().setColorFilter(
                         Color.parseColor(cms.get(1).getmColor()),
                         PorterDuff.Mode.SRC_ATOP);
-
                 if (size > 2) {
-                    // third skills
                     club3.setVisibility(VISIBLE);
-
                     club3.setText(cms.get(2).getmName().toUpperCase());
                     club3.getBackground().setColorFilter(
                             Color.parseColor(cms.get(2).getmColor()),
@@ -699,31 +621,24 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
                 }
             }
         }
-
     }
 
     private void resetVisibility() {
-
         club1.setVisibility(GONE);
         club2.setVisibility(GONE);
         club3.setVisibility(GONE);
-
     }
 
     private void navigateToCommentCreateActivity(int postId) {
-
         Intent intent = new Intent(mContext, CommentsActivity.class);
         intent.putExtra(Constants.EXTRAA_KEY_POST_ID, String.valueOf(postId));
         mContext.startActivity(intent);
-
     }
 
     private void navigateToUserProfile() {
-
         Intent intent = new Intent(mContext, ProfileActivity.class);
         intent.putExtra(Constants.EXTRAA_KEY_STEEM_USER_NAME, mFeed.author);
         mContext.startActivity(intent);
-
     }
 
     public void setPostData(Feed postData) {
@@ -731,10 +646,8 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     }
 
     private void showPopup(){
-
         ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(getContext(), R.style.PopupMenuOverlapAnchor);
         PopupMenu popup = new PopupMenu(contextThemeWrapper,popupMenuDots);
-        //Inflating the Popup using xml file
         popup.getMenuInflater().inflate(R.menu.popup_post, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -743,28 +656,21 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
                 return true;
             }
         });
-
         popup.show();
-
     }
 
     @Override
     public void onReplyFetching() {
-
     }
 
     @Override
     public void onReplyFetched(List<SteemCommentModel> replies) {
-
         HaprampPreferenceManager.getInstance().setCommentCount(mFeed.permlink,replies.size());
-
         setCommentCount(replies.size());
     }
 
     @Override
     public void onReplyFetchError() {
-
     }
-
 }
 

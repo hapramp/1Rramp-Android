@@ -147,6 +147,7 @@ public class PostImageView extends FrameLayout {
                     informationTv.setText("Uploaded");
                     showAndhideActionContainer();
                 } else {
+                    Log.d("ImageUpload",response.errorBody().toString());
                     informationTv.setText("Error");
                     downloadUrl = null;
                     progressBar.setVisibility(GONE);
@@ -155,6 +156,7 @@ public class PostImageView extends FrameLayout {
 
             @Override
             public void onFailure(Call<FileUploadReponse> call, Throwable t) {
+                Log.d("ImageUpload",t.toString());
                 informationTv.setText("Error");
                 progressBar.setVisibility(GONE);
                 downloadUrl = null;
