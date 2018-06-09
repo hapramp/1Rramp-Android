@@ -1,5 +1,13 @@
 <resources>
     <string name="app_name">Hapramp</string>
+    <string name="onboarding_title_1">JOIN COMMUNITY</string>
+    <string name="onboarding_title_2">SHARE CONTENT</string>
+    <string name="onboarding_title_3">EARN REWARDS</string>
+    <string name="onboarding_content_1">Join community</string>
+    <string name="onboarding_content_2">Share your innovative content</string>
+    <string name="onboarding_content_3">Earn rewards for your work </string>
+
+
     <string name="username_hint"><font size="12">USERNAME</font></string>
     <string name="password_hint"><font size="12">PASSWORD</font></string>
     <string name="organization_input_hint"><font size="15">YOUR ORGANISATION NAME</font></string>

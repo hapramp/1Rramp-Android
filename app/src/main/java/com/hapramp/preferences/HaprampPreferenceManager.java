@@ -46,6 +46,15 @@ public class HaprampPreferenceManager {
         Log.d("Pref", "Cleared Prefs.");
     }
 
+    public void setOnBoardingVisited(){
+        editor.putBoolean("onBoardingDone",true);
+        editor.apply();
+    }
+
+    public boolean isOnBoardingDone(){
+        return preferences.getBoolean("onBoardingDone",false);
+    }
+
     public void setLoggedIn(boolean loggedIn) {
         editor.putBoolean("isLoggedIn", loggedIn);
         editor.apply();

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:animateLayoutChanges="true"
+    tools:context=".ui.activity.OnBoardingActivity">
+
+    <xute.clippedslideview.ClippedSlideView
+        android:layout_centerHorizontal="true"
+        android:id="@+id/clippedSlideView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:textSize="20sp"
+        android:textColor="#3f72af"
+        android:layout_marginBottom="16dp"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/onboardingTitle"
+        android:layout_above="@+id/onboardingContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/onboardingContent"
+        android:textColor="#8B000000"
+        android:lines="3"
+        android:lineSpacingExtra="21dp"
+        android:ellipsize="marquee"
+        android:textSize="14sp"
+        android:layout_marginBottom="16dp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/dotsView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <xute.progressdot.ProgressDotView
+        android:layout_centerHorizontal="true"
+        android:id="@+id/dotsView"
+        app:switchTimeInMillis="400"
+        app:smallDotRadius="1dp"
+        app:largeDotRadius="2dp"
+        app:spaceBetweenDots="2dp"
+        app:dotCount="3"
+        android:layout_margin="16dp"
+        android:layout_above="@+id/back"
+        app:activeDotColor="@color/colorPrimary"
+        app:inActiveDotColor="#d8d8d8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:enabled="false"
+        android:clickable="true"
+        android:background="?selectableItemBackgroundBorderless"
+        android:id="@+id/back"
+        android:textColor="@color/Black38"
+        android:layout_alignParentBottom="true"
+        android:textSize="18sp"
+        android:text="BACK"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:clickable="true"
+        android:background="?selectableItemBackgroundBorderless"
+        android:id="@+id/next"
+        android:textColor="@color/colorPrimary"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:textSize="18sp"
+        android:text="NEXT"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

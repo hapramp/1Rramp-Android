@@ -50,7 +50,7 @@ android {
         multiDexEnabled true
     }
     buildTypes {
-        debug{}
+        debug {}
         release {
             //signingConfig signingConfigs.release
         }
@@ -73,9 +73,10 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     implementation "com.github.bumptech.glide:glide:$glideVersion"
     implementation 'com.facebook.shimmer:shimmer:0.1.0@aar'
-    implementation "org.apache.commons:commons-lang3:3.7"
+    implementation 'org.apache.commons:commons-lang3:3.7'
     implementation "com.google.android.gms:play-services-vision:$firebaseVersionOld"
     implementation "info.androidhive:barcode-reader:$barcodeReaderVersion"
+    implementation 'com.android.support.constraint:constraint-layout:1.1.1'
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"
     testImplementation "junit:junit:$junitVersion"
     testImplementation "org.robolectric:robolectric:$roboelectricVersion"
@@ -83,9 +84,11 @@ dependencies {
     implementation "android.arch.persistence.room:runtime:$roomVersion"
     annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
     androidTestImplementation "android.arch.persistence.room:testing:$roomVersion"
-    implementation "android.arch.lifecycle:extensions:1.1.1"
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.github.bxute:ProgressDots:v1.0.3'
+    implementation 'com.github.bxute:ClippedSlideView:v1.0.3'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':steem')
     implementation project(':search')
     implementation project(':hapramp-editor')
