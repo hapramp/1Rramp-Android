@@ -5,12 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
+    android:background="#ffffff"
     android:animateLayoutChanges="true"
     tools:context=".ui.activity.OnBoardingActivity">
 
-    <xute.clippedslideview.ClippedSlideView
+    <ImageView
+        android:layout_marginTop="48dp"
         android:layout_centerHorizontal="true"
-        android:id="@+id/clippedSlideView"
+        android:id="@+id/imageView"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -20,6 +24,7 @@
         android:layout_marginBottom="16dp"
         android:layout_centerHorizontal="true"
         android:id="@+id/onboardingTitle"
+        android:textStyle="bold"
         android:layout_above="@+id/onboardingContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -28,7 +33,6 @@
         android:id="@+id/onboardingContent"
         android:textColor="#8B000000"
         android:lines="3"
-        android:lineSpacingExtra="21dp"
         android:ellipsize="marquee"
         android:textSize="14sp"
         android:layout_marginBottom="16dp"

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hapramp.R;
@@ -15,8 +16,8 @@ import xute.clippedslideview.ClippedSlideView;
 import xute.progressdot.ProgressDotView;
 
 public class OnBoardingActivity extends AppCompatActivity {
-    @BindView(R.id.clippedSlideView)
-    ClippedSlideView clippedSlideView;
+    @BindView(R.id.imageView)
+    ImageView imageView;
     @BindView(R.id.dotsView)
     ProgressDotView dotsView;
     @BindView(R.id.back)
@@ -42,10 +43,10 @@ public class OnBoardingActivity extends AppCompatActivity {
     }
 
     private void init() {
-        icons = new int[]{R.drawable.user_shape, R.drawable.share, R.drawable.dollar};
+        icons = new int[]{R.drawable.onboarding_join, R.drawable.onboarding_share, R.drawable.onboarding_earning};
         titleIds = new int[]{R.string.onboarding_title_1, R.string.onboarding_title_2, R.string.onboarding_title_3};
         contentIds = new int[]{R.string.onboarding_content_1, R.string.onboarding_content_2, R.string.onboarding_content_3};
-        clippedSlideView.setImageResource(icons);
+        imageView.setImageResource(icons[0]);
         invalidateTitleAndContent(0);
     }
 
@@ -55,7 +56,7 @@ public class OnBoardingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (!startReached(mCurrentIndex)) {
                     mCurrentIndex--;
-                    clippedSlideView.slideRight();
+                    imageView.setImageResource(icons[mCurrentIndex]);
                     dotsView.moveBack();
                     invalidateNavButton(mCurrentIndex);
                     invalidateTitleAndContent(mCurrentIndex);
@@ -67,7 +68,7 @@ public class OnBoardingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (!endReached(mCurrentIndex)) {
                     mCurrentIndex++;
-                    clippedSlideView.slideLeft();
+                    imageView.setImageResource(icons[mCurrentIndex]);
                     dotsView.moveToNext();
                     invalidateNavButton(mCurrentIndex);
                     invalidateTitleAndContent(mCurrentIndex);
