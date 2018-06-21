@@ -2,124 +2,105 @@ package com.hapramp.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hapramp.R;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.ui.adapters.OnBoardingPageAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import xute.clippedslideview.ClippedSlideView;
 import xute.progressdot.ProgressDotView;
 
-public class OnBoardingActivity extends AppCompatActivity {
-    @BindView(R.id.imageView)
-    ImageView imageView;
-    @BindView(R.id.dotsView)
-    ProgressDotView dotsView;
-    @BindView(R.id.back)
-    TextView back;
-    @BindView(R.id.next)
-    TextView next;
-    @BindView(R.id.onboardingTitle)
-    TextView onboardingTitle;
-    @BindView(R.id.onboardingContent)
-    TextView onboardingContent;
-    private int[] icons;
-    private int mCurrentIndex;
-    private int[] titleIds;
-    private int[] contentIds;
+public class OnBoardingActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_on_boarding);
-        ButterKnife.bind(this);
-        init();
-        setListeners();
-    }
+		@BindView(R.id.viewpager)
+		ViewPager viewpager;
+		@BindView(R.id.dotsView)
+		ProgressDotView dotsView;
+		@BindView(R.id.back)
+		TextView back;
+		@BindView(R.id.next)
+		TextView next;
 
-    private void init() {
-        icons = new int[]{R.drawable.onboarding_join, R.drawable.onboarding_share, R.drawable.onboarding_earning};
-        titleIds = new int[]{R.string.onboarding_title_1, R.string.onboarding_title_2, R.string.onboarding_title_3};
-        contentIds = new int[]{R.string.onboarding_content_1, R.string.onboarding_content_2, R.string.onboarding_content_3};
-        imageView.setImageResource(icons[0]);
-        invalidateTitleAndContent(0);
-    }
+		private int mCurrentIndex;
 
-    private void setListeners() {
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!startReached(mCurrentIndex)) {
-                    mCurrentIndex--;
-                    imageView.setImageResource(icons[mCurrentIndex]);
-                    dotsView.moveBack();
-                    invalidateNavButton(mCurrentIndex);
-                    invalidateTitleAndContent(mCurrentIndex);
-                }
-            }
-        });
-        next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!endReached(mCurrentIndex)) {
-                    mCurrentIndex++;
-                    imageView.setImageResource(icons[mCurrentIndex]);
-                    dotsView.moveToNext();
-                    invalidateNavButton(mCurrentIndex);
-                    invalidateTitleAndContent(mCurrentIndex);
-                } else {
-                    navigateToLoginPage();
-                }
-            }
-        });
-    }
+		@Override
+		protected void onCreate(Bundle savedInstanceState) {
+				super.onCreate(savedInstanceState);
+				setContentView(R.layout.activity_on_boarding);
+				ButterKnife.bind(this);
+				viewpager.setAdapter(new OnBoardingPageAdapter(this));
+				viewpager.addOnPageChangeListener(this);
+				setListeners();
+		}
 
-    private void invalidateTitleAndContent(int mCurrentIndex) {
-        onboardingTitle.setText(getTitleAtIndex(mCurrentIndex));
-        onboardingContent.setText(getContentAtIndex(mCurrentIndex));
-    }
+		private void setListeners() {
+				back.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View view) {
+								if (mCurrentIndex > 0) {
+										viewpager.setCurrentItem(mCurrentIndex - 1);
+								}
+						}
+				});
+				next.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View view) {
+								if (mCurrentIndex < 2) {
+										Log.d("OnBoarding" , "Index "+mCurrentIndex);
+										viewpager.setCurrentItem(mCurrentIndex + 1);
+								} else {
+										navigateToLoginPage();
+								}
+						}
+				});
+		}
 
-    private void navigateToLoginPage() {
-        HaprampPreferenceManager.getInstance().setOnBoardingVisited();
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
-        finish();
-    }
+		private void navigateToLoginPage() {
+				HaprampPreferenceManager.getInstance().setOnBoardingVisited();
+				Intent intent = new Intent(this, LoginActivity.class);
+				startActivity(intent);
+				finish();
+		}
 
-    private void invalidateNavButton(int mCurrentIndex) {
-        if (endReached(mCurrentIndex)) {
-            next.setText("START EARNING!");
-        } else {
-            next.setText("NEXT");
-        }
-        if (startReached(mCurrentIndex)) {
-            back.setTextColor(getResources().getColor(R.color.Black38));
-            back.setEnabled(false);
-        } else {
-            back.setTextColor(getResources().getColor(R.color.colorPrimary));
-            back.setEnabled(true);
-        }
-    }
+		@Override
+		public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-    private String getTitleAtIndex(int index) {
-        return getResources().getString(titleIds[index]);
-    }
+		}
 
-    private String getContentAtIndex(int index) {
-        return getResources().getString(contentIds[index]);
-    }
+		@Override
+		public void onPageSelected(int position) {
+				if (position > mCurrentIndex) {
+						dotsView.moveToNext();
+				} else {
+						dotsView.moveBack();
+				}
+				mCurrentIndex = position;
+				invalidateNavButton(mCurrentIndex);
+		}
 
-    private boolean endReached(int index) {
-        return index >= icons.length - 1;
-    }
+		@Override
+		public void onPageScrollStateChanged(int state) {
 
-    private boolean startReached(int index) {
-        return index == 0;
-    }
+		}
 
+		private void invalidateNavButton(int mCurrentIndex) {
+				if (mCurrentIndex == 2) {
+						next.setText("START EARNING!");
+				} else {
+						next.setText("NEXT");
+				}
+				if (mCurrentIndex == 0) {
+						back.setTextColor(getResources().getColor(R.color.Black38));
+						back.setEnabled(false);
+				} else {
+						back.setTextColor(getResources().getColor(R.color.colorPrimary));
+						back.setEnabled(true);
+				}
+		}
 }
