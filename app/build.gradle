@@ -87,7 +87,7 @@ dependencies {
     implementation 'android.arch.lifecycle:extensions:1.1.1'
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
     implementation 'com.github.bxute:ProgressDots:v1.0.3'
-    implementation 'com.github.bxute:ClippedSlideView:v1.0.3'
+    implementation 'com.github.hapramp:steemconnect4j:v1.0'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':steem')
     implementation project(':search')

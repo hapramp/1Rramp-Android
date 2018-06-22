@@ -6,6 +6,9 @@ package com.hapramp.utils;
 
 public class Constants {
 
+    public static final String EXTRA_USERNAME = "username";
+    public static final String EXTRA_ACCESS_TOKEN = "access_token";
+    public static final String EXTRA_LOGIN_URL = "login_url";
 
     public static final String EXTRAA_KEY_USER_ID = "userId";
     public static final String EXTRAA_KEY_STEEM_USER_NAME = "steemUsername";
