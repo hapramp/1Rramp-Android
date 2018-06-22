@@ -94,16 +94,17 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.TestActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.PreviewActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".youtube.YoutubeVideoSelectorActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".ui.activity.OnBoardingActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.OnBoardingActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ui.activity.WebloginActivity"></activity>
     </application>
 
 </manifest>
