@@ -242,7 +242,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     }
 
     private void setupToolbar() {
-
         materialTypface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
         searchIcon.setTypeface(materialTypface);
         notificationIcon.setTypeface(materialTypface);
@@ -250,11 +249,9 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
         bottomBarCompetition.setTypeface(materialTypface);
         bottomBarProfile.setTypeface(materialTypface);
         bottomBarSettings.setTypeface(materialTypface);
-
     }
 
     private void attachListeners() {
-
         haprampIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

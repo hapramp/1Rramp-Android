@@ -99,17 +99,12 @@ public class HaprampPreferenceManager {
 		}
 
 		public void saveAllCommunityListAsJson(String json) {
-
-				Log.d("Pref", "saving " + json);
 				editor.putString("allCommunity", json);
 				editor.apply();
-
 		}
 
 		public String getAllCommunityAsJson() {
-
 				return preferences.getString("allCommunity", "{}");
-
 		}
 
 		public void setCommunityTagToNamePair(String tag, String name) {
@@ -131,10 +126,8 @@ public class HaprampPreferenceManager {
 		}
 
 		public void saveUserSelectedCommunitiesAsJson(String json) {
-				Log.d("Pref", "saving " + json);
 				editor.putString("userSelectedCommunity", json);
 				editor.apply();
-
 		}
 
 		public void setCommentCount(String permlink, int count) {
@@ -147,9 +140,7 @@ public class HaprampPreferenceManager {
 		}
 
 		public String getUserSelectedCommunityAsJson() {
-
 				return preferences.getString("userSelectedCommunity", "");
-
 		}
 
 		public String getUserToken() {
