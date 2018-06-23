@@ -1,11 +1,9 @@
 package com.hapramp.ui.activity;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,13 +24,10 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steemconnect.SteemConnectUtils;
 import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectException;
-import com.hapramp.ui.callbacks.login.LoginCallbacks;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.CrashReporterKeys;
-import com.hapramp.utils.FontManager;
 import com.hapramp.utils.PixelUtils;
 import com.hapramp.viewmodel.common.ConnectivityViewModel;
-import com.hapramp.viewmodel.login.LoginViewModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -70,6 +70,9 @@ public interface HaprampAPI {
     @POST("signup/done")
     Call<SteemLoginResponseModel> signupDone(@Body SteemLoginRequestModel requestModel);
 
+    @GET("users/usernames/{username}")
+    Call<UserModel> fetchUserCommunities(@Path("username") String username);
+
     @POST("posts")
     Call<ProcessedBodyResponse> sendForPreProcessing(@Body PreProcessingModel preProcessingModel);
 
