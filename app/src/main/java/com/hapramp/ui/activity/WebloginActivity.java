@@ -1,8 +1,11 @@
 package com.hapramp.ui.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -18,14 +21,39 @@ import java.util.Map;
 
 public class WebloginActivity extends AppCompatActivity {
 
+		private WebView webView;
+		private ProgressDialog progressDialog;
+
 		@Override
 		protected void onCreate(Bundle savedInstanceState) {
 				super.onCreate(savedInstanceState);
 				setContentView(R.layout.activity_weblogin);
-				WebView webView = findViewById(R.id.webview);
+				webView = findViewById(R.id.webview);
 				String loginUrl = getIntent().getStringExtra(Constants.EXTRA_LOGIN_URL);
+				initProgressDialog();
+				initWebView(loginUrl);
+		}
+
+		private void initProgressDialog() {
+				progressDialog = new ProgressDialog(this);
+				progressDialog.setCancelable(false);
+				progressDialog.setIndeterminate(true);
+				progressDialog.setMax(100);
+				progressDialog.setMessage("Loading SteemConnect for Authentication...");
+				progressDialog.show();
+		}
+
+		private void initWebView(String loginUrl) {
 				webView.getSettings().setJavaScriptEnabled(true);
 				webView.getSettings().setDomStorageEnabled(true);
+				webView.setWebChromeClient(new WebChromeClient() {
+						@Override
+						public void onProgressChanged(WebView view, int newProgress) {
+								if (newProgress == 100) {
+										progressDialog.dismiss();
+								}
+						}
+				});
 				webView.setWebViewClient(new WebViewClient() {
 						@Override
 						public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -45,6 +73,7 @@ public class WebloginActivity extends AppCompatActivity {
 						}
 				});
 				webView.loadUrl(loginUrl);
+
 		}
 
 		private void sendBackResult(String username, String token) {
