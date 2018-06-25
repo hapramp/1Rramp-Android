@@ -41,8 +41,6 @@ public class LoginActivity extends AppCompatActivity {
 		TextView loginButton;
 		@BindView(R.id.createSteemAccountBtn)
 		TextView createSteemAccountBtn;
-		@BindView(R.id.helpBtn)
-		TextView helpBtn;
 		private ConnectivityViewModel connectivityViewModel;
 		private SteemConnect steemConnect;
 		private String loginUrl;
@@ -103,12 +101,6 @@ public class LoginActivity extends AppCompatActivity {
 						@Override
 						public void onClick(View v) {
 								openSteemitSignUp();
-						}
-				});
-				helpBtn.setOnClickListener(new View.OnClickListener() {
-						@Override
-						public void onClick(View v) {
-								showLoginHelpDailog();
 						}
 				});
 		}
