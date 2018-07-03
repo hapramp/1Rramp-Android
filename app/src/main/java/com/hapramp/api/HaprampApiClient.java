@@ -46,7 +46,6 @@ public class HaprampApiClient {
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
-        L.D.m(TAG, "Build Retrofit : "+token);
         return retrofit;
     }
 }

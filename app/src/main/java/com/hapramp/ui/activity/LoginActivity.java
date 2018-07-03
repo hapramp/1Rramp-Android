@@ -1,6 +1,6 @@
 package com.hapramp.ui.activity;
 
-import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
@@ -9,10 +9,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,17 +18,22 @@ import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.api.RetrofitServiceGenerator;
+import com.hapramp.datamodels.VerificationDataBody;
+import com.hapramp.datamodels.VerifiedToken;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steemconnect.SteemConnectUtils;
 import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectException;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.CrashReporterKeys;
-import com.hapramp.utils.PixelUtils;
 import com.hapramp.viewmodel.common.ConnectivityViewModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 		public static final String TAG = LoginActivity.class.getSimpleName();
@@ -43,6 +46,7 @@ public class LoginActivity extends AppCompatActivity {
 		TextView createSteemAccountBtn;
 		private ConnectivityViewModel connectivityViewModel;
 		private SteemConnect steemConnect;
+		private ProgressDialog progressDialog;
 		private String loginUrl;
 
 		@Override
@@ -73,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
 
 		private void init() {
 				Crashlytics.setString(CrashReporterKeys.UI_ACTION, "login init");
+				progressDialog = new ProgressDialog(this);
 				getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 				steemConnect = SteemConnectUtils.getSteemConnectInstance();
 				connectivityViewModel = ViewModelProviders.of(this).get(ConnectivityViewModel.class);
@@ -107,7 +112,7 @@ public class LoginActivity extends AppCompatActivity {
 
 		private void navigateToWebLogin() {
 				try {
-						loginUrl = steemConnect.getLoginUrl();
+						loginUrl = steemConnect.getLoginUrl(false);
 						Intent i = new Intent(this, WebloginActivity.class);
 						i.putExtra(Constants.EXTRA_LOGIN_URL, loginUrl);
 						startActivityForResult(i, ACCESS_TOKEN_REQUEST_CODE);
@@ -122,12 +127,39 @@ public class LoginActivity extends AppCompatActivity {
 				if (requestCode == ACCESS_TOKEN_REQUEST_CODE) {
 						if (resultCode == RESULT_OK) {
 								//save token
-								HaprampPreferenceManager.getInstance().saveSteemConnectAcessToken(data.getStringExtra(Constants.EXTRA_ACCESS_TOKEN));
-								navigateToCommunityPage();
+								String accessToken = data.getStringExtra(Constants.EXTRA_ACCESS_TOKEN);
+								String username = data.getStringExtra(Constants.EXTRA_USERNAME);
+								HaprampPreferenceManager.getInstance().setSC2AccessToken(accessToken);
+								requestUserTokenFromAppServer(accessToken, username);
 						} else {
 								showToast("Login Failed");
 						}
 				}
+		}
+
+		private void requestUserTokenFromAppServer(final String userAccessToken, final String username) {
+				VerificationDataBody verificationDataBody = new VerificationDataBody(userAccessToken, username);
+				RetrofitServiceGenerator.getService().verifyUser(verificationDataBody).enqueue(new Callback<VerifiedToken>() {
+						@Override
+						public void onResponse(Call<VerifiedToken> call, Response<VerifiedToken> response) {
+								if (response.isSuccessful()) {
+										//save token
+										HaprampPreferenceManager.getInstance().saveCurrentSteemUsername(username);
+										HaprampPreferenceManager.getInstance().saveUserToken(response.body().token);
+										HaprampPreferenceManager.getInstance().setLoggedIn(true);
+										navigateToCommunityPage();
+								} else {
+										Toast.makeText(LoginActivity.this, "Verification failed!!", Toast.LENGTH_LONG).show();
+								}
+								hideProgressDialog();
+						}
+
+						@Override
+						public void onFailure(Call<VerifiedToken> call, Throwable t) {
+								Toast.makeText(LoginActivity.this, "Verification failed!!", Toast.LENGTH_LONG).show();
+								hideProgressDialog();
+						}
+				});
 		}
 
 		private void navigateToHomePage() {
@@ -144,29 +176,6 @@ public class LoginActivity extends AppCompatActivity {
 
 		private void showToast(String msg) {
 				Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-		}
-
-		private void showLoginHelpDailog() {
-				final Dialog dialog = new Dialog(this);
-				View v = LayoutInflater.from(this).inflate(R.layout.login_info_dialog_view, null);
-				TextView cancel = v.findViewById(R.id.cancelHelpDialog);
-				TextView gotoSteemIt = v.findViewById(R.id.gotoSteemit);
-				cancel.setOnClickListener(new View.OnClickListener() {
-						@Override
-						public void onClick(View v) {
-								dialog.dismiss();
-						}
-				});
-				gotoSteemIt.setOnClickListener(new View.OnClickListener() {
-						@Override
-						public void onClick(View v) {
-								openSteemitInNativeBrowser();
-						}
-				});
-				dialog.setContentView(v);
-				dialog.setCancelable(false);
-				dialog.show();
-				dialog.getWindow().setLayout((PixelUtils.getDimension(this).widthPixels), LinearLayout.LayoutParams.WRAP_CONTENT);
 		}
 
 		private void openSteemitInNativeBrowser() {
@@ -195,6 +204,18 @@ public class LoginActivity extends AppCompatActivity {
 								connectivityText.setVisibility(View.GONE);
 						}
 				}, 4000);
+		}
+
+		private void showProgressDialog() {
+				progressDialog.setTitle("Verification");
+				progressDialog.setMessage("Getting ready your account...");
+				progressDialog.show();
+		}
+
+		private void hideProgressDialog() {
+				if (progressDialog != null) {
+						progressDialog.dismiss();
+				}
 		}
 
 		private void disableSigninButton() {

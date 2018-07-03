@@ -40,7 +40,7 @@ public class ShareUtils {
 
     private static String getFormattedTextForSharing(StringBuilder text, String url) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(text.toString()).append("\nhttps://alpha.hapramp.com"+url).append("\n\nHapramp, The social media platform for creative artists");
+        stringBuilder.append(text.toString()).append("\nhttps://alpha.hapramp.com").append(url).append("\n\nHapramp, The social media platform for creative artists");
         return stringBuilder.toString();
     }
 

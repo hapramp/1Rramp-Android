@@ -26,6 +26,7 @@ import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.datamodels.response.ConfirmationResponse;
+import com.hapramp.steem.models.data.Content;
 import com.hapramp.ui.adapters.FeaturedImageAdapter;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.editor.Editor;
@@ -34,7 +35,6 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.FeedDataConstants;
 import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.PostConfirmationModel;
-import com.hapramp.steem.PostStructureModel;
 import com.hapramp.steem.PreProcessingModel;
 import com.hapramp.steem.ProcessedBodyResponse;
 import com.hapramp.steem.SteemPostCreator;
@@ -101,7 +101,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     FeaturedImageAdapter featuredImageAdapter;
     private String title;
     private ArrayList<String> tags;
-    private PostStructureModel postStructureModel;
+    private Content postStructureModel;
     private String generated_permalink;
     private String permlink_with_username;
 
@@ -281,7 +281,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
         }
         includeCustomTags(tags);
         List<FeedDataItemModel> datas = editorView.getDataItemList();
-        postStructureModel = new PostStructureModel(datas, FeedDataConstants.FEED_TYPE_ARTICLE);
+        postStructureModel = new Content(datas, FeedDataConstants.FEED_TYPE_ARTICLE);
         sendPostToServerForProcessing(postStructureModel);
     }
 
@@ -289,7 +289,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
         tags.addAll(tagsInputBox.getHashTags());
     }
 
-    private void sendPostToServerForProcessing(PostStructureModel content) {
+    private void sendPostToServerForProcessing(Content content) {
         generated_permalink = PermlinkGenerator.getPermlink();
         permlink_with_username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername() + "/" + generated_permalink;
         PreProcessingModel preProcessingModel = new PreProcessingModel(permlink_with_username, new Gson().toJson(content));
@@ -313,12 +313,10 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     }
 
     private void sendPostToSteemBlockChain(final String body) {
-
         showPublishingProgressDialog(true, "Adding to Blockchain...");
         SteemPostCreator steemPostCreator = new SteemPostCreator();
         steemPostCreator.setSteemPostCreatorCallback(this);
         steemPostCreator.createPost(body, title, tags, postStructureModel, generated_permalink);
-
     }
 
     private void confirmServerForPostCreation() {

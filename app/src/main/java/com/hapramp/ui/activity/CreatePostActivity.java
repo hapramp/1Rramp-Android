@@ -33,10 +33,10 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.FeedDataConstants;
 import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.PostConfirmationModel;
-import com.hapramp.steem.PostStructureModel;
 import com.hapramp.steem.PreProcessingModel;
 import com.hapramp.steem.ProcessedBodyResponse;
 import com.hapramp.steem.SteemPostCreator;
+import com.hapramp.steem.models.data.Content;
 import com.hapramp.steem.models.data.FeedDataItemModel;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FilePathUtils;
@@ -72,7 +72,7 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
     @BindView(R.id.bottom_options_container)
     RelativeLayout bottomOptionsContainer;
     private ProgressDialog progressDialog;
-    private PostStructureModel postStructureModel;
+    private Content postStructureModel;
     private List<String> tags;
     private String title;
     private String generated_permalink;
@@ -209,11 +209,11 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
         title = "";
         tags = postCreateComponent.getSelectedCommunityTags();
         List<FeedDataItemModel> datas = postCreateComponent.getDataList();
-        postStructureModel = new PostStructureModel(datas, FeedDataConstants.FEED_TYPE_POST);
+        postStructureModel = new Content(datas, FeedDataConstants.FEED_TYPE_POST);
     }
 
     //PUBLISHING SECTION
-    private void sendPostToServerForProcessing(PostStructureModel content) {
+    private void sendPostToServerForProcessing(Content content) {
         PreProcessingModel preProcessingModel = new PreProcessingModel(permlink_with_username, new Gson().toJson(content));
         RetrofitServiceGenerator.getService().sendForPreProcessing(preProcessingModel)
                 .enqueue(new Callback<ProcessedBodyResponse>() {

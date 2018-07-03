@@ -4,10 +4,9 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
-
 import com.hapramp.dao.CommentsDao;
 import com.hapramp.steem.SteemCommentModel;
-import com.hapramp.steem.models.FeedResponse;
+
 
 /**
  * Created by Ankit on 5/9/2018.

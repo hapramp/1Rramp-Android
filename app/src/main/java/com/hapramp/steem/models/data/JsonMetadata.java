@@ -3,8 +3,10 @@ package com.hapramp.steem.models.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.hapramp.steem.LocalConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,12 @@ public class JsonMetadata implements Parcelable {
     @Expose
     @SerializedName("app")
     public String app;
+
+    public JsonMetadata(List<String> tags , Content content){
+        this.tags = tags;
+        this.app = LocalConfig.APP_TAG;
+        this.content = content;
+    }
 
     protected JsonMetadata(Parcel in) {
         if (in.readByte() == 0x01) {
@@ -87,5 +95,13 @@ public class JsonMetadata implements Parcelable {
 
     public void setApp(String app) {
         this.app = app;
+    }
+
+    public String getJson(){
+        return new Gson().toJson(this,JsonMetadata.class);
+    }
+
+    public String getStringifiedJson() {
+        return new Gson().toJson(this,JsonMetadata.class).replaceAll("\"", "\\\\\"");
     }
 }

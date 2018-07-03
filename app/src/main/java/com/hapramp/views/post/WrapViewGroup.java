@@ -76,12 +76,9 @@ public class WrapViewGroup extends ViewGroup {
                 curTop += maxHeight;
                 maxHeight = 0;
             }
-            //do the layout
-          //  Log.d("ViewG","Laying child "+i+" with["+curLeft+","+ curTop+","+(curLeft + curWidth)+","+ (curTop + curHeight));
             child.layout(curLeft, curTop, curLeft + curWidth, curTop + curHeight);
             //store the max height
             if (maxHeight < curHeight) {
-            //    Log.d("ViewG","Storing max height for "+i);
                 maxHeight = curHeight;
             }
 
@@ -92,7 +89,6 @@ public class WrapViewGroup extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
         int count = getChildCount();
         // Measurement will ultimately be computing these values.
         int maxHeight = 0;

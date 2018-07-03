@@ -518,16 +518,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
         });
     }
 
-    private void redirectToOrgsPage() {
-        hideProgress();
-
-    }
-
-    private void redirectToSkillsPage() {
-        hideProgress();
-
-    }
-
     private void showProgress(String msg) {
         progressDialog.setMessage(msg);
         progressDialog.show();

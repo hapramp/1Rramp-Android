@@ -7,16 +7,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 public class BaseActivity extends AppCompatActivity {
-
     private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
-
     }
 
     public void toast(String msg){
@@ -24,7 +21,6 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void showProgressDialog(String msg,boolean show){
-
         if(progressDialog!=null) {
             if (show) {
                 progressDialog.setMessage(msg);
@@ -33,8 +29,5 @@ public class BaseActivity extends AppCompatActivity {
                 progressDialog.hide();
             }
         }
-
     }
-
-
 }

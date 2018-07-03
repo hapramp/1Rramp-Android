@@ -21,82 +21,91 @@ import com.hapramp.ui.callbacks.communityselection.CommunitySelectionPageCallbac
 import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.viewmodel.communityselectionpage.CommunitySelectionPageViewModel;
 import com.hapramp.views.CommunitySelectionView;
+
 import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /*
-*  This activity is responsible for community selection by user.
-*  Activity is opened when User has not selected this earlier.
-*  LoginActivity gets all the relevant about user after successful login.
-*  After which decisions are taken.
-* */
+	*  This activity is responsible for community selection by user.
+	*  Activity is opened when User has not selected this earlier.
+	*  LoginActivity gets all the relevant about user after successful login.
+	*  After which decisions are taken.
+	* */
 
 public class CommunitySelectionActivity extends BaseActivity implements CommunitySelectionPageCallback {
-    @BindView(R.id.action_bar_title)
-    TextView actionBarTitle;
-    @BindView(R.id.communitySelectionView)
-    CommunitySelectionView communitySelectionView;
-    @BindView(R.id.toolbar_drop_shadow)
-    FrameLayout toolbarDropShadow;
-    @BindView(R.id.communityContinueButton)
-    TextView communityContinueButton;
-    public static final String TAG = CommunitySelectionActivity.class.getSimpleName();
-    private CommunitySelectionPageViewModel communitySelectionPageViewModel;
+		@BindView(R.id.action_bar_title)
+		TextView actionBarTitle;
+		@BindView(R.id.communitySelectionView)
+		CommunitySelectionView communitySelectionView;
+		@BindView(R.id.toolbar_drop_shadow)
+		FrameLayout toolbarDropShadow;
+		@BindView(R.id.communityContinueButton)
+		TextView communityContinueButton;
+		public static final String TAG = CommunitySelectionActivity.class.getSimpleName();
+		private CommunitySelectionPageViewModel communitySelectionPageViewModel;
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_COMMUNITY,null);
-        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_COMMUNITY_SELECTION);
-    }
+		@Override
+		protected void onStart() {
+				super.onStart();
+				AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_COMMUNITY, null);
+				AnalyticsUtil.logEvent(AnalyticsParams.EVENT_COMMUNITY_SELECTION);
+		}
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_community_selection);
-        ButterKnife.bind(this);
-        init();
-    }
+		@Override
+		protected void onCreate(Bundle savedInstanceState) {
+				super.onCreate(savedInstanceState);
+				setContentView(R.layout.activity_community_selection);
+				ButterKnife.bind(this);
+				if (HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson().length() > 0) {
+						navigateToHome();
+				} else {
+						init();
+				}
+		}
 
-    private void init() {
-        Crashlytics.setString(CrashReporterKeys.UI_ACTION,"community selection init");
-        communitySelectionPageViewModel = ViewModelProviders.of(this).get(CommunitySelectionPageViewModel.class);
-        communitySelectionPageViewModel.getCommunities(this).observe(this, new Observer<List<CommunityModel>>() {
-            @Override
-            public void onChanged(@Nullable List<CommunityModel> communityModels) {
-                communitySelectionView.setCommunityList(communityModels);
-                HaprampPreferenceManager.getInstance().saveAllCommunityListAsJson(new Gson().toJson(new CommunityListWrapper(communityModels)));
-            }
-        });
-        communityContinueButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                communitySelectionPageViewModel.updateServer(communitySelectionView.getSelectionList());
-            }
-        });
-    }
+		private void init() {
+				Crashlytics.setString(CrashReporterKeys.UI_ACTION, "community selection init");
+				communitySelectionPageViewModel = ViewModelProviders.of(this).get(CommunitySelectionPageViewModel.class);
+				communitySelectionPageViewModel.getCommunities(this).observe(this, new Observer<List<CommunityModel>>() {
+						@Override
+						public void onChanged(@Nullable List<CommunityModel> communityModels) {
+								communitySelectionView.setCommunityList(communityModels);
+								HaprampPreferenceManager.getInstance().saveAllCommunityListAsJson(new Gson().toJson(new CommunityListWrapper(communityModels)));
+						}
+				});
+				communityContinueButton.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+								showProgressDialog("Updating your communities choice....", true);
+								communitySelectionPageViewModel.updateServer(communitySelectionView.getSelectionList());
+						}
+				});
+		}
 
-    private void navigateToHome() {
-        Intent i = new Intent(this, HomeActivity.class);
-        startActivity(i);
-        finish();
-    }
+		private void navigateToHome() {
+				Intent i = new Intent(this, HomeActivity.class);
+				startActivity(i);
+				finish();
+		}
 
-    @Override
-    public void onCommunityFetchFailed() {
-        toast(getString(R.string.failed_to_fetch_communities));
-    }
+		@Override
+		public void onCommunityFetchFailed() {
+				toast(getString(R.string.failed_to_fetch_communities));
+		}
 
-    @Override
-    public void onCommunityUpdated(List<CommunityModel> selectedCommunities) {
-        toast(getString(R.string.community_updated));
-        HaprampPreferenceManager.getInstance().saveUserSelectedCommunitiesAsJson(new Gson().toJson(new CommunityListWrapper(selectedCommunities)));
-        navigateToHome();
-    }
+		@Override
+		public void onCommunityUpdated(List<CommunityModel> selectedCommunities) {
+				showProgressDialog("", false);
+				toast(getString(R.string.community_updated));
+				HaprampPreferenceManager.getInstance().saveUserSelectedCommunitiesAsJson(new Gson().toJson(new CommunityListWrapper(selectedCommunities)));
+				navigateToHome();
+		}
 
-    @Override
-    public void onCommunityUpdateFailed() {
-        toast(getString(R.string.failed_to_update_communities));
-    }
+		@Override
+		public void onCommunityUpdateFailed() {
+				showProgressDialog("", false);
+				toast(getString(R.string.failed_to_update_communities));
+		}
 }
