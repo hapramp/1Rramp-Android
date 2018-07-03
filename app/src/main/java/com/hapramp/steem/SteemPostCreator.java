@@ -3,9 +3,15 @@ package com.hapramp.steem;
 import android.os.Handler;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
-import android.util.TimeUtils;
 
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.models.data.Content;
+import com.hapramp.steem.models.data.JsonMetadata;
+import com.hapramp.steemconnect.SteemConnectUtils;
+import com.hapramp.steemconnect4j.SteemConnect;
+import com.hapramp.steemconnect4j.SteemConnectCallback;
+import com.hapramp.steemconnect4j.SteemConnectException;
+import com.hapramp.steemconnect4j.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,121 +34,75 @@ import eu.bittrade.libs.steemj.exceptions.SteemInvalidTransactionException;
 import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 
 /**
- * Created by Ankit on 2/21/2018.
- */
+	* Created by Ankit on 2/21/2018.
+	*/
 
 public class SteemPostCreator {
-    private Handler mHandler;
-    public SteemPostCreator() {
-        this.mHandler = new Handler();
-    }
-    @WorkerThread
-    public void createPost(final String body, final String title, final List<String> tags, final PostStructureModel postStructure, final String __permlink) {
-        new Thread() {
-            @Override
-            public void run() {
-                SteemJ steemJ = SteemHelper.getSteemInstance();
-                if (steemJ == null) {
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            steemPostCreatorCallback.onPostCreationFailedOnSteem("Failed To Initialize Steem");
-                        }
-                    });
-                    return;
-                }
-                try {
-                    String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-                    AccountName author = new AccountName(username);
-                    Permlink permlink = new Permlink(__permlink);
-                    boolean allowVotes = LocalConfig.ALLOW_VOTES;
-                    boolean allowCurationRewards = LocalConfig.ALLOW_CURATION_REWARDS;
-                    int percentSteemDollars = LocalConfig.PERCENT_STEEM_DOLLARS;
-                    String jsonMetadata = new JsonMetaDataModel(tags, postStructure).getJson();
-                    AccountName parentAuthor = null;
-                    Permlink parentPermlink = new Permlink(LocalConfig.PARENT_PERMALINK);
-                    CommentOperation commentOperation = new CommentOperation(parentAuthor, parentPermlink, author, permlink, title, body, jsonMetadata);
-                    ArrayList<Operation> operations = new ArrayList<>();
-                    operations.add(commentOperation);
-                    BeneficiaryRouteType beneficiaryRouteType = new BeneficiaryRouteType(new AccountName(LocalConfig.BENEFICIERY_ACCOUNT_NAME), LocalConfig.BENEFICIERY_COMMISSION);
-                    ArrayList<BeneficiaryRouteType> beneficiaryRouteTypes = new ArrayList<>();
-                    beneficiaryRouteTypes.add(beneficiaryRouteType);
-                    CommentPayoutBeneficiaries commentPayoutBeneficiaries = new CommentPayoutBeneficiaries();
-                    commentPayoutBeneficiaries.setBeneficiaries(beneficiaryRouteTypes);
-                    ArrayList<CommentOptionsExtension> commentOptionsExtensions = new ArrayList<>();
-                    commentOptionsExtensions.add(commentPayoutBeneficiaries);
-                    CommentOptionsOperation commentOptionsOperation = new CommentOptionsOperation(
-                            author,
-                            permlink,
-                            new Asset(1000000000, AssetSymbolType.SBD),
-                            percentSteemDollars,
-                            allowVotes,
-                            allowCurationRewards,
-                            commentOptionsExtensions
-                    );
-                    operations.add(commentOptionsOperation);
-                    DynamicGlobalProperty globalProperties = steemJ.getDynamicGlobalProperties();
-                    SignedTransaction signedTransaction = new SignedTransaction(globalProperties.getHeadBlockId(), operations, null);
-                    signedTransaction.sign();
-                    steemJ.broadcastTransaction(signedTransaction);
-                    if (steemPostCreatorCallback != null) {
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                steemPostCreatorCallback.onPostCreatedOnSteem();
-                                HaprampPreferenceManager.getInstance().setLastPostCreatedAt(System.currentTimeMillis());
-                            }
-                        }, 1000);
-                    }
-                } catch (final SteemCommunicationException e) {
-                    e.printStackTrace();
-                    if (steemPostCreatorCallback != null) {
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                steemPostCreatorCallback.onPostCreationFailedOnSteem(e.getMessage());
-                            }
-                        });
-                    }
-                } catch (final SteemResponseException e) {
-                    e.printStackTrace();
-                    if (steemPostCreatorCallback != null) {
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if(e.getCode()==-32000) {
-                                    steemPostCreatorCallback.onPostCreationFailedOnSteem("You can create only 1 post per 5 minute.");
-                                }
-                            }
-                        });
-                    }
-                } catch (final SteemInvalidTransactionException e) {
-                    e.printStackTrace();
-                    if (steemPostCreatorCallback != null) {
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                steemPostCreatorCallback.onPostCreationFailedOnSteem(e.getMessage());
-                            }
-                        });
-                    }
-                }
-            }
-        }.start();
-    }
+		private Handler mHandler;
 
-    private SteemPostCreatorCallback steemPostCreatorCallback;
+		public SteemPostCreator() {
+				this.mHandler = new Handler();
+		}
 
-    public void setSteemPostCreatorCallback(SteemPostCreatorCallback steemPostCreatorCallback) {
-        this.steemPostCreatorCallback = steemPostCreatorCallback;
-    }
+		@WorkerThread
+		public void createPost(final String body, final String title, final List<String> tags, final Content content, final String __permlink) {
+				new Thread() {
+						@Override
+						public void run() {
+								Log.d("PostCreate",HaprampPreferenceManager.getInstance()
+										.getSC2AccessToken());
+								SteemConnect steemConnect = SteemConnectUtils
+										.getSteemConnectInstance(HaprampPreferenceManager.getInstance()
+												.getSC2AccessToken());
+								String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+								String jsonMetadata = new JsonMetadata(tags, content).getJson();
+								steemConnect.comment("",
+										LocalConfig.PARENT_PERMALINK,
+										username,
+										__permlink,
+										com.hapramp.utils.StringUtils.stringify(title),
+										com.hapramp.utils.StringUtils.stringify(body),
+										com.hapramp.utils.StringUtils.stringify(jsonMetadata),
+										new SteemConnectCallback() {
+												@Override
+												public void onResponse(String s) {
+														if(steemPostCreatorCallback != null) {
+																mHandler.post(new Runnable() {
+																		@Override
+																		public void run() {
+																				steemPostCreatorCallback.onPostCreatedOnSteem();
+																		}
+																});
+														}
+												}
 
-    public interface SteemPostCreatorCallback {
+												@Override
+												public void onError(final SteemConnectException e) {
+														if(steemPostCreatorCallback != null) {
+																mHandler.post(new Runnable() {
+																		@Override
+																		public void run() {
+																				steemPostCreatorCallback.onPostCreationFailedOnSteem(e.toString());
+																		}
+																});
+														}
+												}
+										}
+								);
+						}
+				}.start();
+		}
 
-        void onPostCreatedOnSteem();
+		private SteemPostCreatorCallback steemPostCreatorCallback;
 
-        void onPostCreationFailedOnSteem(String msg);
+		public void setSteemPostCreatorCallback(SteemPostCreatorCallback steemPostCreatorCallback) {
+				this.steemPostCreatorCallback = steemPostCreatorCallback;
+		}
 
-    }
+		public interface SteemPostCreatorCallback {
+				void onPostCreatedOnSteem();
+
+				void onPostCreationFailedOnSteem(String msg);
+		}
 
 }

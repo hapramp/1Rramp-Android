@@ -139,7 +139,6 @@ public class ProfileEditActivity extends AppCompatActivity implements UserDpUpda
     }
 
     private void fetchOrgs() {
-        DataServer.getOrgs(this);
     }
 
     @Override

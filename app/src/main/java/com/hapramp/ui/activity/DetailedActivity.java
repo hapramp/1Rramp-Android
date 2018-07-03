@@ -39,13 +39,13 @@ import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.push.Notifyer;
 import com.hapramp.steem.Communities;
-import com.hapramp.steem.PostStructureModel;
 import com.hapramp.steem.SteemCommentCreator;
 import com.hapramp.steem.SteemCommentModel;
 import com.hapramp.steem.SteemHelper;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.FeedWrapper;
 import com.hapramp.steem.models.data.ActiveVote;
+import com.hapramp.steem.models.data.Content;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
@@ -335,7 +335,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
                 String.format(getResources().getString(R.string.post_subtitle_format),
                         MomentsUtils.getFormattedTime(post.created)));
         setCommunities(post.jsonMetadata.tags);
-        PostStructureModel postStructureModel = new PostStructureModel(post.jsonMetadata.content.getData(), post.jsonMetadata.getContent().type);
+        Content postStructureModel = new Content(post.jsonMetadata.content.getData(), post.jsonMetadata.getContent().type);
         renderView.render(postStructureModel);
         ImageHandler.loadCircularImage(this, commentCreaterAvatar, String.format(getResources().getString(R.string.steem_user_profile_pic_format), HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
         setSteemEarnings(post.totalPayoutValue);

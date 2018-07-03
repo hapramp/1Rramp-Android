@@ -22,6 +22,11 @@ public class Content implements Parcelable {
     @SerializedName("data")
     public List<FeedDataItemModel> data;
 
+    public Content(List<FeedDataItemModel> data, String type) {
+        this.data = data;
+        this.type = type;
+    }
+
     protected Content(Parcel in) {
         type = in.readString();
         if (in.readByte() == 0x01) {

@@ -47,7 +47,7 @@ public class CommunityItemView extends FrameLayout {
     private void init(Context context) {
 
         this.mContext = context;
-        View view = LayoutInflater.from(context).inflate(R.layout.skills_view, this);
+        View view = LayoutInflater.from(context).inflate(R.layout.community_selection_item_view, this);
         communityIv = view.findViewById(R.id.skills_bg_image);
         skillSelectionOverlay = view.findViewById(R.id.skill_selection_overlay);
         communityItemTitle = view.findViewById(R.id.skill_title);

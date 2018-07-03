@@ -13,7 +13,7 @@ public class AnalyticsParams {
     public static final String SCREEN_COMMUNITY = "community_selection_page";
     public static final String SCREEN_HOME = "home";
     public static final String SCREEN_EARNING = "earning_page";
-    public static final String SCREEN_SELF_PROFILE = "profile_self";;
+    public static final String SCREEN_SELF_PROFILE = "profile_self";
     public static final String SCREEN_PROFILE ="profile_general";
     public static final String SCREEN_SETTINGS = "settings_page";
     public static final String SCREEN_USER_SEARCH = "user_search";

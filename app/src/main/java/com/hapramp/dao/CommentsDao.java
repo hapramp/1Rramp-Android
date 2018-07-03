@@ -19,12 +19,9 @@ import java.util.List;
 public interface CommentsDao {
 
     @Insert
-    public void insert(SteemCommentModel comment);
-
-    @Query("DELETE FROM comments")
-    public void deleteAll();
+    void insert(SteemCommentModel comment);
 
     @Query("SELECT * FROM comments WHERE postPermlink = :postPermlink")
-    public List<SteemCommentModel> getComments(String postPermlink);
+    List<SteemCommentModel> getComments(String postPermlink);
 
 }

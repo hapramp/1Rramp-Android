@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import com.hapramp.R;
 import com.hapramp.editor.FontSize;
 import com.hapramp.steem.FeedDataConstants;
-import com.hapramp.steem.PostStructureModel;
+import com.hapramp.steem.models.data.Content;
 import com.hapramp.steem.models.data.FeedDataItemModel;
 import com.hapramp.views.types.BlockquoteTypeView;
 import com.hapramp.views.types.BulletTypeView;
@@ -58,11 +58,11 @@ public class RendererView extends FrameLayout {
         container = parentView.findViewById(R.id.container);
     }
 
-    public void render(PostStructureModel postStructureModel) {
+    public void render(Content postStructureModel) {
 
         //todo show rendering progress bar
 
-        List<FeedDataItemModel> dataSeries = postStructureModel.getDataSeries();
+        List<FeedDataItemModel> dataSeries = postStructureModel.getData();
         //loop for views
         for (int i = 0; i < dataSeries.size(); i++) {
             //check for view type

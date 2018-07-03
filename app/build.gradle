@@ -66,6 +66,7 @@ dependencies {
     implementation "com.android.support:appcompat-v7:$supportLibVersion"
     implementation "com.android.support:support-v4:$supportLibVersion"
     implementation "com.android.support:design:$supportLibVersion"
+    implementation "com.android.support:cardview-v7:$supportLibVersion"
     implementation "com.jakewharton:butterknife:$butterknifeVersion"
     implementation "com.google.code.gson:gson:$gsonVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$loggingInterceptorVersion"
@@ -76,7 +77,6 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.7'
     implementation "com.google.android.gms:play-services-vision:$firebaseVersionOld"
     implementation "info.androidhive:barcode-reader:$barcodeReaderVersion"
-    implementation 'com.android.support.constraint:constraint-layout:1.1.1'
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"
     testImplementation "junit:junit:$junitVersion"
     testImplementation "org.robolectric:robolectric:$roboelectricVersion"
@@ -87,7 +87,7 @@ dependencies {
     implementation 'android.arch.lifecycle:extensions:1.1.1'
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
     implementation 'com.github.bxute:ProgressDots:v1.0.3'
-    implementation 'com.github.hapramp:steemconnect4j:v1.0'
+    implementation 'com.github.hapramp:steemconnect4j:v1.211'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':steem')
     implementation project(':search')

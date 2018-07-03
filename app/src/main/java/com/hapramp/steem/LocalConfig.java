@@ -6,7 +6,7 @@ package com.hapramp.steem;
 
 public class LocalConfig {
 
-    public static final String PARENT_PERMALINK = "hapramp-test";
+    public static final String PARENT_PERMALINK = "hapramp";
     public static final String BENEFICIERY_ACCOUNT_NAME = "hapramp";
     public static final String APP_TAG = "hapramp/0.0.1";
     public static final short BENEFICIERY_COMMISSION = 1000; // 20 %

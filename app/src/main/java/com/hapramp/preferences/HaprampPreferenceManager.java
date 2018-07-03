@@ -39,7 +39,6 @@ public class HaprampPreferenceManager {
 		}
 
 		public void clearPreferences() {
-				DataServer.resetAPI();
 				CachePreference.getInstance().clearCachePreferences();
 				editor.clear();
 				editor.apply();
@@ -64,25 +63,31 @@ public class HaprampPreferenceManager {
 				return preferences.getBoolean("isLoggedIn", false);
 		}
 
-		public void saveSteemConnectAcessToken(String accessToken) {
+		public void saveUserToken(String accessToken) {
 				editor.putString("accessToken", accessToken);
 				editor.apply();
 		}
 
-		public String getSteemConnectAccessToken() {
-				return preferences.getString("accessToken", "");
+		public String getUserToken() {
+				return preferences.getString("accessToken","");
 		}
 
-		public void saveUserNameAndPpk(String username, String ppk) {
-
-				editor.putString("username", username);
-				editor.putString("ppk", ppk);
+		public void setSC2AccessToken(String token) {
+				editor.putString("sc2act",token);
 				editor.apply();
+		}
 
+		public String getSC2AccessToken() {
+				return preferences.getString("sc2act","");
 		}
 
 		public String getCurrentSteemUsername() {
 				return preferences.getString("username", "");
+		}
+
+		public void saveCurrentSteemUsername(String username) {
+				editor.putString("username",username);
+				editor.apply();
 		}
 
 		public String getPPK() {
@@ -143,10 +148,6 @@ public class HaprampPreferenceManager {
 				return preferences.getString("userSelectedCommunity", "");
 		}
 
-		public String getUserToken() {
-				return HashGenerator.getSHA2(getPPK());
-		}
-
 		public void saveUserProfile(String username, String json) {
 				editor.putString("user_profile_data_" + username, json);
 				editor.apply();
@@ -156,22 +157,6 @@ public class HaprampPreferenceManager {
 				return preferences.getString("user_profile_data_" + username, "");
 		}
 
-
-		public void setUserInfoAvailable(boolean available) {
-				editor.putBoolean("userInfoAvailable", available);
-				editor.apply();
-		}
-
-
-		public boolean isUserInfoAvailable() {
-				return preferences.getBoolean("userInfoAvailable", false);
-		}
-
-		public void setUserId(String id) {
-				Log.d("Pref", "setting user Id " + id);
-				editor.putString("userId", id);
-				editor.apply();
-		}
 
 		public String getUserId() {
 				return preferences.getString("userId", "");
@@ -183,80 +168,7 @@ public class HaprampPreferenceManager {
 		}
 
 		public void setUser(String user) {
-				L.D.m("Pref", "User json " + user);
 				editor.putString("userJson", user);
-				editor.apply();
-		}
-
-		public void setProfileHardRefreshRequired(boolean isRequired) {
-				editor.putBoolean("profile_ref", isRequired);
-				editor.apply();
-		}
-
-		public boolean isProfileHardRefreshRequired() {
-				return preferences.getBoolean("profile_ref", false);
-		}
-
-		public void setPostHardRefreshRequired(boolean isRequired) {
-				editor.putBoolean("post_ref", isRequired);
-				editor.apply();
-		}
-
-		public boolean isPostHardRefreshRequired() {
-				return preferences.getBoolean("post_ref", false);
-		}
-
-		public void savePostDraft(String s) {
-				editor.putString("post_draft", s);
-				editor.apply();
-		}
-
-		public String getPostDraft() {
-				return preferences.getString("post_draft", "");
-		}
-
-		public void savePostMediaDraft(String filePath) {
-				editor.putString("pmdraft", filePath);
-				editor.apply();
-		}
-
-		public String getPostMediaDraft() {
-				return preferences.getString("pmdraft", "");
-		}
-
-		public void saveArticleDraft(String s) {
-				editor.putString("articleDraft", s);
-				editor.apply();
-		}
-
-		public String getArticleDraft() {
-				return preferences.getString("articleDraft", "");
-		}
-
-		public boolean isPostingServiceRunning() {
-				return preferences.getBoolean("runningService", false);
-		}
-
-		public void setPostCachedStatus(boolean cachedStatus) {
-				editor.putBoolean("postCached", cachedStatus);
-				editor.apply();
-		}
-
-		public boolean isPostsCached() {
-				return preferences.getBoolean("postCached", false);
-		}
-
-		public void setJobAvailable(boolean jobAvailable) {
-				editor.putBoolean("newJob", jobAvailable);
-				editor.apply();
-		}
-
-		public boolean isNewJobAvailble() {
-				return preferences.getBoolean("newJob", false);
-		}
-
-		public void setPostingServiceRunning(boolean running) {
-				editor.putBoolean("runningService", running);
 				editor.apply();
 		}
 
@@ -273,22 +185,8 @@ public class HaprampPreferenceManager {
 				return preferences.getInt("unread_notif", 0);
 		}
 
-		public void setArticleAsDraft(String articleAsDraft) {
-				editor.putString("articleDraft", articleAsDraft);
-				editor.apply();
-		}
-
 		public String getArticleAsDraft() {
 				return preferences.getString("articleDraft", "");
-		}
-
-		public String getAllPlatformUserAsJson() {
-				return preferences.getString("platform_users", "");
-		}
-
-		public void saveAllPlatformUserAsJson(String json) {
-				editor.putString("platform_users", json);
-				editor.apply();
 		}
 
 		public void saveCurrentUserFollowingsAsJson(String json) {

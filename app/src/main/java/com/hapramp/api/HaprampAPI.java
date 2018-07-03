@@ -2,6 +2,8 @@ package com.hapramp.api;
 
 import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.datamodels.CommunitySelectionServerUpdateBody;
+import com.hapramp.datamodels.VerificationDataBody;
+import com.hapramp.datamodels.VerifiedToken;
 import com.hapramp.datamodels.VoteModel;
 import com.hapramp.datamodels.VoteStatus;
 import com.hapramp.datamodels.requests.SteemLoginResponseModel;
@@ -62,13 +64,7 @@ import retrofit2.http.Url;
 public interface HaprampAPI {
 
     @POST("login")
-    Call<SteemLoginResponseModel> login(@Body SteemLoginRequestModel requestModel);
-
-    @POST("signup")
-    Call<SteemSignUpResponseModel> signup(@Body SteemSignupRequestModel requestModel);
-
-    @POST("signup/done")
-    Call<SteemLoginResponseModel> signupDone(@Body SteemLoginRequestModel requestModel);
+    Call<VerifiedToken> verifyUser(@Body VerificationDataBody verificationDataBody);
 
     @GET("users/usernames/{username}")
     Call<UserModel> fetchUserCommunities(@Path("username") String username);
@@ -133,88 +129,15 @@ public interface HaprampAPI {
     @GET
     Call<YoutubeResultModel> getYoutubeResults(@Url String url);
 
-    @POST("users")
-    Call<CreateUserReponse> createUser(@Body CreateUserRequest userRequestModel);
-
-    @GET("organizations")
-    Call<List<OrgsResponse>> getOrgs();
-
-    @GET("users/user")
-    Call<FetchUserResponse> getUserFromToken();
-
     @PUT("users/user")
     Call<DeviceRegistrationReponse> updateUserDeviceId(@Body DeviceId deviceId);
-
-    @PUT("users/{user_id}")
-    Call<UpdateUserResponse> updateOrg(@Path("user_id") String userID, @Body UserUpdateModel user);
 
     @Multipart
     @POST("upload")
     Call<FileUploadReponse> uploadFile(@Part MultipartBody.Part file);
 
-    @PUT("users/skills")
-    Call<SkillsUpdateResponse> setSkills(@Body SkillsUpdateBody skillsUpdateBody);
-
-    @GET
-    Call<PostResponse> getAlltPosts(@Url String url, @Query("order_by") String order_by);
-
-    @GET
-    Call<PostResponse> getPostsBySkills(@Url String url, @Query("skills_or") int skills_id);
-
-    @GET
-    Call<PostResponse> getPostsByUserId(@Url String url, @Query("user_id") int user_id, @Query("order_by") String order_by);
-
-    @GET
-    Call<PostResponse> getPostsByContest(@Url String url, @Query("contest_id") String contest_id);
-
-    @GET("contests")
-    Call<List<CompetitionResponse>> getAllCompetitions();
-
-    @GET("contests")
-    Call<List<CompetitionResponse>> getCompetitionsBySkills(@Query("skills_or") int skills_id);
-
     @GET("users/{user_id}/_full")
     Call<UserModel> getFullUserDetails(@Path("user_id") String user_id);
-
-    @POST("posts/{post_id}/votes")
-    Call<PostResponse> likePost(@Path("post_id") String post_id, @Body LikeBody body);
-
-    @POST("posts")
-    Call<PostResponse> createPost(@Body PostCreateBody body);
-
-    @DELETE("posts/{post_id}")
-    Call<PostResponse> deletePost(@Path("post_id") String post_id);
-
-    @POST("posts/{post_id}/comments")
-    Call<CommentCreateResponse> createComment(@Path("post_id") String postId, @Body CommentBody body);
-
-    @GET
-    Call<CommentsResponse> getComments(@Url String url);
-
-    @GET
-    Call<PostResponse> getPostsBySkillsAndUserId(@Url String url, @Query("skills_or") int skills_id, @Query("user_id") int userId, @Query("order_by") String order_by);
-
-
-    @GET("contests/{contest_id}/posts")
-    Call<CompetitionsPostReponse> getCompetitionsPosts(@Path("contest_id") String compId);
-//
-//    @POST("users/{user_id}/_follow")
-//    Call<UserResponse> followUser(@Path("user_id") String userId, @Body FollowRequestBody body);
-//
-//    @PUT("users/{user_id}")
-//    Call<UserResponse> updateUserDp(@Path("user_id") String userId, @Body UserDataUpdateBody body);
-//
-//    @PUT("users/{user_id}")
-//    Call<UserResponse> updateUserBio(@Path("user_id") String userId, @Body UserBioUpdateRequestBody body);
-
-//    @POST("posts/{post_id}/votes")
-//    Call<Feed> votePost(@Path("post_id") String postId, @Body VoteRequestBody body);
-
-    @DELETE("posts/{post_id}/votes")
-    Call<Feed> deleteVote(@Path("post_id") int postId);
-
-    @GET("users/{user_id}/stats")
-    Call<UserStatsModel> getUserStats(@Path("user_id") String userId);
 
     @GET("notifications")
     Call<NotificationResponse> getNotifications(@Query("start") int start, @Query("limit") int limit);
@@ -224,6 +147,5 @@ public interface HaprampAPI {
 
     @POST("notifications/_mark_all_read")
     Call<NotificationResponse> markAsAllRead();
-
 
 }
