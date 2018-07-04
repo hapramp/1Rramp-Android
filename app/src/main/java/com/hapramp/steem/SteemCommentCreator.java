@@ -6,6 +6,17 @@ import android.util.Log;
 
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.push.Notifyer;
+import com.hapramp.steem.models.data.Content;
+import com.hapramp.steem.models.data.FeedDataItemModel;
+import com.hapramp.steem.models.data.JsonMetadata;
+import com.hapramp.steemconnect.SteemConnectUtils;
+import com.hapramp.steemconnect4j.SteemConnect;
+import com.hapramp.steemconnect4j.SteemConnectCallback;
+import com.hapramp.steemconnect4j.SteemConnectException;
+import com.hapramp.utils.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import eu.bittrade.libs.steemj.SteemJ;
 import eu.bittrade.libs.steemj.base.models.AccountName;
@@ -16,78 +27,88 @@ import eu.bittrade.libs.steemj.exceptions.SteemInvalidTransactionException;
 import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 
 /**
- * Created by Ankit on 4/15/2018.
- */
+	* Created by Ankit on 4/15/2018.
+	*/
 
 public class SteemCommentCreator {
 
-    private Handler mHandler;
-    public SteemCommentCreator() {
-        this.mHandler = new Handler();
-    }
+		private Handler mHandler;
 
-    @WorkerThread
-    public void createComment(final String comment, final String commentOnUser, final String __permlink) {
-        if (steemCommentCreateCallback != null) {
-            steemCommentCreateCallback.onCommentCreateProcessing();
-        }
-        new Thread() {
-            @Override
-            public void run() {
-                final SteemJ steemJ = SteemHelper.getSteemInstance();
-                if (steemJ == null) {
-                    mHandler.post(commentCreateFailedRunnable);
-                    return;
-                }
-                final AccountName commenter = new AccountName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
-                final AccountName commentOnUserAccount = new AccountName(commentOnUser);
-                final String[] tags = {"hapramp"};
+		public SteemCommentCreator() {
+				this.mHandler = new Handler();
+		}
 
-                try {
-                    steemJ.createComment(commenter, commentOnUserAccount, new Permlink(__permlink), comment, tags);
-                    Notifyer.notifyComment(__permlink);
-                    mHandler.post(commentCreatedRunnable);
-                } catch (SteemCommunicationException e) {
-                    mHandler.post(commentCreateFailedRunnable);
-                } catch (SteemResponseException e) {
-                    mHandler.post(commentCreateFailedRunnable);
-                    e.printStackTrace();
-                } catch (SteemInvalidTransactionException e) {
-                    mHandler.post(commentCreateFailedRunnable);
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-    }
+		@WorkerThread
+		public void createComment(final String comment, final String commentOnUser, final String parentPermlink) {
+				if (steemCommentCreateCallback != null) {
+						steemCommentCreateCallback.onCommentCreateProcessing();
+				}
+				new Thread() {
+						@Override
+						public void run() {
+								List<String> tag = new ArrayList<>();
+								tag.add("hapramp");
+								String jsonMetadata = new JsonMetadata(tag, null).getJson();
+								SteemConnect steemConnect = SteemConnectUtils
+										.getSteemConnectInstance(HaprampPreferenceManager.getInstance()
+												.getSC2AccessToken());
+								String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+								String __permlink = PermlinkGenerator.getPermlink();
+								steemConnect.comment(commentOnUser,
+										parentPermlink,
+										username,
+										__permlink,
+										"",
+										com.hapramp.utils.StringUtils.stringify(comment),
+										StringUtils.stringify(jsonMetadata),
+										new SteemConnectCallback() {
+												@Override
+												public void onResponse(String s) {
+														Log.d("CommentCreate", s);
+														Notifyer.notifyComment(parentPermlink);
+														mHandler.post(commentCreatedRunnable);
+												}
 
-    private Runnable commentCreatedRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (steemCommentCreateCallback != null) {
-                steemCommentCreateCallback.onCommentCreated();
-            }
-        }
-    };
+												@Override
+												public void onError(SteemConnectException e) {
+														Log.d("CommentCreateError", e.toString());
+														mHandler.post(commentCreateFailedRunnable);
+												}
+										});
+						}
+				}.start();
+		}
 
-    private Runnable commentCreateFailedRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (steemCommentCreateCallback != null) {
-                steemCommentCreateCallback.onCommentCreateFailed();
-            }
-        }
-    };
+		private Runnable commentCreatedRunnable = new Runnable() {
+				@Override
+				public void run() {
+						if (steemCommentCreateCallback != null) {
+								steemCommentCreateCallback.onCommentCreated();
+						}
+				}
+		};
 
-    private SteemCommentCreateCallback steemCommentCreateCallback;
+		private Runnable commentCreateFailedRunnable = new Runnable() {
+				@Override
+				public void run() {
+						if (steemCommentCreateCallback != null) {
+								steemCommentCreateCallback.onCommentCreateFailed();
+						}
+				}
+		};
 
-    public void setSteemCommentCreateCallback(SteemCommentCreateCallback steemCommentCreateCallback) {
-        this.steemCommentCreateCallback = steemCommentCreateCallback;
-    }
+		private SteemCommentCreateCallback steemCommentCreateCallback;
 
-    public interface SteemCommentCreateCallback {
-        void onCommentCreateProcessing();
-        void onCommentCreated();
-        void onCommentCreateFailed();
-    }
+		public void setSteemCommentCreateCallback(SteemCommentCreateCallback steemCommentCreateCallback) {
+				this.steemCommentCreateCallback = steemCommentCreateCallback;
+		}
+
+		public interface SteemCommentCreateCallback {
+				void onCommentCreateProcessing();
+
+				void onCommentCreated();
+
+				void onCommentCreateFailed();
+		}
 }
 
