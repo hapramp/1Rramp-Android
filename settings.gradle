@@ -1,1 +1,1 @@
-include ':app', ':steem', ':search', ':hapramp-editor', ':youtube_player'
+include ':app', ':search', ':hapramp-editor', ':youtube_player'

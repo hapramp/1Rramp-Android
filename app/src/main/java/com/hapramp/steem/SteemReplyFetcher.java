@@ -4,111 +4,84 @@ import android.os.Handler;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.models.user.Profile;
+import com.hapramp.search.CommentModel;
+import com.hapramp.search.CommentsSearchManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.bittrade.libs.steemj.SteemJ;
-import eu.bittrade.libs.steemj.apis.database.models.state.Discussion;
-import eu.bittrade.libs.steemj.base.models.AccountName;
-import eu.bittrade.libs.steemj.base.models.Permlink;
-import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
-import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
-
 /**
- * Created by Ankit on 4/15/2018.
- */
+	* Created by Ankit on 4/15/2018.
+	*/
 
-public class SteemReplyFetcher {
+public class SteemReplyFetcher implements CommentsSearchManager.CommentFetchCallback {
+		private Handler mHandler;
+		private CommentsSearchManager commentsSearchManager;
 
+		public SteemReplyFetcher() {
+				this.mHandler = new Handler();
+				commentsSearchManager = new CommentsSearchManager();
+				commentsSearchManager.setCommentFetchCallback(this);
+		}
 
-    private static final String TAG = SteemReplyFetcher.class.getSimpleName();
-    private Handler mHandler;
+		@WorkerThread
+		public void requestReplyForPost(final String authorOfPost, final String permlink) {
+				if (steemReplyFetchCallback != null) {
+						steemReplyFetchCallback.onReplyFetching();
+				}
+				commentsSearchManager.requestCommentFor(authorOfPost, permlink);
+		}
 
-    public SteemReplyFetcher() {
-        this.mHandler = new Handler();
-    }
+		private Runnable replyFetchFailedCallback = new Runnable() {
+				@Override
+				public void run() {
+						if (steemReplyFetchCallback != null) {
+								steemReplyFetchCallback.onReplyFetchError();
+						}
+				}
+		};
 
-    @WorkerThread
-    public void requestReplyForPost(final String authorOfPost, final String permlink) {
+		private SteemReplyFetchCallback steemReplyFetchCallback;
 
-        if (steemReplyFetchCallback != null) {
-            steemReplyFetchCallback.onReplyFetching();
-        }
+		public void setSteemReplyFetchCallback(SteemReplyFetchCallback steemReplyFetchCallback) {
+				this.steemReplyFetchCallback = steemReplyFetchCallback;
+		}
 
-        Log.d(TAG, "Fetching Replies");
+		@Override
+		public void onCommentFetched(List<CommentModel.Discussions> commentModels) {
+				final List<SteemCommentModel> contentCommentModels = new ArrayList<>();
+				for (int i = 0; i < commentModels.size(); i++) {
+						CommentModel.Discussions discussion = commentModels.get(i);
+						contentCommentModels.add(new SteemCommentModel(
+								discussion.getAuthor(),
+								discussion.getBody(),
+								discussion.getCreated(),
+								"https://steemitimages.com/u/" + discussion.getAuthor() + "/avatar/small"
+						));
+				}
+				mHandler.post(new Runnable() {
+						@Override
+						public void run() {
+								if (steemReplyFetchCallback != null) {
+										steemReplyFetchCallback.onReplyFetched(contentCommentModels);
+								}
+						}
+				});
 
-        new Thread() {
-            @Override
-            public void run() {
+		}
 
-                final SteemJ steemJ = SteemHelper.getSteemInstance();
-                if (steemJ == null) {
-                    mHandler.post(replyFetchFailedCallback);
-                    return;
-                }
-                final AccountName authorAccount = new AccountName(authorOfPost);
+		@Override
+		public void onCommentFetchError(String e) {
+				mHandler.post(replyFetchFailedCallback);
+		}
 
-                try {
-                    final List<Discussion> discussions = steemJ.getContentReplies(authorAccount, new Permlink(permlink));
-                    final List<SteemCommentModel> contentCommentModels = new ArrayList<>();
-                    for (int i = 0; i < discussions.size(); i++) {
-                        Discussion discussion = discussions.get(i);
-                        contentCommentModels.add(new SteemCommentModel(
-                                discussion.getAuthor().getName(),
-                                discussion.getBody(),
-                                discussion.getLastUpdate().getDateTime(),
-                                ""
-                        ));
-                    }
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (steemReplyFetchCallback != null) {
-                                steemReplyFetchCallback.onReplyFetched(contentCommentModels);
-                            }
-                        }
-                    });
+		public interface SteemReplyFetchCallback {
 
-                } catch (SteemCommunicationException e) {
-                    Log.d(TAG, e.toString());
-                    mHandler.post(replyFetchFailedCallback);
-                } catch (SteemResponseException e) {
-                    Log.d(TAG, e.toString());
-                    mHandler.post(replyFetchFailedCallback);
-                    e.printStackTrace();
-                }
+				void onReplyFetching();
 
-            }
-        }.start();
+				void onReplyFetched(List<SteemCommentModel> replies);
 
-    }
-
-    private Runnable replyFetchFailedCallback = new Runnable() {
-        @Override
-        public void run() {
-            if (steemReplyFetchCallback != null) {
-                steemReplyFetchCallback.onReplyFetchError();
-            }
-        }
-    };
-
-    private SteemReplyFetchCallback steemReplyFetchCallback;
-
-    public void setSteemReplyFetchCallback(SteemReplyFetchCallback steemReplyFetchCallback) {
-        this.steemReplyFetchCallback = steemReplyFetchCallback;
-    }
-
-    public interface SteemReplyFetchCallback {
-
-        void onReplyFetching();
-
-        void onReplyFetched(List<SteemCommentModel> replies);
-
-        void onReplyFetchError();
-    }
+				void onReplyFetchError();
+		}
 
 }

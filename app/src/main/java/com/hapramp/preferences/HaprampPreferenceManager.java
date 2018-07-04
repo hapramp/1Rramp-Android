@@ -10,6 +10,10 @@ import com.hapramp.logger.L;
 import com.hapramp.utils.HashGenerator;
 import com.hapramp.utils.MomentsUtils;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
 	* Created by Ankit on 5/15/2017.
 	*/
@@ -206,4 +210,16 @@ public class HaprampPreferenceManager {
 		public long getLastPostCreatedAt() {
 				return preferences.getLong("last_created_at", 0);
 		}
+
+		public void saveCurrentUserFollowings(ArrayList<String> follower) {
+				Set<String> set = new HashSet<String>();
+				set.addAll(follower);
+				editor.putStringSet("followings",set);
+				editor.apply();
+		}
+
+		public Set<String> getFollowingsSet() {
+				return preferences.getStringSet("followings",null);
+		}
+
 }
