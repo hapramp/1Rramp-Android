@@ -10,8 +10,12 @@ public class SteemConnectUtils {
 				instanceBuilder
 						.setApp("hapramp.app")
 						.setCallbackUrl("https://alpha.hapramp.com/_oauth/")
-						.setScope(new String[]{"comment", "vote"});
-				//todo add more scopes
+						.setScope(new String[]{"vote",
+								"comment",
+								"delete_comment",
+								"comment_options",
+								"custom_json",
+								"claim_reward_balance"});
 				return instanceBuilder.build();
 		}
 
