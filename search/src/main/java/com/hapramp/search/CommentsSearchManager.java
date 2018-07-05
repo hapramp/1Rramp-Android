@@ -1,8 +1,8 @@
 package com.hapramp.search;
 
 import com.google.gson.Gson;
+import com.hapramp.search.models.CommentModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CommentsSearchManager implements NetworkUtils.NetworkResponseCallback {

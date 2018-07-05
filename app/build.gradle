@@ -87,7 +87,7 @@ dependencies {
     implementation 'android.arch.lifecycle:extensions:1.1.1'
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
     implementation 'com.github.bxute:ProgressDots:v1.0.3'
-    implementation 'com.github.hapramp:steemconnect4j:v1.211'
+    implementation 'com.github.hapramp:steemconnect4j:v1.22'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':search')
     implementation project(':hapramp-editor')

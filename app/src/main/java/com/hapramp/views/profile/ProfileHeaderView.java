@@ -21,8 +21,8 @@ import android.widget.Toast;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.gson.Gson;
 import com.hapramp.R;
+import com.hapramp.search.FollowCountManager;
 import com.hapramp.search.FollowingSearchManager;
-import com.hapramp.search.FollowersSearchManager;
 import com.hapramp.steemconnect.SteemConnectUtils;
 import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;
@@ -49,9 +49,7 @@ import retrofit2.Response;
 	* Created by Ankit on 12/30/2017.
 	*/
 
-public class ProfileHeaderView extends FrameLayout implements FollowingSearchManager.FollowingSearchCallback, FollowersSearchManager.FollowerSearchCallback {
-
-
+public class ProfileHeaderView extends FrameLayout implements FollowCountManager.FollowCountCallback, FollowingSearchManager.FollowingSearchCallback {
 		@BindView(R.id.profile_wall_pic)
 		ImageView profileWallPic;
 		@BindView(R.id.profile_pic)
@@ -102,8 +100,8 @@ public class ProfileHeaderView extends FrameLayout implements FollowingSearchMan
 		private boolean loaded;
 		private boolean isFollowed;
 		private String me;
+		private FollowCountManager followCountManager;
 		private FollowingSearchManager followingSearchManager;
-		private FollowersSearchManager followersSearchManager;
 		private SteemConnect steemConnect;
 
 		public ProfileHeaderView(@NonNull Context context) {
@@ -128,8 +126,8 @@ public class ProfileHeaderView extends FrameLayout implements FollowingSearchMan
 				mHandler = new Handler();
 				attachListeners();
 				me = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+				followCountManager = new FollowCountManager(this);
 				followingSearchManager = new FollowingSearchManager(this);
-				followersSearchManager = new FollowersSearchManager(this);
 				steemConnect = SteemConnectUtils.getSteemConnectInstance(HaprampPreferenceManager.getInstance().getSC2AccessToken());
 		}
 
@@ -171,12 +169,13 @@ public class ProfileHeaderView extends FrameLayout implements FollowingSearchMan
 				String json = HaprampPreferenceManager.getInstance().getUserProfile(mUsername);
 				if (json.length() > 0) {
 						SteemUser steemUser = new Gson().fromJson(json, SteemUser.class);
-						Log.d("ProfileHeaderView", "loaded from cache");
 						bind(steemUser);
 				}
 		}
 
 		private void fetchUserInfo() {
+				followingSearchManager.requestFollowings(me);
+				followCountManager.requestFollowInfo(mUsername);
 				String current_user_api_url = String.format(
 						mContext.getResources().getString(R.string.steem_user_api),
 						mUsername);
@@ -185,12 +184,9 @@ public class ProfileHeaderView extends FrameLayout implements FollowingSearchMan
 						.enqueue(new Callback<SteemUser>() {
 								@Override
 								public void onResponse(Call<SteemUser> call, Response<SteemUser> response) {
-										//populate User Info
 										if (response.isSuccessful()) {
 												bind(response.body());
 												cacheUserProfile(response.body());
-												Log.d("ProfileHeaderView", "user fetched");
-
 										} else {
 												failedToFetchSteemInfo();
 										}
@@ -305,8 +301,14 @@ public class ProfileHeaderView extends FrameLayout implements FollowingSearchMan
 
 												@Override
 												public void onError(SteemConnectException e) {
-														showFollowProgress(false);
-														userFollowFailed();
+														Log.d("FollowError ",e.toString());
+														mHandler.post(new Runnable() {
+																@Override
+																public void run() {
+																		showFollowProgress(false);
+																		userFollowFailed();
+																}
+														});
 												}
 										}
 								);
@@ -336,8 +338,14 @@ public class ProfileHeaderView extends FrameLayout implements FollowingSearchMan
 
 												@Override
 												public void onError(SteemConnectException e) {
-														showFollowProgress(false);
-														userUnfollowFailed();
+														Log.d("UnfollowError ",e.toString());
+														mHandler.post(new Runnable() {
+																@Override
+																public void run() {
+																		showFollowProgress(false);
+																		userUnfollowFailed();
+																}
+														});
 												}
 										}
 								);
@@ -362,8 +370,12 @@ public class ProfileHeaderView extends FrameLayout implements FollowingSearchMan
 		private void userFollowedOnSteem() {
 				showFollowProgress(false);
 				setFollowState(true);
-				fetchFollowingsAndCache();
+				syncFollowings();
 				t("You started following " + mUsername);
+		}
+
+		private void syncFollowings() {
+				followingSearchManager.requestFollowings(me);
 		}
 
 		private void userFollowFailed() {
@@ -375,7 +387,7 @@ public class ProfileHeaderView extends FrameLayout implements FollowingSearchMan
 		private void userUnFollowedOnSteem() {
 				showFollowProgress(false);
 				setFollowState(false);
-				fetchFollowingsAndCache();
+				syncFollowings();
 				t("You unfollowed " + mUsername);
 		}
 
@@ -395,11 +407,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowingSearchMan
 						followBtn.setVisibility(VISIBLE);
 						followUnfollowProgress.setVisibility(GONE);
 				}
-		}
-
-		private void fetchFollowingsAndCache() {
-				followersSearchManager.requestFollowers(mUsername);
-				followingSearchManager.requestFollowings(mUsername);
 		}
 
 		private void t(String s) {
@@ -426,32 +433,31 @@ public class ProfileHeaderView extends FrameLayout implements FollowingSearchMan
 		}
 
 		@Override
-		public void onFollowingResponse(final ArrayList<String> followings) {
+		public void onFollowInfo(final int follower, final int followings) {
 				mHandler.post(new Runnable() {
 						@Override
 						public void run() {
-								followingsCount.setText(String.format(mContext.getResources().getString(R.string.profile_following_count_caption), followings.size()));
+								followingsCount.setText(String.format(mContext.getResources().getString(R.string.profile_following_count_caption),
+										followings));
+								followersCount.setText(String.format(mContext.getResources().getString(R.string.profile_followers_caption),
+										follower));
 						}
 				});
+		}
+
+		@Override
+		public void onFollowInfoError(String e) {
+
+		}
+
+		@Override
+		public void onFollowingResponse(ArrayList<String> followings) {
+				Log.d("Followings",followings.toString());
+				HaprampPreferenceManager.getInstance().saveCurrentUserFollowings(followings);
 		}
 
 		@Override
 		public void onFollowingRequestError(String e) {
-
-		}
-
-		@Override
-		public void onFollowerResponse(final ArrayList<String> followers) {
-				mHandler.post(new Runnable() {
-						@Override
-						public void run() {
-								followersCount.setText(String.format(mContext.getResources().getString(R.string.profile_followers_caption), followers.size()));
-						}
-				});
-		}
-
-		@Override
-		public void onFollowerRequestError(String e) {
 
 		}
 }

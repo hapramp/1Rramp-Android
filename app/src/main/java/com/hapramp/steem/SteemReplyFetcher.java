@@ -2,9 +2,8 @@ package com.hapramp.steem;
 
 import android.os.Handler;
 import android.support.annotation.WorkerThread;
-import android.util.Log;
 
-import com.hapramp.search.CommentModel;
+import com.hapramp.search.models.CommentModel;
 import com.hapramp.search.CommentsSearchManager;
 
 import java.util.ArrayList;

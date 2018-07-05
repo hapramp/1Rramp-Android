@@ -1,6 +1,7 @@
 package com.hapramp.search;
 
 import com.google.gson.Gson;
+import com.hapramp.search.models.FollowingsResponse;
 
 import java.util.ArrayList;
 
@@ -24,16 +25,12 @@ public class FollowingSearchManager implements NetworkUtils.NetworkResponseCallb
 
 		private FollowingSearchCallback followerSearchCallback;
 
-		public void setFollowerSearchCallback(FollowingSearchCallback followerSearchCallback) {
-				this.followerSearchCallback = followerSearchCallback;
-		}
-
 		@Override
 		public void onResponse(String response) {
 				FollowingsResponse followSearchResponse = new Gson().fromJson(response, FollowingsResponse.class);
 				ArrayList<String> followings = new ArrayList<>();
 				for (int i = 0; i < followSearchResponse.getResult().getFollowings().size(); i++) {
-						followings.add(followSearchResponse.getResult().getFollowings().get(i).getFollower());
+						followings.add(followSearchResponse.getResult().getFollowings().get(i).getFollowing());
 				}
 				if (followerSearchCallback != null) {
 						followerSearchCallback.onFollowingResponse(followings);

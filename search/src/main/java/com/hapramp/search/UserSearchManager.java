@@ -1,6 +1,7 @@
 package com.hapramp.search;
 
 import com.google.gson.Gson;
+import com.hapramp.search.models.UserSearchResponse;
 
 import java.util.ArrayList;
 
