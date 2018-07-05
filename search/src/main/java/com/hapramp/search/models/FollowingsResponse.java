@@ -1,11 +1,11 @@
-package com.hapramp.search;
+package com.hapramp.search.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class FollowersResponse {
+public class FollowingsResponse {
 
 		@Expose
 		@SerializedName("id")
@@ -19,15 +19,15 @@ public class FollowersResponse {
 
 		public static class Result {
 				@Expose
-				@SerializedName("followers")
-				public List<Followers> followers;
+				@SerializedName("following")
+				public List<Followings> followers;
 
-				public List<Followers> getFollowers() {
+				public List<Followings> getFollowings() {
 						return followers;
 				}
 		}
 
-		public static class Followers {
+		public static class Followings {
 				@Expose
 				@SerializedName("what")
 				public List<String> what;
@@ -38,19 +38,19 @@ public class FollowersResponse {
 				@SerializedName("follower")
 				public String follower;
 
-				public Followers(List<String> what, String following, String follower) {
+				public Followings(List<String> what, String following, String follower) {
 						this.what = what;
 						this.following = following;
 						this.follower = follower;
 				}
 
-				public String getFollower() {
-						return follower;
+				public String getFollowing() {
+						return following;
 				}
 
 		}
 
-		public FollowersResponse(int id, Result result, String jsonrpc) {
+		public FollowingsResponse(int id, Result result, String jsonrpc) {
 				this.id = id;
 				this.result = result;
 				this.jsonrpc = jsonrpc;

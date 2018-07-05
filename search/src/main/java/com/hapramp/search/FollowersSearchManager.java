@@ -1,6 +1,7 @@
 package com.hapramp.search;
 
 import com.google.gson.Gson;
+import com.hapramp.search.models.FollowersResponse;
 
 import java.util.ArrayList;
 
@@ -18,7 +19,7 @@ public class FollowersSearchManager implements NetworkUtils.NetworkResponseCallb
 				String url = "https://api.steemit.com";
 				String method = "POST";
 				String body = "{\"jsonrpc\":\"2.0\", \"method\":\"follow_api.get_followers\"," +
-						" \"params\":{\"account\":\"" + user + "\",\"type\":\"blog\",\"limit\":10}," +
+						" \"params\":{\"account\":\"" + user + "\",\"type\":\"blog\",\"limit\":1000}," +
 						" \"id\":1}";
 				networkUtils.request(url, method, body);
 		}
