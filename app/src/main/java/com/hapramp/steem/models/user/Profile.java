@@ -1,21 +1,7 @@
 package com.hapramp.steem.models.user;
 
-import android.util.Log;
-
-import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.models.Feed;
-import com.hapramp.steem.models.ProfileWrapper;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import eu.bittrade.libs.steemj.SteemJ;
-import eu.bittrade.libs.steemj.base.models.ExtendedAccount;
-import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
-import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 
 /**
  * Created by Ankit on 3/27/2018.

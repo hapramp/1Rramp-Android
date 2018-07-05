@@ -41,8 +41,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import eu.bittrade.libs.steemj.apis.database.models.state.Comment;
-
 /**
  * Created by Ankit on 2/9/2018.
  */

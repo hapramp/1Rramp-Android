@@ -4,7 +4,9 @@
     <option name="classType" value="SINGLE_FILE_WITH_INNER_CLASS" />
     <option name="customAnnotationPattern" value="@annotationTextHere(&quot;%s&quot;)" />
     <option name="encapsulete">
-      <list />
+      <list>
+        <option value="PROVIDE_PRIVATE_FIELD" />
+      </list>
     </option>
     <option name="fieldType" value="GSON_EXPOSE" />
     <option name="naming">

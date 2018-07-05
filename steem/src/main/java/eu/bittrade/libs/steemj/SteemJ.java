@@ -1481,7 +1481,6 @@ public class SteemJ {
         requestObject.setSteemApi(SteemApiType.DATABASE_API);
         String[] parameters = {pattern, String.valueOf(limit)};
         requestObject.setAdditionalParameters(parameters);
-
         return communicationHandler.performRequest(requestObject, String.class);
     }
 

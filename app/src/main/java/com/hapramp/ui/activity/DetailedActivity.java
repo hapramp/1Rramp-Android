@@ -66,12 +66,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import eu.bittrade.libs.steemj.SteemJ;
-import eu.bittrade.libs.steemj.base.models.AccountName;
-import eu.bittrade.libs.steemj.base.models.Permlink;
-import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
-import eu.bittrade.libs.steemj.exceptions.SteemInvalidTransactionException;
-import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

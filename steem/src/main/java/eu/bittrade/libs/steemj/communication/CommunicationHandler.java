@@ -111,6 +111,7 @@ public class CommunicationHandler {
     public <T> List<T> performRequest(JsonRPCRequest requestObject, Class<T> targetClass)
             throws SteemCommunicationException, SteemResponseException {
         try {
+            LOGGER.debug("JsonRpc "+requestObject.toString());
             Pair<URI, Boolean> endpoint = SteemJConfig.getInstance().getNextEndpointURI(numberOfConnectionTries++);
             JsonRPCResponse rawJsonResponse = client.invokeAndReadResponse(requestObject, endpoint.getLeft(),
                     endpoint.getRight());

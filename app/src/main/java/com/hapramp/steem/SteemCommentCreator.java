@@ -14,18 +14,8 @@ import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;
 import com.hapramp.steemconnect4j.SteemConnectException;
 import com.hapramp.utils.StringUtils;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import eu.bittrade.libs.steemj.SteemJ;
-import eu.bittrade.libs.steemj.base.models.AccountName;
-import eu.bittrade.libs.steemj.base.models.Permlink;
-import eu.bittrade.libs.steemj.base.models.operations.CommentOperation;
-import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
-import eu.bittrade.libs.steemj.exceptions.SteemInvalidTransactionException;
-import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
-
 /**
 	* Created by Ankit on 4/15/2018.
 	*/

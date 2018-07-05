@@ -89,7 +89,6 @@ dependencies {
     implementation 'com.github.bxute:ProgressDots:v1.0.3'
     implementation 'com.github.hapramp:steemconnect4j:v1.211'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation project(':steem')
     implementation project(':search')
     implementation project(':hapramp-editor')
     implementation project(':youtube_player')
