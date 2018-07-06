@@ -1,63 +1,357 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
-    tools:context=".ui.fragments.EarningFragment">
+    android:fillViewport="true">
 
     <RelativeLayout
-        android:id="@+id/steemBalanceWrapper"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:background="@drawable/earning_fragment_item_bg"
-        android:elevation="2dp"
-        android:paddingBottom="16dp"
-        android:paddingStart="16dp"
-        android:paddingTop="16dp">
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:padding="16dp"
+        tools:context=".ui.fragments.EarningFragment">
+
+        <ImageView
+            android:id="@+id/user_image"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:src="@drawable/profile" />
 
         <TextView
-            android:id="@+id/steem_balance_label"
+            android:id="@+id/username"
             android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:text="Steem Balance : "
-            android:textColor="@color/Black87"
-            android:textSize="16sp" />
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@+id/user_image"
+            android:text="----" />
+
+        <LinearLayout
+            android:id="@+id/user_fullname_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/username"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@+id/user_image"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/user_fullname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="------ ------"
+                android:textColor="@color/Black87"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/user_reputation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="8dp"
+                android:text="(--)"
+                android:textColor="@color/Black87"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/infor_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/user_image"
+            android:layout_marginTop="16dp"
+            app:cardBackgroundColor="#ffffff"
+            app:cardElevation="2dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true">
+
+                <ImageView
+                    android:id="@+id/steem_icon"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:alpha="0.7"
+                    android:padding="18dp"
+                    android:src="@drawable/steem_icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="64dp"
+                    android:layout_toEndOf="@+id/steem_icon"
+                    android:gravity="center_vertical"
+                    android:text="Steem"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/divider1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/steem_icon"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:src="@drawable/wallet_item_divider" />
+
+                <ImageView
+                    android:id="@+id/steem_power_icon"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_below="@+id/divider1"
+                    android:alpha="0.7"
+                    android:padding="18dp"
+                    android:src="@drawable/sp_icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="64dp"
+                    android:layout_below="@+id/divider1"
+                    android:layout_toEndOf="@+id/steem_icon"
+                    android:gravity="center_vertical"
+                    android:text="Steem Power"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/divider2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/steem_power_icon"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:src="@drawable/wallet_item_divider" />
+
+                <ImageView
+                    android:id="@+id/steem_dollar_icon"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_below="@+id/divider2"
+                    android:alpha="0.7"
+                    android:padding="18dp"
+                    android:src="@drawable/steem_dollar" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="64dp"
+                    android:layout_below="@+id/divider2"
+                    android:layout_toEndOf="@+id/steem_icon"
+                    android:gravity="center_vertical"
+                    android:text="Steem Dollar"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/divider3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/steem_dollar_icon"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:src="@drawable/wallet_item_divider" />
+
+                <ImageView
+                    android:id="@+id/steem_saving_icon"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_below="@+id/divider3"
+                    android:alpha="0.7"
+                    android:padding="18dp"
+                    android:src="@drawable/savings" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="64dp"
+                    android:layout_below="@+id/divider3"
+                    android:layout_toEndOf="@+id/steem_icon"
+                    android:gravity="center_vertical"
+                    android:text="Savings"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/divider4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/steem_saving_icon"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:src="@drawable/wallet_item_divider" />
+
+                <ImageView
+                    android:id="@+id/estimated_value"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_below="@+id/divider4"
+                    android:alpha="0.7"
+                    android:padding="18dp"
+                    android:src="@drawable/account_value_icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="64dp"
+                    android:layout_below="@+id/divider4"
+                    android:layout_toEndOf="@+id/steem_icon"
+                    android:gravity="center_vertical"
+                    android:text="Est. Account Value"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/wallet_steem_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="64dp"
+                    android:layout_alignParentEnd="true"
+                    android:gravity="center_vertical"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp"
+                    android:textColor="@color/Black87"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/wallet_steem_power_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="64dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/divider1"
+                    android:gravity="center_vertical"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp"
+                    android:textColor="@color/Black87"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/wallet_steem_dollar_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="64dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/divider2"
+                    android:gravity="center_vertical"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp"
+                    android:textColor="@color/Black87"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/wallet_saving_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="64dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/divider3"
+                    android:gravity="center_vertical"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp"
+                    android:textColor="@color/Black87"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/wallet_est_account_value_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="64dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/divider4"
+                    android:gravity="center_vertical"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp"
+                    android:textColor="@color/Black87"
+                    android:textSize="14sp" />
+
+                <com.hapramp.views.extraa.BubbleProgressBar
+                    android:id="@+id/steem_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="28dp" />
+
+                <com.hapramp.views.extraa.BubbleProgressBar
+                    android:id="@+id/steem_power_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/divider1"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="28dp" />
+
+                <com.hapramp.views.extraa.BubbleProgressBar
+                    android:id="@+id/steem_dollar_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/divider2"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="28dp" />
+
+                <com.hapramp.views.extraa.BubbleProgressBar
+                    android:id="@+id/saving_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/divider3"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="28dp" />
+
+                <com.hapramp.views.extraa.BubbleProgressBar
+                    android:id="@+id/estimated_value_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/divider4"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="28dp" />
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
 
         <TextView
-            android:id="@+id/steem_balance"
+            android:id="@+id/currency_label"
+            android:layout_below="@+id/infor_card"
+            android:layout_marginTop="4dp"
+            android:text="Current Conversion Rate"
+            android:textColor="@color/Black38"
             android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:gravity="center"
-            android:layout_toEndOf="@+id/steem_balance_label"
-            android:text=""
-            android:textSize="14sp" />
-
-
-        <TextView
-            android:id="@+id/steem_power_label"
-            android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:layout_below="@+id/steem_balance_label"
-            android:text="Steem Power : "
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textColor="@color/Black87"
-            android:textSize="16sp" />
+            android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/steem_power"
+            android:id="@+id/steem_rate"
             android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:gravity="center"
-            android:layout_below="@+id/steem_balance"
-            android:layout_toEndOf="@+id/steem_balance_label"
-            android:text=""
-            android:textSize="14sp" />
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/currency_label"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@+id/steem_usd_value_label"
+            android:text="---"
+            android:textColor="@color/Black87" />
+
+        <TextView
+            android:id="@+id/steem_usd_value_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/currency_label"
+            android:layout_marginTop="8dp"
+            android:text="1 STEEM = "
+            android:textColor="@color/Black54" />
+
+        <TextView
+            android:id="@+id/steem_dollar_rate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/currency_label"
+            android:layout_marginTop="8dp"
+            android:text="---"
+            android:textColor="@color/Black87" />
+
+        <TextView
+            android:id="@+id/steem_dollar_usd_value_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/currency_label"
+            android:layout_marginTop="8dp"
+            android:layout_toStartOf="@+id/steem_dollar_rate"
+            android:text="1 STEEM Dollar = "
+            android:textColor="@color/Black54" />
 
     </RelativeLayout>
+</ScrollView>
 
-
-</RelativeLayout>

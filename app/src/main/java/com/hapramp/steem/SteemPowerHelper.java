@@ -23,27 +23,6 @@ public class SteemPowerHelper {
             }
         }.start();
     }
-//
-//    private static void requestVestingShares(SteemPowerCallback steemPowerCallback, DynamicGlobalProperty dynamicGlobalProperty) {
-//        SteemJ steemJ = SteemHelper.getSteemInstance();
-//        try {
-//            ExtendedAccount extendedAccount = steemJ.getUserAccount(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
-//            steemPowerCallback.onSteemPowerFetched(calculateSteemPower(dynamicGlobalProperty, extendedAccount));
-//            steemPowerCallback.onSteemBalance(extendedAccount.getSbdBalance().getAmount());
-//        } catch (SteemCommunicationException e) {
-//            e.printStackTrace();
-//        } catch (SteemResponseException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    private static float calculateSteemPower(DynamicGlobalProperty dynamicGlobalProperty, ExtendedAccount extendedAccount) {
-//        float totalVestingShares = dynamicGlobalProperty.getTotalVestingShares().getAmount();
-//        float totalVestingFundSteem = dynamicGlobalProperty.getTotalVestingFundSteem().getAmount();
-//        float userVestingShare = extendedAccount.getVestingShares().getAmount();
-//        return ((totalVestingFundSteem * userVestingShare) / totalVestingShares)/1000;
-//    }
-
     public interface SteemPowerCallback {
         void onSteemPowerFetched(float steemPower);
 

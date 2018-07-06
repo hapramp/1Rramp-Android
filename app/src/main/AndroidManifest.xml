@@ -104,7 +104,10 @@
         <activity
             android:name=".ui.activity.OnBoardingActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.activity.WebloginActivity" android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.activity.WebloginActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ui.activity.WalletActivity"></activity>
     </application>
 
 </manifest>
