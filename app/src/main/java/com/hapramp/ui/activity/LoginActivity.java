@@ -9,25 +9,36 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.api.RetrofitServiceGenerator;
+import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.datamodels.VerificationDataBody;
 import com.hapramp.datamodels.VerifiedToken;
+import com.hapramp.datamodels.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steemconnect.SteemConnectUtils;
 import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectException;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.viewmodel.common.ConnectivityViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,6 +55,11 @@ public class LoginActivity extends AppCompatActivity {
 		TextView loginButton;
 		@BindView(R.id.createSteemAccountBtn)
 		TextView createSteemAccountBtn;
+		@BindView(R.id.progress_container)
+		RelativeLayout progressContainer;
+		@BindView(R.id.shaded_progress_message)
+		TextView shadedProgressMessage;
+
 		private ConnectivityViewModel connectivityViewModel;
 		private SteemConnect steemConnect;
 		private ProgressDialog progressDialog;
@@ -68,11 +84,41 @@ public class LoginActivity extends AppCompatActivity {
 		private void checkLastLoginAndMoveAhead() {
 				if (HaprampPreferenceManager.getInstance().isLoggedIn()) {
 						if (HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson().length() == 0) {
-								navigateToCommunityPage();
+								syncUserAccount();
 						} else {
 								navigateToHomePage();
 						}
 				}
+		}
+
+		private void syncUserAccount() {
+				showShadedProgress("Trying to know your communities...");
+				RetrofitServiceGenerator.getService()
+						.fetchUserCommunities(HaprampPreferenceManager.getInstance().getCurrentSteemUsername()).enqueue(new Callback<UserModel>() {
+						@Override
+						public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+								hideShadedProgress();
+								if (response.isSuccessful()) {
+										List<CommunityModel> communityModels = response.body().communityModels;
+										if (communityModels.size() > 0) {
+												HaprampPreferenceManager
+														.getInstance()
+														.saveUserSelectedCommunitiesAsJson(new Gson().toJson(new CommunityListWrapper(response.body().communityModels)));
+												navigateToHomePage();
+										}else{
+												navigateToCommunityPage();
+										}
+								}else{
+										showToast("Failed to get your communites");
+								}
+						}
+
+						@Override
+						public void onFailure(Call<UserModel> call, Throwable t) {
+         hideShadedProgress();
+								showToast("Failed to get your communites");
+						}
+				});
 		}
 
 		private void init() {
@@ -93,6 +139,19 @@ public class LoginActivity extends AppCompatActivity {
 								}
 						}
 				});
+		}
+
+		private void showShadedProgress(String msg){
+				if(progressContainer !=null){
+						shadedProgressMessage.setText(msg);
+						progressContainer.setVisibility(View.VISIBLE);
+				}
+		}
+
+		private void hideShadedProgress(){
+				if(progressContainer !=null){
+						progressContainer.setVisibility(View.GONE);
+				}
 		}
 
 		private void attachListeners() {
@@ -138,16 +197,18 @@ public class LoginActivity extends AppCompatActivity {
 		}
 
 		private void requestUserTokenFromAppServer(final String userAccessToken, final String username) {
+				showShadedProgress("Preparing for your security...");
 				VerificationDataBody verificationDataBody = new VerificationDataBody(userAccessToken, username);
 				RetrofitServiceGenerator.getService().verifyUser(verificationDataBody).enqueue(new Callback<VerifiedToken>() {
 						@Override
 						public void onResponse(Call<VerifiedToken> call, Response<VerifiedToken> response) {
+								hideShadedProgress();
 								if (response.isSuccessful()) {
 										//save token
 										HaprampPreferenceManager.getInstance().saveCurrentSteemUsername(username);
 										HaprampPreferenceManager.getInstance().saveUserToken(response.body().token);
 										HaprampPreferenceManager.getInstance().setLoggedIn(true);
-										navigateToCommunityPage();
+										syncUserAccount();
 								} else {
 										Toast.makeText(LoginActivity.this, "Verification failed!!", Toast.LENGTH_LONG).show();
 								}
