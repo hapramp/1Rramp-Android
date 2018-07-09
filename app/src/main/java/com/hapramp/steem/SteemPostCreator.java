@@ -12,6 +12,7 @@ import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;
 import com.hapramp.steemconnect4j.SteemConnectException;
 import com.hapramp.steemconnect4j.StringUtils;
+import com.hapramp.ui.activity.LoginActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +33,6 @@ public class SteemPostCreator {
 				new Thread() {
 						@Override
 						public void run() {
-								Log.d("PostCreate",HaprampPreferenceManager.getInstance()
-										.getSC2AccessToken());
 								SteemConnect steemConnect = SteemConnectUtils
 										.getSteemConnectInstance(HaprampPreferenceManager.getInstance()
 												.getSC2AccessToken());

@@ -43,11 +43,6 @@ public class TextTypeView extends FrameLayout{
     private void init(Context context){
         View v = LayoutInflater.from(context).inflate(R.layout.text_type_view,this);
         content = v.findViewById(R.id.content);
-        content.setTypeface(FontFace.getNormalTypeface(context));
-    }
-
-    public void setTextSize(int size){
-        content.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
     }
 
     public void setText(String text){

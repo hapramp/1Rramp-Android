@@ -27,7 +27,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
             android:layout_toRightOf="@+id/closeBtn"
-            android:text="Article"
+            android:text="Write Article"
             android:textSize="18sp" />
 
         <TextView

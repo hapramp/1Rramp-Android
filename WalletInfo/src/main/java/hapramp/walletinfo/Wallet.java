@@ -41,8 +41,10 @@ public class Wallet {
 						@Override
 						public void onResponse(String response) {
 								ConversionModel conversionModel = new Gson().fromJson(response, ConversionModel.class);
-								sbd_usd = conversionModel.getData().get(0).getClose();
-								requestSteemRates();
+								if(conversionModel.getData()!=null) {
+										sbd_usd = conversionModel.getData().get(0).getClose();
+										requestSteemRates();
+								}
 						}
 
 						@Override
@@ -61,8 +63,10 @@ public class Wallet {
 						@Override
 						public void onResponse(String response) {
 								ConversionModel conversionModel = new Gson().fromJson(response, ConversionModel.class);
-								steem_usd = conversionModel.getData().get(0).getClose();
-								requestGlobalProperties();
+								if(conversionModel.getData()!=null) {
+										steem_usd = conversionModel.getData().get(0).getClose();
+										requestGlobalProperties();
+								}
 						}
 
 						@Override

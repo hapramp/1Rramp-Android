@@ -320,7 +320,6 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     }
 
     private void confirmServerForPostCreation() {
-
         showPublishingProgressDialog(true, "Sending Confirmation to Server...");
         RetrofitServiceGenerator.getService()
                 .sendPostCreationConfirmation(new PostConfirmationModel(permlink_with_username))
@@ -345,7 +344,6 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     }
 
     private void serverConfirmed() {
-
         toast("Your post is live now.");
         showPublishingProgressDialog(false, "");
         AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_ARTICLE);
@@ -355,20 +353,15 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
                 finish();
             }
         }, 1000);
-
     }
 
     private void showMetaData(boolean show) {
-
         int vis = show ? View.VISIBLE : View.GONE;
         metaView.setVisibility(vis);
-
     }
 
     private void saveDraft() {
-
         toast("Article Saved To Draft");
-
     }
 
     private void restoreDraft() {
@@ -376,9 +369,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     }
 
     private void toast(String s) {
-
         Toast.makeText(this, s, Toast.LENGTH_LONG).show();
-
     }
 
     @Override
@@ -398,6 +389,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     @Override
     public void onPostCreationFailedOnSteem(String msg) {
         toast(msg);
+        showPublishingProgressDialog(false, "");
         Log.d(CreateArticleActivity.class.getSimpleName(), msg);
     }
 

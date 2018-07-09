@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +61,7 @@ public class RendererView extends FrameLayout {
 
     public void render(Content postStructureModel) {
 
-        //todo show rendering progress bar
+        Log.d("Editor Content",postStructureModel.data.toString());
 
         List<FeedDataItemModel> dataSeries = postStructureModel.getData();
         //loop for views
@@ -89,7 +90,6 @@ public class RendererView extends FrameLayout {
             case FeedDataConstants.ContentType.TEXT:
                 TextTypeView textTypeView = new TextTypeView(mContext);
                 textTypeView.setText(data.getContent());
-                textTypeView.setTextSize(FontSize.NORMALTEXTSIZE);
                 return textTypeView;
 
             case FeedDataConstants.ContentType.IMAGE:
@@ -100,19 +100,16 @@ public class RendererView extends FrameLayout {
             case FeedDataConstants.ContentType.H1:
                 HeadingOneTypeView headingTypeView1 = new HeadingOneTypeView(mContext);
                 headingTypeView1.setText(data.getContent());
-                headingTypeView1.setTextSize(FontSize.H1TEXTSIZE);
                 return headingTypeView1;
 
             case FeedDataConstants.ContentType.H2:
                 HeadingTwoTypeView headingTypeView2 = new HeadingTwoTypeView(mContext);
                 headingTypeView2.setText(data.getContent());
-                headingTypeView2.setTextSize(FontSize.H2TEXTSIZE);
                 return headingTypeView2;
 
             case FeedDataConstants.ContentType.H3:
                 HeadingThreeTypeView headingTypeView3 = new HeadingThreeTypeView(mContext);
                 headingTypeView3.setText(data.getContent());
-                headingTypeView3.setTextSize(FontSize.H3TEXTSIZE);
                 return headingTypeView3;
 
             case FeedDataConstants.ContentType.H4:

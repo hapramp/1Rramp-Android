@@ -36,4 +36,13 @@ public class CommunitiesUnitTest {
         communities.add(TRAVEL);
         communities.add(LITERATURE);
     }
+
+    @Test
+    public void testString() {
+        String s = "{\"content\":\"\\\"Hello\\\"\"}";
+        System.out.println(s);
+        s = s.replace("\"","\\\"");
+        s = s.replace("\\\\","\\\\\\");
+        System.out.println(s);
+    }
 }
