@@ -171,6 +171,7 @@ public class HomeFragment extends Fragment implements
 				RetrofitServiceGenerator.getService().fetchUserCommunities(mCurrentUser).enqueue(new Callback<UserModel>() {
 						@Override
 						public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+								hideLoadingProgressBar();
 								if (response.isSuccessful()) {
 										HaprampPreferenceManager.getInstance().saveUserSelectedCommunitiesAsJson(new Gson().toJson(new CommunityListWrapper(response.body().communityModels)));
 										initCategoryView();
@@ -456,7 +457,7 @@ public class HomeFragment extends Fragment implements
 				progressDialog.show();
 		}
 
-		private void hideProgressBar() {
+		private void hideLoadingProgressBar() {
 				if (progressDialog != null) {
 						progressDialog.hide();
 				}

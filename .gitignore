@@ -8,4 +8,6 @@ local.properties
 /captures
 .externalNativeBuild
 *.jks
+/.idea
+.idea
 config.properties

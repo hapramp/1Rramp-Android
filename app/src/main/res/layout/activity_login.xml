@@ -122,6 +122,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <RelativeLayout
+            android:visibility="gone"
+            android:id="@+id/progress_container"
+            android:background="#c0000000"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ProgressBar
+                android:id="@+id/temp_progress"
+                android:indeterminateTint="#ffffff"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/shaded_progress_message"
+                android:padding="8dp"
+                android:textSize="16sp"
+                android:textColor="@color/white"
+                android:layout_below="@+id/temp_progress"
+                android:layout_centerHorizontal="true"
+                android:text="Fetching Communities.."
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
 
     </RelativeLayout>
 

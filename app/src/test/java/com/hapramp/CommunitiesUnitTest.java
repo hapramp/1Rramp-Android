@@ -5,6 +5,7 @@ import com.hapramp.steem.Communities;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 /**
@@ -23,10 +24,8 @@ public class CommunitiesUnitTest {
     public static final String TRAVEL = "hapramp-travel";
     public static final String LITERATURE = "hapramp-literature";
 
-
     @Before
     public void populateCommunityList() {
-
         communities = new ArrayList<>();
         communities.add(PHOTOGRAPHY);
         communities.add(ART);
@@ -36,20 +35,5 @@ public class CommunitiesUnitTest {
         communities.add(DRAMATICS);
         communities.add(TRAVEL);
         communities.add(LITERATURE);
-
     }
-
-    @Test
-    public void testMethod_doesCommunityExists() {
-    }
-
-
-    @Test
-    public void test_StringFormatting() {
-        String t = "0.004";
-        double usd = Double.valueOf(t);
-        System.out.println(usd * 65);
-    }
-
-
 }

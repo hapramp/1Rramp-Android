@@ -34,6 +34,7 @@ import com.hapramp.datamodels.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.models.user.SteemUser;
+import com.hapramp.ui.activity.WalletActivity;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.views.skills.InterestsView;
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ import java.util.List;
 import java.util.Set;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import hapramp.walletinfo.Wallet;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -88,6 +90,8 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 		InterestsView interestsView;
 		@BindView(R.id.postsCaption)
 		TextView postsCaption;
+		@BindView(R.id.wallet_info)
+		TextView walletInfoBtn;
 		@BindView(R.id.profile_header_view_real)
 		RelativeLayout profileHeaderViewReal;
 		@BindView(R.id.shimmer_view_container)
@@ -140,6 +144,15 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 								} else {
 										requestFollowOnSteem();
 								}
+						}
+				});
+
+				walletInfoBtn.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View view) {
+								Intent intent = new Intent(mContext , WalletActivity.class);
+								intent.putExtra(WalletActivity.EXTRA_USERNAME,mUsername);
+								mContext.startActivity(intent);
 						}
 				});
 		}
@@ -222,7 +235,7 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 				if (usernameTv == null)
 						return;
 				loaded = true;
-				String profile_pic = String.format(getResources().getString(R.string.steem_user_profile_pic_format), mUsername);
+				String profile_pic = String.format(getResources().getString(R.string.steem_user_profile_pic_format_large), mUsername);
 				String wall_pic_url = data.getUser().getJsonMetadata().getProfile().getCover_image() != null ?
 						data.getUser().getJsonMetadata().getProfile().getCover_image()
 						:
