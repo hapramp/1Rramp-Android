@@ -64,37 +64,19 @@
             android:background="#ffffff">
 
             <TextView
-                android:id="@+id/featured_image_caption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:padding="8dp"
-                android:text="Select Featured Image"
-                android:textColor="@color/Black38"
-                android:textSize="14sp" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/featured_image_selectorRV"
-                android:layout_width="match_parent"
-                android:layout_height="84dp"
-                android:layout_below="@+id/featured_image_caption"
-                android:layout_marginStart="8dp" />
-
-            <TextView
                 android:id="@+id/community_caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/featured_image_selectorRV"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:text="Community"
-                android:textColor="@color/Black38"
+                android:text="SELECT COMMUNITY"
+                android:textStyle="bold"
+                android:textColor="@color/colorAccent"
                 android:textSize="14sp" />
 
             <com.hapramp.views.post.PostCategoryView
                 android:id="@+id/articleCategoryView"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/community_caption"
                 android:padding="8dp" />
@@ -106,8 +88,10 @@
                 android:layout_below="@+id/articleCategoryView"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:text="Hashtags(Press space to enter)"
-                android:textColor="@color/Black38" />
+                android:text="HashTags(Separated by spaces)"
+                android:textStyle="bold"
+                android:textColor="@color/colorAccent"
+                android:textSize="14sp" />
 
             <com.hapramp.views.hashtag.CustomHashTagInput
                 android:animateLayoutChanges="true"
@@ -118,7 +102,6 @@
                 android:layout_below="@+id/tagsCaption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
-
 
         </RelativeLayout>
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,13 +59,10 @@ public class PostCategoryView extends FrameLayout {
     }
 
     private void addViews() {
-
         for (int i = 0; i < communities.size(); i++) {
-
             final CategoryTextView view = new CategoryTextView(mContext);
             view.setText(communities.get(i).getmName());
             view.setTag(communities.get(i).getmTag());
-
             view.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -72,7 +70,7 @@ public class PostCategoryView extends FrameLayout {
                     int index = selectedTags.indexOf(view.getTag());
                     if (index == -1) {
                         // select it
-                        if (selectedTags.size() > 2) {
+                        if (selectedTags.size() > 3) {
                             Toast.makeText(mContext, "Maximum 3 Skills", Toast.LENGTH_LONG).show();
                         } else {
                             view.setSelected(true);
@@ -104,11 +102,9 @@ public class PostCategoryView extends FrameLayout {
 
 
     public void initCategory() {
-
         CommunityListWrapper cr = new Gson().fromJson(HaprampPreferenceManager.getInstance().getAllCommunityAsJson(), CommunityListWrapper.class);
         communities = cr.getCommunityModels();
         addViews();
-
     }
 
     private CommunitySelectionChangeListener communitySelectionChangeListener;

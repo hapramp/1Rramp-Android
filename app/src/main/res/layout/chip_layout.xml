@@ -1,41 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:paddingStart="4dp"
-    android:paddingEnd="4dp"
-    android:paddingTop="1dp"
-    android:paddingBottom="1dp"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="2dp"
     android:layout_marginEnd="4dp"
     android:layout_marginTop="2dp"
-    android:layout_marginBottom="2dp"
     android:background="@drawable/post_category_item_view_bg"
-    android:layout_height="wrap_content">
+    android:paddingBottom="1dp"
+    android:paddingEnd="4dp"
+    android:paddingStart="4dp"
+    android:paddingTop="1dp">
 
     <TextView
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:paddingTop="6dp"
-        android:paddingBottom="6dp"
-        android:textColor="@color/Black54"
         android:id="@+id/tag_text"
-        android:maxLength="20"
-        android:lines="1"
-        android:text="Ankit"
-        android:textSize="14sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:gravity="center_vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:lines="1"
+        android:maxLength="20"
+        android:paddingBottom="6dp"
+        android:paddingEnd="12dp"
+        android:paddingStart="12dp"
+        android:paddingTop="6dp"
+        android:text="Ankit"
+        android:textColor="@color/Black54"
+        android:textSize="16sp" />
 
     <TextView
-        android:text=""
-        android:layout_toEndOf="@+id/tag_text"
-        android:textColor="@color/colorPrimary"
-        android:textSize="20sp"
-        android:gravity="center"
-       android:layout_centerVertical="true"
         android:id="@+id/remove_btn"
-        android:layout_width="24dp"
-        android:layout_height="24dp" />
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/tag_text"
+        android:background="?selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:gravity="center"
+        android:text=""
+        android:textColor="@color/colorPrimary"
+        android:textSize="24sp" />
 
 </RelativeLayout>

@@ -54,15 +54,11 @@ public class CustomHashTagInput extends FrameLayout implements ChipView.RemoveTa
     }
 
     private void init(Context context) {
-
         this.context = context;
         View view = LayoutInflater.from(context).inflate(R.layout.custom_hashtag_layout, this);
         ButterKnife.bind(this, view);
-
         (chipsContainer).getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
-
         attachListener();
-
     }
 
     private void attachListener() {
@@ -74,7 +70,6 @@ public class CustomHashTagInput extends FrameLayout implements ChipView.RemoveTa
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                //Log.d("CustomHashTag", "s:" + s + " start-" + start + " before-" + before + " count-" + count);
                 if (before < count) {
                     int len = s.length();
                     if (len > 0) {
@@ -103,19 +98,15 @@ public class CustomHashTagInput extends FrameLayout implements ChipView.RemoveTa
     }
 
     private void addChip(String text) {
-
         int size = hashTags.size();
         hashTags.add(text);
         ChipView chipView = new ChipView(context);
         chipView.setRemoveTagListener(this);
         chipView.setTagText(text, size);
-
-        //add view to grop
         chipsContainer.addView(chipView, size,
                 new ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT));
-
     }
 
     @Override

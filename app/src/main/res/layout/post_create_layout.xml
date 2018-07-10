@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:background="@color/white"
     android:layout_height="match_parent">
 
     <RelativeLayout
@@ -55,10 +56,83 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/post_header_container"
         android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="216dp"
+            android:background="#4db7b7b7"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/image_selector"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:padding="16dp"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/post_image_insert" />
+
+                <TextView
+                    android:layout_below="@+id/image_selector"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/Black54"
+                    android:text="Select Image"
+                    android:padding="8dp"
+                    android:textSize="16sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </RelativeLayout>
+
+            <FrameLayout
+                android:id="@+id/central_divider"
+                android:layout_width="1dp"
+                android:layout_height="64dp"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_vertical"
+                android:background="@color/white" />
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/video_selector"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:padding="16dp"
+                    android:clickable="true"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/post_youtube_insert" />
+
+                <TextView
+                    android:layout_below="@+id/video_selector"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/Black54"
+                    android:text="Select Youtube Video"
+                    android:padding="8dp"
+                    android:textSize="16sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
 
         <com.hapramp.views.post.PostImageView
             android:id="@+id/postImageView"
@@ -67,10 +141,10 @@
             android:visibility="gone" />
 
         <RelativeLayout
-            android:visibility="gone"
             android:id="@+id/youtube_item_container"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/youtube_thumbnailIv"
@@ -91,17 +165,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:background="@drawable/remove_video_bg"
-                android:clickable="true"
-                android:textSize="12sp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:textColor="#ffffff"
                 android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Remove" />
+                android:background="@drawable/remove_video_bg"
+                android:clickable="true"
+                android:paddingBottom="4dp"
+                android:paddingEnd="8dp"
+                android:paddingStart="8dp"
+                android:paddingTop="4dp"
+                android:text="Remove"
+                android:textColor="#ffffff"
+                android:textSize="12sp" />
 
         </RelativeLayout>
 
@@ -111,30 +185,42 @@
             android:layout_height="wrap_content"
             android:background="@drawable/post_editor_bg"
             android:gravity="top"
-            android:hint="Write something..."
+            android:hint="Write something ..."
             android:maxLength="140"
             android:minHeight="100dp"
             android:padding="16dp"
-            android:textColor="@color/Black87"
+            android:textColor="@color/Black54"
+            android:lineSpacingExtra="2dp"
             android:textColorHint="@color/Black38"
             android:textSize="14sp" />
 
-        <TextView
-            android:id="@+id/category_caption"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:text="Select Category"
-            android:textColor="@color/Black54"
-            android:textSize="14sp" />
+        <RelativeLayout
+            android:id="@+id/inline_community_selector_container"
+            android:layout_width="wrap_content"
+            android:layout_height="216dp"
+            android:elevation="4dp"
+            android:visibility="visible">
 
-        <com.hapramp.views.post.PostCategoryView
-            android:id="@+id/postCategoryView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp" />
+            <TextView
+                android:id="@+id/inline_category_caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="SELECT COMMUNITY"
+                android:textStyle="bold"
+                android:textColor="@color/colorAccent"
+                android:textSize="14sp" />
+
+            <com.hapramp.views.post.PostCategoryView
+                android:id="@+id/inline_postCategoryView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:layout_below="@+id/inline_category_caption" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 
