@@ -9,12 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="2dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="8dp"
-        android:padding="8dp"
-        android:text="Text using H1 size"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
         android:textColor="@color/Black87"
-        android:textSize="18sp" />
+        android:textSize="22sp" />
 
 </LinearLayout>

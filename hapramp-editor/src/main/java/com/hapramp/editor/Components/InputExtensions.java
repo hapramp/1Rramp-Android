@@ -29,6 +29,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
@@ -48,19 +49,11 @@ import com.hapramp.editor.models.EditorTextStyle;
 import com.hapramp.editor.models.EditorType;
 import com.hapramp.editor.models.Op;
 import com.hapramp.editor.models.RenderType;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-
 import java.util.Map;
-
 import static com.hapramp.editor.FontSize.H1TEXTSIZE;
 import static com.hapramp.editor.FontSize.H2TEXTSIZE;
 import static com.hapramp.editor.FontSize.H3TEXTSIZE;
 import static com.hapramp.editor.FontSize.NORMALTEXTSIZE;
-import static com.hapramp.editor.Utilities.FontCache.BOLD_ROBOTO;
-import static com.hapramp.editor.Utilities.FontCache.LIGHT_ROBOTO;
 
 /**
  * Created by mkallingal on 4/30/2016.
@@ -68,8 +61,9 @@ import static com.hapramp.editor.Utilities.FontCache.LIGHT_ROBOTO;
 public class InputExtensions {
     public static final int HEADING = 0;
     public static final int CONTENT = 1;
-    private int fontFace = R.string.fontFamily__sans_serif_medium;
+    private int fontFace = R.string.fontFamily__sans_serif;
     EditorCore editorCore;
+    private String article_hint = "Write Article Here...";
     private Map<Integer, String> contentTypeface;
     private Map<Integer, String> headingTypeface;
 
@@ -131,7 +125,7 @@ public class InputExtensions {
     }
 
     private TextView getNewTextView(String text) {
-
+        Log.d("Editor","getNewTextView");
         final TextView textView = new TextView(this.editorCore.getContext());
         addEditableStyling(textView, FontSize.NORMALTEXTSIZE);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -143,14 +137,15 @@ public class InputExtensions {
             textView.setText(toReplace);
         }
         return textView;
-
     }
 
     public CustomEditText getNewEditTextInst(final String hint, String text, int textSize) {
-
+        Log.d("Editor","getNewTextViewInst");
         final CustomEditText editText = new CustomEditText(this.editorCore.getContext());
         addEditableStyling(editText, textSize);
-        editText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+          ViewGroup.LayoutParams.WRAP_CONTENT);
+        editText.setLayoutParams(layoutParams);
         if (hint != null) {
             editText.setHint(hint);
         }
@@ -209,7 +204,7 @@ public class InputExtensions {
                     /* if the index was 0, set the placeholder to empty, behaviour happens when the user just press enter
                      */
                             if (index == 0) {
-                                editText.setHint("Write Article...");
+                                editText.setHint(article_hint);
                                 editText.setTag(R.id.control_tag, hint);
                             }
                             int position = index + 1;
@@ -231,26 +226,15 @@ public class InputExtensions {
 
     }
 
-    private boolean isLastText(int index) {
-        if (index == 0)
-            return false;
-        View view = editorCore.getParentView().getChildAt(index - 1);
-        EditorType type = editorCore.getControlType(view);
-        return type == EditorType.INPUT;
-    }
-
     private void addEditableStyling(TextView editText, int textSize) {
-
         editText.setFocusableInTouchMode(true);
         editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
-
     }
 
     public TextView insertEditText(int position, String hint, String text) {
-
+        Log.d("Editor","insertEditText Post:"+position);
         int textSize = FontSize.NORMALTEXTSIZE;
-
-        String nextHint = isLastText(position) ? null : editorCore.placeHolder;
+        String nextHint = position == 0 ? article_hint : "";
         if (editorCore.getRenderType() == RenderType.Editor) {
             final CustomEditText view = getNewEditTextInst(nextHint, text, textSize);
             editorCore.getParentView().addView(view, position);
@@ -307,18 +291,22 @@ public class InputExtensions {
         EditorControl editorControl = editorCore.getControlTag(editText);
         if (isEditorTextStyleHeaders(editorTextStyle)) {
             if (editorCore.containsStyle(editorControl._ControlStyles, editorTextStyle)) {
+                //normal text style
                 editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, NORMALTEXTSIZE);
                 editText.setTypeface(getTypeface(CONTENT, Typeface.NORMAL));
+                editText.setTextColor(Color.parseColor(FontColor.COLOR_BLACK));
                 tag = reWriteTags(editorControl, EditorTextStyle.NORMAL);
             } else {
+                //heading styles
                 int ts = getTextStyleFromStyle(editorTextStyle);
                 if (ts == FontSize.H2TEXTSIZE) {
                     editText.setTextColor(Color.parseColor(FontColor.COLOR_SUBHEADING));
+                    editText.setTypeface(getTypeface(HEADING, Typeface.BOLD));
                 }else{
-                    editText.setTextColor(Color.parseColor(FontColor.COLOR_BLACK));
+                    editText.setTypeface(getTypeface(HEADING, Typeface.NORMAL));
+                    editText.setTextColor(Color.parseColor(FontColor.COLOR_HEADING));
                 }
                 editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, ts);
-                editText.setTypeface(getTypeface(HEADING, Typeface.BOLD));
                 tag = reWriteTags(editorControl, editorTextStyle);
             }
             editText.setTag(tag);

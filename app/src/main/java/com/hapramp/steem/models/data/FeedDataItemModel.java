@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.firebase.storage.StorageException;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.hapramp.utils.StringUtils;
 
 /**
  * Created by Ankit on 4/9/2018.

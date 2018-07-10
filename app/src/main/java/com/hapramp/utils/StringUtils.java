@@ -1,7 +1,11 @@
 package com.hapramp.utils;
 
 public class StringUtils {
+		// replace with single escape character
 		public static String stringify(String s){
-				return s.replaceAll("\"", "\\\\\"");
+				s = s.replace("\"","\\\"");
+				s = s.replace("\\\\","\\\\\\");
+				return s;
 		}
+
 }

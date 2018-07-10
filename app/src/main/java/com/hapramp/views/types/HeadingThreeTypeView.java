@@ -21,7 +21,6 @@ import com.hapramp.editor.FontFace;
 public class HeadingThreeTypeView extends FrameLayout {
 
     private TextView content;
-    private float h1Size = 24f;
 
     public HeadingThreeTypeView(@NonNull Context context) {
         super(context);
@@ -44,9 +43,6 @@ public class HeadingThreeTypeView extends FrameLayout {
         content.setTypeface(FontFace.getBoldTypeface(context));
     }
 
-    public void setTextSize(int size){
-        content.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
-    }
     public void setText(String text) {
         content.setText(Html.fromHtml(text));
     }
