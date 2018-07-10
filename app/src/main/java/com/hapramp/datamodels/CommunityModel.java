@@ -73,4 +73,16 @@ public class CommunityModel {
     public void setmId(int mId) {
         this.mId = mId;
     }
+
+    @Override
+    public String toString() {
+        return "CommunityModel{" +
+          "mDescription='" + mDescription + '\'' +
+          ", mImageUri='" + mImageUri + '\'' +
+          ", mTag='" + mTag + '\'' +
+          ", mColor='" + mColor + '\'' +
+          ", mName='" + mName + '\'' +
+          ", mId=" + mId +
+          '}';
+    }
 }
