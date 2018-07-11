@@ -1,17 +1,23 @@
 package com.hapramp.ui.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.hapramp.R;
 import com.hapramp.search.TranserHistoryManager;
 import com.hapramp.steem.models.TransferHistoryModel;
+import com.hapramp.utils.ImageHandler;
+
 import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -23,6 +29,8 @@ public class AccountHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 		private static final int TYPE_CLAIM = 3;
 		private static final int TYPE_CURATION = 4;
 		private final Context mContext;
+
+
 		private ArrayList<TransferHistoryModel> transferHistoryModels;
 
 		public AccountHistoryAdapter(Context context) {
@@ -32,7 +40,7 @@ public class AccountHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
 		public void setTransferHistoryModels(ArrayList<TransferHistoryModel> transferHistoryModels) {
 				this.transferHistoryModels = transferHistoryModels;
-				Log.d("Adapter","Data"+transferHistoryModels.toString());
+				Log.d("Adapter", "Data" + transferHistoryModels.toString());
 				notifyDataSetChanged();
 		}
 
@@ -42,19 +50,19 @@ public class AccountHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 				View view;
 				switch (viewType) {
 						case TYPE_AUTHOR_REWARD:
-								view = LayoutInflater.from(mContext).inflate(R.layout.account_history_author_reward_item_view, null);
+								view = LayoutInflater.from(mContext).inflate(R.layout.account_history_author_reward_item_view, null, false);
 								return new AuthorRewardViewHolder(view);
 						case TYPE_CLAIM:
-								view = LayoutInflater.from(mContext).inflate(R.layout.account_history_claim_item_view, null);
+								view = LayoutInflater.from(mContext).inflate(R.layout.account_history_claim_item_view, null, false);
 								return new ClaimBalanceViewHolder(view);
 						case TYPE_COMMENT_BENEFACTOR:
-								view = LayoutInflater.from(mContext).inflate(R.layout.account_history_comment_benefactor_item_view, null);
+								view = LayoutInflater.from(mContext).inflate(R.layout.account_history_comment_benefactor_item_view, null, false);
 								return new CommentBenefactorViewHolder(view);
 						case TYPE_CURATION:
-								view = LayoutInflater.from(mContext).inflate(R.layout.account_history_curation_item_view, null);
+								view = LayoutInflater.from(mContext).inflate(R.layout.account_history_curation_item_view, null, false);
 								return new CurationViewHolder(view);
 						case TYPE_TRANSFER:
-								view = LayoutInflater.from(mContext).inflate(R.layout.account_history_transfer_item_view, null);
+								view = LayoutInflater.from(mContext).inflate(R.layout.account_history_transfer_item_view, parent, false);
 								return new TransferViewHolder(view);
 				}
 				return null;
@@ -98,10 +106,12 @@ public class AccountHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 		}
 
 		class TransferViewHolder extends RecyclerView.ViewHolder {
-				@BindView(R.id.from)
-				TextView from;
-				@BindView(R.id.to)
-				TextView to;
+				@BindView(R.id.user_image)
+				ImageView userImage;
+				@BindView(R.id.message_label)
+				TextView messageLabel;
+				@BindView(R.id.remote_user)
+				TextView remoteUser;
 				@BindView(R.id.amount)
 				TextView amount;
 				@BindView(R.id.timestamp)
@@ -116,12 +126,30 @@ public class AccountHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
 				public void bind(TransferHistoryModel transferHistoryModel) {
 						TransferHistoryModel.Transfer transfer = transferHistoryModel.getTransfer();
-						from.setText(transfer.from);
-						to.setText(transfer.to);
-						amount.setText(transfer.amount);
+						if (isSent(transferHistoryModel.getUserAccount(), transfer.from)) {
+								//sent
+								ImageHandler.loadCircularImage(mContext, userImage,
+										String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format), transfer.to));
+								messageLabel.setText("Transferred to");
+								remoteUser.setText(transfer.to);
+								amount.setText(String.format("- %s", transfer.amount));
+								amount.setTextColor(Color.parseColor("#bf0707"));
+						} else {
+								//received
+								ImageHandler.loadCircularImage(mContext, userImage,
+										String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format), transfer.from));
+								messageLabel.setText("Received from");
+								remoteUser.setText(transfer.from);
+								amount.setText(String.format("+ %s", transfer.amount));
+								amount.setTextColor(Color.parseColor("#157c18"));
+						}
 						timestamp.setText(transferHistoryModel.getTimeStamp());
 						message.setText(transfer.memo);
 				}
+		}
+
+		private boolean isSent(String userAccount, String from) {
+				return userAccount.equals(from);
 		}
 
 		class AuthorRewardViewHolder extends RecyclerView.ViewHolder {
@@ -179,16 +207,8 @@ public class AccountHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 		}
 
 		class ClaimBalanceViewHolder extends RecyclerView.ViewHolder {
-				@BindView(R.id.message)
-				TextView message;
-				@BindView(R.id.account)
-				TextView account;
-				@BindView(R.id.sbd)
-				TextView sbd;
-				@BindView(R.id.steem)
-				TextView steem;
-				@BindView(R.id.vests)
-				TextView vests;
+				@BindView(R.id.amount)
+				TextView amount;
 				@BindView(R.id.timestamp)
 				TextView timestamp;
 
@@ -199,12 +219,8 @@ public class AccountHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
 				public void bind(TransferHistoryModel transferHistoryModel) {
 						TransferHistoryModel.ClaimRewardBalance claimRewardBalance = transferHistoryModel.getClaimRewardBalance();
-						sbd.setText(claimRewardBalance.getReward_sbd());
-						account.setText(claimRewardBalance.getAccount());
-						steem.setText(claimRewardBalance.getReward_steem());
-						vests.setText(claimRewardBalance.getReward_vests());
 						timestamp.setText(transferHistoryModel.getTimeStamp());
-						message.setText("Claimed Balance");
+						amount.setText(String.format("%s\n%s\n%s", claimRewardBalance.getReward_sbd(), claimRewardBalance.getReward_steem(), claimRewardBalance.getReward_vests()));
 				}
 		}
 

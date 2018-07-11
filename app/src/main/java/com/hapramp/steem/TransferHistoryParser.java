@@ -27,7 +27,10 @@ public class TransferHistoryParser {
 								String timestamp = transfer_obj.getString("timestamp");
 								JSONObject meta_data_obj = operationArray.getJSONObject(1);
 								String operation = operationArray.getString(0);
-								transferHistoryList.add(parse(operation, timestamp, meta_data_obj));
+								// TODO: 11/07/18 skipping extra data
+								if (operation.equals(TranserHistoryManager.KEYS.OPERATION_TRANSFER) || operation.equals(TranserHistoryManager.KEYS.OPERATION_CLAIM_REWARD_BALANCE)) {
+										transferHistoryList.add(parse(user, operation, timestamp, meta_data_obj));
+								}
 						}
 				}
 				catch (JSONException e) {
@@ -36,19 +39,19 @@ public class TransferHistoryParser {
 				return transferHistoryList;
 		}
 
-		private TransferHistoryModel parse(String operation, String timestamp, JSONObject meta_data_obj) {
+		private TransferHistoryModel parse(String user, String operation, String timestamp, JSONObject meta_data_obj) {
 				try {
 						switch (operation) {
 								case TranserHistoryManager.KEYS.OPERATION_TRANSFER:
-										return parseTransfer(operation, timestamp, meta_data_obj);
-								case TranserHistoryManager.KEYS.OPERATION_AUTHOR_REWARD:
-										return parseAuthorReward(operation, timestamp, meta_data_obj);
+										return parseTransfer(user, operation, timestamp, meta_data_obj);
+							/*	case TranserHistoryManager.KEYS.OPERATION_AUTHOR_REWARD:
+										return parseAuthorReward(user, operation, timestamp, meta_data_obj);*/
 								case TranserHistoryManager.KEYS.OPERATION_CLAIM_REWARD_BALANCE:
-										return parseClaimRewardBalance(operation, timestamp, meta_data_obj);
-								case TranserHistoryManager.KEYS.OPERATION_COMMENT_BENEFACTOR_REWARD:
-										return parseCommentBenefactor(operation, timestamp, meta_data_obj);
+										return parseClaimRewardBalance(user, operation, timestamp, meta_data_obj);
+					/*			case TranserHistoryManager.KEYS.OPERATION_COMMENT_BENEFACTOR_REWARD:
+										return parseCommentBenefactor(user, operation, timestamp, meta_data_obj);
 								case TranserHistoryManager.KEYS.OPERATION_CURATION_REWARD:
-										return parseCurationReward(operation, timestamp, meta_data_obj);
+										return parseCurationReward(user, operation, timestamp, meta_data_obj);*/
 						}
 				}
 				catch (JSONException e) {
@@ -56,9 +59,10 @@ public class TransferHistoryParser {
 				return null;
 		}
 
-		private TransferHistoryModel parseCurationReward(String op, String timestamp, JSONObject meta_data_obj) throws JSONException {
+		private TransferHistoryModel parseCurationReward(String user, String op, String timestamp, JSONObject meta_data_obj) throws JSONException {
 				TransferHistoryModel transferHistoryModel = new TransferHistoryModel();
 				transferHistoryModel.setOperation(op);
+				transferHistoryModel.setUserAccount(user);
 				transferHistoryModel.setTimeStamp(timestamp);
 				transferHistoryModel.setCurationReward(new TransferHistoryModel.CurationReward(
 						meta_data_obj.getString(TranserHistoryManager.KEYS.KEY_CURATOR),
@@ -69,9 +73,10 @@ public class TransferHistoryParser {
 				return transferHistoryModel;
 		}
 
-		private TransferHistoryModel parseCommentBenefactor(String op, String timestamp, JSONObject meta_data_obj) throws JSONException {
+		private TransferHistoryModel parseCommentBenefactor(String user, String op, String timestamp, JSONObject meta_data_obj) throws JSONException {
 				TransferHistoryModel transferHistoryModel = new TransferHistoryModel();
 				transferHistoryModel.setOperation(op);
+				transferHistoryModel.setUserAccount(user);
 				transferHistoryModel.setTimeStamp(timestamp);
 				transferHistoryModel.setCommentBenefactor(new TransferHistoryModel.CommentBenefactor(
 						meta_data_obj.getString(TranserHistoryManager.KEYS.KEY_BENEFACTOR),
@@ -82,9 +87,10 @@ public class TransferHistoryParser {
 				return transferHistoryModel;
 		}
 
-		private TransferHistoryModel parseClaimRewardBalance(String op, String timestamp, JSONObject meta_data_obj) throws JSONException {
+		private TransferHistoryModel parseClaimRewardBalance(String user, String op, String timestamp, JSONObject meta_data_obj) throws JSONException {
 				TransferHistoryModel transferHistoryModel = new TransferHistoryModel();
 				transferHistoryModel.setOperation(op);
+				transferHistoryModel.setUserAccount(user);
 				transferHistoryModel.setTimeStamp(timestamp);
 				transferHistoryModel.setClaimRewardBalance(new TransferHistoryModel.ClaimRewardBalance(
 						meta_data_obj.getString(TranserHistoryManager.KEYS.KEY_ACCOUNT),
@@ -95,9 +101,10 @@ public class TransferHistoryParser {
 				return transferHistoryModel;
 		}
 
-		private TransferHistoryModel parseAuthorReward(String op, String timestamp, JSONObject meta_data_obj) throws JSONException {
+		private TransferHistoryModel parseAuthorReward(String user, String op, String timestamp, JSONObject meta_data_obj) throws JSONException {
 				TransferHistoryModel transferHistoryModel = new TransferHistoryModel();
 				transferHistoryModel.setOperation(op);
+				transferHistoryModel.setUserAccount(user);
 				transferHistoryModel.setTimeStamp(timestamp);
 				transferHistoryModel.setAuthorReward(new TransferHistoryModel.AuthorReward(
 						meta_data_obj.getString(TranserHistoryManager.KEYS.KEY_AUTHOR),
@@ -109,9 +116,10 @@ public class TransferHistoryParser {
 				return transferHistoryModel;
 		}
 
-		private TransferHistoryModel parseTransfer(String op, String timestamp, JSONObject meta_data_obj) throws JSONException {
+		private TransferHistoryModel parseTransfer(String user, String op, String timestamp, JSONObject meta_data_obj) throws JSONException {
 				TransferHistoryModel transferHistoryModel = new TransferHistoryModel();
 				transferHistoryModel.setOperation(op);
+				transferHistoryModel.setUserAccount(user);
 				transferHistoryModel.setTimeStamp(timestamp);
 				transferHistoryModel.setTransfer(new TransferHistoryModel.Transfer(
 						meta_data_obj.getString(TranserHistoryManager.KEYS.KEY_FROM),
@@ -121,5 +129,4 @@ public class TransferHistoryParser {
 				));
 				return transferHistoryModel;
 		}
-
 }

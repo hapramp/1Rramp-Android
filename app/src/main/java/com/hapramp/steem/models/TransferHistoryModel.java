@@ -1,6 +1,7 @@
 package com.hapramp.steem.models;
 
 public class TransferHistoryModel {
+		private String userAccount;
 		private String operation;
 		private Transfer transfer;
   private AuthorReward authorReward;
@@ -10,6 +11,14 @@ public class TransferHistoryModel {
 		private String timeStamp;
 
 		public TransferHistoryModel() { }
+
+		public String getUserAccount() {
+				return userAccount;
+		}
+
+		public void setUserAccount(String userAccount) {
+				this.userAccount = userAccount;
+		}
 
 		public void setOperation(String operation) {
 				this.operation = operation;

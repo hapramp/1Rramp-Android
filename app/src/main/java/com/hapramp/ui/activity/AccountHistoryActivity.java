@@ -49,11 +49,11 @@ public class AccountHistoryActivity extends AppCompatActivity {
 				setContentView(R.layout.activity_account_history);
 				ButterKnife.bind(this);
 				init();
-				if (getIntent().getExtras() != null) {
-						mUsername = getIntent().getExtras().getString(EXTRA_USERNAME, HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
-						toolbarTitle.setText(String.format("%s`s Account History", mUsername));
-						fetchHistory(mUsername);
-				}
+				//if (getIntent().getExtras() != null) {
+				mUsername = "bxute";//getIntent().getExtras().getString(EXTRA_USERNAME, HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
+				toolbarTitle.setText(String.format("%s`s Account History", mUsername));
+				fetchHistory(mUsername);
+				//	}
 		}
 
 		private void init() {

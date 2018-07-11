@@ -1,40 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:elevation="2dp"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/user_image"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="4dp" />
 
     <TextView
-        android:id="@+id/from"
-        android:text="From"
+        android:id="@+id/message_label"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_toEndOf="@+id/user_image"
+        android:textColor="@color/Black54"
+        android:textSize="16sp" />
 
     <TextView
-        android:id="@+id/to"
-        android:text="To"
-        android:layout_below="@+id/from"
+        android:id="@+id/remote_user"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_toEndOf="@+id/message_label"
+        android:textColor="@color/Black87"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/amount"
-        android:layout_below="@+id/to"
-        android:text="Amount"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="4dp"
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/timestamp"
-        android:layout_below="@+id/amount"
-        android:text="Today"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/message_label"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_toEndOf="@id/user_image"
+        android:textColor="@color/Black38" />
 
     <TextView
         android:id="@+id/message"
-        android:text="Message"
-        android:layout_below="@+id/timestamp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/timestamp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_toEndOf="@+id/user_image"
+        android:lineSpacingExtra="2sp"
+        android:textColor="@color/Black54"
+        android:textSize="16sp" />
+
 </RelativeLayout>
