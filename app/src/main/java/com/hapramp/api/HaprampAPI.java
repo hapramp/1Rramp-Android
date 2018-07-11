@@ -40,6 +40,7 @@ import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.FeedResponse;
 import com.hapramp.steem.models.FeedWrapper;
 import com.hapramp.steem.models.user.SteemUser;
+import com.hapramp.views.extraa.CategoryTextView;
 import com.hapramp.youtube.YoutubeResultModel;
 
 import java.util.List;
@@ -71,6 +72,9 @@ public interface HaprampAPI {
 
     @POST("posts")
     Call<ProcessedBodyResponse> sendForPreProcessing(@Body PreProcessingModel preProcessingModel);
+
+    @POST
+    Call<String> getTransferHistory(@Url String url, @Body String body);
 
     @POST("posts/_confirm")
     Call<ConfirmationResponse> sendPostCreationConfirmation(@Body PostConfirmationModel postConfirmationModel);
