@@ -1,31 +1,25 @@
 package com.hapramp.ui.activity;
 
 import android.Manifest;
-import android.animation.Animator;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -50,7 +44,6 @@ import com.hapramp.steem.models.data.FeedDataItemModel;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FilePathUtils;
 import com.hapramp.utils.FontManager;
-import com.hapramp.views.post.PostCategoryView;
 import com.hapramp.views.post.PostCreateComponent;
 import com.hapramp.youtube.YoutubeVideoSelectorActivity;
 
@@ -78,20 +71,12 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
 		PostCreateComponent postCreateComponent;
 		@BindView(R.id.scroll_view)
 		ScrollView scrollView;
-		@BindView(R.id.bottom_options_container)
-		RelativeLayout bottomOptionsContainer;
 		@BindView(R.id.distraction_mode_btn)
 		TextView distractionModeBtn;
-		@BindView(R.id.category_caption)
-		TextView categoryCaption;
-		@BindView(R.id.postCategoryView)
-		PostCategoryView postCategoryView;
-		@BindView(R.id.community_selector_container)
-		RelativeLayout communitySelectorContainer;
-		@BindView(R.id.community_selector_button)
-		ImageView communitySelectorButton;
-		@BindView(R.id.done_selecting)
-		TextView doneSelecting;
+		@BindView(R.id.bottom_options_container)
+		RelativeLayout bottomOptionsContainer;
+		@BindView(R.id.bottom_postButton)
+		TextView bottomPostButton;
 		private ProgressDialog progressDialog;
 		private Content postStructureModel;
 		private List<String> tags;
@@ -149,7 +134,6 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
 				getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 				steemPostCreator = new SteemPostCreator();
 				steemPostCreator.setSteemPostCreatorCallback(this);
-				postCategoryView.initCategory();
 		}
 
 		private void attachListener() {
@@ -183,30 +167,14 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
 								setDistractionFreeMode(!mDistractionFreeMode);
 						}
 				});
-
-				postCategoryView.setCommunitySelectionChangeListener(new PostCategoryView.CommunitySelectionChangeListener() {
-						@Override
-						public void onCommunitySelectionChanged(List<String> communities) {
-								postCreateComponent.setCommunities(communities);
-						}
-				});
-
-				communitySelectorButton.setOnClickListener(new View.OnClickListener() {
+				bottomPostButton.setOnClickListener(new View.OnClickListener() {
 						@Override
 						public void onClick(View view) {
-								showCommunitySelector();
-								communitySelectorButton.setEnabled(false);
-						}
-				});
-
-				doneSelecting.setOnClickListener(new View.OnClickListener() {
-						@Override
-						public void onClick(View view) {
-								closeCommunitySelector();
-								communitySelectorButton.setEnabled(true);
+								publishPost();
 						}
 				});
 		}
+/*
 
 		@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 		private void showCommunitySelector() {
@@ -220,18 +188,14 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
 				anim.setInterpolator(new DecelerateInterpolator());
 				anim.start();
 		}
+*/
 
 		private void setDistractionFreeMode(boolean turnedOn) {
 				mDistractionFreeMode = turnedOn;
 				toolbarContainer.setVisibility(View.GONE);
 				distractionModeBtn.setText(turnedOn ? CLOSE_DISTRACTION_FREE_BUTTON_TEXT : OPEN_DISTRATION_FREE_BUTTON_TEXT);
-				communitySelectorButton.setVisibility(turnedOn ? View.VISIBLE : View.GONE);
-				postCreateComponent.setDistractionFreeMode(turnedOn);
 				toolbarContainer.setVisibility(turnedOn ? View.GONE : View.VISIBLE);
-		}
-
-		private void closeCommunitySelector() {
-				communitySelectorContainer.setVisibility(View.GONE);
+				bottomPostButton.setVisibility(turnedOn ? View.VISIBLE : View.GONE);
 		}
 
 		private void openVideoSelector() {
@@ -275,21 +239,11 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
 				if (postCreateComponent.isMediaSelected()) {
 						if (postCreateComponent.isMediaUploaded()) {
 								if (postCreateComponent.isContentEnough()) {
-										if (mDistractionFreeMode) {
-												if (postCategoryView.getSelectedTags().size() > 1) { //default: hapramp is added at community.
-														return true;
-												} else {
-														shakeCommunityButton();
-														toast("Select atleast 1 community!");
-												}
+										if (postCreateComponent.getSelectedCommunityTags().size() > 1) { //default: hapramp is added at community.
+												return true;
 										} else {
-												if (postCreateComponent.getSelectedCommunityTags().size() > 1) { //default: hapramp is added at community.
-														return true;
-												} else {
-														toast("Select atleast 1 community!");
-												}
+												toast("Select atleast 1 community!");
 										}
-
 								} else {
 										toast("Write someting more...");
 								}
@@ -306,18 +260,13 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
 				generated_permalink = PermlinkGenerator.getPermlink();
 				permlink_with_username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername() + "/" + generated_permalink;
 				title = "";
-				if (mDistractionFreeMode) {
-						tags = postCategoryView.getSelectedTags();
-				} else {
-						tags = postCreateComponent.getSelectedCommunityTags();
-				}
+				tags = postCreateComponent.getSelectedCommunityTags();
 				List<FeedDataItemModel> datas = postCreateComponent.getDataList();
 				postStructureModel = new Content(datas, FeedDataConstants.FEED_TYPE_POST);
 		}
 
 		private void shakeCommunityButton() {
 				final Animation animShake = AnimationUtils.loadAnimation(this, R.anim.shake);
-				communitySelectorButton.startAnimation(animShake);
 				new Handler().postDelayed(new Runnable() {
 						@Override
 						public void run() {

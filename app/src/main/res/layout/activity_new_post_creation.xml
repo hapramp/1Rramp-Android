@@ -95,64 +95,23 @@
             android:textSize="14sp"
             android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/community_selector_button"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+        <TextView
+            android:id="@+id/bottom_postButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="8dp"
-            android:background="?selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:padding="8dp"
-            android:visibility="gone"
-            android:src="@drawable/community_selection" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_above="@+id/bottom_options_container"
-        android:id="@+id/community_selector_container"
-        android:layout_width="wrap_content"
-        android:layout_height="216dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:background="@drawable/community_selection_container_bg"
-        android:elevation="4dp"
-        android:visibility="invisible">
-
-        <TextView
-            android:id="@+id/category_caption"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:text="SELECT COMMUNITY"
-            android:textStyle="bold"
-            android:textColor="@color/colorAccent"
-            android:textSize="14sp" />
-
-        <com.hapramp.views.post.PostCategoryView
-            android:id="@+id/postCategoryView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:layout_below="@+id/category_caption" />
-
-        <TextView
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:clickable="true"
-            android:background="?selectableItemBackgroundBorderless"
+            android:background="@drawable/light_btn_bg"
+            android:gravity="center"
+            android:paddingBottom="6dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="6dp"
+            android:text="PUBLISH"
+            android:visibility="gone"
             android:textColor="@color/colorPrimary"
-            android:padding="16dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:id="@+id/done_selecting"
-            android:text="DONE!"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:textSize="14sp" />
 
     </RelativeLayout>
 

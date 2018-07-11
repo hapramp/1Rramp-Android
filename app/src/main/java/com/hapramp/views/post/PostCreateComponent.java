@@ -126,6 +126,7 @@ public class PostCreateComponent extends FrameLayout implements PostCategoryView
 
 						}
 				});
+
 				btnRemove.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
@@ -174,11 +175,6 @@ public class PostCreateComponent extends FrameLayout implements PostCategoryView
 				postImageView.setImageSource(bitmap, filePath);
 				youtubeId = null;
 				youtubeItemContainer.setVisibility(GONE);
-		}
-
-		public void setDistractionFreeMode(boolean on) {
-				//hide inline container
-				inlineCommunitySelectorContainer.setVisibility(on ? View.GONE : View.VISIBLE);
 		}
 
 		public List<String> getSelectedCommunityTags() {

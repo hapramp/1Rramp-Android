@@ -23,98 +23,107 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Ankit on 12/25/2017.
- */
+	* Created by Ankit on 12/25/2017.
+	*/
 
 public class PostCategoryView extends FrameLayout {
 
-    private ViewGroup rootView;
-    private Context mContext;
-    private List<CommunityModel> communities;
-    private ArrayList<String> selectedTags;
+		private ViewGroup rootView;
+		private Context mContext;
+		private List<CommunityModel> communities;
+		private ArrayList<String> selectedTags;
 
-    public PostCategoryView(@NonNull Context context) {
-        super(context);
-        mContext = context;
-        init();
-    }
+		public PostCategoryView(@NonNull Context context) {
+				super(context);
+				mContext = context;
+				init();
+		}
 
-    public PostCategoryView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        mContext = context;
-        init();
-    }
+		public PostCategoryView(@NonNull Context context, @Nullable AttributeSet attrs) {
+				super(context, attrs);
+				mContext = context;
+				init();
+		}
 
-    public PostCategoryView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        mContext = context;
-        init();
-    }
+		public PostCategoryView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+				super(context, attrs, defStyleAttr);
+				mContext = context;
+				init();
+		}
 
-    private void init() {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.community_view_container, this);
-        rootView = view.findViewById(R.id.viewWrapper);
-        selectedTags = new ArrayList<>();
-        selectedTags.add(Communities.TAG_HAPRAMP);
-    }
+		private void init() {
+				View view = LayoutInflater.from(mContext).inflate(R.layout.community_view_container, this);
+				rootView = view.findViewById(R.id.viewWrapper);
+				selectedTags = new ArrayList<>();
+				selectedTags.add(Communities.TAG_HAPRAMP);
+		}
 
-    private void addViews() {
-        for (int i = 0; i < communities.size(); i++) {
-            final CategoryTextView view = new CategoryTextView(mContext);
-            view.setText(communities.get(i).getmName());
-            view.setTag(communities.get(i).getmTag());
-            view.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
+		private void addViews() {
+				for (int i = 0; i < communities.size(); i++) {
+						final CategoryTextView view = new CategoryTextView(mContext);
+						view.setText(communities.get(i).getmName());
+						view.setTag(communities.get(i).getmTag());
+						view.setOnClickListener(new OnClickListener() {
+								@Override
+								public void onClick(View v) {
 
-                    int index = selectedTags.indexOf(view.getTag());
-                    if (index == -1) {
-                        // select it
-                        if (selectedTags.size() > 3) {
-                            Toast.makeText(mContext, "Maximum 3 Skills", Toast.LENGTH_LONG).show();
-                        } else {
-                            view.setSelected(true);
-                            selectedTags.add((String) view.getTag());
-                        }
-                    } else {
-                        view.setSelected(false);
-                        selectedTags.remove(index);
-                    }
+										int index = selectedTags.indexOf(view.getTag());
+										if (index == -1) {
+												// select it
+												if (selectedTags.size() > 3) {
+														Toast.makeText(mContext, "Maximum 3 Skills", Toast.LENGTH_LONG).show();
+												} else {
+														view.setSelected(true);
+														selectedTags.add((String) view.getTag());
+												}
+										} else {
+												view.setSelected(false);
+												selectedTags.remove(index);
+										}
 
-                    if (communitySelectionChangeListener != null) {
-                        communitySelectionChangeListener.onCommunitySelectionChanged(selectedTags);
-                    }
+										if (communitySelectionChangeListener != null) {
+												communitySelectionChangeListener.onCommunitySelectionChanged(selectedTags);
+										}
+								}
+						});
 
-                }
-            });
+						rootView.addView(view, i,
+								new ViewGroup.LayoutParams(
+										ViewGroup.LayoutParams.WRAP_CONTENT,
+										ViewGroup.LayoutParams.WRAP_CONTENT));
+				}
 
-            rootView.addView(view, i,
-                    new ViewGroup.LayoutParams(
-                            ViewGroup.LayoutParams.WRAP_CONTENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT));
-        }
+		}
 
-    }
+		public List<String> getSelectedTags() {
+				return selectedTags;
+		}
 
-    public List<String> getSelectedTags() {
-        return selectedTags;
-    }
+		public void setSelectionAt(int index , boolean isSelected) {
+				CategoryTextView categoryTextView = (CategoryTextView) rootView.getChildAt(index);
+				if(isSelected){
+						categoryTextView.setSelected(true);
+						selectedTags.add((String) categoryTextView.getTag());
+				}else{
+						categoryTextView.setSelected(false);
+						selectedTags.remove(index);
+				}
+		}
 
+		public void initCategory() {
+				CommunityListWrapper cr = new Gson().fromJson(HaprampPreferenceManager.getInstance().getAllCommunityAsJson(), CommunityListWrapper.class);
+				communities = cr.getCommunityModels();
+				addViews();
+		}
 
-    public void initCategory() {
-        CommunityListWrapper cr = new Gson().fromJson(HaprampPreferenceManager.getInstance().getAllCommunityAsJson(), CommunityListWrapper.class);
-        communities = cr.getCommunityModels();
-        addViews();
-    }
+		private CommunitySelectionChangeListener communitySelectionChangeListener;
 
-    private CommunitySelectionChangeListener communitySelectionChangeListener;
+		public void setCommunitySelectionChangeListener(CommunitySelectionChangeListener communitySelectionChangeListener) {
+				this.communitySelectionChangeListener = communitySelectionChangeListener;
+		}
 
-    public void setCommunitySelectionChangeListener(CommunitySelectionChangeListener communitySelectionChangeListener) {
-        this.communitySelectionChangeListener = communitySelectionChangeListener;
-    }
-
-    public interface CommunitySelectionChangeListener {
-        void onCommunitySelectionChanged(List<String> communities);
-    }
+		public interface CommunitySelectionChangeListener {
+				void onCommunitySelectionChanged(List<String> communities);
+		}
 
 }
