@@ -32,7 +32,6 @@ public class WalletActivity extends AppCompatActivity {
 				earningFragment.setArguments(args);
 				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, earningFragment)
 						.commit();
-
 				closeBtn.setOnClickListener(new View.OnClickListener() {
 						@Override
 						public void onClick(View view) {

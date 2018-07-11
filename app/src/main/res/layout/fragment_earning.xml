@@ -59,6 +59,22 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/see_history_btn"
+            android:text="See History"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:textSize="16sp"
+            android:textColor="#ffffff"
+            android:layout_margin="8dp"
+            android:background="@drawable/filled_btn_bg"
+            android:layout_below="@+id/infor_card"
+            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <android.support.v7.widget.CardView
             android:id="@+id/infor_card"
             android:layout_width="match_parent"
@@ -336,8 +352,8 @@
             android:id="@+id/steem_dollar_rate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@+id/currency_label"
+            android:layout_below="@+id/steem_usd_value_label"
+            android:layout_toEndOf="@+id/steem_dollar_usd_value_label"
             android:layout_marginTop="8dp"
             android:text="---"
             android:textColor="@color/Black87" />
@@ -346,9 +362,8 @@
             android:id="@+id/steem_dollar_usd_value_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/currency_label"
+            android:layout_below="@+id/steem_usd_value_label"
             android:layout_marginTop="8dp"
-            android:layout_toStartOf="@+id/steem_dollar_rate"
             android:text="1 STEEM Dollar = "
             android:textColor="@color/Black54" />
 

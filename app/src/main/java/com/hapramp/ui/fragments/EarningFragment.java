@@ -1,6 +1,7 @@
 package com.hapramp.ui.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -9,13 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.hapramp.R;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.user.SteemUser;
+import com.hapramp.ui.activity.AccountHistoryActivity;
+import com.hapramp.ui.adapters.AccountHistoryAdapter;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.views.extraa.BubbleProgressBar;
+
 import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -59,6 +65,8 @@ public class EarningFragment extends Fragment implements Wallet.UserAccountField
 		TextView userFullname;
 		@BindView(R.id.steem_power_icon)
 		ImageView steemPowerIcon;
+		@BindView(R.id.see_history_btn)
+		TextView seeHistoryBtn;
 
 		private Handler mHandler;
 		private Wallet wallet;
@@ -86,6 +94,7 @@ public class EarningFragment extends Fragment implements Wallet.UserAccountField
 				unbinder = ButterKnife.bind(this, view);
 				fetchUserInfo();
 				fetchWalletInfo();
+				attachListener();
 				return view;
 		}
 
@@ -99,6 +108,17 @@ public class EarningFragment extends Fragment implements Wallet.UserAccountField
 		public void onDestroyView() {
 				super.onDestroyView();
 				unbinder.unbind();
+		}
+
+		private void attachListener() {
+				seeHistoryBtn.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View view) {
+								Intent intent = new Intent(mContext, AccountHistoryActivity.class);
+								intent.putExtra(AccountHistoryActivity.EXTRA_USERNAME, mUsername);
+								mContext.startActivity(intent);
+						}
+				});
 		}
 
 		private void fetchUserInfo() {
