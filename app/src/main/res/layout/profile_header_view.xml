@@ -51,7 +51,7 @@
                 android:background="@drawable/claim_reward_bg"
                 android:clickable="true"
                 android:focusable="true"
-                android:text="Goto Wallet"
+                android:text="Go To Wallet"
                 android:textAllCaps="true"
                 android:textStyle="bold"
                 android:textColor="@color/colorAccent"

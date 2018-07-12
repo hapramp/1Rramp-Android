@@ -61,7 +61,7 @@
 
         <TextView
             android:id="@+id/see_history_btn"
-            android:text="Goto History"
+            android:text="Go To History"
             android:textAllCaps="true"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
