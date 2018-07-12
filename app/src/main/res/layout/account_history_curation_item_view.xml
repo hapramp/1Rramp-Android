@@ -1,33 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="1dp"
+    android:background="#ffffff"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:src="@drawable/curation"
+        android:background="@drawable/claim_reward_bg"
+        android:padding="10dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="4dp" />
 
     <TextView
-        android:id="@+id/message"
+        android:id="@+id/message_label"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/curator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/author"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/reward"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_toEndOf="@+id/icon"
+        android:text="Curation Reward"
+        android:textColor="@color/Black54"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/timestamp"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/message_label"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/Black38"
+        android:layout_toEndOf="@id/icon" />
+
+    <RelativeLayout
+        android:id="@+id/sp_info_container"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_below="@+id/timestamp"
+        android:layout_marginStart="6dp"
+        android:layout_toEndOf="@+id/icon"
+        android:background="@drawable/reward_item_bg">
+
+        <ImageView
+            android:id="@+id/sp_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:alpha="0.4"
+            android:padding="4dp"
+            android:src="@drawable/sp_icon" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@+id/sp_icon"
+            android:background="#a1afba" />
+
+        <TextView
+            android:id="@+id/steem_power_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/sp_icon"
+            android:paddingEnd="4dp"
+            android:paddingStart="4dp"
+            android:text="100 SP"
+            android:textColor="#a1afba"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/goto_btn"
+        android:background="@drawable/goto_post_from_transfer_history_bg"
+        android:text="Go to Post"
+        android:clickable="true"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:textColor="@color/white"
+        android:layout_alignParentEnd="true"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-
-</LinearLayout>
+</RelativeLayout>

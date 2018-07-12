@@ -1,8 +1,11 @@
 package com.hapramp.steem.models;
 
 public class TransferHistoryModel {
+		private String userAccount;
 		private String operation;
 		private Transfer transfer;
+		private String total_vesting_fund_steem;
+		private String total_vesting_shares;
   private AuthorReward authorReward;
   private CommentBenefactor commentBenefactor;
   private ClaimRewardBalance claimRewardBalance;
@@ -10,6 +13,30 @@ public class TransferHistoryModel {
 		private String timeStamp;
 
 		public TransferHistoryModel() { }
+
+		public String getUserAccount() {
+				return userAccount;
+		}
+
+		public void setUserAccount(String userAccount) {
+				this.userAccount = userAccount;
+		}
+
+		public String getTotal_vesting_fund_steem() {
+				return total_vesting_fund_steem;
+		}
+
+		public void setTotal_vesting_fund_steem(String total_vesting_fund_steem) {
+				this.total_vesting_fund_steem = total_vesting_fund_steem;
+		}
+
+		public String getTotal_vesting_shares() {
+				return total_vesting_shares;
+		}
+
+		public void setTotal_vesting_shares(String total_vesting_shares) {
+				this.total_vesting_shares = total_vesting_shares;
+		}
 
 		public void setOperation(String operation) {
 				this.operation = operation;

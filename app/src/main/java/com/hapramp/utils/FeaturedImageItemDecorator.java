@@ -13,11 +13,9 @@ public class FeaturedImageItemDecorator extends RecyclerView.ItemDecoration {
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-
         int px = PixelUtils.dpToPx(8);
         outRect.bottom = px;
         outRect.left = px;
         outRect.top = px;
-
     }
 }
