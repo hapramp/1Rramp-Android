@@ -46,7 +46,7 @@ public class TranserHistoryManager implements NetworkUtils.NetworkResponseCallba
 				public static final String KEY_ACCOUNTS = "accounts";
 				public static final String KEY_TRANSFER_HISTORY = "transfer_history";
 				public static final String KEY_OPERATION = "op";
-				public static final String KEY_TIMESTAMP = "transfer_history";
+				public static final String KEY_TIMESTAMP = "timestamp";
 
 				//operation: Transfer
 				public static final String OPERATION_TRANSFER = "transfer";
@@ -80,6 +80,10 @@ public class TranserHistoryManager implements NetworkUtils.NetworkResponseCallba
 				public static final String KEY_CURATOR = "curator";
 				public static final String KEY_COMMENT_AUTHOR = "comment_author";
 				public static final String KEY_COMMENT_PERMLINK = "comment_permlink";
+
+				public static final String KEY_PROPS = "props";
+				public static final String KEY_TOTAL_VESTING_FUND_STEEM = "total_vesting_fund_steem";
+				public static final String KEY_TOTAL_VESTING_SHARE = "total_vesting_shares";
 
 		}
 }

@@ -1,33 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:elevation="2dp"
+    android:background="#ffffff"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:src="@drawable/author_reward"
+        android:background="@drawable/claim_reward_bg"
+        android:padding="10dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="4dp" />
 
     <TextView
-        android:id="@+id/messsage"
+        android:id="@+id/message_label"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_toEndOf="@+id/icon"
+        android:text="Author Reward"
+        android:textColor="@color/Black54"
+        android:textSize="16sp" />
 
     <TextView
-        android:id="@+id/benefactor"
+        android:id="@+id/amount"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/author"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/reward"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:gravity="end"
+        android:layout_alignParentEnd="true"
+        android:textColor="@color/Black87"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/timestamp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/message_label"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Black38"
+        android:layout_toEndOf="@id/icon" />
 
-
-</LinearLayout>
+</RelativeLayout>

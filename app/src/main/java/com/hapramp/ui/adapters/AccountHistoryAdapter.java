@@ -1,7 +1,9 @@
 package com.hapramp.ui.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -9,14 +11,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
 import com.hapramp.search.TranserHistoryManager;
 import com.hapramp.steem.models.TransferHistoryModel;
 import com.hapramp.utils.ImageHandler;
+import com.hapramp.utils.MomentsUtils;
+import com.hapramp.utils.SteemPowerCalc;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -90,6 +96,7 @@ public class AccountHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
 		@Override
 		public int getItemViewType(int position) {
+				Log.d("Adapter","Positio "+position + transferHistoryModels.get(position).getOperation());
 				switch (transferHistoryModels.get(position).getOperation()) {
 						case TranserHistoryManager.KEYS.OPERATION_TRANSFER:
 								return TYPE_TRANSFER;
@@ -143,8 +150,13 @@ public class AccountHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 								amount.setText(String.format("+ %s", transfer.amount));
 								amount.setTextColor(Color.parseColor("#157c18"));
 						}
-						timestamp.setText(transferHistoryModel.getTimeStamp());
-						message.setText(transfer.memo);
+						timestamp.setText(MomentsUtils.getFormattedTime(transferHistoryModel.getTimeStamp()));
+						if (transfer.memo.length() > 0) {
+								message.setVisibility(View.VISIBLE);
+								message.setText(transfer.memo);
+						} else {
+								message.setVisibility(View.GONE);
+						}
 				}
 		}
 
@@ -153,16 +165,23 @@ public class AccountHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 		}
 
 		class AuthorRewardViewHolder extends RecyclerView.ViewHolder {
-				@BindView(R.id.message)
-				TextView message;
-				@BindView(R.id.sbd)
-				TextView sbd;
-				@BindView(R.id.steem)
-				TextView steem;
-				@BindView(R.id.sp)
-				TextView sp;
 				@BindView(R.id.timestamp)
 				TextView timestamp;
+				@BindView(R.id.steem_tv)
+				TextView steemTv;
+				@BindView(R.id.steem_info_container)
+				RelativeLayout steemInfoContainer;
+				@BindView(R.id.sbd_tv)
+				TextView sbdTv;
+				@BindView(R.id.sbd_info_container)
+				RelativeLayout sbdInfoContainer;
+				@BindView(R.id.steem_power_tv)
+				TextView steemPowerTv;
+				@BindView(R.id.sp_info_container)
+				RelativeLayout spInfoContainer;
+				@BindView(R.id.goto_btn)
+				TextView gotoBtn;
+
 
 				public AuthorRewardViewHolder(View itemView) {
 						super(itemView);
@@ -171,23 +190,42 @@ public class AccountHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
 				public void bind(TransferHistoryModel transferHistoryModel) {
 						TransferHistoryModel.AuthorReward authorReward = transferHistoryModel.getAuthorReward();
-						sbd.setText(authorReward.getSbd_payout());
-						steem.setText(authorReward.getSteem_payout());
-						sp.setText(authorReward.getVesting_payout());
-						timestamp.setText(transferHistoryModel.getTimeStamp());
-						message.setText("Author Reward");
+						timestamp.setText(MomentsUtils.getFormattedTime(transferHistoryModel.getTimeStamp()));
+						double sbd = Double.parseDouble(authorReward.getSbd_payout().split(" ")[0]);
+						double steem = Double.parseDouble(authorReward.getSteem_payout().split(" ")[0]);
+						double sp = SteemPowerCalc.calculateSteemPower(
+								authorReward.getVesting_payout(),
+								transferHistoryModel.getTotal_vesting_fund_steem(),
+								transferHistoryModel.getTotal_vesting_shares());
+
+						if (sbd == 0) {
+								sbdInfoContainer.setVisibility(View.GONE);
+						} else {
+								sbdTv.setText(String.format(Locale.US, "%.3f SBD", sbd));
+						}
+
+						if (steem == 0) {
+								steemInfoContainer.setVisibility(View.GONE);
+						} else {
+								steemTv.setText(String.format(Locale.US, "%.3f STEEM", steem));
+						}
+						steemPowerTv.setText(String.format(Locale.US, "%.3f SP", sp));
+
+						final String postUrl = String.format("https://steemit.com/@%s/%s", authorReward.getAuthor(), authorReward.getPermlink());
+						gotoBtn.setOnClickListener(new View.OnClickListener() {
+								@Override
+								public void onClick(View view) {
+										openIntent(postUrl);
+								}
+						});
 				}
+
+
 		}
 
 		class CommentBenefactorViewHolder extends RecyclerView.ViewHolder {
-				@BindView(R.id.messsage)
-				TextView message;
-				@BindView(R.id.benefactor)
-				TextView benefactor;
-				@BindView(R.id.author)
-				TextView author;
-				@BindView(R.id.reward)
-				TextView reward;
+				@BindView(R.id.amount)
+				TextView amount;
 				@BindView(R.id.timestamp)
 				TextView timestamp;
 
@@ -198,19 +236,26 @@ public class AccountHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
 				public void bind(TransferHistoryModel transferHistoryModel) {
 						TransferHistoryModel.CommentBenefactor commentBenefactor = transferHistoryModel.getCommentBenefactor();
-						reward.setText(commentBenefactor.getReward());
-						author.setText(commentBenefactor.getAuthor());
-						benefactor.setText(commentBenefactor.getBenefactor());
-						timestamp.setText(transferHistoryModel.getTimeStamp());
-						message.setText("Comment Benefactor");
+						timestamp.setText(MomentsUtils.getFormattedTime(transferHistoryModel.getTimeStamp()));
+						amount.setText(commentBenefactor.getReward());
 				}
 		}
 
 		class ClaimBalanceViewHolder extends RecyclerView.ViewHolder {
-				@BindView(R.id.amount)
-				TextView amount;
 				@BindView(R.id.timestamp)
 				TextView timestamp;
+				@BindView(R.id.steem_tv)
+				TextView steemTv;
+				@BindView(R.id.steem_info_container)
+				RelativeLayout steemInfoContainer;
+				@BindView(R.id.sbd_tv)
+				TextView sbdTv;
+				@BindView(R.id.sbd_info_container)
+				RelativeLayout sbdInfoContainer;
+				@BindView(R.id.steem_power_tv)
+				TextView steemPowerTv;
+				@BindView(R.id.sp_info_container)
+				RelativeLayout spInfoContainer;
 
 				public ClaimBalanceViewHolder(View itemView) {
 						super(itemView);
@@ -219,22 +264,40 @@ public class AccountHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
 				public void bind(TransferHistoryModel transferHistoryModel) {
 						TransferHistoryModel.ClaimRewardBalance claimRewardBalance = transferHistoryModel.getClaimRewardBalance();
-						timestamp.setText(transferHistoryModel.getTimeStamp());
-						amount.setText(String.format("%s\n%s\n%s", claimRewardBalance.getReward_sbd(), claimRewardBalance.getReward_steem(), claimRewardBalance.getReward_vests()));
+						timestamp.setText(MomentsUtils.getFormattedTime(transferHistoryModel.getTimeStamp()));
+						double sbd = Double.parseDouble(claimRewardBalance.getReward_sbd().split(" ")[0]);
+						double steem = Double.parseDouble(claimRewardBalance.getReward_steem().split(" ")[0]);
+						double sp = SteemPowerCalc.calculateSteemPower(
+								claimRewardBalance.getReward_vests(),
+								transferHistoryModel.getTotal_vesting_fund_steem(),
+								transferHistoryModel.getTotal_vesting_shares());
+
+						if (sbd == 0) {
+								sbdInfoContainer.setVisibility(View.GONE);
+						} else {
+								sbdInfoContainer.setVisibility(View.VISIBLE);
+								sbdTv.setText(String.format(Locale.US, "%.3f SBD", sbd));
+						}
+
+						if (steem == 0) {
+								steemInfoContainer.setVisibility(View.GONE);
+						} else {
+								steemInfoContainer.setVisibility(View.VISIBLE);
+								steemTv.setText(String.format(Locale.US, "%.3f STEEM", steem));
+						}
+						steemPowerTv.setText(String.format(Locale.US, "%.3f SP", sp));
 				}
 		}
 
 		class CurationViewHolder extends RecyclerView.ViewHolder {
-				@BindView(R.id.message)
-				TextView message;
-				@BindView(R.id.curator)
-				TextView curator;
-				@BindView(R.id.author)
-				TextView author;
-				@BindView(R.id.reward)
-				TextView reward;
+				@BindView(R.id.steem_power_tv)
+				TextView steemPowerTv;
+				@BindView(R.id.sp_info_container)
+				RelativeLayout spInfoContainer;
 				@BindView(R.id.timestamp)
 				TextView timestamp;
+				@BindView(R.id.goto_btn)
+				TextView gotoBtn;
 
 				public CurationViewHolder(View itemView) {
 						super(itemView);
@@ -243,11 +306,25 @@ public class AccountHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
 				public void bind(TransferHistoryModel transferHistoryModel) {
 						TransferHistoryModel.CurationReward curationReward = transferHistoryModel.getCurationReward();
-						curator.setText(curationReward.getCurator());
-						reward.setText(curationReward.getReward());
-						author.setText(curationReward.getComment_author());
-						timestamp.setText(transferHistoryModel.getTimeStamp());
-						message.setText("Curation Reward");
+						timestamp.setText(MomentsUtils.getFormattedTime(transferHistoryModel.getTimeStamp()));
+						double sp = SteemPowerCalc.calculateSteemPower(
+								curationReward.getReward(),
+								transferHistoryModel.getTotal_vesting_fund_steem(),
+								transferHistoryModel.getTotal_vesting_shares());
+						steemPowerTv.setText(String.format(Locale.US, "%.3f SP", sp));
+						final String postUrl = String.format("https://steemit.com/@%s/%s", curationReward.getComment_author(),
+								curationReward.getComment_permlink());
+						gotoBtn.setOnClickListener(new View.OnClickListener() {
+								@Override
+								public void onClick(View view) {
+										openIntent(postUrl);
+								}
+						});
 				}
+		}
+
+		private void openIntent(String url) {
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+				mContext.startActivity(browserIntent);
 		}
 }

@@ -20,16 +20,15 @@
             android:text=""
             android:textSize="24sp" />
         <TextView
+            android:layout_centerHorizontal="true"
             android:id="@+id/toolbar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
-            android:textColor="@color/colorAccent"
-            android:layout_toRightOf="@+id/closeBtn"
+            android:textColor="@color/Black54"
             android:text="Account History"
-            android:textAllCaps="true"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
 
     </RelativeLayout>
 
@@ -50,5 +49,15 @@
         android:background="@drawable/toolbar_shadow"
         android:layout_width="match_parent"
         android:layout_height="2dp"/>
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/empty_message"
+        android:text="No History Available!"
+        android:textSize="18sp"
+        android:textColor="@color/Black54"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

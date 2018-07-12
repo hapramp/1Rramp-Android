@@ -17,6 +17,7 @@ import com.hapramp.search.TranserHistoryManager;
 import com.hapramp.steem.TransferHistoryParser;
 import com.hapramp.steem.models.TransferHistoryModel;
 import com.hapramp.ui.adapters.AccountHistoryAdapter;
+import com.hapramp.utils.AccountHistoryItemDecoration;
 import com.hapramp.utils.FontManager;
 
 import java.util.ArrayList;
@@ -37,6 +38,8 @@ public class AccountHistoryActivity extends AppCompatActivity {
 		ProgressBar loadingProgressBar;
 		@BindView(R.id.toolbar_title)
 		TextView toolbarTitle;
+		@BindView(R.id.empty_message)
+		TextView emptyMessage;
 
 		private AccountHistoryAdapter accountHistoryAdapter;
 		public static final String EXTRA_USERNAME = "username";
@@ -49,11 +52,11 @@ public class AccountHistoryActivity extends AppCompatActivity {
 				setContentView(R.layout.activity_account_history);
 				ButterKnife.bind(this);
 				init();
-				//if (getIntent().getExtras() != null) {
-				mUsername = "bxute";//getIntent().getExtras().getString(EXTRA_USERNAME, HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
+				if (getIntent().getExtras() != null) {
+				mUsername = getIntent().getExtras().getString(EXTRA_USERNAME, HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
 				toolbarTitle.setText(String.format("%s`s Account History", mUsername));
 				fetchHistory(mUsername);
-				//	}
+				}
 		}
 
 		private void init() {
@@ -61,8 +64,8 @@ public class AccountHistoryActivity extends AppCompatActivity {
 				closeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
 				accountHistoryAdapter = new AccountHistoryAdapter(this);
 				accountHistoryRv.setLayoutManager(new LinearLayoutManager(this));
-				DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, LinearLayoutManager.VERTICAL);
-				accountHistoryRv.addItemDecoration(dividerItemDecoration);
+				AccountHistoryItemDecoration itemDecoration = new AccountHistoryItemDecoration();
+				accountHistoryRv.addItemDecoration(itemDecoration);
 				accountHistoryRv.setAdapter(accountHistoryAdapter);
 				closeBtn.setOnClickListener(new View.OnClickListener() {
 						@Override
@@ -98,7 +101,12 @@ public class AccountHistoryActivity extends AppCompatActivity {
 				if (loadingProgressBar != null) {
 						loadingProgressBar.setVisibility(View.GONE);
 				}
-				Collections.reverse(transferHistory);
-				accountHistoryAdapter.setTransferHistoryModels(transferHistory);
+				if(transferHistory.size() > 0) {
+						emptyMessage.setVisibility(View.GONE);
+						Collections.reverse(transferHistory);
+						accountHistoryAdapter.setTransferHistoryModels(transferHistory);
+				}else{
+						emptyMessage.setVisibility(View.VISIBLE);
+				}
 		}
 }
