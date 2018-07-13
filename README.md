@@ -26,26 +26,13 @@ HapRamp is a Steem Blockchain based social media for the creative communities. T
  `Build` -> `Generate Signed Apk`
  
  ### Login steps:
-  - Create a [Steem Account](https://steemit.com) (Leave it if already have one)
-  - Login into your steemit account.
-  - Go to Profile, a popup will appear like:
-  <img width="203" alt="screen shot 2018-06-06 at 3 01 44 pm" src="https://user-images.githubusercontent.com/10809719/41029892-9550815a-699a-11e8-89d3-3d9c2fa6784a.png">
-  
-   - Choose `Wallet`
-   - Click on `Permissions` Tab <img width="393" alt="screen shot 2018-06-06 at 3 03 35 pm" src="https://user-images.githubusercontent.com/10809719/41029981-d927c960-699a-11e8-868a-1a7cc90a2e16.png">
+  You can login using [SteemConnect](https://steemconnect.com)
+  1. Navigate to Login page 
+  <img src="https://github.com/hapramp/Hapramp-Android/blob/master/new_login.png" height="640px" width="320px"/>
    
-   You will get this bar
-   <img width="1119" alt="screen shot 2018-06-06 at 3 05 24 pm" src="https://user-images.githubusercontent.com/10809719/41030088-2246207e-699b-11e8-9276-cc644014070b.png">
-   
-   - You need to click on `SHOW PRIVATE KEY`
-   
-   - Now click on the QR Code <img width="36" alt="screen shot 2018-06-06 at 3 07 53 pm" src="https://user-images.githubusercontent.com/10809719/41030210-6b813594-699b-11e8-8ac0-5b426db900bb.png">.
-   
-   A enlarged QR code appears.
-   (Don`t share this Private Posting Key with anyone)
-   - Now Open `Hapramp` app,
-   - Click on Scan button and scan to login.
-   
+  2. Click on **SIGN IN USING STEEMCONNECT**
+  3. Enter your credentials and you are done!
+
 
 ### Security concerns for contributors
 Any Private keys among 
@@ -55,12 +42,12 @@ Any Private keys among
 
 related to your account should not be pushed/commited along with codes. We are not liable for your accout`s security breach if done via code of this repository.
 
-We store `Private Posting key` on users device to provide seamless experience while postig a blog or commenting etc.
-Our servers donot store this key neither you should try to upload this key anywhere.
+We do not store `Private Posting key` on users device.
+Our servers do not store this key neither you should try to upload this key anywhere.
 
 
 ### Features
- - **Login:** Users can Login using the Private Posting Key of their respective Steem (https://steemit.com) accounts.
+ - **Login:** Users can Login using [SteemConnect](https://steemconnect.com).
  - **Communities:** Select the communities of your interest from the 9 pre-defined communities: Art, Dance, Design, Dramatics, Fashion, Literature, Music, Photography, and Travel.
  - **Feed:**  User feed will be generated based on their preference of the communities.
  - **Content Filter:** Users can switch between the specific community to receive filtered content.
@@ -82,7 +69,8 @@ Our servers donot store this key neither you should try to upload this key anywh
 
 
 #### Screenshots:
-<img src="https://github.com/hapramp/Hapramp-Android/blob/master/screenshots/login.png" width="160px" height="290px"><img src="https://github.com/hapramp/Hapramp-Android/blob/master/screenshots/scanner.png" width="160px" height="290px"><img src="https://github.com/hapramp/Hapramp-Android/blob/master/screenshots/home.png" width="160px" height="290px"><img src="https://github.com/hapramp/Hapramp-Android/blob/master/screenshots/post_creation.png" width="160px" height="290px"><img src="https://github.com/hapramp/Hapramp-Android/blob/master/screenshots/article_creation.png" width="160px" height="290px"><img src="https://github.com/hapramp/Hapramp-Android/blob/master/screenshots/comments.png" width="160px" height="290px"><img src="https://github.com/hapramp/Hapramp-Android/blob/master/screenshots/rating.png" width="160px" height="290px"><img src="https://github.com/hapramp/Hapramp-Android/blob/master/screenshots/user_profile.png" width="160px" height="290px"><img src="https://github.com/hapramp/Hapramp-Android/blob/master/screenshots/trending.png" width="160px" height="290px"><img src="https://github.com/hapramp/Hapramp-Android/blob/master/screenshots/youtube_search_and_embed.png" width="160px" height="290px">
+<img src="https://github.com/hapramp/Hapramp-Android/blob/master/new_login.png" width="160px" height="290px"><img src="https://github.com/hapramp/Hapramp-Android/blob/master/screenshots/home.png" width="160px" height="290px"><img src="https://github.com/hapramp/Hapramp-Android/blob/master/screenshots/post_creation.png" width="160px" height="290px"><img src="https://github.com/hapramp/Hapramp-Android/blob/master/screenshots/article_creation.png" width="160px" height="290px"><img src="https://github.com/hapramp/Hapramp-Android/blob/master/screenshots/comments.png" width="160px" height="290px"><img src="https://github.com/hapramp/Hapramp-Android/blob/master/screenshots/rating.png" width="160px" height="290px"><img src="https://github.com/hapramp/Hapramp-Android/blob/master/screenshots/user_profile.png" width="160px" height="290px"><img src="https://github.com/hapramp/Hapramp-Android/blob/master/screenshots/trending.png" width="160px" height="290px"><img src="https://github.com/hapramp/Hapramp-Android/blob/master/screenshots/youtube_search_and_embed.png" width="160px" height="290px">
+<img src="https://github.com/hapramp/Hapramp-Android/blob/master/wallet.png" width="140px" height="290px"/>
 
 
 
