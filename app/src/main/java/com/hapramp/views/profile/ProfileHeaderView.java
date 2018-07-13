@@ -18,11 +18,14 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.search.FollowCountManager;
 import com.hapramp.search.FollowingSearchManager;
+import com.hapramp.steem.UserProfileFetcher;
+import com.hapramp.steem.models.user.User;
 import com.hapramp.steemconnect.SteemConnectUtils;
 import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;
@@ -37,9 +40,11 @@ import com.hapramp.steem.models.user.SteemUser;
 import com.hapramp.ui.activity.WalletActivity;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.views.skills.InterestsView;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hapramp.walletinfo.Wallet;
@@ -51,7 +56,7 @@ import retrofit2.Response;
 	* Created by Ankit on 12/30/2017.
 	*/
 
-public class ProfileHeaderView extends FrameLayout implements FollowCountManager.FollowCountCallback, FollowingSearchManager.FollowingSearchCallback {
+public class ProfileHeaderView extends FrameLayout implements FollowCountManager.FollowCountCallback, FollowingSearchManager.FollowingSearchCallback, UserProfileFetcher.UserProfileFetchCallback {
 		@BindView(R.id.profile_wall_pic)
 		ImageView profileWallPic;
 		@BindView(R.id.profile_pic)
@@ -107,6 +112,7 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 		private FollowCountManager followCountManager;
 		private FollowingSearchManager followingSearchManager;
 		private SteemConnect steemConnect;
+		UserProfileFetcher userProfileFetcher;
 
 		public ProfileHeaderView(@NonNull Context context) {
 				super(context);
@@ -129,6 +135,8 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 				ButterKnife.bind(this, view);
 				mHandler = new Handler();
 				attachListeners();
+				userProfileFetcher = new UserProfileFetcher();
+				userProfileFetcher.setUserProfileFetchCallback(this);
 				me = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
 				followCountManager = new FollowCountManager(this);
 				followingSearchManager = new FollowingSearchManager(this);
@@ -150,8 +158,8 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 				walletInfoBtn.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View view) {
-								Intent intent = new Intent(mContext , WalletActivity.class);
-								intent.putExtra(WalletActivity.EXTRA_USERNAME,mUsername);
+								Intent intent = new Intent(mContext, WalletActivity.class);
+								intent.putExtra(WalletActivity.EXTRA_USERNAME, mUsername);
 								mContext.startActivity(intent);
 						}
 				});
@@ -181,39 +189,20 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 		private void checkCacheAndLoad() {
 				String json = HaprampPreferenceManager.getInstance().getUserProfile(mUsername);
 				if (json.length() > 0) {
-						SteemUser steemUser = new Gson().fromJson(json, SteemUser.class);
+						User steemUser = new Gson().fromJson(json, User.class);
 						bind(steemUser);
 				}
 		}
 
 		private void fetchUserInfo() {
+				Log.d("ProfileHeaderView", "Fetching user info for " + mUsername);
 				followingSearchManager.requestFollowings(me);
 				followCountManager.requestFollowInfo(mUsername);
-				String current_user_api_url = String.format(
-						mContext.getResources().getString(R.string.steem_user_api),
-						mUsername);
-				RetrofitServiceGenerator.getService()
-						.getSteemUser(current_user_api_url)
-						.enqueue(new Callback<SteemUser>() {
-								@Override
-								public void onResponse(Call<SteemUser> call, Response<SteemUser> response) {
-										if (response.isSuccessful()) {
-												bind(response.body());
-												cacheUserProfile(response.body());
-										} else {
-												failedToFetchSteemInfo();
-										}
-								}
-
-								@Override
-								public void onFailure(Call<SteemUser> call, Throwable t) {
-										failedToFetchSteemInfo();
-								}
-						});
+				userProfileFetcher.fetchUserProfileFor(mUsername);
 		}
 
-		private void cacheUserProfile(SteemUser body) {
-				String json = new Gson().toJson(body);
+		private void cacheUserProfile(User user) {
+				String json = new Gson().toJson(user);
 				HaprampPreferenceManager.getInstance().saveUserProfile(mUsername, json);
 		}
 
@@ -221,7 +210,7 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 
 		}
 
-		private void bind(SteemUser data) {
+		private void bind(User data) {
 				//hide shimmer
 				if (shimmerFrameLayout != null) {
 						shimmerFrameLayout.stopShimmerAnimation();
@@ -236,17 +225,16 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 						return;
 				loaded = true;
 				String profile_pic = String.format(getResources().getString(R.string.steem_user_profile_pic_format_large), mUsername);
-				String wall_pic_url = data.getUser().getJsonMetadata().getProfile().getCover_image() != null ?
-						data.getUser().getJsonMetadata().getProfile().getCover_image()
+				String wall_pic_url = data.getCover_image().length() > 0 ? data.getCover_image()
 						:
 						mContext.getResources().getString(R.string.default_wall_pic);
-				String _bio = data.getUser().getJsonMetadata().getProfile().getAbout() != null ? data.getUser().getJsonMetadata().getProfile().getAbout() : "";
+				String _bio = data.getAbout();
 				ImageHandler.loadCircularImage(mContext, profilePic, profile_pic);
 				ImageHandler.load(mContext, profileWallPic, wall_pic_url);
-				usernameTv.setText(data.getUser().getJsonMetadata().getProfile().getName());
-				hapname.setText(String.format("@%s", data.getUser().getName()));
+				usernameTv.setText(data.getFullname());
+				hapname.setText(String.format("@%s", data.getUsername()));
 				bio.setText(_bio);
-				setPostsCount(data.getUser().getPostCount());
+				setPostsCount(data.getPostCount());
 				if (mUsername.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
 						//self Profile
 						followBtn.setVisibility(GONE);
@@ -314,7 +302,7 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 
 												@Override
 												public void onError(SteemConnectException e) {
-														Log.d("FollowError ",e.toString());
+														Log.d("FollowError ", e.toString());
 														mHandler.post(new Runnable() {
 																@Override
 																public void run() {
@@ -351,7 +339,7 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 
 												@Override
 												public void onError(SteemConnectException e) {
-														Log.d("UnfollowError ",e.toString());
+														Log.d("UnfollowError ", e.toString());
 														mHandler.post(new Runnable() {
 																@Override
 																public void run() {
@@ -465,12 +453,25 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 
 		@Override
 		public void onFollowingResponse(ArrayList<String> followings) {
-				Log.d("Followings",followings.toString());
+				Log.d("Followings", followings.toString());
 				HaprampPreferenceManager.getInstance().saveCurrentUserFollowings(followings);
 		}
 
 		@Override
 		public void onFollowingRequestError(String e) {
 
+		}
+
+		@Override
+		public void onUserFetched(User user) {
+				Log.d("ProfileHeaderView", "Response " + user.toString());
+				bind(user);
+				cacheUserProfile(user);
+		}
+
+		@Override
+		public void onUserFetchError(String e) {
+				Log.d("ProfileHeaderView", "Error Fetching user info for " + mUsername);
+				failedToFetchSteemInfo();
 		}
 }

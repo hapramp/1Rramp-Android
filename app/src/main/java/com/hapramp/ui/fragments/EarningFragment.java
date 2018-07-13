@@ -10,27 +10,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.hapramp.R;
-import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.models.user.SteemUser;
+import com.hapramp.steem.UserProfileFetcher;
+import com.hapramp.steem.models.user.User;
 import com.hapramp.ui.activity.AccountHistoryActivity;
-import com.hapramp.ui.adapters.AccountHistoryAdapter;
 import com.hapramp.utils.ImageHandler;
+import com.hapramp.utils.ReputationCalc;
 import com.hapramp.views.extraa.BubbleProgressBar;
-
 import java.util.Locale;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import hapramp.walletinfo.Wallet;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class EarningFragment extends Fragment implements Wallet.UserAccountFieldsCallback {
+public class EarningFragment extends Fragment implements Wallet.UserAccountFieldsCallback, UserProfileFetcher.UserProfileFetchCallback {
 		@BindView(R.id.wallet_steem_tv)
 		TextView walletSteemTv;
 		@BindView(R.id.wallet_steem_power_tv)
@@ -67,17 +61,19 @@ public class EarningFragment extends Fragment implements Wallet.UserAccountField
 		ImageView steemPowerIcon;
 		@BindView(R.id.see_history_btn)
 		TextView seeHistoryBtn;
-
 		private Handler mHandler;
 		private Wallet wallet;
 		private Unbinder unbinder;
 		private String mUsername;
 		private Context mContext;
+		private UserProfileFetcher userProfileFetcher;
 		public static final String ARG_USERNAME = "username";
 
 		public EarningFragment() {
 				mHandler = new Handler();
 				wallet = new Wallet();
+				userProfileFetcher = new UserProfileFetcher();
+				userProfileFetcher.setUserProfileFetchCallback(this);
 				wallet.setUserAccountFieldsCallback(this);
 		}
 
@@ -122,46 +118,26 @@ public class EarningFragment extends Fragment implements Wallet.UserAccountField
 		}
 
 		private void fetchUserInfo() {
-				String current_user_api_url = String.format(mContext.getResources().getString(R.string.steem_user_api),
-						mUsername);
-				RetrofitServiceGenerator.getService()
-						.getSteemUser(current_user_api_url)
-						.enqueue(new Callback<SteemUser>() {
-								@Override
-								public void onResponse(Call<SteemUser> call, Response<SteemUser> response) {
-										if (response.isSuccessful()) {
-												bindData(response.body());
-										}
-								}
-
-								@Override
-								public void onFailure(Call<SteemUser> call, Throwable t) {
-								}
-						});
+				userProfileFetcher.fetchUserProfileFor(mUsername);
 		}
 
 		private void fetchWalletInfo() {
 				wallet.requestUserAccount(mUsername);
 		}
 
-		private void bindData(SteemUser data) {
+		private void bindData(User data) {
 				try {
 						if (data != null) {
 								username.setText(mUsername);
-								userFullname.setText(data.user.getJsonMetadata().profile.name);
-								long rawReputation = data.user.reputation;
-								userReputation.setText(String.format(Locale.US, "(%.2f)", calculateReputation(rawReputation)));
+								userFullname.setText(data.getFullname());
+								long rawReputation = Long.valueOf(data.getReputation());
+								userReputation.setText(String.format(Locale.US, "(%.2f)", ReputationCalc.calculateReputation(rawReputation)));
 								String profile_pic = String.format(getResources().getString(R.string.steem_user_profile_pic_format_large), mUsername);
 								ImageHandler.loadCircularImage(mContext, userImage, profile_pic);
 						}
 				}
 				catch (Exception e) {
-
 				}
-		}
-
-		private double calculateReputation(long raw) {
-				return (Math.log10(raw) - 9) * 9 + 25;
 		}
 
 		@Override
@@ -271,6 +247,16 @@ public class EarningFragment extends Fragment implements Wallet.UserAccountField
 
 		@Override
 		public void onError(String error) {
+
+		}
+
+		@Override
+		public void onUserFetched(User user) {
+				bindData(user);
+		}
+
+		@Override
+		public void onUserFetchError(String e) {
 
 		}
 }

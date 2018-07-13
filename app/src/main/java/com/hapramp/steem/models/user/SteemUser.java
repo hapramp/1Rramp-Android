@@ -19,4 +19,12 @@ public class SteemUser {
     public String getStatus() {
         return status;
     }
+
+    @Override
+    public String toString() {
+        return "SteemUser{" +
+          "user=" + user +
+          ", status='" + status + '\'' +
+          '}';
+    }
 }

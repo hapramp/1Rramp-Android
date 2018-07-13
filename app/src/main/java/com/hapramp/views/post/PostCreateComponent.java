@@ -25,6 +25,7 @@ import com.hapramp.steem.Communities;
 import com.hapramp.steem.FeedDataConstants;
 import com.hapramp.steem.models.data.FeedDataItemModel;
 import com.hapramp.steem.models.user.SteemUser;
+import com.hapramp.steem.models.user.User;
 import com.hapramp.utils.ImageHandler;
 
 import java.util.ArrayList;
@@ -106,14 +107,10 @@ public class PostCreateComponent extends FrameLayout implements PostCategoryView
 				ButterKnife.bind(this, view);
 				inlinePostCategoryView.initCategory();
 				inlinePostCategoryView.setCommunitySelectionChangeListener(this);
-				SteemUser steemUser = new Gson().fromJson(HaprampPreferenceManager.getInstance().getCurrentUserInfoAsJson(), SteemUser.class);
-				String pic_url = steemUser
-						.getUser()
-						.getJsonMetadata()
-						.getProfile()
-						.getProfileImage();
+				User steemUser = new Gson().fromJson(HaprampPreferenceManager.getInstance().getCurrentUserInfoAsJson(), User.class);
+				String pic_url = steemUser.getProfile_image();
 				ImageHandler.loadCircularImage(context, feedOwnerPic, pic_url);
-				feedOwnerTitle.setText(steemUser.getUser().getJsonMetadata().getProfile().getName());
+				feedOwnerTitle.setText(steemUser.getFullname());
 				postImageView.setImageActionListener(new PostImageView.ImageActionListener() {
 						@Override
 						public void onImageRemoved() {
