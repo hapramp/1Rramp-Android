@@ -79,24 +79,23 @@ public class WrapViewGroup extends ViewGroup {
 				mAvailableWidth = widthSpecSize - getPaddingLeft() - getPaddingRight();
 				measureChildren(widthMeasureSpec, heightMeasureSpec);
 				int childCount = getChildCount();
-				Log.d("WrapView","Childs "+childCount);
 				int tmpWidth = 0;
 				int measureHeight = 0;
 				int currentChildHeight;
+
 				for (int i = 0; i < childCount; i++) {
 						View child = getChildAt(i);
 						currentChildHeight = child.getMeasuredHeight();
 						if (i == 0) {
 								measureHeight = currentChildHeight;
 						}
-						tmpWidth += child.getMeasuredWidth();
+						tmpWidth += child.getMeasuredWidth() + child.getPaddingStart() + child.getPaddingEnd();
 						if (tmpWidth > mAvailableWidth) {
-								measureHeight += currentChildHeight;
-								tmpWidth = 0;
+								measureHeight += currentChildHeight + child.getPaddingTop() + child.getPaddingBottom();
+								tmpWidth = child.getMeasuredWidth() + child.getPaddingStart() + child.getPaddingEnd();
 						}
-						Log.d("WrapView","Height  "+measureHeight);
 				}
-			if (childCount == 0) {
+				if (childCount == 0) {
 						setMeasuredDimension(0, 0);
 				} else if (heightSpecMode == MeasureSpec.UNSPECIFIED || heightSpecMode == MeasureSpec.AT_MOST) {
 						setMeasuredDimension(widthSpecSize, measureHeight + getPaddingTop() + getPaddingBottom());
