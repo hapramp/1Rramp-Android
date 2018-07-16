@@ -321,53 +321,22 @@
 
         </android.support.v7.widget.CardView>
 
-        <TextView
-            android:id="@+id/currency_label"
-            android:layout_below="@+id/infor_card"
-            android:layout_marginTop="4dp"
-            android:text="Current Conversion Rate"
-            android:textColor="@color/Black38"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <xute.cryptocoinview.CoinView
+            android:layout_below="@+id/see_history_btn"
+            android:id="@+id/sbd_rate"
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
-        <TextView
+        <xute.cryptocoinview.CoinView
+            android:layout_below="@+id/sbd_rate"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="64dp"
             android:id="@+id/steem_rate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/currency_label"
-            android:layout_marginTop="8dp"
-            android:layout_toEndOf="@+id/steem_usd_value_label"
-            android:text="---"
-            android:textColor="@color/Black87" />
-
-        <TextView
-            android:id="@+id/steem_usd_value_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/currency_label"
-            android:layout_marginTop="8dp"
-            android:text="1 STEEM = "
-            android:textColor="@color/Black54" />
-
-        <TextView
-            android:id="@+id/steem_dollar_rate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/steem_usd_value_label"
-            android:layout_toEndOf="@+id/steem_dollar_usd_value_label"
-            android:layout_marginTop="8dp"
-            android:text="---"
-            android:textColor="@color/Black87" />
-
-        <TextView
-            android:id="@+id/steem_dollar_usd_value_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/steem_usd_value_label"
-            android:layout_marginTop="8dp"
-            android:text="1 STEEM Dollar = "
-            android:textColor="@color/Black54" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     </RelativeLayout>
+
 </ScrollView>
 
