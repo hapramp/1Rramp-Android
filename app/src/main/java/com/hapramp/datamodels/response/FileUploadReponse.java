@@ -8,32 +8,32 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class FileUploadReponse {
-    @Expose
-    @SerializedName("url")
-    private String downloadUrl;
+  @Expose
+  @SerializedName("url")
+  private String downloadUrl;
 
-    @Expose
-    @SerializedName("error")
-    private String error;
+  @Expose
+  @SerializedName("error")
+  private String error;
 
-    public FileUploadReponse(String downloadUrl, String error) {
-        this.downloadUrl = downloadUrl;
-        this.error = error;
-    }
+  public FileUploadReponse(String downloadUrl, String error) {
+    this.downloadUrl = downloadUrl;
+    this.error = error;
+  }
 
-    public String getDownloadUrl() {
-        return downloadUrl;
-    }
+  public String getDownloadUrl() {
+    return downloadUrl;
+  }
 
-    public void setDownloadUrl(String downloadUrl) {
-        this.downloadUrl = downloadUrl;
-    }
+  public void setDownloadUrl(String downloadUrl) {
+    this.downloadUrl = downloadUrl;
+  }
 
-    public String getError() {
-        return error;
-    }
+  public String getError() {
+    return error;
+  }
 
-    public void setError(String error) {
-        this.error = error;
-    }
+  public void setError(String error) {
+    this.error = error;
+  }
 }

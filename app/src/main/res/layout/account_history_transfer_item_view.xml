@@ -43,15 +43,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/message_label"
+        android:layout_marginBottom="8dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
-        android:layout_marginBottom="8dp"
         android:layout_toEndOf="@id/user_image"
         android:textColor="@color/Black38" />
 
     <TextView
-        android:padding="8dp"
-        android:background="@drawable/transfer_history_message_bg"
         android:id="@+id/message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -59,7 +57,9 @@
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_toEndOf="@+id/user_image"
+        android:background="@drawable/transfer_history_message_bg"
         android:lineSpacingExtra="2sp"
+        android:padding="8dp"
         android:textColor="@color/Black54"
         android:textSize="16sp" />
 

@@ -7,129 +7,129 @@ import java.util.List;
 
 public class ConversionModel {
 
-		@Expose
-		@SerializedName("ConversionType")
-		private ConversionType ConversionType;
-		@Expose
-		@SerializedName("FirstValueInArray")
-		private boolean FirstValueInArray;
-		@Expose
-		@SerializedName("TimeFrom")
-		private int TimeFrom;
-		@Expose
-		@SerializedName("TimeTo")
-		private int TimeTo;
-		@Expose
-		@SerializedName("Data")
-		private List<Data> Data;
-		@Expose
-		@SerializedName("Aggregated")
-		private boolean Aggregated;
-		@Expose
-		@SerializedName("Type")
-		private int Type;
-		@Expose
-		@SerializedName("Response")
-		private String Response;
+  @Expose
+  @SerializedName("ConversionType")
+  private ConversionType ConversionType;
+  @Expose
+  @SerializedName("FirstValueInArray")
+  private boolean FirstValueInArray;
+  @Expose
+  @SerializedName("TimeFrom")
+  private int TimeFrom;
+  @Expose
+  @SerializedName("TimeTo")
+  private int TimeTo;
+  @Expose
+  @SerializedName("Data")
+  private List<Data> Data;
+  @Expose
+  @SerializedName("Aggregated")
+  private boolean Aggregated;
+  @Expose
+  @SerializedName("Type")
+  private int Type;
+  @Expose
+  @SerializedName("Response")
+  private String Response;
 
-		public static class ConversionType {
-				@Expose
-				@SerializedName("conversionSymbol")
-				private String conversionSymbol;
-				@Expose
-				@SerializedName("type")
-				private String type;
+  public ConversionModel.ConversionType getConversionType() {
+    return ConversionType;
+  }
 
-				public String getConversionSymbol() {
-						return conversionSymbol;
-				}
+  public boolean isFirstValueInArray() {
+    return FirstValueInArray;
+  }
 
-				public String getType() {
-						return type;
-				}
-		}
+  public int getTimeFrom() {
+    return TimeFrom;
+  }
 
-		public static class Data {
-				@Expose
-				@SerializedName("volumeto")
-				private double volumeto;
-				@Expose
-				@SerializedName("volumefrom")
-				private double volumefrom;
-				@Expose
-				@SerializedName("open")
-				private double open;
-				@Expose
-				@SerializedName("low")
-				private double low;
-				@Expose
-				@SerializedName("high")
-				private double high;
-				@Expose
-				@SerializedName("close")
-				private double close;
-				@Expose
-				@SerializedName("time")
-				private int time;
+  public int getTimeTo() {
+    return TimeTo;
+  }
 
-				public double getVolumeto() {
-						return volumeto;
-				}
+  public List<ConversionModel.Data> getData() {
+    return Data;
+  }
 
-				public double getVolumefrom() {
-						return volumefrom;
-				}
+  public boolean isAggregated() {
+    return Aggregated;
+  }
 
-				public double getOpen() {
-						return open;
-				}
+  public int getType() {
+    return Type;
+  }
 
-				public double getLow() {
-						return low;
-				}
+  public String getResponse() {
+    return Response;
+  }
 
-				public double getHigh() {
-						return high;
-				}
+  public static class ConversionType {
+    @Expose
+    @SerializedName("conversionSymbol")
+    private String conversionSymbol;
+    @Expose
+    @SerializedName("type")
+    private String type;
 
-				public double getClose() {
-						return close;
-				}
+    public String getConversionSymbol() {
+      return conversionSymbol;
+    }
 
-				public int getTime() {
-						return time;
-				}
-		}
+    public String getType() {
+      return type;
+    }
+  }
 
-		public ConversionModel.ConversionType getConversionType() {
-				return ConversionType;
-		}
+  public static class Data {
+    @Expose
+    @SerializedName("volumeto")
+    private double volumeto;
+    @Expose
+    @SerializedName("volumefrom")
+    private double volumefrom;
+    @Expose
+    @SerializedName("open")
+    private double open;
+    @Expose
+    @SerializedName("low")
+    private double low;
+    @Expose
+    @SerializedName("high")
+    private double high;
+    @Expose
+    @SerializedName("close")
+    private double close;
+    @Expose
+    @SerializedName("time")
+    private int time;
 
-		public boolean isFirstValueInArray() {
-				return FirstValueInArray;
-		}
+    public double getVolumeto() {
+      return volumeto;
+    }
 
-		public int getTimeFrom() {
-				return TimeFrom;
-		}
+    public double getVolumefrom() {
+      return volumefrom;
+    }
 
-		public int getTimeTo() {
-				return TimeTo;
-		}
+    public double getOpen() {
+      return open;
+    }
 
-		public List<ConversionModel.Data> getData() {
-				return Data;
-		}
+    public double getLow() {
+      return low;
+    }
 
-		public boolean isAggregated() {
-				return Aggregated;
-		}
+    public double getHigh() {
+      return high;
+    }
 
-		public int getType() {
-				return Type;
-		}
+    public double getClose() {
+      return close;
+    }
 
-		public String getResponse() {
-				return Response;
-		}
+    public int getTime() {
+      return time;
+    }
+  }
 }

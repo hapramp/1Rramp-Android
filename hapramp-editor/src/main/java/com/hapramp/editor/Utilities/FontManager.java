@@ -6,22 +6,22 @@ import android.graphics.Typeface;
 
 public class FontManager {
 
-    public static final String FONT_MATERIAL = "materialFont.ttf";
+  public static final String FONT_MATERIAL = "materialFont.ttf";
 
-    private static FontManager mInstance;
+  private static FontManager mInstance;
 
-    public FontManager() {
+  public FontManager() {
+  }
+
+  public static FontManager getInstance() {
+    if (mInstance == null) {
+      mInstance = new FontManager();
     }
+    return mInstance;
+  }
 
-    public static FontManager getInstance() {
-        if (mInstance == null) {
-            mInstance = new FontManager();
-        }
-        return mInstance;
-    }
-
-    public Typeface getTypeFace(String type , Context context) {
-        return Typeface.createFromAsset(context.getAssets(), type);
-    }
+  public Typeface getTypeFace(String type, Context context) {
+    return Typeface.createFromAsset(context.getAssets(), type);
+  }
 
 }

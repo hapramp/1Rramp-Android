@@ -1,56 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:padding="8dp"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/noPostLoadedViewContainer"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp">
 
 
     <RelativeLayout
         android:id="@+id/nopost_message_card_container"
-        android:background="@drawable/feed_list_view_asset_card_bg"
-        android:layout_margin="8dp"
-        android:padding="16dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/feed_list_view_asset_card_bg"
+        android:padding="16dp">
 
 
         <TextView
-            android:text=""
-            android:textSize="48sp"
-            android:layout_centerHorizontal="true"
             android:id="@+id/no_post_sad_icon"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text=""
+            android:textSize="48sp" />
 
         <TextView
             android:id="@+id/nopost_message_title"
-            android:text="0 Post Available"
-            android:textStyle="bold"
-            android:textColor="@color/Black54"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/no_post_sad_icon"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/no_post_sad_icon"
+            android:layout_centerHorizontal="true"
+            android:text="0 Post Available"
+            android:textColor="@color/Black54"
+            android:textStyle="bold" />
 
 
         <TextView
-            android:text="Nothing has been posted yet in this section :)"
-            android:textSize="12sp"
-            android:gravity="center"
-            android:paddingTop="8dp"
-            android:paddingBottom="16dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:layout_below="@+id/nopost_message_title"
             android:id="@+id/nopost_message_details"
-            android:textColor="@color/Black38"
-            android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/nopost_message_title"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:paddingBottom="16dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp"
+            android:text="Nothing has been posted yet in this section :)"
+            android:textColor="@color/Black38"
+            android:textSize="12sp" />
 
     </RelativeLayout>
 

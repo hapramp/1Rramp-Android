@@ -16,24 +16,24 @@ import com.hapramp.utils.FontManager;
 
 public class NotificationView extends FrameLayout {
 
-    TextView countTv;
-    TextView iconTv;
+  TextView countTv;
+  TextView iconTv;
 
-    public NotificationView(@NonNull Context context) {
-        super(context);
-        View view = LayoutInflater.from(context).inflate(R.layout.action_bar_notification_view,this);
-        iconTv = view.findViewById(R.id.notification_icon);
-        countTv = view.findViewById(R.id.notification_count);
-        iconTv.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+  public NotificationView(@NonNull Context context) {
+    super(context);
+    View view = LayoutInflater.from(context).inflate(R.layout.action_bar_notification_view, this);
+    iconTv = view.findViewById(R.id.notification_icon);
+    countTv = view.findViewById(R.id.notification_count);
+    iconTv.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+  }
+
+  public void setCount(int count) {
+
+    if (count > 0) {
+      countTv.setVisibility(VISIBLE);
+      countTv.setText(String.valueOf(count));
+    } else {
+      countTv.setVisibility(GONE);
     }
-
-    public void setCount(int count){
-
-        if(count>0) {
-            countTv.setVisibility(VISIBLE);
-            countTv.setText(String.valueOf(count));
-        }else{
-            countTv.setVisibility(GONE);
-        }
-    }
+  }
 }

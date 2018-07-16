@@ -5,6 +5,7 @@ package com.hapramp.interfaces;
  */
 
 public interface UserBioUpdateRequestCallback {
-    void onBioUpdated();
-    void onBioUpdateError();
+  void onBioUpdated();
+
+  void onBioUpdateError();
 }

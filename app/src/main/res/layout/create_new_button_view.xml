@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-   android:layout_width="match_parent"
     android:id="@+id/root"
-    android:clickable="false"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="false">
 
     <FrameLayout
-        android:visibility="gone"
-        android:background="#ffffff"
         android:id="@+id/overlay"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:background="#ffffff"
+        android:visibility="gone" />
 
     <TextView
-        android:visibility="gone"
-        android:alpha="0"
-        android:clickable="false"
-        android:focusable="false"
         android:id="@+id/createArticleBtn"
         android:layout_width="87dp"
         android:layout_height="32dp"
         android:layout_above="@+id/createPostBtn"
         android:layout_centerHorizontal="true"
+        android:alpha="0"
         android:background="@drawable/create_post_floating_btn_bg"
+        android:clickable="false"
+        android:focusable="false"
         android:gravity="center"
         android:paddingBottom="8dp"
         android:paddingEnd="20dp"
@@ -30,19 +29,19 @@
         android:paddingTop="8dp"
         android:text="BLOG"
         android:textColor="@color/Black38"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:visibility="gone" />
 
     <TextView
-        android:clickable="false"
-        android:focusable="false"
-        android:alpha="0"
-        android:visibility="visible"
         android:id="@+id/createPostBtn"
         android:layout_width="87dp"
         android:layout_height="32dp"
         android:layout_above="@+id/plusBtn"
         android:layout_centerHorizontal="true"
+        android:alpha="0"
         android:background="@drawable/create_post_floating_btn_bg"
+        android:clickable="false"
+        android:focusable="false"
         android:gravity="center"
         android:paddingBottom="8dp"
         android:paddingEnd="20dp"
@@ -50,22 +49,23 @@
         android:paddingTop="8dp"
         android:text="POST"
         android:textColor="@color/Black38"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:visibility="visible" />
 
 
     <TextView
-        android:clickable="true"
         android:id="@+id/plusBtn"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:layout_gravity="center"
-        android:background="@drawable/home_more_btn_selector"
-        android:elevation="4dp"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/home_more_btn_selector"
+        android:clickable="true"
+        android:elevation="4dp"
         android:gravity="center"
         android:text=""
-        android:layout_marginBottom="8dp"
         android:textColor="#ffffff"
         android:textSize="22sp" />
 

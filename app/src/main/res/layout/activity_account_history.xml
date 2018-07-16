@@ -19,45 +19,46 @@
             android:gravity="center"
             android:text=""
             android:textSize="24sp" />
+
         <TextView
-            android:layout_centerHorizontal="true"
             android:id="@+id/toolbar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
-            android:textColor="@color/Black54"
             android:text="Account History"
+            android:textColor="@color/Black54"
             android:textSize="18sp" />
 
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:layout_below="@+id/toolbar_container"
         android:id="@+id/accountHistoryRv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar_container" />
 
     <ProgressBar
         android:id="@+id/loadingProgressBar"
-        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
 
     <View
-        android:layout_below="@+id/toolbar_container"
-        android:background="@drawable/toolbar_shadow"
         android:layout_width="match_parent"
-        android:layout_height="2dp"/>
+        android:layout_height="2dp"
+        android:layout_below="@+id/toolbar_container"
+        android:background="@drawable/toolbar_shadow" />
 
     <TextView
-        android:visibility="gone"
         android:id="@+id/empty_message"
-        android:text="No History Available!"
-        android:textSize="18sp"
-        android:textColor="@color/Black54"
-        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="No History Available!"
+        android:textColor="@color/Black54"
+        android:textSize="18sp"
+        android:visibility="gone" />
 
 </RelativeLayout>

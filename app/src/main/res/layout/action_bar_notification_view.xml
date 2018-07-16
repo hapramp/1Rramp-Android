@@ -4,26 +4,26 @@
     android:layout_height="?actionBarSize">
 
     <TextView
-        android:background="#eeeeee"
-        android:textSize="24sp"
-        android:gravity="center"
-        android:text=""
         android:id="@+id/notification_icon"
         android:layout_width="?actionBarSize"
-        android:layout_height="?actionBarSize" />
+        android:layout_height="?actionBarSize"
+        android:background="#eeeeee"
+        android:gravity="center"
+        android:text=""
+        android:textSize="24sp" />
 
     <TextView
-        android:visibility="gone"
         android:id="@+id/notification_count"
-        android:paddingEnd="4dp"
-        android:paddingStart="4dp"
-        android:textSize="12sp"
-        android:text="0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
-        android:layout_alignParentEnd="true"
         android:background="@drawable/notification_badge_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:paddingEnd="4dp"
+        android:paddingStart="4dp"
+        android:text="0"
+        android:textSize="12sp"
+        android:visibility="gone" />
 
 </RelativeLayout>

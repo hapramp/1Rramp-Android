@@ -9,7 +9,9 @@ import java.util.List;
  */
 
 public interface CommunitySelectionPageCallback {
-    void onCommunityFetchFailed();
-    void onCommunityUpdated(List<CommunityModel> communities);
-    void onCommunityUpdateFailed();
+  void onCommunityFetchFailed();
+
+  void onCommunityUpdated(List<CommunityModel> communities);
+
+  void onCommunityUpdateFailed();
 }

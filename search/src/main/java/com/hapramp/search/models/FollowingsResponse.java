@@ -7,57 +7,57 @@ import java.util.List;
 
 public class FollowingsResponse {
 
-		@Expose
-		@SerializedName("id")
-		public int id;
-		@Expose
-		@SerializedName("result")
-		public Result result;
-		@Expose
-		@SerializedName("jsonrpc")
-		public String jsonrpc;
+  @Expose
+  @SerializedName("id")
+  public int id;
+  @Expose
+  @SerializedName("result")
+  public Result result;
+  @Expose
+  @SerializedName("jsonrpc")
+  public String jsonrpc;
 
-		public static class Result {
-				@Expose
-				@SerializedName("following")
-				public List<Followings> followers;
+  public FollowingsResponse(int id, Result result, String jsonrpc) {
+    this.id = id;
+    this.result = result;
+    this.jsonrpc = jsonrpc;
+  }
 
-				public List<Followings> getFollowings() {
-						return followers;
-				}
-		}
+  public Result getResult() {
+    return result;
+  }
 
-		public static class Followings {
-				@Expose
-				@SerializedName("what")
-				public List<String> what;
-				@Expose
-				@SerializedName("following")
-				public String following;
-				@Expose
-				@SerializedName("follower")
-				public String follower;
+  public static class Result {
+    @Expose
+    @SerializedName("following")
+    public List<Followings> followers;
 
-				public Followings(List<String> what, String following, String follower) {
-						this.what = what;
-						this.following = following;
-						this.follower = follower;
-				}
+    public List<Followings> getFollowings() {
+      return followers;
+    }
+  }
 
-				public String getFollowing() {
-						return following;
-				}
+  public static class Followings {
+    @Expose
+    @SerializedName("what")
+    public List<String> what;
+    @Expose
+    @SerializedName("following")
+    public String following;
+    @Expose
+    @SerializedName("follower")
+    public String follower;
 
-		}
+    public Followings(List<String> what, String following, String follower) {
+      this.what = what;
+      this.following = following;
+      this.follower = follower;
+    }
 
-		public FollowingsResponse(int id, Result result, String jsonrpc) {
-				this.id = id;
-				this.result = result;
-				this.jsonrpc = jsonrpc;
-		}
+    public String getFollowing() {
+      return following;
+    }
 
-		public Result getResult() {
-				return result;
-		}
+  }
 
 }

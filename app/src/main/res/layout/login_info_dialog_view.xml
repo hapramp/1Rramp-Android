@@ -5,21 +5,21 @@
     android:orientation="vertical">
 
     <TextView
-        android:textSize="18sp"
-        android:textColor="@color/colorPrimary"
-        android:padding="16dp"
-        android:layout_gravity="center_horizontal"
-        android:text="Login Guideline"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:padding="16dp"
+        android:text="Login Guideline"
+        android:textColor="@color/colorPrimary"
+        android:textSize="18sp" />
 
     <ImageView
         android:id="@+id/helpInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
         android:adjustViewBounds="true"
         android:scaleType="centerInside"
         android:src="@drawable/help_info" />
@@ -28,20 +28,20 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:padding="16dp"
         android:layout_marginBottom="8dp"
-        android:orientation="horizontal">
+        android:layout_weight="2"
+        android:orientation="horizontal"
+        android:padding="16dp">
 
         <TextView
             android:id="@+id/cancelHelpDialog"
             android:layout_width="0dp"
             android:layout_height="36dp"
+            android:layout_marginEnd="8dp"
             android:layout_weight="1"
             android:background="@drawable/light_btn_bg"
             android:gravity="center"
             android:text="Close"
-            android:layout_marginEnd="8dp"
             android:textColor="@color/colorPrimary"
             android:textSize="16sp" />
 
@@ -49,10 +49,10 @@
             android:id="@+id/gotoSteemit"
             android:layout_width="0dp"
             android:layout_height="36dp"
+            android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:background="@drawable/light_btn_bg"
             android:gravity="center"
-            android:layout_marginStart="8dp"
             android:text="Go To Steemit"
             android:textColor="@color/colorPrimary"
             android:textSize="16sp" />

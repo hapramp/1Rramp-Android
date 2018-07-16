@@ -22,87 +22,87 @@ import java.util.List;
 
 public class SelectableInterestsView extends FrameLayout {
 
-    private Context mContext;
-    private String[] skills;
-    private ArrayList<Integer> selectedSkills;
-    private ViewGroup parentView;
+  private Context mContext;
+  private String[] skills;
+  private ArrayList<Integer> selectedSkills;
+  private ViewGroup parentView;
 
-    public SelectableInterestsView(@NonNull Context context) {
-        super(context);
-        mContext = context;
-        init();
-    }
+  public SelectableInterestsView(@NonNull Context context) {
+    super(context);
+    mContext = context;
+    init();
+  }
 
-    public SelectableInterestsView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        mContext = context;
-        init();
-    }
+  private void init() {
 
-    public SelectableInterestsView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        mContext = context;
-        init();
-    }
+    View view = LayoutInflater.from(mContext).inflate(R.layout.community_view_container, this);
+    parentView = view.findViewById(R.id.viewWrapper);
+    selectedSkills = new ArrayList<>();
+    skills = SkillsUtils.getSkillsSet();
 
-    private void init() {
+  }
 
-        View view = LayoutInflater.from(mContext).inflate(R.layout.community_view_container, this);
-        parentView = view.findViewById(R.id.viewWrapper);
-        selectedSkills = new ArrayList<>();
-        skills = SkillsUtils.getSkillsSet();
+  public SelectableInterestsView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
+    mContext = context;
+    init();
+  }
 
-    }
+  public SelectableInterestsView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    mContext = context;
+    init();
+  }
 
-    private void addViews() {
+  private void addViews() {
 
-        for (int i = 0; i < skills.length; i++) {
+    for (int i = 0; i < skills.length; i++) {
 
-            // TODO: 3/31/2018 update the community view
-            final CommunityItemView view = new CommunityItemView(mContext);
-            //view.setCommunityItemTitle(skills[i]);
-            // set selection
-            //
-            view.setSelection((selectedSkills.indexOf(SkillsUtils.getSkillIdFromName(skills[i])) > -1));
+      // TODO: 3/31/2018 update the community view
+      final CommunityItemView view = new CommunityItemView(mContext);
+      //view.setCommunityItemTitle(skills[i]);
+      // set selection
+      //
+      view.setSelection((selectedSkills.indexOf(SkillsUtils.getSkillIdFromName(skills[i])) > -1));
 
 
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+      view.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
 
-                    int index = selectedSkills.indexOf(SkillsUtils.getSkillIdFromName(view.getCommunityTitle()));
-                    if (index == -1) {
-                        // select it
-                        view.setSelection(true);
+          int index = selectedSkills.indexOf(SkillsUtils.getSkillIdFromName(view.getCommunityTitle()));
+          if (index == -1) {
+            // select it
+            view.setSelection(true);
 
-                        selectedSkills.add(SkillsUtils.getSkillIdFromName(view.getCommunityTitle()));
+            selectedSkills.add(SkillsUtils.getSkillIdFromName(view.getCommunityTitle()));
 
-                    } else {
-                        // de-select it
-                        if (selectedSkills.size() < 2) {
-                            // warn for selecting atleast one
-                            Toast.makeText(mContext, "Atleast One Skill Should be There", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        view.setSelection(false);
-                        selectedSkills.remove(index);
+          } else {
+            // de-select it
+            if (selectedSkills.size() < 2) {
+              // warn for selecting atleast one
+              Toast.makeText(mContext, "Atleast One Skill Should be There", Toast.LENGTH_LONG).show();
+              return;
+            }
+            view.setSelection(false);
+            selectedSkills.remove(index);
 
-                    }
+          }
 
-                }
-            });
-
-            parentView.addView(view, i,
-                    new ViewGroup.LayoutParams(
-                            ViewGroup.LayoutParams.WRAP_CONTENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT));
         }
+      });
 
+      parentView.addView(view, i,
+        new ViewGroup.LayoutParams(
+          ViewGroup.LayoutParams.WRAP_CONTENT,
+          ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
-    public List<Integer> getSelectedSkills() {
-        return selectedSkills;
-    }
+  }
+
+  public List<Integer> getSelectedSkills() {
+    return selectedSkills;
+  }
 
 //    public void setInterests(List<UserModel.Skills> skills) {
 //        for (UserModel.Skills skill : skills) {

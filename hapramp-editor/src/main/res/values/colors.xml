@@ -8,7 +8,7 @@
     <item name="green" type="color">#99CC00</item>
     <item name="orange" type="color">#FFFF8800</item>
     <item name="red" type="color">#FFFF4444</item>
-    <item name="darkblue" type="color">#005099 </item>
+    <item name="darkblue" type="color">#005099</item>
     <item name="darkpurple" type="color">#FF9933CC</item>
     <item name="darkgreen" type="color">#2DA44B</item>
     <item name="darkorange" type="color">#f3761c</item>
@@ -19,9 +19,9 @@
     <item name="lightBackground" type="color">#eee</item>
     <item name="pink" type="color">#B81365</item>
     <item name="f5f5f5" type="color">#f5f5f5</item>
-    <item type="color" name="android_default_primary">#009688</item>
-    <color type="color" name="white">#ffffff</color>
-    <color type="color" name="yellow">#FFD72D</color>
+    <item name="android_default_primary" type="color">#009688</item>
+    <color name="white" type="color">#ffffff</color>
+    <color name="yellow" type="color">#FFD72D</color>
     <color name="overlay_light" type="color">#80ffffff</color>
     <color name="overlay" type="color">#80EE3124</color>
     <color name="blue_overlay" type="color">#803b5999</color>

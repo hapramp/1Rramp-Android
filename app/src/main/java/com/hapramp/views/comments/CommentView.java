@@ -25,47 +25,47 @@ import butterknife.ButterKnife;
 
 public class CommentView extends FrameLayout {
 
-    @BindView(R.id.commentAvatar)
-    ImageView commentAvatar;
-    @BindView(R.id.commentMetaHolder)
-    LinearLayout commentMetaHolder;
-    @BindView(R.id.commentTv)
-    TextView commentTv;
-    @BindView(R.id.popupMenuDots)
-    TextView popupMenuDots;
-    @BindView(R.id.commentOwnerName)
-    TextView commentOwnerName;
-    private Context mContext;
+  @BindView(R.id.commentAvatar)
+  ImageView commentAvatar;
+  @BindView(R.id.commentMetaHolder)
+  LinearLayout commentMetaHolder;
+  @BindView(R.id.commentTv)
+  TextView commentTv;
+  @BindView(R.id.popupMenuDots)
+  TextView popupMenuDots;
+  @BindView(R.id.commentOwnerName)
+  TextView commentOwnerName;
+  private Context mContext;
 
-    public CommentView(@NonNull Context context) {
-        super(context);
-        init(context);
-    }
+  public CommentView(@NonNull Context context) {
+    super(context);
+    init(context);
+  }
 
-    public CommentView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
+  private void init(Context context) {
 
-    public CommentView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context);
-    }
+    this.mContext = context;
+    View view = LayoutInflater.from(context).inflate(R.layout.comment_view_band, this);
+    ButterKnife.bind(this, view);
+    popupMenuDots.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
 
-    private void init(Context context) {
+  }
 
-        this.mContext = context;
-        View view = LayoutInflater.from(context).inflate(R.layout.comment_view_band, this);
-        ButterKnife.bind(this, view);
-        popupMenuDots.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+  public CommentView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
+    init(context);
+  }
 
-    }
+  public CommentView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init(context);
+  }
 
-    public void setComment(SteemCommentModel result) {
+  public void setComment(SteemCommentModel result) {
 
-        ImageHandler.loadCircularImage(mContext, commentAvatar, String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format), result.commentAuthor));
-        commentOwnerName.setText(result.getCommentAuthor());
-        commentTv.setText(result.getComment());
+    ImageHandler.loadCircularImage(mContext, commentAvatar, String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format), result.commentAuthor));
+    commentOwnerName.setText(result.getCommentAuthor());
+    commentTv.setText(result.getComment());
 
-    }
+  }
 }

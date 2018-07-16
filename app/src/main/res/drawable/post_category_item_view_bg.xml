@@ -4,9 +4,9 @@
     <item android:state_selected="true">
 
         <shape android:shape="rectangle">
-            <size android:height="10dp" android:width="10dp"/>
-            <corners android:radius="2dp"/>
-            <solid android:color="@color/colorPrimary"/>
+            <size android:width="10dp" android:height="10dp" />
+            <corners android:radius="2dp" />
+            <solid android:color="@color/colorPrimary" />
         </shape>
 
     </item>
@@ -15,9 +15,9 @@
     <item android:state_selected="false">
 
         <shape android:shape="rectangle">
-            <size android:height="10dp" android:width="10dp"/>
-            <corners android:radius="2dp"/>
-            <solid android:color="@color/LightBlack"/>
+            <size android:width="10dp" android:height="10dp" />
+            <corners android:radius="2dp" />
+            <solid android:color="@color/LightBlack" />
         </shape>
 
     </item>

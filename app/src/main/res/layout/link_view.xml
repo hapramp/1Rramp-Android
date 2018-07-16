@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="48dp"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/container"
+    android:layout_width="48dp"
     android:layout_height="48dp">
 
     <TextView
-        android:background="?selectableItemBackgroundBorderless"
         android:id="@+id/link_btn"
-        android:text=""
-       android:layout_centerInParent="true"
-        android:textSize="18sp"
-        android:padding="6dp"
-        android:textColor="@color/Black87"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="?selectableItemBackgroundBorderless"
+        android:padding="6dp"
+        android:text=""
+        android:textColor="@color/Black87"
+        android:textSize="18sp" />
 
 
 </RelativeLayout>

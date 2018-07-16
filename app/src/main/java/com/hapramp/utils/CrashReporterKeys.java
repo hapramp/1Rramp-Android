@@ -5,5 +5,5 @@ package com.hapramp.utils;
  */
 
 public class CrashReporterKeys {
-    public static final String UI_ACTION = "UI Action : ";
+  public static final String UI_ACTION = "UI Action : ";
 }

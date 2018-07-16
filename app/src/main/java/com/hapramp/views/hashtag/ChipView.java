@@ -19,59 +19,58 @@ import butterknife.ButterKnife;
 
 public class ChipView extends RelativeLayout {
 
-    @BindView(R.id.tag_text)
-    TextView tagText;
-    @BindView(R.id.remove_btn)
-    TextView removeBtn;
-    private Context context;
-    private int mIndex;
-    private View view;
+  @BindView(R.id.tag_text)
+  TextView tagText;
+  @BindView(R.id.remove_btn)
+  TextView removeBtn;
+  private Context context;
+  private int mIndex;
+  private View view;
+  private RemoveTagListener removeTagListener;
 
-    public ChipView(Context context) {
-        super(context);
-        init(context);
-    }
+  public ChipView(Context context) {
+    super(context);
+    init(context);
+  }
 
-    public ChipView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
+  private void init(Context context) {
 
-    public ChipView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context);
-    }
+    this.context = context;
+    view = LayoutInflater.from(context).inflate(R.layout.chip_layout, this);
+    ButterKnife.bind(this, view);
+    removeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
 
-    private void init(Context context) {
+    removeBtn.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        if (removeTagListener != null) {
+          removeTagListener.onRemove(view, tagText.getText().toString());
+        }
+      }
+    });
+  }
 
-        this.context = context;
-        view = LayoutInflater.from(context).inflate(R.layout.chip_layout, this);
-        ButterKnife.bind(this,view);
-        removeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+  public ChipView(Context context, AttributeSet attrs) {
+    super(context, attrs);
+    init(context);
+  }
 
-        removeBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(removeTagListener!=null){
-                    removeTagListener.onRemove(view , tagText.getText().toString());
-                }
-            }
-        });
-    }
+  public ChipView(Context context, AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init(context);
+  }
 
-    public void setTagText(String text , int index){
-        tagText.setText(text);
-        this.mIndex = index;
-    }
+  public void setTagText(String text, int index) {
+    tagText.setText(text);
+    this.mIndex = index;
+  }
 
-    private RemoveTagListener removeTagListener;
+  public void setRemoveTagListener(RemoveTagListener removeTagListener) {
+    this.removeTagListener = removeTagListener;
+  }
 
-    public void setRemoveTagListener(RemoveTagListener removeTagListener) {
-        this.removeTagListener = removeTagListener;
-    }
-
-    public interface RemoveTagListener{
-        void onRemove(View view , String tag);
-    }
+  public interface RemoveTagListener {
+    void onRemove(View view, String tag);
+  }
 
 }

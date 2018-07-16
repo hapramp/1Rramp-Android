@@ -8,25 +8,25 @@ import com.google.gson.annotations.SerializedName;
 
 public class UserBioUpdateRequestBody {
 
-    @SerializedName("bio")
-    public String bio;
+  @SerializedName("bio")
+  public String bio;
 
-    public UserBioUpdateRequestBody(String bio) {
-        this.bio = bio;
-    }
+  public UserBioUpdateRequestBody(String bio) {
+    this.bio = bio;
+  }
 
-    public String getBio() {
-        return bio;
-    }
+  public String getBio() {
+    return bio;
+  }
 
-    public void setBio(String bio) {
-        this.bio = bio;
-    }
+  public void setBio(String bio) {
+    this.bio = bio;
+  }
 
-    @Override
-    public String toString() {
-        return "UserBioUpdateRequestBody{" +
-                "bio='" + bio + '\'' +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "UserBioUpdateRequestBody{" +
+      "bio='" + bio + '\'' +
+      '}';
+  }
 }

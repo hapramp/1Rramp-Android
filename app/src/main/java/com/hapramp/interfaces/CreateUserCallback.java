@@ -7,6 +7,7 @@ import com.hapramp.datamodels.response.CreateUserReponse;
  */
 
 public interface CreateUserCallback {
-    void onUserCreated(CreateUserReponse body);
-    void onFailedToCreateUser(String message);
+  void onUserCreated(CreateUserReponse body);
+
+  void onFailedToCreateUser(String message);
 }

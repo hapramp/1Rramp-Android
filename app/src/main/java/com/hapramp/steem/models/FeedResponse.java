@@ -11,33 +11,33 @@ import java.util.List;
 
 public class FeedResponse {
 
-    @Expose
-    @SerializedName("posts")
-    private List<Feed> feeds;
+  @Expose
+  @SerializedName("posts")
+  private List<Feed> feeds;
 
-    @Expose
-    @SerializedName("last_author")
-    private String lastAuthor;
+  @Expose
+  @SerializedName("last_author")
+  private String lastAuthor;
 
-    @Expose
-    @SerializedName("last_permlink")
-    private String lastPermlink;
+  @Expose
+  @SerializedName("last_permlink")
+  private String lastPermlink;
 
-    public FeedResponse(List<Feed> feeds, String lastAuthor, String lastPermlink) {
-        this.feeds = feeds;
-        this.lastAuthor = lastAuthor;
-        this.lastPermlink = lastPermlink;
-    }
+  public FeedResponse(List<Feed> feeds, String lastAuthor, String lastPermlink) {
+    this.feeds = feeds;
+    this.lastAuthor = lastAuthor;
+    this.lastPermlink = lastPermlink;
+  }
 
-    public List<Feed> getFeeds() {
-        return feeds;
-    }
+  public List<Feed> getFeeds() {
+    return feeds;
+  }
 
-    public String getLastAuthor() {
-        return lastAuthor;
-    }
+  public String getLastAuthor() {
+    return lastAuthor;
+  }
 
-    public String getLastPermlink() {
-        return lastPermlink;
-    }
+  public String getLastPermlink() {
+    return lastPermlink;
+  }
 }

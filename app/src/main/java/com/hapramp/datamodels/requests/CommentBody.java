@@ -8,18 +8,18 @@ import com.google.gson.annotations.SerializedName;
 
 public class CommentBody {
 
-    @SerializedName("content")
-    public String content;
+  @SerializedName("content")
+  public String content;
 
-    public CommentBody(String content) {
-        this.content = content;
-    }
+  public CommentBody(String content) {
+    this.content = content;
+  }
 
-    public String getContent() {
-        return content;
-    }
+  public String getContent() {
+    return content;
+  }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
+  public void setContent(String content) {
+    this.content = content;
+  }
 }

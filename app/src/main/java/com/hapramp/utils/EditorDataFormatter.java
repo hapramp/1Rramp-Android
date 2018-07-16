@@ -22,112 +22,112 @@ import static com.hapramp.editor.models.EditorTextStyle.NORMAL;
 
 public class EditorDataFormatter {
 
-    public static FeedDataItemModel getFormatedItem(Node node) {
+  public static FeedDataItemModel getFormatedItem(Node node) {
 
-        FeedDataItemModel feedDataItemModel = new FeedDataItemModel("", FeedDataConstants.ContentType.TEXT);
-        String content = "";
+    FeedDataItemModel feedDataItemModel = new FeedDataItemModel("", FeedDataConstants.ContentType.TEXT);
+    String content = "";
 
-        switch (node.type) {
-            //case for all kind of formatted strings
-            case INPUT: // Text, H1 , H2 , H3
-                // there is single item in this array
-                // Check for text, H1 ,H2 , H3
-                //we have content styles in node: we can make use of that
-                String type = getContentType(node.contentStyles);
-                content = getContent(node.content.get(0), node.contentStyles);
-                feedDataItemModel = new FeedDataItemModel(content, type);
-                break;
+    switch (node.type) {
+      //case for all kind of formatted strings
+      case INPUT: // Text, H1 , H2 , H3
+        // there is single item in this array
+        // Check for text, H1 ,H2 , H3
+        //we have content styles in node: we can make use of that
+        String type = getContentType(node.contentStyles);
+        content = getContent(node.content.get(0), node.contentStyles);
+        feedDataItemModel = new FeedDataItemModel(content, type);
+        break;
 
-            //image
-            case img:
-                // image path at index:0
-                // image desc at index: 1
-                //put desc to caption of data item
-                content = node.content.get(0);
-                //we can extract image description
-                feedDataItemModel = new FeedDataItemModel(content, FeedDataConstants.ContentType.IMAGE);
+      //image
+      case img:
+        // image path at index:0
+        // image desc at index: 1
+        //put desc to caption of data item
+        content = node.content.get(0);
+        //we can extract image description
+        feedDataItemModel = new FeedDataItemModel(content, FeedDataConstants.ContentType.IMAGE);
 
-                if(node.content.size()>1) {
-                    feedDataItemModel.setCaption(node.content.get(1));
-                }
-
-                break;
-
-            case ytb:
-                content = node.content.get(0); // this is video Id of Youtube
-                feedDataItemModel = new FeedDataItemModel(content, FeedDataConstants.ContentType.YOUTUBE);
-                break;
-
-            case hr:
-                feedDataItemModel = new FeedDataItemModel("", FeedDataConstants.ContentType.HR);
-                break;
-
-            case ol:
-                content = getBulletListContent(node.content);
-                feedDataItemModel = new FeedDataItemModel(content, FeedDataConstants.ContentType.OL);
-                break;
-
-            case ul:
-                content = getBulletListContent(node.content);
-                feedDataItemModel = new FeedDataItemModel(content, FeedDataConstants.ContentType.UL);
-                break;
-
-            // TODO: 4/12/2018 Need Blockquote, Youtube type
+        if (node.content.size() > 1) {
+          feedDataItemModel.setCaption(node.content.get(1));
         }
 
-        return feedDataItemModel;
+        break;
+
+      case ytb:
+        content = node.content.get(0); // this is video Id of Youtube
+        feedDataItemModel = new FeedDataItemModel(content, FeedDataConstants.ContentType.YOUTUBE);
+        break;
+
+      case hr:
+        feedDataItemModel = new FeedDataItemModel("", FeedDataConstants.ContentType.HR);
+        break;
+
+      case ol:
+        content = getBulletListContent(node.content);
+        feedDataItemModel = new FeedDataItemModel(content, FeedDataConstants.ContentType.OL);
+        break;
+
+      case ul:
+        content = getBulletListContent(node.content);
+        feedDataItemModel = new FeedDataItemModel(content, FeedDataConstants.ContentType.UL);
+        break;
+
+      // TODO: 4/12/2018 Need Blockquote, Youtube type
     }
 
-    private static String getContent(String content, List<EditorTextStyle> contentStyles) {
+    return feedDataItemModel;
+  }
 
-        String __content;
-        if (contentStyles.contains(BOLDITALIC)) {
-            __content = "<b><i>" + content + "</i></b>";
-        } else if (contentStyles.contains(BOLD)) {
-            __content = "<b>" + content + "</b>";
-        } else if (contentStyles.contains(ITALIC)) {
-            __content = "<i>" + content + "</i>";
-        } else {
-            __content = content;
-        }
+  private static String getContentType(List<EditorTextStyle> contentStyles) {
 
-        return __content;
+    String type;
+    if (contentStyles.contains(H1)) {
+      type = FeedDataConstants.ContentType.H1; //rendered as custom view + html
+    } else if (contentStyles.contains(H2)) {
+      type = FeedDataConstants.ContentType.H2; //rendered as custom view + html
+    } else if (contentStyles.contains(H3)) {
+      type = FeedDataConstants.ContentType.H3; //rendered as custom view + html
+    } else if (contentStyles.contains(NORMAL)) {
+      type = FeedDataConstants.ContentType.TEXT; //rendered as html
+    } else if (contentStyles.contains(BOLDITALIC)) {
+      type = "text"; //rendered as html
+    } else if (contentStyles.contains(BOLD)) {
+      type = "text"; //rendered as html
+    } else {
+      type = "text"; //rendered as html
+    }
+    return type;
+
+  }
+
+  private static String getContent(String content, List<EditorTextStyle> contentStyles) {
+
+    String __content;
+    if (contentStyles.contains(BOLDITALIC)) {
+      __content = "<b><i>" + content + "</i></b>";
+    } else if (contentStyles.contains(BOLD)) {
+      __content = "<b>" + content + "</b>";
+    } else if (contentStyles.contains(ITALIC)) {
+      __content = "<i>" + content + "</i>";
+    } else {
+      __content = content;
     }
 
-    private static String getBulletListContent(ArrayList<String> content) {
+    return __content;
+  }
 
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < content.size(); i++) {
+  private static String getBulletListContent(ArrayList<String> content) {
 
-            stringBuilder
-                    .append(content.get(i))
-                    .append("\n");
+    StringBuilder stringBuilder = new StringBuilder();
+    for (int i = 0; i < content.size(); i++) {
 
-        }
-        return stringBuilder.toString();
-
-    }
-
-    private static String getContentType(List<EditorTextStyle> contentStyles) {
-
-        String type;
-        if (contentStyles.contains(H1)) {
-            type = FeedDataConstants.ContentType.H1; //rendered as custom view + html
-        } else if (contentStyles.contains(H2)) {
-            type = FeedDataConstants.ContentType.H2; //rendered as custom view + html
-        } else if (contentStyles.contains(H3)) {
-            type = FeedDataConstants.ContentType.H3; //rendered as custom view + html
-        } else if (contentStyles.contains(NORMAL)) {
-            type = FeedDataConstants.ContentType.TEXT; //rendered as html
-        } else if (contentStyles.contains(BOLDITALIC)) {
-            type = "text"; //rendered as html
-        } else if (contentStyles.contains(BOLD)) {
-            type = "text"; //rendered as html
-        } else {
-            type = "text"; //rendered as html
-        }
-        return type;
+      stringBuilder
+        .append(content.get(i))
+        .append("\n");
 
     }
+    return stringBuilder.toString();
+
+  }
 
 }

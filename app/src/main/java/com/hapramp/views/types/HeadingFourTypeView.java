@@ -17,30 +17,30 @@ import com.hapramp.R;
 
 public class HeadingFourTypeView extends FrameLayout {
 
-    private TextView content;
+  private TextView content;
 
-    public HeadingFourTypeView(@NonNull Context context) {
-        super(context);
-        init(context);
-    }
+  public HeadingFourTypeView(@NonNull Context context) {
+    super(context);
+    init(context);
+  }
 
-    public HeadingFourTypeView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
+  private void init(Context context) {
+    View v = LayoutInflater.from(context).inflate(R.layout.heading_four_type_view, this);
+    content = v.findViewById(R.id.content);
+  }
 
-    public HeadingFourTypeView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context);
-    }
+  public HeadingFourTypeView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
+    init(context);
+  }
 
-    private void init(Context context) {
-        View v = LayoutInflater.from(context).inflate(R.layout.heading_four_type_view, this);
-        content = v.findViewById(R.id.content);
-    }
+  public HeadingFourTypeView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init(context);
+  }
 
-    public void setText(String text) {
-        content.setText(text);
-    }
+  public void setText(String text) {
+    content.setText(text);
+  }
 
 }

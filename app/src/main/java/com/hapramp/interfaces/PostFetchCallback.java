@@ -7,6 +7,7 @@ import com.hapramp.datamodels.response.PostResponse;
  */
 
 public interface PostFetchCallback {
-    void onPostFetched(PostResponse postResponses);
-    void onPostFetchError();
+  void onPostFetched(PostResponse postResponses);
+
+  void onPostFetchError();
 }

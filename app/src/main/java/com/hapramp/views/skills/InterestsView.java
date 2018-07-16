@@ -22,68 +22,68 @@ import java.util.List;
 
 public class InterestsView extends FrameLayout {
 
-    private Context mContext;
-    private ViewGroup parentView;
-    private List<CommunityModel> communities;
-    private TextView noInterestMessage;
+  private Context mContext;
+  private ViewGroup parentView;
+  private List<CommunityModel> communities;
+  private TextView noInterestMessage;
 
-    public InterestsView(@NonNull Context context) {
-        super(context);
-        mContext = context;
-        init();
+  public InterestsView(@NonNull Context context) {
+    super(context);
+    mContext = context;
+    init();
+  }
+
+  private void init() {
+
+    View view = LayoutInflater.from(mContext).inflate(R.layout.community_view_container, this);
+    parentView = view.findViewById(R.id.viewWrapper);
+    noInterestMessage = view.findViewById(R.id.no_interest_msg);
+
+  }
+
+  public InterestsView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
+    mContext = context;
+    init();
+  }
+
+  public InterestsView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    mContext = context;
+    init();
+  }
+
+  public void setCommunities(List<CommunityModel> communities) {
+    this.communities = communities;
+    if (communities != null && communities.size() > 0) {
+      addViews();
+    } else {
+      noInterestMessage.setVisibility(VISIBLE);
+    }
+  }
+
+  private void addViews() {
+
+    if (parentView.getChildCount() > 0) {
+      // already added, no need to add more duplicate views
+      return;
     }
 
-    public InterestsView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        mContext = context;
-        init();
+    for (int i = 0; i < communities.size(); i++) {
+
+      final CommunityItemView view = new CommunityItemView(mContext);
+      Log.d("InterestView", communities.get(i).toString());
+      view.setCommunityDetails(communities.get(i));
+      view.setSelection(false);
+
+      parentView.addView(view, i,
+        new ViewGroup.LayoutParams(
+          ViewGroup.LayoutParams.WRAP_CONTENT,
+          ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
-    public InterestsView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        mContext = context;
-        init();
-    }
+    noInterestMessage.setVisibility(GONE);
 
-    private void init() {
-
-        View view = LayoutInflater.from(mContext).inflate(R.layout.community_view_container, this);
-        parentView = view.findViewById(R.id.viewWrapper);
-        noInterestMessage = view.findViewById(R.id.no_interest_msg);
-
-    }
-
-    private void addViews() {
-
-        if (parentView.getChildCount() > 0) {
-            // already added, no need to add more duplicate views
-            return;
-        }
-
-        for (int i = 0; i < communities.size(); i++) {
-
-            final CommunityItemView view = new CommunityItemView(mContext);
-            Log.d("InterestView", communities.get(i).toString());
-            view.setCommunityDetails(communities.get(i));
-            view.setSelection(false);
-
-            parentView.addView(view, i,
-                    new ViewGroup.LayoutParams(
-                            ViewGroup.LayoutParams.WRAP_CONTENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT));
-        }
-
-        noInterestMessage.setVisibility(GONE);
-
-    }
-
-    public void setCommunities(List<CommunityModel> communities) {
-        this.communities = communities;
-        if (communities != null && communities.size() > 0) {
-            addViews();
-        }else{
-            noInterestMessage.setVisibility(VISIBLE);
-        }
-    }
+  }
 
 }

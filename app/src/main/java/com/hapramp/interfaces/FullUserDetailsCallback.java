@@ -7,6 +7,7 @@ import com.hapramp.datamodels.response.UserModel;
  */
 
 public interface FullUserDetailsCallback {
-    void onFullUserDetailsFetched(UserModel userModel);
-    void onFullUserDetailsFetchError();
+  void onFullUserDetailsFetched(UserModel userModel);
+
+  void onFullUserDetailsFetchError();
 }

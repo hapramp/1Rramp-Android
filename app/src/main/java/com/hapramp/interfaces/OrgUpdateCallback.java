@@ -5,6 +5,7 @@ package com.hapramp.interfaces;
  */
 
 public interface OrgUpdateCallback {
-    void onOrgUpdated();
-    void onOrgUpdateFailed();
+  void onOrgUpdated();
+
+  void onOrgUpdateFailed();
 }

@@ -109,9 +109,9 @@
             android:paddingStart="16dp"
             android:paddingTop="6dp"
             android:text="PUBLISH"
-            android:visibility="gone"
             android:textColor="@color/colorPrimary"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:visibility="gone" />
 
     </RelativeLayout>
 

@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:background="#ffffff"
     android:layout_height="match_parent"
+    android:background="#ffffff"
     android:fitsSystemWindows="true">
 
     <ScrollView
@@ -13,50 +13,50 @@
         android:layout_above="@+id/editorControlHolder">
 
         <RelativeLayout
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp">
 
             <EditText
-                android:layout_marginStart="8dp"
                 android:id="@+id/heading"
-                android:hint="Heading"
-                android:textSize="28sp"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp"
-                android:textColor="@color/colorPrimary"
-                android:background="@drawable/article_heading_bg"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/article_heading_bg"
+                android:hint="Heading"
+                android:paddingBottom="2dp"
+                android:paddingEnd="8dp"
+                android:paddingStart="8dp"
+                android:paddingTop="2dp"
+                android:textColor="@color/colorPrimary"
+                android:textSize="28sp" />
 
             <EditText
                 android:id="@+id/sub_heading"
-                android:hint="Sub Heading"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/article_heading_bg"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:paddingStart="8dp"
-                android:layout_marginTop="8dp"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp"
-                android:textColor="@color/Black38"
-                android:layout_below="@+id/heading"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/heading"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/article_heading_bg"
+                android:hint="Sub Heading"
+                android:paddingBottom="2dp"
+                android:paddingStart="8dp"
+                android:paddingTop="2dp"
+                android:textColor="@color/Black38"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
             <com.hapramp.editor.Editor
-                android:layout_below="@+id/sub_heading"
                 android:id="@+id/editor"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_below="@+id/sub_heading"
+                android:layout_marginEnd="4dp"
+                android:layout_marginStart="4dp"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
                 app:render_type="Editor" />
 
         </RelativeLayout>

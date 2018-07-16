@@ -3,15 +3,15 @@
 
     <item android:state_pressed="true">
         <shape android:shape="oval">
-            <solid android:color="@color/Black38"/>
-            <size android:height="10dp" android:width="10dp"/>
+            <solid android:color="@color/Black38" />
+            <size android:width="10dp" android:height="10dp" />
         </shape>
     </item>
 
     <item android:state_pressed="false">
         <shape android:shape="oval">
-            <solid android:color="@color/Black12"/>
-            <size android:height="10dp" android:width="10dp"/>
+            <solid android:color="@color/Black12" />
+            <size android:width="10dp" android:height="10dp" />
         </shape>
     </item>
 </selector>

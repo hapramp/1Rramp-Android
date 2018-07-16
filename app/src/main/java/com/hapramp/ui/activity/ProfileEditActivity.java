@@ -29,13 +29,13 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.hapramp.R;
 import com.hapramp.api.DataServer;
+import com.hapramp.datamodels.UserDataUpdateBody;
+import com.hapramp.datamodels.response.OrgsResponse;
+import com.hapramp.datamodels.response.UserModel;
 import com.hapramp.interfaces.FullUserDetailsCallback;
 import com.hapramp.interfaces.OrgsFetchCallback;
 import com.hapramp.interfaces.UserDpUpdateRequestCallback;
 import com.hapramp.logger.L;
-import com.hapramp.datamodels.UserDataUpdateBody;
-import com.hapramp.datamodels.response.OrgsResponse;
-import com.hapramp.datamodels.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
@@ -53,229 +53,222 @@ import butterknife.ButterKnife;
 
 public class ProfileEditActivity extends AppCompatActivity implements UserDpUpdateRequestCallback, FullUserDetailsCallback, OrgsFetchCallback {
 
-    private static final int REQUEST_IMAGE_SELECTOR = 101;
-    @BindView(R.id.profile_pic)
-    ImageView profilePic;
-    @BindView(R.id.editBtn)
-    TextView editBtn;
-    @BindView(R.id.profile_header_container)
-    RelativeLayout profileHeaderContainer;
-    @BindView(R.id.nameEt)
-    EditText nameEt;
-    @BindView(R.id.usernameEt)
-    EditText usernameEt;
-    @BindView(R.id.bioEt)
-    EditText bioEt;
-    @BindView(R.id.org_dropdown)
-    Spinner orgDropdown;
-    @BindView(R.id.emailEt)
-    EditText emailEt;
-    @BindView(R.id.interestView)
-    SelectableInterestsView interestView;
-    @BindView(R.id.backButton)
-    TextView backBtn;
-    @BindView(R.id.saveButton)
-    TextView saveButton;
-    @BindView(R.id.toolbar_container)
-    RelativeLayout toolbarContainer;
-    @BindView(R.id.dpUploadingProgress)
-    ProgressBar dpUploadingProgress;
-    @BindView(R.id.profile_wall_pic)
-    ImageView profileWallPic;
+  private static final int REQUEST_IMAGE_SELECTOR = 101;
+  @BindView(R.id.profile_pic)
+  ImageView profilePic;
+  @BindView(R.id.editBtn)
+  TextView editBtn;
+  @BindView(R.id.profile_header_container)
+  RelativeLayout profileHeaderContainer;
+  @BindView(R.id.nameEt)
+  EditText nameEt;
+  @BindView(R.id.usernameEt)
+  EditText usernameEt;
+  @BindView(R.id.bioEt)
+  EditText bioEt;
+  @BindView(R.id.org_dropdown)
+  Spinner orgDropdown;
+  @BindView(R.id.emailEt)
+  EditText emailEt;
+  @BindView(R.id.interestView)
+  SelectableInterestsView interestView;
+  @BindView(R.id.backButton)
+  TextView backBtn;
+  @BindView(R.id.saveButton)
+  TextView saveButton;
+  @BindView(R.id.toolbar_container)
+  RelativeLayout toolbarContainer;
+  @BindView(R.id.dpUploadingProgress)
+  ProgressBar dpUploadingProgress;
+  @BindView(R.id.profile_wall_pic)
+  ImageView profileWallPic;
+  ArrayAdapter<String> spinnerArrayAdapter;
+  UserModel userData;
+  private String dpUrl;
+  private FirebaseStorage storage;
+  private List<OrgsResponse> orgs;
+  private int selectedOrgId = 0;
 
-    private String dpUrl;
-    private FirebaseStorage storage;
-    ArrayAdapter<String> spinnerArrayAdapter;
-    UserModel userData;
-    private List<OrgsResponse> orgs;
-    private int selectedOrgId = 0;
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_profile_edit);
+    ButterKnife.bind(this);
+    init();
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile_edit);
-        ButterKnife.bind(this);
-        init();
+  }
 
-    }
+  private void init() {
 
-    private void init() {
+    storage = FirebaseStorage.getInstance();
+    fetchOrgs();
+    fetchUserDetailsFull();
 
-        storage = FirebaseStorage.getInstance();
-        fetchOrgs();
-        fetchUserDetailsFull();
+    editBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+    //back button
+    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+    backBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+    backBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        finish();
+      }
+    });
 
-        editBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-        //back button
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        backBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+  }
 
-    }
+  private void fetchOrgs() {
+  }
 
+  private void fetchUserDetailsFull() {
+    DataServer.getFullUserDetails(HaprampPreferenceManager.getInstance().getUserId(), this);
+  }
 
-    private void setSpinnerAdapter(String[] spinnerList) {
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+    super.onActivityResult(requestCode, resultCode, data);
 
-        spinnerArrayAdapter = new ArrayAdapter<String>
-                (this,
-                        android.R.layout.simple_spinner_item,
-                        spinnerList);
+    if (resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
 
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_expandable_list_item_1);
-
-        orgDropdown.setAdapter(spinnerArrayAdapter);
-
-    }
-
-    private void fetchUserDetailsFull() {
-        DataServer.getFullUserDetails(HaprampPreferenceManager.getInstance().getUserId(), this);
-    }
-
-    private void fetchOrgs() {
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_IMAGE_SELECTOR:
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    openGallery();
-                } else {
-                    //do something like displaying a message that he didn`t allow the app to access gallery and you wont be able to let him select from gallery
-                }
-                break;
+      String[] filePathColumn = {MediaStore.Images.Media.DATA};
+      Cursor cursor = getContentResolver().query(data.getData(), filePathColumn, null, null, null);
+      if (cursor != null) {
+        cursor.moveToFirst();
+        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+        if (columnIndex < 0) {
+          L.D.m("Profile", "Photo Url error!");
+        } else {
+          uploadMedia(cursor.getString(columnIndex));
         }
+        cursor.close();
+      }
     }
+  }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
-
-            String[] filePathColumn = {MediaStore.Images.Media.DATA};
-            Cursor cursor = getContentResolver().query(data.getData(), filePathColumn, null, null, null);
-            if (cursor != null) {
-                cursor.moveToFirst();
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                if (columnIndex < 0) {
-                    L.D.m("Profile", "Photo Url error!");
-                } else {
-                    uploadMedia(cursor.getString(columnIndex));
-                }
-                cursor.close();
-            }
+  @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    switch (requestCode) {
+      case REQUEST_IMAGE_SELECTOR:
+        // If request is cancelled, the result arrays are empty.
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+          openGallery();
+        } else {
+          //do something like displaying a message that he didn`t allow the app to access gallery and you wont be able to let him select from gallery
         }
+        break;
+    }
+  }
+
+  private void openGallery() {
+
+    try {
+      if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_SELECTOR);
+      } else {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        galleryIntent.setType("image/*");
+        startActivityForResult(galleryIntent, REQUEST_IMAGE_SELECTOR);
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
     }
 
-    private void uploadMedia(String uri) {
+  }
 
-        showDpProgress();
-        // show image
-        ImageHandler.loadCircularImage(this, profilePic, uri);
-        ImageHandler.load(this,profileWallPic,getResources().getString(R.string.default_wall_pic));
+  private void uploadMedia(String uri) {
 
-        StorageReference storageRef = storage.getReference();
-        StorageReference dpRef = storageRef
-                .child(Constants.userDpFolder)
-                .child(HaprampPreferenceManager.getInstance().getUserId());
+    showDpProgress();
+    // show image
+    ImageHandler.loadCircularImage(this, profilePic, uri);
+    ImageHandler.load(this, profileWallPic, getResources().getString(R.string.default_wall_pic));
 
-        InputStream stream = null;
-        L.D.m("Profile", "Uploading from..." + uri);
+    StorageReference storageRef = storage.getReference();
+    StorageReference dpRef = storageRef
+      .child(Constants.userDpFolder)
+      .child(HaprampPreferenceManager.getInstance().getUserId());
 
-        try {
-            stream = new FileInputStream(new File(uri));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+    InputStream stream = null;
+    L.D.m("Profile", "Uploading from..." + uri);
 
-        UploadTask uploadTask = dpRef.putStream(stream);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
-                hideDpProgress();
-                Toast.makeText(ProfileEditActivity.this, "Failed To Upload Media", Toast.LENGTH_LONG).show();
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                hideDpProgress();
-                Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                dpUrl = downloadUrl.toString();
-                L.D.m("Profile", " uploaded to : " + downloadUrl.toString());
-            }
-        });
-
+    try {
+      stream = new FileInputStream(new File(uri));
+    }
+    catch (FileNotFoundException e) {
+      e.printStackTrace();
     }
 
-    private void updateAppServerForDpUpdate() {
+    UploadTask uploadTask = dpRef.putStream(stream);
+    uploadTask.addOnFailureListener(new OnFailureListener() {
+      @Override
+      public void onFailure(@NonNull Exception exception) {
+        // Handle unsuccessful uploads
+        hideDpProgress();
+        Toast.makeText(ProfileEditActivity.this, "Failed To Upload Media", Toast.LENGTH_LONG).show();
+      }
+    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+      @Override
+      public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+        hideDpProgress();
+        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+        dpUrl = downloadUrl.toString();
+        L.D.m("Profile", " uploaded to : " + downloadUrl.toString());
+      }
+    });
 
-        UserDataUpdateBody body = new UserDataUpdateBody(emailEt.getText().toString(),
-                usernameEt.getText().toString(),
-                nameEt.getText().toString(),
-                dpUrl,
-                bioEt.getText().toString(),
-                selectedOrgId);
+  }
+
+  private void showDpProgress() {
+    if (dpUploadingProgress != null) {
+      dpUploadingProgress.setVisibility(View.VISIBLE);
+    }
+  }
+
+  private void hideDpProgress() {
+    if (dpUploadingProgress != null) {
+      dpUploadingProgress.setVisibility(View.GONE);
+    }
+  }
+
+  private void updateAppServerForDpUpdate() {
+
+    UserDataUpdateBody body = new UserDataUpdateBody(emailEt.getText().toString(),
+      usernameEt.getText().toString(),
+      nameEt.getText().toString(),
+      dpUrl,
+      bioEt.getText().toString(),
+      selectedOrgId);
 
 //        DataServer.updataUserDpUrl(
 //                HaprampPreferenceManager.getInstance().getUserId(),
 //                body
 //                , this);
 
-    }
+  }
 
-    private void openGallery() {
+  @Override
+  public void onUserDataUpdated() {
+    Toast.makeText(this, "Updated!", Toast.LENGTH_LONG).show();
+    //broadcast the change
+    Intent intent = new Intent(Constants.ACTION_USER_DETAILS_CHANGE);
+    intent.putExtra("type", Constants.PROFILE_DATA);
+    sendBroadcast(intent);
 
-        try {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_SELECTOR);
-            } else {
-                Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent, REQUEST_IMAGE_SELECTOR);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+  }
 
-    }
+  @Override
+  public void onUserDataUpdateError() {
+    //load Previous Image
+    bindValues(userData);
+    //ImageHandler.loadCircularImage(this, profilePic, dpUrl);
+  }
 
-    @Override
-    public void onUserDataUpdated() {
-        Toast.makeText(this, "Updated!", Toast.LENGTH_LONG).show();
-        //broadcast the change
-        Intent intent = new Intent(Constants.ACTION_USER_DETAILS_CHANGE);
-        intent.putExtra("type",Constants.PROFILE_DATA);
-        sendBroadcast(intent);
+  private void bindValues(UserModel userModel) {
 
-    }
-
-    @Override
-    public void onUserDataUpdateError() {
-        //load Previous Image
-        bindValues(userData);
-        //ImageHandler.loadCircularImage(this, profilePic, dpUrl);
-    }
-
-    @Override
-    public void onFullUserDetailsFetched(UserModel userModel) {
-        bindValues(userModel);
-    }
-
-    private void bindValues(UserModel userModel) {
-
-        userData = userModel;
+    userData = userModel;
 //        //dp
 //        dpUrl = userModel.image_uri;
 //        ImageHandler.loadCircularImage(this, profilePic, userModel.image_uri);
@@ -322,41 +315,48 @@ public class ProfileEditActivity extends AppCompatActivity implements UserDpUpda
 //        });
 //
 
+  }
+
+  @Override
+  public void onFullUserDetailsFetched(UserModel userModel) {
+    bindValues(userModel);
+  }
+
+  @Override
+  public void onFullUserDetailsFetchError() {
+
+  }
+
+  @Override
+  public void onOrgsFetched(List<OrgsResponse> orgs) {
+
+    String[] _org = new String[orgs.size()];
+    int i = 0;
+    for (OrgsResponse org : orgs) {
+      _org[i++] = org.name;
     }
+    this.orgs = orgs;
+    setSpinnerAdapter(_org);
 
-    @Override
-    public void onFullUserDetailsFetchError() {
+  }
 
-    }
+  private void setSpinnerAdapter(String[] spinnerList) {
 
-    @Override
-    public void onOrgsFetched(List<OrgsResponse> orgs) {
 
-        String[] _org = new String[orgs.size()];
-        int i = 0;
-        for (OrgsResponse org : orgs) {
-            _org[i++] = org.name;
-        }
-        this.orgs = orgs;
-        setSpinnerAdapter(_org);
+    spinnerArrayAdapter = new ArrayAdapter<String>
+      (this,
+        android.R.layout.simple_spinner_item,
+        spinnerList);
 
-    }
+    spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_expandable_list_item_1);
 
-    @Override
-    public void onOrgFetchedError() {
-        // TODO: 12/26/2017 do nothing for now :)
-    }
+    orgDropdown.setAdapter(spinnerArrayAdapter);
 
-    private void showDpProgress() {
-        if (dpUploadingProgress != null) {
-            dpUploadingProgress.setVisibility(View.VISIBLE);
-        }
-    }
+  }
 
-    private void hideDpProgress() {
-        if (dpUploadingProgress != null) {
-            dpUploadingProgress.setVisibility(View.GONE);
-        }
-    }
+  @Override
+  public void onOrgFetchedError() {
+    // TODO: 12/26/2017 do nothing for now :)
+  }
 
 }

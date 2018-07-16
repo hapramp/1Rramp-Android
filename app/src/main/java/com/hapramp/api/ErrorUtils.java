@@ -15,17 +15,18 @@ import retrofit2.Response;
 
 public class ErrorUtils {
 
-    public static GeneralErrorModel parseError(Response<?> response) {
-        Converter<ResponseBody, GeneralErrorModel> converter = HaprampApiClient
-                .getClient("")
-                .responseBodyConverter(GeneralErrorModel.class, new Annotation[0]);
+  public static GeneralErrorModel parseError(Response<?> response) {
+    Converter<ResponseBody, GeneralErrorModel> converter = HaprampApiClient
+      .getClient("")
+      .responseBodyConverter(GeneralErrorModel.class, new Annotation[0]);
 
-        GeneralErrorModel error = null;
+    GeneralErrorModel error = null;
 
-        try {
-            error = converter.convert(response.errorBody());
-        } catch (IOException e) {
-        }
-        return error;
+    try {
+      error = converter.convert(response.errorBody());
     }
+    catch (IOException e) {
+    }
+    return error;
+  }
 }

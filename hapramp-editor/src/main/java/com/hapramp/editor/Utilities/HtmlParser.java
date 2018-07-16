@@ -12,24 +12,24 @@ import com.hapramp.editor.models.HtmlTag;
 
 
 public class HtmlParser {
-    private Context context;
-    LinearLayout parentView;
-    public HtmlParser(Context _context){
-        this.context=_context;
-        parentView=new LinearLayout(this.context);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        parentView.setLayoutParams(params);
+  LinearLayout parentView;
+  private Context context;
+
+  public HtmlParser(Context _context) {
+    this.context = _context;
+    parentView = new LinearLayout(this.context);
+    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    parentView.setLayoutParams(params);
+  }
+
+
+  public static boolean matchesTag(String test) {
+    for (HtmlTag tag : HtmlTag.values()) {
+      if (tag.name().equals(test)) {
+        return true;
+      }
     }
-
-
-
-    public static boolean matchesTag(String test) {
-        for (HtmlTag tag : HtmlTag.values()) {
-            if (tag.name().equals(test)) {
-                return true;
-            }
-        }
-        return false;
-    }
+    return false;
+  }
 }
 

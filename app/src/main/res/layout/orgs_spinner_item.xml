@@ -2,11 +2,11 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/text1"
     style="?android:attr/spinnerItemStyle"
-    android:singleLine="true"
-    android:text="Ankit"
-    android:padding="8dp"
-    android:textColor="@color/Black54"
-    android:background="#f4f4f4"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:ellipsize="marquee" />
+    android:background="#f4f4f4"
+    android:ellipsize="marquee"
+    android:padding="8dp"
+    android:singleLine="true"
+    android:text="Ankit"
+    android:textColor="@color/Black54" />

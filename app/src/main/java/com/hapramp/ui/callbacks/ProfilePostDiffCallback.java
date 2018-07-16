@@ -13,34 +13,34 @@ import java.util.Objects;
 
 public class ProfilePostDiffCallback extends DiffUtil.Callback {
 
-    private List<Feed> mOldFeedList;
-    private List<Feed> mNewFeedList;
+  private List<Feed> mOldFeedList;
+  private List<Feed> mNewFeedList;
 
-    public ProfilePostDiffCallback(List<Feed> oldList,List<Feed> newList) {
-        this.mOldFeedList = oldList;
-        this.mNewFeedList = newList;
-    }
+  public ProfilePostDiffCallback(List<Feed> oldList, List<Feed> newList) {
+    this.mOldFeedList = oldList;
+    this.mNewFeedList = newList;
+  }
 
-    @Override
-    public int getOldListSize() {
-        return mOldFeedList.size();
-    }
+  @Override
+  public int getOldListSize() {
+    return mOldFeedList.size();
+  }
 
-    @Override
-    public int getNewListSize() {
-        return mNewFeedList.size();
-    }
+  @Override
+  public int getNewListSize() {
+    return mNewFeedList.size();
+  }
 
-    @Override
-    public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-        return Objects.equals(mOldFeedList.get(oldItemPosition).id, mNewFeedList.get(newItemPosition).id);
-    }
+  @Override
+  public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+    return Objects.equals(mOldFeedList.get(oldItemPosition).id, mNewFeedList.get(newItemPosition).id);
+  }
 
-    @Override
-    public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-        final Feed oldFeed = mOldFeedList.get(oldItemPosition);
-        final Feed newFeed = mNewFeedList.get(newItemPosition);
-        return Objects.equals(newFeed.totalPayoutValue, oldFeed.totalPayoutValue);
-    }
+  @Override
+  public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+    final Feed oldFeed = mOldFeedList.get(oldItemPosition);
+    final Feed newFeed = mNewFeedList.get(newItemPosition);
+    return Objects.equals(newFeed.totalPayoutValue, oldFeed.totalPayoutValue);
+  }
 
 }

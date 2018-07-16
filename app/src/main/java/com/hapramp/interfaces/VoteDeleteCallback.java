@@ -7,6 +7,7 @@ import com.hapramp.steem.models.Feed;
  */
 
 public interface VoteDeleteCallback {
-    void onVoteDeleted(Feed updatedPost);
-    void onVoteDeleteError();
+  void onVoteDeleted(Feed updatedPost);
+
+  void onVoteDeleteError();
 }

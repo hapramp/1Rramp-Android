@@ -30,9 +30,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/message_label"
+        android:layout_marginBottom="8dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
-        android:layout_marginBottom="8dp"
         android:layout_toEndOf="@id/icon"
         android:textColor="@color/Black38" />
 
@@ -146,16 +146,16 @@
 
     <TextView
         android:id="@+id/goto_btn"
-        android:background="@drawable/goto_post_from_transfer_history_bg"
-        android:text="Go to Post"
-        android:clickable="true"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:textColor="@color/white"
-        android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/goto_post_from_transfer_history_bg"
+        android:clickable="true"
+        android:paddingBottom="8dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp"
+        android:text="Go to Post"
+        android:textColor="@color/white" />
 
 </RelativeLayout>

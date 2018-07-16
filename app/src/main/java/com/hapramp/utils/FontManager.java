@@ -7,24 +7,24 @@ import com.hapramp.main.HapRampMain;
 
 public class FontManager {
 
-    public static final String FONT_MATERIAL = "materialFont.ttf";
+  public static final String FONT_MATERIAL = "materialFont.ttf";
 
-    private static Context context;
-    private static FontManager mInstance;
+  private static Context context;
+  private static FontManager mInstance;
 
-    public FontManager() {
-        FontManager.context = HapRampMain.getContext();
+  public FontManager() {
+    FontManager.context = HapRampMain.getContext();
+  }
+
+  public static FontManager getInstance() {
+    if (mInstance == null) {
+      mInstance = new FontManager();
     }
+    return mInstance;
+  }
 
-    public static FontManager getInstance() {
-        if (mInstance == null) {
-            mInstance = new FontManager();
-        }
-        return mInstance;
-    }
-
-    public Typeface getTypeFace(String type) {
-        return Typeface.createFromAsset(context.getAssets(), type);
-    }
+  public Typeface getTypeFace(String type) {
+    return Typeface.createFromAsset(context.getAssets(), type);
+  }
 
 }

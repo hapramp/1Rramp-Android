@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,58 +11,58 @@
         android:layout_height="?actionBarSize">
 
         <TextView
-        android:background="?selectableItemBackgroundBorderless"
-        android:clickable="true"
-        android:id="@+id/backBtn"
-        android:text=""
-        android:gravity="center"
-        android:textSize="24sp"
-        android:layout_width="48dp"
-        android:layout_height="?actionBarSize" />
+            android:id="@+id/backBtn"
+            android:layout_width="48dp"
+            android:layout_height="?actionBarSize"
+            android:background="?selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:gravity="center"
+            android:text=""
+            android:textSize="24sp" />
 
-    <TextView
-        android:padding="8dp"
-        android:textColor="@color/Black38"
-        android:textSize="18sp"
-        android:gravity="center"
-        android:layout_centerHorizontal="true"
-        android:text="Notifications"
-        android:layout_width="wrap_content"
-        android:layout_height="?actionBarSize" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="?actionBarSize"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="Notifications"
+            android:textColor="@color/Black38"
+            android:textSize="18sp" />
 
-    <TextView
-        android:visibility="gone"
-        android:id="@+id/markallRead"
-        android:text="Mark All Read"
-        android:textColor="@color/colorPrimary"
-        android:textSize="14sp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/light_btn_bg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/markallRead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/light_btn_bg"
+            android:paddingBottom="4dp"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:paddingTop="4dp"
+            android:text="Mark All Read"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            android:visibility="gone" />
 
     </RelativeLayout>
 
     <TextView
-        android:visibility="gone"
         android:id="@+id/notificationsMsg"
-        android:textSize="16sp"
-        android:text="No notifications"
-        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="No notifications"
+        android:textSize="16sp"
+        android:visibility="gone" />
 
     <android.support.v7.widget.RecyclerView
-        android:layout_below="@+id/toolbar_container"
         android:id="@+id/notificationRV"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar_container" />
 
     <FrameLayout
         android:id="@+id/toolbar_drop_shadow"
@@ -73,9 +72,9 @@
         android:background="@drawable/toolbar_shadow" />
 
     <ProgressBar
-        android:layout_centerInParent="true"
         android:id="@+id/notificationProgress"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
 
 </RelativeLayout>

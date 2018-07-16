@@ -5,29 +5,29 @@
     tools:context=".ui.fragments.HapSkillSelectionDialogFragment">
 
     <TextView
-        android:padding="16dp"
-        android:textSize="18sp"
         android:id="@+id/hapskill_caption"
-        android:text="Select HapSkills"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="Select HapSkills"
+        android:textSize="18sp" />
 
     <GridView
-        android:layout_centerHorizontal="true"
-        android:horizontalSpacing="4dp"
-        android:verticalSpacing="16dp"
-        android:numColumns="3"
-        android:columnWidth="96dp"
-        android:layout_below="@+id/hapskill_caption"
         android:id="@+id/skillsGridView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/hapskill_caption"
+        android:layout_centerHorizontal="true"
+        android:columnWidth="96dp"
+        android:horizontalSpacing="4dp"
+        android:numColumns="3"
+        android:verticalSpacing="16dp" />
 
     <ProgressBar
-        android:visibility="gone"
-        android:layout_centerInParent="true"
         android:id="@+id/hapskills_progressBar"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
 
 </RelativeLayout>

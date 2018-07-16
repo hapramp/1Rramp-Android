@@ -8,19 +8,19 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class VoteStatus {
-    @Expose
-    @SerializedName("status")
-    public String status;
+  @Expose
+  @SerializedName("status")
+  public String status;
 
-    public VoteStatus(String status) {
-        this.status = status;
-    }
+  public VoteStatus(String status) {
+    this.status = status;
+  }
 
-    public String getStatus() {
-        return status;
-    }
+  public String getStatus() {
+    return status;
+  }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+  public void setStatus(String status) {
+    this.status = status;
+  }
 }

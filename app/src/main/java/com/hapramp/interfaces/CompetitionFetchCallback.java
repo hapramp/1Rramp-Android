@@ -10,7 +10,8 @@ import java.util.List;
 
 public interface CompetitionFetchCallback {
 
-    void onCompetitionsFetched(List<CompetitionResponse> competitionResponses);
-    void onCompetitionsFetchError();
+  void onCompetitionsFetched(List<CompetitionResponse> competitionResponses);
+
+  void onCompetitionsFetchError();
 
 }

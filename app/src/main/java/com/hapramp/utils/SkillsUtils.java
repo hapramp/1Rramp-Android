@@ -8,140 +8,138 @@ import android.graphics.Color;
 
 public class SkillsUtils {
 
-    public static final int ALL = 0;
-    public static final int ART = 1;
-    public static final int DANCE = 2;
-    public static final int TRAVEL = 3;
-    public static final int LITERATURE = 4;
-    public static final int DRAMATICS = 5;
-    public static final int PHOTOGRAPHY = 6;
-    public static final int MUSIC = 8;
+  public static final int ALL = 0;
+  public static final int ART = 1;
+  public static final int DANCE = 2;
+  public static final int TRAVEL = 3;
+  public static final int LITERATURE = 4;
+  public static final int DRAMATICS = 5;
+  public static final int PHOTOGRAPHY = 6;
+  public static final int MUSIC = 8;
+  final static String[] skills = {"Art", "Dance", "Music", "Travel", "Literature", "Dramatics", "Photography"};
+  // colors
+  private static final String L = "#607d8b";
+  private static final String T = "#8Bc34a";
+  private static final String P = "#2196f3";
+  private static final String D = "#607d8b";
+  private static final String A = "#FFEB3B";
+  private static final String M = "#eF5350";
 
-    // colors
-    private static final String L = "#607d8b";
-    private static final String T = "#8Bc34a";
-    private static final String P = "#2196f3";
-    private static final String D = "#607d8b";
-    private static final String A = "#FFEB3B";
-    private static final String M = "#eF5350";
+  public static int getSkillIdFromName(String name) {
 
-    final static String[] skills = {"Art", "Dance", "Music","Travel", "Literature", "Dramatics", "Photography"};
+    String n = name.toLowerCase();
 
-    public static String getSkillCharacter(int id) {
-
-        switch (id) {
-            case ART:
-                return "A";
-            case DANCE:
-                return "D";
-            case TRAVEL:
-                return "T";
-            case LITERATURE:
-                return "L";
-            case DRAMATICS:
-                return "D";
-            case PHOTOGRAPHY:
-                return "P";
-            case MUSIC:
-                return "M";
-        }
-        return "O";
+    switch (n) {
+      case "art":
+        return ART;
+      case "dance":
+        return DANCE;
+      case "travel":
+        return TRAVEL;
+      case "literature":
+        return LITERATURE;
+      case "dramatics":
+        return DRAMATICS;
+      case "photography":
+        return PHOTOGRAPHY;
+      case "music":
+        return MUSIC;
     }
 
-    public static int getSkillIdFromName(String name) {
+    return -1;
+  }
 
-        String n = name.toLowerCase();
+  public static String getSkillTitleFromId(int id) {
 
-        switch (n) {
-            case "art":
-                return ART;
-            case "dance":
-                return DANCE;
-            case "travel":
-                return TRAVEL;
-            case "literature":
-                return LITERATURE;
-            case "dramatics":
-                return DRAMATICS;
-            case "photography":
-                return PHOTOGRAPHY;
-            case "music":
-                return MUSIC;
-        }
+    switch (id) {
+      case ALL:
+        return "All";
 
-        return -1;
-    }
+      case ART:
+        return "ART";
 
-    public static String getSkillTitleFromId(int id) {
+      case DANCE:
+        return "DANCE";
 
-        switch (id) {
-            case ALL:
-                return "All";
+      case TRAVEL:
+        return "TRAVEL";
 
-            case ART:
-                return "ART";
+      case LITERATURE:
+        return "LITERATURE";
 
-            case DANCE:
-                return "DANCE";
+      case DRAMATICS:
+        return "DRAMATICS";
 
-            case TRAVEL:
-                return "TRAVEL";
+      case PHOTOGRAPHY:
+        return "PHOTOGRAPHY";
 
-            case LITERATURE:
-                return "LITERATURE";
-
-            case DRAMATICS:
-                return "DRAMATICS";
-
-            case PHOTOGRAPHY:
-                return "PHOTOGRAPHY";
-
-            case MUSIC:
-                return "MUSIC";
-
-        }
-
-        return "None";
+      case MUSIC:
+        return "MUSIC";
 
     }
 
-    public static int getSkillTagColorFromId(int skillId) {
+    return "None";
 
-        String c = getSkillCharacter(skillId);
-        int color = 0;
-        switch (c) {
+  }
 
-            case "L":
-                color = Color.parseColor(L);
-                break;
+  public static int getSkillTagColorFromId(int skillId) {
 
-            case "T":
-                color = Color.parseColor(T);
-                break;
+    String c = getSkillCharacter(skillId);
+    int color = 0;
+    switch (c) {
 
-            case "P":
-                color = Color.parseColor(P);
-                break;
-            case "D":
-                color = Color.parseColor(D);
-                break;
-            case "A":
-                color = Color.parseColor(A);
-                break;
-            case "M":
-                color = Color.parseColor(M);
-                break;
-            default:
-                color = Color.parseColor(P);
-                break;
+      case "L":
+        color = Color.parseColor(L);
+        break;
 
-        }
-        return color;
+      case "T":
+        color = Color.parseColor(T);
+        break;
+
+      case "P":
+        color = Color.parseColor(P);
+        break;
+      case "D":
+        color = Color.parseColor(D);
+        break;
+      case "A":
+        color = Color.parseColor(A);
+        break;
+      case "M":
+        color = Color.parseColor(M);
+        break;
+      default:
+        color = Color.parseColor(P);
+        break;
 
     }
+    return color;
 
-    public static String[] getSkillsSet(){
-        return skills;
+  }
+
+  public static String getSkillCharacter(int id) {
+
+    switch (id) {
+      case ART:
+        return "A";
+      case DANCE:
+        return "D";
+      case TRAVEL:
+        return "T";
+      case LITERATURE:
+        return "L";
+      case DRAMATICS:
+        return "D";
+      case PHOTOGRAPHY:
+        return "P";
+      case MUSIC:
+        return "M";
     }
+    return "O";
+  }
+
+  public static String[] getSkillsSet() {
+    return skills;
+  }
 
 }

@@ -23,80 +23,80 @@ import com.hapramp.utils.ImageHandler;
 
 public class CommunityItemView extends FrameLayout {
 
-    ImageView communityIv;
-    TextView skillSelectionOverlay;
-    TextView communityItemTitle;
-    private Context mContext;
-    private CommunityModel mCommunity;
+  ImageView communityIv;
+  TextView skillSelectionOverlay;
+  TextView communityItemTitle;
+  private Context mContext;
+  private CommunityModel mCommunity;
 
-    public CommunityItemView(Context context) {
-        super(context);
-        init(context);
+  public CommunityItemView(Context context) {
+    super(context);
+    init(context);
+  }
+
+  private void init(Context context) {
+
+    this.mContext = context;
+    View view = LayoutInflater.from(context).inflate(R.layout.community_selection_item_view, this);
+    communityIv = view.findViewById(R.id.skills_bg_image);
+    skillSelectionOverlay = view.findViewById(R.id.skill_selection_overlay);
+    communityItemTitle = view.findViewById(R.id.skill_title);
+    skillSelectionOverlay.setTypeface(new FontManager().getTypeFace(FontManager.FONT_MATERIAL));
+
+  }
+
+  public CommunityItemView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
+    init(context);
+  }
+
+  public CommunityItemView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init(context);
+  }
+
+  public void setSelection(boolean selected) {
+    if (selected) {
+      skillSelectionOverlay.setVisibility(VISIBLE);
+    } else {
+      skillSelectionOverlay.setVisibility(GONE);
     }
+  }
 
-    public CommunityItemView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
+  public String getCommunityTitle() {
+    return mCommunity.getmName();
+  }
 
-    public CommunityItemView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context);
-    }
+  private void setCommunityTitle(String title) {
+    communityItemTitle.setText(title);
+  }
 
-    private void init(Context context) {
+  public int getCommunityId() {
+    return mCommunity.getmId();
+  }
 
-        this.mContext = context;
-        View view = LayoutInflater.from(context).inflate(R.layout.community_selection_item_view, this);
-        communityIv = view.findViewById(R.id.skills_bg_image);
-        skillSelectionOverlay = view.findViewById(R.id.skill_selection_overlay);
-        communityItemTitle = view.findViewById(R.id.skill_title);
-        skillSelectionOverlay.setTypeface(new FontManager().getTypeFace(FontManager.FONT_MATERIAL));
+  public void setCommunityDetails(CommunityModel communityModel) {
+    this.mCommunity = communityModel;
+    // set Image
+    setCommunityImage(mCommunity.getmImageUri());
+    // set Overlay Color
+    setCommunityOverlayColor(mCommunity.getmColor());
+    // setTitle
+    setCommunityTitle(mCommunity.getmName());
+  }
 
-    }
+  private void setCommunityImage(String imageUri) {
+    ImageHandler.loadCircularImage(mContext, communityIv, imageUri);
+  }
 
-    private void setOverlayColor(String color) {
+  private void setCommunityOverlayColor(String color) {
+    setOverlayColor(color);
+  }
 
-        GradientDrawable background = (GradientDrawable) skillSelectionOverlay.getBackground();
-        background.setColor(Color.parseColor(color));
+  private void setOverlayColor(String color) {
 
-    }
+    GradientDrawable background = (GradientDrawable) skillSelectionOverlay.getBackground();
+    background.setColor(Color.parseColor(color));
 
-    public void setSelection(boolean selected) {
-        if (selected) {
-            skillSelectionOverlay.setVisibility(VISIBLE);
-        } else {
-            skillSelectionOverlay.setVisibility(GONE);
-        }
-    }
-
-    public String getCommunityTitle() {
-        return mCommunity.getmName();
-    }
-
-    public int getCommunityId() {
-        return mCommunity.getmId();
-    }
-
-    public void setCommunityDetails(CommunityModel communityModel) {
-        this.mCommunity = communityModel;
-        // set Image
-        setCommunityImage(mCommunity.getmImageUri());
-        // set Overlay Color
-        setCommunityOverlayColor(mCommunity.getmColor());
-        // setTitle
-        setCommunityTitle(mCommunity.getmName());
-    }
-
-    private void setCommunityTitle(String title) {
-        communityItemTitle.setText(title);
-    }
-
-    private void setCommunityOverlayColor(String color) {
-        setOverlayColor(color);
-    }
-
-    private void setCommunityImage(String imageUri) {
-        ImageHandler.loadCircularImage(mContext, communityIv, imageUri);
-    }
+  }
 }

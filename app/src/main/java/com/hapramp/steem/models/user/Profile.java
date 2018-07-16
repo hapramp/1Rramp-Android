@@ -10,63 +10,63 @@ import com.google.gson.annotations.SerializedName;
 
 public class Profile {
 
-    private static final String TAG = Profile.class.getSimpleName();
+  private static final String TAG = Profile.class.getSimpleName();
 
-    @SerializedName("profile_image")
-    @Expose
-    public String profileImage = "";
-    @SerializedName("name")
-    @Expose
-    public String name = "";
-    @SerializedName("location")
-    public String location = "";
-    @Expose
-    @SerializedName("cover_image")
-    public String cover_image = "";
-    @Expose
-    @SerializedName("website")
-    public String website = "";
-    @SerializedName("about")
-    @Expose
-    public String about = "";
+  @SerializedName("profile_image")
+  @Expose
+  public String profileImage = "";
+  @SerializedName("name")
+  @Expose
+  public String name = "";
+  @SerializedName("location")
+  public String location = "";
+  @Expose
+  @SerializedName("cover_image")
+  public String cover_image = "";
+  @Expose
+  @SerializedName("website")
+  public String website = "";
+  @SerializedName("about")
+  @Expose
+  public String about = "";
 
-    public Profile(String profileImage, String name, String location, String website, String about, String cover_image) {
-        this.profileImage = profileImage;
-        this.name = name;
-        this.location = location;
-        this.website = website;
-        this.cover_image = cover_image;
-        this.about = about;
-    }
+  public Profile(String profileImage, String name, String location, String website, String about, String cover_image) {
+    this.profileImage = profileImage;
+    this.name = name;
+    this.location = location;
+    this.website = website;
+    this.cover_image = cover_image;
+    this.about = about;
+  }
 
-    public String getCover_image() {
-        return cover_image;
-    }
+  public static String getDefaultProfileAsJson() {
+    String json = "{\"about\":\"about\",\"location\":\"location\",\"name\":\"name\",\"profile_image\":\"https://user-images.githubusercontent.com/10809719/38206885-b36c8a66-36c9-11e8-9c7a-3bba603b4994.png\",\"website\":\"website\",\"cover_image\":\"cover_image_url\"}";
+    return json;
+  }
 
-    public String getProfileImage() {
-        return profileImage;
-    }
+  public String getCover_image() {
+    return cover_image;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getProfileImage() {
+    return profileImage;
+  }
 
-    public String getLocation() {
-        return location;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public String getWebsite() {
-        return website;
-    }
+  public String getLocation() {
+    return location;
+  }
 
-    public String getAbout() {
-        return about;
-    }
+  public String getWebsite() {
+    return website;
+  }
 
-    public static String getDefaultProfileAsJson() {
-        String json = "{\"about\":\"about\",\"location\":\"location\",\"name\":\"name\",\"profile_image\":\"https://user-images.githubusercontent.com/10809719/38206885-b36c8a66-36c9-11e8-9c7a-3bba603b4994.png\",\"website\":\"website\",\"cover_image\":\"cover_image_url\"}";
-        return json;
-    }
+  public String getAbout() {
+    return about;
+  }
 
 
 }

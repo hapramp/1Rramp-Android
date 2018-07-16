@@ -7,6 +7,7 @@ import com.hapramp.datamodels.response.CommentCreateResponse;
  */
 
 public interface CommentCreateCallback {
-    void onCommentCreated(CommentCreateResponse response);
-    void onCommentCreateError();
+  void onCommentCreated(CommentCreateResponse response);
+
+  void onCommentCreateError();
 }

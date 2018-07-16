@@ -1,35 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableRow xmlns:android="http://schemas.android.com/apk/res/android" android:paddingTop="10dp" android:paddingBottom="10dp">
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingBottom="10dp"
+    android:paddingTop="10dp">
 
     <TextView
-        android:layout_column="1"
-        android:textColor="@color/Black87"
-        android:textSize="14sp"
         android:id="@+id/lblOrder"
+        android:layout_column="1"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="7dp"
-        android:text="•"/>
+        android:text="•"
+        android:textColor="@color/Black87"
+        android:textSize="14sp" />
 
     <com.hapramp.editor.Components.CustomEditText
-        android:layout_column="2"
         android:id="@+id/txtText"
-        android:layout_weight="1"
-        android:focusableInTouchMode="true"
         style="@style/WysiwygEditText"
-        android:text="ankit"
-        android:layout_marginBottom="8dp"
         android:layout_width="wrap_content"
-        android:textColor="@color/Black87"
-        android:background="@drawable/invisible_edit_text"/>
+        android:layout_column="2"
+        android:layout_marginBottom="8dp"
+        android:layout_weight="1"
+        android:background="@drawable/invisible_edit_text"
+        android:focusableInTouchMode="true"
+        android:text="ankit"
+        android:textColor="@color/Black87" />
 
     <TextView
-        android:layout_column="2"
         android:id="@+id/lblText"
-        android:layout_weight="1"
-        android:visibility="gone"
         style="@style/WysiwygEditText"
+        android:layout_width="wrap_content"
+        android:layout_column="2"
         android:layout_marginBottom="8dp"
+        android:layout_weight="1"
         android:textColor="@color/Black87"
-        android:layout_width="wrap_content"/>
+        android:visibility="gone" />
 
 </TableRow>

@@ -176,8 +176,8 @@
                         android:id="@+id/star_count"
                         android:layout_width="48dp"
                         android:layout_height="16dp"
-                        android:layout_marginStart="4dp"
                         android:layout_centerVertical="true"
+                        android:layout_marginStart="4dp"
                         android:layout_toEndOf="@+id/star_mock"
                         android:background="@drawable/community_mock_bg"
                         android:text="" />
@@ -211,12 +211,12 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_marginEnd="16dp"
-                        android:layout_alignParentEnd="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
+                        android:layout_marginEnd="16dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 

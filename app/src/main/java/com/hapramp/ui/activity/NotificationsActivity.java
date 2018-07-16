@@ -16,13 +16,13 @@ import android.widget.TextView;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
-import com.hapramp.push.NotificationPayloadModel;
-import com.hapramp.ui.adapters.NotificationsAdapter;
 import com.hapramp.api.DataServer;
+import com.hapramp.datamodels.response.NotificationResponse;
 import com.hapramp.interfaces.MarkallAsReadNotificationCallback;
 import com.hapramp.interfaces.NotificationCallback;
-import com.hapramp.datamodels.response.NotificationResponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.push.NotificationPayloadModel;
+import com.hapramp.ui.adapters.NotificationsAdapter;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ViewItemDecoration;
 
@@ -32,142 +32,142 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class NotificationsActivity extends AppCompatActivity implements NotificationCallback, MarkallAsReadNotificationCallback {
-    @BindView(R.id.backBtn)
-    TextView backBtn;
-    @BindView(R.id.notificationsMsg)
-    TextView notificationsMsg;
-    @BindView(R.id.notificationRV)
-    RecyclerView notificationRV;
-    @BindView(R.id.toolbar_drop_shadow)
-    FrameLayout toolbarDropShadow;
-    @BindView(R.id.notificationProgress)
-    ProgressBar notificationProgress;
-    @BindView(R.id.markallRead)
-    TextView markAllReadButton;
-    @BindView(R.id.toolbar_container)
-    RelativeLayout toolbarContainer;
-    private Typeface materialTypeface;
-    private NotificationsAdapter notificationsAdapter;
-    private int start = 1;
-    private int limit = 20;
-    private ViewItemDecoration viewItemDecoration;
+  @BindView(R.id.backBtn)
+  TextView backBtn;
+  @BindView(R.id.notificationsMsg)
+  TextView notificationsMsg;
+  @BindView(R.id.notificationRV)
+  RecyclerView notificationRV;
+  @BindView(R.id.toolbar_drop_shadow)
+  FrameLayout toolbarDropShadow;
+  @BindView(R.id.notificationProgress)
+  ProgressBar notificationProgress;
+  @BindView(R.id.markallRead)
+  TextView markAllReadButton;
+  @BindView(R.id.toolbar_container)
+  RelativeLayout toolbarContainer;
+  private Typeface materialTypeface;
+  private NotificationsAdapter notificationsAdapter;
+  private int start = 1;
+  private int limit = 20;
+  private ViewItemDecoration viewItemDecoration;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notifications);
-        ButterKnife.bind(this);
-        init();
-        fetchNotification();
-        AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_NOTIFICATION,null);
-        AnalyticsUtil.logEvent(AnalyticsParams.EVENT_OPENS_NOTIFICATION);
-    }
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_notifications);
+    ButterKnife.bind(this);
+    init();
+    fetchNotification();
+    AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_NOTIFICATION, null);
+    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_OPENS_NOTIFICATION);
+  }
 
-    @Override
-    public void onBackPressed() {
+  private void init() {
+
+    materialTypeface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
+    backBtn.setTypeface(materialTypeface);
+    backBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
         close();
-    }
+      }
+    });
+    notificationsAdapter = new NotificationsAdapter(this);
+    notificationRV.setLayoutManager(new LinearLayoutManager(this));
+    notificationRV.setAdapter(notificationsAdapter);
+    Drawable drawable = ContextCompat.getDrawable(this, R.drawable.comment_item_divider_view);
+    viewItemDecoration = new ViewItemDecoration(drawable);
+    viewItemDecoration.setWantTopOffset(false, 0);
+    notificationRV.addItemDecoration(viewItemDecoration);
 
-    private void init() {
+    // reset notification if any
+    HaprampPreferenceManager.getInstance().setUnreadNotification(0);
 
-        materialTypeface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
-        backBtn.setTypeface(materialTypeface);
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                close();
-            }
+
+  }
+
+  private void fetchNotification() {
+
+    DataServer.getNotifications(start, limit, this);
+
+  }
+
+  private void close() {
+    finish();
+    overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit);
+  }
+
+  @Override
+  public void onBackPressed() {
+    close();
+  }
+
+  @Override
+  public void onNotificationsFetched(NotificationResponse notificationResponse) {
+    bindNotifications(notificationResponse.results);
+    hideProgress();
+  }
+
+  private void bindNotifications(List<NotificationPayloadModel> list) {
+
+    if (list.size() == 0) {
+      notificationsMsg.setVisibility(View.VISIBLE);
+    } else {
+      notificationsMsg.setVisibility(View.GONE);
+      notificationsAdapter.setNotifications(list);
+
+      int unread_count = 0;
+      for (NotificationPayloadModel n : list) {
+        unread_count += n.getIsRead() ? 0 : 1;
+      }
+      if (unread_count > 0) {
+
+        markAllReadButton.setVisibility(View.VISIBLE);
+
+        markAllReadButton.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            markAllRead();
+          }
         });
-        notificationsAdapter = new NotificationsAdapter(this);
-        notificationRV.setLayoutManager(new LinearLayoutManager(this));
-        notificationRV.setAdapter(notificationsAdapter);
-        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.comment_item_divider_view);
-        viewItemDecoration = new ViewItemDecoration(drawable);
-        viewItemDecoration.setWantTopOffset(false,0);
-        notificationRV.addItemDecoration(viewItemDecoration);
 
-        // reset notification if any
-        HaprampPreferenceManager.getInstance().setUnreadNotification(0);
-
-
-    }
-
-    private void bindNotifications(List<NotificationPayloadModel> list) {
-
-        if (list.size() == 0) {
-            notificationsMsg.setVisibility(View.VISIBLE);
-        } else {
-            notificationsMsg.setVisibility(View.GONE);
-            notificationsAdapter.setNotifications(list);
-
-            int unread_count = 0;
-            for (NotificationPayloadModel n :list) {
-                unread_count+= n.getIsRead()?0:1;
-            }
-            if(unread_count>0){
-
-                markAllReadButton.setVisibility(View.VISIBLE);
-
-                markAllReadButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        markAllRead();
-                    }
-                });
-
-            }else {
-                markAllReadButton.setVisibility(View.GONE);
-            }
-
-        }
-
-    }
-
-    private void markAllRead() {
-        DataServer.markAllNotificationAsRead(this);
-    }
-
-    private void hideProgress() {
-
-        if (notificationProgress != null) {
-            notificationProgress.setVisibility(View.GONE);
-        }
-
-    }
-
-    private void fetchNotification() {
-
-        DataServer.getNotifications(start, limit, this);
-
-    }
-
-    @Override
-    public void onNotificationsFetched(NotificationResponse notificationResponse) {
-        bindNotifications(notificationResponse.results);
-        hideProgress();
-    }
-
-    @Override
-    public void onNotificationFetchError() {
-        hideProgress();
-    }
-
-    @Override
-    public void markedAllRead() {
-
-        notificationsAdapter.markAllRead();
+      } else {
         markAllReadButton.setVisibility(View.GONE);
+      }
 
     }
 
-    @Override
-    public void markAllReadFailed() {
+  }
 
+  private void hideProgress() {
+
+    if (notificationProgress != null) {
+      notificationProgress.setVisibility(View.GONE);
     }
 
-    private void close(){
-        finish();
-        overridePendingTransition(R.anim.slide_right_enter,R.anim.slide_right_exit);
-    }
+  }
+
+  private void markAllRead() {
+    DataServer.markAllNotificationAsRead(this);
+  }
+
+  @Override
+  public void onNotificationFetchError() {
+    hideProgress();
+  }
+
+  @Override
+  public void markedAllRead() {
+
+    notificationsAdapter.markAllRead();
+    markAllReadButton.setVisibility(View.GONE);
+
+  }
+
+  @Override
+  public void markAllReadFailed() {
+
+  }
 
 }

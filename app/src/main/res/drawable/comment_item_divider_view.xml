@@ -4,22 +4,15 @@
     <item>
         <shape android:shape="rectangle">
 
-            <size
-                android:width="400dp"
-                android:height="0.5dp" />
-            <gradient
-                android:angle="90"
-                android:endColor="@color/Black12"
-                android:startColor="#00ffffff" />
+            <size android:width="400dp" android:height="0.5dp" />
+            <gradient android:angle="90" android:endColor="@color/Black12" android:startColor="#00ffffff" />
         </shape>
 
     </item>
 
     <item android:top="1dp">
         <shape android:shape="rectangle">
-            <size
-                android:width="10dp"
-                android:height="4dp" />
+            <size android:width="10dp" android:height="4dp" />
             <solid android:color="#8eececec" />
         </shape>
     </item>

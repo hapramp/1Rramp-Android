@@ -5,26 +5,26 @@ import com.google.gson.annotations.SerializedName;
 
 public class SteemUser {
 
-    @SerializedName("user")
-    @Expose
-    public User user;
-    @SerializedName("status")
-    @Expose
-    public String status;
+  @SerializedName("user")
+  @Expose
+  public User user;
+  @SerializedName("status")
+  @Expose
+  public String status;
 
-    public User getUser() {
-        return user;
-    }
+  public User getUser() {
+    return user;
+  }
 
-    public String getStatus() {
-        return status;
-    }
+  public String getStatus() {
+    return status;
+  }
 
-    @Override
-    public String toString() {
-        return "SteemUser{" +
-          "user=" + user +
-          ", status='" + status + '\'' +
-          '}';
-    }
+  @Override
+  public String toString() {
+    return "SteemUser{" +
+      "user=" + user +
+      ", status='" + status + '\'' +
+      '}';
+  }
 }

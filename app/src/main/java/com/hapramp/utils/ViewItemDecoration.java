@@ -13,72 +13,72 @@ import android.view.View;
 public class ViewItemDecoration extends RecyclerView.ItemDecoration {
 
 
-    private Drawable mDivider;
-    private boolean wantTopOffset = true;
-    private int topOffset;
+  private Drawable mDivider;
+  private boolean wantTopOffset = true;
+  private int topOffset;
 
-    public ViewItemDecoration(Drawable drawable) {
-        this.mDivider = drawable;
-    }
+  public ViewItemDecoration(Drawable drawable) {
+    this.mDivider = drawable;
+  }
 
-    public void setWantTopOffset(boolean want , int topOffset){
-        this.topOffset = topOffset;
-        this.wantTopOffset = want;
-    }
+  public void setWantTopOffset(boolean want, int topOffset) {
+    this.topOffset = topOffset;
+    this.wantTopOffset = want;
+  }
 
-    @Override
-    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+  @Override
+  public void onDraw(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
 
-        if (parent.getChildAdapterPosition(view) == 0 && wantTopOffset) {
+    int dividerLeft = parent.getPaddingLeft();
+    int dividerRight = parent.getWidth() - parent.getPaddingRight();
 
-            outRect.top = PixelUtils.dpToPx(104);
-            outRect.bottom = mDivider.getIntrinsicHeight();
+    int childCount = parent.getChildCount();
 
-        }else{
-            outRect.bottom = mDivider.getIntrinsicHeight();
-        }
+    for (int i = 0; i < childCount - 1; i++) {
 
+      View child = parent.getChildAt(i);
 
-        if(isLastChild(view,parent) && parent.getAdapter().getItemCount()>1){
-            outRect.bottom = PixelUtils.dpToPx(56);
-        }
+      RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
 
-       // outRect.top = mDivider.getIntrinsicHeight();
+      int dividerTop = child.getBottom() + params.bottomMargin;
+      int dividerBottom = dividerTop + mDivider.getIntrinsicHeight();
 
-    }
-
-    @Override
-    public void onDraw(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
-
-        int dividerLeft = parent.getPaddingLeft();
-        int dividerRight = parent.getWidth() - parent.getPaddingRight();
-
-        int childCount = parent.getChildCount();
-
-        for (int i = 0; i < childCount - 1; i++) {
-
-            View child = parent.getChildAt(i);
-
-            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
-
-            int dividerTop = child.getBottom() + params.bottomMargin;
-            int dividerBottom = dividerTop + mDivider.getIntrinsicHeight();
-
-            mDivider.setBounds(dividerLeft, dividerTop, dividerRight, dividerBottom);
-            mDivider.draw(canvas);
-
-        }
+      mDivider.setBounds(dividerLeft, dividerTop, dividerRight, dividerBottom);
+      mDivider.draw(canvas);
 
     }
 
-    private boolean isLastChild(View v, RecyclerView parent) {
+  }
 
+  @Override
+  public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
 
-        return (parent.getAdapter().getItemCount() - 1) == parent.getChildAdapterPosition(v);
+    if (parent.getChildAdapterPosition(view) == 0 && wantTopOffset) {
 
+      outRect.top = PixelUtils.dpToPx(104);
+      outRect.bottom = mDivider.getIntrinsicHeight();
+
+    } else {
+      outRect.bottom = mDivider.getIntrinsicHeight();
     }
 
-    public void setTopOffset(int topOffset) {
 
+    if (isLastChild(view, parent) && parent.getAdapter().getItemCount() > 1) {
+      outRect.bottom = PixelUtils.dpToPx(56);
     }
+
+    // outRect.top = mDivider.getIntrinsicHeight();
+
+  }
+
+  private boolean isLastChild(View v, RecyclerView parent) {
+
+
+    return (parent.getAdapter().getItemCount() - 1) == parent.getChildAdapterPosition(v);
+
+  }
+
+  public void setTopOffset(int topOffset) {
+
+  }
 }

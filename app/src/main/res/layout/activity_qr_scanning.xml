@@ -58,14 +58,14 @@
     </RelativeLayout>
 
     <TextView
-        android:padding="8dp"
-        android:textStyle="italic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:padding="8dp"
         android:text="Blazing Fast Scan of Posting Key"
         android:textColor="@color/white"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:textStyle="italic" />
 
 </RelativeLayout>

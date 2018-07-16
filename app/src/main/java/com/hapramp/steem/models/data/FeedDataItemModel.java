@@ -3,10 +3,8 @@ package com.hapramp.steem.models.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.firebase.storage.StorageException;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.hapramp.utils.StringUtils;
 
 /**
  * Created by Ankit on 4/9/2018.
@@ -15,114 +13,112 @@ import com.hapramp.utils.StringUtils;
 
 public class FeedDataItemModel implements Parcelable {
 
-    @Expose
-    @SerializedName("type")
-    public String type;
-    @Expose
-    @SerializedName("content")
-    public String content;
-    @Expose
-    @SerializedName("height")
-    public String height;
-    @Expose
-    @SerializedName("width")
-    public String width;
-    @Expose
-    @SerializedName("caption")
-    public String caption;
-
-    public FeedDataItemModel(String content, String type) {
-        this.type = type;
-        this.content = content;
-    }
-
-    protected FeedDataItemModel(Parcel in) {
-
-        type = in.readString();
-        content = in.readString();
-        height = in.readString();
-        width = in.readString();
-        caption = in.readString();
-
+  @SuppressWarnings("unused")
+  public static final Parcelable.Creator<FeedDataItemModel> CREATOR = new Parcelable.Creator<FeedDataItemModel>() {
+    @Override
+    public FeedDataItemModel createFromParcel(Parcel in) {
+      return new FeedDataItemModel(in);
     }
 
     @Override
-    public int describeContents() {
-        return 0;
+    public FeedDataItemModel[] newArray(int size) {
+      return new FeedDataItemModel[size];
     }
+  };
+  @Expose
+  @SerializedName("type")
+  public String type;
+  @Expose
+  @SerializedName("content")
+  public String content;
+  @Expose
+  @SerializedName("height")
+  public String height;
+  @Expose
+  @SerializedName("width")
+  public String width;
+  @Expose
+  @SerializedName("caption")
+  public String caption;
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(type);
-        dest.writeString(content);
-        dest.writeString(height);
-        dest.writeString(width);
-        dest.writeString(caption);
-    }
+  public FeedDataItemModel(String content, String type) {
+    this.type = type;
+    this.content = content;
+  }
 
-    public void setHeight(String height) {
-        this.height = height;
-    }
+  protected FeedDataItemModel(Parcel in) {
 
-    public void setWidth(String width) {
-        this.width = width;
-    }
+    type = in.readString();
+    content = in.readString();
+    height = in.readString();
+    width = in.readString();
+    caption = in.readString();
 
-    public void setCaption(String caption) {
-        this.caption = caption;
-    }
+  }
 
-    public String getType() {
-        return type;
-    }
+  @Override
+  public int describeContents() {
+    return 0;
+  }
 
-    public String getHeight() {
-        return height;
-    }
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
+    dest.writeString(type);
+    dest.writeString(content);
+    dest.writeString(height);
+    dest.writeString(width);
+    dest.writeString(caption);
+  }
 
-    public String getWidth() {
-        return width;
-    }
+  public String getType() {
+    return type;
+  }
 
-    public String getCaption() {
-        return caption;
-    }
+  public void setType(String type) {
+    this.type = type;
+  }
 
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<FeedDataItemModel> CREATOR = new Parcelable.Creator<FeedDataItemModel>() {
-        @Override
-        public FeedDataItemModel createFromParcel(Parcel in) {
-            return new FeedDataItemModel(in);
-        }
+  public String getHeight() {
+    return height;
+  }
 
-        @Override
-        public FeedDataItemModel[] newArray(int size) {
-            return new FeedDataItemModel[size];
-        }
-    };
+  public void setHeight(String height) {
+    this.height = height;
+  }
 
+  public String getWidth() {
+    return width;
+  }
 
-    public String getContentType() {
-        return type;
-    }
+  public void setWidth(String width) {
+    this.width = width;
+  }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+  public String getCaption() {
+    return caption;
+  }
 
-    public String getContent() {
-        return content;
-    }
+  public void setCaption(String caption) {
+    this.caption = caption;
+  }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
+  public String getContentType() {
+    return type;
+  }
 
-    @Override
-    public String toString() {
-        return "FeedDataItemModel{" +
-                "type='" + type + '\'' +
-                ", content='" + content + '\'' +
-                '}';
-    }
+  public String getContent() {
+    return content;
+  }
+
+  public void setContent(String content) {
+    this.content = content;
+  }
+
+  @Override
+  public String toString() {
+    return "FeedDataItemModel{" +
+      "type='" + type + '\'' +
+      ", content='" + content + '\'' +
+      '}';
+  }
 }

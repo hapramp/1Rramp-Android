@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:animateLayoutChanges="true"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
 
 
     <RelativeLayout
         android:id="@+id/toolbar_container"
-        android:background="#ffffff"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize">
+        android:layout_height="?actionBarSize"
+        android:background="#ffffff">
 
         <TextView
             android:id="@+id/backBtn"
-            android:clickable="true"
-            android:focusable="true"
             android:layout_width="?actionBarSize"
             android:layout_height="?actionBarSize"
             android:background="?selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
             android:gravity="center"
             android:text=""
             android:textSize="24sp" />
 
         <TextView
-           android:layout_toEndOf="@+id/backBtn"
-            android:background="?selectableItemBackgroundBorderless"
             android:layout_width="wrap_content"
             android:layout_height="?actionBarSize"
+            android:layout_toEndOf="@+id/backBtn"
+            android:background="?selectableItemBackgroundBorderless"
             android:gravity="center"
             android:text="Comments"
             android:textColor="@color/Black54"
@@ -34,48 +35,47 @@
     </RelativeLayout>
 
     <TextView
-        android:textSize="16sp"
-        android:visibility="gone"
         android:id="@+id/noCommentsCaption"
-        android:text="No Comments"
-        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="No Comments"
+        android:textSize="16sp"
+        android:visibility="gone" />
 
     <android.support.v7.widget.RecyclerView
-        android:layout_below="@+id/toolbar_container"
         android:id="@+id/commentsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="56dp"
-        />
+        android:layout_below="@+id/toolbar_container"
+        android:paddingBottom="56dp" />
 
     <ProgressBar
         android:id="@+id/commentLoadingProgressBar"
-        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
 
     <include
-        layout="@layout/comment_editor_view"
-       android:layout_alignParentBottom="true"
         android:id="@+id/commentInputContainer"
-        android:background="#ffffff"
+        layout="@layout/comment_editor_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#ffffff" />
 
     <ImageView
-        android:layout_above="@+id/commentInputContainer"
         android:id="@+id/shadow"
         android:layout_width="match_parent"
         android:layout_height="2dp"
+        android:layout_above="@+id/commentInputContainer"
         android:scaleType="centerCrop"
         android:src="@drawable/bottom_bar_shadow" />
 
     <ImageView
-        android:layout_below="@+id/toolbar_container"
         android:layout_width="match_parent"
-        android:src="@drawable/toolbar_shadow"
-        android:layout_height="3dp" />
+        android:layout_height="3dp"
+        android:layout_below="@+id/toolbar_container"
+        android:src="@drawable/toolbar_shadow" />
 
 </RelativeLayout>

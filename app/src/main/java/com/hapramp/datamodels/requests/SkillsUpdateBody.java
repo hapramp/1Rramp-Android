@@ -7,24 +7,24 @@ import java.util.Arrays;
  */
 
 public class SkillsUpdateBody {
-    Integer[] skills;
+  Integer[] skills;
 
-    public SkillsUpdateBody(Integer[] skills) {
-        this.skills = skills;
-    }
+  public SkillsUpdateBody(Integer[] skills) {
+    this.skills = skills;
+  }
 
-    public Integer[] getSkills() {
-        return skills;
-    }
+  public Integer[] getSkills() {
+    return skills;
+  }
 
-    public void setSkills(Integer[] skills) {
-        this.skills = skills;
-    }
+  public void setSkills(Integer[] skills) {
+    this.skills = skills;
+  }
 
-    @Override
-    public String toString() {
-        return "SkillsUpdateBody{" +
-                "skills=" + Arrays.toString(skills) +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "SkillsUpdateBody{" +
+      "skills=" + Arrays.toString(skills) +
+      '}';
+  }
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@color/white"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <RelativeLayout
         android:id="@+id/post_header_container"
@@ -76,23 +76,23 @@
 
                 <ImageView
                     android:id="@+id/image_selector"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:clickable="true"
-                    android:padding="16dp"
                     android:layout_width="96dp"
                     android:layout_height="96dp"
                     android:layout_centerInParent="true"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:padding="16dp"
                     android:src="@drawable/post_image_insert" />
 
                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_below="@+id/image_selector"
                     android:layout_centerHorizontal="true"
-                    android:textColor="@color/Black54"
-                    android:text="Select Image"
                     android:padding="8dp"
-                    android:textSize="16sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:text="Select Image"
+                    android:textColor="@color/Black54"
+                    android:textSize="16sp" />
 
             </RelativeLayout>
 
@@ -111,23 +111,23 @@
 
                 <ImageView
                     android:id="@+id/video_selector"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:padding="16dp"
-                    android:clickable="true"
                     android:layout_width="96dp"
                     android:layout_height="96dp"
                     android:layout_centerInParent="true"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:padding="16dp"
                     android:src="@drawable/post_youtube_insert" />
 
                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_below="@+id/video_selector"
                     android:layout_centerHorizontal="true"
-                    android:textColor="@color/Black54"
-                    android:text="Select Youtube Video"
                     android:padding="8dp"
-                    android:textSize="16sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:text="Select Youtube Video"
+                    android:textColor="@color/Black54"
+                    android:textSize="16sp" />
 
             </RelativeLayout>
 
@@ -186,11 +186,11 @@
             android:background="@drawable/post_editor_bg"
             android:gravity="top"
             android:hint="Write something ..."
+            android:lineSpacingExtra="2dp"
             android:maxLength="140"
             android:minHeight="100dp"
             android:padding="16dp"
             android:textColor="@color/Black54"
-            android:lineSpacingExtra="2dp"
             android:textColorHint="@color/Black38"
             android:textSize="14sp" />
 
@@ -209,16 +209,16 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="SELECT COMMUNITY"
-                android:textStyle="bold"
                 android:textColor="@color/colorAccent"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <com.hapramp.views.post.PostCategoryView
                 android:id="@+id/inline_postCategoryView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:layout_below="@+id/inline_category_caption" />
+                android:layout_below="@+id/inline_category_caption"
+                android:padding="8dp" />
 
         </RelativeLayout>
 

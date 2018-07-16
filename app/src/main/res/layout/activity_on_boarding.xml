@@ -4,61 +4,61 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
     android:animateLayoutChanges="true"
+    android:background="#ffffff"
     tools:context=".ui.activity.OnBoardingActivity">
 
-   <android.support.v4.view.ViewPager
-       android:id="@+id/viewpager"
-       android:layout_width="match_parent"
-       android:layout_above="@+id/back"
-       android:layout_height="match_parent"/>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/back" />
 
     <xute.progressdot.ProgressDotView
-        android:layout_centerHorizontal="true"
         android:id="@+id/dotsView"
-        app:switchTimeInMillis="200"
-        app:smallDotRadius="1dp"
-        app:largeDotRadius="2dp"
-        app:spaceBetweenDots="2dp"
-        app:dotCount="3"
-        android:layout_margin="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/back"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="16dp"
         app:activeDotColor="@color/colorPrimary"
+        app:dotCount="3"
         app:inActiveDotColor="#d8d8d8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        app:largeDotRadius="2dp"
+        app:smallDotRadius="1dp"
+        app:spaceBetweenDots="2dp"
+        app:switchTimeInMillis="200" />
 
     <TextView
-        android:enabled="false"
-        android:clickable="true"
-        android:background="?selectableItemBackgroundBorderless"
         android:id="@+id/back"
-        android:textColor="@color/Black38"
-        android:layout_alignParentBottom="true"
-        android:textSize="18sp"
-        android:text="BACK"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:paddingStart="24dp"
-        android:paddingEnd="24dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="?selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:enabled="false"
+        android:paddingBottom="16dp"
+        android:paddingEnd="24dp"
+        android:paddingStart="24dp"
+        android:paddingTop="16dp"
+        android:text="BACK"
+        android:textColor="@color/Black38"
+        android:textSize="18sp" />
 
     <TextView
-        android:clickable="true"
-        android:background="?selectableItemBackgroundBorderless"
         android:id="@+id/next"
-        android:textColor="@color/colorPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:textSize="18sp"
-        android:text="NEXT"
-        android:paddingTop="16dp"
+        android:background="?selectableItemBackgroundBorderless"
+        android:clickable="true"
         android:paddingBottom="16dp"
-        android:paddingStart="24dp"
         android:paddingEnd="24dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:paddingStart="24dp"
+        android:paddingTop="16dp"
+        android:text="NEXT"
+        android:textColor="@color/colorPrimary"
+        android:textSize="18sp" />
 
 </RelativeLayout>

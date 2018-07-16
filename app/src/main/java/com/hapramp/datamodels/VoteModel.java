@@ -9,24 +9,24 @@ import com.google.gson.annotations.SerializedName;
 
 public class VoteModel {
 
-    @Expose
-    @SerializedName("username")
-    public String usernam;
+  @Expose
+  @SerializedName("username")
+  public String usernam;
 
-    @Expose
-    @SerializedName("vote")
-    public int vote;
+  @Expose
+  @SerializedName("vote")
+  public int vote;
 
-    public VoteModel(String usernam, int vote) {
-        this.usernam = usernam;
-        this.vote = vote;
-    }
+  public VoteModel(String usernam, int vote) {
+    this.usernam = usernam;
+    this.vote = vote;
+  }
 
-    public String getUsernam() {
-        return usernam;
-    }
+  public String getUsernam() {
+    return usernam;
+  }
 
-    public int getVote() {
-        return vote;
-    }
+  public int getVote() {
+    return vote;
+  }
 }

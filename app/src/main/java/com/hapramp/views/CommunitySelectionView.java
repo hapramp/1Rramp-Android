@@ -23,91 +23,91 @@ import butterknife.ButterKnife;
 
 public class CommunitySelectionView extends FrameLayout {
 
-    @BindView(R.id.viewWrapper)
-    WrapViewGroup viewWrapper;
+  @BindView(R.id.viewWrapper)
+  WrapViewGroup viewWrapper;
 
-    private Context mContext;
-    private ViewGroup parentView;
-    private ArrayList<Integer> selectedCommunityIds;
-    private List<CommunityModel> mCommunityList;
+  private Context mContext;
+  private ViewGroup parentView;
+  private ArrayList<Integer> selectedCommunityIds;
+  private List<CommunityModel> mCommunityList;
 
-    public CommunitySelectionView(@NonNull Context context) {
-        super(context);
-        init(context);
-    }
+  public CommunitySelectionView(@NonNull Context context) {
+    super(context);
+    init(context);
+  }
 
-    public CommunitySelectionView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
+  private void init(Context context) {
 
-    public CommunitySelectionView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context);
-    }
+    this.mContext = context;
+    View view = LayoutInflater.from(mContext).inflate(R.layout.community_view_container, this);
+    parentView = view.findViewById(R.id.viewWrapper);
+    selectedCommunityIds = new ArrayList<>();
+    ButterKnife.bind(this, view);
 
-    private void init(Context context) {
+  }
 
-        this.mContext = context;
-        View view = LayoutInflater.from(mContext).inflate(R.layout.community_view_container, this);
-        parentView = view.findViewById(R.id.viewWrapper);
-        selectedCommunityIds = new ArrayList<>();
-        ButterKnife.bind(this,view);
+  public CommunitySelectionView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
+    init(context);
+  }
 
-    }
+  public CommunitySelectionView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init(context);
+  }
 
-    public void setCommunityList(List<CommunityModel> communityList) {
+  public void setCommunityList(List<CommunityModel> communityList) {
 
-        this.mCommunityList = communityList;
-        addViews();
+    this.mCommunityList = communityList;
+    addViews();
 
-    }
+  }
 
-    private void addViews() {
+  private void addViews() {
 
-        for (int i = 0; i < mCommunityList.size(); i++) {
-    //        Log.d("View","Addding "+mCommunityList.get(i).getmName());
+    for (int i = 0; i < mCommunityList.size(); i++) {
+      //        Log.d("View","Addding "+mCommunityList.get(i).getmName());
 
-            final CommunityItemView view = new CommunityItemView(mContext);
-           // view.setCommunityItemTitle(String.valueOf(mCommunityList.get(i).getmName()));
-            view.setCommunityDetails(mCommunityList.get(i));
-            // set selection
-            view.setSelection((selectedCommunityIds.indexOf(mCommunityList.get(i).getmId()) > -1));
+      final CommunityItemView view = new CommunityItemView(mContext);
+      // view.setCommunityItemTitle(String.valueOf(mCommunityList.get(i).getmName()));
+      view.setCommunityDetails(mCommunityList.get(i));
+      // set selection
+      view.setSelection((selectedCommunityIds.indexOf(mCommunityList.get(i).getmId()) > -1));
 
-            view.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // try to get the index of current clicked view in selection list, if its index >-1 then it is already selected
-                    int index = selectedCommunityIds.indexOf(view.getCommunityId());
-                    if (index == -1) {
-                        // select it
-                        view.setSelection(true);
+      view.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          // try to get the index of current clicked view in selection list, if its index >-1 then it is already selected
+          int index = selectedCommunityIds.indexOf(view.getCommunityId());
+          if (index == -1) {
+            // select it
+            view.setSelection(true);
 
-                        selectedCommunityIds.add(view.getCommunityId());
+            selectedCommunityIds.add(view.getCommunityId());
 
-                    } else {
-                        // de-select it
-                        if (selectedCommunityIds.size() < 2) {
-                            // warn for selecting atleast one
-                            Toast.makeText(mContext, "Atleast One Skill Should be There", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        view.setSelection(false);
-                        selectedCommunityIds.remove(index);
+          } else {
+            // de-select it
+            if (selectedCommunityIds.size() < 2) {
+              // warn for selecting atleast one
+              Toast.makeText(mContext, "Atleast One Skill Should be There", Toast.LENGTH_LONG).show();
+              return;
+            }
+            view.setSelection(false);
+            selectedCommunityIds.remove(index);
 
-                    }
-                }
-            });
-
-            parentView.addView(view, i,
-                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
+          }
         }
+      });
+
+      parentView.addView(view, i,
+        new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
     }
 
-    public List<Integer> getSelectionList() {
-        return selectedCommunityIds;
-    }
+  }
+
+  public List<Integer> getSelectionList() {
+    return selectedCommunityIds;
+  }
 
 }

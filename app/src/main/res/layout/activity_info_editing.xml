@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,54 +13,54 @@
         android:background="#ffffff">
 
         <TextView
-            android:textColor="@color/Black87"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
             android:text="Enter Your Bio"
+            android:textColor="@color/Black87"
             android:textSize="18sp" />
 
     </RelativeLayout>
 
     <EditText
+        android:id="@+id/bioEt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/okBtn"
+        android:layout_below="@+id/toolbar_container"
         android:layout_margin="8dp"
-        android:hint="Type Here..."
-        android:padding="8dp"
         android:background="@drawable/blank_input_bg"
         android:gravity="top"
-        android:layout_below="@+id/toolbar_container"
-        android:id="@+id/bioEt"
-        android:layout_above="@+id/okBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:hint="Type Here..."
+        android:padding="8dp" />
 
     <TextView
         android:id="@+id/okBtn"
-        android:layout_margin="8dp"
-        android:textColor="#ffffff"
-        android:textSize="18sp"
-        android:background="@drawable/filled_btn_bg"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:text="OK"
-        android:padding="8dp"
-        android:gravity="center"
         android:layout_width="144dp"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="8dp"
+        android:background="@drawable/filled_btn_bg"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="OK"
+        android:textColor="#ffffff"
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/cancelBtn"
-        android:layout_margin="8dp"
-        android:textColor="@color/colorPrimary"
-        android:textSize="18sp"
-        android:background="@drawable/light_btn_bg"
-        android:layout_alignParentBottom="true"
-        android:text="CANCEL"
-        android:padding="8dp"
-        android:gravity="center"
         android:layout_width="144dp"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="8dp"
+        android:background="@drawable/light_btn_bg"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="CANCEL"
+        android:textColor="@color/colorPrimary"
+        android:textSize="18sp" />
 
 
 </RelativeLayout>
