@@ -8,10 +8,10 @@ import android.view.View;
  * Created by Ankit on 1/14/2018.
  */
 
-public class SpaceDecorator  extends RecyclerView.ItemDecoration  {
+public class SpaceDecorator extends RecyclerView.ItemDecoration {
 
-    @Override
-    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+  @Override
+  public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
 
 //        // we can assign space according to requirement
 //
@@ -32,16 +32,16 @@ public class SpaceDecorator  extends RecyclerView.ItemDecoration  {
 //        } else {
 //            outRect.bottom = space;
 //        }
-        if(isLastChild(view,parent) && parent.getAdapter().getItemCount()>1){
-            outRect.bottom = PixelUtils.dpToPx(56);
-        }
-
+    if (isLastChild(view, parent) && parent.getAdapter().getItemCount() > 1) {
+      outRect.bottom = PixelUtils.dpToPx(56);
     }
 
-    private boolean isLastChild(View v, RecyclerView parent) {
+  }
+
+  private boolean isLastChild(View v, RecyclerView parent) {
 
 
-        return (parent.getAdapter().getItemCount() - 1) == parent.getChildAdapterPosition(v);
+    return (parent.getAdapter().getItemCount() - 1) == parent.getChildAdapterPosition(v);
 
-    }
+  }
 }

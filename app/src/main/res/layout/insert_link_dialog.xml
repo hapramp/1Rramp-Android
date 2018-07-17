@@ -1,62 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:paddingStart="16dp"
-    android:paddingTop="16dp"
-    android:paddingEnd="16dp"
+    android:layout_height="wrap_content"
     android:paddingBottom="12dp"
-    android:layout_height="wrap_content">
+    android:paddingEnd="16dp"
+    android:paddingStart="16dp"
+    android:paddingTop="16dp">
 
     <TextView
-        android:textColor="@color/Black87"
         android:id="@+id/link_lbl"
-        android:text="Add a Link"
-        android:textSize="16sp"
-        android:layout_marginBottom="4dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="Add a Link"
+        android:textColor="@color/Black87"
+        android:textSize="16sp" />
 
     <EditText
-        android:layout_below="@+id/link_lbl"
-        android:textSize="14sp"
-        android:hint="http://"
         android:id="@+id/link_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/link_lbl"
         android:layout_marginBottom="8dp"
         android:backgroundTint="@color/colorPrimary"
-        />
+        android:hint="http://"
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/cancelBtn"
-        android:layout_toStartOf="@+id/addLinkBtn"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:layout_below="@+id/link_input"
-        android:text="CANCEL"
-        android:textSize="12sp"
-        android:background="?selectableItemBackgroundBorderless"
-        android:layout_marginEnd="8dp"
-        android:textColor="@color/colorPrimary"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/link_input"
+        android:layout_marginEnd="8dp"
+        android:layout_toStartOf="@+id/addLinkBtn"
+        android:background="?selectableItemBackgroundBorderless"
+        android:paddingBottom="8dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp"
+        android:text="CANCEL"
+        android:textColor="@color/colorPrimary"
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/addLinkBtn"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:textSize="12sp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:layout_below="@+id/link_input"
-        android:layout_alignParentEnd="true"
-        android:text="ADD"
-        android:background="?selectableItemBackgroundBorderless"
-        android:textColor="@color/colorPrimary"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/link_input"
+        android:background="?selectableItemBackgroundBorderless"
+        android:paddingBottom="8dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp"
+        android:text="ADD"
+        android:textColor="@color/colorPrimary"
+        android:textSize="12sp" />
 
 </RelativeLayout>

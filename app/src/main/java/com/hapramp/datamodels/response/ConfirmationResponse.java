@@ -7,18 +7,18 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class ConfirmationResponse {
-    @SerializedName("status")
-    private String status;
+  @SerializedName("status")
+  private String status;
 
-    public ConfirmationResponse(String status) {
-        this.status = status;
-    }
+  public ConfirmationResponse(String status) {
+    this.status = status;
+  }
 
-    public String getStatus() {
-        return status;
-    }
+  public String getStatus() {
+    return status;
+  }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+  public void setStatus(String status) {
+    this.status = status;
+  }
 }

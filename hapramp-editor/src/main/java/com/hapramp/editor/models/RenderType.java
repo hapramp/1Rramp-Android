@@ -6,6 +6,6 @@ package com.hapramp.editor.models;
 
 
 public enum RenderType {
-    Renderer,
-    Editor
+  Renderer,
+  Editor
 }

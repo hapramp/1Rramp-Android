@@ -22,54 +22,54 @@ import butterknife.ButterKnife;
  */
 
 public class FeaturedImageView extends FrameLayout {
-    @BindView(R.id.image)
-    ImageView image;
-    @BindView(R.id.selection_tick)
-    TextView selectionTick;
-    private Context mContext;
-    private boolean isSelected;
+  @BindView(R.id.image)
+  ImageView image;
+  @BindView(R.id.selection_tick)
+  TextView selectionTick;
+  private Context mContext;
+  private boolean isSelected;
 
-    public FeaturedImageView(@NonNull Context context) {
+  public FeaturedImageView(@NonNull Context context) {
 
-        super(context);
-        init(context);
+    super(context);
+    init(context);
 
+  }
+
+  private void init(Context context) {
+
+    this.mContext = context;
+    View view = LayoutInflater.from(context).inflate(R.layout.featured_image_selector_item_view, this);
+    ButterKnife.bind(this, view);
+    selectionTick.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+  }
+
+  public FeaturedImageView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
+    init(context);
+
+  }
+
+  public FeaturedImageView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init(context);
+
+  }
+
+  public void setSelection(boolean isSelected) {
+
+    this.isSelected = isSelected;
+
+    if (isSelected) {
+      selectionTick.setVisibility(VISIBLE);
+    } else {
+      selectionTick.setVisibility(GONE);
     }
 
-    public FeaturedImageView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
+  }
 
-    }
-
-    public FeaturedImageView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context);
-
-    }
-
-    private void init(Context context) {
-
-        this.mContext = context;
-        View view = LayoutInflater.from(context).inflate(R.layout.featured_image_selector_item_view, this);
-        ButterKnife.bind(this, view);
-        selectionTick.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-    }
-
-    public void setSelection(boolean isSelected) {
-
-        this.isSelected = isSelected;
-
-        if (isSelected) {
-            selectionTick.setVisibility(VISIBLE);
-        } else {
-            selectionTick.setVisibility(GONE);
-        }
-
-    }
-
-    public void setImageSource(String url) {
-        ImageHandler.loadSmaller(mContext,image,url);
-    }
+  public void setImageSource(String url) {
+    ImageHandler.loadSmaller(mContext, image, url);
+  }
 
 }

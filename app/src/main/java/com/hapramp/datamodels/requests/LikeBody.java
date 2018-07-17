@@ -8,25 +8,25 @@ import com.google.gson.annotations.SerializedName;
 
 public class LikeBody {
 
-    @SerializedName("vote")
-    public int vote;
+  @SerializedName("vote")
+  public int vote;
 
-    public LikeBody(int vote) {
-        this.vote = vote;
-    }
+  public LikeBody(int vote) {
+    this.vote = vote;
+  }
 
-    public int getVote() {
-        return vote;
-    }
+  public int getVote() {
+    return vote;
+  }
 
-    public void setVote(int vote) {
-        this.vote = vote;
-    }
+  public void setVote(int vote) {
+    this.vote = vote;
+  }
 
-    @Override
-    public String toString() {
-        return "LikeBody{" +
-                "vote=" + vote +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "LikeBody{" +
+      "vote=" + vote +
+      '}';
+  }
 }

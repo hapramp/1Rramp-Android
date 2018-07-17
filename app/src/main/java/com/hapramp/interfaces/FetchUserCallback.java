@@ -7,8 +7,10 @@ import com.hapramp.datamodels.response.FetchUserResponse;
  */
 
 public interface FetchUserCallback {
-    void onUserFetched(FetchUserResponse userResponse);
-    void onUserFetchedError();
-    void onUserNotExists();
+  void onUserFetched(FetchUserResponse userResponse);
+
+  void onUserFetchedError();
+
+  void onUserNotExists();
 
 }

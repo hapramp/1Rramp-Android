@@ -8,66 +8,66 @@ import java.util.List;
 public interface ServiceWorkerCallback {
 
 
-    //=========================================
-    // CACHE CALLBACK
-    //=========================================
+  //=========================================
+  // CACHE CALLBACK
+  //=========================================
 
-    //process of loading from cache
-    void onLoadingFromCache();
+  //process of loading from cache
+  void onLoadingFromCache();
 
-    //failure in loading from cache
-    void onCacheLoadFailed();
+  //failure in loading from cache
+  void onCacheLoadFailed();
 
-    //no data in the cache
-    void onNoDataInCache();
+  //no data in the cache
+  void onNoDataInCache();
 
-    //cache data loaded
-    void onLoadedFromCache(ArrayList<Feed> cachedList, String lastAuthor, String lastPermlink);
-
-
-    //=========================================
-    // SERVER FETCH CALLBACK
-    //=========================================
-
-    //loading process, It shows the request to the service worker first time.
-    void onFetchingFromServer();
-
-    // fetched from server
-    void onFeedsFetched(ArrayList<Feed> body, String lastAuthor, String lastPermlink);
-
-    //something went wrong while fetching from server
-    void onFetchingFromServerFailed();
-
-    void onNoDataAvailable();
-
-    //=========================================
-    // REFRESHING CALLBACK
-    //=========================================
+  //cache data loaded
+  void onLoadedFromCache(ArrayList<Feed> cachedList, String lastAuthor, String lastPermlink);
 
 
-    //fetching fresh data from server.
-    void onRefreshing();
+  //=========================================
+  // SERVER FETCH CALLBACK
+  //=========================================
 
-    // data refreshed from server
-    void onRefreshed(List<Feed> refreshedList, String lastAuthor, String lastPermlink);
+  //loading process, It shows the request to the service worker first time.
+  void onFetchingFromServer();
 
-    //failed to refresh from server
-    void onRefreshFailed();
+  // fetched from server
+  void onFeedsFetched(ArrayList<Feed> body, String lastAuthor, String lastPermlink);
+
+  //something went wrong while fetching from server
+  void onFetchingFromServerFailed();
+
+  void onNoDataAvailable();
+
+  //=========================================
+  // REFRESHING CALLBACK
+  //=========================================
 
 
-    //=========================================
-    // LAZY LOADING CALLBACK
-    //=========================================
-    // Note: Here appendable data means the feeds which are going to be appended
-    // to last of list as user is scrolling through.
+  //fetching fresh data from server.
+  void onRefreshing();
 
-    // process of loading appendable data
-    void onLoadingAppendableData();
+  // data refreshed from server
+  void onRefreshed(List<Feed> refreshedList, String lastAuthor, String lastPermlink);
 
-    //loaded appendable data ( data on request for lazy loading)
-    void onAppendableDataLoaded(List<Feed> appendableList, String lastAuthor, String lastPermlink);
+  //failed to refresh from server
+  void onRefreshFailed();
 
-    //failed to load appendable data
-    void onAppendableDataLoadingFailed();
+
+  //=========================================
+  // LAZY LOADING CALLBACK
+  //=========================================
+  // Note: Here appendable data means the feeds which are going to be appended
+  // to last of list as user is scrolling through.
+
+  // process of loading appendable data
+  void onLoadingAppendableData();
+
+  //loaded appendable data ( data on request for lazy loading)
+  void onAppendableDataLoaded(List<Feed> appendableList, String lastAuthor, String lastPermlink);
+
+  //failed to load appendable data
+  void onAppendableDataLoadingFailed();
 
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/metaView"
-    android:visibility="gone"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:visibility="gone">
 
 
     <RelativeLayout
@@ -70,9 +70,9 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="SELECT COMMUNITY"
-                android:textStyle="bold"
                 android:textColor="@color/colorAccent"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <com.hapramp.views.post.PostCategoryView
                 android:id="@+id/articleCategoryView"
@@ -89,19 +89,19 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="HashTags(Separated by spaces)"
-                android:textStyle="bold"
                 android:textColor="@color/colorAccent"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <com.hapramp.views.hashtag.CustomHashTagInput
-                android:animateLayoutChanges="true"
                 android:id="@+id/tagsInputBox"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_below="@+id/tagsCaption"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tagsCaption"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:animateLayoutChanges="true" />
 
         </RelativeLayout>
 

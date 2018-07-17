@@ -7,6 +7,7 @@ import com.hapramp.datamodels.response.NotificationResponse;
  */
 
 public interface NotificationCallback {
-    void onNotificationsFetched(NotificationResponse notificationResponse);
-    void onNotificationFetchError();
+  void onNotificationsFetched(NotificationResponse notificationResponse);
+
+  void onNotificationFetchError();
 }

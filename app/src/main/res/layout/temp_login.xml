@@ -4,36 +4,35 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:background="#ffffff"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize">
+        android:layout_height="?actionBarSize"
+        android:background="#ffffff">
 
         <TextView
-            android:padding="8dp"
             android:id="@+id/toolbar_title"
-            android:text="Home"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:textSize="18sp"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="Home"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <TextView
-            android:textSize="24sp"
-            android:gravity="center"
-            android:text=""
-            android:layout_toStartOf="@+id/notification"
             android:id="@+id/search"
             android:layout_width="?actionBarSize"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_toStartOf="@+id/notification"
+            android:gravity="center"
+            android:text=""
+            android:textSize="24sp" />
 
 
         <com.hapramp.views.extraa.NotificationView
-            android:layout_alignParentEnd="true"
             android:id="@+id/notification"
             android:layout_width="?actionBarSize"
-            android:layout_height="match_parent" />
-
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true" />
 
 
     </RelativeLayout>

@@ -61,20 +61,20 @@
 
         <TextView
             android:id="@+id/see_history_btn"
-            android:text="Go To History"
-            android:textAllCaps="true"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:textSize="16sp"
-            android:textColor="#a1afba"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/infor_card"
             android:layout_marginTop="8dp"
             android:background="@drawable/claim_reward_bg"
-            android:layout_below="@+id/infor_card"
-            android:layout_alignParentEnd="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:paddingBottom="8dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp"
+            android:text="Go To History"
+            android:textAllCaps="true"
+            android:textColor="#a1afba"
+            android:textSize="16sp" />
 
         <android.support.v7.widget.CardView
             android:id="@+id/infor_card"
@@ -322,19 +322,19 @@
         </android.support.v7.widget.CardView>
 
         <xute.cryptocoinview.CoinView
-            android:layout_below="@+id/see_history_btn"
             android:id="@+id/sbd_rate"
-            android:layout_marginTop="8dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/see_history_btn"
+            android:layout_marginTop="8dp" />
 
         <xute.cryptocoinview.CoinView
-            android:layout_below="@+id/sbd_rate"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="64dp"
             android:id="@+id/steem_rate"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/sbd_rate"
+            android:layout_marginBottom="64dp"
+            android:layout_marginTop="8dp" />
 
     </RelativeLayout>
 

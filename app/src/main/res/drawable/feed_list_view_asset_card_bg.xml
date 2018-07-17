@@ -4,18 +4,26 @@
     <item>
         <shape android:shape="rectangle">
 
-            <corners android:radius="1dp"/>
-            <solid android:color="@color/Black12"/>
-            <size android:width="120dp" android:height="120dp"/>
+            <corners android:radius="1dp" />
+            <solid android:color="@color/Black12" />
+            <size
+                android:width="120dp"
+                android:height="120dp" />
         </shape>
     </item>
 
-    <item android:right="0.5dp" android:bottom="0.5dp">
+    <item
+        android:bottom="0.5dp"
+        android:right="0.5dp">
         <shape android:shape="rectangle">
-            <corners android:radius="1dp"/>
-            <solid android:color="@color/white"/>
-            <stroke android:width="0.5dp" android:color="@color/Black12"/>
-            <size android:width="120dp" android:height="120dp"/>
+            <corners android:radius="1dp" />
+            <solid android:color="@color/white" />
+            <stroke
+                android:width="0.5dp"
+                android:color="@color/Black12" />
+            <size
+                android:width="120dp"
+                android:height="120dp" />
         </shape>
     </item>
 

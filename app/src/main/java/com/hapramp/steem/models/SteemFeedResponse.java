@@ -11,27 +11,27 @@ import java.util.List;
 
 public class SteemFeedResponse {
 
-    @SerializedName("id")
-    @Expose
-    private Integer id;
-    @SerializedName("result")
-    @Expose
-    private List<Feed> result = null;
+  @SerializedName("id")
+  @Expose
+  private Integer id;
+  @SerializedName("result")
+  @Expose
+  private List<Feed> result = null;
 
-    public Integer getId() {
-        return id;
-    }
+  public Integer getId() {
+    return id;
+  }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-    public List<Feed> getResult() {
-        return result;
-    }
+  public List<Feed> getResult() {
+    return result;
+  }
 
-    public void setResult(List<Feed> result) {
-        this.result = result;
-    }
+  public void setResult(List<Feed> result) {
+    this.result = result;
+  }
 
 }

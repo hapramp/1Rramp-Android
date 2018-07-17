@@ -1,34 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     android:id="@+id/mockCommentParentView"
-    android:clickable="true"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@+id/shadow"
-    android:background="#ffffff">
+    android:background="#ffffff"
+    android:clickable="true">
 
     <ImageView
         android:id="@+id/commentCreaterAvatarMock"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:padding="12dp"
-        />
+        android:padding="12dp" />
 
     <RelativeLayout
-        android:layout_toEndOf="@+id/commentCreaterAvatarMock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/commentCreaterAvatarMock"
         android:background="@drawable/comment_input_view_background_cover">
 
 
         <EditText
-            android:clickable="true"
-            android:cursorVisible="false"
-            android:focusable="false"
             android:id="@+id/commentInputBoxMock"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,6 +32,9 @@
             android:layout_marginStart="16dp"
             android:layout_toStartOf="@+id/sendButton"
             android:background="@drawable/blank_input_bg"
+            android:clickable="true"
+            android:cursorVisible="false"
+            android:focusable="false"
             android:hint="Comment Here..."
             android:minHeight="36dp"
             android:paddingBottom="8dp"

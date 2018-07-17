@@ -15,32 +15,31 @@ import java.util.ArrayList;
 
 public class UserSuggestionListAdapter extends ArrayAdapter<String> {
 
-    private ArrayList<String> usernames;
+  private ArrayList<String> usernames;
 
-    public UserSuggestionListAdapter(Context context) {
-        super(context, 0);
-        usernames = new ArrayList<>();
-    }
+  public UserSuggestionListAdapter(Context context) {
+    super(context, 0);
+    usernames = new ArrayList<>();
+  }
 
-    public void setUsernames(ArrayList<String> usernames) {
-        this.usernames = usernames;
-        notifyDataSetChanged();
-    }
+  public void setUsernames(ArrayList<String> usernames) {
+    this.usernames = usernames;
+    notifyDataSetChanged();
+  }
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+  @Override
+  public int getCount() {
+    return usernames.size();
+  }
 
-        View v = new UserSearchItemView(getContext());
+  @Override
+  public View getView(int position, View convertView, ViewGroup parent) {
 
-        ((UserSearchItemView) v).setUsername(usernames.get(position));
+    View v = new UserSearchItemView(getContext());
 
-        return v;
-    }
+    ((UserSearchItemView) v).setUsername(usernames.get(position));
 
-
-    @Override
-    public int getCount() {
-        return usernames.size();
-    }
+    return v;
+  }
 
 }

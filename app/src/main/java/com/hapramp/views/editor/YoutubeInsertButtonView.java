@@ -24,48 +24,48 @@ import butterknife.ButterKnife;
  */
 public class YoutubeInsertButtonView extends FrameLayout {
 
-    @BindView(R.id.container)
-    RelativeLayout container;
-    @BindView(R.id.divider_btn)
-    TextView youtubeBtn;
-    Context mContext;
-    public static int YOUTUBE_RESULT_REQUEST = 102;
+  public static int YOUTUBE_RESULT_REQUEST = 102;
+  @BindView(R.id.container)
+  RelativeLayout container;
+  @BindView(R.id.divider_btn)
+  TextView youtubeBtn;
+  Context mContext;
 
 
-    public YoutubeInsertButtonView(@NonNull Context context) {
-        super(context);
-        init(context);
-    }
+  public YoutubeInsertButtonView(@NonNull Context context) {
+    super(context);
+    init(context);
+  }
 
-    public YoutubeInsertButtonView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
+  private void init(Context context) {
+    this.mContext = context;
 
-    public YoutubeInsertButtonView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context);
-    }
+    View view = LayoutInflater.from(context).inflate(R.layout.paragraph_divider_view, this);
+    ButterKnife.bind(this, view);
+    youtubeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
 
-    private void init(Context context) {
-        this.mContext = context;
+    container.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        startYoutubeSelectionActivity();
+      }
+    });
 
-        View view = LayoutInflater.from(context).inflate(R.layout.paragraph_divider_view, this);
-        ButterKnife.bind(this, view);
-        youtubeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+  }
 
-        container.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               startYoutubeSelectionActivity();
-            }
-        });
+  private void startYoutubeSelectionActivity() {
+    Intent youtubeIntent = new Intent(mContext, YoutubeVideoSelectorActivity.class);
+    ((AppCompatActivity) mContext).startActivityForResult(youtubeIntent, YOUTUBE_RESULT_REQUEST);
+  }
 
-    }
+  public YoutubeInsertButtonView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
+    init(context);
+  }
 
-    private void startYoutubeSelectionActivity() {
-        Intent youtubeIntent = new Intent(mContext, YoutubeVideoSelectorActivity.class);
-        ((AppCompatActivity) mContext).startActivityForResult(youtubeIntent, YOUTUBE_RESULT_REQUEST);
-    }
+  public YoutubeInsertButtonView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init(context);
+  }
 
 }

@@ -22,100 +22,97 @@ import butterknife.ButterKnife;
 
 public class TextHeaderView extends FrameLayout {
 
-    @BindView(R.id.biggerT)
-    TextView biggerT;
+  private static final int STATE_NORMAL = 0;
+  private static final int STATE_LARGE = 1;
+  private static final int STATE_EXTRAA_LARGE = 2;
+  private static final String TAG = TextHeaderView.class.getSimpleName();
+  private static int state = STATE_NORMAL;
+  @BindView(R.id.biggerT)
+  TextView biggerT;
+  @BindView(R.id.container)
+  RelativeLayout container;
+  private HeadingChangeListener headingChangeListener;
 
-    private static final int STATE_NORMAL = 0;
-    private static final int STATE_LARGE = 1;
-    private static final int STATE_EXTRAA_LARGE = 2;
-    private static int state = STATE_NORMAL;
-    @BindView(R.id.container)
-    RelativeLayout container;
+  public TextHeaderView(@NonNull Context context) {
+    super(context);
+    init(context);
+  }
 
-    private static final String TAG = TextHeaderView.class.getSimpleName();
+  private void init(Context context) {
 
-    public TextHeaderView(@NonNull Context context) {
-        super(context);
-        init(context);
-    }
+    View view = LayoutInflater.from(context).inflate(R.layout.text_size_button_view, this);
+    ButterKnife.bind(this, view);
+    biggerT.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
 
-    public TextHeaderView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
+    invalidateButtonStates(STATE_NORMAL);
 
-    public TextHeaderView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context);
-    }
+    container.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        state++;
+        state %= 3;
+        invalidateButtonStates(state);
+      }
+    });
 
-    private void init(Context context) {
+  }
 
-        View view = LayoutInflater.from(context).inflate(R.layout.text_size_button_view, this);
-        ButterKnife.bind(this, view);
-        biggerT.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+  private void invalidateButtonStates(int state) {
 
-        invalidateButtonStates(STATE_NORMAL);
+    switch (state) {
 
-        container.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                state++;
-                state %= 3;
-                invalidateButtonStates(state);
-            }
-        });
-
-    }
-
-    private void invalidateButtonStates(int state) {
-
-        switch (state) {
-
-            case STATE_LARGE:
+      case STATE_LARGE:
 
 //                biggerT.setTextColor(colorInactive);
 //                smallerT.setTextColor(colorActive);
-                if (headingChangeListener != null) {
-                    headingChangeListener.onHeading2Active();
-                }
+        if (headingChangeListener != null) {
+          headingChangeListener.onHeading2Active();
+        }
 
-                break;
+        break;
 
-            case STATE_EXTRAA_LARGE:
+      case STATE_EXTRAA_LARGE:
 
 //                biggerT.setTextColor(colorActive);
 //                smallerT.setTextColor(colorInactive);
-                if (headingChangeListener != null) {
-                    headingChangeListener.onHeading1Active();
-                }
+        if (headingChangeListener != null) {
+          headingChangeListener.onHeading1Active();
+        }
 
-                break;
+        break;
 
-            default:
+      default:
 
 //                biggerT.setTextColor(colorInactive);
 //                smallerT.setTextColor(colorInactive);
-                if (headingChangeListener != null) {
-                    headingChangeListener.onHeadingClear();
-                }
-
-                break;
+        if (headingChangeListener != null) {
+          headingChangeListener.onHeadingClear();
         }
+
+        break;
     }
+  }
 
-    private HeadingChangeListener headingChangeListener;
+  public TextHeaderView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
+    init(context);
+  }
 
-    public void setHeadingChangeListener(HeadingChangeListener headingChangeListener) {
-        this.headingChangeListener = headingChangeListener;
-    }
+  public TextHeaderView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init(context);
+  }
 
-    public interface HeadingChangeListener {
-        void onHeading1Active();
+  public void setHeadingChangeListener(HeadingChangeListener headingChangeListener) {
+    this.headingChangeListener = headingChangeListener;
+  }
 
-        void onHeading2Active();
+  public interface HeadingChangeListener {
+    void onHeading1Active();
 
-        void onHeadingClear();
-    }
+    void onHeading2Active();
+
+    void onHeadingClear();
+  }
 
 }

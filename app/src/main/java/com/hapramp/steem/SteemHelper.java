@@ -1,9 +1,5 @@
 package com.hapramp.steem;
 
-import com.hapramp.preferences.HaprampPreferenceManager;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import java.util.ArrayList;
-
 /**
  * Created by Ankit on 2/18/2018.
  */

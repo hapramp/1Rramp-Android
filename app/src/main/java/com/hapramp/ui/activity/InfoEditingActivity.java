@@ -18,95 +18,95 @@ import butterknife.ButterKnife;
 public class InfoEditingActivity extends AppCompatActivity implements UserBioUpdateRequestCallback {
 
 
-    @BindView(R.id.toolbar_container)
-    RelativeLayout toolbarContainer;
-    @BindView(R.id.bioEt)
-    EditText bioEt;
-    @BindView(R.id.okBtn)
-    TextView okBtn;
-    @BindView(R.id.cancelBtn)
-    TextView cancelBtn;
+  @BindView(R.id.toolbar_container)
+  RelativeLayout toolbarContainer;
+  @BindView(R.id.bioEt)
+  EditText bioEt;
+  @BindView(R.id.okBtn)
+  TextView okBtn;
+  @BindView(R.id.cancelBtn)
+  TextView cancelBtn;
 
-    String lastBio;
-    private ProgressDialog progressDialog;
+  String lastBio;
+  private ProgressDialog progressDialog;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_info_editing);
-        ButterKnife.bind(this);
-        progressDialog = new ProgressDialog(this);
-        lastBio = getIntent().getExtras().getString("bio");
-        bioEt.setText(lastBio);
-        attachListener();
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_info_editing);
+    ButterKnife.bind(this);
+    progressDialog = new ProgressDialog(this);
+    lastBio = getIntent().getExtras().getString("bio");
+    bioEt.setText(lastBio);
+    attachListener();
 
-    }
+  }
 
-    private void attachListener() {
+  private void attachListener() {
 
-        okBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveBio();
-            }
-        });
+    okBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        saveBio();
+      }
+    });
 
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+    cancelBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        finish();
+      }
+    });
 
-    }
+  }
 
-    private void saveBio() {
+  private void saveBio() {
 
-        if(validateBio()){
-            showProgress("Updating Your Bio...");
+    if (validateBio()) {
+      showProgress("Updating Your Bio...");
 //            DataServer.updateUserBio(HaprampPreferenceManager.getInstance().getUserId(),
 //                    new UserBioUpdateRequestBody(bioEt.getText().toString()),this);
-        }
-
     }
 
-    private boolean validateBio(){
+  }
 
-        if(bioEt.getText().toString().length()<1){
-            Toast.makeText(this,"Too Short Bio",Toast.LENGTH_LONG).show();
-            return false;
-        }
+  private boolean validateBio() {
 
-        return true;
-
+    if (bioEt.getText().toString().length() < 1) {
+      Toast.makeText(this, "Too Short Bio", Toast.LENGTH_LONG).show();
+      return false;
     }
 
-    @Override
-    public void onBioUpdated() {
+    return true;
 
-        hideProgress();
-        Toast.makeText(this,"Bio Updated !",Toast.LENGTH_LONG).show();
-        finish();
+  }
 
+  private void showProgress(String msg) {
+    progressDialog.setMessage(msg);
+    progressDialog.show();
+  }
+
+  @Override
+  public void onBioUpdated() {
+
+    hideProgress();
+    Toast.makeText(this, "Bio Updated !", Toast.LENGTH_LONG).show();
+    finish();
+
+  }
+
+  @Override
+  public void onBioUpdateError() {
+    hideProgress();
+    Toast.makeText(this, "Cannot Update Your Bio :(", Toast.LENGTH_LONG).show();
+    finish();
+  }
+
+  private void hideProgress() {
+    if (progressDialog != null) {
+      progressDialog.dismiss();
     }
-
-    @Override
-    public void onBioUpdateError() {
-        hideProgress();
-        Toast.makeText(this,"Cannot Update Your Bio :(",Toast.LENGTH_LONG).show();
-        finish();
-    }
-
-    private void showProgress(String msg) {
-        progressDialog.setMessage(msg);
-        progressDialog.show();
-    }
-
-    private void hideProgress() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
-    }
+  }
 
 }

@@ -3,15 +3,17 @@
 
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="@color/white"/>
-            <size android:height="144dp" android:width="360dp"/>
+            <solid android:color="@color/white" />
+            <size
+                android:width="360dp"
+                android:height="144dp" />
         </shape>
     </item>
 
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/splash_icon"/>
+            android:src="@drawable/splash_icon" />
     </item>
 
 </layer-list>

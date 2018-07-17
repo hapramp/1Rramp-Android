@@ -5,6 +5,7 @@ package com.hapramp.interfaces;
  */
 
 public interface OnPostDeleteCallback {
-    void onPostDeleted(int position);
-    void onPostDeleteFailed();
+  void onPostDeleted(int position);
+
+  void onPostDeleteFailed();
 }

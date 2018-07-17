@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -20,31 +19,31 @@ import com.hapramp.editor.FontFace;
 
 public class HeadingThreeTypeView extends FrameLayout {
 
-    private TextView content;
+  private TextView content;
 
-    public HeadingThreeTypeView(@NonNull Context context) {
-        super(context);
-        init(context);
-    }
+  public HeadingThreeTypeView(@NonNull Context context) {
+    super(context);
+    init(context);
+  }
 
-    public HeadingThreeTypeView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
+  private void init(Context context) {
+    View v = LayoutInflater.from(context).inflate(R.layout.heading_three_type_view, this);
+    content = v.findViewById(R.id.content);
+    content.setTypeface(FontFace.getBoldTypeface(context));
+  }
 
-    public HeadingThreeTypeView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context);
-    }
+  public HeadingThreeTypeView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
+    init(context);
+  }
 
-    private void init(Context context) {
-        View v = LayoutInflater.from(context).inflate(R.layout.heading_three_type_view, this);
-        content = v.findViewById(R.id.content);
-        content.setTypeface(FontFace.getBoldTypeface(context));
-    }
+  public HeadingThreeTypeView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init(context);
+  }
 
-    public void setText(String text) {
-        content.setText(Html.fromHtml(text));
-    }
+  public void setText(String text) {
+    content.setText(Html.fromHtml(text));
+  }
 
 }

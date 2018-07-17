@@ -1,13 +1,11 @@
 package com.hapramp.steem;
 
-import com.hapramp.preferences.HaprampPreferenceManager;
-
 public class SteemPowerHelper {
 
-    public static void requestSteemUserEarningInfo(final SteemPowerCallback steemPowerCallback) {
-        new Thread() {
-            @Override
-            public void run() {
+  public static void requestSteemUserEarningInfo(final SteemPowerCallback steemPowerCallback) {
+    new Thread() {
+      @Override
+      public void run() {
 //                SteemJ steemJ = SteemHelper.getSteemInstance();
 //                try {
 //                    DynamicGlobalProperty dynamicGlobalProperty = steemJ.getDynamicGlobalProperties();
@@ -20,14 +18,15 @@ public class SteemPowerHelper {
 //                    e.printStackTrace();
 //                }
 //                super.run();
-            }
-        }.start();
-    }
-    public interface SteemPowerCallback {
-        void onSteemPowerFetched(float steemPower);
+      }
+    }.start();
+  }
 
-        void onSteemBalance(float balance);
+  public interface SteemPowerCallback {
+    void onSteemPowerFetched(float steemPower);
 
-        void onSteemPowerFetchFailed();
-    }
+    void onSteemBalance(float balance);
+
+    void onSteemPowerFetchFailed();
+  }
 }

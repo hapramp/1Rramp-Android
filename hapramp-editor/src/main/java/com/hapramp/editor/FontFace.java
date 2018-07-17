@@ -9,18 +9,18 @@ import android.graphics.Typeface;
 
 public class FontFace {
 
-    private static int fontFace = R.string.fontFamily__sans_serif_medium;
+  private static int fontFace = R.string.fontFamily__sans_serif_medium;
 
-    public static Typeface getNormalTypeface(Context context){
-        return Typeface.create(getFontFace(context), Typeface.NORMAL);
-    }
+  public static Typeface getNormalTypeface(Context context) {
+    return Typeface.create(getFontFace(context), Typeface.NORMAL);
+  }
 
-    public static Typeface getBoldTypeface(Context context){
-        return Typeface.create(getFontFace(context), Typeface.BOLD);
-    }
+  private static String getFontFace(Context context) {
+    return context.getResources().getString(fontFace);
+  }
 
-    private static String getFontFace(Context context) {
-        return context.getResources().getString(fontFace);
-    }
+  public static Typeface getBoldTypeface(Context context) {
+    return Typeface.create(getFontFace(context), Typeface.BOLD);
+  }
 
 }

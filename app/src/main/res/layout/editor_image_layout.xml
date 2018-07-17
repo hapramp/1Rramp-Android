@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:focusable="true"
-        android:focusableInTouchMode="true"/>
+        android:focusableInTouchMode="true" />
 
     <com.github.irshulx.Components.CustomEditText
         android:id="@+id/desc"
@@ -71,8 +71,8 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:background="@android:color/transparent"
-        android:visibility="gone"
-        android:src="@drawable/remove_image"/>
+        android:src="@drawable/remove_image"
+        android:visibility="gone" />
 
 
 </RelativeLayout>

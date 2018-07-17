@@ -21,51 +21,53 @@ import retrofit2.Response;
 
 public class CommunitySelectionPageViewModel extends ViewModel {
 
-    MutableLiveData<List<CommunityModel>> communities;
-    CommunitySelectionPageCallback communitySelectionPageCallback;
+  MutableLiveData<List<CommunityModel>> communities;
+  CommunitySelectionPageCallback communitySelectionPageCallback;
 
-    public MutableLiveData<List<CommunityModel>> getCommunities(CommunitySelectionPageCallback communitySelectionPageCallback) {
-        if (communities == null) {
-            communities = new MutableLiveData<>();
-            fetchCommunities();
+  public MutableLiveData<List<CommunityModel>> getCommunities(CommunitySelectionPageCallback communitySelectionPageCallback) {
+    if (communities == null) {
+      communities = new MutableLiveData<>();
+      fetchCommunities();
+    }
+    this.communitySelectionPageCallback = communitySelectionPageCallback;
+    return communities;
+  }
+
+  private void fetchCommunities() {
+    DataServer.getService().getCommunities()
+      .enqueue(new Callback<List<CommunityModel>>() {
+        @Override
+        public void onResponse(Call<List<CommunityModel>> call, Response<List<CommunityModel>> response) {
+          if (response.isSuccessful()) {
+            communities.setValue(response.body());
+          } else {
+            communitySelectionPageCallback.onCommunityFetchFailed();
+          }
         }
-        this.communitySelectionPageCallback = communitySelectionPageCallback;
-        return communities;
-    }
 
-    private void fetchCommunities() {
-        DataServer.getService().getCommunities()
-                .enqueue(new Callback<List<CommunityModel>>() {
-                    @Override
-                    public void onResponse(Call<List<CommunityModel>> call, Response<List<CommunityModel>> response) {
-                        if (response.isSuccessful()) {
-                            communities.setValue(response.body());
-                        } else {
-                            communitySelectionPageCallback.onCommunityFetchFailed();
-                        }
-                    }
-                    @Override
-                    public void onFailure(Call<List<CommunityModel>> call, Throwable t) {
-                        communitySelectionPageCallback.onCommunityFetchFailed();
-                    }
-                });
-    }
+        @Override
+        public void onFailure(Call<List<CommunityModel>> call, Throwable t) {
+          communitySelectionPageCallback.onCommunityFetchFailed();
+        }
+      });
+  }
 
-    public void updateServer(List<Integer> selected) {
-        CommunitySelectionServerUpdateBody body = new CommunitySelectionServerUpdateBody(selected);
-        DataServer.getService().updateCommunitySelections(body).enqueue(new Callback<CommunitySelectionResponse>() {
-            @Override
-            public void onResponse(Call<CommunitySelectionResponse> call, Response<CommunitySelectionResponse> response) {
-                if(response.isSuccessful()){
-                    communitySelectionPageCallback.onCommunityUpdated(response.body().getCommunities());
-                }else{
-                    communitySelectionPageCallback.onCommunityUpdateFailed();
-                }
-            }
-            @Override
-            public void onFailure(Call<CommunitySelectionResponse> call, Throwable t) {
-                communitySelectionPageCallback.onCommunityUpdateFailed();
-            }
-        });
-    }
+  public void updateServer(List<Integer> selected) {
+    CommunitySelectionServerUpdateBody body = new CommunitySelectionServerUpdateBody(selected);
+    DataServer.getService().updateCommunitySelections(body).enqueue(new Callback<CommunitySelectionResponse>() {
+      @Override
+      public void onResponse(Call<CommunitySelectionResponse> call, Response<CommunitySelectionResponse> response) {
+        if (response.isSuccessful()) {
+          communitySelectionPageCallback.onCommunityUpdated(response.body().getCommunities());
+        } else {
+          communitySelectionPageCallback.onCommunityUpdateFailed();
+        }
+      }
+
+      @Override
+      public void onFailure(Call<CommunitySelectionResponse> call, Throwable t) {
+        communitySelectionPageCallback.onCommunityUpdateFailed();
+      }
+    });
+  }
 }

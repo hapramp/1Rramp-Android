@@ -16,18 +16,18 @@ import butterknife.ButterKnife;
 
 public class PreviewActivity extends AppCompatActivity {
 
-    @BindView(R.id.renderView)
-    RendererView renderView;
+  @BindView(R.id.renderView)
+  RendererView renderView;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_preview_activity);
-        ButterKnife.bind(this);
-        ArrayList<FeedDataItemModel> feedDataItemModels = getIntent().getParcelableArrayListExtra("data");
-        renderView.render(new Content(feedDataItemModels, FeedDataConstants.FEED_TYPE_ARTICLE));
+    setContentView(R.layout.activity_preview_activity);
+    ButterKnife.bind(this);
+    ArrayList<FeedDataItemModel> feedDataItemModels = getIntent().getParcelableArrayListExtra("data");
+    renderView.render(new Content(feedDataItemModels, FeedDataConstants.FEED_TYPE_ARTICLE));
 
-    }
+  }
 
 }

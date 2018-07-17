@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -20,20 +19,20 @@
                 android:id="@+id/closeBtn"
                 android:layout_width="?actionBarSize"
                 android:layout_height="match_parent"
+                android:background="?android:selectableItemBackgroundBorderless"
+                android:clickable="true"
                 android:gravity="center"
                 android:text=""
-                android:clickable="true"
-                android:background="?android:selectableItemBackgroundBorderless"
                 android:textColor="#fb282828"
                 android:textSize="24sp" />
 
             <TextView
-                android:clickable="true"
-                android:background="?android:selectableItemBackgroundBorderless"
                 android:id="@+id/popupMenu"
                 android:layout_width="?actionBarSize"
                 android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
+                android:background="?android:selectableItemBackgroundBorderless"
+                android:clickable="true"
                 android:gravity="center"
                 android:text=""
                 android:textColor="#fb282828"
@@ -80,11 +79,11 @@
                 android:background="#f55d5d" />
 
             <LinearLayout
-                android:layout_margin="8dp"
                 android:id="@+id/socialButtonContainer"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_below="@+id/story_featured_pic"
+                android:layout_margin="8dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -152,22 +151,22 @@
             </LinearLayout>
 
             <TextView
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
                 android:id="@+id/story_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/socialButtonContainer"
                 android:lineSpacingExtra="4dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
                 android:textColor="#1d1d1d"
                 android:textSize="16sp" />
 
             <TextView
-                android:layout_margin="16dp"
                 android:id="@+id/tags"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/story_content"
+                android:layout_margin="16dp"
                 android:text="#love #blues" />
 
         </RelativeLayout>

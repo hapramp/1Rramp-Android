@@ -1,31 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:animateLayoutChanges="true"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
 
     <include
-        android:visibility="visible"
         layout="@layout/load_more_progress_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:visibility="visible" />
 
 
     <include
-        android:layout_centerVertical="true"
-        android:visibility="gone"
         layout="@layout/no_post_available_message_view"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        />
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:visibility="gone" />
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:visibility="visible"
-        android:animateLayoutChanges="true"
         android:id="@+id/feedRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:visibility="visible">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/feedRecyclerView"
@@ -35,24 +33,23 @@
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <TextView
-        android:visibility="gone"
-        android:background="@drawable/move_to_top_button_bg"
-        android:textSize="24sp"
+        android:id="@+id/moveToTop"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:id="@+id/moveToTop"
-        android:text=""
+        android:background="@drawable/move_to_top_button_bg"
         android:gravity="center"
+        android:text=""
         android:textColor="@color/white"
-        android:layout_width="36dp"
-        android:layout_height="36dp" />
+        android:textSize="24sp"
+        android:visibility="gone" />
 
     <include
-        android:layout_centerVertical="true"
-        android:visibility="gone"
         layout="@layout/failed_load_view"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        />
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:visibility="gone" />
 
 </RelativeLayout>

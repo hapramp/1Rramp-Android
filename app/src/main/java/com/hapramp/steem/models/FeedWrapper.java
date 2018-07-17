@@ -9,19 +9,19 @@ import com.google.gson.annotations.SerializedName;
 
 public class FeedWrapper {
 
-    @Expose
-    @SerializedName("post")
-    public Feed feed;
+  @Expose
+  @SerializedName("post")
+  public Feed feed;
 
-    public FeedWrapper(Feed feed) {
-        this.feed = feed;
-    }
+  public FeedWrapper(Feed feed) {
+    this.feed = feed;
+  }
 
-    public Feed getFeed() {
-        return feed;
-    }
+  public Feed getFeed() {
+    return feed;
+  }
 
-    public void setFeed(Feed feed) {
-        this.feed = feed;
-    }
+  public void setFeed(Feed feed) {
+    this.feed = feed;
+  }
 }

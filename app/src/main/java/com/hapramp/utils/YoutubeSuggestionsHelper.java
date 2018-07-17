@@ -19,79 +19,78 @@ import java.util.ArrayList;
 
 public class YoutubeSuggestionsHelper {
 
-    private static Context context;
-    private static YoutubeSuggestionsHelper mInstance;
+  private static Context context;
+  private static YoutubeSuggestionsHelper mInstance;
+  private SuggestionsCallback suggestionsCallback;
 
-    public YoutubeSuggestionsHelper(Context context) {
-        YoutubeSuggestionsHelper.context = context;
+  public YoutubeSuggestionsHelper(Context context) {
+    YoutubeSuggestionsHelper.context = context;
+  }
+
+  public static YoutubeSuggestionsHelper getInstance(Context context) {
+    if (mInstance == null) {
+      mInstance = new YoutubeSuggestionsHelper(context);
+    }
+    return mInstance;
+  }
+
+  public void findSuggestion(String query) {
+
+    //cancel previous calls
+    VolleyUtils.getInstance().cancelPendingRequests(query);
+
+    if (suggestionsCallback != null) {
+      suggestionsCallback.onFetching();
     }
 
-    public static YoutubeSuggestionsHelper getInstance(Context context) {
-        if (mInstance == null) {
-            mInstance = new YoutubeSuggestionsHelper(context);
+    String url = "http://suggestqueries.google.com/complete/search?q=" + URLEncoder.encode(query) + "&client=firefox&hl=en&ds=yt";
+
+    StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+      @Override
+      public void onResponse(String response) {
+        //log("response "+response);
+        ArrayList<String> suggestionsList = new ArrayList<>();
+        try {
+          JSONArray jsonArray = new JSONArray(response);
+          //JSONArray suggestions = new JSONArray();
+          String suggestionsArr = jsonArray.get(1).toString();
+          JSONArray sarr = new JSONArray(suggestionsArr);
+          for (int i = 0; i < sarr.length(); i++) {
+            suggestionsList.add(sarr.get(i).toString());
+          }
+
+          if (suggestionsCallback != null) {
+            suggestionsCallback.onSuggestionsFetched(suggestionsList);
+          }
+
+
         }
-        return mInstance;
-    }
-
-    public void findSuggestion(String query) {
-
-        //cancel previous calls
-        VolleyUtils.getInstance().cancelPendingRequests(query);
-
-        if (suggestionsCallback != null) {
-            suggestionsCallback.onFetching();
+        catch (JSONException e) {
+          e.printStackTrace();
         }
 
-        String url = "http://suggestqueries.google.com/complete/search?q=" + URLEncoder.encode(query) + "&client=firefox&hl=en&ds=yt";
 
-        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                //log("response "+response);
-                ArrayList<String> suggestionsList = new ArrayList<>();
-                try {
-                    JSONArray jsonArray = new JSONArray(response);
-                    //JSONArray suggestions = new JSONArray();
-                    String suggestionsArr = jsonArray.get(1).toString();
-                    JSONArray sarr = new JSONArray(suggestionsArr);
-                    for (int i = 0; i < sarr.length(); i++) {
-                        suggestionsList.add(sarr.get(i).toString());
-                    }
+      }
+    }, new Response.ErrorListener() {
+      @Override
+      public void onErrorResponse(VolleyError volleyError) {
 
-                    if (suggestionsCallback != null) {
-                        suggestionsCallback.onSuggestionsFetched(suggestionsList);
-                    }
+      }
+    });
 
+    //set tag as term
+    VolleyUtils.getInstance().addToRequestQueue(request, query, context);
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+  }
 
+  public void setSuggestionsCallback(SuggestionsCallback suggestionsCallback) {
+    this.suggestionsCallback = suggestionsCallback;
+  }
 
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
+  public interface SuggestionsCallback {
+    void onFetching();
 
-            }
-        });
-
-        //set tag as term
-        VolleyUtils.getInstance().addToRequestQueue(request, query, context);
-
-    }
-
-
-    private SuggestionsCallback suggestionsCallback;
-
-    public void setSuggestionsCallback(SuggestionsCallback suggestionsCallback) {
-        this.suggestionsCallback = suggestionsCallback;
-    }
-
-    public interface SuggestionsCallback {
-        void onFetching();
-
-        void onSuggestionsFetched(ArrayList<String> suggestions);
-    }
+    void onSuggestionsFetched(ArrayList<String> suggestions);
+  }
 
 }

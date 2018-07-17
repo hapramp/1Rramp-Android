@@ -5,147 +5,147 @@
     android:fillViewport="true">
 
     <RelativeLayout
-        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         android:background="#ffffff">
 
         <TextView
             android:id="@+id/connectivityText"
-            android:padding="2dp"
-            android:visibility="gone"
-            android:textSize="12sp"
-            android:textColor="@color/white"
-            android:gravity="center_horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="2dp"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:visibility="gone" />
 
         <ImageView
-            android:layout_centerHorizontal="true"
             android:id="@+id/logo"
             android:layout_width="96dp"
             android:layout_height="96dp"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="72dp"
             android:src="@drawable/logo_new_app" />
 
         <ImageView
-            android:src="@drawable/vertical_line"
             android:layout_width="wrap_content"
+            android:layout_height="64dp"
             android:layout_below="@+id/logo"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="4dp"
-            android:layout_height="64dp"/>
+            android:src="@drawable/vertical_line" />
 
         <RelativeLayout
             android:id="@+id/steemconnect_dialog_container"
-            android:layout_below="@+id/logo"
-            android:background="@drawable/steemconnect_dialog_bg"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginTop="120dp"
             android:layout_width="match_parent"
-            android:layout_height="144dp">
+            android:layout_height="144dp"
+            android:layout_below="@+id/logo"
+            android:layout_marginEnd="24dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="120dp"
+            android:background="@drawable/steemconnect_dialog_bg">
 
             <TextView
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
                 android:id="@+id/loginButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:paddingTop="12dp"
-                android:paddingBottom="12dp"
+                android:layout_margin="24dp"
                 android:background="@drawable/steemconnect_btn_bg"
                 android:clickable="true"
-                android:focusable="true"
                 android:elevation="2dp"
+                android:focusable="true"
                 android:gravity="center_horizontal"
+                android:paddingBottom="12dp"
+                android:paddingEnd="12dp"
+                android:paddingStart="12dp"
+                android:paddingTop="12dp"
                 android:text="SIGN IN USING STEEMCONNECT"
                 android:textColor="#ffffff"
-                android:layout_margin="24dp"
                 android:textSize="14sp" />
 
         </RelativeLayout>
 
         <FrameLayout
-            android:background="@drawable/steemconnect_dialog_circle_bg"
-            android:layout_marginTop="72dp"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/logo"
             android:layout_width="96dp"
-            android:padding="12dp"
-            android:layout_height="96dp">
+            android:layout_height="96dp"
+            android:layout_below="@+id/logo"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="72dp"
+            android:background="@drawable/steemconnect_dialog_circle_bg"
+            android:padding="12dp">
 
             <ImageView
-                android:src="@drawable/steemconnect_logo"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:src="@drawable/steemconnect_logo" />
 
         </FrameLayout>
 
         <FrameLayout
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
             android:layout_below="@+id/steemconnect_dialog_container"
             android:layout_margin="24dp"
-            android:id="@+id/divider"
-            android:background="@color/Black12"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"/>
+            android:background="@color/Black12" />
 
         <TextView
             android:id="@+id/createSteemAccountBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/account_creation_msg"
+            android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
-            android:paddingStart="36dp"
-            android:paddingEnd="36dp"
             android:background="@drawable/light_btn_bg"
             android:clickable="true"
             android:focusable="true"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/account_creation_msg"
             android:padding="12dp"
+            android:paddingEnd="36dp"
+            android:paddingStart="36dp"
             android:text="CREATE STEEM ACCOUNT"
             android:textColor="@color/colorPrimary"
             android:textSize="14sp" />
 
         <TextView
-            android:text="Don`t have a STEEM Account ?"
-            android:layout_below="@+id/divider"
-            android:textSize="12sp"
-            android:padding="4dp"
-            android:layout_marginTop="16dp"
             android:id="@+id/account_creation_msg"
-            android:layout_centerHorizontal="true"
-            android:textColor="@color/colorPrimary"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/divider"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:padding="4dp"
+            android:text="Don`t have a STEEM Account ?"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp" />
 
         <RelativeLayout
-            android:visibility="gone"
             android:id="@+id/progress_container"
-            android:background="#c0000000"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="#c0000000"
+            android:visibility="gone">
 
             <ProgressBar
                 android:id="@+id/temp_progress"
-                android:indeterminateTint="#ffffff"
-                android:layout_centerInParent="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:indeterminateTint="#ffffff" />
 
             <TextView
                 android:id="@+id/shaded_progress_message"
-                android:padding="8dp"
-                android:textSize="16sp"
-                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/temp_progress"
                 android:layout_centerHorizontal="true"
+                android:padding="8dp"
                 android:text="Fetching Communities.."
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:textColor="@color/white"
+                android:textSize="16sp" />
         </RelativeLayout>
 
     </RelativeLayout>

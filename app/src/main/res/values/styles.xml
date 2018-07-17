@@ -19,7 +19,7 @@
         <item name="colorControlActivated">#333333</item>
     </style>
 
-    <style name="SplashTheme"  parent="Theme.AppCompat.NoActionBar">
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_background</item>
     </style>
 

@@ -146,12 +146,12 @@
     </com.facebook.shimmer.ShimmerFrameLayout>
 
     <TextView
-        android:visibility="gone"
         android:id="@+id/failedToLoadMoreErrorPanel"
+        android:layout_width="match_parent"
+        android:layout_height="144dp"
+        android:layout_centerInParent="true"
         android:text="! Failed To Load More"
         android:textColor="@color/Black54"
-        android:layout_centerInParent="true"
-        android:layout_width="match_parent"
-        android:layout_height="144dp" />
+        android:visibility="gone" />
 
 </RelativeLayout>

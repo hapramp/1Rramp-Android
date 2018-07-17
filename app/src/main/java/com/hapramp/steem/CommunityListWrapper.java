@@ -8,19 +8,19 @@ import java.util.List;
 
 public class CommunityListWrapper {
 
-    @Expose
-    @SerializedName("communities")
-    List<CommunityModel> communityModels;
+  @Expose
+  @SerializedName("communities")
+  List<CommunityModel> communityModels;
 
-    public CommunityListWrapper(List<CommunityModel> communityModels) {
-        this.communityModels = communityModels;
-    }
+  public CommunityListWrapper(List<CommunityModel> communityModels) {
+    this.communityModels = communityModels;
+  }
 
-    public List<CommunityModel> getCommunityModels() {
-        return communityModels;
-    }
+  public List<CommunityModel> getCommunityModels() {
+    return communityModels;
+  }
 
-    public void setCommunityModels(List<CommunityModel> communityModels) {
-        this.communityModels = communityModels;
-    }
+  public void setCommunityModels(List<CommunityModel> communityModels) {
+    this.communityModels = communityModels;
+  }
 }

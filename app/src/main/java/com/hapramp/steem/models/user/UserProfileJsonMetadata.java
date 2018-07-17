@@ -10,11 +10,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class UserProfileJsonMetadata {
 
-    @SerializedName("profile")
-    @Expose
-    public Profile profile;
+  @SerializedName("profile")
+  @Expose
+  public Profile profile;
 
-    public Profile getProfile() {
-        return profile;
-    }
+  public Profile getProfile() {
+    return profile;
+  }
 }

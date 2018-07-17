@@ -9,15 +9,15 @@ import com.hapramp.steem.models.user.Profile;
  */
 
 public class ProfileWrapper {
-    @Expose
-    @SerializedName("profile")
-    public Profile profile;
+  @Expose
+  @SerializedName("profile")
+  public Profile profile;
 
-    public ProfileWrapper(Profile profile) {
-        this.profile = profile;
-    }
+  public ProfileWrapper(Profile profile) {
+    this.profile = profile;
+  }
 
-    public Profile getProfile() {
-        return profile;
-    }
+  public Profile getProfile() {
+    return profile;
+  }
 }

@@ -8,25 +8,25 @@ import com.google.gson.annotations.SerializedName;
 
 public class UserStatsModel {
 
-    @SerializedName("posts")
-    public int posts;
-    @SerializedName("rated")
-    public int rated;
-    @SerializedName("hapcoins")
-    public float hapcoins;
+  @SerializedName("posts")
+  public int posts;
+  @SerializedName("rated")
+  public int rated;
+  @SerializedName("hapcoins")
+  public float hapcoins;
 
-    public UserStatsModel(int posts, int rated,float hapcoins) {
-        this.posts = posts;
-        this.rated = rated;
-        this.hapcoins = hapcoins;
-    }
+  public UserStatsModel(int posts, int rated, float hapcoins) {
+    this.posts = posts;
+    this.rated = rated;
+    this.hapcoins = hapcoins;
+  }
 
-    @Override
-    public String toString() {
-        return "UserStatsModel{" +
-                "posts=" + posts +
-                ", rated=" + rated +
-                ", hapcoins=" + hapcoins +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "UserStatsModel{" +
+      "posts=" + posts +
+      ", rated=" + rated +
+      ", hapcoins=" + hapcoins +
+      '}';
+  }
 }

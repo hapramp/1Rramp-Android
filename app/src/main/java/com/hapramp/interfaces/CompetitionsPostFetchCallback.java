@@ -7,6 +7,7 @@ import com.hapramp.datamodels.response.CompetitionsPostReponse;
  */
 
 public interface CompetitionsPostFetchCallback {
-    void onCompetitionsPostsFetched(CompetitionsPostReponse competitionResponse);
-    void onCompetionsPostFetchError();
+  void onCompetitionsPostsFetched(CompetitionsPostReponse competitionResponse);
+
+  void onCompetionsPostFetchError();
 }

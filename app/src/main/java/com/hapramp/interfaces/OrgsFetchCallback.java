@@ -9,6 +9,7 @@ import java.util.List;
  */
 
 public interface OrgsFetchCallback {
-    void onOrgsFetched(List<OrgsResponse> orgs);
-    void onOrgFetchedError();
+  void onOrgsFetched(List<OrgsResponse> orgs);
+
+  void onOrgFetchedError();
 }

@@ -9,27 +9,27 @@ import com.google.gson.annotations.SerializedName;
 
 public class SteemLoginRequestModel {
 
-    @SerializedName("username")
-    @Expose
-    private String username;
-    @SerializedName("ppk_hash")
-    @Expose
-    private String ppkHash;
+  @SerializedName("username")
+  @Expose
+  private String username;
+  @SerializedName("ppk_hash")
+  @Expose
+  private String ppkHash;
 
-    public String getUsername() {
-        return username;
-    }
+  public String getUsername() {
+    return username;
+  }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+  public void setUsername(String username) {
+    this.username = username;
+  }
 
-    public String getPpkHash() {
-        return ppkHash;
-    }
+  public String getPpkHash() {
+    return ppkHash;
+  }
 
-    public void setPpkHash(String ppkHash) {
-        this.ppkHash = ppkHash;
-    }
+  public void setPpkHash(String ppkHash) {
+    this.ppkHash = ppkHash;
+  }
 
 }

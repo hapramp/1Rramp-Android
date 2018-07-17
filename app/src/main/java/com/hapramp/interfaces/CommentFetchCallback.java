@@ -8,8 +8,9 @@ import com.hapramp.steem.models.Feed;
  */
 
 public interface CommentFetchCallback {
-    void onCommentFetched(CommentsResponse response);
-    void onCommentFetchError();
+  void onCommentFetched(CommentsResponse response);
 
-    void onVoteDeleted(Feed updatedPost);
+  void onCommentFetchError();
+
+  void onVoteDeleted(Feed updatedPost);
 }

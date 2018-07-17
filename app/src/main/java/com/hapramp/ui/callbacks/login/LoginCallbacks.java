@@ -5,11 +5,17 @@ package com.hapramp.ui.callbacks.login;
  */
 
 public interface LoginCallbacks {
-    void onInvalidCredentials();
-    void onInvalidUsernameField(String msg);
-    void onInvalidPostingKey();
-    void onProcesing(String msg);
-    void onLoginSuccess(boolean freshUser);
-    void onLoginFailed(String msg);
-    void onSignupFailed();
+  void onInvalidCredentials();
+
+  void onInvalidUsernameField(String msg);
+
+  void onInvalidPostingKey();
+
+  void onProcesing(String msg);
+
+  void onLoginSuccess(boolean freshUser);
+
+  void onLoginFailed(String msg);
+
+  void onSignupFailed();
 }

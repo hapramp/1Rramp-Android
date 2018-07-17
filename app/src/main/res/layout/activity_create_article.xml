@@ -34,9 +34,9 @@
             android:id="@+id/previewButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toStartOf="@+id/nextButton"
             android:layout_centerVertical="true"
             android:layout_marginEnd="8dp"
+            android:layout_toStartOf="@+id/nextButton"
             android:background="@drawable/light_btn_bg"
             android:gravity="center"
             android:paddingBottom="6dp"
@@ -68,15 +68,15 @@
 
     <com.hapramp.views.editor.EditorView
         android:id="@+id/editorView"
-        android:layout_below="@+id/toolbar_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar_container" />
 
 
     <include
         android:id="@+id/metaView"
         layout="@layout/article_meta_view"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

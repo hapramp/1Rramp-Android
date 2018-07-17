@@ -22,51 +22,50 @@ import butterknife.ButterKnife;
 
 public class LinkView extends FrameLayout {
 
-    @BindView(R.id.link_btn)
-    TextView linkBtn;
-    @BindView(R.id.container)
-    RelativeLayout container;
+  @BindView(R.id.link_btn)
+  TextView linkBtn;
+  @BindView(R.id.container)
+  RelativeLayout container;
+  private LinkInsertListener linkInsertListener;
 
-    public LinkView(@NonNull Context context) {
-        super(context);
-        init(context);
-    }
+  public LinkView(@NonNull Context context) {
+    super(context);
+    init(context);
+  }
 
-    public LinkView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
+  private void init(Context context) {
 
-    public LinkView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context);
-    }
+    View view = LayoutInflater.from(context).inflate(R.layout.link_view, this);
+    ButterKnife.bind(this, view);
+    linkBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
 
-    private void init(Context context) {
+    container.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        if (linkInsertListener != null) {
+          linkInsertListener.onInsertLink();
+        }
+      }
+    });
 
-        View view = LayoutInflater.from(context).inflate(R.layout.link_view, this);
-        ButterKnife.bind(this, view);
-        linkBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+  }
 
-        container.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (linkInsertListener != null) {
-                    linkInsertListener.onInsertLink();
-                }
-            }
-        });
+  public LinkView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
+    init(context);
+  }
 
-    }
+  public LinkView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init(context);
+  }
 
-    private LinkInsertListener linkInsertListener;
+  public void setLinkInsertListener(LinkInsertListener linkInsertListener) {
+    this.linkInsertListener = linkInsertListener;
+  }
 
-    public void setLinkInsertListener(LinkInsertListener linkInsertListener) {
-        this.linkInsertListener = linkInsertListener;
-    }
-
-    public interface LinkInsertListener {
-        void onInsertLink();
-    }
+  public interface LinkInsertListener {
+    void onInsertLink();
+  }
 
 }

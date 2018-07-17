@@ -8,9 +8,9 @@
     tools:context=".ui.activity.TestActivity">
 
     <com.hapramp.views.hashtag.CustomHashTagInput
-        android:animateLayoutChanges="true"
         android:id="@+id/edittext"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true" />
 
 </LinearLayout>

@@ -17,27 +17,27 @@ import com.hapramp.R;
 
 public class HorizontalDividerTypeView extends FrameLayout {
 
-    private TextView content;
+  private TextView content;
 
-    public HorizontalDividerTypeView(@NonNull Context context) {
-        super(context);
-        init(context);
-    }
+  public HorizontalDividerTypeView(@NonNull Context context) {
+    super(context);
+    init(context);
+  }
 
-    public HorizontalDividerTypeView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
+  private void init(Context context) {
+    View v = LayoutInflater.from(context).inflate(R.layout.hr_type_view, this);
+    content = v.findViewById(R.id.content);
+  }
 
-    public HorizontalDividerTypeView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context);
-    }
+  public HorizontalDividerTypeView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
+    init(context);
+  }
 
-    private void init(Context context) {
-        View v = LayoutInflater.from(context).inflate(R.layout.hr_type_view, this);
-        content = v.findViewById(R.id.content);
-    }
+  public HorizontalDividerTypeView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init(context);
+  }
 
 }
 

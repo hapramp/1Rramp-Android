@@ -9,34 +9,35 @@ import android.net.ConnectivityManager;
 
 public class ConnectionUtils {
 
-    public static boolean isConnected(Context context) {
+  public static boolean isConnected(Context context) {
 
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        final android.net.NetworkInfo mobileData = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        final android.net.NetworkInfo wifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        if (mobileData.isConnected()) {
-            return true;
-        } else if (wifi.isConnected()) {
-            return true;
-        }
+    ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    final android.net.NetworkInfo mobileData = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+    final android.net.NetworkInfo wifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+    if (mobileData.isConnected()) {
+      return true;
+    } else if (wifi.isConnected()) {
+      return true;
+    }
 
 //        context.startActivity(new Intent(context, ErrorSplash.class));
 //        ((AppCompatActivity) context).finish();
 
-        return false;
-    }
+    return false;
+  }
 
-    // for wifi service [where login is required before internet ]
-    private static boolean isWorking() {
-        try {
-            Process p1 = java.lang.Runtime.getRuntime().exec("ping -c 1 www.google.com");
-            int returnVal = p1.waitFor();
-            return (returnVal == 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
+  // for wifi service [where login is required before internet ]
+  private static boolean isWorking() {
+    try {
+      Process p1 = java.lang.Runtime.getRuntime().exec("ping -c 1 www.google.com");
+      int returnVal = p1.waitFor();
+      return (returnVal == 0);
     }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
 
 }
 

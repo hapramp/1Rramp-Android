@@ -5,6 +5,7 @@ package com.hapramp.interfaces;
  */
 
 public interface MarkallAsReadNotificationCallback {
-    void markedAllRead();
-    void markAllReadFailed();
+  void markedAllRead();
+
+  void markAllReadFailed();
 }

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/post_header_container"
@@ -17,25 +16,25 @@
             android:padding="8dp" />
 
         <TextView
+            android:id="@+id/feed_owner_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_toEndOf="@+id/feed_owner_pic"
-            android:id="@+id/feed_owner_title"
-            android:textStyle="bold"
             android:text="Ankit Kumar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:textStyle="bold" />
 
 
         <TextView
+            android:id="@+id/feed_owner_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/feed_owner_title"
             android:layout_marginStart="8dp"
             android:layout_marginTop="2dp"
             android:layout_toEndOf="@+id/feed_owner_pic"
-            android:id="@+id/feed_owner_subtitle"
-            android:layout_below="@+id/feed_owner_title"
-            android:text="iiit | 2 days ago"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:text="iiit | 2 days ago" />
 
 
         <!--<LinearLayout-->
@@ -67,13 +66,13 @@
         android:paddingTop="24dp">
 
         <TextView
-            android:visibility="gone"
             android:id="@+id/post_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cheap Romantic Vaccations"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:visibility="gone" />
 
 
         <TextView
@@ -84,8 +83,7 @@
             android:padding="4dp"
             android:text="#hapramp #dance #colors"
             android:textSize="12sp"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/post_snippet"
@@ -94,9 +92,9 @@
             android:layout_below="@+id/tags"
             android:layout_marginTop="8dp"
             android:maxLines="4"
-            android:textStyle="italic"
+            android:textColor="@color/Black38"
             android:textSize="16sp"
-            android:textColor="@color/Black38" />
+            android:textStyle="italic" />
 
         <TextView
             android:id="@+id/likeBtn"
@@ -155,8 +153,8 @@
             android:id="@+id/hapcoins_count"
             android:layout_width="wrap_content"
             android:layout_height="64dp"
-            android:layout_marginTop="24dp"
             android:layout_below="@+id/post_snippet"
+            android:layout_marginTop="24dp"
             android:layout_toEndOf="@id/hapcoinBtn"
             android:gravity="center"
             android:text="24" />
@@ -164,19 +162,19 @@
     </RelativeLayout>
 
     <FrameLayout
-        android:layout_below="@+id/post_meta_container"
         android:layout_width="match_parent"
-        android:layout_height="16dp"/>
+        android:layout_height="16dp"
+        android:layout_below="@+id/post_meta_container" />
 
     <TextView
-        android:clickable="true"
-        android:focusable="true"
         android:id="@+id/starBtn"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_below="@+id/featured_image_post"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="-24dp"
+        android:clickable="true"
+        android:focusable="true"
         android:gravity="center"
         android:padding="8dp"
         android:text=""

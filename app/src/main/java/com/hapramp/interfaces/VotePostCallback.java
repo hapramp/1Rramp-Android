@@ -8,7 +8,8 @@ import com.hapramp.steem.models.Feed;
 
 public interface VotePostCallback {
 
-    void onPostVoted(Feed result);
-    void onPostVoteError();
+  void onPostVoted(Feed result);
+
+  void onPostVoteError();
 
 }

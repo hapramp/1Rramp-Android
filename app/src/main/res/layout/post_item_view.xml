@@ -43,10 +43,10 @@
         android:id="@+id/popupMenuDots"
         android:layout_width="48dp"
         android:layout_height="64dp"
-        android:clickable="true"
-        android:focusable="true"
         android:layout_alignParentEnd="true"
         android:background="?selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
         android:gravity="center"
         android:text=""
         android:textColor="@color/Black38"
@@ -54,9 +54,9 @@
 
     <RelativeLayout
         android:id="@+id/image_container"
-        android:layout_below="@+id/feed_owner_pic"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/feed_owner_pic">
 
         <ImageView
             android:id="@+id/featured_image_post"
@@ -67,12 +67,12 @@
 
         <ImageView
             android:id="@+id/youtube_indicator"
-            android:layout_centerInParent="true"
-            android:src="@drawable/ytb"
-            android:visibility="gone"
             android:layout_width="64dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:adjustViewBounds="true"
-            android:layout_height="wrap_content" />
+            android:src="@drawable/ytb"
+            android:visibility="gone" />
 
     </RelativeLayout>
 
@@ -81,11 +81,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/image_container"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="18sp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="18sp"
         android:visibility="visible" />
 
     <TextView
@@ -187,12 +187,11 @@
         android:textSize="12sp" />
 
     <com.hapramp.views.extraa.StarView
-        android:animateLayoutChanges="true"
         android:id="@+id/starView"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_below="@+id/readMoreBtn"
         android:layout_marginEnd="16dp"
-        />
+        android:animateLayoutChanges="true" />
 
 </RelativeLayout>

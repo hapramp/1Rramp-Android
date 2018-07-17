@@ -34,164 +34,163 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
-	* Created by Ankit on 2/5/2018.
-	*/
+ * Created by Ankit on 2/5/2018.
+ */
 
 public class PostImageView extends FrameLayout {
 
-		@BindView(R.id.image)
-		ImageView image;
-		@BindView(R.id.informationTv)
-		TextView informationTv;
-		@BindView(R.id.actionContainer)
-		RelativeLayout actionContainer;
-		@BindView(R.id.progressBar)
-		ProgressBar progressBar;
-		@BindView(R.id.removeBtn)
-		TextView removeBtn;
-		private View mainView;
-		private String downloadUrl;
+  @BindView(R.id.image)
+  ImageView image;
+  @BindView(R.id.informationTv)
+  TextView informationTv;
+  @BindView(R.id.actionContainer)
+  RelativeLayout actionContainer;
+  @BindView(R.id.progressBar)
+  ProgressBar progressBar;
+  @BindView(R.id.removeBtn)
+  TextView removeBtn;
+  private View mainView;
+  private String downloadUrl;
+  private ImageActionListener imageActionListener;
 
-		public PostImageView(@NonNull Context context) {
-				super(context);
-				init(context);
-		}
+  public PostImageView(@NonNull Context context) {
+    super(context);
+    init(context);
+  }
 
-		public PostImageView(@NonNull Context context, @Nullable AttributeSet attrs) {
-				super(context, attrs);
-				init(context);
-		}
+  private void init(Context context) {
+    mainView = LayoutInflater.from(context).inflate(R.layout.post_image_view, this);
+    ButterKnife.bind(this, mainView);
+    attachListeners();
+    invalidateView();
+  }
 
-		public PostImageView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-				super(context, attrs, defStyleAttr);
-				init(context);
-		}
+  private void attachListeners() {
+    image.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        if (downloadUrl != null) {
+          showAndhideActionContainer();
+        }
+      }
+    });
+    removeBtn.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        scaleAndHideMainView();
+        if (imageActionListener != null) {
+          imageActionListener.onImageRemoved();
+        }
+      }
+    });
+  }
 
-		private void init(Context context) {
-				mainView = LayoutInflater.from(context).inflate(R.layout.post_image_view, this);
-				ButterKnife.bind(this, mainView);
-				attachListeners();
-				invalidateView();
-		}
+  private void invalidateView() {
+    progressBar.setVisibility(VISIBLE);
+    informationTv.setVisibility(GONE);
+  }
 
-		private void attachListeners() {
-				image.setOnClickListener(new OnClickListener() {
-						@Override
-						public void onClick(View v) {
-								if (downloadUrl != null) {
-										showAndhideActionContainer();
-								}
-						}
-				});
-				removeBtn.setOnClickListener(new OnClickListener() {
-						@Override
-						public void onClick(View v) {
-								scaleAndHideMainView();
-								if (imageActionListener != null) {
-										imageActionListener.onImageRemoved();
-								}
-						}
-				});
-		}
+  private void showAndhideActionContainer() {
+    actionContainer.setVisibility(VISIBLE);
+    new Handler().postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        actionContainer.setVisibility(GONE);
+      }
+    }, 2000);
+  }
 
-		public void setImageSource(final Bitmap bitmap, String filePath) {
-				if (bitmap == null)
-						return;
-				invalidateView();
-				mainView.setVisibility(VISIBLE);
-				image.setImageBitmap(bitmap);
-				informationTv.setVisibility(VISIBLE);
-				informationTv.setText("Processing...");
-				startUploading(filePath);
-		}
+  public void scaleAndHideMainView() {
+    Animation anim = new ScaleAnimation(
+      1f, 1f, // Start and end values for the X axis scaling
+      1f, 0f, // Start and end values for the Y axis scaling
+      Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
+      Animation.RELATIVE_TO_SELF, 0f); // Pivot point of Y scaling
+    anim.setFillAfter(false); // Needed to keep the result of the animation
+    anim.setDuration(200);
+    anim.setInterpolator(new DecelerateInterpolator(1f));
+    mainView.startAnimation(anim);
+    anim.setAnimationListener(new Animation.AnimationListener() {
+      @Override
+      public void onAnimationStart(Animation animation) {
+      }
 
-		private void invalidateView() {
-				progressBar.setVisibility(VISIBLE);
-				informationTv.setVisibility(GONE);
-		}
+      @Override
+      public void onAnimationEnd(Animation animation) {
+        mainView.setVisibility(GONE);
+      }
 
-		public void scaleAndHideMainView() {
-				Animation anim = new ScaleAnimation(
-						1f, 1f, // Start and end values for the X axis scaling
-						1f, 0f, // Start and end values for the Y axis scaling
-						Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
-						Animation.RELATIVE_TO_SELF, 0f); // Pivot point of Y scaling
-				anim.setFillAfter(false); // Needed to keep the result of the animation
-				anim.setDuration(200);
-				anim.setInterpolator(new DecelerateInterpolator(1f));
-				mainView.startAnimation(anim);
-				anim.setAnimationListener(new Animation.AnimationListener() {
-						@Override
-						public void onAnimationStart(Animation animation) {
-						}
+      @Override
+      public void onAnimationRepeat(Animation animation) {
+      }
+    });
+  }
 
-						@Override
-						public void onAnimationEnd(Animation animation) {
-								mainView.setVisibility(GONE);
-						}
+  public PostImageView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
+    init(context);
+  }
 
-						@Override
-						public void onAnimationRepeat(Animation animation) {
-						}
-				});
-		}
+  public PostImageView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init(context);
+  }
 
-		private void startUploading(String filePath) {
-				File file = new File(filePath);
-				final RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
-				MultipartBody.Part body = MultipartBody.Part.createFormData("upload", file.getName(), requestFile);
-				RetrofitServiceGenerator.getService().uploadFile(body).enqueue(new Callback<FileUploadReponse>() {
-						@Override
-						public void onResponse(Call<FileUploadReponse> call, Response<FileUploadReponse> response) {
-								if (response.isSuccessful()) {
-										downloadUrl = response.body().getDownloadUrl();
-										progressBar.setVisibility(GONE);
-										informationTv.setText("Uploaded");
-										if (imageActionListener != null) {
-												imageActionListener.onImageUploaded(downloadUrl);
-										}
-										showAndhideActionContainer();
-								} else {
-										Log.d("ImageUpload", response.errorBody().toString());
-										informationTv.setText("Error");
-										downloadUrl = null;
-										progressBar.setVisibility(GONE);
-								}
-						}
+  public void setImageSource(final Bitmap bitmap, String filePath) {
+    if (bitmap == null)
+      return;
+    invalidateView();
+    mainView.setVisibility(VISIBLE);
+    image.setImageBitmap(bitmap);
+    informationTv.setVisibility(VISIBLE);
+    informationTv.setText("Processing...");
+    startUploading(filePath);
+  }
 
-						@Override
-						public void onFailure(Call<FileUploadReponse> call, Throwable t) {
-								Log.d("ImageUpload", t.toString());
-								informationTv.setText("Error");
-								progressBar.setVisibility(GONE);
-								downloadUrl = null;
-						}
-				});
-		}
+  private void startUploading(String filePath) {
+    File file = new File(filePath);
+    final RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
+    MultipartBody.Part body = MultipartBody.Part.createFormData("upload", file.getName(), requestFile);
+    RetrofitServiceGenerator.getService().uploadFile(body).enqueue(new Callback<FileUploadReponse>() {
+      @Override
+      public void onResponse(Call<FileUploadReponse> call, Response<FileUploadReponse> response) {
+        if (response.isSuccessful()) {
+          downloadUrl = response.body().getDownloadUrl();
+          progressBar.setVisibility(GONE);
+          informationTv.setText("Uploaded");
+          if (imageActionListener != null) {
+            imageActionListener.onImageUploaded(downloadUrl);
+          }
+          showAndhideActionContainer();
+        } else {
+          Log.d("ImageUpload", response.errorBody().toString());
+          informationTv.setText("Error");
+          downloadUrl = null;
+          progressBar.setVisibility(GONE);
+        }
+      }
 
-		public String getDownloadUrl() {
-				return downloadUrl;
-		}
+      @Override
+      public void onFailure(Call<FileUploadReponse> call, Throwable t) {
+        Log.d("ImageUpload", t.toString());
+        informationTv.setText("Error");
+        progressBar.setVisibility(GONE);
+        downloadUrl = null;
+      }
+    });
+  }
 
-		private void showAndhideActionContainer() {
-				actionContainer.setVisibility(VISIBLE);
-				new Handler().postDelayed(new Runnable() {
-						@Override
-						public void run() {
-								actionContainer.setVisibility(GONE);
-						}
-				}, 2000);
-		}
+  public String getDownloadUrl() {
+    return downloadUrl;
+  }
 
-		private ImageActionListener imageActionListener;
+  public void setImageActionListener(ImageActionListener imageActionListener) {
+    this.imageActionListener = imageActionListener;
+  }
 
-		public void setImageActionListener(ImageActionListener imageActionListener) {
-				this.imageActionListener = imageActionListener;
-		}
+  public interface ImageActionListener {
+    void onImageRemoved();
 
-		public interface ImageActionListener {
-				void onImageRemoved();
-
-				void onImageUploaded(String downloadUrl);
-		}
+    void onImageUploaded(String downloadUrl);
+  }
 }

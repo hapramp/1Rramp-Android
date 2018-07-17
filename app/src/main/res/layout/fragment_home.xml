@@ -4,13 +4,12 @@
     android:orientation="vertical">
 
 
-    <com.hapramp.views.feedlist.FeedListView
-        xmlns:customNS="http://schemas.android.com/apk/res/com.hapramp"
+    <com.hapramp.views.feedlist.FeedListView xmlns:customNS="http://schemas.android.com/apk/res/com.hapramp"
         android:id="@+id/feedListView"
         android:layout_width="match_parent"
-        customNS:wantTopSpaceOffset="true"
+        android:layout_height="match_parent"
         customNS:topOffset="108"
-        android:layout_height="match_parent"/>
+        customNS:wantTopSpaceOffset="true" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/sectionsRv"
@@ -21,12 +20,12 @@
     <ProgressBar
         android:id="@+id/progressBarLoadingRecite"
         style="?android:attr/progressBarStyleHorizontal"
-        android:indeterminate="true"
-        android:layout_below="@+id/sectionsRv"
         android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:layout_below="@+id/sectionsRv"
+        android:indeterminate="true"
         android:padding="0dp"
-        android:visibility="gone"
-        android:layout_height="12dp"/>
+        android:visibility="gone" />
 
 
 </RelativeLayout>

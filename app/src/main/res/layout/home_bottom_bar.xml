@@ -5,19 +5,19 @@
 
     <ImageView
         android:id="@+id/shadow"
-        android:layout_above="@+id/bottombar_container"
         android:layout_width="match_parent"
         android:layout_height="2dp"
+        android:layout_above="@+id/bottombar_container"
         android:scaleType="centerCrop"
         android:src="@drawable/bottom_bar_shadow" />
 
 
     <LinearLayout
         android:id="@+id/bottombar_container"
-        android:layout_alignParentBottom="true"
-        android:background="#ffffff"
         android:layout_width="match_parent"
         android:layout_height="54dp"
+        android:layout_alignParentBottom="true"
+        android:background="#ffffff"
         android:orientation="horizontal"
         android:weightSum="5">
 
@@ -92,11 +92,11 @@
 
 
         <FrameLayout
-            android:background="#ffffff"
             android:layout_width="0dp"
             android:layout_height="54dp"
             android:layout_gravity="bottom"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:background="#ffffff">
 
             <TextView
                 android:id="@+id/bottomBar_profile"
@@ -123,11 +123,11 @@
 
 
         <FrameLayout
-            android:background="#ffffff"
             android:layout_width="0dp"
             android:layout_height="54dp"
             android:layout_gravity="bottom"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:background="#ffffff">
 
             <TextView
                 android:id="@+id/bottomBar_settings"

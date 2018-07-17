@@ -11,46 +11,45 @@
         android:scaleType="centerInside" />
 
     <RelativeLayout
-        android:padding="8dp"
-        android:background="#90767676"
+        android:id="@+id/actionContainer"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:id="@+id/actionContainer">
+        android:background="#90767676"
+        android:padding="8dp">
 
         <TextView
-            android:textColor="@color/white"
-            android:layout_centerVertical="true"
             android:id="@+id/informationTv"
-            android:text="Processing..."
-            android:textSize="16sp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="Processing..."
+            android:textColor="@color/white"
+            android:textSize="16sp" />
 
         <TextView
-            android:layout_centerVertical="true"
-           android:layout_alignParentEnd="true"
-            android:textSize="16sp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:layout_marginEnd="8dp"
-            android:textColor="@color/white"
-            android:background="@drawable/filled_btn_bg"
             android:id="@+id/removeBtn"
-            android:text="Remove"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/filled_btn_bg"
+            android:paddingBottom="4dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="4dp"
+            android:text="Remove"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
 
     </RelativeLayout>
 
     <ProgressBar
-        android:layout_below="@+id/actionContainer"
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
-        android:indeterminate="true"
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        />
+        android:layout_below="@+id/actionContainer"
+        android:indeterminate="true" />
 
 </RelativeLayout>

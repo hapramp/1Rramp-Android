@@ -1,6 +1,5 @@
 package com.hapramp.main;
 
-import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDexApplication;
 
@@ -12,16 +11,16 @@ import com.google.firebase.FirebaseApp;
 
 public class HapRampMain extends MultiDexApplication {
 
-    private static Context context;
+  private static Context context;
 
-    public void onCreate() {
-        super.onCreate();
-        HapRampMain.context = getApplicationContext();
-        FirebaseApp.initializeApp(context);
-    }
+  public static Context getContext() {
+    return context;
+  }
 
-    public static Context getContext() {
-        return context;
-    }
+  public void onCreate() {
+    super.onCreate();
+    HapRampMain.context = getApplicationContext();
+    FirebaseApp.initializeApp(context);
+  }
 
 }

@@ -5,6 +5,7 @@ package com.hapramp.interfaces;
  */
 
 public interface LikePostCallback {
-    void onPostLiked(int postId);
-    void onPostLikeError();
+  void onPostLiked(int postId);
+
+  void onPostLikeError();
 }

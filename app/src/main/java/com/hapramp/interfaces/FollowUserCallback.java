@@ -5,6 +5,7 @@ package com.hapramp.interfaces;
  */
 
 public interface FollowUserCallback {
-    void onUserFollowSet(boolean state);
-    void onUserFollowSetFailed(boolean state);
+  void onUserFollowSet(boolean state);
+
+  void onUserFollowSetFailed(boolean state);
 }

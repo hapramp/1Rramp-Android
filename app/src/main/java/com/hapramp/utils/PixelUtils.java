@@ -15,38 +15,38 @@ import com.hapramp.main.HapRampMain;
 
 public class PixelUtils {
 
-    private static String height;
+  private static String height;
 
-    public static int pxToDp(int px) {
-        return (int) (px / Resources.getSystem().getDisplayMetrics().density);
-    }
+  public static int pxToDp(int px) {
+    return (int) (px / Resources.getSystem().getDisplayMetrics().density);
+  }
 
-    public static int dpToPx(int dp) {
-        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
-    }
+  public static int dpToPx(int dp) {
+    return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+  }
 
-    public static int getWidth(){
+  public static int getWidth() {
 
-        WindowManager wm = (WindowManager) HapRampMain.getContext().getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        return size.x/2;
+    WindowManager wm = (WindowManager) HapRampMain.getContext().getSystemService(Context.WINDOW_SERVICE);
+    Display display = wm.getDefaultDisplay();
+    Point size = new Point();
+    display.getSize(size);
+    return size.x / 2;
 
-    }
+  }
 
-    public static DisplayMetrics getDimension(Context context){
+  public static DisplayMetrics getDimension(Context context) {
 
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        return metrics;
-    }
+    DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+    return metrics;
+  }
 
-    public static int getHeight() {
+  public static int getHeight() {
 
-        WindowManager wm = (WindowManager) HapRampMain.getContext().getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        return size.y/2;
-    }
+    WindowManager wm = (WindowManager) HapRampMain.getContext().getSystemService(Context.WINDOW_SERVICE);
+    Display display = wm.getDefaultDisplay();
+    Point size = new Point();
+    display.getSize(size);
+    return size.y / 2;
+  }
 }

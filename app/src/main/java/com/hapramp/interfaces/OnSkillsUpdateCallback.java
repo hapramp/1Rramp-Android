@@ -5,6 +5,7 @@ package com.hapramp.interfaces;
  */
 
 public interface OnSkillsUpdateCallback {
-    void onSkillsUpdated();
-    void onSkillsUpdateFailed();
+  void onSkillsUpdated();
+
+  void onSkillsUpdateFailed();
 }

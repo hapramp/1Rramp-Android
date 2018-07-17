@@ -7,18 +7,18 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class DeviceId {
-    @SerializedName("device_id")
-    public String deviceId;
+  @SerializedName("device_id")
+  public String deviceId;
 
-    public DeviceId(String deviceId) {
-        this.deviceId = deviceId;
-    }
+  public DeviceId(String deviceId) {
+    this.deviceId = deviceId;
+  }
 
-    public String getDeviceId() {
-        return deviceId;
-    }
+  public String getDeviceId() {
+    return deviceId;
+  }
 
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
-    }
+  public void setDeviceId(String deviceId) {
+    this.deviceId = deviceId;
+  }
 }

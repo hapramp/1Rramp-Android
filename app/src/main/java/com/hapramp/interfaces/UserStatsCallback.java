@@ -7,6 +7,7 @@ import com.hapramp.datamodels.response.UserStatsModel;
  */
 
 public interface UserStatsCallback {
-    void onUserStatsFetched(UserStatsModel stats);
-    void onUserStatsFetchError();
+  void onUserStatsFetched(UserStatsModel stats);
+
+  void onUserStatsFetchError();
 }

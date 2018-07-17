@@ -4,37 +4,37 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:layout_marginTop="48dp"
-        android:layout_centerHorizontal="true"
         android:id="@+id/imageView"
-        android:src="@drawable/onboarding_earning"
-        android:scaleType="centerCrop"
         android:layout_width="256dp"
-        android:layout_height="256dp" />
+        android:layout_height="256dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="48dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/onboarding_earning" />
 
     <TextView
-        android:textSize="20sp"
-        android:textColor="#3f72af"
-        android:layout_marginBottom="16dp"
-        android:layout_centerHorizontal="true"
         android:id="@+id/onboardingTitle"
-        android:textStyle="bold"
-        android:text="EARN REWARDS"
-        android:layout_marginTop="36dp"
-        android:layout_below="@+id/imageView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="36dp"
+        android:text="EARN REWARDS"
+        android:textColor="#3f72af"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/onboardingContent"
-        android:textColor="#8B000000"
-        android:ellipsize="marquee"
-        android:textSize="14sp"
-        android:layout_marginTop="8dp"
-        android:text="Earn Rewards for your content."
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/onboardingTitle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/onboardingTitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:ellipsize="marquee"
+        android:text="Earn Rewards for your content."
+        android:textColor="#8B000000"
+        android:textSize="14sp" />
 
 </RelativeLayout>

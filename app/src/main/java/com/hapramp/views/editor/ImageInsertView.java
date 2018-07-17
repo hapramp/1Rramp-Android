@@ -23,50 +23,49 @@ import butterknife.ButterKnife;
 public class ImageInsertView extends FrameLayout {
 
 
-    @BindView(R.id.image_btn)
-    TextView imageBtn;
-    @BindView(R.id.container)
-    RelativeLayout container;
+  @BindView(R.id.image_btn)
+  TextView imageBtn;
+  @BindView(R.id.container)
+  RelativeLayout container;
+  private ImageInsertListener insertListener;
 
-    public ImageInsertView(@NonNull Context context) {
-        super(context);
-        init(context);
-    }
+  public ImageInsertView(@NonNull Context context) {
+    super(context);
+    init(context);
+  }
 
-    public ImageInsertView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
+  private void init(Context context) {
 
-    public ImageInsertView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context);
-    }
+    View view = LayoutInflater.from(context).inflate(R.layout.article_image_insert_view, this);
+    ButterKnife.bind(this, view);
+    imageBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
 
-    private void init(Context context) {
+    container.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        if (insertListener != null) {
+          insertListener.onInsertImage();
+        }
+      }
+    });
+  }
 
-        View view = LayoutInflater.from(context).inflate(R.layout.article_image_insert_view, this);
-        ButterKnife.bind(this, view);
-        imageBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
+  public ImageInsertView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
+    init(context);
+  }
 
-        container.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (insertListener != null) {
-                    insertListener.onInsertImage();
-                }
-            }
-        });
-    }
+  public ImageInsertView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init(context);
+  }
 
-    private ImageInsertListener insertListener;
+  public void setInsertListener(ImageInsertListener insertListener) {
+    this.insertListener = insertListener;
+  }
 
-    public void setInsertListener(ImageInsertListener insertListener) {
-        this.insertListener = insertListener;
-    }
-
-    public interface ImageInsertListener {
-        void onInsertImage();
-    }
+  public interface ImageInsertListener {
+    void onInsertImage();
+  }
 
 }

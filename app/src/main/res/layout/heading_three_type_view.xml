@@ -9,8 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="2dp"
-        android:paddingStart="8dp"
         android:paddingEnd="8dp"
+        android:paddingStart="8dp"
         android:textColor="@color/Black87"
         android:textSize="22sp" />
 

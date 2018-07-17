@@ -22,64 +22,63 @@ import butterknife.ButterKnife;
 
 public class ItalicView extends FrameLayout {
 
-    @BindView(R.id.italic_button)
-    TextView italic;
-    @BindView(R.id.container)
-    RelativeLayout container;
-    private boolean isEnabled;
+  @BindView(R.id.italic_button)
+  TextView italic;
+  @BindView(R.id.container)
+  RelativeLayout container;
+  private boolean isEnabled;
+  private ItalicTextListener italicTextListener;
 
-    public ItalicView(@NonNull Context context) {
-        super(context);
-        init(context);
-    }
+  public ItalicView(@NonNull Context context) {
+    super(context);
+    init(context);
+  }
 
-    public ItalicView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
+  private void init(Context context) {
 
-    public ItalicView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context);
-    }
+    View view = LayoutInflater.from(context).inflate(R.layout.italic_view, this);
+    ButterKnife.bind(this, view);
+    italic.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
 
-    private void init(Context context) {
-
-        View view = LayoutInflater.from(context).inflate(R.layout.italic_view, this);
-        ButterKnife.bind(this, view);
-        italic.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-
-        container.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                isEnabled = !isEnabled;
-                invalidateButton();
-            }
-        });
+    container.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        isEnabled = !isEnabled;
+        invalidateButton();
+      }
+    });
 
 
-    }
+  }
 
-    private void invalidateButton() {
+  private void invalidateButton() {
 //        if (isEnabled) {
 //            italic.setTextColor(colorActive);
 //        } else {
 //            italic.setTextColor(colorInactive);
 //        }
 
-        if(italicTextListener!=null){
-            italicTextListener.onItalicText(isEnabled);
-        }
+    if (italicTextListener != null) {
+      italicTextListener.onItalicText(isEnabled);
     }
+  }
 
-    private ItalicTextListener italicTextListener;
+  public ItalicView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
+    init(context);
+  }
 
-    public void setItalicTextListener(ItalicTextListener italicTextListener) {
-        this.italicTextListener = italicTextListener;
-    }
+  public ItalicView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init(context);
+  }
 
-    public interface ItalicTextListener{
-        void onItalicText(boolean isActive);
-    }
+  public void setItalicTextListener(ItalicTextListener italicTextListener) {
+    this.italicTextListener = italicTextListener;
+  }
+
+  public interface ItalicTextListener {
+    void onItalicText(boolean isActive);
+  }
 
 }

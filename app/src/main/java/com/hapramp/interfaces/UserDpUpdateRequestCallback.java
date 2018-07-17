@@ -5,6 +5,7 @@ package com.hapramp.interfaces;
  */
 
 public interface UserDpUpdateRequestCallback {
-    void onUserDataUpdated();
-    void onUserDataUpdateError();
+  void onUserDataUpdated();
+
+  void onUserDataUpdateError();
 }

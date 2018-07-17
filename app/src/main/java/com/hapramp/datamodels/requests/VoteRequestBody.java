@@ -8,11 +8,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class VoteRequestBody {
 
-    @SerializedName("vote")
-    public int vote;
+  @SerializedName("vote")
+  public int vote;
 
-    public VoteRequestBody(int vote) {
-        this.vote = vote;
-    }
+  public VoteRequestBody(int vote) {
+    this.vote = vote;
+  }
 
 }

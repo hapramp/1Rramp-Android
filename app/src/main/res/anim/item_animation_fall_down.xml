@@ -2,25 +2,24 @@
     android:duration="@integer/anim_duration_medium">
 
     <!--<translate-->
-        <!--android:fromYDelta="4%"-->
-        <!--android:toYDelta="0"-->
-        <!--android:interpolator="@android:anim/decelerate_interpolator"-->
-        <!--/>-->
+    <!--android:fromYDelta="4%"-->
+    <!--android:toYDelta="0"-->
+    <!--android:interpolator="@android:anim/decelerate_interpolator"-->
+    <!--/>-->
 
     <alpha
         android:fromAlpha="0.8"
-        android:toAlpha="1"
         android:interpolator="@android:anim/decelerate_interpolator"
-        />
+        android:toAlpha="1" />
 
     <!--<scale-->
-        <!--android:fromXScale="101%"-->
-        <!--android:fromYScale="101%"-->
-        <!--android:toXScale="100%"-->
-        <!--android:toYScale="100%"-->
-        <!--android:pivotX="50%"-->
-        <!--android:pivotY="50%"-->
-        <!--android:interpolator="@android:anim/decelerate_interpolator"-->
-        <!--/>-->
+    <!--android:fromXScale="101%"-->
+    <!--android:fromYScale="101%"-->
+    <!--android:toXScale="100%"-->
+    <!--android:toYScale="100%"-->
+    <!--android:pivotX="50%"-->
+    <!--android:pivotY="50%"-->
+    <!--android:interpolator="@android:anim/decelerate_interpolator"-->
+    <!--/>-->
 
 </set>

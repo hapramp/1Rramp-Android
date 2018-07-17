@@ -8,14 +8,14 @@ import android.view.View;
 
 public class YoutubeFragmentHolder {
 
-    public static View view;
+  public static View view;
 
-    public static void setView(View _view){
-        view = _view;
-    }
+  public static View getView() {
+    return view;
+  }
 
-    public static View getView(){
-        return view;
-    }
+  public static void setView(View _view) {
+    view = _view;
+  }
 
 }
