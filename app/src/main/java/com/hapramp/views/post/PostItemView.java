@@ -295,6 +295,45 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
       });
   }
 
+<<<<<<< HEAD
+=======
+  private long getVotePercentSum(List<Voter> activeVotes) {
+    long sum = 0;
+    for (int i = 0; i < activeVotes.size(); i++) {
+      sum += activeVotes.get(i).getPercent();
+    }
+    return sum;
+  }
+
+  private boolean checkForMyVote(List<Voter> votes) {
+    for (int i = 0; i < votes.size(); i++) {
+      if (votes.get(i).getVoter().equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername()) && votes.get(i).getPercent() > 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private long getMyVotePercent(List<Voter> votes) {
+    for (int i = 0; i < votes.size(); i++) {
+      if (votes.get(i).getVoter().equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
+        return votes.get(i).getPercent();
+      }
+    }
+    return 0;
+  }
+
+  private long getNonZeroVoters(List<Voter> votes) {
+    long sum = 0;
+    for (int i = 0; i < votes.size(); i++) {
+      if (votes.get(i).getPercent() > 0) {
+        sum++;
+      }
+    }
+    return sum;
+  }
+
+>>>>>>> ec40afb9a4ebe812020d637080638571a4bbfc45
   /*
    *  author of the vote: author of the pose
    *  cancel vote
@@ -375,8 +414,12 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         steemConnect.vote(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(), getAuthor(), getPermlinkAsString(), String.valueOf(vote), new SteemConnectCallback() {
           @Override
           public void onResponse(String s) {
+<<<<<<< HEAD
             addMeAsVoter(vote);
             //Notifyer.notifyVote(getFullPermlinkAsString(), vote);
+=======
+            Notifyer.notifyVote(getFullPermlinkAsString(), vote);
+>>>>>>> ec40afb9a4ebe812020d637080638571a4bbfc45
             mHandler.post(new Runnable() {
               @Override
               public void run() {

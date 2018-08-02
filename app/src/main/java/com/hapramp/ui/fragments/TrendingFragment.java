@@ -241,7 +241,11 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
 
   @Override
   public void onDataLoaded(ArrayList<Feed> feeds) {
+<<<<<<< HEAD
     if (feedListView != null)
       feedListView.feedsRefreshed(feeds);
+=======
+    feedListView.feedsRefreshed(feeds);
+>>>>>>> ec40afb9a4ebe812020d637080638571a4bbfc45
   }
 }

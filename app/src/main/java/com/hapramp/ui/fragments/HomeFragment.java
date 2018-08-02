@@ -85,8 +85,13 @@ public class HomeFragment extends Fragment implements
     rawApiCaller = new RawApiCaller();
   }
 
+<<<<<<< HEAD
   private void loadTestData(String tag) {
     rawApiCaller.requestNewFeeds(mContext,tag);
+=======
+  private void loadTestData() {
+    rawApiCaller.requestNewFeeds(mContext);
+>>>>>>> ec40afb9a4ebe812020d637080638571a4bbfc45
     rawApiCaller.setDataCallback(this);
   }
   private void initCategoryView() {
@@ -127,7 +132,11 @@ public class HomeFragment extends Fragment implements
       .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
       .createRequestParam();
     // serviceWorker.requestCommunityFeeds(serviceWorkerRequestParams);
+<<<<<<< HEAD
     loadTestData(tag);
+=======
+    loadTestData();
+>>>>>>> ec40afb9a4ebe812020d637080638571a4bbfc45
   }
 
   private void fetchUserCommunities() {
@@ -192,8 +201,13 @@ public class HomeFragment extends Fragment implements
     feedListView.setFeedListViewListener(this);
     feedListView.initialLoading();
     feedListView.setTopMarginForShimmer(104);
+<<<<<<< HEAD
     //fetchAllPosts();
     loadTestData("bitcoin");
+=======
+    fetchAllPosts();
+    loadTestData();
+>>>>>>> ec40afb9a4ebe812020d637080638571a4bbfc45
   }
 
   @Override
@@ -262,6 +276,10 @@ public class HomeFragment extends Fragment implements
       .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
       .createRequestParam();
     //serviceWorker.requestAllFeeds(serviceWorkerRequestParams);
+<<<<<<< HEAD
+=======
+    loadTestData();
+>>>>>>> ec40afb9a4ebe812020d637080638571a4bbfc45
   }
 
   @Override
@@ -481,7 +499,11 @@ public class HomeFragment extends Fragment implements
 
   @Override
   public void onDataLoaded(ArrayList<Feed> feeds) {
+<<<<<<< HEAD
     if(feedListView!=null)
       feedListView.feedsRefreshed(feeds);
+=======
+    feedListView.feedsRefreshed(feeds);
+>>>>>>> ec40afb9a4ebe812020d637080638571a4bbfc45
   }
 }

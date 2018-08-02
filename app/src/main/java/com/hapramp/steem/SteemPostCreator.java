@@ -27,6 +27,7 @@ public class SteemPostCreator {
 
   @WorkerThread
   public void createPost(final String body, final String title, final List<String> images, final List<String> tags, final String __permlink) {
+<<<<<<< HEAD
     if (AccessTokenValidator.isTokenExpired()) {
       if (steemPostCreatorCallback != null) {
         steemPostCreatorCallback.onPostCreationFailedOnSteem("Token Expired! Login Required!");
@@ -34,6 +35,8 @@ public class SteemPostCreator {
       return;
     }
 
+=======
+>>>>>>> ec40afb9a4ebe812020d637080638571a4bbfc45
     new Thread() {
       @Override
       public void run() {

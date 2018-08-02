@@ -44,7 +44,11 @@ import com.hapramp.steem.SteemCommentCreator;
 import com.hapramp.steem.SteemCommentModel;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.FeedWrapper;
+<<<<<<< HEAD
 import com.hapramp.steem.models.Voter;
+=======
+import com.hapramp.steem.models.data.ActiveVote;
+>>>>>>> ec40afb9a4ebe812020d637080638571a4bbfc45
 import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;
 import com.hapramp.steemconnect4j.SteemConnectException;
@@ -268,8 +272,12 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
 
   private void bindPostValues() {
     detailsActivityCover.setVisibility(View.GONE);
+<<<<<<< HEAD
     commentsViewModel.getSteemComments(post.getAuthor(),
       post.getPermlink()).observeForever(new Observer<List<SteemCommentModel>>() {
+=======
+    commentsViewModel.getSteemComments(post.getAuthor(), post.getPermlink()).observeForever(new Observer<List<SteemCommentModel>>() {
+>>>>>>> ec40afb9a4ebe812020d637080638571a4bbfc45
       @Override
       public void onChanged(@Nullable List<SteemCommentModel> steemCommentModels) {
         commentLoadingProgressBar.setVisibility(View.GONE);
@@ -277,13 +285,18 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         addAllCommentsToView(steemCommentModels);
       }
     });
+<<<<<<< HEAD
     ImageHandler.loadCircularImage(this, feedOwnerPic,
       String.format(getResources().getString(R.string.steem_user_profile_pic_format), post.getAuthor()));
+=======
+    ImageHandler.loadCircularImage(this, feedOwnerPic, String.format(getResources().getString(R.string.steem_user_profile_pic_format), post.getAuthor()));
+>>>>>>> ec40afb9a4ebe812020d637080638571a4bbfc45
     feedOwnerTitle.setText(post.getAuthor());
     feedOwnerSubtitle.setText(
       String.format(getResources().getString(R.string.post_subtitle_format),
         MomentsUtils.getFormattedTime(post.getCreatedAt())));
     markdownView.loadMarkdown(post.getBody(), "file:///android_asset/md_theme.css");
+<<<<<<< HEAD
     ImageHandler.loadCircularImage(this, commentCreaterAvatar,
       String.format(getResources().getString(R.string.steem_user_profile_pic_format),
         HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
@@ -310,6 +323,20 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     }
   }
 
+=======
+    //ImageHandler.loadCircularImage(this, commentCreaterAvatar, String.format(getResources().getString(R.string.steem_user_profile_pic_format), HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
+    attachListenersOnStarView();
+  }
+
+  private void navigateToCommentsPage() {
+    Intent intent = new Intent(DetailedActivity.this, CommentsActivity.class);
+    intent.putExtra(Constants.EXTRAA_KEY_POST_AUTHOR, post.getAuthor());
+    intent.putExtra(Constants.EXTRAA_KEY_POST_PERMLINK, post.getPermlink());
+    intent.putParcelableArrayListExtra(Constants.EXTRAA_KEY_COMMENTS, (ArrayList<SteemCommentModel>) comments);
+    startActivity(intent);
+  }
+
+>>>>>>> ec40afb9a4ebe812020d637080638571a4bbfc45
   @Override
   public void onCommentCreateProcessing() {
   }
