@@ -25,6 +25,7 @@ public class ImageHandler {
   public static void load(Context context, ImageView target, String _uri) {
     Glide.with(context)
       .load(_uri)
+      .diskCacheStrategy(DiskCacheStrategy.RESULT)
       .listener(new RequestListener<String, GlideDrawable>() {
         @Override
         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -44,7 +45,7 @@ public class ImageHandler {
           return false;
         }
       })
-      .diskCacheStrategy(DiskCacheStrategy.RESULT)
+      .skipMemoryCache(true)
       .into(target);
   }
 
@@ -52,9 +53,10 @@ public class ImageHandler {
     try {
       Glide.with(context)
         .load(_uri)
+        .skipMemoryCache(true)
         .override(PixelUtils.dpToPx(72), PixelUtils.dpToPx(72))
         .centerCrop()
-        .diskCacheStrategy(DiskCacheStrategy.ALL)
+        .diskCacheStrategy(DiskCacheStrategy.RESULT)
         .into(imageView);
 
     }
@@ -69,6 +71,8 @@ public class ImageHandler {
         .asBitmap()
         .placeholder(R.drawable.profile)
         .centerCrop()
+        .skipMemoryCache(true)
+        .diskCacheStrategy(DiskCacheStrategy.RESULT)
         .into(new BitmapImageViewTarget(imageView) {
           @Override
           protected void setResource(Bitmap resource) {

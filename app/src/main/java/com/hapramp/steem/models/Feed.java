@@ -1,24 +1,15 @@
 package com.hapramp.steem.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
+
 /**
  * Created by Ankit on 3/8/2018.
  */
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import com.hapramp.steem.models.data.ActiveVote;
-import com.hapramp.steem.models.data.Beneficiary;
-import com.hapramp.steem.models.data.JsonMetadata;
-
-import java.util.ArrayList;
-import java.util.List;
-
-
 public class Feed implements Parcelable {
-
   @SuppressWarnings("unused")
   public static final Parcelable.Creator<Feed> CREATOR = new Parcelable.Creator<Feed>() {
     @Override
@@ -31,138 +22,36 @@ public class Feed implements Parcelable {
       return new Feed[size];
     }
   };
-  @SerializedName("id")
-  @Expose
-  public Long id;
-  @SerializedName("author")
-  @Expose
-  public String author;
-  @SerializedName("permlink")
-  @Expose
-  public String permlink;
-  @SerializedName("category")
-  @Expose
-  public String category;
-  @SerializedName("parent_author")
-  @Expose
-  public String parentAuthor;
-  @SerializedName("parent_permlink")
-  @Expose
-  public String parentPermlink;
-  @SerializedName("title")
-  @Expose
-  public String title;
-  @SerializedName("body")
-  @Expose
-  public String body;
-  @SerializedName("json_metadata")
-  @Expose
-  public JsonMetadata jsonMetadata;
-  @SerializedName("last_update")
-  @Expose
-  public String lastUpdate;
-  @SerializedName("created")
-  @Expose
-  public String created;
-  @SerializedName("active")
-  @Expose
-  public String active;
-  @SerializedName("last_payout")
-  @Expose
-  public String lastPayout;
-  @SerializedName("depth")
-  @Expose
-  public Long depth;
-  @SerializedName("children")
-  @Expose
-  public Long children;
-  @SerializedName("net_rshares")
-  @Expose
-  public Long netRshares;
-  @SerializedName("abs_rshares")
-  @Expose
-  public Long absRshares;
-  @SerializedName("vote_rshares")
-  @Expose
-  public Long voteRshares;
-  @SerializedName("children_abs_rshares")
-  @Expose
-  public Long childrenAbsRshares;
-  @SerializedName("cashout_time")
-  @Expose
-  public String cashoutTime;
-  @SerializedName("max_cashout_time")
-  @Expose
-  public String maxCashoutTime;
-  @SerializedName("total_vote_weight")
-  @Expose
-  public Long totalVoteWeight;
-  @SerializedName("reward_weight")
-  @Expose
-  public Long rewardWeight;
-  @SerializedName("total_payout_value")
-  @Expose
-  public String totalPayoutValue;
-  @SerializedName("curator_payout_value")
-  @Expose
-  public String curatorPayoutValue;
-  @SerializedName("author_rewards")
-  @Expose
-  public Long authorRewards;
-  @SerializedName("net_votes")
-  @Expose
-  public Long netVotes;
-  @SerializedName("root_author")
-  @Expose
-  public String rootAuthor;
-  @SerializedName("root_permlink")
-  @Expose
-  public String rootPermlink;
-  @SerializedName("max_accepted_payout")
-  @Expose
-  public String maxAcceptedPayout;
-  @SerializedName("percent_steem_dollars")
-  @Expose
-  public Long percentSteemDollars;
-  @SerializedName("allow_replies")
-  @Expose
-  public Boolean allowReplies;
-  @SerializedName("allow_votes")
-  @Expose
-  public Boolean allowVotes;
-  @SerializedName("allow_curation_rewards")
-  @Expose
-  public Boolean allowCurationRewards;
-  @SerializedName("beneficiaries")
-  @Expose
-  public List<Beneficiary> beneficiaries = new ArrayList<>();
-  @SerializedName("url")
-  @Expose
-  public String url;
-  @SerializedName("root_title")
-  @Expose
-  public String rootTitle;
-  @SerializedName("pending_payout_value")
-  @Expose
-  public String pendingPayoutValue;
-  @SerializedName("total_pending_payout_value")
-  @Expose
-  public String totalPendingPayoutValue;
-  @SerializedName("active_votes")
-  @Expose
-  public List<ActiveVote> activeVotes = new ArrayList<>();
-  @SerializedName("author_reputation")
-  @Expose
-  public Long authorReputation;
-  @SerializedName("promoted")
-  @Expose
-  public String promoted;
-  @SerializedName("body_length")
-  @Expose
-  public Long bodyLength;
+  private String author;
+  private String permlink;
+  private String category;
+  private String parentAuthor;
+  private String parentPermlink;
+  private String title;
+  private String body;
+  private String cleanedBody;
+  private String featuredImageUrl;
+  private String format;
+  private ArrayList<String> tags;
+  private String createdAt;
+  private int depth;
+  private int children;
+  private String totalPayoutValue;
+  private String curatorPayoutValue;
+  private String rootAuthor;
+  private String rootPermlink;
+  private String url;
+  private String pendingPayoutValue;
+  private String totalPendingPayoutValue;
+  private ArrayList<Voter> voters;
+  private String authorReputation;
+
+  @Override
+  public int describeContents() {
+    return 0;
+  }
 
   protected Feed(Parcel in) {
-    id = in.readByte() == 0x00 ? null : in.readLong();
     author = in.readString();
     permlink = in.readString();
     category = in.readString();
@@ -170,69 +59,39 @@ public class Feed implements Parcelable {
     parentPermlink = in.readString();
     title = in.readString();
     body = in.readString();
-    jsonMetadata = (JsonMetadata) in.readValue(JsonMetadata.class.getClassLoader());
-    lastUpdate = in.readString();
-    created = in.readString();
-    active = in.readString();
-    lastPayout = in.readString();
-    depth = in.readByte() == 0x00 ? null : in.readLong();
-    children = in.readByte() == 0x00 ? null : in.readLong();
-    netRshares = in.readByte() == 0x00 ? null : in.readLong();
-    absRshares = in.readByte() == 0x00 ? null : in.readLong();
-    voteRshares = in.readByte() == 0x00 ? null : in.readLong();
-    childrenAbsRshares = in.readByte() == 0x00 ? null : in.readLong();
-    cashoutTime = in.readString();
-    maxCashoutTime = in.readString();
-    totalVoteWeight = in.readByte() == 0x00 ? null : in.readLong();
-    rewardWeight = in.readByte() == 0x00 ? null : in.readLong();
+    cleanedBody = in.readString();
+    featuredImageUrl = in.readString();
+    format = in.readString();
+    if (in.readByte() == 0x01) {
+      tags = new ArrayList<String>();
+      in.readList(tags, String.class.getClassLoader());
+    } else {
+      tags = null;
+    }
+    createdAt = in.readString();
+    depth = in.readInt();
+    children = in.readInt();
     totalPayoutValue = in.readString();
     curatorPayoutValue = in.readString();
-    authorRewards = in.readByte() == 0x00 ? null : in.readLong();
-    netVotes = in.readByte() == 0x00 ? null : in.readLong();
     rootAuthor = in.readString();
     rootPermlink = in.readString();
-    maxAcceptedPayout = in.readString();
-    percentSteemDollars = in.readByte() == 0x00 ? null : in.readLong();
-    byte allowRepliesVal = in.readByte();
-    allowReplies = allowRepliesVal == 0x02 ? null : allowRepliesVal != 0x00;
-    byte allowVotesVal = in.readByte();
-    allowVotes = allowVotesVal == 0x02 ? null : allowVotesVal != 0x00;
-    byte allowCurationRewardsVal = in.readByte();
-    allowCurationRewards = allowCurationRewardsVal == 0x02 ? null : allowCurationRewardsVal != 0x00;
-    if (in.readByte() == 0x01) {
-      beneficiaries = new ArrayList<Beneficiary>();
-      in.readList(beneficiaries, Beneficiary.class.getClassLoader());
-    } else {
-      beneficiaries = null;
-    }
     url = in.readString();
-    rootTitle = in.readString();
     pendingPayoutValue = in.readString();
     totalPendingPayoutValue = in.readString();
     if (in.readByte() == 0x01) {
-      activeVotes = new ArrayList<ActiveVote>();
-      in.readList(activeVotes, ActiveVote.class.getClassLoader());
+      voters = new ArrayList<Voter>();
+      in.readList(voters, Voter.class.getClassLoader());
     } else {
-      activeVotes = null;
+      voters = null;
     }
-    authorReputation = in.readByte() == 0x00 ? null : in.readLong();
-    promoted = in.readString();
-    bodyLength = in.readByte() == 0x00 ? null : in.readLong();
+    authorReputation = in.readString();
   }
 
-  @Override
-  public int describeContents() {
-    return 0;
+  public Feed() {
   }
 
   @Override
   public void writeToParcel(Parcel dest, int flags) {
-    if (id == null) {
-      dest.writeByte((byte) (0x00));
-    } else {
-      dest.writeByte((byte) (0x01));
-      dest.writeLong(id);
-    }
     dest.writeString(author);
     dest.writeString(permlink);
     dest.writeString(category);
@@ -240,127 +99,244 @@ public class Feed implements Parcelable {
     dest.writeString(parentPermlink);
     dest.writeString(title);
     dest.writeString(body);
-    dest.writeValue(jsonMetadata);
-    dest.writeString(lastUpdate);
-    dest.writeString(created);
-    dest.writeString(active);
-    dest.writeString(lastPayout);
-    if (depth == null) {
+    dest.writeString(cleanedBody);
+    dest.writeString(featuredImageUrl);
+    dest.writeString(format);
+    if (tags == null) {
       dest.writeByte((byte) (0x00));
     } else {
       dest.writeByte((byte) (0x01));
-      dest.writeLong(depth);
+      dest.writeList(tags);
     }
-    if (children == null) {
-      dest.writeByte((byte) (0x00));
-    } else {
-      dest.writeByte((byte) (0x01));
-      dest.writeLong(children);
-    }
-    if (netRshares == null) {
-      dest.writeByte((byte) (0x00));
-    } else {
-      dest.writeByte((byte) (0x01));
-      dest.writeLong(netRshares);
-    }
-    if (absRshares == null) {
-      dest.writeByte((byte) (0x00));
-    } else {
-      dest.writeByte((byte) (0x01));
-      dest.writeLong(absRshares);
-    }
-    if (voteRshares == null) {
-      dest.writeByte((byte) (0x00));
-    } else {
-      dest.writeByte((byte) (0x01));
-      dest.writeLong(voteRshares);
-    }
-    if (childrenAbsRshares == null) {
-      dest.writeByte((byte) (0x00));
-    } else {
-      dest.writeByte((byte) (0x01));
-      dest.writeLong(childrenAbsRshares);
-    }
-    dest.writeString(cashoutTime);
-    dest.writeString(maxCashoutTime);
-    if (totalVoteWeight == null) {
-      dest.writeByte((byte) (0x00));
-    } else {
-      dest.writeByte((byte) (0x01));
-      dest.writeLong(totalVoteWeight);
-    }
-    if (rewardWeight == null) {
-      dest.writeByte((byte) (0x00));
-    } else {
-      dest.writeByte((byte) (0x01));
-      dest.writeLong(rewardWeight);
-    }
+    dest.writeString(createdAt);
+    dest.writeInt(depth);
+    dest.writeInt(children);
     dest.writeString(totalPayoutValue);
     dest.writeString(curatorPayoutValue);
-    if (authorRewards == null) {
-      dest.writeByte((byte) (0x00));
-    } else {
-      dest.writeByte((byte) (0x01));
-      dest.writeLong(authorRewards);
-    }
-    if (netVotes == null) {
-      dest.writeByte((byte) (0x00));
-    } else {
-      dest.writeByte((byte) (0x01));
-      dest.writeLong(netVotes);
-    }
     dest.writeString(rootAuthor);
     dest.writeString(rootPermlink);
-    dest.writeString(maxAcceptedPayout);
-    if (percentSteemDollars == null) {
-      dest.writeByte((byte) (0x00));
-    } else {
-      dest.writeByte((byte) (0x01));
-      dest.writeLong(percentSteemDollars);
-    }
-    if (allowReplies == null) {
-      dest.writeByte((byte) (0x02));
-    } else {
-      dest.writeByte((byte) (allowReplies ? 0x01 : 0x00));
-    }
-    if (allowVotes == null) {
-      dest.writeByte((byte) (0x02));
-    } else {
-      dest.writeByte((byte) (allowVotes ? 0x01 : 0x00));
-    }
-    if (allowCurationRewards == null) {
-      dest.writeByte((byte) (0x02));
-    } else {
-      dest.writeByte((byte) (allowCurationRewards ? 0x01 : 0x00));
-    }
-    if (beneficiaries == null) {
-      dest.writeByte((byte) (0x00));
-    } else {
-      dest.writeByte((byte) (0x01));
-      dest.writeList(beneficiaries);
-    }
     dest.writeString(url);
-    dest.writeString(rootTitle);
     dest.writeString(pendingPayoutValue);
     dest.writeString(totalPendingPayoutValue);
-    if (activeVotes == null) {
+    if (voters == null) {
       dest.writeByte((byte) (0x00));
     } else {
       dest.writeByte((byte) (0x01));
-      dest.writeList(activeVotes);
+      dest.writeList(voters);
     }
-    if (authorReputation == null) {
-      dest.writeByte((byte) (0x00));
-    } else {
-      dest.writeByte((byte) (0x01));
-      dest.writeLong(authorReputation);
-    }
-    dest.writeString(promoted);
-    if (bodyLength == null) {
-      dest.writeByte((byte) (0x00));
-    } else {
-      dest.writeByte((byte) (0x01));
-      dest.writeLong(bodyLength);
-    }
+    dest.writeString(authorReputation);
+  }
+
+  public String getCleanedBody() {
+    return cleanedBody;
+  }
+
+  public void setCleanedBody(String cleanedBody) {
+    this.cleanedBody = cleanedBody;
+  }
+
+  public String getAuthor() {
+    return author;
+  }
+
+  public void setAuthor(String author) {
+    this.author = author;
+  }
+
+  public String getPermlink() {
+    return permlink;
+  }
+
+  public void setPermlink(String permlink) {
+    this.permlink = permlink;
+  }
+
+  public String getCategory() {
+    return category;
+  }
+
+  public void setCategory(String category) {
+    this.category = category;
+  }
+
+  public String getParentAuthor() {
+    return parentAuthor;
+  }
+
+  public void setParentAuthor(String parentAuthor) {
+    this.parentAuthor = parentAuthor;
+  }
+
+  public String getParentPermlink() {
+    return parentPermlink;
+  }
+
+  public void setParentPermlink(String parentPermlink) {
+    this.parentPermlink = parentPermlink;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public String getBody() {
+    return body;
+  }
+
+  public void setBody(String body) {
+    this.body = body;
+  }
+
+  public String getFeaturedImageUrl() {
+    return featuredImageUrl;
+  }
+
+  public void setFeaturedImageUrl(String featuredImageUrl) {
+    this.featuredImageUrl = featuredImageUrl;
+  }
+
+  public String getFormat() {
+    return format;
+  }
+
+  public void setFormat(String format) {
+    this.format = format;
+  }
+
+  public ArrayList<String> getTags() {
+    return tags;
+  }
+
+  public void setTags(ArrayList<String> tags) {
+    this.tags = tags;
+  }
+
+  public String getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(String createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public int getDepth() {
+    return depth;
+  }
+
+  public void setDepth(int depth) {
+    this.depth = depth;
+  }
+
+  public int getChildren() {
+    return children;
+  }
+
+  public void setChildren(int children) {
+    this.children = children;
+  }
+
+  public String getTotalPayoutValue() {
+    return totalPayoutValue;
+  }
+
+  public void setTotalPayoutValue(String totalPayoutValue) {
+    this.totalPayoutValue = totalPayoutValue;
+  }
+
+  public String getCuratorPayoutValue() {
+    return curatorPayoutValue;
+  }
+
+  public void setCuratorPayoutValue(String curatorPayoutValue) {
+    this.curatorPayoutValue = curatorPayoutValue;
+  }
+
+  public String getRootAuthor() {
+    return rootAuthor;
+  }
+
+  public void setRootAuthor(String rootAuthor) {
+    this.rootAuthor = rootAuthor;
+  }
+
+  public String getRootPermlink() {
+    return rootPermlink;
+  }
+
+  public void setRootPermlink(String rootPermlink) {
+    this.rootPermlink = rootPermlink;
+  }
+
+  public String getUrl() {
+    return url;
+  }
+
+  public void setUrl(String url) {
+    this.url = url;
+  }
+
+  public String getPendingPayoutValue() {
+    return pendingPayoutValue;
+  }
+
+  public void setPendingPayoutValue(String pendingPayoutValue) {
+    this.pendingPayoutValue = pendingPayoutValue;
+  }
+
+  public String getTotalPendingPayoutValue() {
+    return totalPendingPayoutValue;
+  }
+
+  public void setTotalPendingPayoutValue(String totalPendingPayoutValue) {
+    this.totalPendingPayoutValue = totalPendingPayoutValue;
+  }
+
+  public ArrayList<Voter> getVoters() {
+    return voters;
+  }
+
+  public void setVoters(ArrayList<Voter> voters) {
+    this.voters = voters;
+  }
+
+  public String getAuthorReputation() {
+    return authorReputation;
+  }
+
+  public void setAuthorReputation(String authorReputation) {
+    this.authorReputation = authorReputation;
+  }
+
+  @Override
+  public String toString() {
+    return "Feed{" +
+      "author='" + author + '\'' +
+      ", permlink='" + permlink + '\'' +
+      ", category='" + category + '\'' +
+      ", parentAuthor='" + parentAuthor + '\'' +
+      ", parentPermlink='" + parentPermlink + '\'' +
+      ", title='" + title + '\'' +
+      ", body='" + body + '\'' +
+      ", cleanedBody='" + cleanedBody + '\'' +
+      ", featuredImageUrl='" + featuredImageUrl + '\'' +
+      ", format='" + format + '\'' +
+      ", tags=" + tags +
+      ", createdAt='" + createdAt + '\'' +
+      ", depth=" + depth +
+      ", children=" + children +
+      ", totalPayoutValue='" + totalPayoutValue + '\'' +
+      ", curatorPayoutValue='" + curatorPayoutValue + '\'' +
+      ", rootAuthor='" + rootAuthor + '\'' +
+      ", rootPermlink='" + rootPermlink + '\'' +
+      ", url='" + url + '\'' +
+      ", pendingPayoutValue='" + pendingPayoutValue + '\'' +
+      ", totalPendingPayoutValue='" + totalPendingPayoutValue + '\'' +
+      ", voters=" + voters +
+      ", authorReputation='" + authorReputation + '\'' +
+      '}';
   }
 }

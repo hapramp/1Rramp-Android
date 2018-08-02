@@ -13,6 +13,7 @@ import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.api.RawApiCaller;
 import com.hapramp.datastore.ServiceWorker;
 import com.hapramp.interfaces.datatore_callback.ServiceWorkerCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -35,7 +36,7 @@ import butterknife.Unbinder;
  * Created by Ankit on 4/14/2018.
  */
 
-public class HotFragment extends Fragment implements FeedListView.FeedListViewListener, ServiceWorkerCallback {
+public class HotFragment extends Fragment implements FeedListView.FeedListViewListener, ServiceWorkerCallback, RawApiCaller.DataCallback {
   @BindView(R.id.feedListView)
   FeedListView feedListView;
   private Unbinder unbinder;
@@ -44,10 +45,13 @@ public class HotFragment extends Fragment implements FeedListView.FeedListViewLi
   private ServiceWorkerRequestParams serviceWorkerRequestParams;
   private String lastAuthor;
   private String lastPermlink;
+  private Context context;
+  private RawApiCaller rawApiCaller;
 
   @Override
   public void onAttach(Context context) {
     super.onAttach(context);
+    this.context = context;
     AnalyticsUtil.getInstance(getActivity()).setCurrentScreen(getActivity(), AnalyticsParams.SCREEN_HOT, null);
   }
 
@@ -55,6 +59,8 @@ public class HotFragment extends Fragment implements FeedListView.FeedListViewLi
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Crashlytics.setString(CrashReporterKeys.UI_ACTION, "hot fragment");
+    rawApiCaller = new RawApiCaller();
+    rawApiCaller.setDataCallback(this);
     setRetainInstance(true);
     prepareServiceWorker();
   }
@@ -86,7 +92,8 @@ public class HotFragment extends Fragment implements FeedListView.FeedListViewLi
       .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
       .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
       .createRequestParam();
-    serviceWorker.requestHotPosts(serviceWorkerRequestParams);
+    //  serviceWorker.requestHotPosts(serviceWorkerRequestParams);
+    rawApiCaller.requestHotFeeds(context);
   }
 
   private void prepareServiceWorker() {
@@ -118,7 +125,7 @@ public class HotFragment extends Fragment implements FeedListView.FeedListViewLi
       .setLastPermlink(lastPermlink)
       .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
       .createRequestParam();
-    serviceWorker.requestAppendableFeedForHot(serviceWorkerRequestParams);
+    //serviceWorker.requestAppendableFeedForHot(serviceWorkerRequestParams);
   }
 
   @Override
@@ -229,4 +236,8 @@ public class HotFragment extends Fragment implements FeedListView.FeedListViewLi
     //NA
   }
 
+  @Override
+  public void onDataLoaded(ArrayList<Feed> feeds) {
+    feedListView.feedsRefreshed(feeds);
+  }
 }

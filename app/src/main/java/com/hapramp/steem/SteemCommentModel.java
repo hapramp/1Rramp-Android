@@ -30,19 +30,22 @@ public class SteemCommentModel implements Parcelable {
   public String commentAuthor;
   public String comment;
   public String createdAt;
+  public int children;
   public String commentAuthorImageUri;
 
   protected SteemCommentModel(Parcel in) {
     commentAuthor = in.readString();
     comment = in.readString();
     createdAt = in.readString();
+    children = in.readInt();
     commentAuthorImageUri = in.readString();
   }
 
-  public SteemCommentModel(String commentAuthor, String comment, String createdAt, String commentAuthorImageUri) {
+  public SteemCommentModel(String commentAuthor, String comment, String createdAt, int children, String commentAuthorImageUri) {
     this.commentAuthor = commentAuthor;
     this.comment = comment;
     this.createdAt = createdAt;
+    this.children = children;
     this.commentAuthorImageUri = commentAuthorImageUri;
   }
 
@@ -56,6 +59,7 @@ public class SteemCommentModel implements Parcelable {
     dest.writeString(commentAuthor);
     dest.writeString(comment);
     dest.writeString(createdAt);
+    dest.writeInt(children);
     dest.writeString(commentAuthorImageUri);
   }
 
@@ -77,6 +81,14 @@ public class SteemCommentModel implements Parcelable {
 
   public String getCreatedAt() {
     return createdAt;
+  }
+
+  public int getChildren() {
+    return children;
+  }
+
+  public void setChildren(int children) {
+    this.children = children;
   }
 
   public String getCommentAuthorImageUri() {

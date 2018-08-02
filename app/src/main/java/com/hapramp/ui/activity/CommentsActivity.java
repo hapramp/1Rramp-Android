@@ -153,7 +153,7 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
 
     SteemCommentModel steemCommentModel = new SteemCommentModel(
       HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
-      cmnt, MomentsUtils.getCurrentTime(),
+      cmnt, MomentsUtils.getCurrentTime(),0,
       String.format(getResources().getString(R.string.steem_user_profile_pic_format),
         HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
     AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_COMMENT);

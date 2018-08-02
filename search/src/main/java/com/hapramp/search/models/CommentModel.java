@@ -39,6 +39,9 @@ public class CommentModel {
     @SerializedName("parent_permlink")
     private String parent_permlink;
     @Expose
+    @SerializedName("children")
+    private int children;
+    @Expose
     @SerializedName("parent_author")
     private String parent_author;
     @Expose
@@ -60,13 +63,12 @@ public class CommentModel {
     @SerializedName("created")
     private String created;
 
-    public Discussions(String json_metadata, String body, String title, String parent_permlink,
-                       String parent_author, String category, String permlink, String author,
-                       int id, String last_update, String created) {
+    public Discussions(String json_metadata, String body, String title, String parent_permlink, int children, String parent_author, String category, String permlink, String author, int id, String last_update, String created) {
       this.json_metadata = json_metadata;
       this.body = body;
       this.title = title;
       this.parent_permlink = parent_permlink;
+      this.children = children;
       this.parent_author = parent_author;
       this.category = category;
       this.permlink = permlink;
@@ -86,6 +88,14 @@ public class CommentModel {
 
     public String getTitle() {
       return title;
+    }
+
+    public int getChildren() {
+      return children;
+    }
+
+    public void setChildren(int children) {
+      this.children = children;
     }
 
     public String getParent_permlink() {

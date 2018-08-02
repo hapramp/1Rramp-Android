@@ -1,64 +1,51 @@
 package com.hapramp.ui.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
-import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datamodels.FeaturedImageSelectionModel;
-import com.hapramp.datamodels.response.ConfirmationResponse;
-import com.hapramp.editor.Editor;
-import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.FeedDataConstants;
-import com.hapramp.steem.PermlinkGenerator;
-import com.hapramp.steem.PostConfirmationModel;
-import com.hapramp.steem.PreProcessingModel;
-import com.hapramp.steem.ProcessedBodyResponse;
 import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.steem.models.data.Content;
-import com.hapramp.steem.models.data.FeedDataItemModel;
-import com.hapramp.ui.adapters.FeaturedImageAdapter;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FilePathUtils;
 import com.hapramp.utils.FontManager;
-import com.hapramp.views.editor.EditorView;
+import com.hapramp.views.editor.LinkInsertDialog;
 import com.hapramp.views.hashtag.CustomHashTagInput;
 import com.hapramp.views.post.PostCategoryView;
-import com.hapramp.youtube.YoutubeVideoSelectorActivity;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import xute.markdeditor.EditorControlBar;
+import xute.markdeditor.MarkDEditor;
 
-import static com.hapramp.views.editor.YoutubeInsertButtonView.YOUTUBE_RESULT_REQUEST;
+public class CreateArticleActivity extends AppCompatActivity implements SteemPostCreator.SteemPostCreatorCallback, EditorControlBar.EditorControlListener {
 
-public class CreateArticleActivity extends AppCompatActivity implements EditorView.OnImageUploadListener, SteemPostCreator.SteemPostCreatorCallback {
-
+  private static final int REQUEST_IMAGE_SELECTOR = 119;
   @BindView(R.id.closeBtn)
   TextView closeBtn;
   @BindView(R.id.previewButton)
@@ -85,10 +72,12 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
   RelativeLayout skillsWrapper;
   @BindView(R.id.metaView)
   RelativeLayout metaView;
-  Editor editor;
-  @BindView(R.id.editorView)
-  EditorView editorView;
-  FeaturedImageAdapter featuredImageAdapter;
+  @BindView(R.id.article_title)
+  EditText articleTitleEt;
+  @BindView(R.id.mdEditor)
+  MarkDEditor markDEditor;
+  @BindView(R.id.controlBar)
+  EditorControlBar editorControlBar;
   private ArrayList<FeaturedImageSelectionModel> insertedImages;
   private ProgressDialog progressDialog;
   private Dialog dialog;
@@ -97,6 +86,8 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
   private Content postStructureModel;
   private String generated_permalink;
   private String permlink_with_username;
+  private String body;
+  private List<String> images;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -110,34 +101,16 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
   }
 
   private void init() {
-
     closeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     backBtnFromArticleMeta.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-    editor = editorView.getEditor();
     progressDialog = new ProgressDialog(this);
-    editorView.setOnImageUploadListener(this);
     insertedImages = new ArrayList<>();
-    featuredImageAdapter = new FeaturedImageAdapter(this);
     articleCategoryView.initCategory();
-
+    editorControlBar.setEditorControlListener(this);
+    editorControlBar.setEditor(markDEditor);
   }
 
   private void attachListeners() {
-
-    // draft button
-    previewButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-
-        ArrayList<FeedDataItemModel> feedDataItemModels = editorView.getDataItemList();
-        Intent i = new Intent(CreateArticleActivity.this, PreviewActivity.class);
-        i.putParcelableArrayListExtra("data", feedDataItemModels);
-        startActivity(i);
-
-      }
-    });
-
-    //next Button
     nextButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -152,7 +125,6 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
       }
     });
 
-    // publish
     publishButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -180,16 +152,38 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
   }
 
   private void publishArticle() {
-    title = editorView.getHeading();
+    title = articleTitleEt.getText().toString().trim();
     tags = (ArrayList<String>) articleCategoryView.getSelectedTags();
-    if (articleCategoryView.getSelectedTags().size() == 1) {
-      toast("Select atleast 1 Community");
-      return;
-    }
     includeCustomTags(tags);
-    List<FeedDataItemModel> datas = editorView.getDataItemList();
-    postStructureModel = new Content(datas, FeedDataConstants.FEED_TYPE_ARTICLE);
-    sendPostToServerForProcessing(postStructureModel);
+    body = markDEditor.getMarkdownContent();
+    images = markDEditor.getImageList();
+    if (validArticle()) {
+      sendPostToSteemBlockChain();
+    }
+  }
+
+  private boolean validArticle() {
+    if (title.length() > 0) {
+      if (tags.size() > 0) {
+        if (body.length() > 0) {
+          return true;
+        } else {
+          toast("Article is too short!");
+        }
+      } else {
+        toast("Select atleast 1 community!");
+      }
+    } else {
+      toast("Article should have some title.");
+    }
+    return false;
+  }
+
+  private void sendPostToSteemBlockChain() {
+    showPublishingProgressDialog(true, "Adding to Blockchain...");
+    SteemPostCreator steemPostCreator = new SteemPostCreator();
+    steemPostCreator.setSteemPostCreatorCallback(this);
+    steemPostCreator.createPost(body, title, images, tags, generated_permalink);
   }
 
   private void showConnectivityError() {
@@ -201,7 +195,6 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
   }
 
   private void showExistAlert() {
-
     AlertDialog.Builder builder = new AlertDialog.Builder(this)
       .setTitle("Close")
       .setMessage("Do you want to Close Post Creation ?")
@@ -212,9 +205,7 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
         }
       })
       .setNegativeButton("No", null);
-
     builder.show();
-
   }
 
   private void toast(String s) {
@@ -225,39 +216,9 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     tags.addAll(tagsInputBox.getHashTags());
   }
 
-  private void sendPostToServerForProcessing(Content content) {
-    generated_permalink = PermlinkGenerator.getPermlink();
-    permlink_with_username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername() + "/" + generated_permalink;
-    PreProcessingModel preProcessingModel = new PreProcessingModel(permlink_with_username, new Gson().toJson(content));
-    RetrofitServiceGenerator.getService().sendForPreProcessing(preProcessingModel).enqueue(new Callback<ProcessedBodyResponse>() {
-      @Override
-      public void onResponse(Call<ProcessedBodyResponse> call, Response<ProcessedBodyResponse> response) {
-        if (response.isSuccessful()) {
-          sendPostToSteemBlockChain(response.body().getmBody());
-        } else {
-          toast("Something went wrong while pre-processing...");
-          showPublishingProgressDialog(false, "");
-        }
-      }
-
-      @Override
-      public void onFailure(Call<ProcessedBodyResponse> call, Throwable t) {
-        toast("Something went wrong with network(" + t.toString() + ")");
-        showPublishingProgressDialog(false, "");
-      }
-    });
-  }
-
   private void close() {
     finish();
     overridePendingTransition(R.anim.slide_down_enter, R.anim.slide_down_exit);
-  }
-
-  private void sendPostToSteemBlockChain(final String body) {
-    showPublishingProgressDialog(true, "Adding to Blockchain...");
-    SteemPostCreator steemPostCreator = new SteemPostCreator();
-    steemPostCreator.setSteemPostCreatorCallback(this);
-    steemPostCreator.createPost(body, title, tags, postStructureModel, generated_permalink);
   }
 
   private void showPublishingProgressDialog(boolean show, String msg) {
@@ -276,96 +237,17 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
   }
 
   @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-    if (requestCode == editor.PICK_IMAGE_REQUEST) {
-      if (resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
-        Uri uri = data.getData();
-        try {
-          Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-          String filePath = FilePathUtils.getPath(this, uri);
-          editor.insertImage(bitmap, filePath);
-        }
-        catch (IOException e) {
-          e.printStackTrace();
-        }
-      }
-    } else if (requestCode == YOUTUBE_RESULT_REQUEST) {
-      if (resultCode == Activity.RESULT_OK) {
-        String videoId = data.getStringExtra(YoutubeVideoSelectorActivity.EXTRA_VIDEO_KEY);
-        editorView.insertYoutube(videoId);
-      } else {
-        Toast.makeText(this, "No Video Selected!", Toast.LENGTH_SHORT).show();
-      }
-    }
-  }
-
-  @Override
   public void onBackPressed() {
     showExistAlert();
   }
 
   @Override
-  protected void onPause() {
-    super.onPause();
-    //     saveDraft();
-  }
-
-  @Override
-  protected void onResume() {
-    super.onResume();
-    // restoreDraft();
-  }
-
-  private void restoreDraft() {
-    editor.render(HaprampPreferenceManager.getInstance().getArticleAsDraft());
-  }
-
-  @Override
-  public void onImageUploaded(String remotePath) {
-    insertedImages.add(new FeaturedImageSelectionModel(false, remotePath));
-    feedFeaturedImageData();
-  }
-
-  private void feedFeaturedImageData() {
-
-    featuredImageAdapter.setImageSelectionModels(insertedImages);
-
-  }
-
-  @Override
   public void onPostCreatedOnSteem() {
     toast("Your post will take few seconds to appear");
-    showPublishingProgressDialog(false, "");
-    // send confirmation to server
-    confirmServerForPostCreation();
+    closeEditor();
   }
 
-  private void confirmServerForPostCreation() {
-    showPublishingProgressDialog(true, "Sending Confirmation to Server...");
-    RetrofitServiceGenerator.getService()
-      .sendPostCreationConfirmation(new PostConfirmationModel(permlink_with_username))
-      .enqueue(new Callback<ConfirmationResponse>() {
-        @Override
-        public void onResponse(Call<ConfirmationResponse> call, Response<ConfirmationResponse> response) {
-          if (response.isSuccessful()) {
-            serverConfirmed();
-          } else {
-            toast("Failed to Confirm Server!");
-            showPublishingProgressDialog(false, "");
-          }
-        }
-
-        @Override
-        public void onFailure(Call<ConfirmationResponse> call, Throwable t) {
-          toast("Something went wrong (" + t.toString() + ")");
-          showPublishingProgressDialog(false, "");
-        }
-      });
-
-  }
-
-  private void serverConfirmed() {
+  private void closeEditor() {
     toast("Your post is live now.");
     showPublishingProgressDialog(false, "");
     AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_ARTICLE);
@@ -384,4 +266,68 @@ public class CreateArticleActivity extends AppCompatActivity implements EditorVi
     Log.d(CreateArticleActivity.class.getSimpleName(), msg);
   }
 
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (requestCode == REQUEST_IMAGE_SELECTOR) {
+      if (resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+        Uri uri = data.getData();
+        String filePath = FilePathUtils.getPath(this, uri);
+        addImage(filePath);
+      }
+    }
+  }
+
+  public void addImage(String filePath) {
+    markDEditor.insertImage(filePath);
+  }
+
+  @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    switch (requestCode) {
+      case REQUEST_IMAGE_SELECTOR:
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+          openGallery();
+        } else {
+          Toast.makeText(this, "Permission not granted to access images.", Toast.LENGTH_SHORT).show();
+        }
+        break;
+    }
+  }
+
+  private void openGallery() {
+    try {
+      if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_SELECTOR);
+      } else {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, REQUEST_IMAGE_SELECTOR);
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public void onInsertImageClicked() {
+    openGallery();
+  }
+
+  @Override
+  public void onInserLinkClicked() {
+    showLinkInsertDialog();
+  }
+
+  private void showLinkInsertDialog() {
+    LinkInsertDialog linkInsertDialog = new LinkInsertDialog(this);
+    linkInsertDialog.setOnLinkInsertedListener(new LinkInsertDialog.OnLinkInsertedListener() {
+      @Override
+      public void onLinkAdded(String text, String link) {
+        markDEditor.addLink(text, link);
+      }
+    });
+    linkInsertDialog.show();
+  }
 }

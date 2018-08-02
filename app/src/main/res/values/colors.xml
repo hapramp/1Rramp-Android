@@ -23,5 +23,6 @@
 
     <color name="ConnectivityGreen">#169422</color>
     <color name="ConnectivityRed">#9b1836</color>
+    <color name="white">#ffffff</color>
 
 </resources>

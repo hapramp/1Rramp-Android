@@ -53,6 +53,7 @@ public class SteemReplyFetcher implements CommentsSearchManager.CommentFetchCall
         discussion.getAuthor(),
         discussion.getBody(),
         discussion.getCreated(),
+        discussion.getChildren(),
         "https://steemitimages.com/u/" + discussion.getAuthor() + "/avatar/small"
       ));
     }

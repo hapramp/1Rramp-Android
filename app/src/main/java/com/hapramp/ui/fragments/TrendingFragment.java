@@ -14,6 +14,7 @@ import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.api.RawApiCaller;
 import com.hapramp.datastore.ServiceWorker;
 import com.hapramp.interfaces.datatore_callback.ServiceWorkerCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -36,7 +37,7 @@ import butterknife.Unbinder;
  * Created by Ankit on 4/14/2018.
  */
 
-public class TrendingFragment extends Fragment implements FeedListView.FeedListViewListener, ServiceWorkerCallback {
+public class TrendingFragment extends Fragment implements FeedListView.FeedListViewListener, ServiceWorkerCallback, RawApiCaller.DataCallback {
   @BindView(R.id.feedListView)
   FeedListView feedListView;
   Unbinder unbinder;
@@ -45,10 +46,13 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
   private ServiceWorker serviceWorker;
   private String lastAuthor;
   private String lastPermlink;
+  private Context context;
+  private RawApiCaller rawApiCaller;
 
   @Override
   public void onAttach(Context context) {
     super.onAttach(context);
+    this.context = context;
     AnalyticsUtil.getInstance(getActivity()).setCurrentScreen((Activity) context, AnalyticsParams.SCREEN_TRENDING, null);
   }
 
@@ -56,6 +60,8 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Crashlytics.setString(CrashReporterKeys.UI_ACTION, "trending fragment");
+    rawApiCaller = new RawApiCaller();
+    rawApiCaller.setDataCallback(this);
     setRetainInstance(true);
     prepareServiceWorker();
   }
@@ -87,7 +93,8 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
       .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
       .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
       .createRequestParam();
-    serviceWorker.requestTrendingPosts(serviceWorkerRequestParams);
+   // serviceWorker.requestTrendingPosts(serviceWorkerRequestParams);
+    rawApiCaller.requestTrendingFeeds(context);
   }
 
   private void prepareServiceWorker() {
@@ -112,18 +119,14 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
 
   @Override
   public void onLoadMoreFeeds() {
-
     serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
-
     serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(Communities.TAG_HAPRAMP)
       .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
       .setLastAuthor(lastAuthor)
       .setLastPermlink(lastPermlink)
       .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
       .createRequestParam();
-
-    serviceWorker.requestAppendableFeedForTrending(serviceWorkerRequestParams);
-
+//    serviceWorker.requestAppendableFeedForTrending(serviceWorkerRequestParams);
   }
 
   @Override
@@ -234,5 +237,10 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
   @Override
   public void onAppendableDataLoadingFailed() {
     //NA
+  }
+
+  @Override
+  public void onDataLoaded(ArrayList<Feed> feeds) {
+    feedListView.feedsRefreshed(feeds);
   }
 }

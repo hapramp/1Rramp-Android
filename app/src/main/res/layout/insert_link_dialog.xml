@@ -17,10 +17,19 @@
         android:textSize="16sp" />
 
     <EditText
-        android:id="@+id/link_input"
+        android:id="@+id/link_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/link_lbl"
+        android:backgroundTint="@color/colorPrimary"
+        android:hint="Link text"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/url_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/link_text"
         android:layout_marginBottom="8dp"
         android:backgroundTint="@color/colorPrimary"
         android:hint="http://"
@@ -30,7 +39,7 @@
         android:id="@+id/cancelBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/link_input"
+        android:layout_below="@+id/url_text"
         android:layout_marginEnd="8dp"
         android:layout_toStartOf="@+id/addLinkBtn"
         android:background="?selectableItemBackgroundBorderless"
@@ -47,7 +56,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/link_input"
+        android:layout_below="@+id/url_text"
         android:background="?selectableItemBackgroundBorderless"
         android:paddingBottom="8dp"
         android:paddingEnd="16dp"
