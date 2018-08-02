@@ -14,6 +14,7 @@ import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.api.RawApiCaller;
 import com.hapramp.datastore.ServiceWorker;
 import com.hapramp.interfaces.datatore_callback.ServiceWorkerCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -36,7 +37,7 @@ import butterknife.Unbinder;
  * Created by Ankit on 4/14/2018.
  */
 
-public class LatestFragment extends Fragment implements FeedListView.FeedListViewListener, ServiceWorkerCallback {
+public class LatestFragment extends Fragment implements FeedListView.FeedListViewListener, ServiceWorkerCallback, RawApiCaller.DataCallback {
 
   @BindView(R.id.feedListView)
   FeedListView feedListView;
@@ -46,10 +47,13 @@ public class LatestFragment extends Fragment implements FeedListView.FeedListVie
   private ServiceWorker serviceWorker;
   private String lastAuthor;
   private String lastPermlink;
+  private RawApiCaller rawApiCaller;
+  private Context mContext;
 
   @Override
   public void onAttach(Context context) {
     super.onAttach(context);
+    this.mContext = context;
     AnalyticsUtil.getInstance(getActivity()).setCurrentScreen((Activity) context, AnalyticsParams.SCREEN_NEW, null);
   }
 
@@ -57,6 +61,8 @@ public class LatestFragment extends Fragment implements FeedListView.FeedListVie
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Crashlytics.setString(CrashReporterKeys.UI_ACTION, "latest fragment");
+    rawApiCaller = new RawApiCaller();
+    rawApiCaller.setDataCallback(this);
     setRetainInstance(true);
     prepareServiceWorker();
   }
@@ -88,7 +94,8 @@ public class LatestFragment extends Fragment implements FeedListView.FeedListVie
       .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
       .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
       .createRequestParam();
-    serviceWorker.requestLatestPosts(serviceWorkerRequestParams);
+  //  serviceWorker.requestLatestPosts(serviceWorkerRequestParams);
+    rawApiCaller.requestNewFeeds(mContext);
   }
 
   private void prepareServiceWorker() {
@@ -120,7 +127,7 @@ public class LatestFragment extends Fragment implements FeedListView.FeedListVie
       .setLastPermlink(lastPermlink)
       .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
       .createRequestParam();
-    serviceWorker.requestAppendableFeedForLatest(serviceWorkerRequestParams);
+   // serviceWorker.requestAppendableFeedForLatest(serviceWorkerRequestParams);
   }
 
   @Override
@@ -231,5 +238,10 @@ public class LatestFragment extends Fragment implements FeedListView.FeedListVie
   @Override
   public void onAppendableDataLoadingFailed() {
     //NA
+  }
+
+  @Override
+  public void onDataLoaded(ArrayList<Feed> feeds) {
+    feedListView.feedsRefreshed(feeds);
   }
 }

@@ -4,7 +4,6 @@ import android.os.Handler;
 import android.support.annotation.WorkerThread;
 
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.models.data.Content;
 import com.hapramp.steem.models.data.JsonMetadata;
 import com.hapramp.steemconnect.SteemConnectUtils;
 import com.hapramp.steemconnect4j.SteemConnect;
@@ -26,7 +25,7 @@ public class SteemPostCreator {
   }
 
   @WorkerThread
-  public void createPost(final String body, final String title, final List<String> tags, final Content content, final String __permlink) {
+  public void createPost(final String body, final String title, final List<String> images, final List<String> tags, final String __permlink) {
     new Thread() {
       @Override
       public void run() {
@@ -34,7 +33,7 @@ public class SteemPostCreator {
           .getSteemConnectInstance(HaprampPreferenceManager.getInstance()
             .getSC2AccessToken());
         String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-        String jsonMetadata = new JsonMetadata(tags, content).getJson();
+        String jsonMetadata = new JsonMetadata(tags, images).getJson();
         steemConnect.comment("",
           LocalConfig.PARENT_PERMALINK,
           username,

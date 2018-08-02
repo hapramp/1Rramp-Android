@@ -7,7 +7,6 @@ import com.hapramp.R;
 import com.hapramp.steem.FeedDataConstants;
 import com.hapramp.steem.models.data.Content;
 import com.hapramp.steem.models.data.FeedDataItemModel;
-import com.hapramp.views.renderer.RendererView;
 
 import java.util.ArrayList;
 
@@ -16,18 +15,10 @@ import butterknife.ButterKnife;
 
 public class PreviewActivity extends AppCompatActivity {
 
-  @BindView(R.id.renderView)
-  RendererView renderView;
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
     setContentView(R.layout.activity_preview_activity);
-    ButterKnife.bind(this);
-    ArrayList<FeedDataItemModel> feedDataItemModels = getIntent().getParcelableArrayListExtra("data");
-    renderView.render(new Content(feedDataItemModels, FeedDataConstants.FEED_TYPE_ARTICLE));
-
   }
 
 }

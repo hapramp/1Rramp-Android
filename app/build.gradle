@@ -90,9 +90,10 @@ dependencies {
     implementation 'com.github.bxute:ProgressDots:v1.0.3'
     implementation 'com.github.hapramp:steemconnect4j:v1.22'
     implementation 'com.github.bxute:CryptoCoinView:v0.2'
+    compile 'us.feras.mdv:markdownview:1.1.0'
+    implementation 'com.github.bxute:MarkDEditor:v0.3'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':search')
-    implementation project(':hapramp-editor')
     implementation project(':youtube_player')
     implementation project(':WalletInfo')
 }

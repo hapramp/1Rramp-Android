@@ -1,6 +1,5 @@
 package com.hapramp.ui.fragments;
 
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -8,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,10 +25,10 @@ import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.api.RawApiCaller;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.datamodels.response.UserModel;
-import com.hapramp.datastore.ServiceWorker;
 import com.hapramp.interfaces.LikePostCallback;
 import com.hapramp.interfaces.datatore_callback.ServiceWorkerCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -55,7 +55,7 @@ import retrofit2.Response;
 
 
 public class HomeFragment extends Fragment implements
-  CategoryRecyclerAdapter.OnCategoryItemClickListener, LikePostCallback, FeedListView.FeedListViewListener, ServiceWorkerCallback {
+  CategoryRecyclerAdapter.OnCategoryItemClickListener, LikePostCallback, FeedListView.FeedListViewListener, ServiceWorkerCallback, RawApiCaller.DataCallback {
   public static final String ALL = "all";
   public static final String TAG = HomeFragment.class.getSimpleName();
   @BindView(R.id.feedListView)
@@ -64,7 +64,7 @@ public class HomeFragment extends Fragment implements
   RecyclerView sectionsRv;
   @BindView(R.id.progressBarLoadingRecite)
   ProgressBar progressBarLoadingRecite;
-  ServiceWorker serviceWorker;
+  //ServiceWorker serviceWorker;
   private Context mContext;
   private String currentSelectedTag = ALL;
   private CategoryRecyclerAdapter categoryRecyclerAdapter;
@@ -76,11 +76,19 @@ public class HomeFragment extends Fragment implements
   private String mCurrentUser;
   private ProgressDialog progressDialog;
   private AlertDialog alertDialog;
+  private Handler mHandler;
+  private RawApiCaller rawApiCaller;
 
   public HomeFragment() {
     Crashlytics.setString(CrashReporterKeys.UI_ACTION, "home fragment");
+    mHandler = new Handler();
+    rawApiCaller = new RawApiCaller();
   }
 
+  private void loadTestData() {
+    rawApiCaller.requestNewFeeds(mContext);
+    rawApiCaller.setDataCallback(this);
+  }
   private void initCategoryView() {
     try {
       categoryRecyclerAdapter = new CategoryRecyclerAdapter(mContext, this);
@@ -118,7 +126,8 @@ public class HomeFragment extends Fragment implements
       .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
       .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
       .createRequestParam();
-    serviceWorker.requestCommunityFeeds(serviceWorkerRequestParams);
+    // serviceWorker.requestCommunityFeeds(serviceWorkerRequestParams);
+    loadTestData();
   }
 
   private void fetchUserCommunities() {
@@ -156,9 +165,9 @@ public class HomeFragment extends Fragment implements
   }
 
   private void prepareServiceWorker() {
-    serviceWorker = new ServiceWorker();
-    serviceWorker.init(getActivity());
-    serviceWorker.setServiceWorkerCallback(this);
+//    serviceWorker = new ServiceWorker();
+//    serviceWorker.init(getActivity());
+//    serviceWorker.setServiceWorkerCallback(this);
     serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder()
       .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
       .setLimit(100);
@@ -184,15 +193,7 @@ public class HomeFragment extends Fragment implements
     feedListView.initialLoading();
     feedListView.setTopMarginForShimmer(104);
     fetchAllPosts();
-  }
-
-  private void fetchAllPosts() {
-    serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
-    serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(Communities.ALL)
-      .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
-      .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
-      .createRequestParam();
-    serviceWorker.requestAllFeeds(serviceWorkerRequestParams);
+    loadTestData();
   }
 
   @Override
@@ -254,15 +255,14 @@ public class HomeFragment extends Fragment implements
 
   //  CALLBACKS FROM FEED LIST VIEW
 
-  private void loadMore(String tag) {
+  private void fetchAllPosts() {
     serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
-    serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(tag)
+    serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(Communities.ALL)
       .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
-      .setLastAuthor(lastAuthor)
-      .setLastPermlink(lastPermlink)
       .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
       .createRequestParam();
-    serviceWorker.requestAppendableFeed(serviceWorkerRequestParams);
+    //serviceWorker.requestAllFeeds(serviceWorkerRequestParams);
+    loadTestData();
   }
 
   @Override
@@ -334,7 +334,6 @@ public class HomeFragment extends Fragment implements
 
   @Override
   public void onFeedsFetched(ArrayList<Feed> feeds, String lastAuthor, String lastPermlink) {
-
     if (feedListView != null) {
       if (currentSelectedTag.equals(Communities.ALL)) {
         feedListView.setHasMoreToLoad(feeds.size() == Constants.MAX_FEED_LOAD_LIMIT);
@@ -349,7 +348,6 @@ public class HomeFragment extends Fragment implements
     if (progressBarLoadingRecite != null) {
       progressBarLoadingRecite.setVisibility(View.GONE);
     }
-
   }
 
   @Override
@@ -469,5 +467,21 @@ public class HomeFragment extends Fragment implements
       .setNegativeButton(negativeButtonText, negativeListener)
       .create();
     alertDialog.show();
+  }
+
+  private void loadMore(String tag) {
+    serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
+    serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(tag)
+      .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
+      .setLastAuthor(lastAuthor)
+      .setLastPermlink(lastPermlink)
+      .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
+      .createRequestParam();
+    // serviceWorker.requestAppendableFeed(serviceWorkerRequestParams);
+  }
+
+  @Override
+  public void onDataLoaded(ArrayList<Feed> feeds) {
+    feedListView.feedsRefreshed(feeds);
   }
 }

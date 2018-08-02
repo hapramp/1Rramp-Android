@@ -45,7 +45,6 @@ import com.hapramp.steem.SteemCommentModel;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.FeedWrapper;
 import com.hapramp.steem.models.data.ActiveVote;
-import com.hapramp.steem.models.data.Content;
 import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;
 import com.hapramp.steemconnect4j.SteemConnectException;
@@ -58,7 +57,6 @@ import com.hapramp.utils.ShareUtils;
 import com.hapramp.viewmodel.comments.CommentsViewModel;
 import com.hapramp.views.comments.CommentView;
 import com.hapramp.views.extraa.StarView;
-import com.hapramp.views.renderer.RendererView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +66,7 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import us.feras.mdv.MarkdownView;
 
 import static android.view.View.VISIBLE;
 
@@ -94,8 +93,8 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
   TextView club1;
   @BindView(R.id.post_header_container)
   RelativeLayout postHeaderContainer;
-  @BindView(R.id.renderView)
-  RendererView renderView;
+  @BindView(R.id.markdownView)
+  MarkdownView markdownView;
   @BindView(R.id.shareBtn)
   TextView shareBtn;
   @BindView(R.id.commentsViewContainer)
@@ -140,7 +139,6 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
   private SteemCommentCreator steemCommentCreator;
   private List<SteemCommentModel> comments = new ArrayList<>();
   private CommentsViewModel commentsViewModel;
-  private String posturl;
   private SteemConnect steemConnect;
   private Runnable steemCastingVoteExceptionRunnable = new Runnable() {
     @Override
@@ -180,13 +178,8 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
   }
 
   private void collectExtras() {
-    posturl = getIntent().getExtras().getString(Constants.EXTRAA_KEY_POST_PERMLINK, null);
-    if (posturl != null) {
-      fetchPost(posturl);
-    } else {
-      post = getIntent().getExtras().getParcelable(Constants.EXTRAA_KEY_POST_DATA);
-      bindPostValues();
-    }
+    post = getIntent().getExtras().getParcelable(Constants.EXTRAA_KEY_POST_DATA);
+    bindPostValues();
   }
 
   private void fetchPost(String posturl) {
@@ -271,30 +264,32 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     popup.show();
   }
 
-  private void navigateToCommentsPage() {
-    Intent intent = new Intent(DetailedActivity.this, CommentsActivity.class);
-    intent.putExtra(Constants.EXTRAA_KEY_POST_AUTHOR, post.author);
-    intent.putExtra(Constants.EXTRAA_KEY_POST_PERMLINK, post.permlink);
-    intent.putParcelableArrayListExtra(Constants.EXTRAA_KEY_COMMENTS, (ArrayList<SteemCommentModel>) comments);
-    startActivity(intent);
+  private void bindPostValues() {
+    detailsActivityCover.setVisibility(View.GONE);
+    commentsViewModel.getSteemComments(post.getAuthor(), post.getPermlink()).observeForever(new Observer<List<SteemCommentModel>>() {
+      @Override
+      public void onChanged(@Nullable List<SteemCommentModel> steemCommentModels) {
+        commentLoadingProgressBar.setVisibility(View.GONE);
+        setCommentCount(steemCommentModels.size());
+        addAllCommentsToView(steemCommentModels);
+      }
+    });
+    ImageHandler.loadCircularImage(this, feedOwnerPic, String.format(getResources().getString(R.string.steem_user_profile_pic_format), post.getAuthor()));
+    feedOwnerTitle.setText(post.getAuthor());
+    feedOwnerSubtitle.setText(
+      String.format(getResources().getString(R.string.post_subtitle_format),
+        MomentsUtils.getFormattedTime(post.getCreatedAt())));
+    markdownView.loadMarkdown(post.getBody(), "file:///android_asset/md_theme.css");
+    //ImageHandler.loadCircularImage(this, commentCreaterAvatar, String.format(getResources().getString(R.string.steem_user_profile_pic_format), HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
+    attachListenersOnStarView();
   }
 
-  private void postComment() {
-    String cmnt = commentInputBox.getText().toString().trim();
-    commentInputBox.setText("");
-    if (cmnt.length() > 2) {
-      steemCommentCreator.createComment(cmnt, post.author, post.permlink);
-    } else {
-      Toast.makeText(this, "Comment Too Short!!", Toast.LENGTH_LONG).show();
-      return;
-    }
-    SteemCommentModel steemCommentModel = new SteemCommentModel(
-      HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
-      cmnt, MomentsUtils.getCurrentTime(),
-      String.format(getResources().getString(R.string.steem_user_profile_pic_format),
-        HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
-    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_COMMENT);
-    commentsViewModel.addComments(steemCommentModel, post.permlink);
+  private void navigateToCommentsPage() {
+    Intent intent = new Intent(DetailedActivity.this, CommentsActivity.class);
+    intent.putExtra(Constants.EXTRAA_KEY_POST_AUTHOR, post.getAuthor());
+    intent.putExtra(Constants.EXTRAA_KEY_POST_PERMLINK, post.getPermlink());
+    intent.putParcelableArrayListExtra(Constants.EXTRAA_KEY_COMMENTS, (ArrayList<SteemCommentModel>) comments);
+    startActivity(intent);
   }
 
   @Override
@@ -332,28 +327,22 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     sendCommentButton.setTypeface(t);
   }
 
-  private void bindPostValues() {
-    detailsActivityCover.setVisibility(View.GONE);
-    commentsViewModel.getSteemComments(post.author, post.permlink).observeForever(new Observer<List<SteemCommentModel>>() {
-      @Override
-      public void onChanged(@Nullable List<SteemCommentModel> steemCommentModels) {
-        commentLoadingProgressBar.setVisibility(View.GONE);
-        setCommentCount(steemCommentModels.size());
-        addAllCommentsToView(steemCommentModels);
-      }
-    });
-    ImageHandler.loadCircularImage(this, feedOwnerPic, String.format(getResources().getString(R.string.steem_user_profile_pic_format), post.author));
-    feedOwnerTitle.setText(post.author);
-    feedOwnerSubtitle.setText(
-      String.format(getResources().getString(R.string.post_subtitle_format),
-        MomentsUtils.getFormattedTime(post.created)));
-    setCommunities(post.jsonMetadata.tags);
-    Content postStructureModel = new Content(post.jsonMetadata.content.getData(), post.jsonMetadata.getContent().type);
-    renderView.render(postStructureModel);
-    ImageHandler.loadCircularImage(this, commentCreaterAvatar, String.format(getResources().getString(R.string.steem_user_profile_pic_format), HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
-    setSteemEarnings(post.totalPayoutValue);
-    bindVotes(post.activeVotes, post.permlink);
-    attachListenersOnStarView();
+  private void postComment() {
+    String cmnt = commentInputBox.getText().toString().trim();
+    commentInputBox.setText("");
+    if (cmnt.length() > 2) {
+      steemCommentCreator.createComment(cmnt, post.getAuthor(), post.getPermlink());
+    } else {
+      Toast.makeText(this, "Comment Too Short!!", Toast.LENGTH_LONG).show();
+      return;
+    }
+    SteemCommentModel steemCommentModel = new SteemCommentModel(
+      HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
+      cmnt, MomentsUtils.getCurrentTime(), 0,
+      String.format(getResources().getString(R.string.steem_user_profile_pic_format),
+        HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
+    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_COMMENT);
+    commentsViewModel.addComments(steemCommentModel, post.getPermlink());
   }
 
   private void attachListenersOnStarView() {
@@ -453,10 +442,13 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     new Thread() {
       @Override
       public void run() {
-        steemConnect.vote(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(), post.author, post.permlink, String.valueOf(vote), new SteemConnectCallback() {
+        steemConnect.vote(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
+          post.getAuthor(),
+          post.getPermlink(),
+          String.valueOf(vote), new SteemConnectCallback() {
           @Override
           public void onResponse(String s) {
-            Notifyer.notifyVote(post.permlink, vote);
+            Notifyer.notifyVote(post.getPermlink(), vote);
             mHandler.post(new Runnable() {
               @Override
               public void run() {
@@ -487,10 +479,12 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
       @Override
       public void run() {
         steemConnect.vote(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
-          post.author, post.permlink, String.valueOf(0), new SteemConnectCallback() {
+          post.getAuthor(),
+          post.getPermlink(),
+          String.valueOf(0), new SteemConnectCallback() {
             @Override
             public void onResponse(String s) {
-              Notifyer.notifyVote(post.permlink, 0);
+              Notifyer.notifyVote(post.getPermlink(), 0);
               mHandler.post(new Runnable() {
                 @Override
                 public void run() {

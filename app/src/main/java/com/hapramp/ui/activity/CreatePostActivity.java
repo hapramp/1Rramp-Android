@@ -18,14 +18,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
@@ -33,14 +30,10 @@ import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datamodels.response.ConfirmationResponse;
 import com.hapramp.interfaces.PostCreateCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.FeedDataConstants;
 import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.PostConfirmationModel;
-import com.hapramp.steem.PreProcessingModel;
-import com.hapramp.steem.ProcessedBodyResponse;
 import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.steem.models.data.Content;
-import com.hapramp.steem.models.data.FeedDataItemModel;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FilePathUtils;
 import com.hapramp.utils.FontManager;
@@ -56,13 +49,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.hapramp.views.editor.YoutubeInsertButtonView.YOUTUBE_RESULT_REQUEST;
-
 public class CreatePostActivity extends AppCompatActivity implements PostCreateCallback, SteemPostCreator.SteemPostCreatorCallback {
-
   public static final String CLOSE_DISTRACTION_FREE_BUTTON_TEXT = "NORMAL MODE";
   public static final String OPEN_DISTRATION_FREE_BUTTON_TEXT = "DISTRACTION FREE MODE";
   private static final int REQUEST_IMAGE_SELECTOR = 101;
+  private static final int YOUTUBE_RESULT_REQUEST = 107;
   @BindView(R.id.closeBtn)
   TextView closeBtn;
   @BindView(R.id.postButton)
@@ -87,6 +78,8 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
   private SteemPostCreator steemPostCreator;
   private String permlink_with_username;
   private boolean mDistractionFreeMode = false;
+  private List<String> images;
+  private String body;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -170,7 +163,7 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
       showPublishingProgressDialog(true, "Preparing Your Post...");
       preparePost();
       showPublishingProgressDialog(true, "Pre-processing...");
-      sendPostToServerForProcessing(postStructureModel);
+      sendPostToSteemBlockChain();
     }
   }
 
@@ -189,21 +182,6 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
       e.printStackTrace();
     }
   }
-/*
-
-		@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-		private void showCommunitySelector() {
-				int width = communitySelectorContainer.getWidth();
-				int height = communitySelectorContainer.getHeight();
-				int startRadius = 0;
-				communitySelectorContainer.setVisibility(View.VISIBLE);
-				int endRadius = (int) Math.hypot(width, height);
-				Animator anim = ViewAnimationUtils.createCircularReveal(communitySelectorContainer, width - 48, height, startRadius, endRadius);
-				anim.setDuration(400);
-				anim.setInterpolator(new DecelerateInterpolator());
-				anim.start();
-		}
-*/
 
   private void openVideoSelector() {
     Intent youtubeIntent = new Intent(this, YoutubeVideoSelectorActivity.class);
@@ -261,53 +239,19 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
   private void preparePost() {
     generated_permalink = PermlinkGenerator.getPermlink();
     permlink_with_username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername() + "/" + generated_permalink;
-    title = "";
+    title = postCreateComponent.getTitle();
+    body = postCreateComponent.getBody();
     tags = postCreateComponent.getSelectedCommunityTags();
-    List<FeedDataItemModel> datas = postCreateComponent.getDataList();
-    postStructureModel = new Content(datas, FeedDataConstants.FEED_TYPE_POST);
+    images = postCreateComponent.getImageList();
   }
 
-  //PUBLISHING SECTION
-  private void sendPostToServerForProcessing(Content content) {
-    PreProcessingModel preProcessingModel = new PreProcessingModel(permlink_with_username, new Gson().toJson(content));
-    RetrofitServiceGenerator.getService().sendForPreProcessing(preProcessingModel)
-      .enqueue(new Callback<ProcessedBodyResponse>() {
-        @Override
-        public void onResponse(Call<ProcessedBodyResponse> call, Response<ProcessedBodyResponse> response) {
-          if (response.isSuccessful()) {
-            // send to blockchain
-            sendPostToSteemBlockChain(response.body().getmBody());
-          } else {
-            toast("Something went wrong while pre-processing...");
-            showPublishingProgressDialog(false, "");
-          }
-        }
-
-        @Override
-        public void onFailure(Call<ProcessedBodyResponse> call, Throwable t) {
-          toast("Something went wrong with network(" + t.toString() + ")");
-          showPublishingProgressDialog(false, "");
-        }
-      });
+  private void sendPostToSteemBlockChain() {
+    showPublishingProgressDialog(true, "Adding to Blockchain... Please wait");
+    steemPostCreator.createPost(body, title, images, tags, generated_permalink);
   }
 
   private void toast(String s) {
     Toast.makeText(this, s, Toast.LENGTH_LONG).show();
-  }
-
-  private void sendPostToSteemBlockChain(final String body) {
-    showPublishingProgressDialog(true, "Adding to Blockchain... Please wait");
-    steemPostCreator.createPost(body, title, tags, postStructureModel, generated_permalink);
-  }
-
-  private void shakeCommunityButton() {
-    final Animation animShake = AnimationUtils.loadAnimation(this, R.anim.shake);
-    new Handler().postDelayed(new Runnable() {
-      @Override
-      public void run() {
-        animShake.cancel();
-      }
-    }, 500);
   }
 
   @Override

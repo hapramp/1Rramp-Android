@@ -22,8 +22,6 @@ import com.hapramp.R;
 import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
-import com.hapramp.steem.FeedDataConstants;
-import com.hapramp.steem.models.data.FeedDataItemModel;
 import com.hapramp.steem.models.user.User;
 import com.hapramp.utils.ImageHandler;
 
@@ -75,6 +73,8 @@ public class PostCreateComponent extends FrameLayout implements PostCategoryView
   RelativeLayout youtubeItemContainer;
   @BindView(R.id.content)
   EditText content;
+  @BindView(R.id.post_title)
+  EditText postTitle;
   @BindView(R.id.inline_category_caption)
   TextView inlineCategoryCaption;
   @BindView(R.id.inline_postCategoryView)
@@ -178,19 +178,39 @@ public class PostCreateComponent extends FrameLayout implements PostCategoryView
     return inlinePostCategoryView.getSelectedTags();
   }
 
-  public List<FeedDataItemModel> getDataList() {
-    List<FeedDataItemModel> datas = new ArrayList<>();
-    if (postImageView.getDownloadUrl() != null && youtubeId == null) {
-      datas.add(new FeedDataItemModel(postImageView.getDownloadUrl(), FeedDataConstants.ContentType.IMAGE));
-    } else if (youtubeId != null) {
-      datas.add(new FeedDataItemModel(youtubeId, FeedDataConstants.ContentType.YOUTUBE));
-    }
-    if (getContent().length() > 0) {
-      datas.add(new FeedDataItemModel(getContent(), FeedDataConstants.ContentType.TEXT));
-    }
-    return datas;
+  public String getTitle() {
+    return postTitle.getText().toString();
   }
 
+  public String getBody() {
+    StringBuilder stringBuilder = new StringBuilder();
+    if (postImageView.getDownloadUrl() != null && youtubeId == null) {
+      stringBuilder
+        .append("\\n![Hapramp Image](")
+        .append(postImageView.getDownloadUrl())
+        .append(")\\n");
+    } else if (youtubeId != null) {
+      stringBuilder.append(String.format("\n<iframe src=\"http://www.youtube.com/embed/%s\"" +
+        " width=\"560\" height=\"315\" frameborder=\"0\" allowfullscreen></iframe>\n", youtubeId));
+    }
+    if (getContent().length() > 0) {
+      stringBuilder
+        .append("\\n")
+        .append(getContent())
+        .append("\\n");
+    }
+    return stringBuilder.toString();
+  }
+
+  public List<String> getImageList() {
+    List<String> images = new ArrayList<>();
+    if (postImageView.getDownloadUrl() != null && youtubeId == null) {
+      images.add(postImageView.getDownloadUrl());
+    } else if (youtubeId != null) {
+      images.add(String.format("https://img.youtube.com/vi/%s/0.jpg", youtubeId));
+    }
+    return images;
+  }
   public String getContent() {
     return content.getText().toString().trim();
   }

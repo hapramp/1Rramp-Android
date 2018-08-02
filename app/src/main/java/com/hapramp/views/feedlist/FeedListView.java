@@ -177,7 +177,6 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
       @Override
       public void onClick(View v) {
         if (feedListViewListener != null) {
-          Log.d("RetryButton", "clicked");
           feedListViewListener.onRetryFeedLoading();
           initialLoading();
         }
@@ -219,7 +218,6 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
 
   // State Methods
   public void initialLoading() {
-    l("initialLoading");
     //hide recycler view
     setFeedRecyclerViewVisibility(false);
     //hide failed view
@@ -235,7 +233,7 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
   }
 
   private void l(String msg) {
-    Log.i("HomeFeedTest", " > [" + TAG + "]  " + msg);
+    //Log.i("HomeFeedTest", " > [" + TAG + "]  " + msg);
   }
 
   // view controllers
@@ -259,7 +257,7 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
 
   private void setLoadingShimmerVisibility(boolean show) {
 
-    Log.d("FeedLoadingShimmer", "shown " + show);
+   // Log.d("FeedLoadingShimmer", "shown " + show);
     setViewVisibility(show, mockContainer);
     //shimmerViewContainer.startShimmerAnimation();
 

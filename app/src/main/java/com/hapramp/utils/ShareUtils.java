@@ -28,12 +28,10 @@ public class ShareUtils {
 
     Intent shareIntent = new Intent();
     shareIntent.setAction(Intent.ACTION_SEND);
-    FeedRenderTypeModel feedRenderTypeModel = scanFeedContentsForRendering(feed.jsonMetadata.content.getData());
-
-    if (feedRenderTypeModel.hasContent) {
-      shareIntent.putExtra(Intent.EXTRA_TEXT, getFormattedTextForSharing(feedRenderTypeModel.text, feed.url));
+    //FeedRenderTypeModel feedRenderTypeModel = scanFeedContentsForRendering(feed));
+    shareIntent.putExtra(Intent.EXTRA_TEXT, getFormattedTextForSharing(feed.getCleanedBody(), feed.getUrl()));
       shareIntent.setType("text/plain");
-    }
+
     context.startActivity(shareIntent);
   }
 
@@ -70,9 +68,9 @@ public class ShareUtils {
 
   }
 
-  private static String getFormattedTextForSharing(StringBuilder text, String url) {
+  private static String getFormattedTextForSharing(String text, String url) {
     StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append(text.toString()).append("\nhttps://alpha.hapramp.com").append(url).append("\n\nHapramp, The social media platform for creative artists");
+    stringBuilder.append(text).append("\nhttps://alpha.hapramp.com").append(url).append("\n\nHapramp, The social media platform for creative artists");
     return stringBuilder.toString();
   }
 

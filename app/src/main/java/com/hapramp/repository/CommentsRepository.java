@@ -43,7 +43,6 @@ public class CommentsRepository implements SteemReplyFetcher.SteemReplyFetchCall
       @Override
       public void run() {
         final List<SteemCommentModel> cmts = commentsDao.getComments(postPermlink);
-        Log.d("RoomData", "From Db:" + cmts.size());
         mHandler.post(new Runnable() {
           @Override
           public void run() {

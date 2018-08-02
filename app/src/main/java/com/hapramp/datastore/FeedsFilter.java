@@ -17,20 +17,18 @@ public class FeedsFilter {
     List<String> tempTagList;
     String tag;
 
-    // iterate through feeds
-    for (int feedIndex = 0; feedIndex < feeds.size(); feedIndex++) {
-      tempTagList = feeds.get(feedIndex).jsonMetadata.getTags();
-      //iterate through tags
-      for (int tagIndex = 0; tagIndex < tempTagList.size(); tagIndex++) {
-        tag = tempTagList.get(tagIndex);
-        if (tag.equals(communityTag)) {
-          filteredFeedList.add(feeds.get(feedIndex));
-        }
-      }
-    }
-
+//    // iterate through feeds
+//    for (int feedIndex = 0; feedIndex < feeds.size(); feedIndex++) {
+//      tempTagList = feeds.get(feedIndex).jsonMetadata.getTags();
+//      //iterate through tags
+//      for (int tagIndex = 0; tagIndex < tempTagList.size(); tagIndex++) {
+//        tag = tempTagList.get(tagIndex);
+//        if (tag.equals(communityTag)) {
+//          filteredFeedList.add(feeds.get(feedIndex));
+//        }
+//      }
+//    }
     return filteredFeedList;
-
   }
 
 }

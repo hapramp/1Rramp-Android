@@ -35,7 +35,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/toolbar_container"
-        android:fillViewport="true"
         android:paddingBottom="56dp">
 
         <LinearLayout
@@ -96,10 +95,10 @@
 
             </RelativeLayout>
 
-            <com.hapramp.views.renderer.RendererView
-                android:id="@+id/renderView"
+            <us.feras.mdv.MarkdownView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent"
+                android:id="@+id/markdownView" />
 
             <TextView
                 android:id="@+id/hashtags"

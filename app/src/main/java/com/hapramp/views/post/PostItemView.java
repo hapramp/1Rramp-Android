@@ -28,18 +28,14 @@ import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.api.URLS;
 import com.hapramp.datamodels.CommunityModel;
-import com.hapramp.datamodels.FeedRenderTypeModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.push.Notifyer;
 import com.hapramp.steem.Communities;
-import com.hapramp.steem.FeedDataConstants;
 import com.hapramp.steem.SteemCommentModel;
 import com.hapramp.steem.SteemReplyFetcher;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.FeedWrapper;
-import com.hapramp.steem.models.data.ActiveVote;
-import com.hapramp.steem.models.data.Content;
-import com.hapramp.steem.models.data.FeedDataItemModel;
+import com.hapramp.steem.models.Voter;
 import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;
 import com.hapramp.steemconnect4j.SteemConnectException;
@@ -50,6 +46,7 @@ import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
+import com.hapramp.utils.MarkdownPreProcessor;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.ShareUtils;
 import com.hapramp.views.extraa.StarView;
@@ -110,6 +107,8 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
   private Handler mHandler;
   private SteemReplyFetcher replyFetcher;
   private SteemConnect steemConnect;
+  private MarkdownPreProcessor markdownPreProcessor;
+
   private Runnable steemCastingVoteExceptionRunnable = new Runnable() {
     @Override
     public void run() {
@@ -131,6 +130,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
   private void init(Context context) {
     this.mContext = context;
     replyFetcher = new SteemReplyFetcher();
+    markdownPreProcessor = new MarkdownPreProcessor();
     replyFetcher.setSteemReplyFetchCallback(this);
     View view = LayoutInflater.from(mContext).inflate(R.layout.post_item_view, this);
     ButterKnife.bind(this, view);
@@ -191,32 +191,20 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
 
   private void bind(final Feed feed) {
     this.mFeed = feed;
-    // set basic meta-info
-    feedOwnerTitle.setText(feed.author);
-    feedOwnerSubtitle.setText(
-      String.format(mContext.getResources().getString(R.string.post_subtitle_format),
-        MomentsUtils.getFormattedTime(feed.created)));
-
-    Content content = feed.jsonMetadata.content;
-    bindPostContent(content.data);
-
-    if (content.type.equals(Constants.CONTENT_TYPE_POST)) {
-      // hide title
-      postTitle.setVisibility(GONE);
-      // hide read more
-      readMoreBtn.setVisibility(GONE);
-    } else if (content.type.equals(Constants.CONTENT_TYPE_ARTICLE)) {
-      checkEllipseAndInvalidateReadMoreButton(postSnippet, readMoreBtn);
-    }
-    setSteemEarnings(feed.pendingPayoutValue);
-    setCommunities(feed.jsonMetadata.tags);
-    ImageHandler.loadCircularImage(mContext, feedOwnerPic, String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format), feed.author));
-    bindVotes(feed.activeVotes, feed.permlink);
-    //load from cache
-    setCommentCount(HaprampPreferenceManager.getInstance().getCommentCount(mFeed.permlink));
+    postSnippet.setVisibility(VISIBLE);
+    postTitle.setVisibility(VISIBLE);
+    featuredImagePost.setVisibility(VISIBLE);
+    feedOwnerTitle.setText(feed.getAuthor());
+    feedOwnerSubtitle.setText(String.format(mContext.getResources().getString(R.string.post_subtitle_format), MomentsUtils.getFormattedTime(feed.getCreatedAt())));
+    setSteemEarnings(feed.getPendingPayoutValue());
+    postTitle.setText(feed.getTitle());
+    postSnippet.setText(feed.getCleanedBody());
+    ImageHandler.load(mContext, featuredImagePost, feed.getFeaturedImageUrl());
+    ImageHandler.loadCircularImage(mContext, feedOwnerPic, String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format), feed.getAuthor()));
     if (ConnectionUtils.isConnected(mContext)) {
-      replyFetcher.requestReplyForPost(feed.author, feed.permlink);
+      replyFetcher.requestReplyForPost(feed.getAuthor(), feed.getPermlink());
     }
+    bindVotes(feed.getVoters(), feed.getPermlink());
     attachListenersOnStarView();
     attachListerOnAuthorHeader();
     attachListenerForOverlowIcon();
@@ -271,7 +259,13 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     });
   }
 
-  private void bindVotes(List<ActiveVote> votes, String permlink) {
+  private void setSteemEarnings(String payout) {
+    if (hapcoinsCount != null && payout != null) {
+      hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), payout.substring(0, payout.indexOf(' '))));
+    }
+  }
+
+  private void bindVotes(List<Voter> votes, String permlink) {
     long votePercentSum = getVotePercentSum(votes);
     boolean amIVoted = checkForMyVote(votes);
     long myVotePercent = amIVoted ? getMyVotePercent(votes) : 0;
@@ -296,75 +290,40 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
       });
   }
 
-  private long getNonZeroVoters(List<ActiveVote> votes) {
-    long sum = 0;
-    for (int i = 0; i < votes.size(); i++) {
-      if (votes.get(i).percent > 0) {
-        sum++;
-      }
-    }
-    return sum;
-  }
-
-  private long getMyVotePercent(List<ActiveVote> votes) {
-    for (int i = 0; i < votes.size(); i++) {
-      if (votes.get(i).voter.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
-        return votes.get(i).percent;
-      }
-    }
-    return 0;
-  }
-
-  private long getVotePercentSum(List<ActiveVote> activeVotes) {
+  private long getVotePercentSum(List<Voter> activeVotes) {
     long sum = 0;
     for (int i = 0; i < activeVotes.size(); i++) {
-      sum += activeVotes.get(i).percent;
+      sum += activeVotes.get(i).getPercent();
     }
     return sum;
   }
 
-  private boolean checkForMyVote(List<ActiveVote> votes) {
+  private boolean checkForMyVote(List<Voter> votes) {
     for (int i = 0; i < votes.size(); i++) {
-      if (votes.get(i).voter.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername()) && votes.get(i).percent > 0) {
+      if (votes.get(i).getVoter().equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername()) && votes.get(i).getPercent() > 0) {
         return true;
       }
     }
     return false;
   }
 
-  private void performVoteOnSteem(final int vote) {
-    starView.voteProcessing();
-    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_VOTE);
-    new Handler().postDelayed(new Runnable() {
-      @Override
-      public void run() {
-        starView.castedVoteTemporarily();
+  private long getMyVotePercent(List<Voter> votes) {
+    for (int i = 0; i < votes.size(); i++) {
+      if (votes.get(i).getVoter().equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
+        return votes.get(i).getPercent();
       }
-    }, 500);
+    }
+    return 0;
+  }
 
-    new Thread() {
-      @Override
-      public void run() {
-        steemConnect.vote(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(), getAuthor(), getPermlinkAsString(), String.valueOf(vote), new SteemConnectCallback() {
-          @Override
-          public void onResponse(String s) {
-            Notifyer.notifyVote(getFullPermlinkAsString(), vote);
-            mHandler.post(new Runnable() {
-              @Override
-              public void run() {
-                Log.d("Vote", "voted!!");
-                castingVoteSuccess();
-              }
-            });
-          }
-
-          @Override
-          public void onError(SteemConnectException e) {
-            mHandler.post(steemCastingVoteExceptionRunnable);
-          }
-        });
+  private long getNonZeroVoters(List<Voter> votes) {
+    long sum = 0;
+    for (int i = 0; i < votes.size(); i++) {
+      if (votes.get(i).getPercent() > 0) {
+        sum++;
       }
-    }.start();
+    }
+    return sum;
   }
 
   /*
@@ -430,105 +389,46 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     fetchUpdatedBalance();
   }
 
-  private void bindPostContent(List<FeedDataItemModel> data) {
-    //reset the visibility
-    if (featuredImagePost != null) {
-      featuredImagePost.setVisibility(GONE);
-      youtubeIndicator.setVisibility(GONE);
-      postTitle.setVisibility(GONE);
-      postSnippet.setVisibility(GONE);
-    }
-    //scan for feed content
-    FeedRenderTypeModel feedRenderTypeModel = scanFeedContentsForRendering(data);
-    //check for image
-    if (feedRenderTypeModel.isFirstMediaImage) {
-      //make visible and bind image
-      if (featuredImagePost != null) {
-        youtubeIndicator.setVisibility(GONE);
-        featuredImagePost.setVisibility(VISIBLE);
-        ImageHandler.load(mContext, featuredImagePost, feedRenderTypeModel.firstImageUrl);
-      }
-    }
-
-    if (feedRenderTypeModel.isFirstMediaVideo) {
-      //make visible and bind image
-      if (featuredImagePost != null) {
-        youtubeIndicator.setVisibility(VISIBLE);
-        featuredImagePost.setVisibility(VISIBLE);
-        ImageHandler.load(mContext, featuredImagePost, feedRenderTypeModel.firstVideoUrl);
-      }
-    }
-
-    if (feedRenderTypeModel.isTitleSet) {
-      //set title
-      if (postTitle != null) {
-        postTitle.setVisibility(VISIBLE);
-        postTitle.setText(feedRenderTypeModel.title);
-      }
-    }
-
-    if (feedRenderTypeModel.hasContent) {
-      //bind content
-      if (postSnippet != null) {
-        postSnippet.setVisibility(VISIBLE);
-        postSnippet.setText(feedRenderTypeModel.text);
-      }
-    }
-  }
-
-  private void fetchUpdatedBalance() {
-    String url = String.format(URLS.STEEM_USER_FEED_URL, mFeed.url);
-    RetrofitServiceGenerator.getService().getFeedFromSteem(url).enqueue(new Callback<FeedWrapper>() {
+  private void performVoteOnSteem(final int vote) {
+    starView.voteProcessing();
+    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_VOTE);
+    new Handler().postDelayed(new Runnable() {
       @Override
-      public void onResponse(Call<FeedWrapper> call, Response<FeedWrapper> response) {
-        if (response.isSuccessful()) {
-          setSteemEarnings(response.body().getFeed().pendingPayoutValue);
-        }
+      public void run() {
+        starView.castedVoteTemporarily();
       }
+    }, 500);
 
+    new Thread() {
       @Override
-      public void onFailure(Call<FeedWrapper> call, Throwable t) {
-      }
-    });
-  }
+      public void run() {
+        steemConnect.vote(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(), getAuthor(), getPermlinkAsString(), String.valueOf(vote), new SteemConnectCallback() {
+          @Override
+          public void onResponse(String s) {
+            Notifyer.notifyVote(getFullPermlinkAsString(), vote);
+            mHandler.post(new Runnable() {
+              @Override
+              public void run() {
+                castingVoteSuccess();
+              }
+            });
+          }
 
-  private FeedRenderTypeModel scanFeedContentsForRendering(List<FeedDataItemModel> data) {
-    FeedRenderTypeModel feedRenderTypeModel = new FeedRenderTypeModel();
-    //iterate through all the content
-    for (int i = 0; i < data.size(); i++) {
-      if (data.get(i).type.equals(FeedDataConstants.ContentType.IMAGE)) {
-        if (!feedRenderTypeModel.isFirstMediaImage && !feedRenderTypeModel.isFirstMediaVideo) {
-          feedRenderTypeModel.setFirstImageUrl(data.get(i).content);
-          feedRenderTypeModel.setFirstMediaImage(true);
-        }
+          @Override
+          public void onError(SteemConnectException e) {
+            mHandler.post(steemCastingVoteExceptionRunnable);
+          }
+        });
       }
-
-      if (data.get(i).type.equals(FeedDataConstants.ContentType.YOUTUBE)) {
-        if (!feedRenderTypeModel.isFirstMediaImage && !feedRenderTypeModel.isFirstMediaVideo) {
-          //set media
-          feedRenderTypeModel.setFirstVideoId(data.get(i).content);
-          feedRenderTypeModel.setFirstMediaVideo(true);
-        }
-
-      }
-      if (data.get(i).type.equals(FeedDataConstants.ContentType.TEXT) || data.get(i).type.equals(FeedDataConstants.ContentType.H2) || data.get(i).type.equals(FeedDataConstants.ContentType.H3)) {
-        feedRenderTypeModel
-          .appendText(data.get(i).getContent());
-      }
-      if (data.get(i).type.equals(FeedDataConstants.ContentType.H1)) {
-        if (!feedRenderTypeModel.isTitleSet)
-          feedRenderTypeModel.setTitle(data.get(i).getContent());
-      }
-    }
-    return feedRenderTypeModel;
+    }.start();
   }
 
   public String getAuthor() {
-    return mFeed.author;
+    return mFeed.getAuthor();
   }
 
   public String getPermlinkAsString() {
-    return mFeed.permlink;
+    return mFeed.getPermlink();
   }
 
   public String getFullPermlinkAsString() {
@@ -562,10 +462,20 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     });
   }
 
-  private void setSteemEarnings(String payout) {
-    if (hapcoinsCount != null) {
-      hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), payout.substring(0, payout.indexOf(' '))));
-    }
+  private void fetchUpdatedBalance() {
+    String url = String.format(URLS.STEEM_USER_FEED_URL, mFeed.getUrl());
+    RetrofitServiceGenerator.getService().getFeedFromSteem(url).enqueue(new Callback<FeedWrapper>() {
+      @Override
+      public void onResponse(Call<FeedWrapper> call, Response<FeedWrapper> response) {
+        if (response.isSuccessful()) {
+          setSteemEarnings(response.body().getFeed().getPendingPayoutValue());
+        }
+      }
+
+      @Override
+      public void onFailure(Call<FeedWrapper> call, Throwable t) {
+      }
+    });
   }
 
   private void setCommunities(List<String> communities) {
@@ -623,7 +533,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
 
   private void navigateToUserProfile() {
     Intent intent = new Intent(mContext, ProfileActivity.class);
-    intent.putExtra(Constants.EXTRAA_KEY_STEEM_USER_NAME, mFeed.author);
+    intent.putExtra(Constants.EXTRAA_KEY_STEEM_USER_NAME, mFeed.getAuthor());
     mContext.startActivity(intent);
   }
 
@@ -651,8 +561,12 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
 
   @Override
   public void onReplyFetched(List<SteemCommentModel> replies) {
-    HaprampPreferenceManager.getInstance().setCommentCount(mFeed.permlink, replies.size());
-    setCommentCount(replies.size());
+    int totalRelies = replies.size();
+    for (int i = 0; i < replies.size(); i++) {
+      totalRelies += replies.get(i).getChildren();
+    }
+    HaprampPreferenceManager.getInstance().setCommentCount(mFeed.getPermlink(), totalRelies);
+    setCommentCount(totalRelies);
   }
 
   private void setCommentCount(int count) {

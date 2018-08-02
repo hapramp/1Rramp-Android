@@ -19,6 +19,9 @@ public class NetworkUtils {
           obj = new URL(url);
           HttpURLConnection con = (HttpURLConnection) obj.openConnection();
           con.setRequestMethod(method);
+          con.setConnectTimeout(20000);
+          con.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
+          con.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.339");
           con.setDoOutput(true);
           if (body.length() > 0) {
             OutputStream os = con.getOutputStream();
