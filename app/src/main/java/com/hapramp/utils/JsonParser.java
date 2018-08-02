@@ -15,7 +15,6 @@ public class JsonParser {
   public JsonParser() {
     markdownPreProcessor = new MarkdownPreProcessor();
   }
-
   public ArrayList<Feed> parseFeed(String response) {
     ArrayList<Feed> feeds = new ArrayList<>();
     try {
@@ -147,7 +146,15 @@ public class JsonParser {
     if (json_metadata.has("tags")) {
       JSONArray jsonArray = json_metadata.getJSONArray("tags");
       for (int i = 0; i < jsonArray.length(); i++) {
-        tags.add((String) jsonArray.get(i));
+        try {
+          if (jsonArray.get(i) instanceof String) {
+            tags.add((String) jsonArray.get(i));
+          } else {
+            continue;
+          }
+        }catch (Exception e) {
+          continue;
+        }
       }
     }
     return tags;

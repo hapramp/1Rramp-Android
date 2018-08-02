@@ -238,6 +238,7 @@ public class HotFragment extends Fragment implements FeedListView.FeedListViewLi
 
   @Override
   public void onDataLoaded(ArrayList<Feed> feeds) {
-    feedListView.feedsRefreshed(feeds);
+    if (feedListView != null)
+      feedListView.feedsRefreshed(feeds);
   }
 }

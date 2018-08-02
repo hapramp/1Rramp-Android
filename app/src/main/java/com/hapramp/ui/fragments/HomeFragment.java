@@ -85,8 +85,8 @@ public class HomeFragment extends Fragment implements
     rawApiCaller = new RawApiCaller();
   }
 
-  private void loadTestData() {
-    rawApiCaller.requestNewFeeds(mContext);
+  private void loadTestData(String tag) {
+    rawApiCaller.requestNewFeeds(mContext,tag);
     rawApiCaller.setDataCallback(this);
   }
   private void initCategoryView() {
@@ -127,7 +127,7 @@ public class HomeFragment extends Fragment implements
       .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
       .createRequestParam();
     // serviceWorker.requestCommunityFeeds(serviceWorkerRequestParams);
-    loadTestData();
+    loadTestData(tag);
   }
 
   private void fetchUserCommunities() {
@@ -192,8 +192,8 @@ public class HomeFragment extends Fragment implements
     feedListView.setFeedListViewListener(this);
     feedListView.initialLoading();
     feedListView.setTopMarginForShimmer(104);
-    fetchAllPosts();
-    loadTestData();
+    //fetchAllPosts();
+    loadTestData("bitcoin");
   }
 
   @Override
@@ -262,7 +262,6 @@ public class HomeFragment extends Fragment implements
       .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
       .createRequestParam();
     //serviceWorker.requestAllFeeds(serviceWorkerRequestParams);
-    loadTestData();
   }
 
   @Override
@@ -482,6 +481,7 @@ public class HomeFragment extends Fragment implements
 
   @Override
   public void onDataLoaded(ArrayList<Feed> feeds) {
-    feedListView.feedsRefreshed(feeds);
+    if(feedListView!=null)
+      feedListView.feedsRefreshed(feeds);
   }
 }

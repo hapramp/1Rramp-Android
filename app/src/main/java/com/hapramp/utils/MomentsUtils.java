@@ -30,6 +30,9 @@ public class MomentsUtils {
   }
 
   public static String getFormattedTime(String timeStamp) {
+    if (timeStamp == null)
+      return "unknown";
+
     try {
       SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
       dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
@@ -56,4 +59,5 @@ public class MomentsUtils {
     long now = System.currentTimeMillis();
     return (now - lastCreatedAt) > TIME_DIFF_FOR_CREATING_POST;
   }
+
 }

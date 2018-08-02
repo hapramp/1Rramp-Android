@@ -42,6 +42,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import xute.markdeditor.EditorControlBar;
 import xute.markdeditor.MarkDEditor;
+import xute.markdeditor.Styles.TextComponentStyle;
 
 public class CreateArticleActivity extends AppCompatActivity implements SteemPostCreator.SteemPostCreatorCallback, EditorControlBar.EditorControlListener {
 
@@ -108,6 +109,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     articleCategoryView.initCategory();
     editorControlBar.setEditorControlListener(this);
     editorControlBar.setEditor(markDEditor);
+    markDEditor.setHeading(TextComponentStyle.NORMAL);
   }
 
   private void attachListeners() {

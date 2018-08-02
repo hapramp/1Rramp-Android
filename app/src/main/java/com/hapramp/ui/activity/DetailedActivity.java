@@ -44,7 +44,7 @@ import com.hapramp.steem.SteemCommentCreator;
 import com.hapramp.steem.SteemCommentModel;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.FeedWrapper;
-import com.hapramp.steem.models.data.ActiveVote;
+import com.hapramp.steem.models.Voter;
 import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;
 import com.hapramp.steemconnect4j.SteemConnectException;
@@ -54,6 +54,7 @@ import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.ShareUtils;
+import com.hapramp.utils.VoteUtils;
 import com.hapramp.viewmodel.comments.CommentsViewModel;
 import com.hapramp.views.comments.CommentView;
 import com.hapramp.views.extraa.StarView;
@@ -251,7 +252,8 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
   }
 
   private void showPopup() {
-    ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(this, R.style.PopupMenuOverlapAnchor);
+    ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(this,
+      R.style.PopupMenuOverlapAnchor);
     PopupMenu popup = new PopupMenu(contextThemeWrapper, overflowBtn);
     popup.getMenuInflater().inflate(R.menu.popup_post, popup.getMenu());
     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -266,7 +268,8 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
 
   private void bindPostValues() {
     detailsActivityCover.setVisibility(View.GONE);
-    commentsViewModel.getSteemComments(post.getAuthor(), post.getPermlink()).observeForever(new Observer<List<SteemCommentModel>>() {
+    commentsViewModel.getSteemComments(post.getAuthor(),
+      post.getPermlink()).observeForever(new Observer<List<SteemCommentModel>>() {
       @Override
       public void onChanged(@Nullable List<SteemCommentModel> steemCommentModels) {
         commentLoadingProgressBar.setVisibility(View.GONE);
@@ -274,22 +277,37 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         addAllCommentsToView(steemCommentModels);
       }
     });
-    ImageHandler.loadCircularImage(this, feedOwnerPic, String.format(getResources().getString(R.string.steem_user_profile_pic_format), post.getAuthor()));
+    ImageHandler.loadCircularImage(this, feedOwnerPic,
+      String.format(getResources().getString(R.string.steem_user_profile_pic_format), post.getAuthor()));
     feedOwnerTitle.setText(post.getAuthor());
     feedOwnerSubtitle.setText(
       String.format(getResources().getString(R.string.post_subtitle_format),
         MomentsUtils.getFormattedTime(post.getCreatedAt())));
     markdownView.loadMarkdown(post.getBody(), "file:///android_asset/md_theme.css");
-    //ImageHandler.loadCircularImage(this, commentCreaterAvatar, String.format(getResources().getString(R.string.steem_user_profile_pic_format), HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
+    ImageHandler.loadCircularImage(this, commentCreaterAvatar,
+      String.format(getResources().getString(R.string.steem_user_profile_pic_format),
+        HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
+    bindVotes(post.getVoters(), post.getPermlink());
+    setSteemEarnings(post.getPendingPayoutValue());
     attachListenersOnStarView();
   }
 
-  private void navigateToCommentsPage() {
-    Intent intent = new Intent(DetailedActivity.this, CommentsActivity.class);
-    intent.putExtra(Constants.EXTRAA_KEY_POST_AUTHOR, post.getAuthor());
-    intent.putExtra(Constants.EXTRAA_KEY_POST_PERMLINK, post.getPermlink());
-    intent.putParcelableArrayListExtra(Constants.EXTRAA_KEY_COMMENTS, (ArrayList<SteemCommentModel>) comments);
-    startActivity(intent);
+  private void addAllCommentsToView(List<SteemCommentModel> discussions) {
+    commentsViewContainer.removeAllViews();
+    int commentCount = discussions.size();
+    commentLoadingProgressBar.setVisibility(View.GONE);
+    if (commentCount == 0) {
+      emptyCommentsCaption.setVisibility(VISIBLE);
+    } else {
+      emptyCommentsCaption.setVisibility(View.GONE);
+    }
+    int range = commentCount > 3 ? 3 : discussions.size();
+    for (int i = 0; i < range; i++) {
+      addCommentToView(discussions.get(i), i);
+    }
+    if (commentCount > 3) {
+      moreCommentsCaption.setVisibility(VISIBLE);
+    }
   }
 
   @Override
@@ -370,11 +388,11 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     });
   }
 
-  private void bindVotes(List<ActiveVote> votes, String permlink) {
-    long votePercentSum = getVotePercentSum(votes);
-    boolean amIVoted = checkForMyVote(votes);
-    long myVotePercent = amIVoted ? getMyVotePercent(votes) : 0;
-    long totalVotes = getNonZeroVoters(votes);
+  private void bindVotes(List<Voter> votes, String permlink) {
+    long votePercentSum = VoteUtils.getVotePercentSum(votes);
+    boolean amIVoted = VoteUtils.checkForMyVote(votes);
+    long myVotePercent = amIVoted ? VoteUtils.getMyVotePercent(votes) : 0;
+    long totalVotes = VoteUtils.getNonZeroVoters(votes);
     starView.setVoteState(
       new StarView.Vote(
         amIVoted,
@@ -393,42 +411,6 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
           deleteVoteOnSteem();
         }
       });
-  }
-
-  private long getNonZeroVoters(List<ActiveVote> votes) {
-    long sum = 0;
-    for (int i = 0; i < votes.size(); i++) {
-      if (votes.get(i).percent > 0) {
-        sum++;
-      }
-    }
-    return sum;
-  }
-
-  private long getVotePercentSum(List<ActiveVote> activeVotes) {
-    long sum = 0;
-    for (int i = 0; i < activeVotes.size(); i++) {
-      sum += activeVotes.get(i).percent;
-    }
-    return sum;
-  }
-
-  private long getMyVotePercent(List<ActiveVote> votes) {
-    for (int i = 0; i < votes.size(); i++) {
-      if (votes.get(i).voter.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
-        return votes.get(i).percent;
-      }
-    }
-    return 0;
-  }
-
-  private boolean checkForMyVote(List<ActiveVote> votes) {
-    for (int i = 0; i < votes.size(); i++) {
-      if (votes.get(i).voter.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername()) && votes.get(i).percent > 0) {
-        return true;
-      }
-    }
-    return false;
   }
 
   private void performVoteOnSteem(final int vote) {
@@ -580,20 +562,13 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     commentCount.setText(String.format(getResources().getString(R.string.comment_format), count));
   }
 
-  private void addAllCommentsToView(List<SteemCommentModel> discussions) {
-    commentsViewContainer.removeAllViews();
-    int commentCount = discussions.size();
-    commentLoadingProgressBar.setVisibility(View.GONE);
-    if (commentCount == 0) {
-      emptyCommentsCaption.setVisibility(VISIBLE);
-    }
-    int range = commentCount > 3 ? 3 : discussions.size();
-    for (int i = 0; i < range; i++) {
-      addCommentToView(discussions.get(i), i);
-    }
-    if (commentCount > 3) {
-      moreCommentsCaption.setVisibility(VISIBLE);
-    }
+  private void navigateToCommentsPage() {
+    Intent intent = new Intent(DetailedActivity.this, CommentsActivity.class);
+    intent.putExtra(Constants.EXTRAA_KEY_POST_AUTHOR, post.getAuthor());
+    intent.putExtra(Constants.EXTRAA_KEY_POST_PERMLINK, post.getPermlink());
+    intent.putParcelableArrayListExtra(Constants.EXTRAA_KEY_COMMENTS,
+      (ArrayList<SteemCommentModel>) comments);
+    startActivity(intent);
   }
 
   private void addCommentToView(SteemCommentModel steemCommentModel, int index) {
