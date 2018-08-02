@@ -242,6 +242,7 @@ public class LatestFragment extends Fragment implements FeedListView.FeedListVie
 
   @Override
   public void onDataLoaded(ArrayList<Feed> feeds) {
-    feedListView.feedsRefreshed(feeds);
+    if (feedListView != null)
+      feedListView.feedsRefreshed(feeds);
   }
 }

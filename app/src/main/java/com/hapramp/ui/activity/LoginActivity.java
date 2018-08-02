@@ -30,6 +30,7 @@ import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steemconnect.SteemConnectUtils;
 import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectException;
+import com.hapramp.utils.AccessTokenValidator;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.viewmodel.common.ConnectivityViewModel;
@@ -79,10 +80,15 @@ public class LoginActivity extends AppCompatActivity {
 
   private void checkLastLoginAndMoveAhead() {
     if (HaprampPreferenceManager.getInstance().isLoggedIn()) {
-      if (HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson().length() == 0) {
-        syncUserAccount();
+      //check token expiry
+      if (!AccessTokenValidator.isTokenExpired()) {
+        if (HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson().length() == 0) {
+          syncUserAccount();
+        } else {
+          navigateToHomePage();
+        }
       } else {
-        navigateToHomePage();
+        Toast.makeText(this, "token expired", Toast.LENGTH_LONG).show();
       }
     }
   }
@@ -231,6 +237,7 @@ public class LoginActivity extends AppCompatActivity {
         //save token
         String accessToken = data.getStringExtra(Constants.EXTRA_ACCESS_TOKEN);
         String username = data.getStringExtra(Constants.EXTRA_USERNAME);
+        HaprampPreferenceManager.getInstance().setTokenExpireTime(AccessTokenValidator.getNextExpiryTime());
         HaprampPreferenceManager.getInstance().setSC2AccessToken(accessToken);
         requestUserTokenFromAppServer(accessToken, username);
       } else {

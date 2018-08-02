@@ -11,6 +11,7 @@ import com.hapramp.steemconnect.SteemConnectUtils;
 import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;
 import com.hapramp.steemconnect4j.SteemConnectException;
+import com.hapramp.utils.AccessTokenValidator;
 import com.hapramp.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -44,12 +45,20 @@ public class SteemCommentCreator {
   public SteemCommentCreator() {
     this.mHandler = new Handler();
   }
-
   @WorkerThread
   public void createComment(final String comment, final String commentOnUser, final String parentPermlink) {
     if (steemCommentCreateCallback != null) {
       steemCommentCreateCallback.onCommentCreateProcessing();
+      return;
     }
+
+    if (AccessTokenValidator.isTokenExpired()) {
+      if (steemCommentCreateCallback != null) {
+        steemCommentCreateCallback.onCommentCreateFailed();
+      }
+      return;
+    }
+
     new Thread() {
       @Override
       public void run() {

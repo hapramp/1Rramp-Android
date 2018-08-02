@@ -62,6 +62,15 @@ public class HaprampPreferenceManager {
     editor.apply();
   }
 
+  public void setTokenExpireTime(long time) {
+    editor.putLong("tokenExpiryTime", time);
+    editor.apply();
+  }
+
+  public long getTokenExpiryTime() {
+    return preferences.getLong("tokenExpiryTime", -1);
+  }
+
   public String getUserToken() {
     return preferences.getString("accessToken", "");
   }
