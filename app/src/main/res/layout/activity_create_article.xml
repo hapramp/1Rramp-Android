@@ -84,10 +84,18 @@
                 android:hint="Title of Article"
                 android:textSize="24sp"
                 android:textStyle="bold"
+<<<<<<< HEAD
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:textColorHint="#c9c8c8"
+=======
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"
+>>>>>>> ec40afb9a4ebe812020d637080638571a4bbfc45
                 android:background="@drawable/post_editor_bg"
                 android:minHeight="48dp"
                 android:layout_width="match_parent"

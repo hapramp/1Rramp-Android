@@ -21,6 +21,16 @@ public class RawApiCaller {
   Context context;
   private DataCallback dataCallback;
 
+<<<<<<< HEAD
+  public void requestNewFeeds(Context context, String tag) {
+    mHandler = new Handler();
+    this.context = context;
+    final String reqBody = "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_discussions_by_created\", \"params\":[{\"" + tag + "\":\"art\",\"limit\":100}], \"id\":1}";
+    putNetworkRequest(reqBody, "new");
+  }
+
+=======
+>>>>>>> ec40afb9a4ebe812020d637080638571a4bbfc45
   public void requestNewFeeds(Context context) {
     mHandler = new Handler();
     this.context = context;

@@ -2,7 +2,6 @@ package com.hapramp.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.hapramp.main.HapRampMain;
 
@@ -17,22 +16,18 @@ import java.util.Set;
 public class HaprampPreferenceManager {
 
   private static final String PREF_NAME = "hapramp_pref";
-  private static final int PREF_MODE_PRIVATE = 1;
   private static SharedPreferences preferences;
   private static SharedPreferences.Editor editor;
   private static HaprampPreferenceManager mInstance;
-  private String articleAsDraft;
 
-  public HaprampPreferenceManager(int i) {
-
+  public HaprampPreferenceManager() {
     preferences = HapRampMain.getContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     editor = preferences.edit();
-
   }
 
   public static HaprampPreferenceManager getInstance() {
     if (mInstance == null) {
-      mInstance = new HaprampPreferenceManager(0);
+      mInstance = new HaprampPreferenceManager();
     }
     return mInstance;
   }
@@ -41,7 +36,7 @@ public class HaprampPreferenceManager {
     CachePreference.getInstance().clearCachePreferences();
     editor.clear();
     editor.apply();
-    Log.d("Pref", "Cleared Prefs.");
+    setOnBoardingVisited();
   }
 
   public void setOnBoardingVisited() {
@@ -65,6 +60,15 @@ public class HaprampPreferenceManager {
   public void saveUserToken(String accessToken) {
     editor.putString("accessToken", accessToken);
     editor.apply();
+  }
+
+  public void setTokenExpireTime(long time) {
+    editor.putLong("tokenExpiryTime", time);
+    editor.apply();
+  }
+
+  public long getTokenExpiryTime() {
+    return preferences.getLong("tokenExpiryTime", -1);
   }
 
   public String getUserToken() {
