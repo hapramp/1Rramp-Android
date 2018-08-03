@@ -98,7 +98,6 @@ public class PostCreateComponent extends FrameLayout implements PostCategoryView
     ButterKnife.bind(this, view);
     inlinePostCategoryView.initCategory();
     inlinePostCategoryView.setCommunitySelectionChangeListener(this);
-    Log.d("PostCreateComponent",HaprampPreferenceManager.getInstance().getCurrentUserInfoAsJson());
     User steemUser = new Gson().fromJson(HaprampPreferenceManager.getInstance().getCurrentUserInfoAsJson(), User.class);
     String pic_url = steemUser.getProfile_image();
     ImageHandler.loadCircularImage(context, feedOwnerPic, pic_url);

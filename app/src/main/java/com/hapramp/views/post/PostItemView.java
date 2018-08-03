@@ -29,7 +29,6 @@ import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.api.URLS;
 import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.push.Notifyer;
 import com.hapramp.steem.Communities;
 import com.hapramp.steem.SteemCommentModel;
 import com.hapramp.steem.SteemReplyFetcher;
@@ -86,7 +85,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
   @BindView(R.id.popupMenuDots)
   TextView popupMenuDots;
   @BindView(R.id.featured_image_post)
-  ImageView featuredImagePost;
+  ImageView featuredImageView;
   @BindView(R.id.post_title)
   TextView postTitle;
   @BindView(R.id.post_snippet)
@@ -149,7 +148,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
         navigateToDetailsPage();
       }
     });
-    featuredImagePost.setOnClickListener(new OnClickListener() {
+    featuredImageView.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
         navigateToDetailsPage();
@@ -197,14 +196,24 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
   private void bind(final Feed feed) {
     this.mFeed = feed;
     postSnippet.setVisibility(VISIBLE);
-    postTitle.setVisibility(VISIBLE);
-    featuredImagePost.setVisibility(VISIBLE);
     feedOwnerTitle.setText(feed.getAuthor());
     feedOwnerSubtitle.setText(String.format(mContext.getResources().getString(R.string.post_subtitle_format), MomentsUtils.getFormattedTime(feed.getCreatedAt())));
     setSteemEarnings(feed.getPendingPayoutValue());
-    postTitle.setText(feed.getTitle());
     postSnippet.setText(feed.getCleanedBody());
-    ImageHandler.load(mContext, featuredImagePost, feed.getFeaturedImageUrl());
+    if (feed.getTitle().length() > 0) {
+      postTitle.setVisibility(VISIBLE);
+      postTitle.setText(feed.getTitle());
+    } else {
+      postTitle.setVisibility(GONE);
+    }
+
+    if (feed.getFeaturedImageUrl().length() > 0) {
+      featuredImageView.setVisibility(VISIBLE);
+      ImageHandler.load(mContext, featuredImageView, feed.getFeaturedImageUrl());
+    } else {
+      featuredImageView.setVisibility(GONE);
+    }
+
     ImageHandler.loadCircularImage(mContext, feedOwnerPic, String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format), feed.getAuthor()));
     if (ConnectionUtils.isConnected(mContext)) {
       replyFetcher.requestReplyForPost(feed.getAuthor(), feed.getPermlink());
