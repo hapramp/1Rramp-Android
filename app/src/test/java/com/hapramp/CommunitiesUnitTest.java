@@ -1,5 +1,6 @@
 package com.hapramp;
 
+import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.models.data.JsonMetadata;
 import com.hapramp.utils.MarkdownPreProcessor;
 
@@ -55,6 +56,13 @@ public class CommunitiesUnitTest {
     images.add("http://www.ankit.old.png");
     JsonMetadata jsonMetadata = new JsonMetadata(tags, images);
     System.out.println(com.hapramp.utils.StringUtils.stringify(jsonMetadata.getJson()));
+  }
+
+  @Test
+  public void testPermlinkGenerator(){
+    String title = "My title   is   perfect.";
+    title = PermlinkGenerator.getPermlink(title);
+    System.out.println(title);
   }
 
 }

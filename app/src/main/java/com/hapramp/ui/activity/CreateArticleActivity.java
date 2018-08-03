@@ -26,6 +26,7 @@ import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.datamodels.FeaturedImageSelectionModel;
+import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.steem.models.data.Content;
 import com.hapramp.utils.ConnectionUtils;
@@ -155,6 +156,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
 
   private void publishArticle() {
     title = articleTitleEt.getText().toString().trim();
+    generated_permalink = PermlinkGenerator.getPermlink(title);
     tags = (ArrayList<String>) articleCategoryView.getSelectedTags();
     includeCustomTags(tags);
     body = markDEditor.getMarkdownContent();
