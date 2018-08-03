@@ -249,6 +249,24 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         showPopup();
       }
     });
+    feedOwnerPic.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        navigateToUserProfile();
+      }
+    });
+    feedOwnerTitle.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        navigateToUserProfile();
+      }
+    });
+  }
+
+  private void navigateToUserProfile() {
+    Intent intent = new Intent(this, ProfileActivity.class);
+    intent.putExtra(Constants.EXTRAA_KEY_STEEM_USER_NAME, post.getAuthor());
+    startActivity(intent);
   }
 
   private void showPopup() {
