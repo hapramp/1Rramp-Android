@@ -16,6 +16,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.widget.Space;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.MenuItem;
@@ -308,6 +309,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     bindVotes(post.getVoters(), post.getPermlink());
     setSteemEarnings(post.getPendingPayoutValue());
     attachListenersOnStarView();
+    setCommunities(post.getTags());
   }
 
   private void addAllCommentsToView(List<SteemCommentModel> discussions) {
@@ -538,13 +540,13 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
           0
         ));
       } else {
-        hashtags.append("#")
+        hashtags.append("<b>#</b>")
           .append(communities.get(i))
-          .append(" ");
+          .append("  ");
       }
     }
     addCommunitiesToLayout(cm);
-    hashtagsTv.setText(hashtags);
+    hashtagsTv.setText(Html.fromHtml(hashtags.toString()));
   }
 
   private void addCommunitiesToLayout(List<CommunityModel> cms) {
