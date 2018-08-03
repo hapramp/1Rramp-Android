@@ -530,6 +530,9 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
   }
 
   private void setCommunities(List<String> communities) {
+    if (communities == null)
+      return;
+
     List<CommunityModel> cm = new ArrayList<>();
     StringBuilder hashtags = new StringBuilder();
     for (int i = 0; i < communities.size(); i++) {
