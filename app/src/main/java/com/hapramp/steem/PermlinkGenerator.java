@@ -16,7 +16,9 @@ public class PermlinkGenerator {
   public static String getPermlink(String title){
     title = title.trim().toLowerCase();
     if (title.length() > 0) {
+      title = title.replaceAll("[^a-zA-Z\\d\\s:]","-");
       title = title.replaceAll("[ ]{1,}", "-");
+      title = title.replaceAll("[-]{1,}", "-");
       title = String.format("%s-%s", title, getCurrentTimeStamp());
     } else {
       title = getPermlink();
