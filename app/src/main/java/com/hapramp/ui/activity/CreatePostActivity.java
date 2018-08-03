@@ -71,7 +71,6 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
   @BindView(R.id.bottom_postButton)
   TextView bottomPostButton;
   private ProgressDialog progressDialog;
-  private Content postStructureModel;
   private List<String> tags;
   private String title;
   private String generated_permalink;

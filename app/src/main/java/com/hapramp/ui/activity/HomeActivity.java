@@ -13,7 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -24,12 +23,13 @@ import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.hapramp.R;
+import com.hapramp.api.RawApiCaller;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.push.Notifyer;
 import com.hapramp.steem.CommunityListWrapper;
-import com.hapramp.steem.models.user.SteemUser;
+import com.hapramp.steem.models.user.User;
 import com.hapramp.ui.fragments.EarningFragment;
 import com.hapramp.ui.fragments.HomeFragment;
 import com.hapramp.ui.fragments.ProfileFragment;
@@ -110,6 +110,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   private PostUploadReceiver postUploadReceiver;
   private NotificationUpdateReceiver notificationUpdateReceiver;
   private boolean isReceiverRegistered;
+  private RawApiCaller rawApiCaller;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -162,6 +163,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     settingsFragment = new SettingsFragment();
     earningFragment = new EarningFragment();
     progressDialog = new ProgressDialog(this);
+    rawApiCaller = new RawApiCaller();
   }
 
   private void attachListeners() {
@@ -247,22 +249,13 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   }
 
   private void fetchCompleteUserInfo() {
-    RetrofitServiceGenerator.getService().getSteemUser(String.format(
-      getResources().getString(R.string.steem_user_api),
-      HaprampPreferenceManager.getInstance().getCurrentSteemUsername())).enqueue(new Callback<SteemUser>() {
+    rawApiCaller.setUserMetadataCallback(new RawApiCaller.UserMetadataCallback() {
       @Override
-      public void onResponse(Call<SteemUser> call, Response<SteemUser> response) {
-        if (response.isSuccessful()) {
-          //save user to preference
-          HaprampPreferenceManager.getInstance().saveCurrentUserInfoAsJson(new Gson().toJson(response.body()));
-        }
-      }
-
-      @Override
-      public void onFailure(Call<SteemUser> call, Throwable t) {
-
+      public void onUserMetadataLoaded(User user) {
+        HaprampPreferenceManager.getInstance().saveCurrentUserInfoAsJson(new Gson().toJson(user));
       }
     });
+    rawApiCaller.requestUserMetadata(this, HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
   }
 
   private void updateDeviceId() {

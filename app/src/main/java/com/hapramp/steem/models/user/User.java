@@ -19,13 +19,86 @@ public class User {
   private String cover_image;
   @SerializedName("about")
   private String about;
+  @SerializedName("website")
+  private String website;
   @SerializedName("post_count")
   private int postCount;
   @SerializedName("reputation")
-  private String reputation;
+  private long reputation;
+  @SerializedName("created")
+  private String created;
+  @SerializedName("comment_count")
+  private int commentCount;
+  @SerializedName("can_vote")
+  private boolean canVote;
+  @SerializedName("voting_power")
+  private int votingPower;
+
+
+  public User() {
+  }
+
+  public User(String username, String fullname, String location,
+              String profile_image, String cover_image, String about,
+              String website, int postCount, long reputation, String created,
+              int commentCount, boolean canVote, int votingPower) {
+    this.username = username;
+    this.fullname = fullname;
+    this.location = location;
+    this.profile_image = profile_image;
+    this.cover_image = cover_image;
+    this.about = about;
+    this.website = website;
+    this.postCount = postCount;
+    this.reputation = reputation;
+    this.created = created;
+    this.commentCount = commentCount;
+    this.canVote = canVote;
+    this.votingPower = votingPower;
+  }
+
+  public int getCommentCount() {
+    return commentCount;
+  }
+
+  public void setCommentCount(int commentCount) {
+    this.commentCount = commentCount;
+  }
+
+  public boolean isCanVote() {
+    return canVote;
+  }
+
+  public void setCanVote(boolean canVote) {
+    this.canVote = canVote;
+  }
+
+  public int getVotingPower() {
+    return votingPower;
+  }
+
+  public void setVotingPower(int votingPower) {
+    this.votingPower = votingPower;
+  }
+
+  public String getCreated() {
+    return created;
+  }
+
+  public void setCreated(String created) {
+    this.created = created;
+  }
 
   public String getUsername() {
     return username;
+  }
+
+  public String getWebsite() {
+    return website;
+  }
+
+  public void setWebsite(String website) {
+    this.website = website;
   }
 
   public void setUsername(String username) {
@@ -56,20 +129,20 @@ public class User {
     this.profile_image = profile_image;
   }
 
-  public String getReputation() {
-    return reputation;
-  }
-
-  public void setReputation(String reputation) {
-    this.reputation = reputation;
-  }
-
   public String getCover_image() {
     return cover_image;
   }
 
   public void setCover_image(String cover_image) {
     this.cover_image = cover_image;
+  }
+
+  public String getAbout() {
+    return about;
+  }
+
+  public void setAbout(String about) {
+    this.about = about;
   }
 
   public int getPostCount() {
@@ -80,12 +153,12 @@ public class User {
     this.postCount = postCount;
   }
 
-  public String getAbout() {
-    return about;
+  public long getReputation() {
+    return reputation;
   }
 
-  public void setAbout(String about) {
-    this.about = about;
+  public void setReputation(long reputation) {
+    this.reputation = reputation;
   }
 
   @Override

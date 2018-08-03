@@ -97,7 +97,6 @@ public class EarningFragment extends Fragment implements Wallet.UserAccountField
   private String mUsername;
   private Context mContext;
   private UserProfileFetcher userProfileFetcher;
-  //------
   private double steem;
   private double sbd;
   private double sp;

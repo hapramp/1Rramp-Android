@@ -2,6 +2,7 @@ package com.hapramp.utils;
 
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.Voter;
+import com.hapramp.steem.models.user.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -177,5 +178,46 @@ public class JsonParser {
 
   private String getCleanedBody(String dirtyBody) {
     return markdownPreProcessor.getCleanContent(dirtyBody);
+  }
+
+  public User parseUser(String userJson) {
+    User user = new User();
+    try {
+      JSONObject root = new JSONObject(userJson);
+      JSONObject userObj = root.getJSONObject("user");
+      JSONObject jmd = userObj.getJSONObject("json_metadata");
+
+      if (jmd.has("profile")) {
+        JSONObject po = jmd.getJSONObject("profile");
+        if (po.has("profile_image")) {
+          user.setProfile_image(po.getString("profile_image"));
+        }
+        if (po.has("cover_image")) {
+          user.setCover_image("cover_image");
+        }
+        if (po.has("name")) {
+          user.setFullname(po.getString("name"));
+        }
+        if (po.has("location")) {
+          user.setLocation("location");
+        }
+        if (po.has("about")) {
+          user.setAbout(po.getString("about"));
+        }
+        if (po.has("website")) {
+          user.setWebsite(po.getString("website"));
+        }
+      }
+      user.setCreated(userObj.getString("created"));
+      user.setCommentCount(userObj.getInt("comment_count"));
+      user.setPostCount(userObj.optInt("post_count"));
+      user.setCanVote(userObj.getBoolean("can_vote"));
+      user.setVotingPower(userObj.getInt("voting_power"));
+      user.setReputation(userObj.getLong("reputation"));
+    }
+    catch (JSONException e) {
+      e.printStackTrace();
+    }
+    return user;
   }
 }
