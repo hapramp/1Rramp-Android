@@ -33,7 +33,6 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.PostConfirmationModel;
 import com.hapramp.steem.SteemPostCreator;
-import com.hapramp.steem.models.data.Content;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FilePathUtils;
 import com.hapramp.utils.FontManager;
@@ -334,13 +333,8 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
   public void onPostCreatedOnSteem() {
     toast("Your post will take few seconds to appear");
     showPublishingProgressDialog(false, "");
-    // send confirmation to server
-    confirmServerForPostCreation();
+    postCreated();
   }
-
-  //==================
-  // STEEM POST CREATOR CALLBACK
-  //==================
 
   private void confirmServerForPostCreation() {
     showPublishingProgressDialog(true, "Sending Confirmation to Server...");
@@ -350,7 +344,7 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
         @Override
         public void onResponse(Call<ConfirmationResponse> call, Response<ConfirmationResponse> response) {
           if (response.isSuccessful()) {
-            serverConfirmed();
+            postCreated();
           } else {
             toast("Failed to Confirm Server!");
             showPublishingProgressDialog(false, "");
@@ -365,7 +359,7 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
       });
   }
 
-  private void serverConfirmed() {
+  private void postCreated() {
     toast("Your post is live now.");
     showPublishingProgressDialog(false, "");
     AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_POST);
