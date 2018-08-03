@@ -555,9 +555,10 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
   }
 
   private void setSteemEarnings(String payout) {
-    hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), payout.substring(0, payout.indexOf(' '))));
+    if (hapcoinsCount != null && payout != null) {
+      hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), payout.substring(0, payout.indexOf(' '))));
+    }
   }
-
   private void setCommentCount(int count) {
     commentCount.setText(String.format(getResources().getString(R.string.comment_format), count));
   }
