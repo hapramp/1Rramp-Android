@@ -201,23 +201,21 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
   }
 
   private boolean validPost() {
-    //check image/video
     if (postCreateComponent.isMediaSelected()) {
-      if (postCreateComponent.isMediaUploaded()) {
-        if (postCreateComponent.isContentEnough()) {
-          if (postCreateComponent.getSelectedCommunityTags().size() > 1) { //default: hapramp is added at community.
-            return true;
-          } else {
-            toast("Select atleast 1 community!");
-          }
-        } else {
-          toast("Write someting more...");
-        }
+      if (!postCreateComponent.isMediaUploaded()) {
+        toast("Please wait while we upload your image.");
+        return false;
+      }
+    }
+
+    if (postCreateComponent.isContentEnough()) {
+      if (postCreateComponent.getSelectedCommunityTags().size() > 1) { //default: hapramp is added at community.
+        return true;
       } else {
-        toast("Media is being uploaded!");
+        toast("Select atleast 1 community!");
       }
     } else {
-      toast("You must select image/video");
+      toast("Write someting more...");
     }
     return false;
   }
@@ -237,9 +235,9 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
   }
 
   private void preparePost() {
-    generated_permalink = PermlinkGenerator.getPermlink();
     permlink_with_username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername() + "/" + generated_permalink;
     title = postCreateComponent.getTitle();
+    generated_permalink = PermlinkGenerator.getPermlink(title);
     body = postCreateComponent.getBody();
     tags = postCreateComponent.getSelectedCommunityTags();
     images = postCreateComponent.getImageList();

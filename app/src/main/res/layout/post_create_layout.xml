@@ -200,7 +200,6 @@
             android:gravity="top"
             android:hint="Write something ..."
             android:lineSpacingExtra="2dp"
-            android:maxLength="140"
             android:minHeight="100dp"
             android:padding="16dp"
             android:textColor="@color/Black54"

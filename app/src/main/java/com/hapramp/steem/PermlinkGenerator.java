@@ -14,9 +14,13 @@ public class PermlinkGenerator {
   private final static String ALPHA_NUMERIC_STRING = "q0w1e2r3t4y5u6i7o8p9l0kjhgfdsazxcvbnm";
 
   public static String getPermlink(String title){
-    title = title.trim();
-    title = title.replaceAll("[ ]{1,}","-");
-    title = String.format("%s_%s", title, getCurrentTimeStamp());
+    title = title.trim().toLowerCase();
+    if (title.length() > 0) {
+      title = title.replaceAll("[ ]{1,}", "-");
+      title = String.format("%s-%s", title, getCurrentTimeStamp());
+    } else {
+      title = getPermlink();
+    }
     return title;
   }
 
