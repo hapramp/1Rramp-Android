@@ -71,7 +71,6 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
   TextView bottomPostButton;
   private ProgressDialog progressDialog;
   private List<String> tags;
-  private String title;
   private String generated_permalink;
   private SteemPostCreator steemPostCreator;
   private String permlink_with_username;
@@ -200,20 +199,22 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
 
   private boolean validPost() {
     if (postCreateComponent.isMediaSelected()) {
-      if (!postCreateComponent.isMediaUploaded()) {
+      if (postCreateComponent.isMediaUploaded()) {
+        return true;
+      } else {
         toast("Please wait while we upload your image.");
         return false;
       }
-    }
-
-    if (postCreateComponent.isContentEnough()) {
-      if (postCreateComponent.getSelectedCommunityTags().size() > 1) { //default: hapramp is added at community.
-        return true;
+    }else {
+      if (postCreateComponent.isContentEnough()) {
+        if (postCreateComponent.getSelectedCommunityTags().size() > 1) { //default: hapramp is added at community.
+          return true;
+        } else {
+          toast("Select atleast 1 community!");
+        }
       } else {
-        toast("Select atleast 1 community!");
+        toast("Write someting more...");
       }
-    } else {
-      toast("Write someting more...");
     }
     return false;
   }
@@ -234,16 +235,15 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
 
   private void preparePost() {
     permlink_with_username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername() + "/" + generated_permalink;
-    title = postCreateComponent.getTitle();
-    generated_permalink = PermlinkGenerator.getPermlink(title);
+    generated_permalink = PermlinkGenerator.getPermlink();
     body = postCreateComponent.getBody();
     tags = postCreateComponent.getSelectedCommunityTags();
     images = postCreateComponent.getImageList();
   }
 
   private void sendPostToSteemBlockChain() {
-    showPublishingProgressDialog(true, "Adding to Blockchain... Please wait");
-    steemPostCreator.createPost(body, title, images, tags, generated_permalink);
+    showPublishingProgressDialog(true, "Publishing...");
+    steemPostCreator.createPost(body, "", images, tags, generated_permalink);
   }
 
   private void toast(String s) {

@@ -61,19 +61,6 @@
         android:layout_below="@+id/post_header_container"
         android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/post_title"
-            android:layout_width="match_parent"
-            android:minHeight="48dp"
-            android:hint="Title of the post"
-            android:textSize="16sp"
-            android:paddingStart="16sp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"
-            android:paddingEnd="16dp"
-            android:background="@drawable/post_editor_bg"
-            android:layout_height="wrap_content" />
-
         <LinearLayout
             android:id="@+id/placeholder"
             android:layout_width="match_parent"

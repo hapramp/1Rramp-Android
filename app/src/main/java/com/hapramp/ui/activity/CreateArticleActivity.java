@@ -184,7 +184,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   }
 
   private void sendPostToSteemBlockChain() {
-    showPublishingProgressDialog(true, "Adding to Blockchain...");
+    showPublishingProgressDialog(true, "Publishing...");
     SteemPostCreator steemPostCreator = new SteemPostCreator();
     steemPostCreator.setSteemPostCreatorCallback(this);
     steemPostCreator.createPost(body, title, images, tags, generated_permalink);
