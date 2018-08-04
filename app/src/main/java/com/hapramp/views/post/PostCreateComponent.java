@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.Space;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -73,8 +74,6 @@ public class PostCreateComponent extends FrameLayout implements PostCategoryView
   RelativeLayout youtubeItemContainer;
   @BindView(R.id.content)
   EditText content;
-  @BindView(R.id.post_title)
-  EditText postTitle;
   @BindView(R.id.inline_category_caption)
   TextView inlineCategoryCaption;
   @BindView(R.id.inline_postCategoryView)
@@ -176,10 +175,6 @@ public class PostCreateComponent extends FrameLayout implements PostCategoryView
 
   public List<String> getSelectedCommunityTags() {
     return inlinePostCategoryView.getSelectedTags();
-  }
-
-  public String getTitle() {
-    return postTitle.getText().toString();
   }
 
   public String getBody() {

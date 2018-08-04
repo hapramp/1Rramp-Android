@@ -13,8 +13,20 @@ public class PermlinkGenerator {
   private static final int MAX_LENGTH = 64;
   private final static String ALPHA_NUMERIC_STRING = "q0w1e2r3t4y5u6i7o8p9l0kjhgfdsazxcvbnm";
 
-  public static String getPermlink() {
+  public static String getPermlink(String title){
+    title = title.trim().toLowerCase();
+    if (title.length() > 0) {
+      title = title.replaceAll("[^a-zA-Z\\d\\s:]","-");
+      title = title.replaceAll("[ ]{1,}", "-");
+      title = title.replaceAll("[-]{1,}", "-");
+      title = String.format("%s-%s", title, getCurrentTimeStamp());
+    } else {
+      title = getPermlink();
+    }
+    return title;
+  }
 
+  public static String getPermlink() {
     StringBuilder builder = new StringBuilder()
       .append(random())
       .append(getCurrentTimeStamp());
@@ -35,14 +47,11 @@ public class PermlinkGenerator {
 
   private static String getCurrentTimeStamp() {
     try {
-
       SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
       return dateFormat.format(new Date()); // Find todays date
-
     }
     catch (Exception e) {
       e.printStackTrace();
-
       return null;
     }
   }

@@ -33,7 +33,6 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.PostConfirmationModel;
 import com.hapramp.steem.SteemPostCreator;
-import com.hapramp.steem.models.data.Content;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FilePathUtils;
 import com.hapramp.utils.FontManager;
@@ -71,9 +70,7 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
   @BindView(R.id.bottom_postButton)
   TextView bottomPostButton;
   private ProgressDialog progressDialog;
-  private Content postStructureModel;
   private List<String> tags;
-  private String title;
   private String generated_permalink;
   private SteemPostCreator steemPostCreator;
   private String permlink_with_username;
@@ -201,23 +198,23 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
   }
 
   private boolean validPost() {
-    //check image/video
     if (postCreateComponent.isMediaSelected()) {
       if (postCreateComponent.isMediaUploaded()) {
-        if (postCreateComponent.isContentEnough()) {
-          if (postCreateComponent.getSelectedCommunityTags().size() > 1) { //default: hapramp is added at community.
-            return true;
-          } else {
-            toast("Select atleast 1 community!");
-          }
+        return true;
+      } else {
+        toast("Please wait while we upload your image.");
+        return false;
+      }
+    }else {
+      if (postCreateComponent.isContentEnough()) {
+        if (postCreateComponent.getSelectedCommunityTags().size() > 1) { //default: hapramp is added at community.
+          return true;
         } else {
-          toast("Write someting more...");
+          toast("Select atleast 1 community!");
         }
       } else {
-        toast("Media is being uploaded!");
+        toast("Write someting more...");
       }
-    } else {
-      toast("You must select image/video");
     }
     return false;
   }
@@ -237,17 +234,16 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
   }
 
   private void preparePost() {
-    generated_permalink = PermlinkGenerator.getPermlink();
     permlink_with_username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername() + "/" + generated_permalink;
-    title = postCreateComponent.getTitle();
+    generated_permalink = PermlinkGenerator.getPermlink();
     body = postCreateComponent.getBody();
     tags = postCreateComponent.getSelectedCommunityTags();
     images = postCreateComponent.getImageList();
   }
 
   private void sendPostToSteemBlockChain() {
-    showPublishingProgressDialog(true, "Adding to Blockchain... Please wait");
-    steemPostCreator.createPost(body, title, images, tags, generated_permalink);
+    showPublishingProgressDialog(true, "Publishing...");
+    steemPostCreator.createPost(body, "", images, tags, generated_permalink);
   }
 
   private void toast(String s) {
@@ -337,13 +333,8 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
   public void onPostCreatedOnSteem() {
     toast("Your post will take few seconds to appear");
     showPublishingProgressDialog(false, "");
-    // send confirmation to server
-    confirmServerForPostCreation();
+    postCreated();
   }
-
-  //==================
-  // STEEM POST CREATOR CALLBACK
-  //==================
 
   private void confirmServerForPostCreation() {
     showPublishingProgressDialog(true, "Sending Confirmation to Server...");
@@ -353,7 +344,7 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
         @Override
         public void onResponse(Call<ConfirmationResponse> call, Response<ConfirmationResponse> response) {
           if (response.isSuccessful()) {
-            serverConfirmed();
+            postCreated();
           } else {
             toast("Failed to Confirm Server!");
             showPublishingProgressDialog(false, "");
@@ -368,7 +359,7 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
       });
   }
 
-  private void serverConfirmed() {
+  private void postCreated() {
     toast("Your post is live now.");
     showPublishingProgressDialog(false, "");
     AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_POST);

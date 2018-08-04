@@ -16,6 +16,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.widget.Space;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.MenuItem;
@@ -249,6 +250,24 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         showPopup();
       }
     });
+    feedOwnerPic.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        navigateToUserProfile();
+      }
+    });
+    feedOwnerTitle.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        navigateToUserProfile();
+      }
+    });
+  }
+
+  private void navigateToUserProfile() {
+    Intent intent = new Intent(this, ProfileActivity.class);
+    intent.putExtra(Constants.EXTRAA_KEY_STEEM_USER_NAME, post.getAuthor());
+    startActivity(intent);
   }
 
   private void showPopup() {
@@ -290,6 +309,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     bindVotes(post.getVoters(), post.getPermlink());
     setSteemEarnings(post.getPendingPayoutValue());
     attachListenersOnStarView();
+    setCommunities(post.getTags());
   }
 
   private void addAllCommentsToView(List<SteemCommentModel> discussions) {
@@ -510,6 +530,9 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
   }
 
   private void setCommunities(List<String> communities) {
+    if (communities == null)
+      return;
+
     List<CommunityModel> cm = new ArrayList<>();
     StringBuilder hashtags = new StringBuilder();
     for (int i = 0; i < communities.size(); i++) {
@@ -520,13 +543,13 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
           0
         ));
       } else {
-        hashtags.append("#")
+        hashtags.append("<b>#</b>")
           .append(communities.get(i))
-          .append(" ");
+          .append("  ");
       }
     }
     addCommunitiesToLayout(cm);
-    hashtagsTv.setText(hashtags);
+    hashtagsTv.setText(Html.fromHtml(hashtags.toString()));
   }
 
   private void addCommunitiesToLayout(List<CommunityModel> cms) {
@@ -555,9 +578,10 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
   }
 
   private void setSteemEarnings(String payout) {
-    hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), payout.substring(0, payout.indexOf(' '))));
+    if (hapcoinsCount != null && payout != null) {
+      hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), payout.substring(0, payout.indexOf(' '))));
+    }
   }
-
   private void setCommentCount(int count) {
     commentCount.setText(String.format(getResources().getString(R.string.comment_format), count));
   }

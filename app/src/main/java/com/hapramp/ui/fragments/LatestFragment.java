@@ -37,7 +37,7 @@ import butterknife.Unbinder;
  * Created by Ankit on 4/14/2018.
  */
 
-public class LatestFragment extends Fragment implements FeedListView.FeedListViewListener, ServiceWorkerCallback, RawApiCaller.DataCallback {
+public class LatestFragment extends Fragment implements FeedListView.FeedListViewListener, ServiceWorkerCallback, RawApiCaller.FeedDataCallback {
 
   @BindView(R.id.feedListView)
   FeedListView feedListView;

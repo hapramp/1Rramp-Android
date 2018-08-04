@@ -55,7 +55,7 @@ import retrofit2.Response;
 
 
 public class HomeFragment extends Fragment implements
-  CategoryRecyclerAdapter.OnCategoryItemClickListener, LikePostCallback, FeedListView.FeedListViewListener, ServiceWorkerCallback, RawApiCaller.DataCallback {
+  CategoryRecyclerAdapter.OnCategoryItemClickListener, LikePostCallback, FeedListView.FeedListViewListener, ServiceWorkerCallback, RawApiCaller.FeedDataCallback {
   public static final String ALL = "all";
   public static final String TAG = HomeFragment.class.getSimpleName();
   @BindView(R.id.feedListView)

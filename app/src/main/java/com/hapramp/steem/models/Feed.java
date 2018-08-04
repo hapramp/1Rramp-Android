@@ -27,10 +27,10 @@ public class Feed implements Parcelable {
   private String category;
   private String parentAuthor;
   private String parentPermlink;
-  private String title;
+  private String title = "";
   private String body;
   private String cleanedBody;
-  private String featuredImageUrl;
+  private String featuredImageUrl = "";
   private String format;
   private ArrayList<String> tags;
   private String createdAt;

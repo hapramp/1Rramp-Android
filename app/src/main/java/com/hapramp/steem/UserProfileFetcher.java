@@ -48,7 +48,7 @@ public class UserProfileFetcher {
       JSONObject userObj = root.getJSONObject("user");
 
       user.setUsername(userObj.getString("name"));
-      user.setReputation(userObj.getString("reputation"));
+      user.setReputation(userObj.getLong("reputation"));
       user.setPostCount(userObj.optInt("post_count", 0));
       //try getting json_metadata
       Object json_metadataObj = userObj.get("json_metadata");

@@ -10,6 +10,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.hapramp.steem.models.Feed;
+import com.hapramp.steem.models.user.User;
 import com.hapramp.utils.JsonParser;
 import com.hapramp.utils.VolleyUtils;
 
@@ -19,7 +20,8 @@ import java.util.ArrayList;
 public class RawApiCaller {
   Handler mHandler;
   Context context;
-  private DataCallback dataCallback;
+  private FeedDataCallback dataCallback;
+  private UserMetadataCallback userMetadataCallback;
 
   public void requestNewFeeds(Context context, String tag) {
     mHandler = new Handler();
@@ -40,8 +42,7 @@ public class RawApiCaller {
     StringRequest newBlogRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
       @Override
       public void onResponse(String response) {
-        Log.d("VResponse", response);
-        parseResponseOnWorkerThread(response);
+        parseFeedResponseOnWorkerThread(response);
       }
     }, new Response.ErrorListener() {
       @Override
@@ -64,7 +65,7 @@ public class RawApiCaller {
     VolleyUtils.getInstance().addToRequestQueue(newBlogRequest, tag, context);
   }
 
-  private void parseResponseOnWorkerThread(final String response) {
+  private void parseFeedResponseOnWorkerThread(final String response) {
     final JsonParser jsonParser = new JsonParser();
     new Thread() {
       @Override
@@ -96,11 +97,55 @@ public class RawApiCaller {
     putNetworkRequest(reqBody, "hot");
   }
 
-  public void setDataCallback(DataCallback dataCallback) {
+  public void requestUserMetadata(Context context, String username) {
+    mHandler = new Handler();
+    this.context = context;
+    String url = String.format("https://steemit.com/@%s.json", username);
+    StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+      @Override
+      public void onResponse(String s) {
+        parseUserMetaResponseOnWorkerThread(s);
+      }
+    }, new Response.ErrorListener() {
+      @Override
+      public void onErrorResponse(VolleyError volleyError) {
+
+      }
+    });
+    VolleyUtils.getInstance().addToRequestQueue(stringRequest, "user_metadata", context);
+  }
+
+  private void parseUserMetaResponseOnWorkerThread(final String userJson) {
+    new Thread() {
+      @Override
+      public void run() {
+        final JsonParser jsonParser = new JsonParser();
+        mHandler.post(new Runnable() {
+          @Override
+          public void run() {
+            User user = jsonParser.parseUser(userJson);
+            if (userMetadataCallback != null) {
+              userMetadataCallback.onUserMetadataLoaded(user);
+            }
+          }
+        });
+      }
+    }.start();
+  }
+
+  public void setDataCallback(FeedDataCallback dataCallback) {
     this.dataCallback = dataCallback;
   }
 
-  public interface DataCallback {
+  public void setUserMetadataCallback(UserMetadataCallback userMetadataCallback) {
+    this.userMetadataCallback = userMetadataCallback;
+  }
+
+  public interface UserMetadataCallback {
+    void onUserMetadataLoaded(User user);
+  }
+
+  public interface FeedDataCallback {
     void onDataLoaded(ArrayList<Feed> feeds);
   }
 }
