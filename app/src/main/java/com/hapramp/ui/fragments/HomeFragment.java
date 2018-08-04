@@ -127,7 +127,7 @@ public class HomeFragment extends Fragment implements
       .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
       .createRequestParam();
     // serviceWorker.requestCommunityFeeds(serviceWorkerRequestParams);
-    loadTestData(tag);
+    loadTestData(tag.replace("hapramp-",""));
   }
 
   private void fetchUserCommunities() {
@@ -193,18 +193,13 @@ public class HomeFragment extends Fragment implements
     feedListView.initialLoading();
     feedListView.setTopMarginForShimmer(104);
     //fetchAllPosts();
-    loadTestData("bitcoin");
+    loadTestData("art");
   }
 
   @Override
   public void onStart() {
     super.onStart();
     AnalyticsUtil.getInstance(mContext).setCurrentScreen((Activity) mContext, AnalyticsParams.SCREEN_HOME, null);
-  }
-
-  @Override
-  public void onPause() {
-    super.onPause();
   }
 
   @Override
@@ -284,13 +279,8 @@ public class HomeFragment extends Fragment implements
     progressBarLoadingRecite.animate().translationY(0);
   }
 
-
-  //CALLBACKS FROM SERVICE WORKER
-
   @Override
-  public void onLoadingFromCache() {
-
-  }
+  public void onLoadingFromCache() { }
 
   @Override
   public void onCacheLoadFailed() {

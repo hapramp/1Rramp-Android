@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 
 import com.hapramp.repository.CommentsRepository;
 import com.hapramp.steem.SteemCommentModel;
-
 import java.util.List;
 
 /**
@@ -46,6 +45,12 @@ public class CommentsViewModel extends AndroidViewModel {
     SteemCommentModel _commentToAdd = steemCommentModel;
     _commentToAdd.setPostPermlink(postPermlink);
     commentsRepository.addComment(_commentToAdd);
+  }
+
+  public void addComments(List<SteemCommentModel> steemCommentModel) {
+    for (int i = 0; i < steemCommentModel.size(); i++) {
+      commentsRepository.addComment(steemCommentModel.get(i));
+    }
   }
 
 }
