@@ -65,6 +65,8 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
   ImageView shadow;
   @BindView(R.id.commentLoadingProgressBar)
   ProgressBar commentLoadingProgressBar;
+  @BindView(R.id.commentLoadingProgressMessage)
+  TextView commentLoadingProgressMessage;
   private String initialCommentUrl;
   private String postId;
   private CommentsAdapter commentsAdapter;
@@ -108,16 +110,14 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
     commentsRecyclerView.addItemDecoration(viewItemDecoration);
     commentsRecyclerView.setAdapter(commentsAdapter);
     if (commentsList.size() > 0) {
-      commentLoadingProgressBar.setVisibility(View.GONE);
       commentsAdapter.addComments(commentsList);
     }
 
     commentsViewModel.getSteemComments(postAuthor, postPermlink).observeForever(new Observer<List<SteemCommentModel>>() {
       @Override
       public void onChanged(@Nullable List<SteemCommentModel> steemCommentModels) {
-        commentLoadingProgressBar.setVisibility(View.GONE);
-        Log.d("RoomData", "received " + steemCommentModels.size());
         commentsAdapter.addComments((ArrayList<SteemCommentModel>) steemCommentModels);
+        hideProgressInfo();
       }
     });
 
@@ -138,8 +138,34 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
     });
   }
 
-  //================================
-  // Comments part
+  private void hideProgressInfo() {
+    Log.d("Comments","done loading comments");
+    if (commentLoadingProgressBar != null) {
+      commentLoadingProgressBar.setVisibility(View.GONE);
+      commentLoadingProgressMessage.setVisibility(View.GONE);
+    }
+  }
+
+
+  @Override
+  public void onCommentCreateProcessing() {
+  }
+
+  @Override
+  public void onCommentCreated() {
+    hideProgress();
+  }
+
+  @Override
+  public void onCommentCreateFailed() {
+    hideProgress();
+  }
+
+  private void hideProgress() {
+    if (progressDialog != null) {
+      progressDialog.dismiss();
+    }
+  }
 
   private void postComment() {
     String cmnt = commentInputBox.getText().toString().trim();
@@ -150,45 +176,12 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
       Toast.makeText(this, "Comment Too Short!!", Toast.LENGTH_LONG).show();
       return;
     }
-
     SteemCommentModel steemCommentModel = new SteemCommentModel(
       HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
-      cmnt, MomentsUtils.getCurrentTime(),0,
+      cmnt, MomentsUtils.getCurrentTime(), 0,
       String.format(getResources().getString(R.string.steem_user_profile_pic_format),
         HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
     AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_COMMENT);
     commentsViewModel.addComments(steemCommentModel, postPermlink);
-  }
-
-
-  @Override
-  public void onCommentCreateProcessing() {
-    //showProgress("Posting Your Comment...");
-  }
-
-  @Override
-  public void onCommentCreated() {
-    hideProgress();
-    //Toast.makeText(this, "Comment Created", Toast.LENGTH_LONG).show();
-  }
-
-  @Override
-  public void onCommentCreateFailed() {
-    hideProgress();
-    //Toast.makeText(this, "Comment Operation Failed", Toast.LENGTH_LONG).show();
-  }
-
-  private void hideProgress() {
-
-    if (progressDialog != null) {
-      progressDialog.dismiss();
-    }
-
-  }
-
-  private void showProgress(String msg) {
-    progressDialog.setMessage(msg);
-    progressDialog.setCancelable(false);
-    progressDialog.show();
   }
 }
