@@ -88,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
           navigateToHomePage();
         }
       } else {
-        Toast.makeText(this, "Token expired", Toast.LENGTH_LONG).show();
+       // Toast.makeText(this, "Token expired", Toast.LENGTH_LONG).show();
       }
     }
   }

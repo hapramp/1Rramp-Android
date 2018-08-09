@@ -52,6 +52,8 @@ import butterknife.Unbinder;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import xute.markdownrenderer.utils.ItemSeparator;
+import xute.markdownrenderer.utils.ItemTypeDetector;
 
 
 public class HomeFragment extends Fragment implements
@@ -89,6 +91,7 @@ public class HomeFragment extends Fragment implements
     rawApiCaller.requestNewFeeds(mContext,tag);
     rawApiCaller.setDataCallback(this);
   }
+
   private void initCategoryView() {
     try {
       categoryRecyclerAdapter = new CategoryRecyclerAdapter(mContext, this);
@@ -193,7 +196,7 @@ public class HomeFragment extends Fragment implements
     feedListView.initialLoading();
     feedListView.setTopMarginForShimmer(104);
     //fetchAllPosts();
-    loadTestData("art");
+    loadTestData("news");
   }
 
   @Override
@@ -471,7 +474,9 @@ public class HomeFragment extends Fragment implements
 
   @Override
   public void onDataLoaded(ArrayList<Feed> feeds) {
-    if(feedListView!=null)
+    if (feedListView != null) {
       feedListView.feedsRefreshed(feeds);
+    }
   }
+
 }

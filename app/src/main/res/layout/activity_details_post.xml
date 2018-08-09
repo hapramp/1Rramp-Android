@@ -95,7 +95,7 @@
 
             </RelativeLayout>
 
-            <us.feras.mdv.MarkdownView
+            <WebView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/markdownView" />
@@ -122,7 +122,7 @@
                 android:paddingEnd="16dp"
                 android:paddingStart="16dp"
                 android:paddingTop="6dp"
-                android:text="SHARE TO FRIEND"
+                android:text="Share"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
 
@@ -151,7 +151,7 @@
                 android:layout_height="72dp"
                 android:gravity="center_vertical"
                 android:paddingStart="24dp"
-                android:text="No Comments"
+                android:text="No Comment"
                 android:textColor="@color/Black54"
                 android:textSize="14sp"
                 android:visibility="gone" />
@@ -205,7 +205,7 @@
                         android:layout_toStartOf="@+id/sendButton"
                         android:background="@drawable/blank_input_bg"
                         android:clickable="true"
-                        android:hint="Comment Here..."
+                        android:hint="Write a comment..."
                         android:minHeight="36dp"
                         android:paddingBottom="8dp"
                         android:paddingEnd="16dp"

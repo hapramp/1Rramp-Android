@@ -336,7 +336,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   }
 
   private void fetchUserInfo() {
-    Log.d("ProfileHeaderView", "Fetching user info for " + mUsername);
     followingSearchManager.requestFollowings(me);
     followCountManager.requestFollowInfo(mUsername);
     userProfileFetcher.fetchUserProfileFor(mUsername);
@@ -384,7 +383,8 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   }
 
   public void setPostsCount(long count) {
-    postCounts.setText(String.format(mContext.getResources().getString(R.string.profile_posts_count_caption), count));
+    String text = count > 1 ? count + " Posts" : count + " Post";
+    postCounts.setText(text);
   }
 
   private void invalidateFollowButton() {
@@ -426,10 +426,10 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     mHandler.post(new Runnable() {
       @Override
       public void run() {
-        followingsCount.setText(String.format(mContext.getResources().getString(R.string.profile_following_count_caption),
-          followings));
-        followersCount.setText(String.format(mContext.getResources().getString(R.string.profile_followers_caption),
-          follower));
+        String followerText = follower > 1 ? follower + " Follwers" : follower + " Follwer";
+        String followingText = followings > 1 ? followings + " Follwings" : followings + " Follwing";
+        followingsCount.setText(followingText);
+        followersCount.setText(followerText);
       }
     });
   }
@@ -441,7 +441,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 
   @Override
   public void onFollowingResponse(ArrayList<String> followings) {
-    Log.d("Followings", followings.toString());
     HaprampPreferenceManager.getInstance().saveCurrentUserFollowings(followings);
   }
 
@@ -452,7 +451,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 
   @Override
   public void onUserFetched(User user) {
-    Log.d("ProfileHeaderView", "Response " + user.toString());
     bind(user);
     cacheUserProfile(user);
   }
@@ -464,11 +462,9 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 
   @Override
   public void onUserFetchError(String e) {
-    Log.d("ProfileHeaderView", "Error Fetching user info for " + mUsername);
     failedToFetchSteemInfo();
   }
 
   private void failedToFetchSteemInfo() {
-
   }
 }

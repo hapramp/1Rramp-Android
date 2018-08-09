@@ -27,7 +27,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
             android:layout_toRightOf="@+id/closeBtn"
-            android:text="Write Article"
+            android:text="Blog"
             android:textSize="18sp" />
 
         <TextView
@@ -81,7 +81,7 @@
 
             <EditText
                 android:id="@+id/article_title"
-                android:hint="Title of Article"
+                android:hint="Title"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:paddingStart="16dp"

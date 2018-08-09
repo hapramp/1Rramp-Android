@@ -49,8 +49,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CreatePostActivity extends AppCompatActivity implements PostCreateCallback, SteemPostCreator.SteemPostCreatorCallback {
-  public static final String CLOSE_DISTRACTION_FREE_BUTTON_TEXT = "NORMAL MODE";
-  public static final String OPEN_DISTRATION_FREE_BUTTON_TEXT = "DISTRACTION FREE MODE";
   private static final int REQUEST_IMAGE_SELECTOR = 101;
   private static final int YOUTUBE_RESULT_REQUEST = 107;
   @BindView(R.id.closeBtn)
@@ -63,12 +61,7 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
   PostCreateComponent postCreateComponent;
   @BindView(R.id.scroll_view)
   ScrollView scrollView;
-  @BindView(R.id.distraction_mode_btn)
-  TextView distractionModeBtn;
-  @BindView(R.id.bottom_options_container)
-  RelativeLayout bottomOptionsContainer;
-  @BindView(R.id.bottom_postButton)
-  TextView bottomPostButton;
+
   private ProgressDialog progressDialog;
   private List<String> tags;
   private String generated_permalink;
@@ -99,10 +92,9 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
 
   private void initProgressDialog() {
     progressDialog = new ProgressDialog(this);
-    progressDialog.setTitle("Post Upload");
     progressDialog.setIndeterminate(true);
     progressDialog.setCancelable(false);
-    progressDialog.setMessage("Uploading Your Post...");
+    progressDialog.setMessage("Publishing...");
   }
 
   private void attachListener() {
@@ -130,18 +122,6 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
       }
     });
 
-    distractionModeBtn.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        setDistractionFreeMode(!mDistractionFreeMode);
-      }
-    });
-    bottomPostButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        publishPost();
-      }
-    });
   }
 
   private void close() {
@@ -150,12 +130,10 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
   }
 
   private void publishPost() {
-    // check connection
     if (!ConnectionUtils.isConnected(this)) {
       showConnectivityError();
       return;
     }
-
     if (validPost()) {
       showPublishingProgressDialog(true, "Preparing Your Post...");
       preparePost();
@@ -185,14 +163,6 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
     startActivityForResult(youtubeIntent, YOUTUBE_RESULT_REQUEST);
   }
 
-  private void setDistractionFreeMode(boolean turnedOn) {
-    mDistractionFreeMode = turnedOn;
-    toolbarContainer.setVisibility(View.GONE);
-    distractionModeBtn.setText(turnedOn ? CLOSE_DISTRACTION_FREE_BUTTON_TEXT : OPEN_DISTRATION_FREE_BUTTON_TEXT);
-    toolbarContainer.setVisibility(turnedOn ? View.GONE : View.VISIBLE);
-    bottomPostButton.setVisibility(turnedOn ? View.VISIBLE : View.GONE);
-  }
-
   private void showConnectivityError() {
     Snackbar.make(toolbarContainer, "No Internet!", Snackbar.LENGTH_SHORT).show();
   }
@@ -205,7 +175,7 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
         toast("Please wait while we upload your image.");
         return false;
       }
-    }else {
+    } else {
       if (postCreateComponent.isContentEnough()) {
         if (postCreateComponent.getSelectedCommunityTags().size() > 1) { //default: hapramp is added at community.
           return true;
@@ -226,10 +196,10 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
         progressDialog.setIndeterminate(true);
         progressDialog.show();
       } else {
-        progressDialog.hide();
+        progressDialog.dismiss();
       }
     } else {
-      progressDialog.hide();
+      progressDialog.dismiss();
     }
   }
 
@@ -301,9 +271,9 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
 
   private void showExistAlert() {
     AlertDialog.Builder builder = new AlertDialog.Builder(this)
-      .setTitle("Close")
-      .setMessage("Do you want to Close Post Creation ?")
-      .setPositiveButton("Close", new DialogInterface.OnClickListener() {
+      .setTitle("Discard?")
+      .setMessage("You cannot recover discarded posts.")
+      .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
           close();
@@ -360,7 +330,6 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
   }
 
   private void postCreated() {
-    toast("Your post is live now.");
     showPublishingProgressDialog(false, "");
     AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_POST);
     new Handler().postDelayed(new Runnable() {
