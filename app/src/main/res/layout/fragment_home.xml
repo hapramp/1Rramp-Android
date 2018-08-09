@@ -3,7 +3,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
     <com.hapramp.views.feedlist.FeedListView xmlns:customNS="http://schemas.android.com/apk/res/com.hapramp"
         android:id="@+id/feedListView"
         android:layout_width="match_parent"
@@ -26,6 +25,5 @@
         android:indeterminate="true"
         android:padding="0dp"
         android:visibility="gone" />
-
 
 </RelativeLayout>

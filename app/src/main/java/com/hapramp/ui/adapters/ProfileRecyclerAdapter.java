@@ -68,11 +68,8 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
   @Override
   public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int pos) {
-
     if (viewHolder instanceof PostViewHolder) {
-      // Log.d("Adapter", "Binding Post at " + pos);
       ((PostViewHolder) viewHolder).bind(feeds.get(pos - 1));
-
     } else if (viewHolder instanceof ProfileHeaderViewHolder) {
       if (!profileHeaderInitialized) {
         ((ProfileHeaderViewHolder) viewHolder).setUsername(mUsername);

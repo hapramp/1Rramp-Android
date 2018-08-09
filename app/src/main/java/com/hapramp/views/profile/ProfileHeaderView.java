@@ -308,7 +308,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 
   public void setUsername(String username) {
     this.mUsername = username;
-    //hide shimmer
     if (shimmerFrameLayout != null) {
       shimmerFrameLayout.setBaseAlpha(0.1f);
       shimmerFrameLayout.setDropoff(0.08f);
@@ -318,7 +317,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
       shimmerFrameLayout.setVisibility(VISIBLE);
       shimmerFrameLayout.startShimmerAnimation();
     }
-
     if (username != null) {
       if (!loaded) {
         checkCacheAndLoad();
@@ -330,6 +328,7 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   private void checkCacheAndLoad() {
     String json = HaprampPreferenceManager.getInstance().getUserProfile(mUsername);
     if (json.length() > 0) {
+      Log.d("ProfileHeaderView", "json " + json);
       User steemUser = new Gson().fromJson(json, User.class);
       bind(steemUser);
     }
@@ -342,12 +341,11 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   }
 
   private void bind(User data) {
-    //hide shimmer
+    Log.d("ProfileHeaderView", data.toString());
     if (shimmerFrameLayout != null) {
       shimmerFrameLayout.stopShimmerAnimation();
       shimmerFrameLayout.setVisibility(GONE);
     }
-    //show content
     if (profileHeaderViewReal != null) {
       profileHeaderViewReal.setVisibility(VISIBLE);
     }
@@ -451,6 +449,7 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 
   @Override
   public void onUserFetched(User user) {
+    Log.d("ProfileHeaderView", "User fetched" + user.toString());
     bind(user);
     cacheUserProfile(user);
   }

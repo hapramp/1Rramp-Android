@@ -46,7 +46,6 @@ public class UserProfileFetcher {
     try {
       JSONObject root = new JSONObject(response);
       JSONObject userObj = root.getJSONObject("user");
-
       user.setUsername(userObj.getString("name"));
       user.setReputation(userObj.getLong("reputation"));
       user.setPostCount(userObj.optInt("post_count", 0));

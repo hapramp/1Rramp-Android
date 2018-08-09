@@ -39,8 +39,6 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
-import com.hapramp.api.RetrofitServiceGenerator;
-import com.hapramp.api.URLS;
 import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.push.Notifyer;
@@ -48,7 +46,6 @@ import com.hapramp.steem.Communities;
 import com.hapramp.steem.SteemCommentCreator;
 import com.hapramp.steem.SteemCommentModel;
 import com.hapramp.steem.models.Feed;
-import com.hapramp.steem.models.FeedWrapper;
 import com.hapramp.steem.models.Voter;
 import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;
@@ -69,9 +66,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import xute.markdownrenderer.utils.MarkdownRendererUtils;
 
 import static android.view.View.VISIBLE;
@@ -188,23 +182,6 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     bindPostValues();
   }
 
-  private void fetchPost(String posturl) {
-    RetrofitServiceGenerator.getService().getFeedFromSteem(String.format(URLS.STEEM_CURATION_FEED_URL, posturl)).enqueue(new Callback<FeedWrapper>() {
-      @Override
-      public void onResponse(Call<FeedWrapper> call, Response<FeedWrapper> response) {
-        if (response.isSuccessful()) {
-          post = response.body().feed;
-          bindPostValues();
-        }
-      }
-
-      @Override
-      public void onFailure(Call<FeedWrapper> call, Throwable t) {
-
-      }
-    });
-  }
-
   private void attachListener() {
     closeBtn.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -307,7 +284,6 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
       String.format(getResources().getString(R.string.post_subtitle_format),
         MomentsUtils.getFormattedTime(post.getCreatedAt())));
     renderMarkdown(post.getBody());
-
     ImageHandler.loadCircularImage(this, commentCreaterAvatar,
       String.format(getResources().getString(R.string.steem_user_profile_pic_format),
         HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
@@ -339,6 +315,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     int commentCount = discussions.size();
     commentLoadingProgressBar.setVisibility(View.GONE);
     if (commentCount == 0) {
+      emptyCommentsCaption.setText("No Comments");
       emptyCommentsCaption.setVisibility(VISIBLE);
     } else {
       emptyCommentsCaption.setVisibility(View.GONE);
