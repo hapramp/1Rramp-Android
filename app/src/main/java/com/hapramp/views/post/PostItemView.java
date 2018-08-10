@@ -199,6 +199,7 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     feedOwnerTitle.setText(feed.getAuthor());
     feedOwnerSubtitle.setText(String.format(mContext.getResources().getString(R.string.post_subtitle_format), MomentsUtils.getFormattedTime(feed.getCreatedAt())));
     setSteemEarnings(feed.getPendingPayoutValue());
+    setCommunities(feed.getTags());
     postSnippet.setText(feed.getCleanedBody());
     if (feed.getTitle().length() > 0) {
       postTitle.setVisibility(VISIBLE);
@@ -274,8 +275,11 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
   }
 
   private void setSteemEarnings(String payout) {
-    if (hapcoinsCount != null && payout != null) {
+    try {
       hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), payout.substring(0, payout.indexOf(' '))));
+    }
+    catch (Exception e) {
+
     }
   }
 

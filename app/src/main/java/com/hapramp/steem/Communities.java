@@ -15,11 +15,7 @@ public class Communities {
   public static final String TAG_HAPRAMP = "hapramp";
   public static final String IMAGE_URI_ALL = "https://user-images.githubusercontent.com/10809719/39564005-05b3a8cc-4ed0-11e8-8854-4714ef346798.png";
 
-  // TODO: 4/1/2018 check community existence from stored list in preference.
-  // It enhances the flexibility to change data dynamically from server
-
   public static boolean doesCommunityExists(String commmunity) {
-
     switch (commmunity) {
       case PHOTOGRAPHY:
         return true;
@@ -42,7 +38,5 @@ public class Communities {
       default:
         return false;
     }
-
   }
-
 }

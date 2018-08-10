@@ -20,11 +20,9 @@ public class CachePreference {
   private static CachePreference mInstance;
 
   public CachePreference() {
-
     preferences = HapRampMain.getContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     editor = preferences.edit();
     editor.apply();
-
   }
 
   public static CachePreference getInstance() {
@@ -44,13 +42,11 @@ public class CachePreference {
   }
 
   public void cacheFeedResponse(FeedResponse feedResponse) {
-
     if (feedResponse != null) {
       editor.putString("feed_cache", new Gson().toJson(feedResponse));
       editor.putBoolean("feedCached", true);
       editor.apply();
     }
-
   }
 
   public FeedResponse getCachedFeedResponse() {

@@ -21,15 +21,9 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
   ArrayList<String> titles = new ArrayList<>();
 
   public ViewPagerAdapter(FragmentManager fm) {
-
     super(fm);
-    fragments.add(new TrendingFragment());
     fragments.add(new LatestFragment());
-    fragments.add(new HotFragment());
-    titles.add("Trending");
-    titles.add("New");
-    titles.add("Hot");
-
+    titles.add("NEW ON HAPRAMP");
   }
 
   @Override

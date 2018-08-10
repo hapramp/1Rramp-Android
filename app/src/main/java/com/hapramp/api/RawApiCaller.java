@@ -2,9 +2,7 @@ package com.hapramp.api;
 
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -20,38 +18,35 @@ import java.util.ArrayList;
 public class RawApiCaller {
   Handler mHandler;
   Context context;
+  public static final String HAPRAMP_API_URL = "https://testapi.hapramp.com/api/v2/curation/tag/";
+  private String STEEMIT_API_URL = "https://api.steemit.com";
   private FeedDataCallback dataCallback;
   private UserMetadataCallback userMetadataCallback;
+  private String currentRequestTag = "";
 
-  public void requestNewFeeds(Context context, String tag) {
-    mHandler = new Handler();
+  public RawApiCaller(Context context) {
     this.context = context;
-    final String reqBody = "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_discussions_by_created\", \"params\":[{\"" + tag + "\":\"art\",\"limit\":15}], \"id\":1}";
-    putNetworkRequest(reqBody, "new");
+    mHandler = new Handler();
   }
 
-  public void requestNewFeeds(Context context) {
-    mHandler = new Handler();
-    this.context = context;
-    final String reqBody = "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_discussions_by_created\", \"params\":[{\"tag\":\"art\",\"limit\":15}], \"id\":1}";
-    putNetworkRequest(reqBody, "new");
-  }
-
-  private void putNetworkRequest(final String reqBody, String tag) {
-    String url = "https://api.steemit.com";
-    StringRequest newBlogRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+  //for search page [Posts with hapramp tag]
+  public void requestLatestPostsByTag(final String tag) {
+    final String rtag = "latest_post_by_tag_" + tag;
+    this.currentRequestTag = rtag;
+    final String reqBody = "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_discussions_by_created\", \"params\":[{\"tag\":\"" + tag + "\",\"limit\":40}], \"id\":1}";
+    StringRequest newBlogRequest = new StringRequest(Request.Method.POST, STEEMIT_API_URL, new Response.Listener<String>() {
       @Override
       public void onResponse(String response) {
-        parseFeedResponseOnWorkerThread(response);
+        parseLatestPostByTag(response, rtag);
       }
     }, new Response.ErrorListener() {
       @Override
       public void onErrorResponse(VolleyError error) {
-
+        returnErrorCallback();
       }
     }) {
       @Override
-      public byte[] getBody() throws AuthFailureError {
+      public byte[] getBody() {
         try {
           return reqBody.getBytes("utf-8");
         }
@@ -61,44 +56,101 @@ public class RawApiCaller {
         return null;
       }
     };
-
-    VolleyUtils.getInstance().addToRequestQueue(newBlogRequest, tag, context);
+    VolleyUtils.getInstance().addToRequestQueue(newBlogRequest, currentRequestTag, context);
   }
 
-  private void parseFeedResponseOnWorkerThread(final String response) {
+  private void parseLatestPostByTag(final String response, final String tag) {
     final JsonParser jsonParser = new JsonParser();
     new Thread() {
       @Override
       public void run() {
-        final ArrayList<Feed> feeds = jsonParser.parseFeed(response);
+        final ArrayList<Feed> feeds = jsonParser.parseFeedStructure3(response);
         mHandler.post(new Runnable() {
           @Override
           public void run() {
-            if (dataCallback != null) {
-              dataCallback.onDataLoaded(feeds);
-            }
+            if (isRequestLive(tag))
+              if (dataCallback != null) {
+                dataCallback.onDataLoaded(feeds);
+              }
           }
         });
       }
     }.start();
   }
 
-  public void requestTrendingFeeds(Context context) {
-    mHandler = new Handler();
-    this.context = context;
-    final String reqBody = "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_discussions_by_trending\", \"params\":[{\"tag\":\"steem\",\"limit\":100}], \"id\":1}";
-    putNetworkRequest(reqBody, "trending");
+  private void returnErrorCallback() {
+    mHandler.post(new Runnable() {
+      @Override
+      public void run() {
+        if (dataCallback != null) {
+          dataCallback.onDataLoadError();
+        }
+      }
+    });
   }
 
-  public void requestHotFeeds(Context context) {
-    mHandler = new Handler();
-    this.context = context;
-    final String reqBody = "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_discussions_by_hot\", \"params\":[{\"tag\":\"steem\",\"limit\":100}], \"id\":1}";
-    putNetworkRequest(reqBody, "hot");
+  private boolean isRequestLive(String requestTag) {
+    return this.currentRequestTag.equals(requestTag);
+  }
+
+  public void requestUserBlogs(String username) {
+    final String rtag = "user_blog_" + username;
+    this.currentRequestTag = rtag;
+    String url = "https://testapi.hapramp.com/api/v2/feeds/blog/" + username;
+    StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+      @Override
+      public void onResponse(String response) {
+        parseUserFeed(response, rtag);
+      }
+    }, new Response.ErrorListener() {
+      @Override
+      public void onErrorResponse(VolleyError volleyError) {
+        returnErrorCallback();
+      }
+    });
+    VolleyUtils.getInstance().addToRequestQueue(stringRequest, rtag, context);
+  }
+
+  private void parseUserFeed(final String response, final String currentRequestTag) {
+    final JsonParser jsonParser = new JsonParser();
+    new Thread() {
+      @Override
+      public void run() {
+        final ArrayList<Feed> feeds = jsonParser.parseFeedStructure2(response);
+        mHandler.post(new Runnable() {
+          @Override
+          public void run() {
+            if (isRequestLive(currentRequestTag))
+              if (dataCallback != null) {
+                dataCallback.onDataLoaded(feeds);
+              }
+          }
+        });
+      }
+    }.start();
+  }
+
+  public void requestUserFeed(String username) {
+    final String rtag = "user_feed_" + username;
+    this.currentRequestTag = rtag;
+    String url = "https://testapi.hapramp.com/api/v2/feeds/user/" + username;
+    StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+      new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+          parseUserFeed(response, rtag);
+        }
+      }, new Response.ErrorListener() {
+      @Override
+      public void onErrorResponse(VolleyError volleyError) {
+        returnErrorCallback();
+      }
+    });
+    VolleyUtils.getInstance().addToRequestQueue(stringRequest, "user_feed_steemit", context);
   }
 
   public void requestUserMetadata(Context context, String username) {
-    mHandler = new Handler();
+    this.currentRequestTag = "user_metadata";
     this.context = context;
     String url = String.format("https://steemit.com/@%s.json", username);
     StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -141,11 +193,51 @@ public class RawApiCaller {
     this.userMetadataCallback = userMetadataCallback;
   }
 
+  public void requestCuratedFeedsByTag(final String tag) {
+    final String rtag = "curate_by_tag_" + tag;
+    this.currentRequestTag = rtag;
+    String url = HAPRAMP_API_URL + tag;
+    StringRequest curatedFeedRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+      @Override
+      public void onResponse(String response) {
+        parseCuratedFeedResponseOnWorkerThread(response, rtag);
+      }
+    }, new Response.ErrorListener() {
+      @Override
+      public void onErrorResponse(VolleyError error) {
+        returnErrorCallback();
+      }
+    });
+    VolleyUtils.getInstance().addToRequestQueue(curatedFeedRequest, currentRequestTag, context);
+  }
+
   public interface UserMetadataCallback {
     void onUserMetadataLoaded(User user);
   }
 
+  private void parseCuratedFeedResponseOnWorkerThread(final String response, final String requestTag) {
+    final JsonParser jsonParser = new JsonParser();
+    new Thread() {
+      @Override
+      public void run() {
+        final ArrayList<Feed> feeds = jsonParser.parseCuratedFeed(response);
+        mHandler.post(new Runnable() {
+          @Override
+          public void run() {
+            if (isRequestLive(requestTag)) {
+              if (dataCallback != null) {
+                dataCallback.onDataLoaded(feeds);
+              }
+            }
+          }
+        });
+      }
+    }.start();
+  }
+
   public interface FeedDataCallback {
     void onDataLoaded(ArrayList<Feed> feeds);
+
+    void onDataLoadError();
   }
 }

@@ -146,7 +146,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     settingsFragment = new SettingsFragment();
     earningFragment = new EarningFragment();
     progressDialog = new ProgressDialog(this);
-    rawApiCaller = new RawApiCaller();
+    rawApiCaller = new RawApiCaller(this);
   }
 
   private void attachListeners() {

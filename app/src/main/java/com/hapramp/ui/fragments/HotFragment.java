@@ -14,19 +14,11 @@ import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.api.RawApiCaller;
-import com.hapramp.datastore.ServiceWorker;
-import com.hapramp.interfaces.datatore_callback.ServiceWorkerCallback;
-import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.Communities;
-import com.hapramp.steem.ServiceWorkerRequestBuilder;
-import com.hapramp.steem.ServiceWorkerRequestParams;
 import com.hapramp.steem.models.Feed;
-import com.hapramp.utils.Constants;
 import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.views.feedlist.FeedListView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,15 +28,10 @@ import butterknife.Unbinder;
  * Created by Ankit on 4/14/2018.
  */
 
-public class HotFragment extends Fragment implements FeedListView.FeedListViewListener, ServiceWorkerCallback, RawApiCaller.FeedDataCallback {
+public class HotFragment extends Fragment implements FeedListView.FeedListViewListener, RawApiCaller.FeedDataCallback {
   @BindView(R.id.feedListView)
   FeedListView feedListView;
   private Unbinder unbinder;
-  private ServiceWorker serviceWorker;
-  private ServiceWorkerRequestBuilder serviceWorkerRequestParamsBuilder;
-  private ServiceWorkerRequestParams serviceWorkerRequestParams;
-  private String lastAuthor;
-  private String lastPermlink;
   private Context context;
   private RawApiCaller rawApiCaller;
 
@@ -59,10 +46,9 @@ public class HotFragment extends Fragment implements FeedListView.FeedListViewLi
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Crashlytics.setString(CrashReporterKeys.UI_ACTION, "hot fragment");
-    rawApiCaller = new RawApiCaller();
+    rawApiCaller = new RawApiCaller(context);
     rawApiCaller.setDataCallback(this);
     setRetainInstance(true);
-    prepareServiceWorker();
   }
 
   @Nullable
@@ -87,23 +73,9 @@ public class HotFragment extends Fragment implements FeedListView.FeedListViewLi
   }
 
   private void fetchPosts() {
-    serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
-    serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(Communities.TAG_HAPRAMP)
-      .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
-      .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
-      .createRequestParam();
-    //  serviceWorker.requestHotPosts(serviceWorkerRequestParams);
-    rawApiCaller.requestHotFeeds(context);
+   // rawApiCaller.requestHotFeeds(context);
   }
 
-  private void prepareServiceWorker() {
-    serviceWorker = new ServiceWorker();
-    serviceWorker.init(getActivity());
-    serviceWorker.setServiceWorkerCallback(this);
-    serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder()
-      .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
-      .setLimit(Constants.MAX_FEED_LOAD_LIMIT);
-  }
 
   //FEEDLIST CALLBACKS
   @Override
@@ -118,14 +90,7 @@ public class HotFragment extends Fragment implements FeedListView.FeedListViewLi
 
   @Override
   public void onLoadMoreFeeds() {
-    serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
-    serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder.serCommunityTag(Communities.TAG_HAPRAMP)
-      .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
-      .setLastAuthor(lastAuthor)
-      .setLastPermlink(lastPermlink)
-      .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
-      .createRequestParam();
-    //serviceWorker.requestAppendableFeedForHot(serviceWorkerRequestParams);
+
   }
 
   @Override
@@ -138,107 +103,17 @@ public class HotFragment extends Fragment implements FeedListView.FeedListViewLi
     //NA
   }
 
-
-  // SERVICE WORKER CALLBACKS
-
-  @Override
-  public void onLoadingFromCache() {
-    //NA
-  }
-
-  @Override
-  public void onCacheLoadFailed() {
-    //NA
-  }
-
-  @Override
-  public void onNoDataInCache() {
-    //NA
-  }
-
-  @Override
-  public void onLoadedFromCache(ArrayList<Feed> cachedList, String lastAuthor, String lastPermlink) {
-    if (feedListView != null) {
-      feedListView.cachedFeedFetched(cachedList);
-      this.lastAuthor = lastAuthor;
-      this.lastPermlink = lastPermlink;
-    }
-  }
-
-  @Override
-  public void onFetchingFromServer() {
-    if (feedListView != null) {
-      feedListView.feedRefreshing(false);
-    }
-  }
-
-  @Override
-  public void onFeedsFetched(ArrayList<Feed> body, String lastAuthor, String lastPermlink) {
-    if (feedListView != null) {
-      feedListView.feedsRefreshed(body);
-    }
-  }
-
-  @Override
-  public void onFetchingFromServerFailed() {
-    if (feedListView != null) {
-      feedListView.failedToRefresh("");
-    }
-  }
-
-  @Override
-  public void onNoDataAvailable() {
-
-  }
-
-  @Override
-  public void onRefreshing() {
-    if (feedListView != null) {
-      feedListView.feedRefreshing(false);
-    }
-  }
-
-  @Override
-  public void onRefreshed(List<Feed> refreshedList, String lastAuthor, String lastPermlink) {
-    if (feedListView != null) {
-      feedListView.setHasMoreToLoad(refreshedList.size() == Constants.MAX_FEED_LOAD_LIMIT);
-      feedListView.feedsRefreshed(refreshedList);
-      this.lastAuthor = lastAuthor;
-      this.lastPermlink = lastPermlink;
-    }
-    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_BROWSE_HOT);
-  }
-
-  @Override
-  public void onRefreshFailed() {
-    if (feedListView != null) {
-      feedListView.failedToRefresh("");
-    }
-  }
-
-  @Override
-  public void onLoadingAppendableData() {
-    //NA
-  }
-
-  @Override
-  public void onAppendableDataLoaded(List<Feed> appendableList, String lastAuthor, String lastPermlink) {
-    if (feedListView != null) {
-      feedListView.setHasMoreToLoad(appendableList.size() == Constants.MAX_FEED_LOAD_LIMIT);
-      feedListView.loadedMoreFeeds(appendableList);
-      this.lastAuthor = lastAuthor;
-      this.lastPermlink = lastPermlink;
-    }
-  }
-
-  @Override
-  public void onAppendableDataLoadingFailed() {
-    //NA
-  }
-
   @Override
   public void onDataLoaded(ArrayList<Feed> feeds) {
-    if (feedListView != null)
+    if (feedListView != null) {
       feedListView.feedsRefreshed(feeds);
+    }
+  }
+
+  @Override
+  public void onDataLoadError() {
+    if (feedListView != null) {
+      feedListView.failedToRefresh("");
+    }
   }
 }
