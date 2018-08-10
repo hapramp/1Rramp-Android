@@ -44,8 +44,8 @@ android {
         applicationId "com.hapramp"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 7
-        versionName "0.0.6"
+        versionCode 8
+        versionName "0.0.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -94,7 +94,6 @@ dependencies {
     implementation project(':search')
     implementation project(':youtube_player')
     implementation project(':WalletInfo')
-    implementation project(':markdownrenderer')
 }
 
 apply plugin: 'com.google.gms.google-services'
