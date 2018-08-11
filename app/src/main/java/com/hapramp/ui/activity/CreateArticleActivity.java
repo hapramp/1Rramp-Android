@@ -241,7 +241,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
 
   @Override
   public void onPostCreatedOnSteem() {
-    toast("Your blog will take few seconds to appear");
+    toast("Published");
     closeEditor();
   }
 

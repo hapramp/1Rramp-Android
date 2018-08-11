@@ -40,7 +40,10 @@ import com.hapramp.views.post.PostCreateComponent;
 import com.hapramp.youtube.YoutubeVideoSelectorActivity;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -208,7 +211,18 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
     generated_permalink = PermlinkGenerator.getPermlink();
     body = postCreateComponent.getBody();
     tags = postCreateComponent.getSelectedCommunityTags();
+    tags.addAll(getHashTagsFromBody(body));
     images = postCreateComponent.getImageList();
+  }
+
+  private ArrayList<String> getHashTagsFromBody(String body) {
+    ArrayList<String> tags = new ArrayList<>();
+    Pattern pattern = Pattern.compile("#(\\w+)");
+    Matcher matcher = pattern.matcher(body);
+    while (matcher.find()) {
+      tags.add(matcher.group(1));
+    }
+    return tags;
   }
 
   private void sendPostToSteemBlockChain() {
@@ -301,7 +315,7 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
 
   @Override
   public void onPostCreatedOnSteem() {
-    toast("Your post will take few seconds to appear");
+    toast("Published");
     showPublishingProgressDialog(false, "");
     postCreated();
   }

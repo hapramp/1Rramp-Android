@@ -358,9 +358,8 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   private void showExistAlert() {
 
     AlertDialog.Builder builder = new AlertDialog.Builder(this)
-      .setTitle("Exit")
-      .setMessage("Do you want to Exit ?")
-      .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+      .setTitle("Exit ?")
+      .setPositiveButton("YES", new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
           finish();

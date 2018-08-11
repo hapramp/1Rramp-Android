@@ -94,6 +94,7 @@ dependencies {
     implementation project(':search')
     implementation project(':youtube_player')
     implementation project(':WalletInfo')
+    implementation project(':lib')
 }
 
 apply plugin: 'com.google.gms.google-services'
