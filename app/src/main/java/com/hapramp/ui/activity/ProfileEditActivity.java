@@ -219,6 +219,7 @@ public class ProfileEditActivity extends AppCompatActivity {
       } else if (requestCode == USER_COVER_IMAGE_REQUEST) {
         ImageHandler.load(this, profileCoverImageView, imagePath);
         showCoverImageProgress();
+        Log.d("ProfileEdit", "path " + imagePath);
         startUploading(imagePath, new Callback<FileUploadReponse>() {
           @Override
           public void onResponse(Call<FileUploadReponse> call, Response<FileUploadReponse> response) {

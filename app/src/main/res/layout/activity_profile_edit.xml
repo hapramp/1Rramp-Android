@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     tools:context=".ui.activity.ProfileEditActivity">
 
     <RelativeLayout
@@ -32,6 +31,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="16dp"
+                    android:textColor="@color/Black87"
                     android:layout_toRightOf="@+id/backButton"
                     android:text="Edit Profile"
                     android:textSize="18sp" />
@@ -56,17 +56,16 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:animateLayoutChanges="true"
                 android:id="@+id/profile_header_container"
                 android:layout_width="match_parent"
-                android:layout_height="292dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/toolbar_container">
 
                 <ImageView
+                    android:background="#eeeeee"
                     android:id="@+id/profile_wall_pic"
                     android:layout_width="match_parent"
-                    android:layout_height="196dp"
-                    android:adjustViewBounds="true"
+                    android:layout_height="96dp"
                     android:scaleType="fitXY" />
 
                 <ProgressBar
@@ -80,10 +79,11 @@
                     android:layout_centerHorizontal="true" />
 
                 <ImageView
-                    android:padding="12dp"
+                    android:padding="14dp"
                     android:src="@drawable/edit_btn"
                     android:id="@+id/cover_image_editBtn"
                     android:layout_alignParentRight="true"
+                    android:background="@drawable/cover_image_edit_bg"
                     android:layout_margin="4dp"
                     android:layout_width="48dp"
                     android:layout_height="48dp" />
@@ -137,7 +137,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="Name"
-                    android:textColor="@color/Black54"
+                    android:textSize="16sp"
+                    android:textColor="@color/Black87"
                     android:textStyle="bold" />
 
                 <EditText
@@ -145,15 +146,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Your display name"
-                    android:textColor="@color/Black54"
-                    android:textSize="14sp" />
+                    android:textColor="@color/Black87"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="About Me"
-                    android:textColor="@color/Black54"
+                    android:textSize="16sp"
+                    android:textColor="@color/Black87"
                     android:textStyle="bold" />
 
                 <EditText
@@ -161,15 +163,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="usernameTv"
-                    android:textColor="@color/Black54"
-                    android:textSize="14sp" />
+                    android:textColor="@color/Black87"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="Location"
-                    android:textColor="@color/Black54"
+                    android:textSize="16sp"
+                    android:textColor="@color/Black87"
                     android:textStyle="bold" />
 
                 <EditText
@@ -178,16 +181,16 @@
                     android:layout_height="wrap_content"
                     android:hint="location"
                     android:lineSpacingExtra="2dp"
-                    android:textColor="@color/Black54"
-                    android:textSize="14sp"
-                    android:textStyle="italic" />
+                    android:textColor="@color/Black87"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="Website"
-                    android:textColor="@color/Black54"
+                    android:textSize="16sp"
+                    android:textColor="@color/Black87"
                     android:textStyle="bold" />
 
                 <EditText
@@ -196,12 +199,8 @@
                     android:layout_height="wrap_content"
                     android:hint="http://"
                     android:lineSpacingExtra="2dp"
-                    android:textColor="@color/Black54"
-                    android:textSize="14sp"
-                    android:textStyle="italic" />
-
+                    android:textColor="@color/Black87"
+                    android:textSize="16sp" />
             </LinearLayout>
-
         </RelativeLayout>
-
 </ScrollView>
