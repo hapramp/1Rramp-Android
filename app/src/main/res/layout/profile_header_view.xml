@@ -41,15 +41,15 @@
                 android:id="@+id/wallet_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="8dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/claim_reward_bg"
                 android:clickable="true"
                 android:focusable="true"
                 android:paddingBottom="8dp"
-                android:paddingEnd="16dp"
-                android:paddingStart="16dp"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp"
                 android:paddingTop="8dp"
                 android:text="Go To Wallet"
                 android:textAllCaps="true"
@@ -139,8 +139,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/profile_user_name_container"
             android:layout_marginBottom="18dp"
-            android:layout_marginEnd="18dp"
-            android:layout_marginStart="18dp"
+            android:layout_marginRight="18dp"
+            android:layout_marginLeft="18dp"
             android:layout_marginTop="48dp"
             android:hint="Your Bio Here..."
             android:lineSpacingExtra="2dp"
@@ -154,8 +154,8 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/bio"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
             android:background="@color/Black12" />
 
         <LinearLayout
@@ -209,8 +209,8 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/post_stats"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
             android:background="@color/Black12" />
 
         <TextView
@@ -220,8 +220,8 @@
             android:layout_below="@+id/divider_bottom"
             android:gravity="center_vertical"
             android:paddingBottom="12sp"
-            android:paddingEnd="18sp"
-            android:paddingStart="24sp"
+            android:paddingRight="18sp"
+            android:paddingLeft="24sp"
             android:paddingTop="18sp"
             android:text="Interests"
             android:textColor="@color/colorPrimary"
@@ -233,8 +233,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/interestCaption"
             android:layout_marginBottom="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="16dp" />
+            android:layout_marginRight="8dp"
+            android:layout_marginLeft="16dp" />
 
         <TextView
             android:id="@+id/postsCaption"
@@ -243,8 +243,8 @@
             android:layout_below="@+id/interestsView"
             android:background="@color/LightBlack"
             android:paddingBottom="18dp"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp"
+            android:paddingRight="16dp"
+            android:paddingLeft="16dp"
             android:paddingTop="28dp"
             android:text="POSTS"
             android:textColor="@color/Black54"
