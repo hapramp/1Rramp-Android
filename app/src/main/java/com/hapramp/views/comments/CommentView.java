@@ -15,6 +15,7 @@ import com.hapramp.R;
 import com.hapramp.steem.SteemCommentModel;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
+import com.hapramp.utils.MomentsUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +36,8 @@ public class CommentView extends FrameLayout {
   TextView popupMenuDots;
   @BindView(R.id.commentOwnerName)
   TextView commentOwnerName;
+  @BindView(R.id.created_time)
+  TextView createdTime;
   private Context mContext;
 
   public CommentView(@NonNull Context context) {
@@ -43,12 +46,10 @@ public class CommentView extends FrameLayout {
   }
 
   private void init(Context context) {
-
     this.mContext = context;
     View view = LayoutInflater.from(context).inflate(R.layout.comment_view_band, this);
     ButterKnife.bind(this, view);
     popupMenuDots.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-
   }
 
   public CommentView(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -62,10 +63,13 @@ public class CommentView extends FrameLayout {
   }
 
   public void setComment(SteemCommentModel result) {
-
     ImageHandler.loadCircularImage(mContext, commentAvatar, String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format), result.commentAuthor));
     commentOwnerName.setText(result.getCommentAuthor());
     commentTv.setText(result.getComment());
-
+    if (result.getCreatedAt() != null && result.getCreatedAt().length() > 0) {
+      createdTime.setText(MomentsUtils.getFormattedTime(result.getCreatedAt()));
+    } else {
+      createdTime.setText("--");
+    }
   }
 }

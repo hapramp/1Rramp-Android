@@ -42,10 +42,10 @@ android {
     }
     defaultConfig {
         applicationId "com.hapramp"
-        minSdkVersion 19
+        minSdkVersion 16
         targetSdkVersion 27
-        versionCode 5
-        versionName "0.0.4"
+        versionCode 8
+        versionName "0.0.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -87,15 +87,14 @@ dependencies {
     androidTestImplementation "android.arch.persistence.room:testing:$roomVersion"
     implementation 'android.arch.lifecycle:extensions:1.1.1'
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
-    implementation 'com.github.bxute:ProgressDots:v1.0.3'
     implementation 'com.github.hapramp:steemconnect4j:v1.22'
-    implementation 'com.github.bxute:CryptoCoinView:v0.2'
-    compile 'us.feras.mdv:markdownview:1.1.0'
-    implementation 'com.github.bxute:MarkDEditor:v0.3'
+    implementation 'com.github.bxute:CryptoCoinView:v0.4'
+    implementation 'com.github.bxute:MarkDEditor:v0.4'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':search')
     implementation project(':youtube_player')
     implementation project(':WalletInfo')
+    implementation project(':lib')
 }
 
 apply plugin: 'com.google.gms.google-services'

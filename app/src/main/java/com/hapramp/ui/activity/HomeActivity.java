@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -27,14 +26,12 @@ import com.hapramp.api.RawApiCaller;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.push.Notifyer;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.models.user.User;
 import com.hapramp.ui.fragments.EarningFragment;
 import com.hapramp.ui.fragments.HomeFragment;
 import com.hapramp.ui.fragments.ProfileFragment;
 import com.hapramp.ui.fragments.SettingsFragment;
-import com.hapramp.utils.Constants;
 import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.utils.FontManager;
 import com.hapramp.views.extraa.CreateButtonView;
@@ -54,7 +51,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   private final int BOTTOM_MENU_SETTINGS = 10;
   private final int BOTTOM_MENU_EARNINGS = 11;
   private final int FRAGMENT_HOME = 12;
-  private final int FRAGMENT_COMPETITION = 13;
   private final int FRAGMENT_PROFILE = 14;
   private final int FRAGMENT_SETTINGS = 15;
   private final int FRAGMENT_EARNINGS = 16;
@@ -70,12 +66,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   TextView bottomBarProfile;
   @BindView(R.id.bottomBar_settings)
   TextView bottomBarSettings;
-  @BindView(R.id.notification_icon)
-  TextView notificationIcon;
-  @BindView(R.id.notification_count)
-  TextView notificationCount;
-  @BindView(R.id.notification_container)
-  RelativeLayout notificationContainer;
   @BindView(R.id.action_bar_container)
   RelativeLayout actionBarContainer;
   @BindView(R.id.contentPlaceHolder)
@@ -90,8 +80,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   TextView bottomBarSettingsText;
   @BindView(R.id.toolbar_drop_shadow)
   FrameLayout toolbarDropShadow;
-  @BindView(R.id.postUploadStatus)
-  TextView postUploadStatus;
   @BindView(R.id.shadow)
   ImageView shadow;
   @BindView(R.id.bottombar_container)
@@ -108,8 +96,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   private EarningFragment earningFragment;
   private ProgressDialog progressDialog;
   private PostUploadReceiver postUploadReceiver;
-  private NotificationUpdateReceiver notificationUpdateReceiver;
-  private boolean isReceiverRegistered;
   private RawApiCaller rawApiCaller;
 
   @Override
@@ -122,9 +108,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     initObjects();
     attachListeners();
     postUploadReceiver = new PostUploadReceiver();
-    notificationUpdateReceiver = new NotificationUpdateReceiver();
     fetchCompleteUserInfo();
-    updateDeviceId();
     transactFragment(FRAGMENT_HOME);
   }
 
@@ -147,7 +131,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   private void setupToolbar() {
     materialTypface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
     searchIcon.setTypeface(materialTypface);
-    notificationIcon.setTypeface(materialTypface);
     bottomBarHome.setTypeface(materialTypface);
     bottomBarCompetition.setTypeface(materialTypface);
     bottomBarProfile.setTypeface(materialTypface);
@@ -163,7 +146,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     settingsFragment = new SettingsFragment();
     earningFragment = new EarningFragment();
     progressDialog = new ProgressDialog(this);
-    rawApiCaller = new RawApiCaller();
+    rawApiCaller = new RawApiCaller(this);
   }
 
   private void attachListeners() {
@@ -225,18 +208,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
         transactFragment(FRAGMENT_SETTINGS);
       }
     });
-
-
     createButtonView.setItemClickListener(this);
-
-    notificationIcon.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        startActivity(new Intent(HomeActivity.this, NotificationsActivity.class));
-        overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit);
-      }
-    });
-
     searchIcon.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -245,7 +217,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
         overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit);
       }
     });
-
   }
 
   private void fetchCompleteUserInfo() {
@@ -258,73 +229,43 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     rawApiCaller.requestUserMetadata(this, HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
   }
 
-  private void updateDeviceId() {
-    Notifyer.updateDeviceToken();
-  }
-
   private void transactFragment(int fragment) {
 
     switch (fragment) {
       case FRAGMENT_HOME:
-
         currentVisibleFragment = homeFragment;
-
-        // if (!homeFragment.isAdded()) {
         fragmentManager.beginTransaction()
           .addToBackStack("home")
           .replace(R.id.contentPlaceHolder, homeFragment)
           .commit();
-        //    }
-
-        //   showFragment(homeFragment);
-
         break;
 
       case FRAGMENT_PROFILE:
-
         currentVisibleFragment = profileFragment;
-
-        //  if (!profileFragment.isAdded()) {
         fragmentManager.beginTransaction()
           .addToBackStack("profile")
           .replace(R.id.contentPlaceHolder, profileFragment)
           .commit();
-        //  }
-
-        //   showFragment(profileFragment);
-
         break;
       case FRAGMENT_SETTINGS:
 
         currentVisibleFragment = settingsFragment;
-
-        //  if (!settingsFragment.isAdded()) {
         fragmentManager.beginTransaction()
           .addToBackStack("setting")
           .replace(R.id.contentPlaceHolder, settingsFragment)
           .commit();
-        //   }
-
-        //   showFragment(settingsFragment);
-
         break;
 
       case FRAGMENT_EARNINGS:
 
         currentVisibleFragment = earningFragment;
-
-        //    if (!earningFragment.isAdded()) {
         fragmentManager.beginTransaction()
           .addToBackStack("earning")
           .replace(R.id.contentPlaceHolder, earningFragment)
           .commit();
-        //   }
-        //   showFragment(earningFragment);
         break;
-
       default:
         break;
-
     }
   }
 
@@ -417,9 +358,8 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   private void showExistAlert() {
 
     AlertDialog.Builder builder = new AlertDialog.Builder(this)
-      .setTitle("Exit")
-      .setMessage("Do you want to Exit ?")
-      .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+      .setTitle("Exit ?")
+      .setPositiveButton("YES", new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
           finish();
@@ -429,80 +369,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
 
     builder.show();
 
-  }
-
-  @Override
-  protected void onPause() {
-    super.onPause();
-
-    if (isReceiverRegistered) {
-      unregisterReceiver(postUploadReceiver);
-      unregisterReceiver(notificationUpdateReceiver);
-      isReceiverRegistered = false;
-    }
-
-  }
-
-  @Override
-  protected void onResume() {
-    super.onResume();
-    if (!isReceiverRegistered) {
-      registerReceiver(postUploadReceiver, new IntentFilter(Constants.ACTION_POST_UPLOAD));
-      registerReceiver(notificationUpdateReceiver, new IntentFilter(Constants.ACTION_NOTIFICATION_UPDATE));
-      isReceiverRegistered = true;
-    }
-    setNotifications();
-  }
-
-  private void setNotifications() {
-    int count = HaprampPreferenceManager.getInstance().getUnreadNotifications();
-    if (count > 0) {
-      notificationCount.setVisibility(View.VISIBLE);
-      String _s = count > 9 ? "9+" : String.valueOf(count);
-      notificationCount.setText(_s);
-    } else {
-      notificationCount.setVisibility(View.GONE);
-    }
-
-  }
-
-  private void showFragment(Fragment fragment) {
-
-    FragmentManager fragmentManager = getSupportFragmentManager();
-    fragmentManager.beginTransaction().show(fragment).commitAllowingStateLoss();
-
-    //hide other fragment
-    if (fragment != homeFragment) {
-      fragmentManager.beginTransaction().hide(homeFragment).commitAllowingStateLoss();
-      fragmentManager.executePendingTransactions();
-    }
-    if (fragment != earningFragment) {
-      fragmentManager.beginTransaction().hide(earningFragment).commitAllowingStateLoss();
-      fragmentManager.executePendingTransactions();
-    }
-
-    if (fragment != profileFragment) {
-      fragmentManager.beginTransaction().hide(profileFragment).commitAllowingStateLoss();
-      fragmentManager.executePendingTransactions();
-    }
-
-    if (fragment != settingsFragment) {
-      fragmentManager.beginTransaction().hide(settingsFragment).commitAllowingStateLoss();
-      fragmentManager.executePendingTransactions();
-    }
-
-
-  }
-
-  private void showProgress(String msg) {
-    progressDialog.setMessage(msg);
-    progressDialog.show();
-  }
-
-  private void hideProgress() {
-    if (progressDialog != null) {
-      progressDialog.dismiss();
-    }
   }
 
   @Override
@@ -519,16 +385,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     overridePendingTransition(R.anim.slide_up_enter, R.anim.slide_up_exit);
   }
 
-  private class NotificationUpdateReceiver extends BroadcastReceiver {
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-      setNotifications();
-    }
-  }
-
   private class PostUploadReceiver extends BroadcastReceiver {
-
     @Override
     public void onReceive(Context context, Intent intent) {
       if (profileFragment.isAdded())

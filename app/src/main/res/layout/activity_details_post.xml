@@ -21,7 +21,7 @@
             android:id="@+id/overflowBtn"
             android:layout_width="?actionBarSize"
             android:layout_height="?actionBarSize"
-            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:background="?selectableItemBackgroundBorderless"
             android:clickable="true"
             android:gravity="center"
@@ -58,7 +58,7 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="16dp" />
+                    android:layout_marginRight="16dp" />
 
                 <android.support.v4.widget.Space
                     android:id="@+id/reference_line"
@@ -71,7 +71,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/reference_line"
-                    android:layout_toEndOf="@+id/feed_owner_pic"
+                    android:layout_toRightOf="@+id/feed_owner_pic"
                     android:text="Ankit Kumar"
                     android:textColor="@color/Black87"
                     android:textStyle="bold" />
@@ -81,8 +81,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/reference_line"
-                    android:layout_toEndOf="@+id/feed_owner_title"
-                    android:paddingStart="4sp"
+                    android:layout_toRightOf="@+id/feed_owner_title"
+                    android:paddingLeft="4sp"
                     android:text="| 2 days ago"
                     android:textColor="@color/Black54" />
 
@@ -91,11 +91,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/reference_line"
-                    android:layout_toEndOf="@+id/feed_owner_pic" />
+                    android:layout_toRightOf="@+id/feed_owner_pic" />
 
             </RelativeLayout>
 
-            <us.feras.mdv.MarkdownView
+            <WebView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/markdownView" />
@@ -115,14 +115,14 @@
                 android:id="@+id/shareBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/filled_btn_bg"
                 android:paddingBottom="6dp"
                 android:paddingEnd="16dp"
                 android:paddingStart="16dp"
                 android:paddingTop="6dp"
-                android:text="SHARE TO FRIEND"
+                android:text="Share"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
 
@@ -150,8 +150,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="72dp"
                 android:gravity="center_vertical"
-                android:paddingStart="24dp"
-                android:text="No Comments"
+                android:paddingLeft="24dp"
+                android:text="Loading Comments"
                 android:textColor="@color/Black54"
                 android:textSize="14sp"
                 android:visibility="gone" />
@@ -161,7 +161,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
                 android:background="?selectableItemBackground"
                 android:clickable="true"
@@ -191,9 +191,9 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
                     android:layout_marginTop="8dp"
-                    android:layout_toEndOf="@+id/commentCreaterAvatar"
+                    android:layout_toRightOf="@+id/commentCreaterAvatar"
                     android:background="@drawable/comment_input_view_background_cover">
 
                     <EditText
@@ -201,15 +201,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginStart="16dp"
-                        android:layout_toStartOf="@+id/sendButton"
+                        android:layout_marginLeft="16dp"
+                        android:layout_toLeftOf="@+id/sendButton"
                         android:background="@drawable/blank_input_bg"
                         android:clickable="true"
-                        android:hint="Comment Here..."
+                        android:hint="Write a comment..."
                         android:minHeight="36dp"
                         android:paddingBottom="8dp"
-                        android:paddingEnd="16dp"
-                        android:paddingStart="0dp"
+                        android:paddingRight="16dp"
+                        android:paddingLeft="0dp"
                         android:paddingTop="8dp"
                         android:textSize="14sp" />
 
@@ -217,7 +217,7 @@
                         android:id="@+id/sendButton"
                         android:layout_width="48dp"
                         android:layout_height="36dp"
-                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:background="?selectableItemBackgroundBorderless"
                         android:clickable="true"
@@ -281,7 +281,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
                     android:lines="1"
                     android:text="0 Comments"
                     android:textColor="@color/Black54"
@@ -294,8 +294,8 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="24dp"
-                android:layout_toStartOf="@+id/hapcoins_count"
+                android:layout_marginLeft="24dp"
+                android:layout_toLeftOf="@+id/hapcoins_count"
                 android:background="@drawable/rs_coin_bg"
                 android:gravity="center"
                 android:text="$"
@@ -307,9 +307,9 @@
                 android:id="@+id/hapcoins_count"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
                 android:gravity="center_vertical"
                 android:textColor="@color/Black54"
                 android:textSize="12sp" />

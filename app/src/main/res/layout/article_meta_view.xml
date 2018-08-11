@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:visibility="gone">
 
-
     <RelativeLayout
         android:id="@+id/meta_toolbar_container"
         android:layout_width="match_parent"
@@ -88,7 +87,7 @@
                 android:layout_below="@+id/articleCategoryView"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:text="HashTags(Separated by spaces)"
+                android:text="Add tags (Space separated,max 5)"
                 android:textColor="@color/colorAccent"
                 android:textSize="14sp"
                 android:textStyle="bold" />

@@ -135,7 +135,6 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
           publishArticle();
         } else {
           showConnectivityError();
-          saveDraft();
         }
       }
     });
@@ -194,15 +193,11 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     Snackbar.make(toolbarContainer, "No Internet!  Article Saved To Draft ", Snackbar.LENGTH_SHORT).show();
   }
 
-  private void saveDraft() {
-    toast("Article Saved To Draft");
-  }
-
   private void showExistAlert() {
     AlertDialog.Builder builder = new AlertDialog.Builder(this)
-      .setTitle("Close")
-      .setMessage("Do you want to Close Post Creation ?")
-      .setPositiveButton("Close", new DialogInterface.OnClickListener() {
+      .setTitle("Discard ?")
+      .setMessage("You cannot recover discarded blogs.")
+      .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
           close();
@@ -229,7 +224,6 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
 
     if (progressDialog != null) {
       if (show) {
-        progressDialog.setTitle("Article Upload");
         progressDialog.setMessage(msg);
         progressDialog.setCancelable(false);
         progressDialog.setIndeterminate(true);
@@ -247,12 +241,11 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
 
   @Override
   public void onPostCreatedOnSteem() {
-    toast("Your post will take few seconds to appear");
+    toast("Published");
     closeEditor();
   }
 
   private void closeEditor() {
-    toast("Your post is live now.");
     showPublishingProgressDialog(false, "");
     AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_ARTICLE);
     new Handler().postDelayed(new Runnable() {

@@ -6,10 +6,8 @@ import java.util.regex.Pattern;
 
 public class MarkdownPreProcessor {
   public static final String url_regex = "((http|https):\\/\\/.*?)[ |<|\"|)|\\\\|]";
-  public static final String md_image_string_regex = "!((\\[.*?\\])(.*?)[)])";
+  public static final String md_image_string_regex = "!\\[(.*?)\\]\\((.*?)[)]";
   public static final String md_link_string_regex = "((\\[.*?\\])(.*?)[)])";
-  //link text in group: 1
-  //url in group: 2
   public static final String md_link_string_regex_2 = "\\[(.*?)\\](\\(.*?\\))";
 
   public String getCleanContent(String content) {
@@ -25,7 +23,6 @@ public class MarkdownPreProcessor {
 
   private String removeNewlineChar(String content) {
     return content.replace("\n", " ");
-    // return content.replaceAll(newLineCharRegex, " ");
   }
 
   private String removeDirectLinks(String content) {
@@ -41,8 +38,6 @@ public class MarkdownPreProcessor {
   }
 
   private String removeMarkdownStringLinksInPreservativeManner(String content) {
-    //anchor text : group 1
-    //url part: group 2
     String anchorText;
     Pattern r = Pattern.compile(md_link_string_regex_2);
     Matcher m = r.matcher(content);

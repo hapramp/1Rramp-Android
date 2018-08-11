@@ -2,14 +2,8 @@ package com.hapramp.utils;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
-import com.hapramp.datamodels.FeedRenderTypeModel;
-import com.hapramp.steem.FeedDataConstants;
 import com.hapramp.steem.models.Feed;
-import com.hapramp.steem.models.data.FeedDataItemModel;
-
-import java.util.List;
 
 /**
  * Created by Ankit on 5/9/2018.
@@ -28,49 +22,22 @@ public class ShareUtils {
 
     Intent shareIntent = new Intent();
     shareIntent.setAction(Intent.ACTION_SEND);
-    //FeedRenderTypeModel feedRenderTypeModel = scanFeedContentsForRendering(feed));
-    shareIntent.putExtra(Intent.EXTRA_TEXT, getFormattedTextForSharing(feed.getCleanedBody(), feed.getUrl()));
+    shareIntent.putExtra(Intent.EXTRA_TEXT, getFormattedTextForSharing(feed.getTitle(),
+      feed.getCleanedBody(), feed.getAuthor(), feed.getPermlink()));
       shareIntent.setType("text/plain");
-
     context.startActivity(shareIntent);
   }
 
-  private static FeedRenderTypeModel scanFeedContentsForRendering(List<FeedDataItemModel> data) {
-
-    FeedRenderTypeModel feedRenderTypeModel = new FeedRenderTypeModel();
-
-    //iterate through all the content
-    for (int i = 0; i < data.size(); i++) {
-
-      //for image
-      if (data.get(i).type.equals(FeedDataConstants.ContentType.IMAGE)) {
-
-        //neither video or image is detected prior
-        if (!feedRenderTypeModel.isFirstMediaImage && !feedRenderTypeModel.isFirstMediaVideo) {
-          //set media
-          feedRenderTypeModel.setFirstImageUrl(data.get(i).content);
-          feedRenderTypeModel.setFirstMediaImage(true);
-        }
-
-      }
-
-      //accumulate text
-      if (data.get(i).type.equals(FeedDataConstants.ContentType.TEXT) || data.get(i).type.equals(FeedDataConstants.ContentType.H2) || data.get(i).type.equals(FeedDataConstants.ContentType.H3)) {
-
-        feedRenderTypeModel
-          .appendText(data.get(i).getContent());
-
-      }
-    }
-
-    Log.d("PostItemView", "scanned Model : " + feedRenderTypeModel.toString());
-    return feedRenderTypeModel;
-
-  }
-
-  private static String getFormattedTextForSharing(String text, String url) {
+  private static String getFormattedTextForSharing(String title, String text, String username, String permlink) {
     StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append(text).append("\nhttps://alpha.hapramp.com").append(url).append("\n\nHapramp, The social media platform for creative artists");
+    stringBuilder.append(title);
+    stringBuilder.append("\n");
+    int len = (text.length() > 140 ? 140 : text.length());
+    stringBuilder.append(text.substring(0, len));
+    stringBuilder.append("...\n");
+    stringBuilder.append("https://alpha.hapramp.com/");
+    stringBuilder.append("@").append(username).append("/").append(permlink);
+    stringBuilder.append("\n\nHapRamp, The social media platform for creative artists");
     return stringBuilder.toString();
   }
 

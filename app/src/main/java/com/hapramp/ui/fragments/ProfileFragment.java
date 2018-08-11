@@ -16,25 +16,20 @@ import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
-import com.hapramp.datastore.ServiceWorker;
-import com.hapramp.interfaces.datatore_callback.ServiceWorkerCallback;
+import com.hapramp.api.RawApiCaller;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.ServiceWorkerRequestBuilder;
-import com.hapramp.steem.ServiceWorkerRequestParams;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.ui.adapters.ProfileRecyclerAdapter;
-import com.hapramp.utils.Constants;
 import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.utils.ViewItemDecoration;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class ProfileFragment extends Fragment implements ServiceWorkerCallback {
+public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCallback {
   private static final String TAG = ProfileFragment.class.getSimpleName();
   @BindView(R.id.profilePostRv)
   RecyclerView profilePostRv;
@@ -43,15 +38,14 @@ public class ProfileFragment extends Fragment implements ServiceWorkerCallback {
   private ViewItemDecoration viewItemDecoration;
   private Unbinder unbinder;
   private LinearLayoutManager llm;
+  private RawApiCaller rawApiCaller;
   private String username;
-  private ServiceWorker serviceWorker;
-  private ServiceWorkerRequestBuilder serviceWorkerRequestParamsBuilder;
-  private ServiceWorkerRequestParams serviceWorkerRequestParams;
-  private String lastAuthor;
-  private String lastPermlink;
+
 
   public ProfileFragment() {
     Crashlytics.setString(CrashReporterKeys.UI_ACTION, "profile fragment");
+    rawApiCaller = new RawApiCaller(mContext);
+    rawApiCaller.setDataCallback(this);
   }
 
   @Override
@@ -106,41 +100,20 @@ public class ProfileFragment extends Fragment implements ServiceWorkerCallback {
     profilePostRv.setLayoutManager(llm);
     profilePostRv.setAdapter(profilePostAdapter);
     setScrollListener();
-    prepareServiceWorker();
     fetchPosts();
   }
 
   private void fetchPosts() {
-    serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
-    serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder
-      .setUserName(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
-      .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
-      .createRequestParam();
-    serviceWorker.requestProfilePosts(serviceWorkerRequestParams);
+    rawApiCaller.requestUserBlogs(username);
   }
 
   private void setScrollListener() {
     profilePostRv.addOnScrollListener(new EndlessOnScrollListener(llm) {
       @Override
       public void onScrolledToEnd() {
-        loadMore();
+
       }
     });
-  }
-
-  private void prepareServiceWorker() {
-    serviceWorker = new ServiceWorker();
-    serviceWorker.init(getActivity());
-    serviceWorker.setServiceWorkerCallback(this);
-  }
-
-  private void loadMore() {
-    serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
-    serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder
-      .setLastAuthor(lastAuthor)
-      .setLastPermlink(lastPermlink)
-      .createRequestParam();
-    serviceWorker.requestAppendableProfilePosts(serviceWorkerRequestParams);
   }
 
   public void reloadPosts() {
@@ -148,87 +121,12 @@ public class ProfileFragment extends Fragment implements ServiceWorkerCallback {
   }
 
   @Override
-  public void onLoadingFromCache() {
-
+  public void onDataLoaded(ArrayList<Feed> feeds) {
+    profilePostAdapter.setPosts(feeds);
   }
 
   @Override
-  public void onCacheLoadFailed() {
-
-  }
-
-  @Override
-  public void onNoDataInCache() {
-
-  }
-
-  @Override
-  public void onLoadedFromCache(ArrayList<Feed> cachedList, String lastAuthor, String lastPermlink) {
-    if (profilePostAdapter != null) {
-      profilePostAdapter.setPosts(cachedList);
-    }
-  }
-
-  @Override
-  public void onFetchingFromServer() {
-
-  }
-
-  @Override
-  public void onFeedsFetched(ArrayList<Feed> fetchedFeeds, String lastAuthor, String lastPermlink) {
-    if (profilePostAdapter != null) {
-      profilePostAdapter.setPosts(fetchedFeeds);
-      this.lastAuthor = lastAuthor;
-      this.lastPermlink = lastPermlink;
-    }
-  }
-
-  @Override
-  public void onFetchingFromServerFailed() {
-
-  }
-
-  @Override
-  public void onNoDataAvailable() {
-
-  }
-
-  @Override
-  public void onRefreshing() {
-
-  }
-
-  @Override
-  public void onRefreshed(List<Feed> refreshedList, String lastAuthor, String lastPermlink) {
-    if (profilePostAdapter != null) {
-      profilePostAdapter.setPosts(refreshedList);
-      this.lastAuthor = lastAuthor;
-      this.lastPermlink = lastPermlink;
-    }
-    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_BROWSE_SELF_POST);
-  }
-
-  @Override
-  public void onRefreshFailed() {
-
-  }
-
-  @Override
-  public void onLoadingAppendableData() {
-
-  }
-
-  @Override
-  public void onAppendableDataLoaded(List<Feed> appendableList, String lastAuthor, String lastPermlink) {
-    if (profilePostAdapter != null) {
-      profilePostAdapter.appendPost(appendableList);
-      this.lastAuthor = lastAuthor;
-      this.lastPermlink = lastPermlink;
-    }
-  }
-
-  @Override
-  public void onAppendableDataLoadingFailed() {
+  public void onDataLoadError() {
 
   }
 
@@ -249,8 +147,6 @@ public class ProfileFragment extends Fragment implements ServiceWorkerCallback {
         onScrolledToEnd();
       }
     }
-
     public abstract void onScrolledToEnd();
-
   }
 }

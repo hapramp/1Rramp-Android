@@ -11,10 +11,6 @@ import butterknife.ButterKnife;
 
 public class TestActivity extends AppCompatActivity {
 
-
-  @BindView(R.id.edittext)
-  CustomHashTagInput edittext;
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);

@@ -22,6 +22,10 @@ import android.view.ContextThemeWrapper;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,8 +39,6 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
-import com.hapramp.api.RetrofitServiceGenerator;
-import com.hapramp.api.URLS;
 import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.push.Notifyer;
@@ -44,7 +46,6 @@ import com.hapramp.steem.Communities;
 import com.hapramp.steem.SteemCommentCreator;
 import com.hapramp.steem.SteemCommentModel;
 import com.hapramp.steem.models.Feed;
-import com.hapramp.steem.models.FeedWrapper;
 import com.hapramp.steem.models.Voter;
 import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;
@@ -53,6 +54,7 @@ import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
+import com.hapramp.utils.MarkdownRendererUtils;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.ShareUtils;
 import com.hapramp.utils.VoteUtils;
@@ -65,10 +67,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import us.feras.mdv.MarkdownView;
 
 import static android.view.View.VISIBLE;
 
@@ -96,7 +94,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
   @BindView(R.id.post_header_container)
   RelativeLayout postHeaderContainer;
   @BindView(R.id.markdownView)
-  MarkdownView markdownView;
+  WebView webView;
   @BindView(R.id.shareBtn)
   TextView shareBtn;
   @BindView(R.id.commentsViewContainer)
@@ -182,23 +180,6 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
   private void collectExtras() {
     post = getIntent().getExtras().getParcelable(Constants.EXTRAA_KEY_POST_DATA);
     bindPostValues();
-  }
-
-  private void fetchPost(String posturl) {
-    RetrofitServiceGenerator.getService().getFeedFromSteem(String.format(URLS.STEEM_CURATION_FEED_URL, posturl)).enqueue(new Callback<FeedWrapper>() {
-      @Override
-      public void onResponse(Call<FeedWrapper> call, Response<FeedWrapper> response) {
-        if (response.isSuccessful()) {
-          post = response.body().feed;
-          bindPostValues();
-        }
-      }
-
-      @Override
-      public void onFailure(Call<FeedWrapper> call, Throwable t) {
-
-      }
-    });
   }
 
   private void attachListener() {
@@ -302,7 +283,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     feedOwnerSubtitle.setText(
       String.format(getResources().getString(R.string.post_subtitle_format),
         MomentsUtils.getFormattedTime(post.getCreatedAt())));
-    markdownView.loadMarkdown(post.getBody(), "file:///android_asset/md_theme.css");
+    renderMarkdown(post.getBody());
     ImageHandler.loadCircularImage(this, commentCreaterAvatar,
       String.format(getResources().getString(R.string.steem_user_profile_pic_format),
         HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
@@ -312,11 +293,29 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     setCommunities(post.getTags());
   }
 
+  private void renderMarkdown(String body) {
+    body = MarkdownRendererUtils.getHtmlContent(body);
+    webView.setWebChromeClient(new WebChromeClient());
+    webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+    webView.getSettings().setJavaScriptEnabled(true);
+    webView.getSettings().setPluginState(WebSettings.PluginState.ON);
+    webView.setWebChromeClient(new WebChromeClient());
+    webView.getSettings().setAllowFileAccess(true);
+    webView.setWebViewClient(new WebViewClient());
+    webView.getSettings().setLoadWithOverviewMode(true);
+    webView.loadDataWithBaseURL("file:///android_asset/",
+      "<link rel=\"stylesheet\" type=\"text/css\" href=\"md_theme.css\" />"+body,
+      "text/html; charset=utf-8",
+      "utf-8",
+      null);
+  }
+
   private void addAllCommentsToView(List<SteemCommentModel> discussions) {
     commentsViewContainer.removeAllViews();
     int commentCount = discussions.size();
     commentLoadingProgressBar.setVisibility(View.GONE);
     if (commentCount == 0) {
+      emptyCommentsCaption.setText("No Comments");
       emptyCommentsCaption.setVisibility(VISIBLE);
     } else {
       emptyCommentsCaption.setVisibility(View.GONE);
@@ -543,7 +542,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
           0
         ));
       } else {
-        hashtags.append("<b>#</b>")
+        hashtags.append("<b>  #</b>")
           .append(communities.get(i))
           .append("  ");
       }

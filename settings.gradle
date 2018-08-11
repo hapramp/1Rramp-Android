@@ -1,1 +1,1 @@
-include ':app', ':search', ':hapramp-editor', ':youtube_player', ':WalletInfo'
+include ':app', ':search', ':hapramp-editor', ':youtube_player', ':WalletInfo', ':lib'

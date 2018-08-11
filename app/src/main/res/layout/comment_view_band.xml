@@ -3,15 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="8dp"
-    android:paddingEnd="8dp"
-    android:paddingStart="8dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
     android:paddingTop="8dp">
 
     <LinearLayout
         android:id="@+id/commentMetaHolder"
         android:layout_width="match_parent"
         android:layout_height="36dp"
-        android:layout_toStartOf="@+id/popupMenuDots"
+        android:layout_toLeftOf="@+id/popupMenuDots"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -25,8 +25,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:paddingEnd="8dp"
-            android:paddingStart="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
             android:text="Ankit Kumar"
             android:textColor="@color/Black54"
             android:textSize="16sp" />
@@ -38,24 +38,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/commentMetaHolder"
-        android:layout_marginEnd="36dp"
-        android:layout_marginStart="46dp"
+        android:layout_marginLeft="46dp"
+        android:layout_marginRight="36dp"
         android:lineSpacingExtra="3dp"
         android:textColor="@color/Black38"
         android:textSize="12sp"
         android:textStyle="italic" />
 
-
     <TextView
         android:id="@+id/popupMenuDots"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:background="?selectableItemBackgroundBorderless"
         android:gravity="end"
         android:text=""
         android:textColor="@color/Black54"
         android:textSize="24sp"
         android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/created_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:background="?selectableItemBackgroundBorderless"
+        android:gravity="end"
+        android:paddingRight="8dp"
+        android:textColor="@color/Black54"
+        android:textSize="12sp" />
 
 </RelativeLayout>

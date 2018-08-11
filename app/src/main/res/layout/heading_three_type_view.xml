@@ -11,7 +11,7 @@
         android:lineSpacingExtra="2dp"
         android:paddingEnd="8dp"
         android:paddingStart="8dp"
-        android:textColor="@color/Black87"
+        android:textColor="#090909"
         android:textSize="22sp" />
 
 </LinearLayout>

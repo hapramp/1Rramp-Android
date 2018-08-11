@@ -13,7 +13,7 @@ import com.hapramp.steem.SteemCommentModel;
  * Created by Ankit on 5/9/2018.
  */
 
-@Database(entities = {SteemCommentModel.class}, version = 1)
+@Database(entities = {SteemCommentModel.class}, version = 1, exportSchema = false)
 public abstract class HaprampRoomDatabase extends RoomDatabase {
   private static HaprampRoomDatabase INSTANCE;
 

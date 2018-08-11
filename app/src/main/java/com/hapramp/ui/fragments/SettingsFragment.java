@@ -11,7 +11,6 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
@@ -19,7 +18,6 @@ import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.ui.activity.LoginActivity;
-import com.hapramp.utils.FontManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,11 +25,11 @@ import butterknife.Unbinder;
 
 
 public class SettingsFragment extends Fragment {
-  @BindView(R.id.logoutIcon)
-  TextView logoutIcon;
   Unbinder unbinder;
-  @BindView(R.id.logoutContainer)
-  LinearLayout logoutContainer;
+  @BindView(R.id.feedback_btn)
+  TextView feedbackBtn;
+  @BindView(R.id.logoutBtn)
+  TextView logoutBtn;
   private Context mContext;
 
   public SettingsFragment() {
@@ -42,11 +40,6 @@ public class SettingsFragment extends Fragment {
     super.onAttach(context);
     this.mContext = context;
     AnalyticsUtil.getInstance(getActivity()).setCurrentScreen((Activity) context, AnalyticsParams.SCREEN_SETTINGS, null);
-  }
-
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
   }
 
   @Override
@@ -62,11 +55,16 @@ public class SettingsFragment extends Fragment {
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    logoutIcon.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-    logoutContainer.setOnClickListener(new View.OnClickListener() {
+    logoutBtn.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         showAlertDialogForLogout();
+      }
+    });
+    feedbackBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        shareFeedbackOrReportIssue();
       }
     });
   }
@@ -93,6 +91,18 @@ public class SettingsFragment extends Fragment {
     Intent intent = new Intent(mContext, LoginActivity.class);
     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
     startActivity(intent);
+  }
+
+  private void shareFeedbackOrReportIssue() {
+    Intent intent = new Intent(Intent.ACTION_SEND);
+    String[] recipients = {"hi@hapramp.com"};
+    intent.putExtra(Intent.EXTRA_EMAIL, recipients);
+    intent.putExtra(Intent.EXTRA_SUBJECT, "[Issue/Feedback] Regarding Hapramp Android App.");
+    intent.putExtra(Intent.EXTRA_TEXT, "");
+    intent.putExtra(Intent.EXTRA_BCC, "ankit@hapramp.com");
+    intent.setType("text/html");
+    intent.setPackage("com.google.android.gm");
+    startActivity(Intent.createChooser(intent, "Send mail"));
   }
 
   @Override

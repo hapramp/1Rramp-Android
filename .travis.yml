@@ -14,6 +14,7 @@ env:
   - EMULATOR_API=22
   - ANDROID_BUILD_TOOLS=27.1.1
   - ADB_INSTALL_TIMEOUT=5
+  - ANDROID_ABI=google_apis/armeabi-v7a
   - secure: h51vBQ5GfZVq/gZYGvI4+f4JSAsDK6DIcbhbSGmtkmklj/llO/kgsqSnQ/Kp8igt7bu/gluMC9pjngIqb5eU651erPK1X8hNXVP4JvmAvJQfwoKGZ/uubBbfi0E8FlHhtHaVRs8JSLhM9MT85A/iqpFL8yOPiuzm1hLF1V5ORtU97miCugFhF4QwELod9/tU5f2GhqRjXKXw2MFms1NTYhGAmhgMB6+xuCX9kK1eavY9sZ7QPWRTm82QV26O38s6Q1h0yz7otwk8nL5SiufZ7KOzkv2VpHsz858A2LTl+kmAw5y2BfcXIW/4rAd7tkT5mRfqWw899h4YB4+CgQzEgoALMeR2y63SuWnDqbQL5noJhJLRi98m86vED4t59bTQ2fZkjdynxv9sUowXkHyRtBxRkB4Yn6HMBe8wSX4hSV3b9FMp7zOTEBu+JjC2muyeVsge1kM2ZVP5r42HV83hZRPAhMmuPfVgCi3rXefcQ270/CUV3kxw2ZBuAXiNjGxidfAOMbxb1CvWTgxcubE9Rv2qRBiZqMxI/5j5ULRsLwH0hsnOWNfNYpsBLPHyGTA2kGIS/RZ3lK00NYI2IrDIxeSs5j3opdE9835WmwONfNXQEwG0D7iVKZgZyjVK6YNYWLfzV8rNCRJn3FwDoSoJCiIyUVZyveMcyp11Q4gtLKI=
   - secure: s86TTwannpchi6DjNIKUyMTjbRufXvAqSp00/nbvFm2kG8Mn+o6wO2IYcLOFywCpJXaYa6Fq15zcFonlgeSZH9SJRiheLIjF2HsSEFuxcD3aiU/Nu+OQKTjpvLxUmMWu/BeVJQ5ilwsF7agKlc/gUlqKzLGs3cb/M4b9/wOONEfEtfAbSGjsVH2Tfe+b6BMSlENCZ9ABs3xE0NrCNxsUo9wyup9oYqqL+WmECCrjt7oVoRfiUOmN4rEVHIfTt4eBOeVzj7/Y8xqb6GnUZoFaVJ1nhwUv78fB/lUj8t4RWdYRTVJak6MsMmTNN69VfQYKKyJyGFfue2BldT7raEcvq/XvNTX9UhqMWRdYuZ9MvA8kCAehQhOBPBk1Y0VKTqJjI0aXH9g80WVAmwYHUNjlrmS7pIOyXKddBwl90tU62OBsRNKq9cT5dZdweoIuHyEYLlPEatF4l/hHV3IlEtLV0Pkq8mAKdSiqZ1qiDZZSOUrVviW76+BcLlIP57angoLZ7LbjI/FBvEWKkJDxZOSc6Ib6vJCzUbxu173DxdR9SLtY8QQCx4POC6oTDALix145l+y/uP+dYG9Dpi8Q+cV2U2ALdAdKW0m5ONknR0RoFBRcsE6RUFo4Z1/95Lbd2/bmxHTCyID5WsTR3ql35wLAUy9tsp0moxpFIX5ALfXZUYs=
   - secure: lIu80u8rCpkkU7689+X+VlfrtP1TjTjYktl5+EK0bwzorRtT1ADPStahdzaWwE9dr0LsdcTLprCNA8OlF41SmXmkRw7VapP/+HVfAKelpZNkGNvqxBjWBqDgfv+t2aCCpo+zkD+ErYbSnyibbWEyuxas5Q7kTN9d9wcZ6U5TVWH+vehwYdlelIVvfjr/8ncoErYWBgEy8gJVZFpkpUMb9QUzgkMVkQRzI5n1GZuwK+H1MaxQrs7l8okF+7XBYf3eWe+87j6wQQaL3BxzH2LAW/bt2Z4DakoDjH89Ko9tq0r0qJi9kU2Sz/WX2l83IPHRvh4ep+BF8+YQ6zUm1LhjxAn5IfsufqAOkTKYE7Ogh5I5FtkPrc4uObqoc7uZoCKtRnprpHwj8sN6zi6EsK2fXpQ0Bu6rBfJ+N5GbqIrKwMPkXvL1Y2YllABh9dYFra1ieiQiC6cXIKoN1MA7t8aooY86XhxjkXhu5596ppJU/tgnHFKgZFkHmjq6uCrOT+ykMZV1B9ZhbTiKlsYpVhTwLrmea1ZeGHWOTNQMXNZhEhvIl9uRpdhvkkIfmXL2BgGbt8gZ8VcvX98RZGrv3LpL39PBPpMSU1pdlX1LKRJy+pizObucVBSWMtV2zjImqt1hzgw69DBK17ygyZRhZJAhwFM+TxxyYguouKWTaa3exQA=
@@ -29,9 +30,9 @@ android:
   - android-$EMULATOR_API_LEVEL
   - extra-google-m2repository
   - extra-android-m2repository
-  - addon-google_apis-google-19
-  - sys-img-armeabi-v7a-addon-google_apis-google-$ANDROID_API_LEVEL
-  - sys-img-armeabi-v7a-addon-google_apis-google-$EMULATOR_API_LEVEL
+  - addon-google_apis-google-22
+  - sys-img-armeabi-v7a-addon-google_apis-google-22
+  - sys-img-armeabi-v7a-addon-google_apis-google-22
   licenses:
   - android-sdk-preview-license-.+
   - android-sdk-license-.+
@@ -48,7 +49,7 @@ before_install:
 - "./gradlew dependencies || true"
 before_script:
 - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
-- emulator -avd test -no-skin -no-audio -no-window &
+- emulator -avd test -no-skin -no-window &
 - android-wait-for-emulator
 - adb shell input keyevent 82 &
 script:

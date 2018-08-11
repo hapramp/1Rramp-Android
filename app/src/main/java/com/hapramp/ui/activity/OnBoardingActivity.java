@@ -4,9 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.ImageView;
 
 import com.hapramp.R;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -14,49 +14,78 @@ import com.hapramp.ui.adapters.OnBoardingPageAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import xute.progressdot.ProgressDotView;
 
-public class OnBoardingActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
+public class OnBoardingActivity extends AppCompatActivity {
 
   @BindView(R.id.viewpager)
   ViewPager viewpager;
-  @BindView(R.id.dotsView)
-  ProgressDotView dotsView;
-  @BindView(R.id.back)
-  TextView back;
-  @BindView(R.id.next)
-  TextView next;
-
-  private int mCurrentIndex;
-
+  @BindView(R.id.intro_btn_skip)
+  Button introBtnSkip;
+  @BindView(R.id.intro_indicator_0)
+  ImageView introIndicator0;
+  @BindView(R.id.intro_indicator_1)
+  ImageView introIndicator1;
+  @BindView(R.id.intro_indicator_2)
+  ImageView introIndicator2;
+  @BindView(R.id.intro_btn_finish)
+  Button introBtnFinish;
+  @BindView(R.id.intro_btn_next)
+  ImageView introBtnNext;
+  private int page;
+  private View[] indicators;
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_on_boarding);
     ButterKnife.bind(this);
-    viewpager.setAdapter(new OnBoardingPageAdapter(this));
-    viewpager.addOnPageChangeListener(this);
-    setListeners();
+    initialize();
+    attachListeners();
   }
 
-  private void setListeners() {
-    back.setOnClickListener(new View.OnClickListener() {
+  private void initialize() {
+    viewpager.setAdapter(new OnBoardingPageAdapter(this));
+    indicators = new View[]{introIndicator0, introIndicator1, introIndicator2};
+  }
+
+  private void attachListeners() {
+    viewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
       @Override
-      public void onClick(View view) {
-        if (mCurrentIndex > 0) {
-          viewpager.setCurrentItem(mCurrentIndex - 1);
-        }
+      public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+      }
+
+      @Override
+      public void onPageSelected(int position) {
+        page = position;
+        updatePageIndicators(position);
+        introBtnNext.setVisibility(position == 2 ? View.GONE : View.VISIBLE);
+        introBtnFinish.setVisibility(position == 2 ? View.VISIBLE : View.GONE);
+      }
+
+      @Override
+      public void onPageScrollStateChanged(int state) {
+
       }
     });
-    next.setOnClickListener(new View.OnClickListener() {
+
+    introBtnSkip.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        if (mCurrentIndex < 2) {
-          Log.d("OnBoarding", "Index " + mCurrentIndex);
-          viewpager.setCurrentItem(mCurrentIndex + 1);
-        } else {
-          navigateToLoginPage();
-        }
+        navigateToLoginPage();
+      }
+    });
+
+    introBtnFinish.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        navigateToLoginPage();
+      }
+    });
+
+    introBtnNext.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        viewpager.setCurrentItem(page + 1);
       }
     });
   }
@@ -68,39 +97,11 @@ public class OnBoardingActivity extends AppCompatActivity implements ViewPager.O
     finish();
   }
 
-  @Override
-  public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-  }
-
-  @Override
-  public void onPageSelected(int position) {
-    if (position > mCurrentIndex) {
-      dotsView.moveToNext();
-    } else {
-      dotsView.moveBack();
-    }
-    mCurrentIndex = position;
-    invalidateNavButton(mCurrentIndex);
-  }
-
-  @Override
-  public void onPageScrollStateChanged(int state) {
-
-  }
-
-  private void invalidateNavButton(int mCurrentIndex) {
-    if (mCurrentIndex == 2) {
-      next.setText("START EARNING!");
-    } else {
-      next.setText("NEXT");
-    }
-    if (mCurrentIndex == 0) {
-      back.setTextColor(getResources().getColor(R.color.Black38));
-      back.setEnabled(false);
-    } else {
-      back.setTextColor(getResources().getColor(R.color.colorPrimary));
-      back.setEnabled(true);
+  private void updatePageIndicators(int position) {
+    for (int i = 0; i < 3; i++) {
+      indicators[i].setBackgroundResource(
+        i == position ? R.drawable.indicator_selected : R.drawable.indicator_unselected
+      );
     }
   }
 }

@@ -31,7 +31,7 @@
             android:layout_marginStart="16dp"
             android:layout_toStartOf="@+id/sendButton"
             android:background="@drawable/blank_input_bg"
-            android:hint="Comment Here..."
+            android:hint="Write a comment..."
             android:minHeight="36dp"
             android:paddingBottom="8dp"
             android:paddingEnd="16dp"

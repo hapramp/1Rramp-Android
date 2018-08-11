@@ -1,9 +1,7 @@
 package com.hapramp.steem;
 
 import android.os.Handler;
-
 import com.hapramp.steem.models.user.User;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -46,7 +44,6 @@ public class UserProfileFetcher {
     try {
       JSONObject root = new JSONObject(response);
       JSONObject userObj = root.getJSONObject("user");
-
       user.setUsername(userObj.getString("name"));
       user.setReputation(userObj.getLong("reputation"));
       user.setPostCount(userObj.optInt("post_count", 0));

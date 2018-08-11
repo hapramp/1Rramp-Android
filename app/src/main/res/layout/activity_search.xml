@@ -4,8 +4,7 @@
     android:id="@+id/appBar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
-
+    
     <RelativeLayout
         android:id="@+id/action_bar_container"
         android:layout_width="match_parent"
@@ -27,8 +26,8 @@
             android:id="@+id/searchInput"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_toEndOf="@+id/backBtn"
-            android:layout_toStartOf="@+id/searchBtn"
+            android:layout_toRightOf="@+id/backBtn"
+            android:layout_toLeftOf="@+id/searchBtn"
             android:background="#ffffff"
             android:hint="Search user.."
             android:imeOptions="actionSearch"
@@ -39,7 +38,7 @@
             android:id="@+id/searchBtn"
             android:layout_width="56dp"
             android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:background="?selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"

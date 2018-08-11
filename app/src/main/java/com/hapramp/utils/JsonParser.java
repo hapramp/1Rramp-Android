@@ -1,5 +1,7 @@
 package com.hapramp.utils;
 
+import android.util.Log;
+
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.Voter;
 import com.hapramp.steem.models.user.User;
@@ -16,13 +18,16 @@ public class JsonParser {
   public JsonParser() {
     markdownPreProcessor = new MarkdownPreProcessor();
   }
-  public ArrayList<Feed> parseFeed(String response) {
+
+  //Structure: {"jsonrpc":"2.0","result":{"feed":[{....
+  public ArrayList<Feed> parseFeedStructure1(String response) {
     ArrayList<Feed> feeds = new ArrayList<>();
     try {
       JSONObject ro = new JSONObject(response);
-      JSONArray results = ro.getJSONArray("result");
-      for (int i = 0; i < results.length(); i++) {
-        feeds.add(parseCoreData((JSONObject) results.get(i)));
+      JSONObject resultObj = ro.getJSONObject("result");
+      JSONArray feedsArray = resultObj.getJSONArray("feed");
+      for (int i = 0; i < feedsArray.length(); i++) {
+        feeds.add(parseCoreData((JSONObject) feedsArray.get(i)));
       }
     }
     catch (JSONException e) {
@@ -70,15 +75,15 @@ public class JsonParser {
       //root permlink
       String rootPermlink = rootObject.getString("root_permlink");
       //url
-      String url = rootObject.getString("url");
+      String url = rootObject.optString("url", "");
       //pending payout value
-      String pendingPayoutValue = rootObject.getString("pending_payout_value");
+      String pendingPayoutValue = rootObject.optString("pending_payout_value", "");
       //total pending payout value
-      String totalPendingPayoutValue = rootObject.getString("total_pending_payout_value");
+      String totalPendingPayoutValue = rootObject.optString("total_pending_payout_value", "");
       //voters
       ArrayList<Voter> voters = readVoters(rootObject);
       //author reputation
-      String autorReputation = rootObject.getString("author_reputation");
+      String autorReputation = rootObject.optString("author_reputation", "");
       feed.setBody(body);
       feed.setCleanedBody(getCleanedBody(body));
       feed.setAuthor(author);
@@ -104,8 +109,59 @@ public class JsonParser {
       feed.setAuthorReputation(autorReputation);
     }
     catch (JSONException e) {
+      Log.e("JsonParserException", e.toString());
     }
     return feed;
+  }
+
+  private ArrayList<Voter> readVoters(JSONObject rootObject) throws JSONException {
+    ArrayList<Voter> voters = new ArrayList<>();
+    if (rootObject.has("active_votes")) {
+      JSONArray __voters = rootObject.optJSONArray("active_votes");
+      for (int i = 0; i < __voters.length(); i++) {
+        JSONObject __voter = __voters.getJSONObject(i);
+        voters.add(new Voter(
+          __voter.getString("voter"),
+          __voter.getInt("percent"),
+          __voter.getString("reputation"),
+          __voter.getString("time")
+        ));
+      }
+    }
+    return voters;
+  }
+
+  //{"jsonrpc":"2.0","result":[{"id
+  public ArrayList<Feed> parseFeedStructure3(String response) {
+    ArrayList<Feed> feeds = new ArrayList<>();
+    try {
+      JSONObject ro = new JSONObject(response);
+      JSONArray feedsArray = ro.getJSONArray("result");
+      for (int i = 0; i < feedsArray.length(); i++) {
+        feeds.add(parseCoreData((JSONObject) feedsArray.get(i)));
+      }
+    }
+    catch (JSONException e) {
+      e.printStackTrace();
+    }
+    return feeds;
+  }
+
+  // {"posts": [{...
+  public ArrayList<Feed> parseFeedStructure2(String response) {
+    ArrayList<Feed> feeds = new ArrayList<>();
+    try {
+      JSONObject root = new JSONObject(response);
+      JSONArray jsonArray = root.getJSONArray("posts");
+      for (int i = 0; i < jsonArray.length(); i++) {
+        JSONObject co = jsonArray.getJSONObject(i);
+        feeds.add(parseCoreData(co));
+      }
+    }
+    catch (JSONException e) {
+
+    }
+    return feeds;
   }
 
   private JSONObject getJsonMetaDataObject(JSONObject jsonObject) throws JSONException {
@@ -161,19 +217,18 @@ public class JsonParser {
     return tags;
   }
 
-  private ArrayList<Voter> readVoters(JSONObject rootObject) throws JSONException {
-    ArrayList<Voter> voters = new ArrayList<>();
-    JSONArray __voters = rootObject.getJSONArray("active_votes");
-    for (int i = 0; i < __voters.length(); i++) {
-      JSONObject __voter = __voters.getJSONObject(i);
-      voters.add(new Voter(
-        __voter.getString("voter"),
-        __voter.getInt("percent"),
-        __voter.getString("reputation"),
-        __voter.getString("time")
-      ));
+  public ArrayList<Feed> parseCuratedFeed(String response) {
+    ArrayList<Feed> feeds = new ArrayList<>();
+    try {
+      JSONArray rootArray = new JSONArray(response);
+      for (int i = 0; i < rootArray.length(); i++) {
+        feeds.add(parseCoreData((JSONObject) rootArray.get(i)));
+      }
     }
-    return voters;
+    catch (JSONException e) {
+      e.printStackTrace();
+    }
+    return feeds;
   }
 
   private String getCleanedBody(String dirtyBody) {

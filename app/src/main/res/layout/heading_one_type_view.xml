@@ -14,7 +14,8 @@
         android:paddingStart="8dp"
         android:paddingTop="2dp"
         android:text="Text using H1 size"
-        android:textColor="#3f72af"
+        android:textColor="#090909"
+        android:textStyle="bold"
         android:textSize="28sp" />
 
 </LinearLayout>

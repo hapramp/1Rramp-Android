@@ -6,7 +6,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -15,11 +14,8 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
-import com.hapramp.datastore.ServiceWorker;
-import com.hapramp.interfaces.datatore_callback.ServiceWorkerCallback;
+import com.hapramp.api.RawApiCaller;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.ServiceWorkerRequestBuilder;
-import com.hapramp.steem.ServiceWorkerRequestParams;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.ui.adapters.ProfileRecyclerAdapter;
 import com.hapramp.utils.Constants;
@@ -27,13 +23,12 @@ import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ViewItemDecoration;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 // Activity for User Profile
-public class ProfileActivity extends AppCompatActivity implements ServiceWorkerCallback {
+public class ProfileActivity extends AppCompatActivity implements RawApiCaller.FeedDataCallback {
   private static final int POST_LIMIT = 100;
   @BindView(R.id.closeBtn)
   TextView closeBtn;
@@ -47,11 +42,7 @@ public class ProfileActivity extends AppCompatActivity implements ServiceWorkerC
   private ProfileRecyclerAdapter profilePostAdapter;
   private ViewItemDecoration viewItemDecoration;
   private LinearLayoutManager llm;
-  private ServiceWorker serviceWorker;
-  private ServiceWorkerRequestBuilder serviceWorkerRequestParamsBuilder;
-  private ServiceWorkerRequestParams serviceWorkerRequestParams;
-  private String lastAuthor;
-  private String lastPermlink;
+  private RawApiCaller rawApiCaller;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -60,12 +51,12 @@ public class ProfileActivity extends AppCompatActivity implements ServiceWorkerC
     ButterKnife.bind(this);
     init();
     attachListeners();
-    prepareServiceWorker();
-    fetchPosts();
     AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_PROFILE, null);
   }
 
   private void init() {
+    rawApiCaller = new RawApiCaller(this);
+    rawApiCaller.setDataCallback(this);
     closeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     if (getIntent() == null) {
       Toast.makeText(this, "No Username Passed", Toast.LENGTH_SHORT).show();
@@ -81,6 +72,7 @@ public class ProfileActivity extends AppCompatActivity implements ServiceWorkerC
     profilePostRv.addItemDecoration(viewItemDecoration);
     profilePostRv.setAdapter(profilePostAdapter);
     setScrollListener();
+    fetchPosts();
   }
 
   private void attachListeners() {
@@ -92,135 +84,34 @@ public class ProfileActivity extends AppCompatActivity implements ServiceWorkerC
     });
   }
 
-  private void prepareServiceWorker() {
-    serviceWorker = new ServiceWorker();
-    serviceWorker.init(this);
-    serviceWorker.setServiceWorkerCallback(this);
-  }
-
-  private void fetchPosts() {
-    serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
-    serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder
-      .setUserName(username)
-      .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
-      .createRequestParam();
-    serviceWorker.requestProfilePosts(serviceWorkerRequestParams);
-  }
-
   private void setScrollListener() {
     profilePostRv.addOnScrollListener(new EndlessOnScrollListener(llm) {
       @Override
       public void onScrolledToEnd() {
-        loadMore();
+        //loadMore();
       }
     });
   }
 
-  private void loadMore() {
-    serviceWorkerRequestParamsBuilder = new ServiceWorkerRequestBuilder();
-    serviceWorkerRequestParams = serviceWorkerRequestParamsBuilder
-      .setUserName(username)
-      .setLimit(Constants.MAX_FEED_LOAD_LIMIT)
-      .setLastAuthor(lastAuthor)
-      .setLastPermlink(lastPermlink)
-      .createRequestParam();
-    serviceWorker.requestAppendableProfilePosts(serviceWorkerRequestParams);
+  private void fetchPosts() {
+    rawApiCaller.requestUserBlogs(username);
   }
 
   @Override
-  public void onLoadingFromCache() {
-
+  public void onDataLoaded(ArrayList<Feed> feeds) {
+    profilePostAdapter.setPosts(feeds);
   }
 
   @Override
-  public void onCacheLoadFailed() {
-
-  }
-
-  @Override
-  public void onNoDataInCache() {
-
-  }
-
-  @Override
-  public void onLoadedFromCache(ArrayList<Feed> cachedList, String lastAuthor, String lastPermlink) {
-    if (profilePostAdapter != null) {
-      profilePostAdapter.setPosts(cachedList);
-    }
-  }
-
-  @Override
-  public void onFetchingFromServer() {
-
-  }
-
-  @Override
-  public void onFeedsFetched(ArrayList<Feed> fetched, String lastAuthor, String lastPermlink) {
-    if (profilePostAdapter != null) {
-      Log.d("ProfileActivity", "size" + fetched.size());
-      profilePostAdapter.setPosts(fetched);
-      this.lastAuthor = lastAuthor;
-      this.lastPermlink = lastPermlink;
-    }
-  }
-
-  @Override
-  public void onFetchingFromServerFailed() {
-
-  }
-
-  @Override
-  public void onNoDataAvailable() {
-
-  }
-
-  @Override
-  public void onRefreshing() {
-
-  }
-
-  @Override
-  public void onRefreshed(List<Feed> refreshedList, String lastAuthor, String lastPermlink) {
-    if (profilePostAdapter != null) {
-      profilePostAdapter.setPosts(refreshedList);
-      this.lastAuthor = lastAuthor;
-      this.lastPermlink = lastPermlink;
-    }
-  }
-
-  @Override
-  public void onRefreshFailed() {
-
-  }
-
-  @Override
-  public void onLoadingAppendableData() {
-
-  }
-
-  @Override
-  public void onAppendableDataLoaded(List<Feed> appendableList, String lastAuthor, String lastPermlink) {
-    if (profilePostAdapter != null) {
-      profilePostAdapter.appendPost(appendableList);
-      this.lastAuthor = lastAuthor;
-      this.lastPermlink = lastPermlink;
-    }
-  }
-
-  @Override
-  public void onAppendableDataLoadingFailed() {
+  public void onDataLoadError() {
 
   }
 
   public abstract class EndlessOnScrollListener extends RecyclerView.OnScrollListener {
-
-    // use your LayoutManager instead
     private LinearLayoutManager lm;
-
     EndlessOnScrollListener(LinearLayoutManager llm) {
       this.lm = llm;
     }
-
     @Override
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
       super.onScrolled(recyclerView, dx, dy);
@@ -229,8 +120,6 @@ public class ProfileActivity extends AppCompatActivity implements ServiceWorkerC
         onScrolledToEnd();
       }
     }
-
     public abstract void onScrolledToEnd();
-
   }
 }

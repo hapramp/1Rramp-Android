@@ -5,30 +5,25 @@
     android:background="#ffffff"
     tools:context=".ui.fragments.SettingsFragment">
 
-    <LinearLayout
-        android:id="@+id/logoutContainer"
+    <TextView
+        android:id="@+id/feedback_btn"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="?selectableItemBackgroundBorderless"
+        android:background="?selectableItemBackground"
         android:clickable="true"
-        android:orientation="horizontal">
+        android:gravity="center"
+        android:text="Share Feedback Or Report Issue"
+        android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/logoutIcon"
-            android:layout_width="56dp"
+            android:id="@+id/logoutBtn"
+            android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:gravity="center"
-            android:text=""
-            android:textSize="32sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_below="@+id/feedback_btn"
             android:gravity="center"
             android:text="Logout"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
+            android:clickable="true"
+            android:background="?selectableItemBackground"
+            android:textSize="16sp" />
 
 </RelativeLayout>

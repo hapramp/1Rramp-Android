@@ -14,7 +14,7 @@
         android:paddingStart="8dp"
         android:paddingTop="2dp"
         android:text="Text using H1 size"
-        android:textColor="@color/Black38"
+        android:textColor="#090909"
         android:textSize="24sp"
         android:textStyle="bold" />
 

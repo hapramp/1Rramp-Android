@@ -23,19 +23,9 @@ public class CommunityTabItemView extends FrameLayout {
   TextView skillTitle;
   FrameLayout selectorOverlay;
   FrameLayout selectionTabIndicator;
-
   private CommunityModel community;
-
-  public CommunityTabItemView(@NonNull Context context) {
-    super(context);
-    this.mContext = context;
-    View view = LayoutInflater.from(context).inflate(R.layout.category_selector_item, this);
-    skillsBgImage = view.findViewById(R.id.skills_bg_image);
-    skillTitle = view.findViewById(R.id.skill_title);
-    selectorOverlay = view.findViewById(R.id.selector_overlay);
-    selectionTabIndicator = view.findViewById(R.id.selection_tab_indicator);
-
-  }
+  private int index;
+  private TouchListener touchListener;
 
   public void setSelected(boolean isSelected) {
     setSelection(isSelected);
@@ -51,10 +41,43 @@ public class CommunityTabItemView extends FrameLayout {
     }
   }
 
+  public CommunityTabItemView(@NonNull Context context) {
+    super(context);
+    this.mContext = context;
+    View view = LayoutInflater.from(context).inflate(R.layout.category_selector_item, this);
+    skillsBgImage = view.findViewById(R.id.skills_bg_image);
+    skillTitle = view.findViewById(R.id.skill_title);
+    selectorOverlay = view.findViewById(R.id.selector_overlay);
+    selectionTabIndicator = view.findViewById(R.id.selection_tab_indicator);
+    view.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        if (touchListener != null) {
+          touchListener.onTouched(index);
+        }
+      }
+    });
+  }
+
   public void setCommunity(CommunityModel model) {
     this.community = model;
     skillTitle.setText(model.getmName());
     ImageHandler.loadCircularImage(mContext, skillsBgImage, community.getmImageUri());
+  }
 
+  public void setIndex(int index) {
+    this.index = index;
+  }
+
+  public String getCommunityTag() {
+    return community.getmTag();
+  }
+
+  public void setTouchListener(TouchListener touchListener) {
+    this.touchListener = touchListener;
+  }
+
+  public interface TouchListener {
+    void onTouched(int index);
   }
 }
