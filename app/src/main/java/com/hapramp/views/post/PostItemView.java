@@ -545,12 +545,13 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
 
   @Override
   public void onReplyFetched(List<SteemCommentModel> replies) {
-    int totalRelies = replies.size();
-    for (int i = 0; i < replies.size(); i++) {
-      totalRelies += replies.get(i).getChildren();
-    }
-    HaprampPreferenceManager.getInstance().setCommentCount(mFeed.getPermlink(), totalRelies);
-    setCommentCount(totalRelies);
+//    int totalRelies = replies.size();
+//    for (int i = 0; i < replies.size(); i++) {
+//      totalRelies += replies.get(i).getChildren();
+//    }
+    int replySize = replies.size();
+    HaprampPreferenceManager.getInstance().setCommentCount(mFeed.getPermlink(), replySize);
+    setCommentCount(replySize);
   }
 
   private void setCommentCount(int count) {

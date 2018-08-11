@@ -11,8 +11,8 @@
         customNS:topOffset="108"
         customNS:wantTopSpaceOffset="true" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/sectionsRv"
+    <com.hapramp.views.CommunityFilterView
+        android:id="@+id/communityFilterView"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:background="#ffffff" />

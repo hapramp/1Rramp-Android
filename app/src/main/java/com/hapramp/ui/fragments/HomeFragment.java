@@ -10,8 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -37,6 +35,7 @@ import com.hapramp.steem.models.Feed;
 import com.hapramp.ui.adapters.CategoryRecyclerAdapter;
 import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.utils.ShadowUtils;
+import com.hapramp.views.CommunityFilterView;
 import com.hapramp.views.feedlist.FeedListView;
 
 import java.util.ArrayList;
@@ -49,19 +48,17 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class HomeFragment extends Fragment implements
-  CategoryRecyclerAdapter.OnCategoryItemClickListener, LikePostCallback, FeedListView.FeedListViewListener, RawApiCaller.FeedDataCallback {
+public class HomeFragment extends Fragment implements LikePostCallback, FeedListView.FeedListViewListener, RawApiCaller.FeedDataCallback, CommunityFilterView.CommunityFilterCallback {
   public static final String ALL = "all";
   public static final String TAG = HomeFragment.class.getSimpleName();
   @BindView(R.id.feedListView)
   FeedListView feedListView;
-  @BindView(R.id.sectionsRv)
-  RecyclerView sectionsRv;
   @BindView(R.id.progressBarLoadingRecite)
   ProgressBar progressBarLoadingRecite;
+  @BindView(R.id.communityFilterView)
+  CommunityFilterView communityFilterView;
   private Context mContext;
   private String currentSelectedTag = ALL;
-  private CategoryRecyclerAdapter categoryRecyclerAdapter;
   private Unbinder unbinder;
   private String mCurrentUser;
   private ProgressDialog progressDialog;
@@ -78,16 +75,14 @@ public class HomeFragment extends Fragment implements
 
   private void initCategoryView() {
     try {
-      categoryRecyclerAdapter = new CategoryRecyclerAdapter(mContext, this);
-      sectionsRv.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
-      sectionsRv.setAdapter(categoryRecyclerAdapter);
-      Drawable drawable = ShadowUtils.generateBackgroundWithShadow(sectionsRv, R.color.white, R.dimen.communitybar_shadow_radius, R.color.Black12, R.dimen.communitybar_shadow_elevation, Gravity.BOTTOM);
-      sectionsRv.setBackground(drawable);
+      Drawable drawable = ShadowUtils.generateBackgroundWithShadow(communityFilterView, R.color.white, R.dimen.communitybar_shadow_radius, R.color.Black12, R.dimen.communitybar_shadow_elevation, Gravity.BOTTOM);
+      communityFilterView.setBackground(drawable);
       CommunityListWrapper cwr = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
       ArrayList<CommunityModel> communityModels = new ArrayList<>();
       communityModels.add(0, new CommunityModel("", Communities.IMAGE_URI_ALL, Communities.ALL, "", "Feed", 0));
       communityModels.addAll(cwr.getCommunityModels());
-      categoryRecyclerAdapter.setCommunities(communityModels);
+      communityFilterView.setCommunityFilterCallback(this);
+      communityFilterView.addCommunities(communityModels);
     }
     catch (Exception e) {
       Log.e(TAG, e.toString());
@@ -95,40 +90,28 @@ public class HomeFragment extends Fragment implements
     }
   }
 
-  @Override
-  public void onCategoryClicked(String tag) {
-    feedListView.initialLoading();
-    currentSelectedTag = tag;
-    if (tag.equals(Communities.ALL)) {
-      fetchAllPosts();
-    } else {
-      fetchCommunityPosts(tag);
-    }
-    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_BROWSE_HOME);
-  }
-
   private void fetchUserCommunities() {
     showLoadingProgressBarWithMessage("Getting your communities...");
     RetrofitServiceGenerator.getService().fetchUserCommunities(mCurrentUser)
       .enqueue(new Callback<UserModel>() {
-      @Override
-      public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-        hideLoadingProgressBar();
-        if (response.isSuccessful()) {
-          HaprampPreferenceManager.getInstance()
-            .saveUserSelectedCommunitiesAsJson(new Gson()
-              .toJson(new CommunityListWrapper(response.body().communityModels)));
-          initCategoryView();
-        } else {
+        @Override
+        public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+          hideLoadingProgressBar();
+          if (response.isSuccessful()) {
+            HaprampPreferenceManager.getInstance()
+              .saveUserSelectedCommunitiesAsJson(new Gson()
+                .toJson(new CommunityListWrapper(response.body().communityModels)));
+            initCategoryView();
+          } else {
+            onFailedToFetchUserCommunities();
+          }
+        }
+
+        @Override
+        public void onFailure(Call<UserModel> call, Throwable t) {
           onFailedToFetchUserCommunities();
         }
-      }
-
-      @Override
-      public void onFailure(Call<UserModel> call, Throwable t) {
-        onFailedToFetchUserCommunities();
-      }
-    });
+      });
   }
 
   @Override
@@ -242,8 +225,8 @@ public class HomeFragment extends Fragment implements
   }
 
   private void hideCategorySection() {
-    sectionsRv.animate().translationY(-sectionsRv.getMeasuredHeight());
-    progressBarLoadingRecite.animate().translationY(-sectionsRv.getMeasuredHeight());
+    communityFilterView.animate().translationY(-communityFilterView.getMeasuredHeight());
+    progressBarLoadingRecite.animate().translationY(-communityFilterView.getMeasuredHeight());
   }
 
   @Override
@@ -252,7 +235,7 @@ public class HomeFragment extends Fragment implements
   }
 
   private void bringBackCategorySection() {
-    sectionsRv.animate().translationY(0);
+    communityFilterView.animate().translationY(0);
     progressBarLoadingRecite.animate().translationY(0);
   }
 
@@ -286,7 +269,7 @@ public class HomeFragment extends Fragment implements
   @Override
   public void onDataLoaded(ArrayList<Feed> feeds) {
     if (feedListView != null) {
-      Log.d("HomeFragment",feeds.size()+"");
+      Log.d("HomeFragment", feeds.size() + "");
       feedListView.feedsRefreshed(feeds);
     }
   }
@@ -298,4 +281,15 @@ public class HomeFragment extends Fragment implements
     }
   }
 
+  @Override
+  public void onCommunitySelected(String tag) {
+    feedListView.initialLoading();
+    currentSelectedTag = tag;
+    if (tag.equals(Communities.ALL)) {
+      fetchAllPosts();
+    } else {
+      fetchCommunityPosts(tag);
+    }
+    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_BROWSE_HOME);
+  }
 }

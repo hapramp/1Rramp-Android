@@ -7,10 +7,8 @@
     android:orientation="vertical"
     tools:context=".ui.activity.TestActivity">
 
-    <com.hapramp.views.hashtag.CustomHashTagInput
-        android:id="@+id/edittext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true" />
+   <com.hapramp.views.CommunityFilterView
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"/>
 
 </LinearLayout>
