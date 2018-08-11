@@ -1,9 +1,7 @@
 package com.hapramp.steem;
 
 import android.os.Handler;
-
 import com.hapramp.steem.models.user.User;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 

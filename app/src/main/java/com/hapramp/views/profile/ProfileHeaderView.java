@@ -328,7 +328,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   private void checkCacheAndLoad() {
     String json = HaprampPreferenceManager.getInstance().getUserProfile(mUsername);
     if (json.length() > 0) {
-      Log.d("ProfileHeaderView", "json " + json);
       User steemUser = new Gson().fromJson(json, User.class);
       bind(steemUser);
     }
@@ -341,7 +340,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   }
 
   private void bind(User data) {
-    Log.d("ProfileHeaderView", data.toString());
     if (shimmerFrameLayout != null) {
       shimmerFrameLayout.stopShimmerAnimation();
       shimmerFrameLayout.setVisibility(GONE);
@@ -391,7 +389,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   }
 
   private void fetchUserCommunities() {
-
     RetrofitServiceGenerator.getService().getUserFromUsername(mUsername).enqueue(new Callback<UserModel>() {
       @Override
       public void onResponse(Call<UserModel> call, Response<UserModel> response) {
@@ -449,7 +446,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 
   @Override
   public void onUserFetched(User user) {
-    Log.d("ProfileHeaderView", "User fetched" + user.toString());
     bind(user);
     cacheUserProfile(user);
   }
