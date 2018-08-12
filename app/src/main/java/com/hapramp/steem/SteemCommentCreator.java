@@ -2,7 +2,6 @@ package com.hapramp.steem;
 
 import android.os.Handler;
 import android.support.annotation.WorkerThread;
-import android.util.Log;
 
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.push.Notifyer;
@@ -49,7 +48,6 @@ public class SteemCommentCreator {
   public void createComment(final String comment, final String commentOnUser, final String parentPermlink) {
     if (steemCommentCreateCallback != null) {
       steemCommentCreateCallback.onCommentCreateProcessing();
-      return;
     }
 
     if (AccessTokenValidator.isTokenExpired()) {
@@ -80,14 +78,12 @@ public class SteemCommentCreator {
           new SteemConnectCallback() {
             @Override
             public void onResponse(String s) {
-              Log.d("CommentCreate", s);
               Notifyer.notifyComment(parentPermlink);
               mHandler.post(commentCreatedRunnable);
             }
 
             @Override
             public void onError(SteemConnectException e) {
-              Log.d("CommentCreateError", e.toString());
               mHandler.post(commentCreateFailedRunnable);
             }
           });
