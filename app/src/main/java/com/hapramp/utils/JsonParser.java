@@ -183,7 +183,10 @@ public class JsonParser {
     if (json_metadata.has("image")) {
       JSONArray images = json_metadata.getJSONArray("image");
       if (images.length() > 0) {
-        return (String) images.get(0);
+        Object im = images.get(0);
+        if (im instanceof String) {
+          return (String) im;
+        }
       }
     }
     //if not found, try searching inside body
@@ -241,7 +244,6 @@ public class JsonParser {
       JSONObject root = new JSONObject(userJson);
       JSONObject userObj = root.getJSONObject("user");
       JSONObject jmd = userObj.getJSONObject("json_metadata");
-
       if (jmd.has("profile")) {
         JSONObject po = jmd.getJSONObject("profile");
         if (po.has("profile_image")) {

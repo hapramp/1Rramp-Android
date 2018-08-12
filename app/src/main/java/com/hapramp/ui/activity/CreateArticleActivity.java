@@ -160,12 +160,12 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     title = articleTitleEt.getText().toString().trim();
     generated_permalink = PermlinkGenerator.getPermlink(title);
     tags = (ArrayList<String>) articleCategoryView.getSelectedTags();
-    includeCustomTags(tags);
     body = markDEditor.getMarkdownContent();
     images = markDEditor.getImageList();
     if (validArticle()) {
       sendPostToSteemBlockChain();
     }
+    includeCustomTags(tags);
   }
 
   private boolean validArticle() {
