@@ -25,6 +25,7 @@ import com.hapramp.R;
 import com.hapramp.api.RawApiCaller;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datamodels.CommunityModel;
+import com.hapramp.datamodels.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.models.user.User;
@@ -104,6 +105,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     setContentView(R.layout.activity_home);
     ButterKnife.bind(this);
     syncCommunities();
+    syncUserCommunities();
     setupToolbar();
     initObjects();
     attachListeners();
@@ -121,12 +123,39 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
           cacheCommunitiesList();
         }
       }
-
       @Override
       public void onFailure(Call<List<CommunityModel>> call, Throwable t) {
       }
     });
   }
+
+  private void syncUserCommunities() {
+    RetrofitServiceGenerator.getService().fetchUserCommunities(HaprampPreferenceManager.getInstance().getCurrentSteemUsername()).enqueue(new Callback<UserModel>() {
+      @Override
+      public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+        if (response.isSuccessful()) {
+          if (response.body().getCommunityModels().size() == 0) {
+            HaprampPreferenceManager.getInstance()
+              .saveUserSelectedCommunitiesAsJson(new Gson()
+                .toJson(new CommunityListWrapper(response.body().communityModels)));
+            navigateToCommunitySelectionPage();
+          }
+        }
+      }
+
+      @Override
+      public void onFailure(Call<UserModel> call, Throwable t) {
+
+      }
+    });
+  }
+
+  private void navigateToCommunitySelectionPage() {
+    Intent intent = new Intent(this, CommunitySelectionActivity.class);
+    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+    startActivity(intent);
+  }
+
 
   private void setupToolbar() {
     materialTypface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
