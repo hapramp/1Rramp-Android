@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.util.Log;
 
 /**
  * Created by Ankit on 5/14/2018.
@@ -31,19 +32,17 @@ public class FilePathUtils {
   @TargetApi(Build.VERSION_CODES.KITKAT)
   @SuppressLint("NewApi")
   public static String getPath(final Context context, final Uri uri) {
-
     // check here to KITKAT or new version
     final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
-
     // DocumentProvider
     if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
 
       // ExternalStorageProvider
       if (isExternalStorageDocument(uri)) {
+        Log.d("FileUtils","isExternalStorageDocument");
         final String docId = DocumentsContract.getDocumentId(uri);
         final String[] split = docId.split(":");
         final String type = split[0];
-
         if ("primary".equalsIgnoreCase(type)) {
           return Environment.getExternalStorageDirectory() + "/"
             + split[1];
@@ -51,16 +50,16 @@ public class FilePathUtils {
       }
       // DownloadsProvider
       else if (isDownloadsDocument(uri)) {
-
+        Log.d("FileUtils","isDownloadsDocument");
         final String id = DocumentsContract.getDocumentId(uri);
         final Uri contentUri = ContentUris.withAppendedId(
           Uri.parse("content://downloads/public_downloads"),
           Long.valueOf(id));
-
         return getDataColumn(context, contentUri, null, null);
       }
       // MediaProvider
       else if (isMediaDocument(uri)) {
+        Log.d("FileUtils","isMediaDocument(uri)");
         final String docId = DocumentsContract.getDocumentId(uri);
         final String[] split = docId.split(":");
         final String type = split[0];
@@ -83,7 +82,7 @@ public class FilePathUtils {
     }
     // MediaStore (and general)
     else if ("content".equalsIgnoreCase(uri.getScheme())) {
-
+      Log.d("FileUtils","\"content\".equalsIgnoreCas");
       // Return the remote address
       if (isGooglePhotosUri(uri))
         return uri.getLastPathSegment();

@@ -1,5 +1,7 @@
 package com.hapramp.api;
 
+import android.util.Log;
+
 import com.hapramp.preferences.HaprampPreferenceManager;
 
 public class RetrofitServiceGenerator {

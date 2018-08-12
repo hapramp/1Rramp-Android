@@ -25,7 +25,9 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.api.URLS;
 import com.hapramp.datamodels.FeaturedImageSelectionModel;
+import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.steem.models.data.Content;
@@ -110,7 +112,8 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     articleCategoryView.initCategory();
     editorControlBar.setEditorControlListener(this);
     editorControlBar.setEditor(markDEditor);
-    markDEditor.setHeading(TextComponentStyle.NORMAL);
+    markDEditor.setHeading(TextComponentStyle.H1);
+    markDEditor.setServerInfo(URLS.BASE_URL, HaprampPreferenceManager.getInstance().getUserToken());
   }
 
   private void attachListeners() {
@@ -221,7 +224,6 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   }
 
   private void showPublishingProgressDialog(boolean show, String msg) {
-
     if (progressDialog != null) {
       if (show) {
         progressDialog.setMessage(msg);
@@ -282,7 +284,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
     switch (requestCode) {
       case REQUEST_IMAGE_SELECTOR:
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
           openGallery();
         } else {
           Toast.makeText(this, "Permission not granted to access images.", Toast.LENGTH_SHORT).show();
@@ -293,12 +295,15 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
 
   private void openGallery() {
     try {
-      if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+      if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+        &&
+        ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_SELECTOR);
       } else {
-        Intent intent = new Intent();
+        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        //Intent intent = new Intent();
         intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
+        //intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, REQUEST_IMAGE_SELECTOR);
       }
     }
