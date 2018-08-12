@@ -58,10 +58,16 @@ public class CommunitySelectionActivity extends BaseActivity implements Communit
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_community_selection);
     ButterKnife.bind(this);
-    CommunityListWrapper cwr = new Gson().fromJson(HaprampPreferenceManager.getInstance().
-      getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
-    if (cwr.getCommunityModels().size() > 0) {
-      navigateToHome();
+    String cachedCommunity = HaprampPreferenceManager.getInstance().
+      getUserSelectedCommunityAsJson();
+    if (cachedCommunity.length() > 0) {
+      CommunityListWrapper cwr = new Gson().fromJson(HaprampPreferenceManager.getInstance().
+        getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
+      if (cwr != null) {
+        if (cwr.getCommunityModels().size() > 0) {
+          navigateToHome();
+        }
+      }
     } else {
       init();
     }
