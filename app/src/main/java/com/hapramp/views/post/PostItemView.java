@@ -142,6 +142,12 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     commentBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     popupMenuDots.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     mHandler = new Handler();
+    postTitle.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        navigateToDetailsPage();
+      }
+    });
     commentBtn.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
