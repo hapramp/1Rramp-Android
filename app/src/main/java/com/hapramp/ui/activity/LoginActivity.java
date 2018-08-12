@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
@@ -147,7 +146,7 @@ public class LoginActivity extends AppCompatActivity {
             navigateToCommunityPage();
           }
         } else {
-          showToast("Failed to get your communites");
+          showToast("Failed to get your communities. Please try loggin in again!");
         }
       }
 
@@ -279,16 +278,4 @@ public class LoginActivity extends AppCompatActivity {
       progressDialog.dismiss();
     }
   }
-
-  private void openSteemitInNativeBrowser() {
-    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.steemit_url)));
-    startActivity(browserIntent);
-  }
-
-  private void showProgressDialog() {
-    progressDialog.setTitle("Verification");
-    progressDialog.setMessage("Getting ready your account...");
-    progressDialog.show();
-  }
-
 }
