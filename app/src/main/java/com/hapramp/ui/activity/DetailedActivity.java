@@ -271,13 +271,13 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
       @Override
       public void onChanged(@Nullable List<SteemCommentModel> steemCommentModels) {
         commentLoadingProgressBar.setVisibility(View.GONE);
-        setCommentCount(steemCommentModels.size());
         addAllCommentsToView(steemCommentModels);
       }
     });
     ImageHandler.loadCircularImage(this, feedOwnerPic,
       String.format(getResources().getString(R.string.steem_user_profile_pic_format), post.getAuthor()));
     feedOwnerTitle.setText(post.getAuthor());
+    setCommentCount(post.getChildren());
     feedOwnerSubtitle.setText(
       String.format(getResources().getString(R.string.post_subtitle_format),
         MomentsUtils.getFormattedTime(post.getCreatedAt())));
