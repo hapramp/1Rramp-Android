@@ -339,43 +339,10 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     userProfileFetcher.fetchUserProfileFor(mUsername);
   }
 
-  private void bind(User data) {
-    if (shimmerFrameLayout != null) {
-      shimmerFrameLayout.stopShimmerAnimation();
-      shimmerFrameLayout.setVisibility(GONE);
-    }
-    if (profileHeaderViewReal != null) {
-      profileHeaderViewReal.setVisibility(VISIBLE);
-    }
-    //check for null view(incase view is removed)
-    if (usernameTv == null)
-      return;
-    loaded = true;
-    String profile_pic = String.format(getResources().getString(R.string.steem_user_profile_pic_format_large), mUsername);
-    String wall_pic_url = data.getCover_image().length() > 0 ? data.getCover_image()
-      :
-      mContext.getResources().getString(R.string.default_wall_pic);
-    String _bio = data.getAbout();
-    ImageHandler.loadCircularImage(mContext, profilePic, profile_pic);
-    ImageHandler.load(mContext, profileWallPic, wall_pic_url);
-    usernameTv.setText(data.getFullname());
-    hapname.setText(String.format("@%s", data.getUsername()));
-    bio.setText(_bio);
-    setPostsCount(data.getPostCount());
-    if (mUsername.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
-      //self Profile
-      followBtn.setVisibility(GONE);
-      editBtn.setVisibility(VISIBLE);
-      editBtn.setEnabled(false);
-      CommunityListWrapper listWrapper = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
-      interestsView.setCommunities(listWrapper.getCommunityModels());
-    } else {
-      followBtn.setVisibility(VISIBLE);
-      editBtn.setVisibility(GONE);
-      // set follow or unfollow button
-      invalidateFollowButton();
-      fetchUserCommunities();
-    }
+  private void cacheUserProfile(User user) {
+    String json = new Gson().toJson(user);
+    HaprampPreferenceManager.getInstance().saveUserProfile(mUsername, json);
+    bind(user);
   }
 
   public void setPostsCount(long count) {
@@ -450,9 +417,49 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     cacheUserProfile(user);
   }
 
-  private void cacheUserProfile(User user) {
-    String json = new Gson().toJson(user);
-    HaprampPreferenceManager.getInstance().saveUserProfile(mUsername, json);
+  private void bind(User data) {
+    if (shimmerFrameLayout != null) {
+      shimmerFrameLayout.stopShimmerAnimation();
+      shimmerFrameLayout.setVisibility(GONE);
+    }
+    if (profileHeaderViewReal != null) {
+      profileHeaderViewReal.setVisibility(VISIBLE);
+    }
+    //check for null view(incase view is removed)
+    if (usernameTv == null)
+      return;
+    loaded = true;
+    String profile_pic = String.format(getResources().getString(R.string.steem_user_profile_pic_format_large), mUsername);
+    String wall_pic_url = data.getCover_image().length() > 0 ? data.getCover_image()
+      :
+      mContext.getResources().getString(R.string.default_wall_pic);
+    String _bio = data.getAbout();
+    ImageHandler.loadCircularImage(mContext, profilePic, profile_pic);
+    ImageHandler.load(mContext, profileWallPic, wall_pic_url);
+    usernameTv.setText(data.getFullname());
+    hapname.setText(String.format("@%s", data.getUsername()));
+    bio.setText(_bio);
+    setPostsCount(data.getPostCount());
+    if (mUsername.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
+      //self Profile
+      followBtn.setVisibility(GONE);
+      editBtn.setVisibility(VISIBLE);
+      editBtn.setEnabled(true);
+      editBtn.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          navigateToProfileEditActivity();
+        }
+      });
+      CommunityListWrapper listWrapper = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
+      interestsView.setCommunities(listWrapper.getCommunityModels());
+    } else {
+      followBtn.setVisibility(VISIBLE);
+      editBtn.setVisibility(GONE);
+      // set follow or unfollow button
+      invalidateFollowButton();
+      fetchUserCommunities();
+    }
   }
 
   @Override
