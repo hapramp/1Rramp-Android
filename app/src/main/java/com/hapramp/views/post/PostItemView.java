@@ -30,8 +30,6 @@ import com.hapramp.api.URLS;
 import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
-import com.hapramp.steem.SteemCommentModel;
-import com.hapramp.steem.SteemReplyFetcher;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.FeedWrapper;
 import com.hapramp.steem.models.Voter;
@@ -68,7 +66,7 @@ import static com.hapramp.utils.VoteUtils.getVotePercentSum;
  * Created by Ankit on 12/30/2017.
  */
 
-public class PostItemView extends FrameLayout implements SteemReplyFetcher.SteemReplyFetchCallback {
+public class PostItemView extends FrameLayout {
   public static final String TAG = PostItemView.class.getSimpleName();
   @BindView(R.id.feed_owner_pic)
   ImageView feedOwnerPic;
@@ -109,7 +107,6 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
   private Context mContext;
   private Feed mFeed;
   private Handler mHandler;
-  private SteemReplyFetcher replyFetcher;
   private SteemConnect steemConnect;
   private MarkdownPreProcessor markdownPreProcessor;
 
@@ -133,15 +130,19 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
 
   private void init(Context context) {
     this.mContext = context;
-    replyFetcher = new SteemReplyFetcher();
     markdownPreProcessor = new MarkdownPreProcessor();
-    replyFetcher.setSteemReplyFetchCallback(this);
     View view = LayoutInflater.from(mContext).inflate(R.layout.post_item_view, this);
     ButterKnife.bind(this, view);
     hapcoinBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     commentBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     popupMenuDots.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     mHandler = new Handler();
+    postTitle.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        navigateToDetailsPage();
+      }
+    });
     commentBtn.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -216,10 +217,8 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     }
 
     ImageHandler.loadCircularImage(mContext, feedOwnerPic, String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format), feed.getAuthor()));
-    if (ConnectionUtils.isConnected(mContext)) {
-      replyFetcher.requestReplyForPost(feed.getAuthor(), feed.getPermlink());
-    }
     bindVotes(feed.getVoters(), feed.getPermlink());
+    setCommentCount(feed.getChildren());
     attachListenersOnStarView();
     attachListerOnAuthorHeader();
     attachListenerForOverlowIcon();
@@ -539,27 +538,8 @@ public class PostItemView extends FrameLayout implements SteemReplyFetcher.Steem
     popup.show();
   }
 
-  @Override
-  public void onReplyFetching() {
-  }
-
-  @Override
-  public void onReplyFetched(List<SteemCommentModel> replies) {
-//    int totalRelies = replies.size();
-//    for (int i = 0; i < replies.size(); i++) {
-//      totalRelies += replies.get(i).getChildren();
-//    }
-    int replySize = replies.size();
-    HaprampPreferenceManager.getInstance().setCommentCount(mFeed.getPermlink(), replySize);
-    setCommentCount(replySize);
-  }
-
   private void setCommentCount(int count) {
     commentCount.setText(String.format(getResources().getString(R.string.comment_format), count));
-  }
-
-  @Override
-  public void onReplyFetchError() {
   }
 
   private void addMeAsVoter(int percent){

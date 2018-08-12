@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.hapramp.R;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datamodels.response.FileUploadReponse;
+import com.hapramp.utils.ImageHandler;
 
 import java.io.File;
 
@@ -52,6 +53,7 @@ public class PostImageView extends FrameLayout {
   private View mainView;
   private String downloadUrl;
   private ImageActionListener imageActionListener;
+  private Context mContext;
 
   public PostImageView(@NonNull Context context) {
     super(context);
@@ -59,6 +61,7 @@ public class PostImageView extends FrameLayout {
   }
 
   private void init(Context context) {
+    this.mContext = context;
     mainView = LayoutInflater.from(context).inflate(R.layout.post_image_view, this);
     ButterKnife.bind(this, mainView);
     attachListeners();
@@ -136,12 +139,11 @@ public class PostImageView extends FrameLayout {
     init(context);
   }
 
-  public void setImageSource(final Bitmap bitmap, String filePath) {
-    if (bitmap == null)
-      return;
+  public void setImageSource(String filePath) {
     invalidateView();
     mainView.setVisibility(VISIBLE);
-    image.setImageBitmap(bitmap);
+    ImageHandler.load(mContext,image,filePath);
+
     informationTv.setVisibility(VISIBLE);
     informationTv.setText("Processing...");
     startUploading(filePath);

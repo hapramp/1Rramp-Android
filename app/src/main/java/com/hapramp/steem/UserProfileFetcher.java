@@ -1,7 +1,9 @@
 package com.hapramp.steem;
 
 import android.os.Handler;
+
 import com.hapramp.steem.models.user.User;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -48,29 +50,20 @@ public class UserProfileFetcher {
       user.setReputation(userObj.getLong("reputation"));
       user.setPostCount(userObj.optInt("post_count", 0));
       //try getting json_metadata
-      Object json_metadataObj = userObj.get("json_metadata");
-      if (json_metadataObj instanceof String) {
-        user.setAbout("(About) - N/A");
-        user.setCover_image("");
-        user.setFullname("(Full name) - N/A");
-        user.setLocation("(Location) - N/A");
-        user.setProfile_image("");
-      } else if (json_metadataObj instanceof JSONObject) {
-        //profile
-        if (((JSONObject) json_metadataObj).has("profile")) {
-          JSONObject profileObj = ((JSONObject) json_metadataObj).getJSONObject("profile");
-          user.setAbout(profileObj.optString("about", "(About) - N/A"));
-          user.setProfile_image(profileObj.optString("profile_image", ""));
-          user.setLocation(profileObj.optString("location", "(Location) - N/A"));
-          user.setFullname(profileObj.optString("name", "(Full name) - N/A"));
-          user.setCover_image(profileObj.optString("cover_image", ""));
+      JSONObject json_metadataObj = getJsonMetadataObject(userObj.get("json_metadata"));
+      if (json_metadataObj != null && (json_metadataObj).has("profile")) {
+        JSONObject profileObj = (json_metadataObj).getJSONObject("profile");
+        user.setAbout(profileObj.optString("about", ""));
+        user.setProfile_image(profileObj.optString("profile_image", ""));
+        user.setLocation(profileObj.optString("location", ""));
+        user.setFullname(profileObj.optString("name", ""));
+        user.setCover_image(profileObj.optString("cover_image", ""));
         } else {
-          user.setAbout("(About) - N/A");
-          user.setCover_image("");
-          user.setFullname("(Full name) - N/A");
-          user.setLocation("(Location) - N/A");
-          user.setProfile_image("");
-        }
+        user.setAbout("");
+        user.setCover_image("");
+        user.setFullname("");
+        user.setLocation("");
+        user.setProfile_image("");
       }
     }
     catch (final JSONException e) {
@@ -91,6 +84,18 @@ public class UserProfileFetcher {
           userProfileFetchCallback.onUserFetched(user);
         }
       });
+    }
+  }
+
+  private JSONObject getJsonMetadataObject(Object obj) throws JSONException {
+    if (obj instanceof String) {
+      if (((String) obj).length() == 0) {
+        return null;
+      } else {
+        return new JSONObject((String) obj);
+      }
+    } else {
+      return (JSONObject) obj;
     }
   }
 

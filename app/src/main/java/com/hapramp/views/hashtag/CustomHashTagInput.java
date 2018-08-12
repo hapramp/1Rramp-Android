@@ -2,11 +2,13 @@ package com.hapramp.views.hashtag;
 
 import android.animation.LayoutTransition;
 import android.content.Context;
+import android.hardware.camera2.TotalCaptureResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,8 @@ import com.hapramp.R;
 import com.hapramp.views.post.WrapViewGroup;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -85,6 +89,14 @@ public class CustomHashTagInput extends FrameLayout implements ChipView.RemoveTa
   }
 
   private void addChip(String text) {
+    Pattern pattern = Pattern.compile("([a-z\\-]+\\b)(?!;)");
+    Matcher matcher = pattern.matcher(text);
+    while (matcher.find()) {
+      text = matcher.group(1);
+    }
+    if (text.length() == 0) {
+      return;
+    }
     int size = hashTags.size();
     hashTags.add(text);
     ChipView chipView = new ChipView(context);

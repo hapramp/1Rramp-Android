@@ -3,7 +3,6 @@ package com.hapramp.ui.activity;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -14,7 +13,6 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.widget.Space;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
@@ -273,13 +271,13 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
       @Override
       public void onChanged(@Nullable List<SteemCommentModel> steemCommentModels) {
         commentLoadingProgressBar.setVisibility(View.GONE);
-        setCommentCount(steemCommentModels.size());
         addAllCommentsToView(steemCommentModels);
       }
     });
     ImageHandler.loadCircularImage(this, feedOwnerPic,
       String.format(getResources().getString(R.string.steem_user_profile_pic_format), post.getAuthor()));
     feedOwnerTitle.setText(post.getAuthor());
+    setCommentCount(post.getChildren());
     feedOwnerSubtitle.setText(
       String.format(getResources().getString(R.string.post_subtitle_format),
         MomentsUtils.getFormattedTime(post.getCreatedAt())));
@@ -601,37 +599,5 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
       new ViewGroup.LayoutParams(
         ViewGroup.LayoutParams.WRAP_CONTENT,
         ViewGroup.LayoutParams.WRAP_CONTENT));
-  }
-
-  private void showPopUp(View v, final int post_id, final int position) {
-    final PopupMenu popupMenu = new PopupMenu(this, v);
-    popupMenu.getMenuInflater().inflate(R.menu.post_item_menu, popupMenu.getMenu());
-    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-      @Override
-      public boolean onMenuItemClick(MenuItem item) {
-        showAlertDialogForDelete(post_id, position);
-        return true;
-      }
-    });
-    popupMenu.show();
-  }
-
-  private void showAlertDialogForDelete(final int post_id, final int position) {
-    new AlertDialog.Builder(this)
-      .setTitle("Post Delete")
-      .setMessage("Delete This Post")
-      .setPositiveButton("Delete",
-        new DialogInterface.OnClickListener() {
-          @Override
-          public void onClick(DialogInterface dialog, int which) {
-            requestPostDelete(post_id, position);
-          }
-        })
-      .setNegativeButton("Cancel",
-        null)
-      .show();
-  }
-
-  private void requestPostDelete(int post_id, int pos) {
   }
 }

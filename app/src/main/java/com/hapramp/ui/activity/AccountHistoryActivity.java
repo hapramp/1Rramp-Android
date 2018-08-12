@@ -52,7 +52,7 @@ public class AccountHistoryActivity extends AppCompatActivity {
     init();
     if (getIntent().getExtras() != null) {
       mUsername = getIntent().getExtras().getString(EXTRA_USERNAME, HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
-      toolbarTitle.setText(String.format("%s`s Account History", mUsername));
+      toolbarTitle.setText(String.format("%s's Account History", mUsername));
       fetchHistory(mUsername);
     }
   }
