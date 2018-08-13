@@ -211,7 +211,7 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
 
   private ArrayList<String> getHashTagsFromBody(String body) {
     ArrayList<String> tags = new ArrayList<>();
-    Pattern pattern = Pattern.compile("(\\#[a-z\\-]+\\b)(?!;)");
+    Pattern pattern = Pattern.compile("#([a-z\\-]+\\b)(?!;)");
     Matcher matcher = pattern.matcher(body);
     while (matcher.find()) {
       tags.add(matcher.group(1));

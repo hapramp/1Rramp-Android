@@ -33,7 +33,6 @@ public class HaprampPreferenceManager {
   }
 
   public void clearPreferences() {
-    CachePreference.getInstance().clearCachePreferences();
     editor.clear();
     editor.apply();
     setOnBoardingVisited();
