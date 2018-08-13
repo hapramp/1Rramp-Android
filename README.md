@@ -1,4 +1,5 @@
-# HapRamp Android App [![Build Status](https://travis-ci.org/hapramp/Hapramp-Android.svg?branch=master)](https://travis-ci.org/hapramp/Hapramp-Android)
+# HapRamp Android App [![Build Status](https://travis-ci.org/hapramp/Hapramp-Android.svg?branch=master)](https://travis-ci.org/hapramp/Hapramp-Android) [![Discord](https://img.shields.io/discord/456730715598618624.svg)](https://discord.gg/r9vwcHe)
+
 
 HapRamp is a Steem Blockchain based social media for the creative communities. This is the Android application for users to use the platform.
 
