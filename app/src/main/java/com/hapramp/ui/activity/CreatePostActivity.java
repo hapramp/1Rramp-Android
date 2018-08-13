@@ -34,13 +34,12 @@ import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageFilePathReader;
+import com.hapramp.utils.RegexUtils;
 import com.hapramp.views.post.PostCreateComponent;
 import com.hapramp.youtube.YoutubeVideoSelectorActivity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -231,13 +230,7 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
   }
 
   private ArrayList<String> getHashTagsFromBody(String body) {
-    ArrayList<String> tags = new ArrayList<>();
-    Pattern pattern = Pattern.compile("#([a-z\\-]+\\b)(?!;)");
-    Matcher matcher = pattern.matcher(body);
-    while (matcher.find()) {
-      tags.add(matcher.group(1));
-    }
-    return tags;
+    return RegexUtils.getHashTags(body);
   }
 
   private void sendPostToSteemBlockChain() {

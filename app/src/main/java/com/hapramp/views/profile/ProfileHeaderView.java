@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.gson.Gson;
 import com.hapramp.R;
@@ -328,8 +329,11 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   private void checkCacheAndLoad() {
     String json = HaprampPreferenceManager.getInstance().getUserProfile(mUsername);
     if (json.length() > 0) {
+      Log.d("ProfileHeaderView", "cached json: " + json);
       User steemUser = new Gson().fromJson(json, User.class);
-      bind(steemUser);
+      if (steemUser.getUsername() != null) {
+        bind(steemUser);
+      }
     }
   }
 
@@ -457,6 +461,9 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   }
 
   private void cacheUserProfile(User user) {
+    if (user.getUsername() == null) {
+      Crashlytics.log(mUsername + ":Incorrect profile Info is cached:" + user.toString());
+    }
     String json = new Gson().toJson(user);
     HaprampPreferenceManager.getInstance().saveUserProfile(mUsername, json);
     bind(user);
