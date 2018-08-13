@@ -37,13 +37,11 @@ public class CommunitySelectionView extends FrameLayout {
   }
 
   private void init(Context context) {
-
     this.mContext = context;
     View view = LayoutInflater.from(mContext).inflate(R.layout.community_view_container, this);
     parentView = view.findViewById(R.id.viewWrapper);
     selectedCommunityIds = new ArrayList<>();
     ButterKnife.bind(this, view);
-
   }
 
   public CommunitySelectionView(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -57,57 +55,51 @@ public class CommunitySelectionView extends FrameLayout {
   }
 
   public void setCommunityList(List<CommunityModel> communityList) {
-
     this.mCommunityList = communityList;
     addViews();
-
   }
 
-  private void addViews() {
-
-    for (int i = 0; i < mCommunityList.size(); i++) {
-      //        Log.d("View","Addding "+mCommunityList.get(i).getmName());
-
-      final CommunityItemView view = new CommunityItemView(mContext);
-      // view.setCommunityItemTitle(String.valueOf(mCommunityList.get(i).getmName()));
-      view.setCommunityDetails(mCommunityList.get(i));
-      // set selection
-      view.setSelection((selectedCommunityIds.indexOf(mCommunityList.get(i).getmId()) > -1));
-
-      view.setOnClickListener(new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          // try to get the index of current clicked view in selection list, if its index >-1 then it is already selected
-          int index = selectedCommunityIds.indexOf(view.getCommunityId());
-          if (index == -1) {
-            // select it
-            view.setSelection(true);
-
-            selectedCommunityIds.add(view.getCommunityId());
-
-          } else {
-            // de-select it
-            if (selectedCommunityIds.size() < 2) {
-              // warn for selecting atleast one
-              Toast.makeText(mContext, "Atleast One Skill Should be There", Toast.LENGTH_LONG).show();
-              return;
-            }
-            view.setSelection(false);
-            selectedCommunityIds.remove(index);
-
-          }
-        }
-      });
-
-      parentView.addView(view, i,
-        new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-    }
-
-  }
-
+  private CommunitySelectionListener communitySelectionListener;
   public List<Integer> getSelectionList() {
     return selectedCommunityIds;
   }
 
+  private void addViews() {
+    for (int i = 0; i < mCommunityList.size(); i++) {
+      final CommunityItemView view = new CommunityItemView(mContext);
+      view.setCommunityDetails(mCommunityList.get(i));
+      view.setSelection((selectedCommunityIds.indexOf(mCommunityList.get(i).getmId()) > -1));
+      view.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          int index = selectedCommunityIds.indexOf(view.getCommunityId());
+          if (index == -1) {
+            view.setSelection(true);
+            selectedCommunityIds.add(view.getCommunityId());
+          } else {
+            if (selectedCommunityIds.size() < 2) {
+              Toast.makeText(mContext, "You must have atleast one community", Toast.LENGTH_LONG).show();
+              return;
+            }
+            view.setSelection(false);
+            selectedCommunityIds.remove(index);
+          }
+          if (communitySelectionListener != null) {
+            communitySelectionListener.onCommunitySelectionChanged(selectedCommunityIds);
+          }
+        }
+      });
+      parentView.addView(view, i,
+        new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+    }
+
+  }
+
+  public void setCommunitySelectionListener(CommunitySelectionListener communitySelectionListener) {
+    this.communitySelectionListener = communitySelectionListener;
+  }
+
+  public interface CommunitySelectionListener {
+    void onCommunitySelectionChanged(List<Integer> selections);
+  }
 }

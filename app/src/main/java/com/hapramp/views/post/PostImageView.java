@@ -1,7 +1,6 @@
 package com.hapramp.views.post;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -143,43 +142,51 @@ public class PostImageView extends FrameLayout {
     invalidateView();
     mainView.setVisibility(VISIBLE);
     ImageHandler.load(mContext,image,filePath);
-
     informationTv.setVisibility(VISIBLE);
     informationTv.setText("Processing...");
     startUploading(filePath);
   }
 
   private void startUploading(String filePath) {
-    File file = new File(filePath);
-    final RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
-    MultipartBody.Part body = MultipartBody.Part.createFormData("upload", file.getName(), requestFile);
-    RetrofitServiceGenerator.getService().uploadFile(body).enqueue(new Callback<FileUploadReponse>() {
-      @Override
-      public void onResponse(Call<FileUploadReponse> call, Response<FileUploadReponse> response) {
-        if (response.isSuccessful()) {
-          downloadUrl = response.body().getDownloadUrl();
-          progressBar.setVisibility(GONE);
-          informationTv.setText("Uploaded");
-          if (imageActionListener != null) {
-            imageActionListener.onImageUploaded(downloadUrl);
-          }
-          showAndhideActionContainer();
-        } else {
-          Log.d("ImageUpload", response.errorBody().toString());
-          informationTv.setText("Error");
-          downloadUrl = null;
-          progressBar.setVisibility(GONE);
-        }
-      }
+    try {
+      File file = new File(filePath);
 
-      @Override
-      public void onFailure(Call<FileUploadReponse> call, Throwable t) {
-        Log.d("ImageUpload", t.toString());
-        informationTv.setText("Error");
-        progressBar.setVisibility(GONE);
-        downloadUrl = null;
-      }
-    });
+      Log.d("FilePath", filePath);
+      final RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
+      MultipartBody.Part body = MultipartBody.Part.createFormData("upload", file.getName(), requestFile);
+      RetrofitServiceGenerator.getService().uploadFile(body).enqueue(new Callback<FileUploadReponse>() {
+        @Override
+        public void onResponse(Call<FileUploadReponse> call, Response<FileUploadReponse> response) {
+          if (response.isSuccessful()) {
+            downloadUrl = response.body().getDownloadUrl();
+            progressBar.setVisibility(GONE);
+            informationTv.setText("Uploaded");
+            if (imageActionListener != null) {
+              imageActionListener.onImageUploaded(downloadUrl);
+            }
+            showAndhideActionContainer();
+          } else {
+            Log.d("ImageUpload", response.errorBody().toString());
+            informationTv.setText("Error");
+            downloadUrl = null;
+            progressBar.setVisibility(GONE);
+          }
+        }
+
+        @Override
+        public void onFailure(Call<FileUploadReponse> call, Throwable t) {
+          Log.d("ImageUpload", t.toString());
+          informationTv.setText("Error");
+          progressBar.setVisibility(GONE);
+          downloadUrl = null;
+        }
+      });
+    }
+    catch (Exception e) {
+      informationTv.setText("Failed to load image.");
+      progressBar.setVisibility(GONE);
+      downloadUrl = null;
+    }
   }
 
   public String getDownloadUrl() {
@@ -192,7 +199,6 @@ public class PostImageView extends FrameLayout {
 
   public interface ImageActionListener {
     void onImageRemoved();
-
     void onImageUploaded(String downloadUrl);
   }
 }

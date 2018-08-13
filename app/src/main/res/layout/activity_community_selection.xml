@@ -10,7 +10,7 @@
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:padding="8dp"
-        android:text="PICK YOUR SKILLS"
+        android:text="PICK YOUR COMMUNITIES"
         android:textColor="@color/Black54"
         android:textSize="14sp"
         android:textStyle="bold" />
@@ -31,6 +31,13 @@
         android:layout_below="@+id/action_bar_title"
         android:background="@drawable/toolbar_shadow" />
 
+    <ProgressBar
+        android:layout_below="@+id/toolbar_drop_shadow"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/communityLoadingProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <TextView
         android:id="@+id/communityContinueButton"
         android:layout_width="wrap_content"
@@ -43,6 +50,7 @@
         android:background="@drawable/filled_btn_bg"
         android:clickable="true"
         android:elevation="2dp"
+        android:enabled="false"
         android:focusable="true"
         android:paddingBottom="8dp"
         android:paddingLeft="48dp"
