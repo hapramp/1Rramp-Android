@@ -146,7 +146,7 @@ public class LoginActivity extends AppCompatActivity {
             navigateToCommunityPage();
           }
         } else {
-          showToast("Failed to get your communities. Please try loggin in again!");
+          showToast("Failed to get your communities. Try again!");
         }
       }
 

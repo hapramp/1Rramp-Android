@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
@@ -34,7 +35,7 @@ import butterknife.ButterKnife;
  *  After which decisions are taken.
  * */
 
-public class CommunitySelectionActivity extends BaseActivity implements CommunitySelectionPageCallback {
+public class CommunitySelectionActivity extends BaseActivity implements CommunitySelectionPageCallback, CommunitySelectionView.CommunitySelectionListener {
   public static final String TAG = CommunitySelectionActivity.class.getSimpleName();
   @BindView(R.id.action_bar_title)
   TextView actionBarTitle;
@@ -44,6 +45,8 @@ public class CommunitySelectionActivity extends BaseActivity implements Communit
   FrameLayout toolbarDropShadow;
   @BindView(R.id.communityContinueButton)
   TextView communityContinueButton;
+  @BindView(R.id.communityLoadingProgressBar)
+  ProgressBar communityLoadingProgressBar;
   private CommunitySelectionPageViewModel communitySelectionPageViewModel;
 
   @Override
@@ -66,11 +69,11 @@ public class CommunitySelectionActivity extends BaseActivity implements Communit
       if (cwr != null) {
         if (cwr.getCommunityModels().size() > 0) {
           navigateToHome();
+          return;
         }
       }
-    } else {
-      init();
     }
+    init();
   }
 
   private void navigateToHome() {
@@ -81,14 +84,19 @@ public class CommunitySelectionActivity extends BaseActivity implements Communit
 
   private void init() {
     Crashlytics.setString(CrashReporterKeys.UI_ACTION, "community selection init");
+    communitySelectionView.setCommunitySelectionListener(this);
     communitySelectionPageViewModel = ViewModelProviders.of(this).get(CommunitySelectionPageViewModel.class);
-    communitySelectionPageViewModel.getCommunities(this).observe(this, new Observer<List<CommunityModel>>() {
-      @Override
-      public void onChanged(@Nullable List<CommunityModel> communityModels) {
-        communitySelectionView.setCommunityList(communityModels);
-        HaprampPreferenceManager.getInstance().saveAllCommunityListAsJson(new Gson().toJson(new CommunityListWrapper(communityModels)));
-      }
-    });
+    communitySelectionPageViewModel.getCommunities(this)
+      .observe(this, new Observer<List<CommunityModel>>() {
+        @Override
+        public void onChanged(@Nullable List<CommunityModel> communityModels) {
+          communitySelectionView.setCommunityList(communityModels);
+          if (communityLoadingProgressBar != null) {
+            communityLoadingProgressBar.setVisibility(View.GONE);
+          }
+          HaprampPreferenceManager.getInstance().saveAllCommunityListAsJson(new Gson().toJson(new CommunityListWrapper(communityModels)));
+        }
+      });
     communityContinueButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -115,5 +123,10 @@ public class CommunitySelectionActivity extends BaseActivity implements Communit
   public void onCommunityUpdateFailed() {
     showProgressDialog("", false);
     toast(getString(R.string.failed_to_update_communities));
+  }
+
+  @Override
+  public void onCommunitySelectionChanged(List<Integer> selections) {
+    communityContinueButton.setEnabled(selections.size() > 0);
   }
 }

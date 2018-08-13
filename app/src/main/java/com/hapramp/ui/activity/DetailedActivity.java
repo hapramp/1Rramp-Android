@@ -52,7 +52,7 @@ import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
-import com.hapramp.utils.MarkdownRendererUtils;
+import com.hapramp.utils.RegexUtils;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.ShareUtils;
 import com.hapramp.utils.VoteUtils;
@@ -292,7 +292,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
   }
 
   private void renderMarkdown(String body) {
-    body = MarkdownRendererUtils.getHtmlContent(body);
+    body = RegexUtils.getHtmlContent(body);
     webView.setWebChromeClient(new WebChromeClient());
     webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
     webView.getSettings().setJavaScriptEnabled(true);

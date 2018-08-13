@@ -7,7 +7,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -32,8 +31,8 @@ import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.steem.models.data.Content;
 import com.hapramp.utils.ConnectionUtils;
-import com.hapramp.utils.FilePathUtils;
 import com.hapramp.utils.FontManager;
+import com.hapramp.utils.ImageFilePathReader;
 import com.hapramp.views.editor.LinkInsertDialog;
 import com.hapramp.views.hashtag.CustomHashTagInput;
 import com.hapramp.views.post.PostCategoryView;
@@ -160,13 +159,24 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     title = articleTitleEt.getText().toString().trim();
     generated_permalink = PermlinkGenerator.getPermlink(title);
     tags = (ArrayList<String>) articleCategoryView.getSelectedTags();
-    includeCustomTags(tags);
     body = markDEditor.getMarkdownContent();
-    images = markDEditor.getImageList();
+    images = getImageLinks();
     if (validArticle()) {
       sendPostToSteemBlockChain();
     }
+    includeCustomTags(tags);
   }
+
+  private List<String> getImageLinks() {
+    List<String> images = markDEditor.getImageList();
+    for (int i = 0; i < images.size(); i++) {
+      if (images.get(i) == null) {
+        images.remove(i);
+      }
+    }
+    return images;
+  }
+
 
   private boolean validArticle() {
     if (title.length() > 0) {
@@ -269,14 +279,29 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (requestCode == REQUEST_IMAGE_SELECTOR) {
       if (resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
-        Uri uri = data.getData();
-        String filePath = FilePathUtils.getPath(this, uri);
-        addImage(filePath);
+        handleImageResult(data);
       }
     }
   }
 
+  private void handleImageResult(final Intent intent) {
+    final Handler handler = new Handler();
+    new Thread() {
+      @Override
+      public void run() {
+        final String filePath = ImageFilePathReader.getImageFilePath(CreateArticleActivity.this, intent);
+        handler.post(new Runnable() {
+          @Override
+          public void run() {
+            addImage(filePath);
+          }
+        });
+      }
+    }.start();
+  }
+
   public void addImage(String filePath) {
+    Log.d("ImageFilePath","adding image "+filePath);
     markDEditor.insertImage(filePath);
   }
 

@@ -33,7 +33,6 @@ public class HaprampPreferenceManager {
   }
 
   public void clearPreferences() {
-    CachePreference.getInstance().clearCachePreferences();
     editor.clear();
     editor.apply();
     setOnBoardingVisited();
@@ -93,10 +92,6 @@ public class HaprampPreferenceManager {
     editor.apply();
   }
 
-  public String getPPK() {
-    return preferences.getString("ppk", "");
-  }
-
   public void saveCurrentUserInfoAsJson(String json) {
     editor.putString("c_user", json);
     editor.apply();
@@ -136,15 +131,6 @@ public class HaprampPreferenceManager {
   public void saveUserSelectedCommunitiesAsJson(String json) {
     editor.putString("userSelectedCommunity", json);
     editor.apply();
-  }
-
-  public void setCommentCount(String permlink, int count) {
-    editor.putInt("comment_count_" + permlink, count);
-    editor.apply();
-  }
-
-  public int getCommentCount(String permlink) {
-    return preferences.getInt("comment_count_" + permlink, 0);
   }
 
   public String getUserSelectedCommunityAsJson() {

@@ -1,9 +1,7 @@
 package com.hapramp.steem;
 
 import android.os.Handler;
-
 import com.hapramp.steem.models.user.User;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -46,8 +44,8 @@ public class UserProfileFetcher {
     try {
       JSONObject root = new JSONObject(response);
       JSONObject userObj = root.getJSONObject("user");
-      user.setUsername(userObj.getString("name"));
-      user.setReputation(userObj.getLong("reputation"));
+      user.setUsername(userObj.optString("name"));
+      user.setReputation(userObj.optLong("reputation"));
       user.setPostCount(userObj.optInt("post_count", 0));
       //try getting json_metadata
       JSONObject json_metadataObj = getJsonMetadataObject(userObj.get("json_metadata"));
@@ -65,8 +63,7 @@ public class UserProfileFetcher {
         user.setLocation("");
         user.setProfile_image("");
       }
-    }
-    catch (final JSONException e) {
+    }catch (final JSONException e) {
       if (userProfileFetchCallback != null) {
         mHandler.post(new Runnable() {
           @Override

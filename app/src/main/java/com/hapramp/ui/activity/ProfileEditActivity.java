@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -24,8 +25,8 @@ import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datamodels.response.FileUploadReponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.user.User;
-import com.hapramp.utils.FilePathUtils;
 import com.hapramp.utils.FontManager;
+import com.hapramp.utils.ImageFilePathReader;
 import com.hapramp.utils.ImageHandler;
 
 import java.io.File;
@@ -195,50 +196,79 @@ public class ProfileEditActivity extends AppCompatActivity {
   public void onActivityResult(final int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     if (resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
-      String imagePath = FilePathUtils.getPath(this, data.getData());
       if (requestCode == USER_PROFILE_IMAGE_REQUEST) {
-        ImageHandler.loadCircularImage(this, profileImageView, imagePath);
-        showDpProgress();
-        startUploading(imagePath, new Callback<FileUploadReponse>() {
-          @Override
-          public void onResponse(Call<FileUploadReponse> call, Response<FileUploadReponse> response) {
-            if (response.isSuccessful()) {
-              userProfileImageDownloadUrl = response.body().getDownloadUrl();
-            } else {
-              userProfileImageDownloadUrl = null;
-            }
-            hideDpProgress();
-          }
-
-          @Override
-          public void onFailure(Call<FileUploadReponse> call, Throwable t) {
-            userProfileImageDownloadUrl = null;
-            hideDpProgress();
-          }
-        });
+        handleProfileImageUpload(data);
       } else if (requestCode == USER_COVER_IMAGE_REQUEST) {
-        ImageHandler.load(this, profileCoverImageView, imagePath);
-        showCoverImageProgress();
-        Log.d("ProfileEdit", "path " + imagePath);
-        startUploading(imagePath, new Callback<FileUploadReponse>() {
-          @Override
-          public void onResponse(Call<FileUploadReponse> call, Response<FileUploadReponse> response) {
-            if (response.isSuccessful()) {
-              userCoverImageDownloadUrl = response.body().getDownloadUrl();
-            } else {
-              userCoverImageDownloadUrl = null;
-            }
-            hideCoverImageProgress();
-          }
+        handleCoverImageUpload(data);
+      }
+    }
+  }
 
+  private void handleProfileImageUpload(final Intent intent) {
+    final Handler handler = new Handler();
+    new Thread() {
+      @Override
+      public void run() {
+        final String imagePath = ImageFilePathReader.getImageFilePath(ProfileEditActivity.this, intent);
+        handler.post(new Runnable() {
           @Override
-          public void onFailure(Call<FileUploadReponse> call, Throwable t) {
-            userCoverImageDownloadUrl = null;
-            hideCoverImageProgress();
+          public void run() {
+            ImageHandler.loadCircularImage(ProfileEditActivity.this, profileImageView, imagePath);
+            showDpProgress();
+            startUploading(imagePath, new Callback<FileUploadReponse>() {
+              @Override
+              public void onResponse(Call<FileUploadReponse> call, Response<FileUploadReponse> response) {
+                if (response.isSuccessful()) {
+                  userProfileImageDownloadUrl = response.body().getDownloadUrl();
+                } else {
+                  userProfileImageDownloadUrl = null;
+                }
+                hideDpProgress();
+              }
+              @Override
+              public void onFailure(Call<FileUploadReponse> call, Throwable t) {
+                userProfileImageDownloadUrl = null;
+                hideDpProgress();
+              }
+            });
           }
         });
       }
-    }
+    }.start();
+  }
+
+  private void handleCoverImageUpload(final Intent intent) {
+    final Handler handler = new Handler();
+    new Thread() {
+      @Override
+      public void run() {
+        final String imagePath = ImageFilePathReader.getImageFilePath(ProfileEditActivity.this, intent);
+        handler.post(new Runnable() {
+          @Override
+          public void run() {
+            ImageHandler.load(ProfileEditActivity.this, profileCoverImageView, imagePath);
+            showCoverImageProgress();
+            startUploading(imagePath, new Callback<FileUploadReponse>() {
+              @Override
+              public void onResponse(Call<FileUploadReponse> call, Response<FileUploadReponse> response) {
+                if (response.isSuccessful()) {
+                  userCoverImageDownloadUrl = response.body().getDownloadUrl();
+                } else {
+                  userCoverImageDownloadUrl = null;
+                }
+                hideCoverImageProgress();
+              }
+
+              @Override
+              public void onFailure(Call<FileUploadReponse> call, Throwable t) {
+                userCoverImageDownloadUrl = null;
+                hideCoverImageProgress();
+              }
+            });
+          }
+        });
+      }
+    }.start();
   }
 
   private void showDpProgress() {
