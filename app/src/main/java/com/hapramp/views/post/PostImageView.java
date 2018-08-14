@@ -156,7 +156,7 @@ public class PostImageView extends FrameLayout {
       if (retryCount > MAX_RETRY_COUNT)
         return;
       progressBar.setVisibility(VISIBLE);
-      informationTv.setText("Re-trying to upload image.");
+      informationTv.setText("Retrying image upload...");
       startUploading(filePath);
     }
   }
