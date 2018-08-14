@@ -24,15 +24,14 @@ public class MomentsUtils {
     return dateFormat.format(calendar.getTime());
   }
 
-  public static String getTimeLeft() {
-    long deadline = HaprampPreferenceManager.getInstance().getLastPostCreatedAt() + TIME_DIFF_FOR_CREATING_POST;
+  public static String getTimeLeftInPostCreation() {
+    long deadline = HaprampPreferenceManager.getInstance().nextPostCreationAllowedAt();
     return getFormattedTime(getTimeFromMillis(deadline));
   }
 
   public static String getFormattedTime(String timeStamp) {
     if (timeStamp == null)
       return "unknown";
-
     try {
       SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
       dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
@@ -55,7 +54,7 @@ public class MomentsUtils {
   }
 
   public static boolean isAllowedToCreatePost() {
-    long lastCreatedAt = HaprampPreferenceManager.getInstance().getLastPostCreatedAt();
+    long lastCreatedAt = HaprampPreferenceManager.getInstance().nextPostCreationAllowedAt();
     long now = System.currentTimeMillis();
     return (now - lastCreatedAt) > TIME_DIFF_FOR_CREATING_POST;
   }

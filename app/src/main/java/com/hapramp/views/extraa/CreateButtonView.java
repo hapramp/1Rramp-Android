@@ -72,7 +72,7 @@ public class CreateButtonView extends FrameLayout {
             showFloatingButtons();
           }
         } else {
-          Toast.makeText(mContext, "You can create your item " + MomentsUtils.getTimeLeft(), Toast.LENGTH_LONG).show();
+          Toast.makeText(mContext, "You can create next post " + MomentsUtils.getTimeLeftInPostCreation(), Toast.LENGTH_LONG).show();
         }
       }
     });

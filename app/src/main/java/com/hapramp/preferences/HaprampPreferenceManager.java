@@ -187,14 +187,6 @@ public class HaprampPreferenceManager {
     return preferences.getString("current_user_followings", "");
   }
 
-  public long getLastPostCreatedAt() {
-    return preferences.getLong("last_created_at", 0);
-  }
-
-  public void setLastPostCreatedAt(long timeMillis) {
-    editor.putLong("last_created_at", timeMillis);
-    editor.apply();
-  }
 
   public void saveCurrentUserFollowings(ArrayList<String> follower) {
     Set<String> set = new HashSet<String>();
@@ -207,4 +199,13 @@ public class HaprampPreferenceManager {
     return preferences.getStringSet("followings", null);
   }
 
+  public long nextPostCreationAllowedAt() {
+    return preferences.getLong("next_post_creation_allowed_at", 0);
+  }
+
+  public void recordPostCreationTime() {
+    long nextPostCreationStartFrom = System.currentTimeMillis() + 300000;
+    editor.putLong("next_post_creation_allowed_at", nextPostCreationStartFrom);
+    editor.apply();
+  }
 }

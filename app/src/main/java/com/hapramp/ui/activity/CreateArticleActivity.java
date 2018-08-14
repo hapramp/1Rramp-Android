@@ -254,6 +254,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   @Override
   public void onPostCreatedOnSteem() {
     toast("Published");
+    HaprampPreferenceManager.getInstance().recordPostCreationTime();
     closeEditor();
   }
 

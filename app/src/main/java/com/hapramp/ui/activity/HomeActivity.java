@@ -385,7 +385,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   }
 
   private void showExistAlert() {
-
     AlertDialog.Builder builder = new AlertDialog.Builder(this)
       .setTitle("Exit ?")
       .setPositiveButton("YES", new DialogInterface.OnClickListener() {
@@ -395,9 +394,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
         }
       })
       .setNegativeButton("No", null);
-
     builder.show();
-
   }
 
   @Override
