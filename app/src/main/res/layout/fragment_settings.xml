@@ -1,8 +1,9 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="#ffffff"
+    android:orientation="vertical"
     tools:context=".ui.fragments.SettingsFragment">
 
     <TextView
@@ -12,18 +13,44 @@
         android:background="?selectableItemBackground"
         android:clickable="true"
         android:gravity="center"
-        android:text="Share Feedback Or Report Issue"
+        android:text="Share Feedback Or Report Issues"
+        android:textColor="@color/Black87"
         android:textSize="16sp" />
 
-        <TextView
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/Black12" />
+
+    <TextView
             android:id="@+id/logoutBtn"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:layout_below="@+id/feedback_btn"
             android:gravity="center"
             android:text="Logout"
+        android:textColor="@color/Black87"
             android:clickable="true"
             android:background="?selectableItemBackground"
             android:textSize="16sp" />
 
-</RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/Black12" />
+
+    <TextView
+        android:id="@+id/tos"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="?selectableItemBackground"
+        android:clickable="true"
+        android:gravity="center"
+        android:text="Terms of service"
+        android:textColor="@color/Black87"
+        android:textSize="16sp" />
+
+</LinearLayout>

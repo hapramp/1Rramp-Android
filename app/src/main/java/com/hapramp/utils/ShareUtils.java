@@ -37,7 +37,7 @@ public class ShareUtils {
     stringBuilder.append("...\n");
     stringBuilder.append("https://alpha.hapramp.com/");
     stringBuilder.append("@").append(username).append("/").append(permlink);
-    stringBuilder.append("\n\nHapRamp, The social media platform for creative artists");
+    stringBuilder.append("\n\n1ramp, Social media for creators.");
     return stringBuilder.toString();
   }
 

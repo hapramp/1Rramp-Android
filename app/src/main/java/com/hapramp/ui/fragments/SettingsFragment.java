@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -30,6 +31,8 @@ public class SettingsFragment extends Fragment {
   TextView feedbackBtn;
   @BindView(R.id.logoutBtn)
   TextView logoutBtn;
+  @BindView(R.id.tos)
+  TextView tos;
   private Context mContext;
 
   public SettingsFragment() {
@@ -67,10 +70,20 @@ public class SettingsFragment extends Fragment {
         shareFeedbackOrReportIssue();
       }
     });
+    tos.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        openTermsPage();
+      }
+    });
+  }
+
+  private void openTermsPage() {
+    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.1ramp.io/terms.html"));
+    startActivity(browserIntent);
   }
 
   private void showAlertDialogForLogout() {
-
     new AlertDialog.Builder(mContext)
       .setTitle("Logout")
       .setMessage("Do you want to Logout ? ")
@@ -95,11 +108,10 @@ public class SettingsFragment extends Fragment {
 
   private void shareFeedbackOrReportIssue() {
     Intent intent = new Intent(Intent.ACTION_SEND);
-    String[] recipients = {"hi@hapramp.com"};
+    String[] recipients = {"feedback@1ramp.io"};
     intent.putExtra(Intent.EXTRA_EMAIL, recipients);
-    intent.putExtra(Intent.EXTRA_SUBJECT, "[Issue/Feedback] Regarding Hapramp Android App.");
+    intent.putExtra(Intent.EXTRA_SUBJECT, "[Issue/Feedback] Regarding 1ramp Android App.");
     intent.putExtra(Intent.EXTRA_TEXT, "");
-    intent.putExtra(Intent.EXTRA_BCC, "ankit@hapramp.com");
     intent.setType("text/html");
     intent.setPackage("com.google.android.gm");
     startActivity(Intent.createChooser(intent, "Send mail"));
