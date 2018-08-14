@@ -1,6 +1,7 @@
 package com.hapramp.api;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -24,7 +25,10 @@ public class HaprampApiClient {
     HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
     logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-    OkHttpClient client = new OkHttpClient.Builder()
+    OkHttpClient client = new OkHttpClient
+      .Builder()
+      .connectTimeout(5, TimeUnit.MINUTES)
+      .readTimeout(5, TimeUnit.MINUTES)
       .addInterceptor(new Interceptor() {
         @Override
         public Response intercept(Chain chain) throws IOException {

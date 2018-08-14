@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datamodels.response.FileUploadReponse;
@@ -38,7 +39,6 @@ import retrofit2.Response;
  */
 
 public class PostImageView extends FrameLayout {
-
   @BindView(R.id.image)
   ImageView image;
   @BindView(R.id.informationTv)
@@ -53,6 +53,9 @@ public class PostImageView extends FrameLayout {
   private String downloadUrl;
   private ImageActionListener imageActionListener;
   private Context mContext;
+  private final int MAX_RETRY_COUNT = 5;
+  private int retryCount = 0;
+
 
   public PostImageView(@NonNull Context context) {
     super(context);
@@ -147,10 +150,20 @@ public class PostImageView extends FrameLayout {
     startUploading(filePath);
   }
 
-  private void startUploading(String filePath) {
+  private void retryUpload(String filePath) {
+    if (informationTv != null) {
+      retryCount++;
+      if (retryCount > MAX_RETRY_COUNT)
+        return;
+      progressBar.setVisibility(VISIBLE);
+      informationTv.setText("Re-trying to upload image.");
+      startUploading(filePath);
+    }
+  }
+
+  private void startUploading(final String filePath) {
     try {
-      File file = new File(filePath);
-      Log.d("FilePath", filePath);
+      final File file = new File(filePath);
       final RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
       MultipartBody.Part body = MultipartBody.Part.createFormData("upload", file.getName(), requestFile);
       RetrofitServiceGenerator.getService().uploadFile(body).enqueue(new Callback<FileUploadReponse>() {
@@ -166,23 +179,26 @@ public class PostImageView extends FrameLayout {
             showAndhideActionContainer();
           } else {
             Log.d("ImageUpload", response.errorBody().toString());
-            informationTv.setText("Error");
+            Crashlytics.log(response.errorBody().toString());
             downloadUrl = null;
             progressBar.setVisibility(GONE);
+            retryUpload(filePath);
           }
         }
 
         @Override
         public void onFailure(Call<FileUploadReponse> call, Throwable t) {
           Log.d("ImageUpload", t.toString());
-          informationTv.setText("Error");
+          Crashlytics.logException(t);
           progressBar.setVisibility(GONE);
           downloadUrl = null;
+          retryUpload(filePath);
         }
       });
     }
     catch (Exception e) {
       informationTv.setText("Failed to load image.");
+      Crashlytics.logException(e);
       progressBar.setVisibility(GONE);
       downloadUrl = null;
     }
