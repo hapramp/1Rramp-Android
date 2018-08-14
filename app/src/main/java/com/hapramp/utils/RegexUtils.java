@@ -52,14 +52,4 @@ public class RegexUtils {
   private static String replaceMarkdownLinks(String body) {
     return body.replaceAll("\\[(.*?)\\]\\((.*?)\\)", "<a href=\"$2\">$1</a>");
   }
-
-  public static ArrayList<String> getHashTags(String body) {
-    ArrayList<String> tags = new ArrayList<>();
-    Pattern pattern = Pattern.compile("(^| |\\n|>)#([a-z\\-]+\\b)(?!;)");
-    Matcher matcher = pattern.matcher(body);
-    while (matcher.find()) {
-      tags.add(matcher.group(2));
-    }
-    return tags;
-  }
 }

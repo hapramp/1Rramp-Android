@@ -33,6 +33,7 @@ import com.hapramp.steem.PostConfirmationModel;
 import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FontManager;
+import com.hapramp.utils.HashTagUtils;
 import com.hapramp.utils.ImageFilePathReader;
 import com.hapramp.utils.RegexUtils;
 import com.hapramp.views.post.PostCreateComponent;
@@ -230,7 +231,7 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
   }
 
   private ArrayList<String> getHashTagsFromBody(String body) {
-    return RegexUtils.getHashTags(body);
+    return HashTagUtils.getHashTags(body);
   }
 
   private void sendPostToSteemBlockChain() {
