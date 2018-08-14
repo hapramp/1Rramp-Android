@@ -32,7 +32,6 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.models.Feed;
-import com.hapramp.ui.adapters.CategoryRecyclerAdapter;
 import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.utils.ShadowUtils;
 import com.hapramp.views.CommunityFilterView;

@@ -11,16 +11,11 @@ public class Splash extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    testRPC();
     if (HaprampPreferenceManager.getInstance().isOnBoardingDone()) {
       navigateToLogin();
     } else {
       navigateToOnBoarding();
     }
-  }
-
-  public void testRPC() {
-
   }
 
   private void navigateToLogin() {

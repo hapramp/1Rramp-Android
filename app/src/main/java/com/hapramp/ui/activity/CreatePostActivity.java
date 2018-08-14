@@ -24,18 +24,15 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
-import com.hapramp.api.RetrofitServiceGenerator;
-import com.hapramp.datamodels.response.ConfirmationResponse;
 import com.hapramp.interfaces.PostCreateCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.PermlinkGenerator;
-import com.hapramp.steem.PostConfirmationModel;
 import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.HashTagUtils;
 import com.hapramp.utils.ImageFilePathReader;
-import com.hapramp.utils.RegexUtils;
+import com.hapramp.utils.MomentsUtils;
 import com.hapramp.views.post.PostCreateComponent;
 import com.hapramp.youtube.YoutubeVideoSelectorActivity;
 
@@ -44,9 +41,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class CreatePostActivity extends AppCompatActivity implements PostCreateCallback, SteemPostCreator.SteemPostCreatorCallback {
   private static final int REQUEST_IMAGE_SELECTOR = 101;
@@ -331,32 +325,10 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
     postCreated();
   }
 
-  private void confirmServerForPostCreation() {
-    showPublishingProgressDialog(true, "Sending Confirmation to Server...");
-    RetrofitServiceGenerator.getService()
-      .sendPostCreationConfirmation(new PostConfirmationModel(permlink_with_username))
-      .enqueue(new Callback<ConfirmationResponse>() {
-        @Override
-        public void onResponse(Call<ConfirmationResponse> call, Response<ConfirmationResponse> response) {
-          if (response.isSuccessful()) {
-            postCreated();
-          } else {
-            toast("Failed to Confirm Server!");
-            showPublishingProgressDialog(false, "");
-          }
-        }
-
-        @Override
-        public void onFailure(Call<ConfirmationResponse> call, Throwable t) {
-          toast("Something went wrong (" + t.toString() + ")");
-          showPublishingProgressDialog(false, "");
-        }
-      });
-  }
-
   private void postCreated() {
     showPublishingProgressDialog(false, "");
     AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_POST);
+    HaprampPreferenceManager.getInstance().setLastPostCreatedAt(MomentsUtils.getCurrentTime());
     new Handler().postDelayed(new Runnable() {
       @Override
       public void run() {

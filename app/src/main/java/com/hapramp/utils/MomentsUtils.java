@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 
 /**
@@ -24,15 +25,14 @@ public class MomentsUtils {
     return dateFormat.format(calendar.getTime());
   }
 
-  public static String getTimeLeft() {
-    long deadline = HaprampPreferenceManager.getInstance().getLastPostCreatedAt() + TIME_DIFF_FOR_CREATING_POST;
+  public static String getTimeLeftInPostCreation() {
+    long deadline = HaprampPreferenceManager.getInstance().nextPostCreationAllowedAt();
     return getFormattedTime(getTimeFromMillis(deadline));
   }
 
   public static String getFormattedTime(String timeStamp) {
     if (timeStamp == null)
       return "unknown";
-
     try {
       SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
       dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
@@ -46,7 +46,7 @@ public class MomentsUtils {
     return "";
   }
 
-  private static String getTimeFromMillis(long millisTime) {
+  public static String getTimeFromMillis(long millisTime) {
     DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     formatter.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
     Calendar calendar = Calendar.getInstance();
@@ -54,10 +54,24 @@ public class MomentsUtils {
     return formatter.format(calendar.getTime());
   }
 
-  public static boolean isAllowedToCreatePost() {
-    long lastCreatedAt = HaprampPreferenceManager.getInstance().getLastPostCreatedAt();
-    long now = System.currentTimeMillis();
-    return (now - lastCreatedAt) > TIME_DIFF_FOR_CREATING_POST;
+  public static long getMillisFromTime(String time) {
+    try {
+      SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+      formatter.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
+      Date date = formatter.parse(time);
+      return date.getTime();
+    }
+    catch (ParseException e) {
+      e.printStackTrace();
+    }
+    return System.currentTimeMillis();
   }
+
+  public static boolean isAllowedToCreatePost() {
+    long nextPostCreationAllowedAt = HaprampPreferenceManager.getInstance().nextPostCreationAllowedAt();
+    long now = System.currentTimeMillis();
+    return (now - nextPostCreationAllowedAt) > 0;
+  }
+
 
 }

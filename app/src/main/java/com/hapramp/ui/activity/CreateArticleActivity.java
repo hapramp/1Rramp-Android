@@ -33,6 +33,7 @@ import com.hapramp.steem.models.data.Content;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageFilePathReader;
+import com.hapramp.utils.MomentsUtils;
 import com.hapramp.views.editor.LinkInsertDialog;
 import com.hapramp.views.hashtag.CustomHashTagInput;
 import com.hapramp.views.post.PostCategoryView;
@@ -254,6 +255,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   @Override
   public void onPostCreatedOnSteem() {
     toast("Published");
+    HaprampPreferenceManager.getInstance().setLastPostCreatedAt(MomentsUtils.getCurrentTime());
     closeEditor();
   }
 
