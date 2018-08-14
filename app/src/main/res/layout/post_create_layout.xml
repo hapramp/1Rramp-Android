@@ -194,6 +194,22 @@
             android:textSize="16sp" />
 
         <RelativeLayout
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:id="@+id/hashtags_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/inline_hashtags"
+                android:textColor="@color/colorAccent"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/inline_community_selector_container"
             android:layout_width="wrap_content"
             android:layout_height="216dp"

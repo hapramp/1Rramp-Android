@@ -1,14 +1,15 @@
 package com.hapramp.views.post;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.Space;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -24,6 +25,7 @@ import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
 import com.hapramp.steem.models.user.User;
+import com.hapramp.utils.HashTagUtils;
 import com.hapramp.utils.ImageHandler;
 
 import java.util.ArrayList;
@@ -80,6 +82,10 @@ public class PostCreateComponent extends FrameLayout implements PostCategoryView
   PostCategoryView inlinePostCategoryView;
   @BindView(R.id.inline_community_selector_container)
   RelativeLayout inlineCommunitySelectorContainer;
+  @BindView(R.id.inline_hashtags)
+  TextView inlineHashtags;
+  @BindView(R.id.hashtags_container)
+  RelativeLayout hashtagsContainer;
   private Context mContext;
   private String youtubeId = null;
   private boolean mediaSelected = false;
@@ -100,6 +106,7 @@ public class PostCreateComponent extends FrameLayout implements PostCategoryView
     String pic_url = steemUser.getProfile_image();
     ImageHandler.loadCircularImage(context, feedOwnerPic, pic_url);
     feedOwnerTitle.setText(steemUser.getFullname());
+    attachTextListeners();
     postImageView.setImageActionListener(new PostImageView.ImageActionListener() {
       @Override
       public void onImageRemoved() {
@@ -140,6 +147,34 @@ public class PostCreateComponent extends FrameLayout implements PostCategoryView
         }
       }
     });
+  }
+
+  private void attachTextListeners() {
+    content.addTextChangedListener(new TextWatcher() {
+      @Override
+      public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+      }
+
+      @Override
+      public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        extractHashTagsAndDisplay(charSequence.toString());
+      }
+
+      @Override
+      public void afterTextChanged(Editable editable) {
+
+      }
+    });
+  }
+
+  private void extractHashTagsAndDisplay(String body) {
+    ArrayList<String> tags = HashTagUtils.getHashTags(body);
+    StringBuilder stringBuilder = new StringBuilder();
+    for (int i = 0; i < tags.size(); i++) {
+      stringBuilder.append(" #").append(tags.get(i));
+    }
+    inlineHashtags.setText(stringBuilder.toString());
   }
 
   public PostCreateComponent(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -206,6 +241,7 @@ public class PostCreateComponent extends FrameLayout implements PostCategoryView
     }
     return images;
   }
+
   public String getContent() {
     return content.getText().toString().trim();
   }
