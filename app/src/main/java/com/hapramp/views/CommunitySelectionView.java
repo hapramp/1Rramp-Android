@@ -59,6 +59,14 @@ public class CommunitySelectionView extends FrameLayout {
     addViews();
   }
 
+  public void setCommunityList(List<CommunityModel> communityList, List<CommunityModel> preselectedCommunity) {
+    this.mCommunityList = communityList;
+    for (int i = 0; i < preselectedCommunity.size(); i++) {
+      selectedCommunityIds.add(preselectedCommunity.get(i).getmId());
+    }
+    addViews();
+  }
+
   private CommunitySelectionListener communitySelectionListener;
   public List<Integer> getSelectionList() {
     return selectedCommunityIds;

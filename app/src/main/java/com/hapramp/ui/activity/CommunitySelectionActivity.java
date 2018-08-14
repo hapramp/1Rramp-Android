@@ -37,6 +37,7 @@ import butterknife.ButterKnife;
 
 public class CommunitySelectionActivity extends BaseActivity implements CommunitySelectionPageCallback, CommunitySelectionView.CommunitySelectionListener {
   public static final String TAG = CommunitySelectionActivity.class.getSimpleName();
+  public static final String EXTRA_PRESELECTED_MODE = "preselected_mode";
   @BindView(R.id.action_bar_title)
   TextView actionBarTitle;
   @BindView(R.id.communitySelectionView)
@@ -61,19 +62,26 @@ public class CommunitySelectionActivity extends BaseActivity implements Communit
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_community_selection);
     ButterKnife.bind(this);
-    String cachedCommunity = HaprampPreferenceManager.getInstance().
+    boolean editable = getIntent().getBooleanExtra(EXTRA_PRESELECTED_MODE, false);
+    setMode(editable);
+  }
+
+  private void setMode(boolean editable) {
+    String userSelectedCommunity = HaprampPreferenceManager.getInstance().
       getUserSelectedCommunityAsJson();
-    if (cachedCommunity.length() > 0) {
+    if (userSelectedCommunity.length() > 0) {
       CommunityListWrapper cwr = new Gson().fromJson(HaprampPreferenceManager.getInstance().
         getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
       if (cwr != null) {
         if (cwr.getCommunityModels().size() > 0) {
-          navigateToHome();
-          return;
+          if (!editable) {
+            navigateToHome();
+            return;
+          }
         }
       }
     }
-    init();
+    init(editable);
   }
 
   private void navigateToHome() {
@@ -82,7 +90,7 @@ public class CommunitySelectionActivity extends BaseActivity implements Communit
     finish();
   }
 
-  private void init() {
+  private void init(final boolean editable) {
     Crashlytics.setString(CrashReporterKeys.UI_ACTION, "community selection init");
     communitySelectionView.setCommunitySelectionListener(this);
     communitySelectionPageViewModel = ViewModelProviders.of(this).get(CommunitySelectionPageViewModel.class);
@@ -90,7 +98,13 @@ public class CommunitySelectionActivity extends BaseActivity implements Communit
       .observe(this, new Observer<List<CommunityModel>>() {
         @Override
         public void onChanged(@Nullable List<CommunityModel> communityModels) {
-          communitySelectionView.setCommunityList(communityModels);
+          if (editable) {
+            CommunityListWrapper cwr = new Gson().fromJson(HaprampPreferenceManager.getInstance().
+              getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
+            communitySelectionView.setCommunityList(communityModels, cwr.getCommunityModels());
+          } else {
+            communitySelectionView.setCommunityList(communityModels);
+          }
           if (communityLoadingProgressBar != null) {
             communityLoadingProgressBar.setVisibility(View.GONE);
           }
@@ -100,7 +114,7 @@ public class CommunitySelectionActivity extends BaseActivity implements Communit
     communityContinueButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        showProgressDialog("Updating your communities choice....", true);
+        showProgressDialog("Updating your communities choice...", true);
         communitySelectionPageViewModel.updateServer(communitySelectionView.getSelectionList());
       }
     });
