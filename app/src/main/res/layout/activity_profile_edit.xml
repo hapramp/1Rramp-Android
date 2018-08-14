@@ -162,7 +162,7 @@
                     android:id="@+id/aboutMeEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="usernameTv"
+                    android:hint="Something about you..."
                     android:textColor="@color/Black87"
                     android:textSize="16sp" />
 
@@ -179,7 +179,7 @@
                     android:id="@+id/locationEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="location"
+                    android:hint="Location"
                     android:lineSpacingExtra="2dp"
                     android:textColor="@color/Black87"
                     android:textSize="16sp" />
