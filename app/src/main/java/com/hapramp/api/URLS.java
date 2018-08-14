@@ -7,5 +7,4 @@ package com.hapramp.api;
 public class URLS {
   public static final String BASE_URL = "https://testapi.hapramp.com/api/v2/";
   public static final String STEEM_USER_FEED_URL = "https://steemit.com%s.json";
-  public static final String STEEM_CURATION_FEED_URL = "https://steemit.com/curation/@%s.json";
 }
