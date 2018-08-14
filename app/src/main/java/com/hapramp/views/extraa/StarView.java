@@ -120,17 +120,12 @@ public class StarView extends FrameLayout {
       voteState.myVotePercent,
       voteState.totalVotedUsers,
       voteState.totalVotePercentSum);
-
-    Log.d("VoteTest", "CurrentVote :" + voteState.toString());
-
     setCurrentState(voteState);
     return this;
 
   }
 
   private void setCurrentState(Vote voteState) {
-
-    l("Setting current vote " + voteState.toString());
     this.currentState = voteState;
     setStarIndicatorState(currentState.iHaveVoted);
 
@@ -140,10 +135,6 @@ public class StarView extends FrameLayout {
       ratingBar.setRating(0);
     }
 
-  }
-
-  private void l(String s) {
-    Log.i("STRV", s);
   }
 
   private void setStarIndicatorState(boolean isRated) {
@@ -376,7 +367,6 @@ public class StarView extends FrameLayout {
     ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
       @Override
       public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-        l("New Rating - " + rating);
         if (fromUser) {
           //ratings has changed
           setNewRating(rating);
@@ -405,7 +395,6 @@ public class StarView extends FrameLayout {
   }
 
   private void showRatingProgress(boolean show) {
-    l("Show rating progress " + show);
     if (show) {
       //hide text
       starInfo.setVisibility(GONE);

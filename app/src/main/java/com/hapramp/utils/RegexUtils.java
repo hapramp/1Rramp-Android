@@ -1,10 +1,11 @@
 package com.hapramp.utils;
 
+import android.util.Log;
+
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,6 +16,7 @@ public class RegexUtils {
   private static Matcher matcher;
 
   public static String getHtmlContent(String md) {
+    Log.d("Makrdown",md);
     Parser parser = Parser.builder().build();
     Node document = parser.parse(md);
     HtmlRenderer renderer = HtmlRenderer.builder().build();
@@ -32,7 +34,7 @@ public class RegexUtils {
   private static String replacePlainLinks(String body) {
     pattern = Pattern.compile("[\\n|>| ](http(s|):\\/\\/.*?)[\\n|<| ]");
     matcher = pattern.matcher(body);
-    if (matcher.find()) {
+    while (matcher.find()) {
       body = new StringBuilder(body).replace(matcher.start(1), matcher.end(1),
         "<a href=\"" + matcher.group(1) + "\">" + matcher.group(1) + "</a>").toString();
     }
@@ -42,7 +44,8 @@ public class RegexUtils {
   public static String replacePlainImageLinks(String body) {
     pattern = Pattern.compile("(^|[^\"])((http(s|):.*?)(.png|.jpeg|.PNG|.gif|.jpg)(.*?))( |$|\\n|<)");
     matcher = pattern.matcher(body);
-    if (matcher.find() && matcher.group(5).length() > 0) {
+    while (matcher.find() && matcher.group(5).length() > 0) {
+      Log.d("Markdown",matcher.group(2));
       body = new StringBuilder(body).replace(matcher.start(2), matcher.end(2),
         "<img src=\"" + matcher.group(2) + "\"/>").toString();
     }

@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class RawApiCaller {
   Handler mHandler;
   Context context;
-  public static final String HAPRAMP_API_URL = "https://testapi.hapramp.com/api/v2/curation/tag/";
+  public static final String HAPRAMP_API_URL = URLS.BASE_URL + "curation/tag/";
   private String STEEMIT_API_URL = "https://api.steemit.com";
   private FeedDataCallback dataCallback;
   private UserMetadataCallback userMetadataCallback;
@@ -96,7 +96,7 @@ public class RawApiCaller {
   public void requestUserBlogs(String username) {
     final String rtag = "user_blog_" + username;
     this.currentRequestTag = rtag;
-    String url = "https://testapi.hapramp.com/api/v2/feeds/blog/" + username;
+    String url = URLS.BASE_URL + "feeds/blog/" + username;
     StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
       @Override
       public void onResponse(String response) {
@@ -133,7 +133,7 @@ public class RawApiCaller {
   public void requestUserFeed(String username) {
     final String rtag = "user_feed_" + username;
     this.currentRequestTag = rtag;
-    String url = "https://testapi.hapramp.com/api/v2/feeds/user/" + username;
+    String url = URLS.BASE_URL + "feeds/user/" + username;
     StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
       new Response.Listener<String>() {
         @Override
@@ -237,7 +237,6 @@ public class RawApiCaller {
 
   public interface FeedDataCallback {
     void onDataLoaded(ArrayList<Feed> feeds);
-
     void onDataLoadError();
   }
 }

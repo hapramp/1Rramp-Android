@@ -32,8 +32,6 @@ import xute.cryptocoinview.CoinView;
 import xute.cryptocoinview.Coins;
 
 public class EarningFragment extends Fragment implements Wallet.UserAccountFieldsCallback, UserProfileFetcher.UserProfileFetchCallback {
-
-  //------
   public static final String ARG_USERNAME = "username";
   @BindView(R.id.user_image)
   ImageView userImage;
