@@ -1,6 +1,8 @@
 package com.hapramp.steem;
 
 import android.os.Handler;
+
+import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.user.User;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,6 +49,7 @@ public class UserProfileFetcher {
       user.setUsername(userObj.optString("name"));
       user.setReputation(userObj.optLong("reputation"));
       user.setPostCount(userObj.optInt("post_count", 0));
+      HaprampPreferenceManager.getInstance().setLastPostCreatedAt(userObj.getString("last_root_post"));
       //try getting json_metadata
       JSONObject json_metadataObj = getJsonMetadataObject(userObj.get("json_metadata"));
       if (json_metadataObj != null && (json_metadataObj).has("profile")) {

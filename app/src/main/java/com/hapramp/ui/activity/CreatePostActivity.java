@@ -32,6 +32,7 @@ import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.HashTagUtils;
 import com.hapramp.utils.ImageFilePathReader;
+import com.hapramp.utils.MomentsUtils;
 import com.hapramp.views.post.PostCreateComponent;
 import com.hapramp.youtube.YoutubeVideoSelectorActivity;
 
@@ -327,7 +328,7 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
   private void postCreated() {
     showPublishingProgressDialog(false, "");
     AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_POST);
-    HaprampPreferenceManager.getInstance().recordPostCreationTime();
+    HaprampPreferenceManager.getInstance().setLastPostCreatedAt(MomentsUtils.getCurrentTime());
     new Handler().postDelayed(new Runnable() {
       @Override
       public void run() {
