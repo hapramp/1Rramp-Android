@@ -394,6 +394,7 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   }
 
   private void invalidateFollowButton() {
+    // TODO: 13/08/18 needs to be sure about 
     Set<String> followings = HaprampPreferenceManager.getInstance().getFollowingsSet();
     setFollowState(followings.contains(mUsername));
   }

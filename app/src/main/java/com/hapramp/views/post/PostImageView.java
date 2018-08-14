@@ -150,7 +150,6 @@ public class PostImageView extends FrameLayout {
   private void startUploading(String filePath) {
     try {
       File file = new File(filePath);
-
       Log.d("FilePath", filePath);
       final RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
       MultipartBody.Part body = MultipartBody.Part.createFormData("upload", file.getName(), requestFile);
