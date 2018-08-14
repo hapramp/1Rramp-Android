@@ -301,7 +301,6 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   }
 
   public void addImage(String filePath) {
-    Log.d("ImageFilePath","adding image "+filePath);
     markDEditor.insertImage(filePath);
   }
 
@@ -326,9 +325,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_SELECTOR);
       } else {
         Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        //Intent intent = new Intent();
         intent.setType("image/*");
-        //intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, REQUEST_IMAGE_SELECTOR);
       }
     }
