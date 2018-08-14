@@ -79,6 +79,8 @@ public class ProfileEditActivity extends AppCompatActivity {
   private String about = "";
   private String location = "";
   private String website = "";
+  private String newProfileImageDownloadUrl = "";
+  private String newCoverImageDownloadUrl = "";
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -101,27 +103,27 @@ public class ProfileEditActivity extends AppCompatActivity {
   private void bindUserData(User user) {
     if (user.getFullname() != null) {
       fullname = user.getFullname();
-      nameEt.setText(user.getFullname());
+      nameEt.setText(fullname);
     }
     if (user.getAbout() != null) {
       about = user.getAbout();
-      aboutMeEt.setText(user.getAbout());
+      aboutMeEt.setText(about);
     }
     if (user.getLocation() != null) {
       location = user.getLocation();
-      locationEt.setText(user.getLocation());
+      locationEt.setText(location);
     }
     if (user.getWebsite() != null) {
       website = user.getWebsite();
-      websiteEt.setText(user.getWebsite());
+      websiteEt.setText(website);
     }
     if (user.getProfile_image() != null) {
       userProfileImageDownloadUrl = user.getProfile_image();
-      ImageHandler.loadCircularImage(this, profileImageView, user.getProfile_image());
+      ImageHandler.loadCircularImage(this, profileImageView, userProfileImageDownloadUrl);
     }
     if (user.getCover_image() != null) {
       userCoverImageDownloadUrl = user.getCover_image();
-      ImageHandler.load(this, profileCoverImageView, user.getCover_image());
+      ImageHandler.load(this, profileCoverImageView, userCoverImageDownloadUrl);
     }
   }
 
@@ -172,18 +174,64 @@ public class ProfileEditActivity extends AppCompatActivity {
   }
 
   private String collectDataAndBuildUrl() {
-    fullname = nameEt.getText().toString().trim();
-    about = aboutMeEt.getText().toString().trim();
-    location = locationEt.getText().toString().trim();
-    website = websiteEt.getText().toString().trim();
+    boolean firstPayloadAdded = false;
+    String new_fullname = nameEt.getText().toString().trim();
+    String new_about = aboutMeEt.getText().toString().trim();
+    String new_location = locationEt.getText().toString().trim();
+    String new_website = websiteEt.getText().toString().trim();
     StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append("https://steemconnect.com/sign/profile-update?")
-      .append("name=" + fullname)
-      .append("&about=" + about)
-      .append("&location=" + location)
-      .append("&website=" + website)
-      .append("&profile_image=" + userProfileImageDownloadUrl)
-      .append("&cover_image=" + userCoverImageDownloadUrl);
+    stringBuilder.append("https://steemconnect.com/sign/profile-update?");
+    //detect name change
+    if (!fullname.equals(new_fullname)) {
+      stringBuilder
+        .append("name=")
+        .append(new_fullname);
+      firstPayloadAdded = true;
+    }
+    if (!about.equals(new_about)) {
+      if (firstPayloadAdded) {
+        stringBuilder.append("&");
+      }
+      stringBuilder
+        .append("about=")
+        .append(new_about);
+      firstPayloadAdded = true;
+    }
+    if (!location.equals(new_location)) {
+      if (firstPayloadAdded) {
+        stringBuilder.append("&");
+      }
+      stringBuilder
+        .append("location=")
+        .append(new_location);
+      firstPayloadAdded = true;
+    }
+    if (!website.equals(new_website)) {
+      if (firstPayloadAdded) {
+        stringBuilder.append("&");
+      }
+      stringBuilder
+        .append("website=")
+        .append(new_website);
+      firstPayloadAdded = true;
+    }
+    if (!userProfileImageDownloadUrl.equals(newProfileImageDownloadUrl)) {
+      if (firstPayloadAdded) {
+        stringBuilder.append("&");
+      }
+      stringBuilder
+        .append("profile_image=")
+        .append(newProfileImageDownloadUrl);
+      firstPayloadAdded = true;
+    }
+    if (!userCoverImageDownloadUrl.equals(newCoverImageDownloadUrl)) {
+      if (firstPayloadAdded) {
+        stringBuilder.append("&");
+      }
+      stringBuilder
+        .append("cover_image=")
+        .append(newCoverImageDownloadUrl);
+    }
     return stringBuilder.toString();
   }
 
@@ -219,15 +267,15 @@ public class ProfileEditActivity extends AppCompatActivity {
               @Override
               public void onResponse(Call<FileUploadReponse> call, Response<FileUploadReponse> response) {
                 if (response.isSuccessful()) {
-                  userProfileImageDownloadUrl = response.body().getDownloadUrl();
+                  newProfileImageDownloadUrl = response.body().getDownloadUrl();
                 } else {
-                  userProfileImageDownloadUrl = null;
+                  newProfileImageDownloadUrl = null;
                 }
                 hideDpProgress();
               }
               @Override
               public void onFailure(Call<FileUploadReponse> call, Throwable t) {
-                userProfileImageDownloadUrl = null;
+                newProfileImageDownloadUrl = null;
                 hideDpProgress();
               }
             });
@@ -252,16 +300,16 @@ public class ProfileEditActivity extends AppCompatActivity {
               @Override
               public void onResponse(Call<FileUploadReponse> call, Response<FileUploadReponse> response) {
                 if (response.isSuccessful()) {
-                  userCoverImageDownloadUrl = response.body().getDownloadUrl();
+                  newCoverImageDownloadUrl = response.body().getDownloadUrl();
                 } else {
-                  userCoverImageDownloadUrl = null;
+                  newCoverImageDownloadUrl = null;
                 }
                 hideCoverImageProgress();
               }
 
               @Override
               public void onFailure(Call<FileUploadReponse> call, Throwable t) {
-                userCoverImageDownloadUrl = null;
+                newCoverImageDownloadUrl = null;
                 hideCoverImageProgress();
               }
             });
