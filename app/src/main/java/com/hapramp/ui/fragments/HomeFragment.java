@@ -33,7 +33,6 @@ import com.hapramp.steem.Communities;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.utils.CrashReporterKeys;
-import com.hapramp.utils.RepeatPostCreationUtils;
 import com.hapramp.utils.ShadowUtils;
 import com.hapramp.views.CommunityFilterView;
 import com.hapramp.views.feedlist.FeedListView;
@@ -71,12 +70,6 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
     mHandler = new Handler();
     rawApiCaller = new RawApiCaller(mContext);
     rawApiCaller.setDataCallback(this);
-  }
-
-  @Override
-  public void onResume() {
-    super.onResume();
-    RepeatPostCreationUtils.syncLastPostCreationTime();
   }
 
   private void initCategoryView() {

@@ -35,6 +35,7 @@ import com.hapramp.ui.fragments.ProfileFragment;
 import com.hapramp.ui.fragments.SettingsFragment;
 import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.utils.FontManager;
+import com.hapramp.utils.RepeatPostCreationUtils;
 import com.hapramp.views.extraa.CreateButtonView;
 
 import java.util.List;
@@ -104,6 +105,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_home);
     ButterKnife.bind(this);
+    RepeatPostCreationUtils.syncLastPostCreationTime();
     syncCommunities();
     syncUserCommunities();
     setupToolbar();
@@ -259,7 +261,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   }
 
   private void transactFragment(int fragment) {
-
     switch (fragment) {
       case FRAGMENT_HOME:
         currentVisibleFragment = homeFragment;
