@@ -394,7 +394,7 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   }
 
   private void invalidateFollowButton() {
-    // TODO: 13/08/18 needs to be sure about 
+    // TODO: 13/08/18 needs to be sure about
     Set<String> followings = HaprampPreferenceManager.getInstance().getFollowingsSet();
     setFollowState(followings.contains(mUsername));
   }
@@ -432,8 +432,12 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     mHandler.post(new Runnable() {
       @Override
       public void run() {
-        String followerText = follower > 1 ? follower + " Follwers" : follower + " Follwer";
-        String followingText = followings > 1 ? followings + " Follwings" : followings + " Follwing";
+        String followerText = follower > 1 ?
+          follower + getContext().getString(R.string.profile_follower_count_text) :
+          follower + getContext().getString(R.string.profile_follower_count_text_singular);
+        String followingText = followings > 1 ?
+          followings + getContext().getString(R.string.profile_following_count_text_plural) :
+          followings + getContext().getString(R.string.profile_following_count_text_singular);
         followingsCount.setText(followingText);
         followersCount.setText(followerText);
       }
