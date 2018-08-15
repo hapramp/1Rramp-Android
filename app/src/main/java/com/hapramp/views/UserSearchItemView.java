@@ -101,7 +101,7 @@ public class UserSearchItemView extends FrameLayout implements FollowingSearchMa
   private void confirmUnfollowAction() {
     AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
       .setTitle("Unfollow")
-      .setMessage("Do you want to Unfollow " + getUsername() + " ?")
+      .setMessage("Do you want to Unfollow " + getUsername() + "?")
       .setPositiveButton("UnFollow", new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
@@ -247,10 +247,19 @@ public class UserSearchItemView extends FrameLayout implements FollowingSearchMa
       return;
     }
     Set<String> followings = HaprampPreferenceManager.getInstance().getFollowingsSet();
-    if (followings.contains(mUsername)) {
-      alreadyFollowed();
+    if (followings != null) {
+      if (followUnfollowBtn != null) {
+        followUnfollowBtn.setVisibility(VISIBLE);
+      }
+      if (followings.contains(mUsername)) {
+        alreadyFollowed();
+      } else {
+        notFollowed();
+      }
     } else {
-      notFollowed();
+      if (followUnfollowBtn != null) {
+        followUnfollowBtn.setVisibility(GONE);
+      }
     }
   }
 

@@ -189,7 +189,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 
             @Override
             public void onError(SteemConnectException e) {
-              Log.d("FollowError ", e.toString());
               mHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -226,7 +225,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 
             @Override
             public void onError(SteemConnectException e) {
-              Log.d("UnfollowError ", e.toString());
               mHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -243,11 +241,9 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 
   private void showFollowProgress(boolean show) {
     if (show) {
-      //hide button
       followBtn.setVisibility(GONE);
       followUnfollowProgress.setVisibility(VISIBLE);
     } else {
-      //show button
       followBtn.setVisibility(VISIBLE);
       followUnfollowProgress.setVisibility(GONE);
     }
@@ -270,13 +266,13 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     showFollowProgress(false);
     setFollowState(false);
     syncFollowings();
-    t("You unfollowed " + mUsername);
+    t("You un-followed " + mUsername);
   }
 
   private void userUnfollowFailed() {
     showFollowProgress(false);
     setFollowState(true);
-    t("Failed to unfollow " + mUsername);
+    t("Failed to un-follow " + mUsername);
   }
 
   private void setFollowState(boolean state) {
@@ -329,7 +325,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   private void checkCacheAndLoad() {
     String json = HaprampPreferenceManager.getInstance().getUserProfile(mUsername);
     if (json.length() > 0) {
-      Log.d("ProfileHeaderView", "cached json: " + json);
       User steemUser = new Gson().fromJson(json, User.class);
       if (steemUser.getUsername() != null) {
         bind(steemUser);
@@ -338,7 +333,9 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   }
 
   private void fetchUserInfo() {
-    followingSearchManager.requestFollowings(me);
+    if (!mUsername.equals(me)) {
+      followingSearchManager.requestFollowings(me);
+    }
     followCountManager.requestFollowInfo(mUsername);
     userProfileFetcher.fetchUserProfileFor(mUsername);
   }
@@ -382,7 +379,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     } else {
       followBtn.setVisibility(VISIBLE);
       editBtn.setVisibility(GONE);
-      // set follow or unfollow button
       invalidateFollowButton();
       fetchUserCommunities();
     }
@@ -392,11 +388,16 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     String text = count > 1 ? count + " Posts" : count + " Post";
     postCounts.setText(text);
   }
-
-  private void invalidateFollowButton() {
-    // TODO: 13/08/18 needs to be sure about
-    Set<String> followings = HaprampPreferenceManager.getInstance().getFollowingsSet();
-    setFollowState(followings.contains(mUsername));
+  
+  @Override
+  public void onFollowingResponse(ArrayList<String> followings) {
+    HaprampPreferenceManager.getInstance().saveCurrentUserFollowings(followings);
+    mHandler.post(new Runnable() {
+      @Override
+      public void run() {
+        invalidateFollowButton();
+      }
+    });
   }
 
   private void fetchUserCommunities() {
@@ -449,9 +450,19 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 
   }
 
-  @Override
-  public void onFollowingResponse(ArrayList<String> followings) {
-    HaprampPreferenceManager.getInstance().saveCurrentUserFollowings(followings);
+  private void invalidateFollowButton() {
+    Set<String> followings = HaprampPreferenceManager.getInstance().getFollowingsSet();
+    if (followings != null) {
+      if (followBtn != null) {
+        followBtn.setVisibility(VISIBLE);
+      }
+      setFollowState(followings.contains(mUsername));
+    } else {
+      //hide button
+      if (followBtn != null) {
+        followBtn.setVisibility(GONE);
+      }
+    }
   }
 
   @Override
