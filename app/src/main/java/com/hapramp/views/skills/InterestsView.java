@@ -103,7 +103,6 @@ public class InterestsView extends FrameLayout {
   private void navigateToCommunitSelectionPage() {
     Intent i = new Intent(mContext, CommunitySelectionActivity.class);
     i.putExtra(EXTRA_PRESELECTED_MODE, true);
-    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
     mContext.startActivity(i);
   }
 
