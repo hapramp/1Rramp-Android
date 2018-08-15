@@ -6,6 +6,8 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -41,7 +43,7 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchM
   @BindView(R.id.backBtn)
   TextView backBtn;
   @BindView(R.id.searchInput)
-  EditText searchInput;
+  EditText usernameSearchInputField;
   @BindView(R.id.searchBtn)
   TextView searchBtn;
   @BindView(R.id.action_bar_container)
@@ -91,8 +93,7 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchM
   }
 
   private void attachListener() {
-
-    searchInput.addTextChangedListener(new TextWatcher() {
+    usernameSearchInputField.addTextChangedListener(new TextWatcher() {
       @Override
       public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -100,7 +101,7 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchM
 
       @Override
       public void onTextChanged(CharSequence s, int start, int before, int count) {
-        String searchTerm = searchInput.getText().toString().trim();
+        String searchTerm = usernameSearchInputField.getText().toString().trim().toLowerCase();
         if (searchTerm.length() > 0) {
           fetchSuggestions(searchTerm);
           setSearchMode();
@@ -116,7 +117,7 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchM
     searchBtn.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        String searchTerm = searchInput.getText().toString();
+        String searchTerm = usernameSearchInputField.getText().toString();
         if (searchTerm.length() >= 0) {
           fetchSuggestions(searchTerm);
           setSearchMode();
@@ -182,8 +183,8 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchM
       suggestionsContainer.setVisibility(View.GONE);
     }
     //clear search view
-    if (searchInput != null) {
-      searchInput.setText("");
+    if (usernameSearchInputField != null) {
+      usernameSearchInputField.setText("");
     }
     //change cross icon to back
     if (backBtn != null) {
