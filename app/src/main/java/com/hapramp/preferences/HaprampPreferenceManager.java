@@ -189,9 +189,9 @@ public class HaprampPreferenceManager {
   }
 
 
-  public void saveCurrentUserFollowings(ArrayList<String> follower) {
+  public void saveCurrentUserFollowings(ArrayList<String> followings) {
     Set<String> set = new HashSet<String>();
-    set.addAll(follower);
+    set.addAll(followings);
     editor.putStringSet("followings", set);
     editor.apply();
   }
