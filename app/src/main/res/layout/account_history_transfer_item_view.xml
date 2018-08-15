@@ -16,8 +16,8 @@
         android:id="@+id/message_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_toEndOf="@+id/user_image"
+        android:layout_marginLeft="4dp"
+        android:layout_toRightOf="@+id/user_image"
         android:textColor="@color/Black54"
         android:textSize="16sp" />
 
@@ -25,28 +25,33 @@
         android:id="@+id/remote_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_toEndOf="@+id/message_label"
+        android:layout_marginLeft="4dp"
+        android:layout_toRightOf="@+id/message_label"
+        android:background="?selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:textStyle="bold"
         android:textColor="@color/Black87"
         android:textSize="16sp" />
 
     <TextView
         android:id="@+id/amount"
+        android:layout_below="@+id/remote_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_toRightOf="@id/user_image"
         android:textSize="18sp" />
 
     <TextView
         android:id="@+id/timestamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/message_label"
+        android:layout_below="@+id/amount"
         android:layout_marginBottom="8dp"
-        android:layout_marginStart="4dp"
+        android:layout_marginLeft="4dp"
         android:layout_marginTop="4dp"
-        android:layout_toEndOf="@id/user_image"
+        android:layout_toRightOf="@id/user_image"
         android:textColor="@color/Black38" />
 
     <TextView
@@ -54,9 +59,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/timestamp"
-        android:layout_marginStart="4dp"
+        android:layout_marginLeft="4dp"
         android:layout_marginTop="4dp"
-        android:layout_toEndOf="@+id/user_image"
+        android:layout_toRightOf="@+id/user_image"
         android:background="@drawable/transfer_history_message_bg"
         android:lineSpacingExtra="2sp"
         android:padding="8dp"
