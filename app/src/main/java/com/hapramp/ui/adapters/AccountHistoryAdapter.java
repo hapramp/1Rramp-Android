@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,8 @@ import android.widget.TextView;
 import com.hapramp.R;
 import com.hapramp.search.TranserHistoryManager;
 import com.hapramp.steem.models.TransferHistoryModel;
+import com.hapramp.ui.activity.ProfileActivity;
+import com.hapramp.utils.Constants;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.SteemPowerCalc;
@@ -46,7 +47,6 @@ public class AccountHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
   public void setTransferHistoryModels(ArrayList<TransferHistoryModel> transferHistoryModels) {
     this.transferHistoryModels = transferHistoryModels;
-    Log.d("Adapter", "Data" + transferHistoryModels.toString());
     notifyDataSetChanged();
   }
 
@@ -91,7 +91,6 @@ public class AccountHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
   @Override
   public int getItemViewType(int position) {
-    Log.d("Adapter", "Positio " + position + transferHistoryModels.get(position).getOperation());
     switch (transferHistoryModels.get(position).getOperation()) {
       case TranserHistoryManager.KEYS.OPERATION_TRANSFER:
         return TYPE_TRANSFER;
@@ -142,12 +141,14 @@ public class AccountHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public void bind(TransferHistoryModel transferHistoryModel) {
       TransferHistoryModel.Transfer transfer = transferHistoryModel.getTransfer();
+      final Intent profileIntent = new Intent(mContext, ProfileActivity.class);
       if (isSent(transferHistoryModel.getUserAccount(), transfer.from)) {
         //sent
         ImageHandler.loadCircularImage(mContext, userImage,
           String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format), transfer.to));
         messageLabel.setText("Transferred to");
         remoteUser.setText(transfer.to);
+        profileIntent.putExtra(Constants.EXTRAA_KEY_STEEM_USER_NAME, transfer.to);
         amount.setText(String.format("- %s", transfer.amount));
         amount.setTextColor(Color.parseColor("#bf0707"));
       } else {
@@ -156,6 +157,7 @@ public class AccountHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vie
           String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format), transfer.from));
         messageLabel.setText("Received from");
         remoteUser.setText(transfer.from);
+        profileIntent.putExtra(Constants.EXTRAA_KEY_STEEM_USER_NAME, transfer.from);
         amount.setText(String.format("+ %s", transfer.amount));
         amount.setTextColor(Color.parseColor("#157c18"));
       }
@@ -166,6 +168,12 @@ public class AccountHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vie
       } else {
         message.setVisibility(View.GONE);
       }
+      remoteUser.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          mContext.startActivity(profileIntent);
+        }
+      });
     }
   }
 
