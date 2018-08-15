@@ -28,6 +28,7 @@ public class InterestsView extends FrameLayout {
   private ViewGroup parentView;
   private List<CommunityModel> communities;
   private TextView noInterestMessage;
+  private boolean editable;
 
   public InterestsView(@NonNull Context context) {
     super(context);
@@ -53,8 +54,9 @@ public class InterestsView extends FrameLayout {
     init();
   }
 
-  public void setCommunities(List<CommunityModel> communities) {
+  public void setCommunities(List<CommunityModel> communities, boolean editable) {
     this.communities = communities;
+    this.editable = editable;
     if (communities != null && communities.size() > 0) {
       addViews();
     } else {
@@ -77,20 +79,23 @@ public class InterestsView extends FrameLayout {
           ViewGroup.LayoutParams.WRAP_CONTENT,
           ViewGroup.LayoutParams.WRAP_CONTENT));
     }
-    //add edit icon with click listener
-    final CommunityItemView editCommunityItem = new CommunityItemView(mContext);
-    CommunityModel communityModel = new CommunityModel("Add or Remove Community",
-      "android.resource://com.hapramp/drawable/edit_community",
-      "", "#77938d8d", "Edit Community", 404);
-    editCommunityItem.setCommunityDetails(communityModel);
-    editCommunityItem.setSelection(false);
-    editCommunityItem.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        navigateToCommunitSelectionPage();
-      }
-    });
-    parentView.addView(editCommunityItem);
+
+    if (editable) {
+      //add edit icon with click listener
+      final CommunityItemView editCommunityItem = new CommunityItemView(mContext);
+      CommunityModel communityModel = new CommunityModel("Add or Remove Community",
+        "android.resource://com.hapramp/drawable/edit_community",
+        "", "#77938d8d", "Edit Community", 404);
+      editCommunityItem.setCommunityDetails(communityModel);
+      editCommunityItem.setSelection(false);
+      editCommunityItem.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          navigateToCommunitSelectionPage();
+        }
+      });
+      parentView.addView(editCommunityItem);
+    }
     noInterestMessage.setVisibility(GONE);
 
   }
@@ -98,7 +103,6 @@ public class InterestsView extends FrameLayout {
   private void navigateToCommunitSelectionPage() {
     Intent i = new Intent(mContext, CommunitySelectionActivity.class);
     i.putExtra(EXTRA_PRESELECTED_MODE, true);
-    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
     mContext.startActivity(i);
   }
 

@@ -378,7 +378,7 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
         }
       });
       CommunityListWrapper listWrapper = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
-      interestsView.setCommunities(listWrapper.getCommunityModels());
+      interestsView.setCommunities(listWrapper.getCommunityModels(), true);
     } else {
       followBtn.setVisibility(VISIBLE);
       editBtn.setVisibility(GONE);
@@ -419,7 +419,7 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   }
 
   private void setCommunities(List<CommunityModel> communities) {
-    interestsView.setCommunities(communities);
+    interestsView.setCommunities(communities, false);
   }
 
   private void navigateToProfileEditActivity() {
