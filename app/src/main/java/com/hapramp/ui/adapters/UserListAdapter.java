@@ -14,7 +14,6 @@ import java.util.ArrayList;
  */
 
 public class UserSuggestionListAdapter extends ArrayAdapter<String> {
-
   private ArrayList<String> usernames;
 
   public UserSuggestionListAdapter(Context context) {
@@ -34,11 +33,8 @@ public class UserSuggestionListAdapter extends ArrayAdapter<String> {
 
   @Override
   public View getView(int position, View convertView, ViewGroup parent) {
-
     View v = new UserSearchItemView(getContext());
-
     ((UserSearchItemView) v).setUsername(usernames.get(position));
-
     return v;
   }
 
