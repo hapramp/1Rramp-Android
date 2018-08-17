@@ -186,6 +186,8 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="16dp"
+                android:background="?selectableItemBackground"
+                android:clickable="true"
                 android:text="0 Followers"
                 android:textColor="@color/Black38"
                 android:textStyle="bold" />
@@ -199,6 +201,8 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="16dp"
+                android:background="?selectableItemBackground"
+                android:clickable="true"
                 android:text="0 Followings"
                 android:textColor="@color/Black38"
                 android:textStyle="bold" />
@@ -252,6 +256,5 @@
             android:textStyle="bold" />
 
     </RelativeLayout>
-    <!---->
     <include layout="@layout/profile_headerview_skeleton" />
 </FrameLayout>

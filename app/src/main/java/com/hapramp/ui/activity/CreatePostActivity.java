@@ -60,8 +60,6 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
   private List<String> tags;
   private String generated_permalink;
   private SteemPostCreator steemPostCreator;
-  private String permlink_with_username;
-  private boolean mDistractionFreeMode = false;
   private List<String> images;
   private String body;
 
@@ -216,7 +214,6 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
   }
 
   private void preparePost() {
-    permlink_with_username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername() + "/" + generated_permalink;
     generated_permalink = PermlinkGenerator.getPermlink();
     body = postCreateComponent.getBody();
     tags = postCreateComponent.getSelectedCommunityTags();

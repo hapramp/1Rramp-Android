@@ -70,10 +70,6 @@ public class MarkdownPreProcessor {
     return links;
   }
 
-  private String removeMarkdownStringLinks(String content) {
-    return content.replaceAll(md_link_string_regex, "");
-  }
-
   public String getFirstImageUrl(String content) {
     content = removeNewlineChar(content);
     ArrayList<String> allUrls = getAllImageLinks(content);

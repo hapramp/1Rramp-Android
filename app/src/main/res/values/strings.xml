@@ -6,11 +6,8 @@
     <string name="onboarding_content_1">Join community</string>
     <string name="onboarding_content_2">Share your innovative content</string>
     <string name="onboarding_content_3">Earn rewards for your work </string>
-
-
     <string name="username_hint"><font size="12">USERNAME</font></string>
     <string name="password_hint"><font size="12">PASSWORD</font></string>
-    <string name="organization_input_hint"><font size="15">YOUR ORGANISATION NAME</font></string>
     <string name="profile_posts_count_caption">%1$d Post</string>
     <string name="profile_followers_caption">%1$d Followers</string>
     <string name="profile_following_count_caption">%1$d Following</string>
@@ -23,21 +20,15 @@
     <string name="post_subtitle_format">| %1$s</string>
     <string name="steem_user_api">https://steemit.com/@%1$s.json</string>
     <string name="steem_user_profile_pic_format">https://steemitimages.com/u/%s/avatar</string>
-
-    <string name="sample">Bitcoin uses peer-to-peer technology to operate with no central authority or banks
-        managing transactions and the issuing of bitcoins is carried out collectively by the network. Bitcoin is open-source; its design is public, nobody owns or controls Bitcoin and everyone can take part. Through many of its unique properties,
-        Bitcoin allows exciting uses that could not be covered by any previous payment system.</string>
-
     <string name="post_created">%1$d Posts Created</string>
     <string name="hapcoins_format">$%1$s Earned</string>
     <string name="comment_format">%1d Comments</string>
-
     <string name="post_rated">%1$d Posts Rated</string>
     <string name="comment_author">By : %1$s</string>
     <string name="other_comments_format">Comments[%1$d]</string>
     <string name="other_comment_format">Comment[%1$d]</string>
     <string name="no_other_comment_format">No Comment</string>
-    <string name="type_here">Type Here...</string>
+    <string name="type_here">Type here...</string>
     <string name="default_user_pic">https://user-images.githubusercontent.com/10809719/38453010-68604fa2-3a6c-11e8-9ba6-0515cd7fbe97.png</string>
     <string name="unregistered_user_profile_msg">User not registered on Hapramp</string>
     <string name="kajal_subtitle">Kajal Aggarwal (born 19 June 1985) is an Indian film actress and model</string>
@@ -58,10 +49,10 @@
     <string name="community_updated">Community Updated!</string>
     <string name="failed_to_fetch_communities">Failed to fetch communities</string>
     <string name="steem_user_profile_pic_format_large">https://steemitimages.com/u/%s/avatar/large</string>
-    <string name="profile_follower_count_text">Followers</string>
-    <string name="profile_follower_count_text_singular">Follower</string>
-    <string name="profile_following_count_text_plural">Followings</string>
-    <string name="profile_following_count_text_singular">Following</string>
+    <string name="profile_follower_count_text">%1$d Followers</string>
+    <string name="profile_follower_count_text_singular">%1$d Follower</string>
+    <string name="profile_following_count_text_plural">%1$d Followings</string>
+    <string name="profile_following_count_text_singular">%1$d Following</string>
     <string name="loading_community_message">Loading communities...</string>
     <string name="token_request_loading_message">Loading...</string>
     <string name="community_save_progress_mesaage">Saving your communities...</string>

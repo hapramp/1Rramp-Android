@@ -6,10 +6,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
-import android.text.InputFilter;
-import android.text.Spanned;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -22,12 +19,13 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.api.FollowingApi;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.search.FollowingSearchManager;
 import com.hapramp.search.UserSearchManager;
-import com.hapramp.ui.adapters.UserSuggestionListAdapter;
+import com.hapramp.ui.adapters.UserListAdapter;
 import com.hapramp.ui.adapters.ViewPagerAdapter;
 import com.hapramp.utils.ConnectionUtils;
+import com.hapramp.utils.FollowingsSyncUtils;
 import com.hapramp.utils.FontManager;
 
 import java.util.ArrayList;
@@ -35,8 +33,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class UserSearchActivity extends AppCompatActivity implements UserSearchManager.UserSearchListener, FollowingSearchManager.FollowingSearchCallback {
-  public static final String TAG = UserSearchActivity.class.getSimpleName();
+public class UserSearchActivity extends AppCompatActivity implements UserSearchManager.UserSearchListener{
   private static boolean SEARCH_MODE = false;
   private final String backTextIcon = "\uF04D";
   private final String closeSearchTextIcon = "\uF156";
@@ -64,9 +61,8 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchM
   ViewPager viewpager;
   @BindView(R.id.suggestionsContainer)
   RelativeLayout suggestionsContainer;
-  UserSuggestionListAdapter adapter;
+  UserListAdapter adapter;
   UserSearchManager searchManager;
-  FollowingSearchManager followingSearchManager;
   private Handler mHandler;
 
   @Override
@@ -85,7 +81,7 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchM
     setupViewPager(viewpager);
     tabs.setupWithViewPager(viewpager);
     tabs.setSelectedTabIndicatorHeight((int) (2 * getResources().getDisplayMetrics().density));
-    adapter = new UserSuggestionListAdapter(this);
+    adapter = new UserListAdapter(this);
     suggestionsListView.setAdapter(adapter);
     mHandler = new Handler();
     backBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
@@ -139,12 +135,10 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchM
 
   private void initSearchManager() {
     searchManager = new UserSearchManager(this);
-    followingSearchManager = new FollowingSearchManager(this);
   }
 
   private void fetchFollowingsAndCache() {
-    final String follower = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-    followingSearchManager.requestFollowings(follower);
+    FollowingsSyncUtils.syncFollowings(this);
   }
 
   private void setupViewPager(ViewPager viewPager) {
@@ -243,16 +237,5 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchM
         adapter.setUsernames(suggestions);
       }
     });
-  }
-
-  @Override
-  public void onFollowingResponse(ArrayList<String> follower) {
-    HaprampPreferenceManager.getInstance().saveCurrentUserFollowings(follower);
-    onPrepared();
-  }
-
-  @Override
-  public void onFollowingRequestError(String e) {
-    Log.e("FollowingSearch", e);
   }
 }

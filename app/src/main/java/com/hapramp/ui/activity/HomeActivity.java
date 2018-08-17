@@ -27,7 +27,6 @@ import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.datamodels.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.search.FollowingSearchManager;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.models.user.User;
 import com.hapramp.ui.fragments.EarningFragment;
@@ -35,11 +34,11 @@ import com.hapramp.ui.fragments.HomeFragment;
 import com.hapramp.ui.fragments.ProfileFragment;
 import com.hapramp.ui.fragments.SettingsFragment;
 import com.hapramp.utils.CrashReporterKeys;
+import com.hapramp.utils.FollowingsSyncUtils;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.RepeatPostCreationUtils;
 import com.hapramp.views.extraa.CreateButtonView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -120,18 +119,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   }
 
   private void syncUserFollowings() {
-    FollowingSearchManager followingSearchManager = new FollowingSearchManager(new FollowingSearchManager.FollowingSearchCallback() {
-      @Override
-      public void onFollowingResponse(ArrayList<String> followings) {
-        HaprampPreferenceManager.getInstance().saveCurrentUserFollowings(followings);
-      }
-
-      @Override
-      public void onFollowingRequestError(String e) {
-
-      }
-    });
-    followingSearchManager.requestFollowings(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
+    FollowingsSyncUtils.syncFollowings(this);
   }
 
   private void syncCommunities() {

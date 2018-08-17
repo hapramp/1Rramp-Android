@@ -27,9 +27,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-// Activity for User Profile
 public class ProfileActivity extends AppCompatActivity implements RawApiCaller.FeedDataCallback {
-  private static final int POST_LIMIT = 100;
   @BindView(R.id.closeBtn)
   TextView closeBtn;
   @BindView(R.id.toolbar_container)
@@ -108,9 +106,7 @@ public class ProfileActivity extends AppCompatActivity implements RawApiCaller.F
   }
 
   public abstract class EndlessOnScrollListener extends RecyclerView.OnScrollListener {
-    private LinearLayoutManager lm;
     EndlessOnScrollListener(LinearLayoutManager llm) {
-      this.lm = llm;
     }
     @Override
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {

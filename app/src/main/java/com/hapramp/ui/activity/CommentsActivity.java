@@ -67,11 +67,8 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
   ProgressBar commentLoadingProgressBar;
   @BindView(R.id.commentLoadingProgressMessage)
   TextView commentLoadingProgressMessage;
-  private String initialCommentUrl;
-  private String postId;
   private CommentsAdapter commentsAdapter;
   private ViewItemDecoration viewItemDecoration;
-  private String moreCommentsAt;
   private ProgressDialog progressDialog;
   private Typeface typeface;
   private ArrayList<SteemCommentModel> commentsList;

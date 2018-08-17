@@ -16,18 +16,18 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.search.FollowingSearchManager;
 import com.hapramp.steemconnect.SteemConnectUtils;
 import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;
 import com.hapramp.steemconnect4j.SteemConnectException;
 import com.hapramp.ui.activity.ProfileActivity;
 import com.hapramp.utils.Constants;
+import com.hapramp.utils.FollowingsSyncUtils;
 import com.hapramp.utils.ImageHandler;
 
-import java.util.ArrayList;
 import java.util.Set;
 
 import butterknife.BindView;
@@ -37,8 +37,7 @@ import butterknife.ButterKnife;
  * Created by Ankit on 4/6/2018.
  */
 
-public class UserSearchItemView extends FrameLayout implements FollowingSearchManager.FollowingSearchCallback {
-
+public class UserItemView extends FrameLayout {
   @BindView(R.id.user_pic)
   ImageView userPic;
   @BindView(R.id.content)
@@ -53,22 +52,11 @@ public class UserSearchItemView extends FrameLayout implements FollowingSearchMa
   private String mUsername;
   private String me;
   private SteemConnect steemConnect;
-  private FollowingSearchManager followingSearchManager;
+  private FollowStateChangeListener followStateChangeListener;
 
-  public UserSearchItemView(@NonNull Context context) {
+  public UserItemView(@NonNull Context context) {
     super(context);
     init(context);
-  }
-
-  private void init(Context context) {
-    this.mContext = context;
-    View view = LayoutInflater.from(context).inflate(R.layout.user_suggestions_item_row, this);
-    ButterKnife.bind(this, view);
-    mHandler = new Handler();
-    me = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-    followingSearchManager = new FollowingSearchManager(this);
-    steemConnect = SteemConnectUtils.getSteemConnectInstance(HaprampPreferenceManager.getInstance().getSC2AccessToken());
-    attachListeners();
   }
 
   private void attachListeners() {
@@ -133,7 +121,12 @@ public class UserSearchItemView extends FrameLayout implements FollowingSearchMa
 
             @Override
             public void onError(SteemConnectException e) {
-              userFollowFailed();
+              mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                  userFollowFailed();
+                }
+              });
             }
           }
         );
@@ -143,6 +136,23 @@ public class UserSearchItemView extends FrameLayout implements FollowingSearchMa
 
   private String getUsername() {
     return this.mUsername;
+  }
+
+  private void showProgress(boolean show) {
+    try {
+      if (show) {
+        //hide button
+        followUnfollowBtn.setVisibility(GONE);
+        followUnfollowProgress.setVisibility(VISIBLE);
+      } else {
+        //show button
+        followUnfollowBtn.setVisibility(VISIBLE);
+        followUnfollowProgress.setVisibility(GONE);
+      }
+    }
+    catch (Exception e) {
+      Crashlytics.log(e.toString());
+    }
   }
 
   private void requestUnFollowOnSteem() {
@@ -166,7 +176,12 @@ public class UserSearchItemView extends FrameLayout implements FollowingSearchMa
 
             @Override
             public void onError(SteemConnectException e) {
-              userUnfollowFailed();
+              mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                  userUnfollowFailed();
+                }
+              });
             }
           }
         );
@@ -174,23 +189,14 @@ public class UserSearchItemView extends FrameLayout implements FollowingSearchMa
     }.start();
   }
 
-  private void showProgress(boolean show) {
-    if (show) {
-      //hide button
-      followUnfollowBtn.setVisibility(GONE);
-      followUnfollowProgress.setVisibility(VISIBLE);
-    } else {
-      //show button
-      followUnfollowBtn.setVisibility(VISIBLE);
-      followUnfollowProgress.setVisibility(GONE);
-    }
-  }
-
-  private void userFollowedOnSteem() {
-    showProgress(false);
-    alreadyFollowed();
-    syncFollowings();
-    t("You started following " + getUsername());
+  private void init(Context context) {
+    this.mContext = context;
+    View view = LayoutInflater.from(context).inflate(R.layout.user_suggestions_item_row, this);
+    ButterKnife.bind(this, view);
+    mHandler = new Handler();
+    me = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+    steemConnect = SteemConnectUtils.getSteemConnectInstance(HaprampPreferenceManager.getInstance().getSC2AccessToken());
+    attachListeners();
   }
 
   private void userFollowFailed() {
@@ -199,11 +205,9 @@ public class UserSearchItemView extends FrameLayout implements FollowingSearchMa
     t("Failed to follow " + getUsername());
   }
 
-  private void userUnFollowedOnSteem() {
-    showProgress(false);
-    notFollowed();
-    syncFollowings();
-    t("You unfollowed " + getUsername());
+  public UserItemView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
+    init(context);
   }
 
   private void userUnfollowFailed() {
@@ -219,8 +223,9 @@ public class UserSearchItemView extends FrameLayout implements FollowingSearchMa
     followed = true;
   }
 
-  private void syncFollowings() {
-    followingSearchManager.requestFollowings(me);
+  public UserItemView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init(context);
   }
 
   private void t(String s) {
@@ -263,23 +268,35 @@ public class UserSearchItemView extends FrameLayout implements FollowingSearchMa
     }
   }
 
-  public UserSearchItemView(@NonNull Context context, @Nullable AttributeSet attrs) {
-    super(context, attrs);
-    init(context);
+  private void userUnFollowedOnSteem() {
+    showProgress(false);
+    notFollowed();
+    syncFollowings();
+    if (followStateChangeListener != null) {
+      followStateChangeListener.onFollowStateChanged();
+    }
+    t("You unfollowed " + getUsername());
   }
 
-  public UserSearchItemView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-    super(context, attrs, defStyleAttr);
-    init(context);
+  private void syncFollowings() {
+    FollowingsSyncUtils.syncFollowings(mContext);
   }
 
-  @Override
-  public void onFollowingResponse(ArrayList<String> followings) {
-    HaprampPreferenceManager.getInstance().saveCurrentUserFollowings(followings);
+  private void userFollowedOnSteem() {
+    showProgress(false);
+    alreadyFollowed();
+    syncFollowings();
+    if (followStateChangeListener != null) {
+      followStateChangeListener.onFollowStateChanged();
+    }
+    t("You started following " + getUsername());
   }
 
-  @Override
-  public void onFollowingRequestError(String e) {
+  public void setFollowStateChangeListener(FollowStateChangeListener followStateChangeListener) {
+    this.followStateChangeListener = followStateChangeListener;
+  }
 
+  public interface FollowStateChangeListener {
+    void onFollowStateChanged();
   }
 }

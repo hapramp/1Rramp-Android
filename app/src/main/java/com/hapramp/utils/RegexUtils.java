@@ -25,16 +25,6 @@ public class RegexUtils {
     return body.replaceAll("!\\[(.*?)\\]\\((.*?)[)]", "<img alt=\"$1\" src=\"$2\"/>");
   }
 
-  private static String replacePlainLinks(String body) {
-    pattern = Pattern.compile("[\\n|>| ](http(s|):\\/\\/.*?)[\\n|<| ]");
-    matcher = pattern.matcher(body);
-    while (matcher.find()) {
-      body = new StringBuilder(body).replace(matcher.start(1), matcher.end(1),
-        "<a href=\"" + matcher.group(1) + "\">" + matcher.group(1) + "</a>").toString();
-    }
-    return body;
-  }
-
   public static String replacePlainImageLinks(String body) {
     pattern = Pattern.compile("(^|[^\"])((http(s|):.*?)(.png|.jpeg|.PNG|.gif|.jpg)(.*?))( |$|\\n|<)");
     matcher = pattern.matcher(body);

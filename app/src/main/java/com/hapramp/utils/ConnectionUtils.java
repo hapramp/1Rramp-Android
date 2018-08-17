@@ -16,14 +16,11 @@ public class ConnectionUtils {
     final android.net.NetworkInfo wifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
     if (mobileData.isConnected()) {
       return true;
-    } else if (wifi.isConnected()) {
-      return true;
-    }
+    } else return wifi.isConnected();
 
 //        context.startActivity(new Intent(context, ErrorSplash.class));
 //        ((AppCompatActivity) context).finish();
 
-    return false;
   }
 
   // for wifi service [where login is required before internet ]
