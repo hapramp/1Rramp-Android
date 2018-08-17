@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
-import com.hapramp.api.FollowingApi;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steemconnect.SteemConnectUtils;
 import com.hapramp.steemconnect4j.SteemConnect;
@@ -26,9 +25,9 @@ import com.hapramp.steemconnect4j.SteemConnectCallback;
 import com.hapramp.steemconnect4j.SteemConnectException;
 import com.hapramp.ui.activity.ProfileActivity;
 import com.hapramp.utils.Constants;
+import com.hapramp.utils.FollowingsSyncUtils;
 import com.hapramp.utils.ImageHandler;
 
-import java.util.ArrayList;
 import java.util.Set;
 
 import butterknife.BindView;
@@ -38,7 +37,7 @@ import butterknife.ButterKnife;
  * Created by Ankit on 4/6/2018.
  */
 
-public class UserItemView extends FrameLayout implements FollowingApi.FollowingCallback {
+public class UserItemView extends FrameLayout {
   @BindView(R.id.user_pic)
   ImageView userPic;
   @BindView(R.id.content)
@@ -53,7 +52,6 @@ public class UserItemView extends FrameLayout implements FollowingApi.FollowingC
   private String mUsername;
   private String me;
   private SteemConnect steemConnect;
-  private FollowingApi followingApi;
   private FollowStateChangeListener followStateChangeListener;
 
   public UserItemView(@NonNull Context context) {
@@ -197,8 +195,6 @@ public class UserItemView extends FrameLayout implements FollowingApi.FollowingC
     ButterKnife.bind(this, view);
     mHandler = new Handler();
     me = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-    followingApi = new FollowingApi(mContext);
-    followingApi.setFollowingCallback(this);
     steemConnect = SteemConnectUtils.getSteemConnectInstance(HaprampPreferenceManager.getInstance().getSC2AccessToken());
     attachListeners();
   }
@@ -283,7 +279,7 @@ public class UserItemView extends FrameLayout implements FollowingApi.FollowingC
   }
 
   private void syncFollowings() {
-    followingApi.requestFollowings(me, null);
+    FollowingsSyncUtils.syncFollowings(mContext);
   }
 
   private void userFollowedOnSteem() {
@@ -294,16 +290,6 @@ public class UserItemView extends FrameLayout implements FollowingApi.FollowingC
       followStateChangeListener.onFollowStateChanged();
     }
     t("You started following " + getUsername());
-  }
-
-  @Override
-  public void onFollowings(ArrayList<String> followings) {
-    HaprampPreferenceManager.getInstance().saveCurrentUserFollowings(followings);
-  }
-
-  @Override
-  public void onError() {
-
   }
 
   public void setFollowStateChangeListener(FollowStateChangeListener followStateChangeListener) {

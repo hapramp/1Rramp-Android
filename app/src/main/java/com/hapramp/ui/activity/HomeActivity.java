@@ -22,7 +22,6 @@ import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.hapramp.R;
-import com.hapramp.api.FollowingApi;
 import com.hapramp.api.RawApiCaller;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datamodels.CommunityModel;
@@ -35,11 +34,11 @@ import com.hapramp.ui.fragments.HomeFragment;
 import com.hapramp.ui.fragments.ProfileFragment;
 import com.hapramp.ui.fragments.SettingsFragment;
 import com.hapramp.utils.CrashReporterKeys;
+import com.hapramp.utils.FollowingsSyncUtils;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.RepeatPostCreationUtils;
 import com.hapramp.views.extraa.CreateButtonView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -120,21 +119,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   }
 
   private void syncUserFollowings() {
-    FollowingApi followingApi = new FollowingApi(this);
-
-    followingApi.setFollowingCallback(new FollowingApi.FollowingCallback() {
-      @Override
-      public void onFollowings(ArrayList<String> followings) {
-        HaprampPreferenceManager.getInstance().saveCurrentUserFollowings(followings);
-      }
-
-      @Override
-      public void onError() {
-
-      }
-    });
-    followingApi.requestFollowings(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
-      null);
+    FollowingsSyncUtils.syncFollowings(this);
   }
 
   private void syncCommunities() {

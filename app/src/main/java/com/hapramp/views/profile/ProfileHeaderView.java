@@ -22,7 +22,6 @@ import com.crashlytics.android.Crashlytics;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.gson.Gson;
 import com.hapramp.R;
-import com.hapramp.api.FollowingApi;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.datamodels.response.UserModel;
@@ -38,6 +37,8 @@ import com.hapramp.steemconnect4j.SteemConnectException;
 import com.hapramp.ui.activity.FollowListActivity;
 import com.hapramp.ui.activity.ProfileEditActivity;
 import com.hapramp.ui.activity.WalletActivity;
+import com.hapramp.utils.CompleteFollowingHelper;
+import com.hapramp.utils.FollowingsSyncUtils;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.views.skills.InterestsView;
 
@@ -59,7 +60,7 @@ import static com.hapramp.ui.activity.FollowListActivity.EXTRA_KEY_USERNAME;
  * Created by Ankit on 12/30/2017.
  */
 
-public class ProfileHeaderView extends FrameLayout implements FollowCountManager.FollowCountCallback, UserProfileFetcher.UserProfileFetchCallback, FollowingApi.FollowingCallback {
+public class ProfileHeaderView extends FrameLayout implements FollowCountManager.FollowCountCallback, UserProfileFetcher.UserProfileFetchCallback, CompleteFollowingHelper.FollowingsSyncCompleteListener {
   @BindView(R.id.profile_wall_pic)
   ImageView profileWallPic;
   @BindView(R.id.profile_pic)
@@ -113,7 +114,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   private boolean isFollowed;
   private String me;
   private FollowCountManager followCountManager;
-  private FollowingApi followingApi;
   private SteemConnect steemConnect;
   private int followersCount;
   private int followingCount;
@@ -134,8 +134,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     userProfileFetcher.setUserProfileFetchCallback(this);
     me = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
     followCountManager = new FollowCountManager(this);
-    followingApi = new FollowingApi(mContext);
-    followingApi.setFollowingCallback(this);
     steemConnect = SteemConnectUtils.getSteemConnectInstance(HaprampPreferenceManager.getInstance().getSC2AccessToken());
   }
 
@@ -366,13 +364,10 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   }
 
   private void syncFollowings() {
-    followingApi.requestFollowings(me, null);
+    FollowingsSyncUtils.syncFollowings(mContext, this);
   }
 
   private void fetchUserInfo() {
-    if (!mUsername.equals(me)) {
-      followingApi.requestFollowings(me, null);
-    }
     followCountManager.requestFollowInfo(mUsername);
     userProfileFetcher.fetchUserProfileFor(mUsername);
   }
@@ -544,18 +539,12 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   }
 
   @Override
-  public void onFollowings(ArrayList<String> followings) {
-    HaprampPreferenceManager.getInstance().saveCurrentUserFollowings(followings);
-    mHandler.post(new Runnable() {
-      @Override
-      public void run() {
-        invalidateFollowButton();
-      }
-    });
-  }
-
-  @Override
-  public void onError() {
-
+  public void onSyncCompleted() {
+    try {
+      invalidateFollowButton();
+    }
+    catch (Exception e) {
+      Crashlytics.log(e.toString());
+    }
   }
 }

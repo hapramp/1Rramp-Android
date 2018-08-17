@@ -128,7 +128,6 @@ public class FollowingsFragment extends Fragment implements FollowingApi.Followi
   }
 
   public void refreshData() {
-    //Log.d("FollowingsFragment", "refreshing data");
     fetchFollowingsList(null);
   }
 

@@ -23,19 +23,16 @@ public class FollowingApi {
   private Handler mHandler;
   private String STEEMIT_API_URL = "https://api.steemit.com";
   private FollowingCallback followingCallback;
-  private NetworkUtils networkUtils;
   private String currentRequestTag;
 
   public FollowingApi(Context context) {
     this.context = context;
     this.mHandler = new Handler();
-    networkUtils = new NetworkUtils();
   }
 
   public void setFollowingCallback(FollowingCallback followingCallback) {
     this.followingCallback = followingCallback;
   }
-
 
   public void requestFollowings(final String username, final String startFromUser) {
     final String rtag = "following_" + username + "_" + startFromUser;
@@ -101,7 +98,6 @@ public class FollowingApi {
   private boolean isRequestLive(String requestTag) {
     return this.currentRequestTag.equals(requestTag);
   }
-
 
   public interface FollowingCallback {
     void onFollowings(ArrayList<String> followings);

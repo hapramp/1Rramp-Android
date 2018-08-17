@@ -25,6 +25,7 @@ import com.hapramp.search.UserSearchManager;
 import com.hapramp.ui.adapters.UserListAdapter;
 import com.hapramp.ui.adapters.ViewPagerAdapter;
 import com.hapramp.utils.ConnectionUtils;
+import com.hapramp.utils.FollowingsSyncUtils;
 import com.hapramp.utils.FontManager;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class UserSearchActivity extends AppCompatActivity implements UserSearchManager.UserSearchListener, FollowingApi.FollowingCallback {
+public class UserSearchActivity extends AppCompatActivity implements UserSearchManager.UserSearchListener{
   public static final String TAG = UserSearchActivity.class.getSimpleName();
   private static boolean SEARCH_MODE = false;
   private final String backTextIcon = "\uF04D";
@@ -64,7 +65,6 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchM
   UserListAdapter adapter;
   UserSearchManager searchManager;
   private Handler mHandler;
-  private FollowingApi followingApi;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +85,6 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchM
     adapter = new UserListAdapter(this);
     suggestionsListView.setAdapter(adapter);
     mHandler = new Handler();
-    followingApi = new FollowingApi(this);
-    followingApi.setFollowingCallback(this);
     backBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     searchBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
   }
@@ -141,8 +139,7 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchM
   }
 
   private void fetchFollowingsAndCache() {
-    final String follower = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-    followingApi.requestFollowings(follower,null);
+    FollowingsSyncUtils.syncFollowings(this);
   }
 
   private void setupViewPager(ViewPager viewPager) {
@@ -241,16 +238,5 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchM
         adapter.setUsernames(suggestions);
       }
     });
-  }
-
-  @Override
-  public void onFollowings(ArrayList<String> followings) {
-    HaprampPreferenceManager.getInstance().saveCurrentUserFollowings(followings);
-    onPrepared();
-  }
-
-  @Override
-  public void onError() {
-
   }
 }
