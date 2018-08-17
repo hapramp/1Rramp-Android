@@ -19,13 +19,12 @@ public class ShareUtils {
   }
 
   public static void shareMixedContent(Context context, Feed feed) {
-
     Intent shareIntent = new Intent();
     shareIntent.setAction(Intent.ACTION_SEND);
     shareIntent.putExtra(Intent.EXTRA_TEXT, getFormattedTextForSharing(feed.getTitle(),
       feed.getCleanedBody(), feed.getAuthor(), feed.getPermlink()));
       shareIntent.setType("text/plain");
-    context.startActivity(shareIntent);
+    context.startActivity(Intent.createChooser(shareIntent, "Share post..."));
   }
 
   private static String getFormattedTextForSharing(String title, String text, String username, String permlink) {
