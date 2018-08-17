@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 public class BaseActivity extends AppCompatActivity {
   private ProgressDialog progressDialog;
 
@@ -17,7 +19,11 @@ public class BaseActivity extends AppCompatActivity {
   }
 
   public void toast(String msg) {
-    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    try {
+      Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }catch (Exception e){
+      Crashlytics.log(e.toString());
+    }
   }
 
   public void showProgressDialog(String msg, boolean show) {
