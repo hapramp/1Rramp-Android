@@ -113,7 +113,7 @@ public class CommunitySelectionActivity extends BaseActivity implements Communit
     communityContinueButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        showProgressDialog("Updating your communities choice...", true);
+        showProgressDialog(getString(R.string.community_save_progress_mesaage), true);
         communitySelectionPageViewModel.updateServer(communitySelectionView.getSelectionList());
       }
     });

@@ -128,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
   }
 
   private void syncUserAccount() {
-    showShadedProgress("Trying to know your communities...");
+    showShadedProgress(getString(R.string.loading_community_message));
     RetrofitServiceGenerator.getService()
       .fetchUserCommunities(HaprampPreferenceManager.getInstance().getCurrentSteemUsername()).enqueue(new Callback<UserModel>() {
       @Override
@@ -152,7 +152,7 @@ public class LoginActivity extends AppCompatActivity {
       @Override
       public void onFailure(Call<UserModel> call, Throwable t) {
         hideShadedProgress();
-        showToast("Failed to get your communites");
+        showToast("Failed to get your communities");
       }
     });
   }
@@ -246,7 +246,7 @@ public class LoginActivity extends AppCompatActivity {
   }
 
   private void requestUserTokenFromAppServer(final String userAccessToken, final String username) {
-    showShadedProgress("Preparing for your security...");
+    showShadedProgress(getString(R.string.token_request_loading_message));
     VerificationDataBody verificationDataBody = new VerificationDataBody(userAccessToken, username);
     RetrofitServiceGenerator.getService().verifyUser(verificationDataBody).enqueue(new Callback<VerifiedToken>() {
       @Override
