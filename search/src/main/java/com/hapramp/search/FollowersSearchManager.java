@@ -19,9 +19,16 @@ public class FollowersSearchManager implements NetworkUtils.NetworkResponseCallb
   public void requestFollowers(String user) {
     String url = "https://api.steemit.com";
     String method = "POST";
-    String body = "{\"jsonrpc\":\"2.0\", \"method\":\"follow_api.get_followers\"," +
-      " \"params\":{\"account\":\"" + user + "\",\"type\":\"blog\",\"limit\":1000}," +
-      " \"id\":1}";
+    String body = "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_followers\"," +
+      " \"params\":[\"" + user + "\",\"null\",\"blog\",20], \"id\":1}";
+    networkUtils.request(url, method, body);
+  }
+
+  public void requestMoreFollowers(String user, String startFromUser) {
+    String url = "https://api.steemit.com";
+    String method = "POST";
+    String body = "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_followers\"," +
+      " \"params\":[\"" + user + "\",\"" + startFromUser + "\",\"blog\",20], \"id\":1}";
     networkUtils.request(url, method, body);
   }
 

@@ -151,13 +151,10 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
     viewItemDecoration = new ViewItemDecoration(drawable);
     viewItemDecoration.setWantTopOffset(wantTopSpace, topOffset);
     spaceDecorator = new SpaceDecorator();
-
     layoutManager = new LinearLayoutManager(mContext);
     feedRecyclerView.setLayoutManager(layoutManager);
     homeFeedsAdapter = new HomeFeedsAdapter(context, feedRecyclerView);
-
     homeFeedsAdapter.setOnLoadMoreListener(this);
-
     feedRecyclerView.addItemDecoration(spaceDecorator);
     feedRecyclerView.addItemDecoration(viewItemDecoration);
 

@@ -58,8 +58,11 @@
     <string name="community_updated">Community Updated!</string>
     <string name="failed_to_fetch_communities">Failed to fetch communities</string>
     <string name="steem_user_profile_pic_format_large">https://steemitimages.com/u/%s/avatar/large</string>
-    <string name="profile_follower_count_text">Followers</string>
-    <string name="profile_follower_count_text_singular">Follower</string>
-    <string name="profile_following_count_text_plural">Followings</string>
-    <string name="profile_following_count_text_singular">Following</string>
+    <string name="profile_follower_count_text">%1$d Followers</string>
+    <string name="profile_follower_count_text_singular">%1$d Follower</string>
+    <string name="profile_following_count_text_plural">%1$d Followings</string>
+    <string name="profile_following_count_text_singular">%1$d Following</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

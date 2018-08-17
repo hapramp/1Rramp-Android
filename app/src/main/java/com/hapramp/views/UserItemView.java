@@ -17,8 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
+import com.hapramp.api.FollowingApi;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.search.FollowingSearchManager;
 import com.hapramp.steemconnect.SteemConnectUtils;
 import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;
@@ -37,7 +37,7 @@ import butterknife.ButterKnife;
  * Created by Ankit on 4/6/2018.
  */
 
-public class UserSearchItemView extends FrameLayout implements FollowingSearchManager.FollowingSearchCallback {
+public class UserItemView extends FrameLayout implements FollowingApi.FollowingCallback {
 
   @BindView(R.id.user_pic)
   ImageView userPic;
@@ -53,22 +53,12 @@ public class UserSearchItemView extends FrameLayout implements FollowingSearchMa
   private String mUsername;
   private String me;
   private SteemConnect steemConnect;
-  private FollowingSearchManager followingSearchManager;
+  private FollowingApi followingApi;
+  private FollowStateChangeListener followStateChangeListener;
 
-  public UserSearchItemView(@NonNull Context context) {
+  public UserItemView(@NonNull Context context) {
     super(context);
     init(context);
-  }
-
-  private void init(Context context) {
-    this.mContext = context;
-    View view = LayoutInflater.from(context).inflate(R.layout.user_suggestions_item_row, this);
-    ButterKnife.bind(this, view);
-    mHandler = new Handler();
-    me = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-    followingSearchManager = new FollowingSearchManager(this);
-    steemConnect = SteemConnectUtils.getSteemConnectInstance(HaprampPreferenceManager.getInstance().getSC2AccessToken());
-    attachListeners();
   }
 
   private void attachListeners() {
@@ -186,11 +176,16 @@ public class UserSearchItemView extends FrameLayout implements FollowingSearchMa
     }
   }
 
-  private void userFollowedOnSteem() {
-    showProgress(false);
-    alreadyFollowed();
-    syncFollowings();
-    t("You started following " + getUsername());
+  private void init(Context context) {
+    this.mContext = context;
+    View view = LayoutInflater.from(context).inflate(R.layout.user_suggestions_item_row, this);
+    ButterKnife.bind(this, view);
+    mHandler = new Handler();
+    me = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+    followingApi = new FollowingApi(mContext);
+    followingApi.setFollowingCallback(this);
+    steemConnect = SteemConnectUtils.getSteemConnectInstance(HaprampPreferenceManager.getInstance().getSC2AccessToken());
+    attachListeners();
   }
 
   private void userFollowFailed() {
@@ -199,11 +194,9 @@ public class UserSearchItemView extends FrameLayout implements FollowingSearchMa
     t("Failed to follow " + getUsername());
   }
 
-  private void userUnFollowedOnSteem() {
-    showProgress(false);
-    notFollowed();
-    syncFollowings();
-    t("You unfollowed " + getUsername());
+  public UserItemView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
+    init(context);
   }
 
   private void userUnfollowFailed() {
@@ -219,8 +212,9 @@ public class UserSearchItemView extends FrameLayout implements FollowingSearchMa
     followed = true;
   }
 
-  private void syncFollowings() {
-    followingSearchManager.requestFollowings(me);
+  public UserItemView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init(context);
   }
 
   private void t(String s) {
@@ -263,23 +257,45 @@ public class UserSearchItemView extends FrameLayout implements FollowingSearchMa
     }
   }
 
-  public UserSearchItemView(@NonNull Context context, @Nullable AttributeSet attrs) {
-    super(context, attrs);
-    init(context);
+  private void userUnFollowedOnSteem() {
+    showProgress(false);
+    notFollowed();
+    syncFollowings();
+    if (followStateChangeListener != null) {
+      followStateChangeListener.onFollowStateChanged();
+    }
+    t("You unfollowed " + getUsername());
   }
 
-  public UserSearchItemView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-    super(context, attrs, defStyleAttr);
-    init(context);
+  private void syncFollowings() {
+    followingApi.requestFollowings(me, null);
+  }
+
+  private void userFollowedOnSteem() {
+    showProgress(false);
+    alreadyFollowed();
+    syncFollowings();
+    if (followStateChangeListener != null) {
+      followStateChangeListener.onFollowStateChanged();
+    }
+    t("You started following " + getUsername());
   }
 
   @Override
-  public void onFollowingResponse(ArrayList<String> followings) {
+  public void onFollowings(ArrayList<String> followings) {
     HaprampPreferenceManager.getInstance().saveCurrentUserFollowings(followings);
   }
 
   @Override
-  public void onFollowingRequestError(String e) {
+  public void onError() {
 
+  }
+
+  public void setFollowStateChangeListener(FollowStateChangeListener followStateChangeListener) {
+    this.followStateChangeListener = followStateChangeListener;
+  }
+
+  public interface FollowStateChangeListener {
+    void onFollowStateChanged();
   }
 }

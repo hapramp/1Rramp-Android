@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -23,12 +22,12 @@ import com.crashlytics.android.Crashlytics;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.gson.Gson;
 import com.hapramp.R;
+import com.hapramp.api.FollowingApi;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.datamodels.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.search.FollowCountManager;
-import com.hapramp.search.FollowingSearchManager;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.UserProfileFetcher;
 import com.hapramp.steem.models.user.User;
@@ -36,6 +35,7 @@ import com.hapramp.steemconnect.SteemConnectUtils;
 import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;
 import com.hapramp.steemconnect4j.SteemConnectException;
+import com.hapramp.ui.activity.FollowListActivity;
 import com.hapramp.ui.activity.ProfileEditActivity;
 import com.hapramp.ui.activity.WalletActivity;
 import com.hapramp.utils.ImageHandler;
@@ -51,11 +51,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.hapramp.ui.activity.FollowListActivity.EXTRA_KEY_USERNAME;
+
 /**
  * Created by Ankit on 12/30/2017.
  */
 
-public class ProfileHeaderView extends FrameLayout implements FollowCountManager.FollowCountCallback, FollowingSearchManager.FollowingSearchCallback, UserProfileFetcher.UserProfileFetchCallback {
+public class ProfileHeaderView extends FrameLayout implements FollowCountManager.FollowCountCallback, UserProfileFetcher.UserProfileFetchCallback, FollowingApi.FollowingCallback {
   @BindView(R.id.profile_wall_pic)
   ImageView profileWallPic;
   @BindView(R.id.profile_pic)
@@ -109,7 +111,7 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   private boolean isFollowed;
   private String me;
   private FollowCountManager followCountManager;
-  private FollowingSearchManager followingSearchManager;
+  private FollowingApi followingApi;
   private SteemConnect steemConnect;
 
   public ProfileHeaderView(@NonNull Context context) {
@@ -127,7 +129,8 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     userProfileFetcher.setUserProfileFetchCallback(this);
     me = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
     followCountManager = new FollowCountManager(this);
-    followingSearchManager = new FollowingSearchManager(this);
+    followingApi = new FollowingApi(mContext);
+    followingApi.setFollowingCallback(this);
     steemConnect = SteemConnectUtils.getSteemConnectInstance(HaprampPreferenceManager.getInstance().getSC2AccessToken());
   }
 
@@ -149,6 +152,20 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
         Intent intent = new Intent(mContext, WalletActivity.class);
         intent.putExtra(WalletActivity.EXTRA_USERNAME, mUsername);
         mContext.startActivity(intent);
+      }
+    });
+
+    followersCount.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        navigateToFollowListPage();
+      }
+    });
+
+    followingsCount.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        navigateToFollowListPage();
       }
     });
   }
@@ -285,8 +302,10 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     }
   }
 
-  private void syncFollowings() {
-    followingSearchManager.requestFollowings(me);
+  private void navigateToFollowListPage() {
+    Intent intent = new Intent(mContext, FollowListActivity.class);
+    intent.putExtra(EXTRA_KEY_USERNAME, mUsername);
+    mContext.startActivity(intent);
   }
 
   private void t(String s) {
@@ -332,9 +351,13 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     }
   }
 
+  private void syncFollowings() {
+    followingApi.requestFollowings(me, null);
+  }
+
   private void fetchUserInfo() {
     if (!mUsername.equals(me)) {
-      followingSearchManager.requestFollowings(me);
+      followingApi.requestFollowings(me, null);
     }
     followCountManager.requestFollowInfo(mUsername);
     userProfileFetcher.fetchUserProfileFor(mUsername);
@@ -374,7 +397,8 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
           navigateToProfileEditActivity();
         }
       });
-      CommunityListWrapper listWrapper = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
+      CommunityListWrapper listWrapper = new Gson().fromJson(HaprampPreferenceManager
+        .getInstance().getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
       interestsView.setCommunities(listWrapper.getCommunityModels(), true);
     } else {
       followBtn.setVisibility(VISIBLE);
@@ -387,17 +411,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   public void setPostsCount(long count) {
     String text = count > 1 ? count + " Posts" : count + " Post";
     postCounts.setText(text);
-  }
-  
-  @Override
-  public void onFollowingResponse(ArrayList<String> followings) {
-    HaprampPreferenceManager.getInstance().saveCurrentUserFollowings(followings);
-    mHandler.post(new Runnable() {
-      @Override
-      public void run() {
-        invalidateFollowButton();
-      }
-    });
   }
 
   private void fetchUserCommunities() {
@@ -434,11 +447,13 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
       @Override
       public void run() {
         String followerText = follower > 1 ?
-          follower + getContext().getString(R.string.profile_follower_count_text) :
-          follower + getContext().getString(R.string.profile_follower_count_text_singular);
+          String.format(getContext().getString(R.string.profile_follower_count_text), follower) :
+          String.format(getContext().getString(R.string.profile_follower_count_text_singular), follower);
+
         String followingText = followings > 1 ?
-          followings + getContext().getString(R.string.profile_following_count_text_plural) :
-          followings + getContext().getString(R.string.profile_following_count_text_singular);
+          String.format(getContext().getString(R.string.profile_following_count_text_plural), followings) :
+          String.format(getContext().getString(R.string.profile_following_count_text_singular), followings);
+
         followingsCount.setText(followingText);
         followersCount.setText(followerText);
       }
@@ -466,11 +481,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   }
 
   @Override
-  public void onFollowingRequestError(String e) {
-
-  }
-
-  @Override
   public void onUserFetched(User user) {
     bind(user);
     cacheUserProfile(user);
@@ -491,5 +501,21 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   }
 
   private void failedToFetchSteemInfo() {
+  }
+
+  @Override
+  public void onFollowings(ArrayList<String> followings) {
+    HaprampPreferenceManager.getInstance().saveCurrentUserFollowings(followings);
+    mHandler.post(new Runnable() {
+      @Override
+      public void run() {
+        invalidateFollowButton();
+      }
+    });
+  }
+
+  @Override
+  public void onError() {
+
   }
 }
