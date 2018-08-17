@@ -62,4 +62,7 @@
     <string name="profile_follower_count_text_singular">Follower</string>
     <string name="profile_following_count_text_plural">Followings</string>
     <string name="profile_following_count_text_singular">Following</string>
+    <string name="loading_community_message">Loading communities...</string>
+    <string name="token_request_loading_message">Loading...</string>
+    <string name="community_save_progress_mesaage">Saving your communities...</string>
 </resources>

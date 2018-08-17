@@ -23,7 +23,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
   public ViewPagerAdapter(FragmentManager fm) {
     super(fm);
     fragments.add(new LatestFragment());
-    titles.add("NEW ON HAPRAMP");
+    titles.add("NEW ON 1RAMP");
   }
 
   @Override
