@@ -18,6 +18,8 @@ import butterknife.ButterKnife;
 
 public class FollowListActivity extends AppCompatActivity {
   public static final String EXTRA_KEY_USERNAME = "username";
+  public static final String EXTRA_KEY_FOLLOWING = "followin";
+  public static final String EXTRA_KEY_FOLLOWERS = "followers";
   @BindView(R.id.closeBtn)
   TextView closeBtn;
   @BindView(R.id.toolbar_container)
@@ -27,6 +29,8 @@ public class FollowListActivity extends AppCompatActivity {
   @BindView(R.id.viewpager)
   ViewPager viewpager;
   private String username;
+  private int followers;
+  private int following;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,8 @@ public class FollowListActivity extends AppCompatActivity {
     if (getIntent() != null) {
       username = getIntent().getExtras().getString(EXTRA_KEY_USERNAME,
         HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
+      followers = getIntent().getExtras().getInt(EXTRA_KEY_FOLLOWERS, 0);
+      following = getIntent().getExtras().getInt(EXTRA_KEY_FOLLOWING, 0);
     }
     initView();
   }
@@ -55,6 +61,7 @@ public class FollowListActivity extends AppCompatActivity {
 
   private void setupViewPager(ViewPager viewPager) {
     FollowListPagerAdapter adapter = new FollowListPagerAdapter(getSupportFragmentManager(), username);
+    adapter.setFollowInfo(followers,following);
     viewPager.setAdapter(adapter);
   }
 }

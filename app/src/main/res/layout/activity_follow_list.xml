@@ -29,7 +29,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="16dp"
             android:layout_toRightOf="@+id/closeBtn"
-            android:text="Followers/Followings"
+            android:text="Followers/Following"
             android:textSize="18sp" />
     </RelativeLayout>
 

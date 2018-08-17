@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
 import com.hapramp.api.FollowingApi;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -38,7 +39,6 @@ import butterknife.ButterKnife;
  */
 
 public class UserItemView extends FrameLayout implements FollowingApi.FollowingCallback {
-
   @BindView(R.id.user_pic)
   ImageView userPic;
   @BindView(R.id.content)
@@ -123,7 +123,12 @@ public class UserItemView extends FrameLayout implements FollowingApi.FollowingC
 
             @Override
             public void onError(SteemConnectException e) {
-              userFollowFailed();
+              mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                  userFollowFailed();
+                }
+              });
             }
           }
         );
@@ -133,6 +138,23 @@ public class UserItemView extends FrameLayout implements FollowingApi.FollowingC
 
   private String getUsername() {
     return this.mUsername;
+  }
+
+  private void showProgress(boolean show) {
+    try {
+      if (show) {
+        //hide button
+        followUnfollowBtn.setVisibility(GONE);
+        followUnfollowProgress.setVisibility(VISIBLE);
+      } else {
+        //show button
+        followUnfollowBtn.setVisibility(VISIBLE);
+        followUnfollowProgress.setVisibility(GONE);
+      }
+    }
+    catch (Exception e) {
+      Crashlytics.log(e.toString());
+    }
   }
 
   private void requestUnFollowOnSteem() {
@@ -156,24 +178,17 @@ public class UserItemView extends FrameLayout implements FollowingApi.FollowingC
 
             @Override
             public void onError(SteemConnectException e) {
-              userUnfollowFailed();
+              mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                  userUnfollowFailed();
+                }
+              });
             }
           }
         );
       }
     }.start();
-  }
-
-  private void showProgress(boolean show) {
-    if (show) {
-      //hide button
-      followUnfollowBtn.setVisibility(GONE);
-      followUnfollowProgress.setVisibility(VISIBLE);
-    } else {
-      //show button
-      followUnfollowBtn.setVisibility(VISIBLE);
-      followUnfollowProgress.setVisibility(GONE);
-    }
   }
 
   private void init(Context context) {

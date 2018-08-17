@@ -51,6 +51,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.hapramp.ui.activity.FollowListActivity.EXTRA_KEY_FOLLOWERS;
+import static com.hapramp.ui.activity.FollowListActivity.EXTRA_KEY_FOLLOWING;
 import static com.hapramp.ui.activity.FollowListActivity.EXTRA_KEY_USERNAME;
 
 /**
@@ -83,9 +85,9 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   @BindView(R.id.post_counts)
   TextView postCounts;
   @BindView(R.id.followers_count)
-  TextView followersCount;
+  TextView followersCountTv;
   @BindView(R.id.followings_count)
-  TextView followingsCount;
+  TextView followingsCountTv;
   @BindView(R.id.post_stats)
   LinearLayout postStats;
   @BindView(R.id.divider_bottom)
@@ -113,6 +115,9 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   private FollowCountManager followCountManager;
   private FollowingApi followingApi;
   private SteemConnect steemConnect;
+  private int followersCount;
+  private int followingCount;
+  private boolean followInfoAvailable;
 
   public ProfileHeaderView(@NonNull Context context) {
     super(context);
@@ -155,14 +160,14 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
       }
     });
 
-    followersCount.setOnClickListener(new OnClickListener() {
+    followersCountTv.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View view) {
         navigateToFollowListPage();
       }
     });
 
-    followingsCount.setOnClickListener(new OnClickListener() {
+    followingsCountTv.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View view) {
         navigateToFollowListPage();
@@ -266,11 +271,14 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     }
   }
 
-  private void userFollowedOnSteem() {
-    showFollowProgress(false);
-    setFollowState(true);
-    syncFollowings();
-    t("You started following " + mUsername);
+  private void navigateToFollowListPage() {
+    if (followInfoAvailable) {
+      Intent intent = new Intent(mContext, FollowListActivity.class);
+      intent.putExtra(EXTRA_KEY_USERNAME, mUsername);
+      intent.putExtra(EXTRA_KEY_FOLLOWING, followingCount);
+      intent.putExtra(EXTRA_KEY_FOLLOWERS, followersCount);
+      mContext.startActivity(intent);
+    }
   }
 
   private void userFollowFailed() {
@@ -279,17 +287,16 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     t("Failed to follow " + mUsername);
   }
 
-  private void userUnFollowedOnSteem() {
-    showFollowProgress(false);
-    setFollowState(false);
-    syncFollowings();
-    t("You un-followed " + mUsername);
-  }
-
-  private void userUnfollowFailed() {
+  private void userFollowedOnSteem() {
     showFollowProgress(false);
     setFollowState(true);
-    t("Failed to un-follow " + mUsername);
+    syncFollowings();
+    refreshFollowingInfo();
+    t("You started following " + mUsername);
+  }
+
+  private void refreshFollowingInfo() {
+    followCountManager.requestFollowInfo(mUsername);
   }
 
   private void setFollowState(boolean state) {
@@ -302,10 +309,17 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     }
   }
 
-  private void navigateToFollowListPage() {
-    Intent intent = new Intent(mContext, FollowListActivity.class);
-    intent.putExtra(EXTRA_KEY_USERNAME, mUsername);
-    mContext.startActivity(intent);
+  private void userUnFollowedOnSteem() {
+    try {
+      showFollowProgress(false);
+      setFollowState(false);
+      syncFollowings();
+      refreshFollowingInfo();
+      t("You unfollowed " + mUsername);
+    }
+    catch (Exception e) {
+      Crashlytics.log(e.toString());
+    }
   }
 
   private void t(String s) {
@@ -410,7 +424,9 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 
   public void setPostsCount(long count) {
     String text = count > 1 ? count + " Posts" : count + " Post";
-    postCounts.setText(text);
+    if (postCounts != null) {
+      postCounts.setText(text);
+    }
   }
 
   private void fetchUserCommunities() {
@@ -441,23 +457,47 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     mContext.startActivity(intent);
   }
 
+  private void userUnfollowFailed() {
+    try {
+      showFollowProgress(false);
+      setFollowState(true);
+      t("Failed to unfollow " + mUsername);
+    }
+    catch (Exception e) {
+      Crashlytics.log(e.toString());
+    }
+  }
+
   @Override
   public void onFollowInfo(final int follower, final int followings) {
+    this.followersCount = follower;
+    this.followingCount = followings;
+    followInfoAvailable = true;
     mHandler.post(new Runnable() {
       @Override
       public void run() {
-        String followerText = follower > 1 ?
-          String.format(getContext().getString(R.string.profile_follower_count_text), follower) :
-          String.format(getContext().getString(R.string.profile_follower_count_text_singular), follower);
-
-        String followingText = followings > 1 ?
-          String.format(getContext().getString(R.string.profile_following_count_text_plural), followings) :
-          String.format(getContext().getString(R.string.profile_following_count_text_singular), followings);
-
-        followingsCount.setText(followingText);
-        followersCount.setText(followerText);
+        setFollowerCount(follower);
+        setFollowingCount(followings);
       }
     });
+  }
+
+  private void setFollowerCount(int count) {
+    String followerText = count > 1 ?
+      String.format(getContext().getString(R.string.profile_follower_count_text), count) :
+      String.format(getContext().getString(R.string.profile_follower_count_text_singular), count);
+    if (followersCountTv != null) {
+      followersCountTv.setText(followerText);
+    }
+  }
+
+  private void setFollowingCount(int count) {
+    String followingText = count > 1 ?
+      String.format(getContext().getString(R.string.profile_following_count_text_plural), count) :
+      String.format(getContext().getString(R.string.profile_following_count_text_singular), count);
+    if (followersCountTv != null) {
+      followingsCountTv.setText(followingText);
+    }
   }
 
   @Override

@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="64dp"
+    android:background="#ffffff"
     android:padding="8dp">
 
     <ImageView
@@ -19,8 +20,8 @@
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:lines="1"
+        android:background="?selectableItemBackground"
         android:paddingLeft="8dp"
-        android:text="bxute"
         android:textColor="@color/Black87"
         android:textSize="16sp" />
 
