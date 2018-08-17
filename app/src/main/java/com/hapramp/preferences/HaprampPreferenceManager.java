@@ -152,16 +152,6 @@ public class HaprampPreferenceManager {
     return preferences.getString("userId", "");
   }
 
-  public void setUserEmail(String s) {
-    editor.putString("userEmail", s);
-    editor.apply();
-  }
-
-  public void setUser(String user) {
-    editor.putString("userJson", user);
-    editor.apply();
-  }
-
   public void incrementUnreadNotifications() {
     setUnreadNotification(getUnreadNotifications() + 1);
   }
@@ -174,20 +164,6 @@ public class HaprampPreferenceManager {
   public int getUnreadNotifications() {
     return preferences.getInt("unread_notif", 0);
   }
-
-  public String getArticleAsDraft() {
-    return preferences.getString("articleDraft", "");
-  }
-
-  public void saveCurrentUserFollowingsAsJson(String json) {
-    editor.putString("current_user_followings", json);
-    editor.apply();
-  }
-
-  public String getCurrentUserFollowingsAsJson() {
-    return preferences.getString("current_user_followings", "");
-  }
-
 
   public void saveCurrentUserFollowings(ArrayList<String> followings) {
     Set<String> set = new HashSet<String>();

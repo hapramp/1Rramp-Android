@@ -8,12 +8,6 @@ public abstract class LazyLoader implements AbsListView.OnScrollListener {
   private int previousTotal = 0 ;
   private int threshold = DEFAULT_THRESHOLD ;
 
-  public LazyLoader() {}
-
-  public LazyLoader(int threshold) {
-    this.threshold = threshold;
-  }
-
   @Override
   public void onScrollStateChanged(AbsListView view, int scrollState) {
   }

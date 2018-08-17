@@ -29,7 +29,6 @@ import static com.hapramp.ui.activity.FollowListActivity.EXTRA_KEY_USERNAME;
  * A simple {@link Fragment} subclass.
  */
 public class FollowersFragment extends Fragment implements FollowersApi.FollowerCallback, UserItemView.FollowStateChangeListener {
-  public static final int FRAGMENT_FOLLOWERS = 1;
   @BindView(R.id.followersRv)
   RecyclerView followersRV;
   Unbinder unbinder;

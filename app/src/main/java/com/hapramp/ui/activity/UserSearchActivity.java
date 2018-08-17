@@ -34,7 +34,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class UserSearchActivity extends AppCompatActivity implements UserSearchManager.UserSearchListener{
-  public static final String TAG = UserSearchActivity.class.getSimpleName();
   private static boolean SEARCH_MODE = false;
   private final String backTextIcon = "\uF04D";
   private final String closeSearchTextIcon = "\uF156";

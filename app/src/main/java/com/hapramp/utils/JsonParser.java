@@ -19,23 +19,6 @@ public class JsonParser {
     markdownPreProcessor = new MarkdownPreProcessor();
   }
 
-  //Structure: {"jsonrpc":"2.0","result":{"feed":[{....
-  public ArrayList<Feed> parseFeedStructure1(String response) {
-    ArrayList<Feed> feeds = new ArrayList<>();
-    try {
-      JSONObject ro = new JSONObject(response);
-      JSONObject resultObj = ro.getJSONObject("result");
-      JSONArray feedsArray = resultObj.getJSONArray("feed");
-      for (int i = 0; i < feedsArray.length(); i++) {
-        feeds.add(parseCoreData((JSONObject) feedsArray.get(i)));
-      }
-    }
-    catch (JSONException e) {
-      e.printStackTrace();
-    }
-    return feeds;
-  }
-
   private Feed parseCoreData(JSONObject rootObject) {
     Feed feed = new Feed();
     try {

@@ -68,16 +68,8 @@ public class Voter implements Parcelable {
     this.percent = percent;
   }
 
-  public String getReputation() {
-    return reputation;
-  }
-
   public void setReputation(String reputation) {
     this.reputation = reputation;
-  }
-
-  public String getVoteTime() {
-    return voteTime;
   }
 
   public void setVoteTime(String voteTime) {

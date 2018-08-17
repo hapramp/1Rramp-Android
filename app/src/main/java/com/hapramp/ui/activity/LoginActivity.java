@@ -44,7 +44,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
-  public static final String TAG = LoginActivity.class.getSimpleName();
   private static final int ACCESS_TOKEN_REQUEST_CODE = 109;
   @BindView(R.id.connectivityText)
   TextView connectivityText;

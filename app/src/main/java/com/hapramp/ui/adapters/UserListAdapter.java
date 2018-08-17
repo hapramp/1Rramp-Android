@@ -26,11 +26,6 @@ public class UserListAdapter extends ArrayAdapter<String> {
     notifyDataSetChanged();
   }
 
-  public void appendUserList(ArrayList<String> usernames) {
-    this.usernames.addAll(usernames);
-    notifyDataSetChanged();
-  }
-
   @Override
   public int getCount() {
     return usernames.size();

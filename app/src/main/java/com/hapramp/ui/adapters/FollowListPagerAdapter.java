@@ -24,7 +24,6 @@ public class FollowListPagerAdapter extends FragmentPagerAdapter implements Foll
   private FollowCountManager followCountManager;
   ArrayList<Fragment> fragments = new ArrayList<>();
   ArrayList<String> titles = new ArrayList<>();
-  private UserItemView.FollowStateChangeListener followStateChangeListener;
   private int followingCount;
   private int followersCount;
   private Handler mHandler;

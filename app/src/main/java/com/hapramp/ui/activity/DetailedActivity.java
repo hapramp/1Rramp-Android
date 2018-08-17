@@ -348,12 +348,6 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     }
   }
 
-  private void showProgress(String msg) {
-    progressDialog.setMessage(msg);
-    progressDialog.setCancelable(false);
-    progressDialog.show();
-  }
-
   private void setTypefaces() {
     Typeface t = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
     closeBtn.setTypeface(t);

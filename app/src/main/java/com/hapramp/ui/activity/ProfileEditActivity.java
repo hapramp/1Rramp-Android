@@ -41,8 +41,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ProfileEditActivity extends AppCompatActivity {
-
-  private static final int REQUEST_IMAGE_SELECTOR = 101;
   private static final int USER_PROFILE_IMAGE_REQUEST = 102;
   private static final int USER_COVER_IMAGE_REQUEST = 103;
   @BindView(R.id.backButton)

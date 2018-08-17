@@ -36,7 +36,6 @@ import butterknife.ButterKnife;
  * */
 
 public class CommunitySelectionActivity extends BaseActivity implements CommunitySelectionPageCallback, CommunitySelectionView.CommunitySelectionListener {
-  public static final String TAG = CommunitySelectionActivity.class.getSimpleName();
   public static final String EXTRA_PRESELECTED_MODE = "preselected_mode";
   @BindView(R.id.action_bar_title)
   TextView actionBarTitle;

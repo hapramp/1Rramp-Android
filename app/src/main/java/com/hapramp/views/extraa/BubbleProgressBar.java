@@ -23,7 +23,6 @@ public class BubbleProgressBar extends View {
   private static double mPhaseDifference = 0;
   private Resources resources;
   private float mBubbleMaxRadiusInPx;
-  private float mBubbleMinRadiusInPx;
   private float mBubbleGapInPx;
   private Paint mPaint;
   private int calculatedViewWidth;
@@ -37,7 +36,6 @@ public class BubbleProgressBar extends View {
   private void init(Context context) {
     resources = context.getResources();
     mBubbleMaxRadiusInPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, BUBBLE_MAX_RADIUS_IN_DP, resources.getDisplayMetrics());
-    mBubbleMinRadiusInPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, BUBBLE_MIN_RADIUS_IN_DP, resources.getDisplayMetrics());
     mBubbleGapInPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, BUBBLE_GAP_IN_DP, resources.getDisplayMetrics());
     mPaint = new Paint();
     mPaint.setStyle(Paint.Style.FILL);
@@ -100,7 +98,7 @@ public class BubbleProgressBar extends View {
 
   @Override
   protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-    int width = getPaddingStart() + getPaddingEnd() + calculatedViewWidth;
+    int width = getPaddingLeft() + getPaddingRight() + calculatedViewWidth;
     int height = getPaddingTop() + getPaddingBottom() + calculatedViewHeight;
     int w = resolveSizeAndState(width, widthMeasureSpec, 0);
     int h = resolveSizeAndState(height, heightMeasureSpec, 0);
