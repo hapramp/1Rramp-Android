@@ -43,15 +43,6 @@ public interface HaprampAPI {
   @GET("users/usernames/{username}")
   Call<UserModel> fetchUserCommunities(@Path("username") String username);
 
-  @POST("posts")
-  Call<ProcessedBodyResponse> sendForPreProcessing(@Body PreProcessingModel preProcessingModel);
-
-  @POST
-  Call<String> getTransferHistory(@Url String url, @Body String body);
-
-  @POST("posts/_confirm")
-  Call<ConfirmationResponse> sendPostCreationConfirmation(@Body PostConfirmationModel postConfirmationModel);
-
   @POST("posts/comments/_notify")
   Call<ConfirmationResponse> notifyCommentOnPost(@Query("permlink") String permlink);
 
@@ -64,38 +55,8 @@ public interface HaprampAPI {
   @PUT("users/communities")
   Call<CommunitySelectionResponse> updateCommunitySelections(@Body CommunitySelectionServerUpdateBody body);
 
-  @GET("feeds/user/{username}")
-  Call<FeedResponse> getUserFeeds(@Path("username") String username, @Query("limit") int limit);
-
   @GET
   Call<FeedWrapper> getFeedFromSteem(@Url String url);
-
-  @GET("feeds/user/{username}")
-  Call<FeedResponse> getUserFeeds(@Path("username") String username, @Query("limit") int limit, @Query("start_author") String lastAuthor, @Query("start_permlink") String lastPermlink);
-
-  @GET("feeds/blog/{username}")
-  Call<FeedResponse> getPostsOfUser(@Path("username") String username, @Query("limit") int limit);
-
-  @GET("feeds/blog/{username}")
-  Call<FeedResponse> getPostsOfUser(@Path("username") String username, @Query("limit") int limit, @Query("start_author") String lastAuthor, @Query("start_permlink") String lastPermlink);
-
-  @GET("feeds/created/{tag}")
-  Call<FeedResponse> getLatestFeed(@Path("tag") String tag, @Query("limit") int limit);
-
-  @GET("feeds/created/{tag}")
-  Call<FeedResponse> getLatestFeed(@Path("tag") String tag, @Query("limit") int limit, @Query("start_author") String lastAuthor, @Query("start_permlink") String lastPermlink);
-
-  @GET("feeds/hot/{tag}")
-  Call<FeedResponse> getHotFeed(@Path("tag") String tag, @Query("limit") int limit);
-
-  @GET("feeds/hot/{tag}")
-  Call<FeedResponse> getHotFeed(@Path("tag") String tag, @Query("limit") int limit, @Query("start_author") String lastAuthor, @Query("start_permlink") String lastPermlink);
-
-  @GET("feeds/trending/{tag}")
-  Call<FeedResponse> getTrendingFeed(@Path("tag") String tag, @Query("limit") int limit);
-
-  @GET("feeds/trending/{tag}")
-  Call<FeedResponse> getTrendingFeed(@Path("tag") String tag, @Query("limit") int limit, @Query("start_author") String lastAuthor, @Query("start_permlink") String lastPermlink);
 
   @GET("users/usernames/{username}")
   Call<UserModel> getUserFromUsername(@Path("username") String username);
