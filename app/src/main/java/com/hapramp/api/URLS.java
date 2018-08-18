@@ -5,6 +5,6 @@ package com.hapramp.api;
  */
 
 public class URLS {
-  public static final String BASE_URL = "https://hapramp-server.padding12.hasura-app.io/api/v2/";
+  public static final String BASE_URL = "https://api.hapramp.com/api/v2/";
   public static final String STEEM_USER_FEED_URL = "https://steemit.com%s.json";
 }

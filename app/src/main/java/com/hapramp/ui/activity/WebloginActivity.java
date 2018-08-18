@@ -38,7 +38,7 @@ public class WebloginActivity extends AppCompatActivity {
     progressDialog.setCancelable(false);
     progressDialog.setIndeterminate(true);
     progressDialog.setMax(100);
-    progressDialog.setMessage("Loading SteemConnect for Authentication...");
+    progressDialog.setMessage("Loading...");
     progressDialog.show();
   }
 
@@ -60,6 +60,8 @@ public class WebloginActivity extends AppCompatActivity {
           Map<String, String> urlMap = splitQuery(new URL(url));
           if (urlMap.containsKey(Constants.EXTRA_ACCESS_TOKEN)) {
             sendBackResult(urlMap.get(Constants.EXTRA_USERNAME), urlMap.get(Constants.EXTRA_ACCESS_TOKEN));
+          } else {
+            sendBackError();
           }
         }
         catch (UnsupportedEncodingException e) {
@@ -72,16 +74,19 @@ public class WebloginActivity extends AppCompatActivity {
       }
     });
     webView.loadUrl(loginUrl);
-
   }
 
   public static Map<String, String> splitQuery(URL url) throws UnsupportedEncodingException {
     Map<String, String> query_pairs = new LinkedHashMap<String, String>();
-    String query = url.getQuery();
-    String[] pairs = query.split("&");
-    for (String pair : pairs) {
-      int idx = pair.indexOf("=");
-      query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+    if (url != null) {
+      String query = url.getQuery();
+      if (query != null) {
+        String[] pairs = query.split("&");
+        for (String pair : pairs) {
+          int idx = pair.indexOf("=");
+          query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+        }
+      }
     }
     return query_pairs;
   }
@@ -91,6 +96,12 @@ public class WebloginActivity extends AppCompatActivity {
     intent.putExtra(Constants.EXTRA_USERNAME, username);
     intent.putExtra(Constants.EXTRA_ACCESS_TOKEN, token);
     setResult(RESULT_OK, intent);
+    finish();
+  }
+
+  private void sendBackError() {
+    Intent intent = new Intent();
+    setResult(RESULT_CANCELED, intent);
     finish();
   }
 }

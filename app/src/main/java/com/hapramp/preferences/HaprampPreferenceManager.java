@@ -15,8 +15,7 @@ import java.util.Set;
  */
 
 public class HaprampPreferenceManager {
-
-  private static final String PREF_NAME = "hapramp_pref";
+  private static final String PREF_NAME = "1ramp_pref";
   private static SharedPreferences preferences;
   private static SharedPreferences.Editor editor;
   private static HaprampPreferenceManager mInstance;

@@ -253,12 +253,12 @@ public class LoginActivity extends AppCompatActivity {
       public void onResponse(Call<VerifiedToken> call, Response<VerifiedToken> response) {
         hideShadedProgress();
         if (response.isSuccessful()) {
-          //save token
           HaprampPreferenceManager.getInstance().saveCurrentSteemUsername(username);
           HaprampPreferenceManager.getInstance().saveUserToken(response.body().token);
           HaprampPreferenceManager.getInstance().setLoggedIn(true);
           syncUserAccount();
         } else {
+          Crashlytics.log("LoginError:" + response.toString());
           Toast.makeText(LoginActivity.this, "Verification failed!!", Toast.LENGTH_LONG).show();
         }
         hideProgressDialog();
@@ -266,6 +266,7 @@ public class LoginActivity extends AppCompatActivity {
 
       @Override
       public void onFailure(Call<VerifiedToken> call, Throwable t) {
+        Crashlytics.log("LoginError:" + t.toString());
         Toast.makeText(LoginActivity.this, "Verification failed!!", Toast.LENGTH_LONG).show();
         hideProgressDialog();
       }
