@@ -62,6 +62,8 @@
             android:id="@+id/featured_image_post"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minHeight="256dp"
+            android:background="#20919191"
             android:scaleType="fitCenter"
             android:visibility="gone" />
 
