@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -14,6 +15,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.bumptech.glide.request.target.Target;
 import com.hapramp.R;
+import com.hapramp.preferences.HaprampPreferenceManager;
 
 
 /**
@@ -21,10 +23,17 @@ import com.hapramp.R;
  */
 
 public class ImageHandler {
-
+  static int imageWidth;
   public static void load(Context context, ImageView target, String _uri) {
+    imageWidth = HaprampPreferenceManager
+      .getInstance()
+      .getDeviceWidth() / HaprampPreferenceManager
+      .getInstance()
+      .getImageDowngradeFactor();
+    String final_url = "https://steemitimages.com/" + imageWidth + "x0/" + _uri;
+    NetworkQualityUtils.startNetworkSampling();
     Glide.with(context)
-      .load(_uri)
+      .load(final_url)
       .diskCacheStrategy(DiskCacheStrategy.RESULT)
       .listener(new RequestListener<String, GlideDrawable>() {
         @Override
@@ -36,6 +45,7 @@ public class ImageHandler {
         public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
           GlideDrawableImageViewTarget glideTarget = (GlideDrawableImageViewTarget) target;
           ImageView iv = glideTarget.getView();
+          NetworkQualityUtils.stopstartNetworkSampling();
           int width = iv.getMeasuredWidth();
           int targetHeight = width * resource.getIntrinsicHeight() / resource.getIntrinsicWidth();
           if (iv.getLayoutParams().height != targetHeight) {
@@ -45,27 +55,13 @@ public class ImageHandler {
           return false;
         }
       })
-      .skipMemoryCache(true)
+      .skipMemoryCache(false)
       .into(target);
-  }
-
-  public static void loadSmaller(Context context, ImageView imageView, String _uri) {
-    try {
-      Glide.with(context)
-        .load(_uri)
-        .skipMemoryCache(true)
-        .override(PixelUtils.dpToPx(72), PixelUtils.dpToPx(72))
-        .centerCrop()
-        .diskCacheStrategy(DiskCacheStrategy.RESULT)
-        .into(imageView);
-
-    }
-    catch (IllegalArgumentException e) {
-    }
   }
 
   public static void loadCircularImage(final Context context, final ImageView imageView, String url) {
     try {
+      NetworkQualityUtils.startNetworkSampling();
       Glide.with(context)
         .load(url)
         .asBitmap()
@@ -78,6 +74,7 @@ public class ImageHandler {
           protected void setResource(Bitmap resource) {
             RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(context.getResources(), resource);
             circularBitmapDrawable.setCircular(true);
+            NetworkQualityUtils.stopstartNetworkSampling();
             imageView.setImageDrawable(circularBitmapDrawable);
           }
         });
@@ -85,4 +82,6 @@ public class ImageHandler {
     catch (IllegalArgumentException e) {
     }
   }
+
+
 }

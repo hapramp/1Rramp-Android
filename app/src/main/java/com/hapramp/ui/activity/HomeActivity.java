@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -106,6 +108,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_home);
     ButterKnife.bind(this);
+    saveDeviceWidth();
     RepeatPostCreationUtils.syncLastPostCreationTime();
     syncCommunities();
     syncUserCommunities();
@@ -118,6 +121,12 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     transactFragment(FRAGMENT_HOME);
   }
 
+  private void saveDeviceWidth() {
+    Resources resources = getResources();
+    DisplayMetrics displayMetrics = resources.getDisplayMetrics();
+    int deviceWidth = displayMetrics.widthPixels;
+    HaprampPreferenceManager.getInstance().setDEviceWidth(deviceWidth);
+  }
   private void syncUserFollowings() {
     FollowingsSyncUtils.syncFollowings(this);
   }

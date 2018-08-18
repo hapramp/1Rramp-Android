@@ -185,4 +185,22 @@ public class HaprampPreferenceManager {
     editor.apply();
   }
 
+  public void setDEviceWidth(int width) {
+    editor.putInt("deviceWidth", width);
+    editor.apply();
+  }
+
+  public int getDeviceWidth() {
+    return preferences.getInt("deviceWidth", 0);
+  }
+
+
+  public int getImageDowngradeFactor() {
+    return preferences.getInt("image_load_down_grade_factor", 2);
+  }
+
+  public void setImageLoaddownGradeFactor(int downGradeFactor) {
+    editor.putInt("image_load_down_grade_factor", downGradeFactor);
+    editor.apply();
+  }
 }
