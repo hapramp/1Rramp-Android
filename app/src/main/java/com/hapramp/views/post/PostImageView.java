@@ -55,6 +55,7 @@ public class PostImageView extends FrameLayout {
   private Context mContext;
   private final int MAX_RETRY_COUNT = 5;
   private int retryCount = 0;
+  private boolean imageRemoved;
 
 
   public PostImageView(@NonNull Context context) {
@@ -85,6 +86,7 @@ public class PostImageView extends FrameLayout {
         scaleAndHideMainView();
         if (imageActionListener != null) {
           imageActionListener.onImageRemoved();
+          imageRemoved = true;
         }
       }
     });
@@ -143,6 +145,7 @@ public class PostImageView extends FrameLayout {
 
   public void setImageSource(String filePath) {
     invalidateView();
+    imageRemoved = false;
     mainView.setVisibility(VISIBLE);
     ImageHandler.load(mContext,image,filePath);
     informationTv.setVisibility(VISIBLE);
@@ -151,7 +154,7 @@ public class PostImageView extends FrameLayout {
   }
 
   private void retryUpload(String filePath) {
-    if (informationTv != null) {
+    if (informationTv != null && !imageRemoved) {
       retryCount++;
       if (retryCount > MAX_RETRY_COUNT)
         return;
@@ -178,21 +181,21 @@ public class PostImageView extends FrameLayout {
             }
             showAndhideActionContainer();
           } else {
-            Log.d("ImageUpload", response.errorBody().toString());
             Crashlytics.log(response.errorBody().toString());
             downloadUrl = null;
             progressBar.setVisibility(GONE);
             retryUpload(filePath);
+            Log.d("ImageUploadDebug", "unsuccessfullResponse " + response.toString());
           }
         }
 
         @Override
         public void onFailure(Call<FileUploadReponse> call, Throwable t) {
-          Log.d("ImageUpload", t.toString());
           Crashlytics.logException(t);
           progressBar.setVisibility(GONE);
           downloadUrl = null;
           retryUpload(filePath);
+          Log.d("ImageUploadDebug", "onFailure() " + t.toString());
         }
       });
     }
