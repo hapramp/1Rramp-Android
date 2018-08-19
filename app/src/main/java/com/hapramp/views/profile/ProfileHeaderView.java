@@ -118,6 +118,7 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   private int followersCount;
   private int followingCount;
   private boolean followInfoAvailable;
+  private User cachedUserProfileData;
 
   public ProfileHeaderView(@NonNull Context context) {
     super(context);
@@ -126,6 +127,7 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 
   private void init(Context context) {
     mContext = context;
+    loaded = false;
     View view = LayoutInflater.from(context).inflate(R.layout.profile_header_view, this);
     ButterKnife.bind(this, view);
     mHandler = new Handler();
@@ -356,9 +358,9 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   private void checkCacheAndLoad() {
     String json = HaprampPreferenceManager.getInstance().getUserProfile(mUsername);
     if (json.length() > 0) {
-      User steemUser = new Gson().fromJson(json, User.class);
-      if (steemUser.getUsername() != null) {
-        bind(steemUser);
+      cachedUserProfileData = new Gson().fromJson(json, User.class);
+      if (cachedUserProfileData.getUsername() != null) {
+        bind(cachedUserProfileData);
       }
     }
   }
@@ -380,19 +382,27 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     if (profileHeaderViewReal != null) {
       profileHeaderViewReal.setVisibility(VISIBLE);
     }
-    //check for null view(incase view is removed)
+    //check for null view(in case view is removed)
     if (usernameTv == null)
       return;
-    loaded = true;
-    String profile_pic = String.format(getResources().getString(R.string.steem_user_profile_pic_format_large), mUsername);
-    String wall_pic_url = data.getCover_image().length() > 0 ? data.getCover_image()
-      :
+    String wall_pic_url = data.getCover_image().length() > 0 ? data.getCover_image() :
       mContext.getResources().getString(R.string.default_wall_pic);
-    String _bio = data.getAbout();
-    ImageHandler.loadCircularImage(mContext, profilePic, profile_pic);
-    ImageHandler.load(mContext, profileWallPic, wall_pic_url);
+    String profile_pic = String.format(getResources().getString(R.string.steem_user_profile_pic_format_large), mUsername);
+    if (loaded) {
+      if (!cachedUserProfileData.getCover_image().equals(data.getCover_image())) {
+        ImageHandler.load(mContext, profileWallPic, wall_pic_url);
+      }
+
+      if (!cachedUserProfileData.getProfile_image().equals(data.getProfile_image())) {
+        ImageHandler.loadCircularImage(mContext, profilePic, profile_pic);
+      }
+    } else {
+      ImageHandler.load(mContext, profileWallPic, wall_pic_url);
+      ImageHandler.loadCircularImage(mContext, profilePic, profile_pic);
+    }
     usernameTv.setText(data.getFullname());
     hapname.setText(String.format("@%s", data.getUsername()));
+    String _bio = data.getAbout();
     bio.setText(_bio);
     setPostsCount(data.getPostCount());
     if (mUsername.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
@@ -408,13 +418,15 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
       });
       CommunityListWrapper listWrapper = new Gson().fromJson(HaprampPreferenceManager
         .getInstance().getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
-      interestsView.setCommunities(listWrapper.getCommunityModels(), true);
+      if (interestsView != null)
+        interestsView.setCommunities(listWrapper.getCommunityModels(), true);
     } else {
       followBtn.setVisibility(VISIBLE);
       editBtn.setVisibility(GONE);
       invalidateFollowButton();
       fetchUserCommunities();
     }
+    loaded = true;
   }
 
   public void setPostsCount(long count) {

@@ -56,4 +56,5 @@
     <string name="loading_community_message">Loading communities...</string>
     <string name="token_request_loading_message">Loading...</string>
     <string name="community_save_progress_mesaage">Saving your communities...</string>
+    <string name="app_exit_alert_message">Exit?</string>
 </resources>
