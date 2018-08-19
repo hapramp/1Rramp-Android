@@ -9,7 +9,9 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import javax.net.SocketFactory;
-
+/*
+* Original source: https://gist.github.com/slightfoot/00a26683ea68856ceb50e26c7d8a47d0
+* */
 public class RestrictedSocketFactory extends SocketFactory {
   private static final String TAG = RestrictedSocketFactory.class.getSimpleName();
 
