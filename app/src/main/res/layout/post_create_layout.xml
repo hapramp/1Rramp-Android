@@ -228,7 +228,7 @@
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
-            <com.hapramp.views.post.PostCategoryView
+            <com.hapramp.views.post.PostCommunityView
                 android:id="@+id/inline_postCategoryView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

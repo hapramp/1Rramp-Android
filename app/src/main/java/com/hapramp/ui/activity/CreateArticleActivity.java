@@ -36,7 +36,7 @@ import com.hapramp.utils.ImageFilePathReader;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.views.editor.LinkInsertDialog;
 import com.hapramp.views.hashtag.CustomHashTagInput;
-import com.hapramp.views.post.PostCategoryView;
+import com.hapramp.views.post.PostCommunityView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +67,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   @BindView(R.id.community_caption)
   TextView communityCaption;
   @BindView(R.id.articleCategoryView)
-  PostCategoryView articleCategoryView;
+  PostCommunityView articleCategoryView;
   @BindView(R.id.tagsCaption)
   TextView tagsCaption;
   @BindView(R.id.tagsInputBox)

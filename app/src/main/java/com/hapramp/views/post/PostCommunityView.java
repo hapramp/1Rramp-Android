@@ -25,7 +25,7 @@ import java.util.List;
  * Created by Ankit on 12/25/2017.
  */
 
-public class PostCategoryView extends FrameLayout {
+public class PostCommunityView extends FrameLayout {
 
   private ViewGroup rootView;
   private Context mContext;
@@ -33,7 +33,7 @@ public class PostCategoryView extends FrameLayout {
   private ArrayList<String> selectedTags;
   private CommunitySelectionChangeListener communitySelectionChangeListener;
 
-  public PostCategoryView(@NonNull Context context) {
+  public PostCommunityView(@NonNull Context context) {
     super(context);
     mContext = context;
     init();
@@ -46,13 +46,13 @@ public class PostCategoryView extends FrameLayout {
     selectedTags.add(Communities.TAG_HAPRAMP);
   }
 
-  public PostCategoryView(@NonNull Context context, @Nullable AttributeSet attrs) {
+  public PostCommunityView(@NonNull Context context, @Nullable AttributeSet attrs) {
     super(context, attrs);
     mContext = context;
     init();
   }
 
-  public PostCategoryView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+  public PostCommunityView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     mContext = context;
     init();
@@ -92,7 +92,7 @@ public class PostCategoryView extends FrameLayout {
           if (index == -1) {
             // select it
             if (selectedTags.size() > 3) {
-              Toast.makeText(mContext, "Maximum 3 Skills", Toast.LENGTH_LONG).show();
+              Toast.makeText(mContext, "Maximum 3 Communities", Toast.LENGTH_LONG).show();
             } else {
               view.setSelected(true);
               selectedTags.add((String) view.getTag());

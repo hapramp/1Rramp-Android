@@ -73,7 +73,7 @@
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
-            <com.hapramp.views.post.PostCategoryView
+            <com.hapramp.views.post.PostCommunityView
                 android:id="@+id/articleCategoryView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

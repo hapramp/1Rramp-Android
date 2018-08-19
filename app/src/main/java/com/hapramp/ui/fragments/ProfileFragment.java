@@ -2,15 +2,19 @@ package com.hapramp.ui.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
@@ -33,7 +37,10 @@ public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCa
   private static final String TAG = ProfileFragment.class.getSimpleName();
   @BindView(R.id.profilePostRv)
   RecyclerView profilePostRv;
+  @BindView(R.id.profileRefreshLayout)
+  SwipeRefreshLayout profileRefreshLayout;
   private Context mContext;
+  private Resources resources;
   private ProfileRecyclerAdapter profilePostAdapter;
   private ViewItemDecoration viewItemDecoration;
   private Unbinder unbinder;
@@ -52,6 +59,7 @@ public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCa
   public void onAttach(Context context) {
     super.onAttach(context);
     this.mContext = context;
+    resources = mContext.getResources();
     AnalyticsUtil.getInstance(getActivity()).setCurrentScreen((Activity) mContext, AnalyticsParams.SCREEN_SELF_PROFILE, null);
   }
 
@@ -69,7 +77,6 @@ public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCa
     View view = inflater.inflate(R.layout.fragment_profile, container, false);
     unbinder = ButterKnife.bind(this, view);
     init();
-    fetchPosts();
     return view;
   }
 
@@ -108,6 +115,13 @@ public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCa
   }
 
   private void setScrollListener() {
+    profileRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+      @Override
+      public void onRefresh() {
+        fetchPosts();
+      }
+    });
+
     profilePostRv.addOnScrollListener(new EndlessOnScrollListener(llm) {
       @Override
       public void onScrolledToEnd() {
@@ -123,11 +137,22 @@ public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCa
   @Override
   public void onDataLoaded(ArrayList<Feed> feeds) {
     profilePostAdapter.setPosts(feeds);
+    if (profileRefreshLayout != null) {
+      if (profileRefreshLayout.isRefreshing()) {
+        profileRefreshLayout.setRefreshing(false);
+        Toast.makeText(mContext, "Refreshed your posts.", Toast.LENGTH_LONG).show();
+      }
+    }
   }
 
   @Override
   public void onDataLoadError() {
-
+    if (profileRefreshLayout != null) {
+      if (profileRefreshLayout.isRefreshing()) {
+        profileRefreshLayout.setRefreshing(false);
+        Toast.makeText(mContext, "Failed to refresh your posts.", Toast.LENGTH_LONG).show();
+      }
+    }
   }
 
   public abstract class EndlessOnScrollListener extends RecyclerView.OnScrollListener {
@@ -147,6 +172,7 @@ public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCa
         onScrolledToEnd();
       }
     }
+
     public abstract void onScrolledToEnd();
   }
 }

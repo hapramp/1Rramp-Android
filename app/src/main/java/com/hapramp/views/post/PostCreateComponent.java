@@ -3,7 +3,6 @@ package com.hapramp.views.post;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.Space;
@@ -38,7 +37,7 @@ import butterknife.ButterKnife;
  * Created by Ankit on 4/1/2018.
  */
 
-public class PostCreateComponent extends FrameLayout implements PostCategoryView.CommunitySelectionChangeListener {
+public class PostCreateComponent extends FrameLayout implements PostCommunityView.CommunitySelectionChangeListener {
 
   @BindView(R.id.feed_owner_pic)
   ImageView feedOwnerPic;
@@ -79,7 +78,7 @@ public class PostCreateComponent extends FrameLayout implements PostCategoryView
   @BindView(R.id.inline_category_caption)
   TextView inlineCategoryCaption;
   @BindView(R.id.inline_postCategoryView)
-  PostCategoryView inlinePostCategoryView;
+  PostCommunityView inlinePostCommunityView;
   @BindView(R.id.inline_community_selector_container)
   RelativeLayout inlineCommunitySelectorContainer;
   @BindView(R.id.inline_hashtags)
@@ -100,8 +99,8 @@ public class PostCreateComponent extends FrameLayout implements PostCategoryView
     this.mContext = context;
     View view = LayoutInflater.from(context).inflate(R.layout.post_create_layout, this);
     ButterKnife.bind(this, view);
-    inlinePostCategoryView.initCategory();
-    inlinePostCategoryView.setCommunitySelectionChangeListener(this);
+    inlinePostCommunityView.initCategory();
+    inlinePostCommunityView.setCommunitySelectionChangeListener(this);
     User steemUser = new Gson().fromJson(HaprampPreferenceManager.getInstance().getCurrentUserInfoAsJson(), User.class);
     String pic_url = steemUser.getProfile_image();
     ImageHandler.loadCircularImage(context, feedOwnerPic, pic_url);
@@ -209,7 +208,7 @@ public class PostCreateComponent extends FrameLayout implements PostCategoryView
   }
 
   public List<String> getSelectedCommunityTags() {
-    return inlinePostCategoryView.getSelectedTags();
+    return inlinePostCommunityView.getSelectedTags();
   }
 
   public String getBody() {
