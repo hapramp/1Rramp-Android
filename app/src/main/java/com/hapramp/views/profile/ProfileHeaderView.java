@@ -388,7 +388,7 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     String wall_pic_url = data.getCover_image().length() > 0 ? data.getCover_image() :
       mContext.getResources().getString(R.string.default_wall_pic);
     String profile_pic = String.format(getResources().getString(R.string.steem_user_profile_pic_format_large), mUsername);
-    if (loaded) {
+    if (loaded && cachedUserProfileData != null) {
       if (!cachedUserProfileData.getCover_image().equals(data.getCover_image())) {
         ImageHandler.load(mContext, profileWallPic, wall_pic_url);
       }
@@ -539,7 +539,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     }
     String json = new Gson().toJson(user);
     HaprampPreferenceManager.getInstance().saveUserProfile(mUsername, json);
-    bind(user);
   }
 
   @Override
