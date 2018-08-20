@@ -156,7 +156,7 @@ public class PostImageView extends FrameLayout implements ImageRotationHandler.I
     ImageHandler.loadFilePath(mContext, image, filePath);
     informationTv.setVisibility(VISIBLE);
     informationTv.setText("Processing...");
-    imageRotationHandler.checkOrientationAndFixImage(filePath);
+    imageRotationHandler.checkOrientationAndFixImage(filePath, 0);
   }
 
   private void retryUpload(String filePath, boolean fileNeedsToBeDeleted) {
@@ -231,7 +231,7 @@ public class PostImageView extends FrameLayout implements ImageRotationHandler.I
   }
 
   @Override
-  public void onImageRotationFixed(final String filePath, final boolean fileShouldBeDeleted) {
+  public void onImageRotationFixed(final String filePath, final boolean fileShouldBeDeleted, int uid) {
     mHandler.post(new Runnable() {
       @Override
       public void run() {

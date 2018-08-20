@@ -18,7 +18,7 @@ public class ImageRotationHandler {
     this.mContext = context;
   }
 
-  public void checkOrientationAndFixImage(final String imagePath) {
+  public void checkOrientationAndFixImage(final String imagePath, final int uid) {
     new Thread() {
       @Override
       public void run() {
@@ -33,22 +33,22 @@ public class ImageRotationHandler {
           switch (orientation) {
             case ExifInterface.ORIENTATION_ROTATE_90:
               rotatedBitmap = rotateImage(bitmap, 90);
-              saveRotatedBitampAndSendBackResults(rotatedBitmap, imagePath);
+              saveRotatedBitampAndSendBackResults(rotatedBitmap, imagePath, uid);
               break;
             case ExifInterface.ORIENTATION_ROTATE_180:
               rotatedBitmap = rotateImage(bitmap, 180);
-              saveRotatedBitampAndSendBackResults(rotatedBitmap, imagePath);
+              saveRotatedBitampAndSendBackResults(rotatedBitmap, imagePath, uid);
               break;
             case ExifInterface.ORIENTATION_ROTATE_270:
               rotatedBitmap = rotateImage(bitmap, 270);
-              saveRotatedBitampAndSendBackResults(rotatedBitmap, imagePath);
+              saveRotatedBitampAndSendBackResults(rotatedBitmap, imagePath, uid);
               break;
             default:
-              performCallback(imagePath, false);
+              performCallback(imagePath, false, uid);
           }
         }
         catch (IOException e) {
-          performCallback(imagePath, false);
+          performCallback(imagePath, false, uid);
         }
       }
     }.start();
@@ -69,19 +69,19 @@ public class ImageRotationHandler {
     return bitmap;
   }
 
-  private void saveRotatedBitampAndSendBackResults(Bitmap bitmap, String originalPath) {
+  private void saveRotatedBitampAndSendBackResults(Bitmap bitmap, String originalPath, int uid) {
     if (bitmap == null) {
-      performCallback(originalPath, false);
+      performCallback(originalPath, false, uid);
     } else {
       FileOutputStream out = null;
       try {
         File filename = new File(mContext.getCacheDir(), System.currentTimeMillis() + "_rotated_cache.png");
         out = new FileOutputStream(filename);
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-        performCallback(filename.getAbsolutePath(), true);
+        performCallback(filename.getAbsolutePath(), true, uid);
       }
       catch (Exception e) {
-        performCallback(originalPath, false);
+        performCallback(originalPath, false, uid);
         e.printStackTrace();
       }
       finally {
@@ -97,9 +97,9 @@ public class ImageRotationHandler {
     }
   }
 
-  private void performCallback(String filePath, boolean needsToBeCleaned) {
+  private void performCallback(String filePath, boolean needsToBeCleaned, int uid) {
     if (imageRotationOperationListner != null) {
-      imageRotationOperationListner.onImageRotationFixed(filePath, needsToBeCleaned);
+      imageRotationOperationListner.onImageRotationFixed(filePath, needsToBeCleaned, uid);
     }
   }
 
@@ -108,6 +108,6 @@ public class ImageRotationHandler {
   }
 
   public interface ImageRotationOperationListner {
-    void onImageRotationFixed(String filePath, boolean fileShouldBeDeleted);
+    void onImageRotationFixed(String filePath, boolean fileShouldBeDeleted, int uid);
   }
 }

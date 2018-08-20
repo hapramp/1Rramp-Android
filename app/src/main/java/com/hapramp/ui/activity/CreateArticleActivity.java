@@ -32,7 +32,7 @@ import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.steem.models.data.Content;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FontManager;
-import com.hapramp.utils.ImageFilePathReader;
+import com.hapramp.utils.GoogleImageFilePathReader;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.views.editor.LinkInsertDialog;
 import com.hapramp.views.hashtag.CustomHashTagInput;
@@ -291,7 +291,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     new Thread() {
       @Override
       public void run() {
-        final String filePath = ImageFilePathReader.getImageFilePath(CreateArticleActivity.this, intent);
+        final String filePath = GoogleImageFilePathReader.getImageFilePath(CreateArticleActivity.this, intent);
         handler.post(new Runnable() {
           @Override
           public void run() {

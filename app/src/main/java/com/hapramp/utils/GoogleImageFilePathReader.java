@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class ImageFilePathReader {
+public class GoogleImageFilePathReader {
   public static String getImageFilePath(Context context, Intent data) {
     Uri uri = data.getData();
     if (uri != null)
