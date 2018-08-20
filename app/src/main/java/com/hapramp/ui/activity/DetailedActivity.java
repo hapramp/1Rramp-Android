@@ -303,7 +303,9 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     webView.setWebViewClient(new WebViewClient() {
       @Override
       public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        if (url != null && (url.startsWith("http://") || url.startsWith("https://"))) {
+        if (url != null && (url.matches("(http:\\/\\/www\\.|https:\\/\\/www" +
+          "\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]" +
+          "{1,5})?(\\/.*)?"))) {
           view.getContext().startActivity(
             new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
           return true;
