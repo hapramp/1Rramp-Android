@@ -21,7 +21,9 @@ import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datamodels.response.FileUploadReponse;
+import com.hapramp.utils.ImageCacheClearUtils;
 import com.hapramp.utils.ImageHandler;
+import com.hapramp.utils.ImageRotationHandler;
 
 import java.io.File;
 
@@ -38,7 +40,7 @@ import retrofit2.Response;
  * Created by Ankit on 2/5/2018.
  */
 
-public class PostImageView extends FrameLayout {
+public class PostImageView extends FrameLayout implements ImageRotationHandler.ImageRotationOperationListner {
   @BindView(R.id.image)
   ImageView image;
   @BindView(R.id.informationTv)
@@ -55,8 +57,9 @@ public class PostImageView extends FrameLayout {
   private Context mContext;
   private final int MAX_RETRY_COUNT = 5;
   private int retryCount = 0;
-  private boolean imageRemoved;
-
+  private Handler mHandler;
+  private ImageRotationHandler imageRotationHandler;
+  private String currentFilePath;
 
   public PostImageView(@NonNull Context context) {
     super(context);
@@ -65,8 +68,11 @@ public class PostImageView extends FrameLayout {
 
   private void init(Context context) {
     this.mContext = context;
+    mHandler = new Handler();
     mainView = LayoutInflater.from(context).inflate(R.layout.post_image_view, this);
     ButterKnife.bind(this, mainView);
+    imageRotationHandler = new ImageRotationHandler(context);
+    imageRotationHandler.setImageRotationOperationListner(this);
     attachListeners();
     invalidateView();
   }
@@ -86,7 +92,7 @@ public class PostImageView extends FrameLayout {
         scaleAndHideMainView();
         if (imageActionListener != null) {
           imageActionListener.onImageRemoved();
-          imageRemoved = true;
+          currentFilePath = null;
         }
       }
     });
@@ -145,27 +151,31 @@ public class PostImageView extends FrameLayout {
 
   public void setImageSource(String filePath) {
     invalidateView();
-    imageRemoved = false;
+    currentFilePath = filePath;
     mainView.setVisibility(VISIBLE);
-    ImageHandler.load(mContext,image,filePath);
+    ImageHandler.loadFilePath(mContext, image, filePath);
     informationTv.setVisibility(VISIBLE);
     informationTv.setText("Processing...");
-    startUploading(filePath);
+    imageRotationHandler.checkOrientationAndFixImage(filePath);
   }
 
-  private void retryUpload(String filePath) {
-    if (informationTv != null && !imageRemoved) {
+  private void retryUpload(String filePath, boolean fileNeedsToBeDeleted) {
+    if (informationTv != null && !isImageRemoved(filePath)) {
       retryCount++;
       if (retryCount > MAX_RETRY_COUNT)
         return;
       progressBar.setVisibility(VISIBLE);
       informationTv.setText("Retrying image upload...");
-      startUploading(filePath);
+      startUploading(filePath, fileNeedsToBeDeleted);
     }
   }
 
-  private void startUploading(final String filePath) {
+  private void startUploading(final String filePath, final boolean fileShouldBeDeleted) {
     try {
+      if (informationTv != null) {
+        informationTv.setText("Uploading...");
+      }
+      Log.d("ImageOrientation", "uploading");
       final File file = new File(filePath);
       final RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
       MultipartBody.Part body = MultipartBody.Part.createFormData("upload", file.getName(), requestFile);
@@ -174,6 +184,7 @@ public class PostImageView extends FrameLayout {
         public void onResponse(Call<FileUploadReponse> call, Response<FileUploadReponse> response) {
           if (response.isSuccessful()) {
             downloadUrl = response.body().getDownloadUrl();
+            Log.d("ImageOrientation", "Download Url:" + downloadUrl);
             progressBar.setVisibility(GONE);
             informationTv.setText("Uploaded");
             if (imageActionListener != null) {
@@ -184,8 +195,10 @@ public class PostImageView extends FrameLayout {
             Crashlytics.log(response.errorBody().toString());
             downloadUrl = null;
             progressBar.setVisibility(GONE);
-            retryUpload(filePath);
-            Log.d("ImageUploadDebug", "unsuccessfullResponse " + response.toString());
+            retryUpload(filePath, fileShouldBeDeleted);
+          }
+          if (fileShouldBeDeleted) {
+            ImageCacheClearUtils.deleteImage(filePath);
           }
         }
 
@@ -194,8 +207,7 @@ public class PostImageView extends FrameLayout {
           Crashlytics.logException(t);
           progressBar.setVisibility(GONE);
           downloadUrl = null;
-          retryUpload(filePath);
-          Log.d("ImageUploadDebug", "onFailure() " + t.toString());
+          retryUpload(filePath, fileShouldBeDeleted);
         }
       });
     }
@@ -207,12 +219,25 @@ public class PostImageView extends FrameLayout {
     }
   }
 
+  private boolean isImageRemoved(String filePath) {
+    return !filePath.equals(currentFilePath);
+  }
   public String getDownloadUrl() {
     return downloadUrl;
   }
 
   public void setImageActionListener(ImageActionListener imageActionListener) {
     this.imageActionListener = imageActionListener;
+  }
+
+  @Override
+  public void onImageRotationFixed(final String filePath, final boolean fileShouldBeDeleted) {
+    mHandler.post(new Runnable() {
+      @Override
+      public void run() {
+        startUploading(filePath, fileShouldBeDeleted);
+      }
+    });
   }
 
   public interface ImageActionListener {

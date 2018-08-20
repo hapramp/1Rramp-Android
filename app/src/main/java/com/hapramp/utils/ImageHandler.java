@@ -24,6 +24,7 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 
 public class ImageHandler {
   static int imageWidth;
+
   public static void load(Context context, ImageView target, String _uri) {
     imageWidth = HaprampPreferenceManager
       .getInstance()
@@ -46,6 +47,33 @@ public class ImageHandler {
           GlideDrawableImageViewTarget glideTarget = (GlideDrawableImageViewTarget) target;
           ImageView iv = glideTarget.getView();
           NetworkQualityUtils.stopstartNetworkSampling();
+          int width = iv.getMeasuredWidth();
+          int targetHeight = width * resource.getIntrinsicHeight() / resource.getIntrinsicWidth();
+          if (iv.getLayoutParams().height != targetHeight) {
+            iv.getLayoutParams().height = targetHeight;
+            iv.requestLayout();
+          }
+          return false;
+        }
+      })
+      .skipMemoryCache(false)
+      .into(target);
+  }
+
+  public static void loadFilePath(Context context, ImageView target, String filePath) {
+    Glide.with(context)
+      .load(filePath)
+      .diskCacheStrategy(DiskCacheStrategy.RESULT)
+      .listener(new RequestListener<String, GlideDrawable>() {
+        @Override
+        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+          return false;
+        }
+
+        @Override
+        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+          GlideDrawableImageViewTarget glideTarget = (GlideDrawableImageViewTarget) target;
+          ImageView iv = glideTarget.getView();
           int width = iv.getMeasuredWidth();
           int targetHeight = width * resource.getIntrinsicHeight() / resource.getIntrinsicWidth();
           if (iv.getLayoutParams().height != targetHeight) {
@@ -82,6 +110,5 @@ public class ImageHandler {
     catch (IllegalArgumentException e) {
     }
   }
-
 
 }
