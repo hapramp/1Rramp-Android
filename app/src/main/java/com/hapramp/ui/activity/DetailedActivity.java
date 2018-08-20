@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,7 +22,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -300,7 +300,18 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     webView.getSettings().setPluginState(WebSettings.PluginState.ON);
     webView.setWebChromeClient(new WebChromeClient());
     webView.getSettings().setAllowFileAccess(true);
-    webView.setWebViewClient(new WebViewClient());
+    webView.setWebViewClient(new WebViewClient() {
+      @Override
+      public boolean shouldOverrideUrlLoading(WebView view, String url) {
+        if (url != null && (url.startsWith("http://") || url.startsWith("https://"))) {
+          view.getContext().startActivity(
+            new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+          return true;
+        } else {
+          return false;
+        }
+      }
+    });
     webView.getSettings().setLoadWithOverviewMode(true);
     webView.loadDataWithBaseURL("file:///android_asset/",
       "<link rel=\"stylesheet\" type=\"text/css\" href=\"md_theme.css\" />"+body,
