@@ -63,6 +63,7 @@ public class JsonParser {
       String pendingPayoutValue = rootObject.optString("pending_payout_value", "");
       //total pending payout value
       String totalPendingPayoutValue = rootObject.optString("total_pending_payout_value", "");
+      String cashoutTime = rootObject.optString("cashout_time");
       //voters
       ArrayList<Voter> voters = readVoters(rootObject);
       //author reputation
@@ -88,6 +89,7 @@ public class JsonParser {
       feed.setUrl(url);
       feed.setPendingPayoutValue(pendingPayoutValue);
       feed.setTotalPendingPayoutValue(totalPendingPayoutValue);
+      feed.setCashOutTime(cashoutTime);
       feed.setVoters(voters);
       feed.setAuthorReputation(autorReputation);
     }

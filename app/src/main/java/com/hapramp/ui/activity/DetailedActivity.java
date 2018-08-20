@@ -21,7 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -120,9 +119,9 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
   TextView commentBtn;
   @BindView(R.id.commentCount)
   TextView commentCount;
-  @BindView(R.id.hapcoinBtn)
+  @BindView(R.id.payoutBtn)
   TextView hapcoinBtn;
-  @BindView(R.id.hapcoins_count)
+  @BindView(R.id.payoutValue)
   TextView hapcoinsCount;
   @BindView(R.id.starView)
   StarView starView;

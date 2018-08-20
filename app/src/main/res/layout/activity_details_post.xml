@@ -290,12 +290,12 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/hapcoinBtn"
+                android:id="@+id/payoutBtn"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="24dp"
-                android:layout_toLeftOf="@+id/hapcoins_count"
+                android:layout_toLeftOf="@+id/payoutValue"
                 android:background="@drawable/rs_coin_bg"
                 android:gravity="center"
                 android:text="$"
@@ -304,7 +304,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/hapcoins_count"
+                android:id="@+id/payoutValue"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:layout_alignParentRight="true"

@@ -48,6 +48,8 @@ import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.ShareUtils;
 import com.hapramp.views.extraa.StarView;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,10 +96,10 @@ public class PostItemView extends FrameLayout {
   TextView commentBtn;
   @BindView(R.id.commentCount)
   TextView commentCount;
-  @BindView(R.id.hapcoinBtn)
+  @BindView(R.id.payoutBtn)
   TextView hapcoinBtn;
-  @BindView(R.id.hapcoins_count)
-  TextView hapcoinsCount;
+  @BindView(R.id.payoutValue)
+  TextView payoutValueTv;
   @BindView(R.id.starView)
   StarView starView;
   @BindView(R.id.youtube_indicator)
@@ -108,6 +110,9 @@ public class PostItemView extends FrameLayout {
   private Feed mFeed;
   private Handler mHandler;
   private SteemConnect steemConnect;
+  private String detailedPayoutValueString = "$";
+  private String briefPayoutValueString = "$";
+  private boolean expandedPayoutView;
   private MarkdownPreProcessor markdownPreProcessor;
 
   private Runnable steemCastingVoteExceptionRunnable = new Runnable() {
@@ -130,6 +135,7 @@ public class PostItemView extends FrameLayout {
 
   private void init(Context context) {
     this.mContext = context;
+    expandedPayoutView = false;
     markdownPreProcessor = new MarkdownPreProcessor();
     View view = LayoutInflater.from(mContext).inflate(R.layout.post_item_view, this);
     ButterKnife.bind(this, view);
@@ -199,7 +205,7 @@ public class PostItemView extends FrameLayout {
     postSnippet.setVisibility(VISIBLE);
     feedOwnerTitle.setText(feed.getAuthor());
     feedOwnerSubtitle.setText(String.format(mContext.getResources().getString(R.string.post_subtitle_format), MomentsUtils.getFormattedTime(feed.getCreatedAt())));
-    setSteemEarnings(feed.getPendingPayoutValue());
+    setSteemEarnings(feed);
     setCommunities(feed.getTags());
     postSnippet.setText(feed.getCleanedBody());
     if (feed.getTitle().length() > 0) {
@@ -222,6 +228,45 @@ public class PostItemView extends FrameLayout {
     attachListenersOnStarView();
     attachListerOnAuthorHeader();
     attachListenerForOverlowIcon();
+    attachListenerOnPayoutValue();
+  }
+
+  private void setSteemEarnings(Feed feed) {
+    try {
+      StringBuilder stringBuilder = new StringBuilder();
+      DecimalFormat df = new DecimalFormat("#.###");
+      df.setRoundingMode(RoundingMode.CEILING);
+      double pendingPayoutValue = Double.parseDouble(feed.getPendingPayoutValue().split(" ")[0]);
+      double totalPayoutValue = Double.parseDouble(feed.getTotalPayoutValue().split(" ")[0]);
+      double curatorPayoutValue = Double.parseDouble(feed.getCuratorPayoutValue().split(" ")[0]);
+      if (pendingPayoutValue > 0) {
+        //payout is pending
+        String cashoutTime = MomentsUtils.getFormattedTime(feed.getCashOutTime());
+        stringBuilder
+          .append("Pending Payout")
+          .append("\n")
+          .append("$")
+          .append(df.format(pendingPayoutValue))
+          .append("\n")
+          .append(cashoutTime);
+
+        briefPayoutValueString = "$" + df.format(pendingPayoutValue);
+      } else {
+        //cashed out
+        stringBuilder
+          .append("Past Payout $")
+          .append(String.valueOf(df.format(totalPayoutValue + curatorPayoutValue)))
+          .append("\n")
+          .append("- Author $").append(df.format(totalPayoutValue))
+          .append("\n")
+          .append("- Curator $").append(df.format(curatorPayoutValue));
+        briefPayoutValueString = "$" + (df.format(totalPayoutValue + curatorPayoutValue));
+      }
+      detailedPayoutValueString = stringBuilder.toString();
+      payoutValueTv.setText(briefPayoutValueString);
+    }
+    catch (Exception e) {
+    }
   }
 
   private void attachListenerForOverlowIcon() {
@@ -273,13 +318,26 @@ public class PostItemView extends FrameLayout {
     });
   }
 
-  private void setSteemEarnings(String payout) {
-    try {
-      hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), payout.substring(0, payout.indexOf(' '))));
-    }
-    catch (Exception e) {
-
-    }
+  private void attachListenerOnPayoutValue() {
+    payoutValueTv.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        if (expandedPayoutView) {
+          payoutValueTv.setText(briefPayoutValueString);
+          expandedPayoutView = false;
+        } else {
+          payoutValueTv.setText(detailedPayoutValueString);
+          expandedPayoutView = true;
+          new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+              payoutValueTv.setText(briefPayoutValueString);
+              expandedPayoutView = false;
+            }
+          }, 3000);
+        }
+      }
+    });
   }
 
   private void bindVotes(List<Voter> votes, String permlink) {
@@ -451,7 +509,7 @@ public class PostItemView extends FrameLayout {
       @Override
       public void onResponse(Call<FeedWrapper> call, Response<FeedWrapper> response) {
         if (response.isSuccessful()) {
-          setSteemEarnings(response.body().getFeed().getPendingPayoutValue());
+          setSteemEarnings(response.body().getFeed());
         }
       }
 
