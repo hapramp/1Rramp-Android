@@ -1,6 +1,7 @@
 package com.hapramp.views.post;
 
 import android.content.Context;
+import android.media.ExifInterface;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,6 +25,7 @@ import com.hapramp.datamodels.response.FileUploadReponse;
 import com.hapramp.utils.ImageHandler;
 
 import java.io.File;
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -147,7 +149,7 @@ public class PostImageView extends FrameLayout {
     invalidateView();
     imageRemoved = false;
     mainView.setVisibility(VISIBLE);
-    ImageHandler.load(mContext,image,filePath);
+    ImageHandler.loadPath(mContext, image, filePath);
     informationTv.setVisibility(VISIBLE);
     informationTv.setText("Processing...");
     startUploading(filePath);
@@ -165,6 +167,7 @@ public class PostImageView extends FrameLayout {
   }
 
   private void startUploading(final String filePath) {
+    checkOrientation(filePath);
     try {
       final File file = new File(filePath);
       final RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
@@ -174,6 +177,7 @@ public class PostImageView extends FrameLayout {
         public void onResponse(Call<FileUploadReponse> call, Response<FileUploadReponse> response) {
           if (response.isSuccessful()) {
             downloadUrl = response.body().getDownloadUrl();
+            Log.d("ImageOrientation", downloadUrl);
             progressBar.setVisibility(GONE);
             informationTv.setText("Uploaded");
             if (imageActionListener != null) {
@@ -204,6 +208,41 @@ public class PostImageView extends FrameLayout {
       Crashlytics.logException(e);
       progressBar.setVisibility(GONE);
       downloadUrl = null;
+    }
+  }
+
+  private void checkOrientation(String imagePath) {
+    ExifInterface ei = null;
+    try {
+      ei = new ExifInterface(imagePath);
+      int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+        ExifInterface.ORIENTATION_NORMAL);
+      Log.d("ImageOrientation", "undef");
+      //Bitmap rotatedBitmap = null;
+      switch (orientation) {
+        case ExifInterface.ORIENTATION_ROTATE_90:
+          Log.d("ImageOrientation", "rotate 90");
+          //rotatedBitmap = rotateImage(bitmap, 90);
+          break;
+
+        case ExifInterface.ORIENTATION_ROTATE_180:
+          Log.d("ImageOrientation", "rotate 180");
+          //rotatedBitmap = rotateImage(bitmap, 180);
+          break;
+
+        case ExifInterface.ORIENTATION_ROTATE_270:
+          Log.d("ImageOrientation", "rotate 270");
+          //rotatedBitmap = rotateImage(bitmap, 270);
+          break;
+
+        case ExifInterface.ORIENTATION_NORMAL:
+          Log.d("ImageOrientation", "normal");
+        default:
+          //rotatedBitmap = bitmap;
+      }
+    }
+    catch (IOException e) {
+      Log.d("ImageOrientation", "normal");
     }
   }
 

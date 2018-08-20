@@ -9,7 +9,9 @@ public class Constants {
   public static final String EXTRA_USERNAME = "username";
   public static final String EXTRA_ACCESS_TOKEN = "access_token";
   public static final String EXTRA_LOGIN_URL = "login_url";
-
+  public static final String REGEX_URL = "(http:\\\\/\\\\/www\\\\.|https:\\\\/\\\\/www\" +\n" +
+    "          \"\\\\.|http:\\\\/\\\\/|https:\\\\/\\\\/)?[a-z0-9]+([\\\\-\\\\.]{1}[a-z0-9]+)*\\\\.[a-z]{2,5}(:[0-9]\" +\n" +
+    "          \"{1,5})?(\\\\/.*)?";
   public static final String EXTRAA_KEY_USER_ID = "userId";
   public static final String EXTRAA_KEY_STEEM_USER_NAME = "steemUsername";
   public static final String EXTRAA_KEY_CONTEXT_TEXT = "context";

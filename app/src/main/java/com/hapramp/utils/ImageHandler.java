@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -59,6 +58,33 @@ public class ImageHandler {
       .into(target);
   }
 
+  public static void loadPath(Context context, ImageView imageView, String path) {
+    Glide.with(context)
+      .load(path)
+      .diskCacheStrategy(DiskCacheStrategy.RESULT)
+      .listener(new RequestListener<String, GlideDrawable>() {
+        @Override
+        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+          return false;
+        }
+
+        @Override
+        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+          GlideDrawableImageViewTarget glideTarget = (GlideDrawableImageViewTarget) target;
+          ImageView iv = glideTarget.getView();
+          NetworkQualityUtils.stopstartNetworkSampling();
+          int width = iv.getMeasuredWidth();
+          int targetHeight = width * resource.getIntrinsicHeight() / resource.getIntrinsicWidth();
+          if (iv.getLayoutParams().height != targetHeight) {
+            iv.getLayoutParams().height = targetHeight;
+            iv.requestLayout();
+          }
+          return false;
+        }
+      })
+      .skipMemoryCache(false)
+      .into(imageView);
+  }
   public static void loadCircularImage(final Context context, final ImageView imageView, String url) {
     try {
       NetworkQualityUtils.startNetworkSampling();
