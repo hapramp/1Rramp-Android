@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
@@ -110,10 +111,7 @@ public class PostItemView extends FrameLayout {
   private Feed mFeed;
   private Handler mHandler;
   private SteemConnect steemConnect;
-  private String detailedPayoutValueString = "$";
   private String briefPayoutValueString = "$";
-  private boolean expandedPayoutView;
-  private MarkdownPreProcessor markdownPreProcessor;
 
   private Runnable steemCastingVoteExceptionRunnable = new Runnable() {
     @Override
@@ -135,8 +133,6 @@ public class PostItemView extends FrameLayout {
 
   private void init(Context context) {
     this.mContext = context;
-    expandedPayoutView = false;
-    markdownPreProcessor = new MarkdownPreProcessor();
     View view = LayoutInflater.from(mContext).inflate(R.layout.post_item_view, this);
     ButterKnife.bind(this, view);
     hapcoinBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
@@ -228,43 +224,25 @@ public class PostItemView extends FrameLayout {
     attachListenersOnStarView();
     attachListerOnAuthorHeader();
     attachListenerForOverlowIcon();
-    attachListenerOnPayoutValue();
   }
 
   private void setSteemEarnings(Feed feed) {
     try {
-      StringBuilder stringBuilder = new StringBuilder();
       DecimalFormat df = new DecimalFormat("#.###");
       df.setRoundingMode(RoundingMode.CEILING);
       double pendingPayoutValue = Double.parseDouble(feed.getPendingPayoutValue().split(" ")[0]);
       double totalPayoutValue = Double.parseDouble(feed.getTotalPayoutValue().split(" ")[0]);
       double curatorPayoutValue = Double.parseDouble(feed.getCuratorPayoutValue().split(" ")[0]);
       if (pendingPayoutValue > 0) {
-        //payout is pending
-        String cashoutTime = MomentsUtils.getFormattedTime(feed.getCashOutTime());
-        stringBuilder
-          .append("Pending Payout")
-          .append("\n")
-          .append("$")
-          .append(df.format(pendingPayoutValue))
-          .append("\n")
-          .append(cashoutTime);
         briefPayoutValueString = "$" + df.format(pendingPayoutValue);
       } else {
         //cashed out
-        stringBuilder
-          .append("Past Payout $")
-          .append(String.valueOf(df.format(totalPayoutValue + curatorPayoutValue)))
-          .append("\n")
-          .append("- Author $").append(df.format(totalPayoutValue))
-          .append("\n")
-          .append("- Curator $").append(df.format(curatorPayoutValue));
         briefPayoutValueString = "$" + (df.format(totalPayoutValue + curatorPayoutValue));
       }
-      detailedPayoutValueString = stringBuilder.toString();
       payoutValueTv.setText(briefPayoutValueString);
     }
     catch (Exception e) {
+      Crashlytics.log(e.toString());
     }
   }
 
@@ -315,28 +293,6 @@ public class PostItemView extends FrameLayout {
         return true;
       }
     });
-  }
-
-  private void attachListenerOnPayoutValue() {
-//    payoutValueTv.setOnClickListener(new OnClickListener() {
-//      @Override
-//      public void onClick(View view) {
-//        if (expandedPayoutView) {
-//          payoutValueTv.setText(briefPayoutValueString);
-//          expandedPayoutView = false;
-//        } else {
-//          payoutValueTv.setText(detailedPayoutValueString);
-//          expandedPayoutView = true;
-//          new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//              payoutValueTv.setText(briefPayoutValueString);
-//              expandedPayoutView = false;
-//            }
-//          }, 3000);
-//        }
-//      }
-//    });
   }
 
   private void bindVotes(List<Voter> votes, String permlink) {
