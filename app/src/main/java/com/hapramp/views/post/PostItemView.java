@@ -34,6 +34,7 @@ import com.hapramp.steem.Communities;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.FeedWrapper;
 import com.hapramp.steem.models.Voter;
+import com.hapramp.steemconnect.SteemConnectUtils;
 import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;
 import com.hapramp.steemconnect4j.SteemConnectException;
@@ -44,7 +45,6 @@ import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
-import com.hapramp.utils.MarkdownPreProcessor;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.ShareUtils;
 import com.hapramp.views.extraa.StarView;
@@ -338,7 +338,6 @@ public class PostItemView extends FrameLayout {
         steemConnect.vote(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(), getAuthor(), getPermlinkAsString(), String.valueOf(0), new SteemConnectCallback() {
           @Override
           public void onResponse(String s) {
-           // Notifyer.notifyVote(getFullPermlinkAsString(), 0);
             removeMeFromVoterList();
             mHandler.post(new Runnable() {
               @Override
@@ -401,7 +400,6 @@ public class PostItemView extends FrameLayout {
           @Override
           public void onResponse(String s) {
             addMeAsVoter(vote);
-            //Notifyer.notifyVote(getFullPermlinkAsString(), vote);
             mHandler.post(new Runnable() {
               @Override
               public void run() {
@@ -537,19 +535,7 @@ public class PostItemView extends FrameLayout {
     bind(postData);
   }
 
-  private void showPopup() {
-    ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(getContext(), R.style.PopupMenuOverlapAnchor);
-    PopupMenu popup = new PopupMenu(contextThemeWrapper, popupMenuDots);
-    popup.getMenuInflater().inflate(R.menu.popup_post, popup.getMenu());
-    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-      @Override
-      public boolean onMenuItemClick(MenuItem item) {
-        ShareUtils.shareMixedContent(mContext, mFeed);
-        return true;
-      }
-    });
-    popup.show();
-  }
+  private PostActionListener postActionListener;
 
   private void setCommentCount(int count) {
     commentCount.setText(String.format(getResources().getString(R.string.comment_format), count));
@@ -572,5 +558,80 @@ public class PostItemView extends FrameLayout {
     voter.setReputation("");
     mFeed.removeVoter(voter);
   }
+
+  private void showPopup() {
+    int menu_res_id;
+    if ((getActiveVoteCount() == 0) &&
+      mFeed.getAuthor().equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
+      menu_res_id = R.menu.post_menu_with_delete;
+    } else {
+      menu_res_id = R.menu.popup_post;
+    }
+    ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(getContext(), R.style.PopupMenuOverlapAnchor);
+    PopupMenu popup = new PopupMenu(contextThemeWrapper, popupMenuDots);
+    popup.getMenuInflater().inflate(menu_res_id, popup.getMenu());
+    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+      @Override
+      public boolean onMenuItemClick(MenuItem item) {
+        if (item.getItemId() == R.id.delete_post) {
+          deleteThisPostItem();
+          return true;
+        } else if (item.getItemId() == R.id.share) {
+          ShareUtils.shareMixedContent(mContext, mFeed);
+          return true;
+        }
+        return false;
+      }
+    });
+    popup.show();
+  }
+
+  private int getActiveVoteCount() {
+    int activeVoteCount = 0;
+    for (int i = 0; i < mFeed.getVoters().size(); i++) {
+      if (mFeed.getVoters().get(i).getPercent() > 0) {
+        activeVoteCount++;
+      }
+    }
+    return activeVoteCount;
+  }
+
+  private void deleteThisPostItem() {
+    if (postActionListener != null) {
+      postActionListener.onPostDeleted();
+    }
+    new Thread() {
+      @Override
+      public void run() {
+        SteemConnect steemConnect = SteemConnectUtils
+          .getSteemConnectInstance(HaprampPreferenceManager
+            .getInstance().getSC2AccessToken());
+        steemConnect.delete(mFeed.getAuthor(), mFeed.getPermlink(), new SteemConnectCallback() {
+          @Override
+          public void onResponse(String response) {
+          }
+
+          @Override
+          public void onError(SteemConnectException e) {
+            mHandler.post(new Runnable() {
+              @Override
+              public void run() {
+                Toast.makeText(mContext, "Error occurred while deleting post.", Toast.LENGTH_LONG).show();
+              }
+            });
+          }
+        });
+      }
+    }.start();
+  }
+
+  public void setPostActionListener(PostActionListener postActionListener) {
+    this.postActionListener = postActionListener;
+  }
+
+  public interface PostActionListener {
+    void onPostDeleted();
+  }
+
 }
 

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.hapramp.R;
 import com.hapramp.steem.SteemCommentModel;
+import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
 
@@ -24,7 +25,6 @@ import butterknife.ButterKnife;
  */
 
 public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.CommentViewHolder> {
-
 
   private ArrayList<SteemCommentModel> commentsList;
   private Context mContext;
@@ -66,8 +66,8 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
   }
 
   class CommentViewHolder extends RecyclerView.ViewHolder {
-
-
+    @BindView(R.id.popupMenuDots)
+    TextView popupMenuDots;
     @BindView(R.id.commentAvatar)
     ImageView commentAvatar;
     @BindView(R.id.commentOwnerName)
@@ -80,10 +80,9 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
     TextView createdTime;
 
     public CommentViewHolder(View itemView) {
-
       super(itemView);
       ButterKnife.bind(this, itemView);
-
+      popupMenuDots.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     }
 
     public void bind(SteemCommentModel comment) {
@@ -97,5 +96,4 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
       commentTv.setText(comment.getComment());
     }
   }
-
 }
