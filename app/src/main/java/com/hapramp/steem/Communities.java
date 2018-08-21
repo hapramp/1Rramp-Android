@@ -1,42 +1,28 @@
 package com.hapramp.steem;
 
-public class Communities {
+import com.google.gson.Gson;
+import com.hapramp.datamodels.CommunityModel;
+import com.hapramp.preferences.HaprampPreferenceManager;
 
-  public static final String PHOTOGRAPHY = "hapramp-photography";
-  public static final String ART = "hapramp-art";
-  public static final String MUSIC = "hapramp-music";
-  public static final String FASHION = "hapramp-fashion";
-  public static final String DANCE = "hapramp-dance";
-  public static final String DRAMATICS = "hapramp-dramatics";
-  public static final String TRAVEL = "hapramp-travel";
-  public static final String LITERATURE = "hapramp-literature";
-  public static final String DESIGN = "hapramp-design";
+import java.util.List;
+
+public class Communities {
   public static final String ALL = "all";
   public static final String TAG_HAPRAMP = "hapramp";
   public static final String IMAGE_URI_ALL = "https://user-images.githubusercontent.com/10809719/39564005-05b3a8cc-4ed0-11e8-8854-4714ef346798.png";
 
-  public static boolean doesCommunityExists(String commmunity) {
-    switch (commmunity) {
-      case PHOTOGRAPHY:
-        return true;
-      case ART:
-        return true;
-      case MUSIC:
-        return true;
-      case FASHION:
-        return true;
-      case DANCE:
-        return true;
-      case DRAMATICS:
-        return true;
-      case TRAVEL:
-        return true;
-      case LITERATURE:
-        return true;
-      case DESIGN:
-        return true;
-      default:
-        return false;
+  public static boolean doesCommunityExists(String community_tag) {
+    CommunityListWrapper communityListWrapper = new Gson().
+      fromJson(HaprampPreferenceManager.getInstance().
+        getAllCommunityAsJson(), CommunityListWrapper.class);
+    if (communityListWrapper != null) {
+      List<CommunityModel> communities = communityListWrapper.getCommunityModels();
+      for (int i = 0; i < communities.size(); i++) {
+        if (communities.get(i).getmTag().equals(community_tag)) {
+          return true;
+        }
+      }
     }
+    return false;
   }
 }
