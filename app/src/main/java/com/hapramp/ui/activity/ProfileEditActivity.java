@@ -286,7 +286,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ImageRotat
         handler.post(new Runnable() {
           @Override
           public void run() {
-            ImageHandler.load(ProfileEditActivity.this, profileCoverImageView, imagePath);
+            ImageHandler.loadFilePath(ProfileEditActivity.this, profileCoverImageView, imagePath);
             showCoverImageProgress();
           }
         });
