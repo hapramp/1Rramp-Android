@@ -1,6 +1,7 @@
 package com.hapramp.views.post;
 
 import android.content.Context;
+import android.media.ExifInterface;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,6 +25,7 @@ import com.hapramp.datamodels.response.FileUploadReponse;
 import com.hapramp.utils.ImageHandler;
 
 import java.io.File;
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -147,7 +149,7 @@ public class PostImageView extends FrameLayout {
     invalidateView();
     imageRemoved = false;
     mainView.setVisibility(VISIBLE);
-    ImageHandler.load(mContext,image,filePath);
+    ImageHandler.load(mContext, image, filePath);
     informationTv.setVisibility(VISIBLE);
     informationTv.setText("Processing...");
     startUploading(filePath);
@@ -174,6 +176,7 @@ public class PostImageView extends FrameLayout {
         public void onResponse(Call<FileUploadReponse> call, Response<FileUploadReponse> response) {
           if (response.isSuccessful()) {
             downloadUrl = response.body().getDownloadUrl();
+            Log.d("ImageOrientation", downloadUrl);
             progressBar.setVisibility(GONE);
             informationTv.setText("Uploaded");
             if (imageActionListener != null) {
