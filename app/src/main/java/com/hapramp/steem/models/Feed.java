@@ -43,6 +43,7 @@ public class Feed implements Parcelable {
   private String url;
   private String pendingPayoutValue;
   private String totalPendingPayoutValue;
+  private String cashOutTime;
   private ArrayList<Voter> voters;
   private String authorReputation;
 
@@ -78,6 +79,7 @@ public class Feed implements Parcelable {
     url = in.readString();
     pendingPayoutValue = in.readString();
     totalPendingPayoutValue = in.readString();
+    cashOutTime = in.readString();
     if (in.readByte() == 0x01) {
       voters = new ArrayList<Voter>();
       in.readList(voters, Voter.class.getClassLoader());
@@ -118,6 +120,7 @@ public class Feed implements Parcelable {
     dest.writeString(url);
     dest.writeString(pendingPayoutValue);
     dest.writeString(totalPendingPayoutValue);
+    dest.writeString(cashOutTime);
     if (voters == null) {
       dest.writeByte((byte) (0x00));
     } else {
@@ -133,6 +136,14 @@ public class Feed implements Parcelable {
 
   public void setCleanedBody(String cleanedBody) {
     this.cleanedBody = cleanedBody;
+  }
+
+  public String getCashOutTime() {
+    return cashOutTime;
+  }
+
+  public void setCashOutTime(String cashOutTime) {
+    this.cashOutTime = cashOutTime;
   }
 
   public String getAuthor() {

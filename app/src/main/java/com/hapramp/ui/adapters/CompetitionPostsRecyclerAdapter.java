@@ -84,9 +84,9 @@ public class CompetitionPostsRecyclerAdapter extends RecyclerView.Adapter<Compet
     TextView commentBtn;
     @BindView(R.id.commentCount)
     TextView commentCount;
-    @BindView(R.id.hapcoinBtn)
+    @BindView(R.id.payoutBtn)
     TextView hapcoinBtn;
-    @BindView(R.id.hapcoins_count)
+    @BindView(R.id.payoutValue)
     TextView hapcoinsCount;
     @BindView(R.id.post_meta_container)
     RelativeLayout postMetaContainer;

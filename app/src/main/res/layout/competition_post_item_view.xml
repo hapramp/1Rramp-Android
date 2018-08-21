@@ -139,7 +139,7 @@
             android:text="24" />
 
         <TextView
-            android:id="@+id/hapcoinBtn"
+            android:id="@+id/payoutBtn"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_below="@+id/post_snippet"
@@ -150,12 +150,12 @@
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/hapcoins_count"
+            android:id="@+id/payoutValue"
             android:layout_width="wrap_content"
             android:layout_height="64dp"
             android:layout_below="@+id/post_snippet"
             android:layout_marginTop="24dp"
-            android:layout_toEndOf="@id/hapcoinBtn"
+            android:layout_toEndOf="@id/payoutBtn"
             android:gravity="center"
             android:text="24" />
 
