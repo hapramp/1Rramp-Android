@@ -3,8 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/share"
+        android:title="Share" />
+    <item
         android:id="@+id/delete_post"
-        android:title="Delete"
-        app:showAsAction="never" />
-
+        android:title="Delete" />
 </menu>

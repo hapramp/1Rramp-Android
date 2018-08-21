@@ -82,12 +82,22 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
   }
 
   @Override
-  public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+  public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
     if (holder instanceof FeedViewHolder) {
-      ((FeedViewHolder) holder).bind(feeds.get(position));
+      ((FeedViewHolder) holder).bind(feeds.get(position), new PostItemView.PostActionListener() {
+        @Override
+        public void onPostDeleted() {
+          removeItemAt(position);
+        }
+      });
     } else if (holder instanceof LoadMoreViewHolder) {
       ((LoadMoreViewHolder) holder).startSimmer();
     }
+  }
+
+  private void removeItemAt(int position) {
+    feeds.remove(position);
+    notifyItemRemoved(position);
   }
 
   @Override
@@ -129,7 +139,8 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
       postItemView = (PostItemView) itemView;
     }
 
-    public void bind(final Feed postData) {
+    public void bind(final Feed postData, final PostItemView.PostActionListener postActionListener) {
+      postItemView.setPostActionListener(postActionListener);
       postItemView.setPostData(postData);
     }
   }

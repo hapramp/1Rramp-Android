@@ -38,10 +38,6 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
   }
 
   public void appendPost(List<Feed> appendable) {
-//        final ProfilePostDiffCallback diffCallback = new ProfilePostDiffCallback(this.feeds,appendable);
-//        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
-//        feeds.addAll(appendable);
-//        diffResult.dispatchUpdatesTo(this);
     int oldSize = appendable.size();
     feeds.addAll(appendable);
     notifyItemRangeChanged(oldSize, feeds.size() - 1);
@@ -67,15 +63,25 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
   }
 
   @Override
-  public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int pos) {
+  public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int pos) {
     if (viewHolder instanceof PostViewHolder) {
-      ((PostViewHolder) viewHolder).bind(feeds.get(pos - 1));
+      ((PostViewHolder) viewHolder).bind(feeds.get(pos - 1), new PostItemView.PostActionListener() {
+        @Override
+        public void onPostDeleted() {
+          removeItemAt(pos);
+        }
+      });
     } else if (viewHolder instanceof ProfileHeaderViewHolder) {
       if (!profileHeaderInitialized) {
         ((ProfileHeaderViewHolder) viewHolder).setUsername(mUsername);
         profileHeaderInitialized = true;
       }
     }
+  }
+
+  private void removeItemAt(int pos) {
+    feeds.remove(pos - 1);
+    notifyItemRemoved(pos);
   }
 
   @Override
@@ -89,12 +95,9 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
   @Override
   public int getItemCount() {
-
     // since we have additional item at the top + one at the bottom
     s = feeds.size();
-
     return s == 0 ? 1 : s + 1;
-
   }
 
   class PostViewHolder extends RecyclerView.ViewHolder {
@@ -106,7 +109,8 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
       postItemView = (PostItemView) itemView;
     }
 
-    public void bind(final Feed postData) {
+    public void bind(final Feed postData, final PostItemView.PostActionListener postActionListener) {
+      postItemView.setPostActionListener(postActionListener);
       postItemView.setPostData(postData);
     }
 
