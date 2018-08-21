@@ -31,7 +31,7 @@ import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.HashTagUtils;
-import com.hapramp.utils.ImageFilePathReader;
+import com.hapramp.utils.GoogleImageFilePathReader;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.views.post.PostCreateComponent;
 import com.hapramp.youtube.YoutubeVideoSelectorActivity;
@@ -152,7 +152,7 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
     new Thread() {
       @Override
       public void run() {
-        final String filePath = ImageFilePathReader.getImageFilePath(CreatePostActivity.this, intent);
+        final String filePath = GoogleImageFilePathReader.getImageFilePath(CreatePostActivity.this, intent);
         handler.post(new Runnable() {
           @Override
           public void run() {

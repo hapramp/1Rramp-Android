@@ -26,8 +26,10 @@ import com.hapramp.datamodels.response.FileUploadReponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.user.User;
 import com.hapramp.utils.FontManager;
-import com.hapramp.utils.ImageFilePathReader;
+import com.hapramp.utils.GoogleImageFilePathReader;
+import com.hapramp.utils.ImageCacheClearUtils;
 import com.hapramp.utils.ImageHandler;
+import com.hapramp.utils.ImageRotationHandler;
 
 import java.io.File;
 
@@ -40,7 +42,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProfileEditActivity extends AppCompatActivity {
+public class ProfileEditActivity extends AppCompatActivity implements ImageRotationHandler.ImageRotationOperationListner {
   private static final int USER_PROFILE_IMAGE_REQUEST = 102;
   private static final int USER_COVER_IMAGE_REQUEST = 103;
   @BindView(R.id.backButton)
@@ -79,6 +81,10 @@ public class ProfileEditActivity extends AppCompatActivity {
   private String website = "";
   private String newProfileImageDownloadUrl = "";
   private String newCoverImageDownloadUrl = "";
+  private final int COVER_IMAGE_UID = 1201;
+  private final int PROFILE_IMAGE_UID = 1203;
+  private ImageRotationHandler imageRotationHandler;
+  private Handler mHandler;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +95,9 @@ public class ProfileEditActivity extends AppCompatActivity {
   }
 
   private void init() {
+    imageRotationHandler = new ImageRotationHandler(this);
+    mHandler = new Handler();
+    imageRotationHandler.setImageRotationOperationListner(this);
     dpEditButton.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     backButton.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
@@ -255,30 +264,15 @@ public class ProfileEditActivity extends AppCompatActivity {
     new Thread() {
       @Override
       public void run() {
-        final String imagePath = ImageFilePathReader.getImageFilePath(ProfileEditActivity.this, intent);
+        final String imagePath = GoogleImageFilePathReader.getImageFilePath(ProfileEditActivity.this, intent);
         handler.post(new Runnable() {
           @Override
           public void run() {
             ImageHandler.loadCircularImage(ProfileEditActivity.this, profileImageView, imagePath);
             showDpProgress();
-            startUploading(imagePath, new Callback<FileUploadReponse>() {
-              @Override
-              public void onResponse(Call<FileUploadReponse> call, Response<FileUploadReponse> response) {
-                if (response.isSuccessful()) {
-                  newProfileImageDownloadUrl = response.body().getDownloadUrl();
-                } else {
-                  newProfileImageDownloadUrl = null;
-                }
-                hideDpProgress();
-              }
-              @Override
-              public void onFailure(Call<FileUploadReponse> call, Throwable t) {
-                newProfileImageDownloadUrl = null;
-                hideDpProgress();
-              }
-            });
           }
         });
+        imageRotationHandler.checkOrientationAndFixImage(imagePath, PROFILE_IMAGE_UID);
       }
     }.start();
   }
@@ -288,31 +282,15 @@ public class ProfileEditActivity extends AppCompatActivity {
     new Thread() {
       @Override
       public void run() {
-        final String imagePath = ImageFilePathReader.getImageFilePath(ProfileEditActivity.this, intent);
+        final String imagePath = GoogleImageFilePathReader.getImageFilePath(ProfileEditActivity.this, intent);
         handler.post(new Runnable() {
           @Override
           public void run() {
             ImageHandler.load(ProfileEditActivity.this, profileCoverImageView, imagePath);
             showCoverImageProgress();
-            startUploading(imagePath, new Callback<FileUploadReponse>() {
-              @Override
-              public void onResponse(Call<FileUploadReponse> call, Response<FileUploadReponse> response) {
-                if (response.isSuccessful()) {
-                  newCoverImageDownloadUrl = response.body().getDownloadUrl();
-                } else {
-                  newCoverImageDownloadUrl = null;
-                }
-                hideCoverImageProgress();
-              }
-
-              @Override
-              public void onFailure(Call<FileUploadReponse> call, Throwable t) {
-                newCoverImageDownloadUrl = null;
-                hideCoverImageProgress();
-              }
-            });
           }
         });
+        imageRotationHandler.checkOrientationAndFixImage(imagePath, COVER_IMAGE_UID);
       }
     }.start();
   }
@@ -347,11 +325,14 @@ public class ProfileEditActivity extends AppCompatActivity {
     }
   }
 
-  private void startUploading(String filePath, Callback<FileUploadReponse> fileUploadReponseCallback) {
-    File file = new File(filePath);
-    final RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
-    MultipartBody.Part body = MultipartBody.Part.createFormData("upload", file.getName(), requestFile);
-    RetrofitServiceGenerator.getService().uploadFile(body).enqueue(fileUploadReponseCallback);
+  @Override
+  public void onImageRotationFixed(final String filePath, final boolean fileShouldBeDeleted, final int uid) {
+    mHandler.post(new Runnable() {
+      @Override
+      public void run() {
+        startUploading(filePath, fileShouldBeDeleted, uid);
+      }
+    });
   }
 
   private void showCoverImageProgress() {
@@ -364,5 +345,43 @@ public class ProfileEditActivity extends AppCompatActivity {
     if (coverImageUploadProgressBar != null) {
       coverImageUploadProgressBar.setVisibility(View.GONE);
     }
+  }
+
+  private void startUploading(final String filePath, final boolean fileShouldBeDeleted, final int uid) {
+    File file = new File(filePath);
+    final RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
+    MultipartBody.Part body = MultipartBody.Part.createFormData("upload", file.getName(), requestFile);
+    RetrofitServiceGenerator.getService().uploadFile(body).enqueue(new Callback<FileUploadReponse>() {
+      @Override
+      public void onResponse(Call<FileUploadReponse> call, Response<FileUploadReponse> response) {
+        if (response.isSuccessful()) {
+          if (uid == COVER_IMAGE_UID) {
+            newCoverImageDownloadUrl = response.body().getDownloadUrl();
+          } else if (uid == PROFILE_IMAGE_UID) {
+            newProfileImageDownloadUrl = response.body().getDownloadUrl();
+          }
+        } else {
+          if (uid == COVER_IMAGE_UID) {
+            newCoverImageDownloadUrl = null;
+          } else {
+            newProfileImageDownloadUrl = null;
+          }
+        }
+        hideCoverImageProgress();
+        if (fileShouldBeDeleted) {
+          ImageCacheClearUtils.deleteImage(filePath);
+        }
+      }
+
+      @Override
+      public void onFailure(Call<FileUploadReponse> call, Throwable t) {
+        if (uid == COVER_IMAGE_UID) {
+          newCoverImageDownloadUrl = null;
+        } else {
+          newProfileImageDownloadUrl = null;
+        }
+        hideCoverImageProgress();
+      }
+    });
   }
 }
