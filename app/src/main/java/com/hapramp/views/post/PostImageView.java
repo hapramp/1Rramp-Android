@@ -1,6 +1,7 @@
 package com.hapramp.views.post;
 
 import android.content.Context;
+import android.media.ExifInterface;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,6 +27,7 @@ import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.ImageRotationHandler;
 
 import java.io.File;
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -184,7 +186,6 @@ public class PostImageView extends FrameLayout implements ImageRotationHandler.I
         public void onResponse(Call<FileUploadReponse> call, Response<FileUploadReponse> response) {
           if (response.isSuccessful()) {
             downloadUrl = response.body().getDownloadUrl();
-            Log.d("ImageOrientation", "Download Url:" + downloadUrl);
             progressBar.setVisibility(GONE);
             informationTv.setText("Uploaded");
             if (imageActionListener != null) {
