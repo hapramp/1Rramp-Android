@@ -62,12 +62,12 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
   private String mCurrentUser;
   private ProgressDialog progressDialog;
   private AlertDialog alertDialog;
-  private Handler mHandler;
   private RawApiCaller rawApiCaller;
+  private String last_author;
+  private String last_permlink;
 
   public HomeFragment() {
     Crashlytics.setString(CrashReporterKeys.UI_ACTION, "home fragment");
-    mHandler = new Handler();
     rawApiCaller = new RawApiCaller(mContext);
     rawApiCaller.setDataCallback(this);
   }
@@ -201,7 +201,27 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
 
   @Override
   public void onLoadMoreFeeds() {
+    if (currentSelectedTag.equals(ALL)) {
+      rawApiCaller.requestMoreUserFeed(HaprampPreferenceManager.getInstance()
+        .getCurrentSteemUsername(), last_author, last_permlink);
+    }
+  }
 
+  @Override
+  public void onDataLoaded(ArrayList<Feed> feeds, boolean appendableData) {
+    if (feedListView != null) {
+      if (appendableData) {
+        feeds.remove(0);
+        feedListView.loadedMoreFeeds(feeds);
+      } else {
+        feedListView.feedsRefreshed(feeds);
+      }
+      int size = feeds.size();
+      if (feeds.size() > 0) {
+        last_author = feeds.get(size - 1).getAuthor();
+        last_permlink = feeds.get(size - 1).getPermlink();
+      }
+    }
   }
 
   private void fetchAllPosts() {
@@ -211,11 +231,9 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
   }
 
   private void fetchCommunityPosts(String tag) {
-    // TODO: 09/08/18 Manupulate tag for now
     feedListView.feedRefreshing(false);
     tag = tag.replace("hapramp-", "");
     rawApiCaller.requestCuratedFeedsByTag(tag);
-
   }
 
   @Override
@@ -263,14 +281,6 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
       .setNegativeButton(negativeButtonText, negativeListener)
       .create();
     alertDialog.show();
-  }
-
-  @Override
-  public void onDataLoaded(ArrayList<Feed> feeds) {
-    if (feedListView != null) {
-      Log.d("HomeFragment", feeds.size() + "");
-      feedListView.feedsRefreshed(feeds);
-    }
   }
 
   @Override

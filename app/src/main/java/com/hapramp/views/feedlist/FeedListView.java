@@ -11,7 +11,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
@@ -40,8 +39,6 @@ import butterknife.ButterKnife;
  */
 
 public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoadMoreListener {
-
-
   public static final String TAG = FeedListView.class.getSimpleName();
   @BindView(R.id.feed_owner_pic)
   ImageView feedOwnerPic;
@@ -132,7 +129,6 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
   private ViewItemDecoration viewItemDecoration;
   private SpaceDecorator spaceDecorator;
   private int y;
-  // TODO: 2/12/2018  add view setters and attach adapter
   private FeedListViewListener feedListViewListener;
 
   public FeedListView(@NonNull Context context) {
@@ -141,31 +137,26 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
   }
 
   private void init(Context context) {
-
     this.mContext = context;
     rootView = LayoutInflater.from(context).inflate(R.layout.feed_list_view, this);
     ButterKnife.bind(this, rootView);
     attachListeners();
-
     Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
     viewItemDecoration = new ViewItemDecoration(drawable);
     viewItemDecoration.setWantTopOffset(wantTopSpace, topOffset);
     spaceDecorator = new SpaceDecorator();
     layoutManager = new LinearLayoutManager(mContext);
     feedRecyclerView.setLayoutManager(layoutManager);
-    homeFeedsAdapter = new HomeFeedsAdapter(context, feedRecyclerView);
+    homeFeedsAdapter = new HomeFeedsAdapter(context);
     homeFeedsAdapter.setOnLoadMoreListener(this);
     feedRecyclerView.addItemDecoration(spaceDecorator);
     feedRecyclerView.addItemDecoration(viewItemDecoration);
-
     feedRecyclerView.setAdapter(homeFeedsAdapter);
     feedRecyclerView.setNestedScrollingEnabled(false);
-
     feedRefreshLayout.setProgressViewOffset(false, PixelUtils.dpToPx(72), PixelUtils.dpToPx(120));
     feedRefreshLayout.setColorSchemeColors(mContext.getResources().getColor(R.color.colorPrimary));
     sadIcon.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     noPostSadIcon.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-
   }
 
   private void attachListeners() {
@@ -402,80 +393,43 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
   }
 
   public void feedsRefreshed(List<Feed> refreshedFeeds) {
-    // TODO: 2/12/2018 set items to adapter | hide other views | disable swiperefreshing views
-    l("FeedRefreshed {posts - " + refreshedFeeds.size());
     if (refreshedFeeds.size() > 0) {
-
-      //hide recycler view
       setFeedRecyclerViewVisibility(true);
-      //hide failed view
       setFailedToLoadViewVisibility(false);
-      //show no feed loaded
       setNoFeedLoadedViewVisibility(false);
-      //hide shimmer
       setLoadingShimmerVisibility(false);
-
       homeFeedsAdapter.setFeeds(refreshedFeeds);
       showRefreshingLayout(false);
-
     } else {
-      //hide recycler view
       setFeedRecyclerViewVisibility(false);
-      //hide failed view
       setFailedToLoadViewVisibility(false);
-      //show no feed loaded
       setNoFeedLoadedViewVisibility(true);
-      //hide shimmer
       setLoadingShimmerVisibility(false);
-
       showRefreshingLayout(false);
       nopostMessageTitle.setText("No Feeds");
       nopostMessageDetails.setText("No Feed Available in This Section");
-
     }
-
   }
 
   public void failedToRefresh(String msg) {
-
-    l("failedToRefresh");
-
     if (homeFeedsAdapter.getFeedsCount() == 0) {
-      //hide recycler view
       setFeedRecyclerViewVisibility(false);
-      //hide failed view
       setFailedToLoadViewVisibility(true);
-      //show no feed loaded
       setNoFeedLoadedViewVisibility(false);
-      //hide shimmer
       setLoadingShimmerVisibility(false);
-
       showRefreshingLayout(false);
-
       failedMessageTitle.setText("Failed To Load Feeds");
       failedMessageDetails.setText("We are having issue loading feeds");
-
     } else {
-      // hide the progress bar
       showRefreshingLayout(false);
-
     }
-
   }
 
   public void loadedMoreFeeds(List<Feed> moreFeeds) {
-
-    l("loadMoreFeeds");
-    // TODO: 2/12/2018 append items to adapter
-    if (feedRecyclerView.getVisibility() != VISIBLE)
+    if (feedRecyclerView.getVisibility() != VISIBLE) {
       setFeedRecyclerViewVisibility(true);
-
+    }
     homeFeedsAdapter.appendFeeds(moreFeeds);
-
-  }
-
-  public void failedToFetchAppendable() {
-
   }
 
   public void setFeedListViewListener(FeedListViewListener feedListViewListener) {
@@ -484,14 +438,9 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
 
   @Override
   public void onLoadMore() {
-    l("onLoadMore()");
     if (feedListViewListener != null) {
       feedListViewListener.onLoadMoreFeeds();
     }
-  }
-
-  public void setHasMoreToLoad(boolean hasMoreToLoad) {
-    homeFeedsAdapter.setHasMoreToLoad(hasMoreToLoad);
   }
 
   public interface FeedListViewListener {
@@ -505,7 +454,5 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
     void onHideCommunityList();
 
     void onShowCommunityList();
-
   }
-
 }

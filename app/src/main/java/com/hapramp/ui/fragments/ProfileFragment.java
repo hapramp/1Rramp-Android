@@ -10,7 +10,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +32,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCallback {
+public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCallback, ProfileRecyclerAdapter.OnLoadMoreListener {
   private static final String TAG = ProfileFragment.class.getSimpleName();
   @BindView(R.id.profilePostRv)
   RecyclerView profilePostRv;
@@ -47,6 +46,8 @@ public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCa
   private LinearLayoutManager llm;
   private RawApiCaller rawApiCaller;
   private String username;
+  private String last_author;
+  private String last_permlink;
 
 
   public ProfileFragment() {
@@ -73,22 +74,10 @@ public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCa
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
                            Bundle savedInstanceState) {
-    // Inflate the layout for this fragment
     View view = inflater.inflate(R.layout.fragment_profile, container, false);
     unbinder = ButterKnife.bind(this, view);
     init();
     return view;
-  }
-
-  @Override
-  public void onResume() {
-    super.onResume();
-  }
-
-  @Override
-  public void onPause() {
-    super.onPause();
-
   }
 
   @Override
@@ -99,6 +88,7 @@ public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCa
 
   private void init() {
     profilePostAdapter = new ProfileRecyclerAdapter(mContext, HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
+    profilePostAdapter.setOnLoadMoreListener(this);
     Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
     viewItemDecoration = new ViewItemDecoration(drawable);
     viewItemDecoration.setWantTopOffset(false, 0);
@@ -121,13 +111,6 @@ public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCa
         fetchPosts();
       }
     });
-
-    profilePostRv.addOnScrollListener(new EndlessOnScrollListener(llm) {
-      @Override
-      public void onScrolledToEnd() {
-
-      }
-    });
   }
 
   public void reloadPosts() {
@@ -135,12 +118,24 @@ public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCa
   }
 
   @Override
-  public void onDataLoaded(ArrayList<Feed> feeds) {
-    profilePostAdapter.setPosts(feeds);
-    if (profileRefreshLayout != null) {
-      if (profileRefreshLayout.isRefreshing()) {
-        profileRefreshLayout.setRefreshing(false);
-        Toast.makeText(mContext, "Refreshed your posts.", Toast.LENGTH_LONG).show();
+  public void onDataLoaded(ArrayList<Feed> feeds,boolean appendable) {
+    if (profilePostRv != null) {
+      if (appendable) {
+        feeds.remove(0);
+        profilePostAdapter.appendPosts(feeds);
+      } else {
+        profilePostAdapter.setPosts(feeds);
+        if (profileRefreshLayout != null) {
+          if (profileRefreshLayout.isRefreshing()) {
+            profileRefreshLayout.setRefreshing(false);
+            Toast.makeText(mContext, "Refreshed your posts.", Toast.LENGTH_LONG).show();
+          }
+        }
+      }
+      int size = feeds.size();
+      if (feeds.size() > 0) {
+        last_author = feeds.get(size - 1).getAuthor();
+        last_permlink = feeds.get(size - 1).getPermlink();
       }
     }
   }
@@ -155,24 +150,13 @@ public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCa
     }
   }
 
-  public abstract class EndlessOnScrollListener extends RecyclerView.OnScrollListener {
+  @Override
+  public void onLoadMore() {
+    fetchMorePosts();
+  }
 
-    // use your LayoutManager instead
-    private LinearLayoutManager lm;
-
-    EndlessOnScrollListener(LinearLayoutManager llm) {
-      this.lm = llm;
-    }
-
-    @Override
-    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-      super.onScrolled(recyclerView, dx, dy);
-
-      if (!recyclerView.canScrollVertically(1)) {
-        onScrolledToEnd();
-      }
-    }
-
-    public abstract void onScrolledToEnd();
+  private void fetchMorePosts() {
+    rawApiCaller.requestMoreUserBlogs(HaprampPreferenceManager.getInstance()
+      .getCurrentSteemUsername(), last_author, last_permlink);
   }
 }
