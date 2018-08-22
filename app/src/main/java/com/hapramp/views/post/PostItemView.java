@@ -49,10 +49,9 @@ import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.ShareUtils;
 import com.hapramp.views.extraa.StarView;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -228,16 +227,14 @@ public class PostItemView extends FrameLayout {
 
   private void setSteemEarnings(Feed feed) {
     try {
-      DecimalFormat df = new DecimalFormat("#.###");
-      df.setRoundingMode(RoundingMode.CEILING);
       double pendingPayoutValue = Double.parseDouble(feed.getPendingPayoutValue().split(" ")[0]);
       double totalPayoutValue = Double.parseDouble(feed.getTotalPayoutValue().split(" ")[0]);
       double curatorPayoutValue = Double.parseDouble(feed.getCuratorPayoutValue().split(" ")[0]);
       if (pendingPayoutValue > 0) {
-        briefPayoutValueString = "$" + df.format(pendingPayoutValue);
+        briefPayoutValueString = String.format(Locale.US, "$%1$.3f", pendingPayoutValue);
       } else {
         //cashed out
-        briefPayoutValueString = "$" + (df.format(totalPayoutValue + curatorPayoutValue));
+        briefPayoutValueString = String.format(Locale.US, "$%1$.3f", totalPayoutValue + curatorPayoutValue);
       }
       payoutValueTv.setText(briefPayoutValueString);
     }
