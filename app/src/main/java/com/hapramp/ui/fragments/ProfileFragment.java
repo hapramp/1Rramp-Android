@@ -135,7 +135,7 @@ public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCa
   }
 
   @Override
-  public void onDataLoaded(ArrayList<Feed> feeds) {
+  public void onDataLoaded(ArrayList<Feed> feeds,boolean appendable) {
     profilePostAdapter.setPosts(feeds);
     if (profileRefreshLayout != null) {
       if (profileRefreshLayout.isRefreshing()) {

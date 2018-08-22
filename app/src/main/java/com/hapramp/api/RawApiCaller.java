@@ -2,7 +2,6 @@ package com.hapramp.api;
 
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -10,11 +9,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.user.User;
+import com.hapramp.utils.Constants;
 import com.hapramp.utils.JsonParser;
 import com.hapramp.utils.VolleyUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RawApiCaller {
   Handler mHandler;
@@ -71,7 +73,7 @@ public class RawApiCaller {
           public void run() {
             if (isRequestLive(tag))
               if (dataCallback != null) {
-                dataCallback.onDataLoaded(feeds);
+                dataCallback.onDataLoaded(feeds, false);
               }
           }
         });
@@ -101,7 +103,7 @@ public class RawApiCaller {
     StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
       @Override
       public void onResponse(String response) {
-        parseUserFeed(response, rtag);
+        parseUserFeed(response, rtag, false);
       }
     }, new Response.ErrorListener() {
       @Override
@@ -112,7 +114,7 @@ public class RawApiCaller {
     VolleyUtils.getInstance().addToRequestQueue(stringRequest, rtag, context);
   }
 
-  private void parseUserFeed(final String response, final String currentRequestTag) {
+  private void parseUserFeed(final String response, final String currentRequestTag, final boolean appendableData) {
     final JsonParser jsonParser = new JsonParser();
     new Thread() {
       @Override
@@ -123,7 +125,7 @@ public class RawApiCaller {
           public void run() {
             if (isRequestLive(currentRequestTag))
               if (dataCallback != null) {
-                dataCallback.onDataLoaded(feeds);
+                dataCallback.onDataLoaded(feeds, appendableData);
               }
           }
         });
@@ -134,12 +136,12 @@ public class RawApiCaller {
   public void requestUserFeed(String username) {
     final String rtag = "user_feed_" + username;
     this.currentRequestTag = rtag;
-    String url = URLS.BASE_URL + "feeds/user/" + username;
+    String url = URLS.BASE_URL + "feeds/user/" + username + "?limit=" + Constants.FEED_LOADING_LIMIT;
     StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
       new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
-          parseUserFeed(response, rtag);
+          parseUserFeed(response, rtag, false);
         }
       }, new Response.ErrorListener() {
       @Override
@@ -148,6 +150,28 @@ public class RawApiCaller {
       }
     });
     VolleyUtils.getInstance().addToRequestQueue(stringRequest, "user_feed_steemit", context);
+  }
+
+  public void requestMoreUserFeed(String username, final String start_author, final String start_permlink) {
+    final String rtag = "more_user_feed_" + username;
+    this.currentRequestTag = rtag;
+    String url = URLS.BASE_URL + "feeds/user/" + username +
+      "?limit=" + Constants.FEED_LOADING_LIMIT +
+      "&start_author=" + start_author +
+      "&start_permlink=" + start_permlink;
+    StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+      new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+          parseUserFeed(response, rtag, true);
+        }
+      }, new Response.ErrorListener() {
+      @Override
+      public void onErrorResponse(VolleyError volleyError) {
+        returnErrorCallback();
+      }
+    });
+    VolleyUtils.getInstance().addToRequestQueue(stringRequest, "more_user_feed_server", context);
   }
 
   public void requestUserMetadata(Context context, String username) {
@@ -227,7 +251,7 @@ public class RawApiCaller {
           public void run() {
             if (isRequestLive(requestTag)) {
               if (dataCallback != null) {
-                dataCallback.onDataLoaded(feeds);
+                dataCallback.onDataLoaded(feeds, false);
               }
             }
           }
@@ -237,7 +261,7 @@ public class RawApiCaller {
   }
 
   public interface FeedDataCallback {
-    void onDataLoaded(ArrayList<Feed> feeds);
+    void onDataLoaded(ArrayList<Feed> feeds, boolean appendableData);
     void onDataLoadError();
   }
 }

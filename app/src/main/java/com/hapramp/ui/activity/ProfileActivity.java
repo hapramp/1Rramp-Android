@@ -96,7 +96,7 @@ public class ProfileActivity extends AppCompatActivity implements RawApiCaller.F
   }
 
   @Override
-  public void onDataLoaded(ArrayList<Feed> feeds) {
+  public void onDataLoaded(ArrayList<Feed> feeds, boolean appendableData) {
     profilePostAdapter.setPosts(feeds);
   }
 
