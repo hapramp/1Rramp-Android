@@ -30,8 +30,8 @@ import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FontManager;
-import com.hapramp.utils.HashTagUtils;
 import com.hapramp.utils.GoogleImageFilePathReader;
+import com.hapramp.utils.HashTagUtils;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.views.post.PostCreateComponent;
 import com.hapramp.youtube.YoutubeVideoSelectorActivity;
@@ -178,23 +178,23 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
   }
 
   private boolean validPost() {
-    if (postCreateComponent.isMediaSelected()) {
-      if (postCreateComponent.isMediaUploaded()) {
-        return true;
-      } else {
-        toast("Please wait while we upload your image.");
-        return false;
-      }
-    } else {
-      if (postCreateComponent.isContentEnough()) {
-        if (postCreateComponent.getSelectedCommunityTags().size() > 1) { //default: hapramp is added at community.
+    if (postCreateComponent.getSelectedCommunityTags().size() > 1) {
+      if (postCreateComponent.isMediaSelected()) {
+        if (postCreateComponent.isMediaUploaded()) {
           return true;
         } else {
-          toast("Select atleast 1 community!");
+          toast("Please wait while we upload your image.");
+          return false;
         }
       } else {
-        toast("Write someting more...");
+        if (postCreateComponent.isContentEnough()) {
+          return true;
+        } else {
+          toast("Write something more...");
+        }
       }
+    } else {
+      toast("Select atleast 1 community!");
     }
     return false;
   }
