@@ -7,7 +7,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -113,7 +112,6 @@ public class ProfileActivity extends AppCompatActivity implements RawApiCaller.F
         if (profileRefreshLayout != null) {
           if (profileRefreshLayout.isRefreshing()) {
             profileRefreshLayout.setRefreshing(false);
-            Toast.makeText(this, "Refreshed your posts.", Toast.LENGTH_LONG).show();
           }
         }
       }
@@ -127,7 +125,11 @@ public class ProfileActivity extends AppCompatActivity implements RawApiCaller.F
 
   @Override
   public void onDataLoadError() {
-
+    if (profileRefreshLayout != null) {
+      if (profileRefreshLayout.isRefreshing()) {
+        profileRefreshLayout.setRefreshing(false);
+      }
+    }
   }
 
   @Override

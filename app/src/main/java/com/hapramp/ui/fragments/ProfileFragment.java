@@ -128,7 +128,6 @@ public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCa
         if (profileRefreshLayout != null) {
           if (profileRefreshLayout.isRefreshing()) {
             profileRefreshLayout.setRefreshing(false);
-            Toast.makeText(mContext, "Refreshed your posts.", Toast.LENGTH_LONG).show();
           }
         }
       }
@@ -145,7 +144,6 @@ public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCa
     if (profileRefreshLayout != null) {
       if (profileRefreshLayout.isRefreshing()) {
         profileRefreshLayout.setRefreshing(false);
-        Toast.makeText(mContext, "Failed to refresh your posts.", Toast.LENGTH_LONG).show();
       }
     }
   }
