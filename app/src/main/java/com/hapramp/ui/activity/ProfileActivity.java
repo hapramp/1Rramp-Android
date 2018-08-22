@@ -3,9 +3,11 @@ package com.hapramp.ui.activity;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -27,7 +29,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ProfileActivity extends AppCompatActivity implements RawApiCaller.FeedDataCallback {
+public class ProfileActivity extends AppCompatActivity implements RawApiCaller.FeedDataCallback, ProfileRecyclerAdapter.OnLoadMoreListener {
   @BindView(R.id.closeBtn)
   TextView closeBtn;
   @BindView(R.id.toolbar_container)
@@ -36,11 +38,15 @@ public class ProfileActivity extends AppCompatActivity implements RawApiCaller.F
   RecyclerView profilePostRv;
   @BindView(R.id.profile_user_name)
   TextView profileUserName;
+  @BindView(R.id.profileRefreshLayout)
+  SwipeRefreshLayout profileRefreshLayout;
   private String username;
   private ProfileRecyclerAdapter profilePostAdapter;
   private ViewItemDecoration viewItemDecoration;
   private LinearLayoutManager llm;
   private RawApiCaller rawApiCaller;
+  private String last_author;
+  private String last_permlink;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +68,7 @@ public class ProfileActivity extends AppCompatActivity implements RawApiCaller.F
     }
     username = getIntent().getExtras().getString(Constants.EXTRAA_KEY_STEEM_USER_NAME, HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
     profilePostAdapter = new ProfileRecyclerAdapter(this, username);
+    profilePostAdapter.setOnLoadMoreListener(this);
     llm = new LinearLayoutManager(this);
     profilePostRv.setLayoutManager(llm);
     Drawable drawable = ContextCompat.getDrawable(this, R.drawable.post_item_divider_view);
@@ -83,10 +90,10 @@ public class ProfileActivity extends AppCompatActivity implements RawApiCaller.F
   }
 
   private void setScrollListener() {
-    profilePostRv.addOnScrollListener(new EndlessOnScrollListener(llm) {
+    profileRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
       @Override
-      public void onScrolledToEnd() {
-        //loadMore();
+      public void onRefresh() {
+        fetchPosts();
       }
     });
   }
@@ -96,8 +103,26 @@ public class ProfileActivity extends AppCompatActivity implements RawApiCaller.F
   }
 
   @Override
-  public void onDataLoaded(ArrayList<Feed> feeds, boolean appendableData) {
-    profilePostAdapter.setPosts(feeds);
+  public void onDataLoaded(ArrayList<Feed> feeds, boolean appendable) {
+    if (profilePostRv != null) {
+      if (appendable) {
+        feeds.remove(0);
+        profilePostAdapter.appendPosts(feeds);
+      } else {
+        profilePostAdapter.setPosts(feeds);
+        if (profileRefreshLayout != null) {
+          if (profileRefreshLayout.isRefreshing()) {
+            profileRefreshLayout.setRefreshing(false);
+            Toast.makeText(this, "Refreshed your posts.", Toast.LENGTH_LONG).show();
+          }
+        }
+      }
+      int size = feeds.size();
+      if (feeds.size() > 0) {
+        last_author = feeds.get(size - 1).getAuthor();
+        last_permlink = feeds.get(size - 1).getPermlink();
+      }
+    }
   }
 
   @Override
@@ -105,17 +130,12 @@ public class ProfileActivity extends AppCompatActivity implements RawApiCaller.F
 
   }
 
-  public abstract class EndlessOnScrollListener extends RecyclerView.OnScrollListener {
-    EndlessOnScrollListener(LinearLayoutManager llm) {
-    }
-    @Override
-    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-      super.onScrolled(recyclerView, dx, dy);
+  @Override
+  public void onLoadMore() {
+    fetchMorePosts();
+  }
 
-      if (!recyclerView.canScrollVertically(1)) {
-        onScrolledToEnd();
-      }
-    }
-    public abstract void onScrolledToEnd();
+  private void fetchMorePosts() {
+    rawApiCaller.requestMoreUserBlogs(username, last_author, last_permlink);
   }
 }

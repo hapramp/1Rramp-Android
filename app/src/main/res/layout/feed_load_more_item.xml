@@ -1,133 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:id="@+id/loading_view_root"
+    android:background="#53d7d7d7"
     android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:id="@+id/post_header_container"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:background="#ffffff"
-        android:clickable="true"
-        android:focusable="true">
-
-        <ImageView
-            android:id="@+id/feed_owner_pic"
-            android:layout_width="64dp"
-            android:layout_height="match_parent"
-            android:padding="12dp"
-            android:src="@color/Black12" />
-
-        <android.support.v4.widget.Space
-            android:id="@+id/reference_line"
-            android:layout_width="match_parent"
-            android:layout_height="4dp"
-            android:layout_centerVertical="true" />
-
-        <TextView
-            android:id="@+id/feed_owner_title"
-            android:layout_width="144dp"
-            android:layout_height="16dp"
-            android:layout_above="@+id/reference_line"
-            android:layout_toRightOf="@+id/feed_owner_pic"
-            android:background="@color/Black12"
-            android:text=""
-            android:textStyle="bold" />
-
-
-        <TextView
-            android:id="@+id/feed_owner_subtitle"
-            android:layout_width="84dp"
-            android:layout_height="12dp"
-            android:layout_below="@+id/reference_line"
-            android:layout_toRightOf="@+id/feed_owner_pic"
-            android:background="@color/Black12"
-            android:text="" />
-
-
-    </RelativeLayout>
-
-    <FrameLayout
-        android:id="@+id/image_mock"
-        android:layout_width="match_parent"
-        android:layout_height="144dp"
-        android:layout_below="@+id/post_header_container"
-        android:background="@color/LightBlack" />
-
-    <RelativeLayout
-        android:id="@+id/post_meta_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/image_mock"
-        android:background="#ffffff"
-        android:padding="16dp">
-
-        <TextView
-            android:id="@+id/post_title"
-            android:layout_width="144dp"
-            android:layout_height="16dp"
-            android:background="@color/Black12"
-            android:paddingLeft="8dp"
-            android:paddingTop="8dp"
-            android:text=""
-            android:textSize="16sp" />
-
-
-        <TextView
-            android:id="@+id/tags"
-            android:layout_width="84dp"
-            android:layout_height="8dp"
-            android:layout_below="@+id/post_title"
-            android:layout_marginTop="8dp"
-            android:background="@color/Black12"
-            android:padding="8dp"
-            android:text=""
-            android:textSize="12sp"
-            android:visibility="visible" />
-
-
-        <TextView
-            android:id="@+id/line1"
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:layout_below="@+id/tags"
-            android:layout_marginTop="16dp"
-            android:background="@color/Black12"
-            android:text=""
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/line2"
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:layout_below="@+id/line1"
-            android:layout_marginTop="4dp"
-            android:background="@color/Black12"
-            android:text=""
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/line3"
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:layout_below="@+id/line2"
-            android:layout_marginTop="4dp"
-            android:background="@color/Black12"
-            android:text=""
-            android:textSize="16sp" />
-
-
-        <TextView
-            android:id="@+id/line4"
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:layout_below="@+id/line3"
-            android:layout_marginTop="4dp"
-            android:background="@color/Black12"
-            android:text=""
-            android:textSize="16sp" />
-
-    </RelativeLayout>
+    <ProgressBar
+        android:id="@+id/load_more_progress_view"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_margin="84dp"/>
 
 </RelativeLayout>

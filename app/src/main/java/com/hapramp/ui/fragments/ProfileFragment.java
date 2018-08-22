@@ -74,22 +74,10 @@ public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCa
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
                            Bundle savedInstanceState) {
-    // Inflate the layout for this fragment
     View view = inflater.inflate(R.layout.fragment_profile, container, false);
     unbinder = ButterKnife.bind(this, view);
     init();
     return view;
-  }
-
-  @Override
-  public void onResume() {
-    super.onResume();
-  }
-
-  @Override
-  public void onPause() {
-    super.onPause();
-
   }
 
   @Override

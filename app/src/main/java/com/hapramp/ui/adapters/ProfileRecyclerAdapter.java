@@ -2,11 +2,10 @@ package com.hapramp.ui.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.widget.ProgressBar;
 
 import com.hapramp.R;
 import com.hapramp.steem.models.Feed;
@@ -53,7 +52,7 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
       View view = new ProfileHeaderView(mContext);
       viewHolder = new ProfileHeaderViewHolder(view);
     } else if (viewType == VIEW_TYPE_LOADING) {
-      View _v = LayoutInflater.from(mContext).inflate(R.layout.feed_load_more_item, null);
+      View _v = LayoutInflater.from(mContext).inflate(R.layout.feed_load_more_item, viewGroup, false);
       viewHolder = new LoadMoreViewHolder(_v);
     }
     return viewHolder;
@@ -169,8 +168,8 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
 
   class LoadMoreViewHolder extends RecyclerView.ViewHolder {
-    @BindView(R.id.loading_view_root)
-    RelativeLayout loadingViewRoot;
+    @BindView(R.id.load_more_progress_view)
+    ProgressBar loadingViewProgressBar;
 
     public LoadMoreViewHolder(View itemView) {
       super(itemView);
@@ -178,14 +177,14 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     public void showLoadingView() {
-      if (loadingViewRoot != null) {
-        loadingViewRoot.setVisibility(View.VISIBLE);
+      if (loadingViewProgressBar != null) {
+        loadingViewProgressBar.setVisibility(View.VISIBLE);
       }
     }
 
     public void hideLoadingView() {
-      if (loadingViewRoot != null) {
-        loadingViewRoot.setVisibility(View.GONE);
+      if (loadingViewProgressBar != null) {
+        loadingViewProgressBar.setVisibility(View.GONE);
       }
     }
   }
