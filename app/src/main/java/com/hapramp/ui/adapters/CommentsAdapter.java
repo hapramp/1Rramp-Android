@@ -72,8 +72,6 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
     ImageView commentAvatar;
     @BindView(R.id.commentOwnerName)
     TextView commentOwnerName;
-    @BindView(R.id.commentMetaHolder)
-    LinearLayout commentMetaHolder;
     @BindView(R.id.commentTv)
     TextView commentTv;
     @BindView(R.id.created_time)
