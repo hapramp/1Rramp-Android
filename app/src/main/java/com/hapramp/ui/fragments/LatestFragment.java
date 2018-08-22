@@ -36,6 +36,8 @@ public class LatestFragment extends Fragment implements FeedListView.FeedListVie
   private RawApiCaller rawApiCaller;
   private Context mContext;
   private String TAG = "hapramp";
+  private String last_author;
+  private String last_permlink;
 
   @Override
   public void onAttach(Context context) {
@@ -75,7 +77,12 @@ public class LatestFragment extends Fragment implements FeedListView.FeedListVie
   }
 
   private void fetchPosts() {
-    rawApiCaller.requestLatestPostsByTag(TAG);
+    rawApiCaller.requestPostsByTag(TAG);
+  }
+
+  @Override
+  public void onLoadMoreFeeds() {
+    fetchMorePosts();
   }
 
   //FEEDLIST CALLBACKS
@@ -89,8 +96,8 @@ public class LatestFragment extends Fragment implements FeedListView.FeedListVie
     fetchPosts();
   }
 
-  @Override
-  public void onLoadMoreFeeds() {
+  private void fetchMorePosts() {
+    rawApiCaller.requestMorePostsByTag(TAG, last_author, last_permlink);
   }
 
   @Override
@@ -104,9 +111,19 @@ public class LatestFragment extends Fragment implements FeedListView.FeedListVie
   }
 
   @Override
-  public void onDataLoaded(ArrayList<Feed> feeds,boolean appendable) {
+  public void onDataLoaded(ArrayList<Feed> feeds, boolean appendableData) {
     if (feedListView != null) {
-      feedListView.feedsRefreshed(feeds);
+      if (appendableData) {
+        feeds.remove(0);
+        feedListView.loadedMoreFeeds(feeds);
+      } else {
+        feedListView.feedsRefreshed(feeds);
+      }
+      int size = feeds.size();
+      if (feeds.size() > 0) {
+        last_author = feeds.get(size - 1).getAuthor();
+        last_permlink = feeds.get(size - 1).getPermlink();
+      }
     }
   }
 

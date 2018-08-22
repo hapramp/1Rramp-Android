@@ -15,8 +15,6 @@ import com.hapramp.utils.VolleyUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class RawApiCaller {
   Handler mHandler;
@@ -32,15 +30,15 @@ public class RawApiCaller {
     mHandler = new Handler();
   }
 
-  //for search page [Posts with hapramp tag]
-  public void requestLatestPostsByTag(final String tag) {
+  //for New On 1ramp section [Posts with hapramp tag]
+  public void requestPostsByTag(final String tag) {
     final String rtag = "latest_post_by_tag_" + tag;
     this.currentRequestTag = rtag;
-    final String reqBody = "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_discussions_by_created\", \"params\":[{\"tag\":\"" + tag + "\",\"limit\":40}], \"id\":1}";
+    final String reqBody = "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_discussions_by_created\", \"params\":[{\"tag\":\"" + tag + "\",\"limit\":8}], \"id\":1}";
     StringRequest newBlogRequest = new StringRequest(Request.Method.POST, STEEMIT_API_URL, new Response.Listener<String>() {
       @Override
       public void onResponse(String response) {
-        parseLatestPostByTag(response, rtag);
+        parseLatestPostByTag(response, rtag, false);
       }
     }, new Response.ErrorListener() {
       @Override
@@ -62,7 +60,7 @@ public class RawApiCaller {
     VolleyUtils.getInstance().addToRequestQueue(newBlogRequest, currentRequestTag, context);
   }
 
-  private void parseLatestPostByTag(final String response, final String tag) {
+  private void parseLatestPostByTag(final String response, final String tag, final boolean appendable) {
     final JsonParser jsonParser = new JsonParser();
     new Thread() {
       @Override
@@ -73,12 +71,43 @@ public class RawApiCaller {
           public void run() {
             if (isRequestLive(tag))
               if (dataCallback != null) {
-                dataCallback.onDataLoaded(feeds, false);
+                dataCallback.onDataLoaded(feeds, appendable);
               }
           }
         });
       }
     }.start();
+  }
+
+  public void requestMorePostsByTag(final String tag, final String start_author, String start_permlink) {
+    final String rtag = "latest_post_by_tag_more_" + tag;
+    this.currentRequestTag = rtag;
+    final String reqBody = "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_discussions_by_created\"," +
+      "\"params\":[{\"start_author\":\"" + start_author + "\",\"start_permlink\":\"" + start_permlink +
+      "\",\"tag\":\"" + tag + "\",\"limit\":8}], \"id\":1}";
+    StringRequest newBlogRequest = new StringRequest(Request.Method.POST, STEEMIT_API_URL, new Response.Listener<String>() {
+      @Override
+      public void onResponse(String response) {
+        parseLatestPostByTag(response, rtag, true);
+      }
+    }, new Response.ErrorListener() {
+      @Override
+      public void onErrorResponse(VolleyError error) {
+        returnErrorCallback();
+      }
+    }) {
+      @Override
+      public byte[] getBody() {
+        try {
+          return reqBody.getBytes("utf-8");
+        }
+        catch (UnsupportedEncodingException e) {
+          e.printStackTrace();
+        }
+        return null;
+      }
+    };
+    VolleyUtils.getInstance().addToRequestQueue(newBlogRequest, currentRequestTag, context);
   }
 
   private void returnErrorCallback() {
