@@ -128,11 +128,34 @@ public class RawApiCaller {
   public void requestUserBlogs(String username) {
     final String rtag = "user_blog_" + username;
     this.currentRequestTag = rtag;
-    String url = URLS.BASE_URL + "feeds/blog/" + username;
+    String url = URLS.BASE_URL + "feeds/blog/" + username +
+      "?limit=8";
     StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
       @Override
       public void onResponse(String response) {
         parseUserFeed(response, rtag, false);
+      }
+    }, new Response.ErrorListener() {
+      @Override
+      public void onErrorResponse(VolleyError volleyError) {
+        returnErrorCallback();
+      }
+    });
+    VolleyUtils.getInstance().addToRequestQueue(stringRequest, rtag, context);
+  }
+
+  public void requestMoreUserBlogs(String username, String start_author, String start_permlink) {
+    final String rtag = "user_blog_" + username;
+    this.currentRequestTag = rtag;
+    String url = URLS.BASE_URL + "feeds/blog/" + username +
+      "?limit=8" +
+      "&start_author=" + start_author +
+      "&start_permlink=" + start_permlink;
+    ;
+    StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+      @Override
+      public void onResponse(String response) {
+        parseUserFeed(response, rtag, true);
       }
     }, new Response.ErrorListener() {
       @Override

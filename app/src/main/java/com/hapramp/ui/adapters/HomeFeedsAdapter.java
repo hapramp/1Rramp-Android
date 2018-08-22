@@ -89,13 +89,10 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     } else if (holder instanceof LoadMoreViewHolder) {
       if (!isLoading && mOnLoadMoreListener != null) {
         if (hasChanceOfMoreFeeds) {
-          //call for more data
           isLoading = true;
           mOnLoadMoreListener.onLoadMore();
           ((LoadMoreViewHolder) holder).showLoadingView();
         } else {
-          Log.d("HomFragment","hinding view");
-          //hide the loading view
           ((LoadMoreViewHolder) holder).hideLoadingView();
         }
       }
