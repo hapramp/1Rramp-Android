@@ -44,28 +44,6 @@
             android:name=".ui.activity.CreateArticleActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".ui.activity.NotificationsActivity"
-            android:parentActivityName=".ui.activity.HomeActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.activity.InfoEditingActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".ui.activity.HowToEarnActivity"
-            android:screenOrientation="portrait" />
-
-        <service android:name=".services.HaprampFirebaseInstanceId">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service>
-        <service android:name=".services.HapramapPushService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
 
         <activity
             android:name=".ui.activity.ProfileEditActivity"
@@ -84,19 +62,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activity.QrScanningActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ui.activity.CommunitySelectionActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.UserSearchActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.activity.TestActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.activity.PreviewActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".youtube.YoutubeVideoSelectorActivity"

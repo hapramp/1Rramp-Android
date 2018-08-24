@@ -5,21 +5,11 @@
     <color name="colorPrimaryDark">#112D4E</color>
     <color name="colorAccent">#112D4E</color>
 
-    <color name="Yellow">#FFEB3B</color>
-    <color name="Blue">#2196f3</color>
-    <color name="Green">#8Bc34a</color>
-    <color name="Orange">#eF5350</color>
-    <color name="Violet">#9c27b0</color>
-    <color name="BlueGrey">#607d8b</color>
-    <color name="Brown">#795548</color>
-
     <color name="LightBlack">#f5f5f5</color>
     <color name="Black12">#1f000000</color>
     <color name="Black38">#61000000</color>
     <color name="Black54">#8a000000</color>
     <color name="Black87">#dd000000</color>
-    <color name="WhiteSmoke">#fafafa</color>
-    <color name="Grey224">#03e0e0e0</color>
 
     <color name="ConnectivityGreen">#169422</color>
     <color name="ConnectivityRed">#9b1836</color>

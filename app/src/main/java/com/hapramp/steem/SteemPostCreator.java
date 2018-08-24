@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.support.annotation.WorkerThread;
 
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.models.data.JsonMetadata;
+import com.hapramp.steem.models.JsonMetadata;
 import com.hapramp.steemconnect.SteemConnectUtils;
 import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;

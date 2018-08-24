@@ -2,7 +2,6 @@ package com.hapramp.ui.activity;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,11 +24,9 @@ import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.api.URLS;
-import com.hapramp.datamodels.FeaturedImageSelectionModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.SteemPostCreator;
-import com.hapramp.steem.models.data.Content;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.GoogleImageFilePathReader;
@@ -82,14 +79,10 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   MarkDEditor markDEditor;
   @BindView(R.id.controlBar)
   EditorControlBar editorControlBar;
-  private ArrayList<FeaturedImageSelectionModel> insertedImages;
   private ProgressDialog progressDialog;
-  private Dialog dialog;
   private String title;
   private ArrayList<String> tags;
-  private Content postStructureModel;
   private String generated_permalink;
-  private String permlink_with_username;
   private String body;
   private List<String> images;
 
@@ -108,7 +101,6 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     closeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     backBtnFromArticleMeta.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     progressDialog = new ProgressDialog(this);
-    insertedImages = new ArrayList<>();
     articleCategoryView.initCategory();
     editorControlBar.setEditorControlListener(this);
     editorControlBar.setEditor(markDEditor);

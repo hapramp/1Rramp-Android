@@ -4,16 +4,9 @@ import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.datamodels.CommunitySelectionServerUpdateBody;
 import com.hapramp.datamodels.VerificationDataBody;
 import com.hapramp.datamodels.VerifiedToken;
-import com.hapramp.datamodels.requests.VoteRequestBody;
-import com.hapramp.datamodels.response.ConfirmationResponse;
 import com.hapramp.datamodels.response.FileUploadReponse;
-import com.hapramp.datamodels.response.NotificationResponse;
 import com.hapramp.datamodels.response.UserModel;
 import com.hapramp.steem.CommunitySelectionResponse;
-import com.hapramp.steem.PostConfirmationModel;
-import com.hapramp.steem.PreProcessingModel;
-import com.hapramp.steem.ProcessedBodyResponse;
-import com.hapramp.steem.models.FeedResponse;
 import com.hapramp.steem.models.FeedWrapper;
 import com.hapramp.youtube.YoutubeResultModel;
 
@@ -28,7 +21,6 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
 import retrofit2.http.Url;
 
 /**
@@ -42,12 +34,6 @@ public interface HaprampAPI {
 
   @GET("users/usernames/{username}")
   Call<UserModel> fetchUserCommunities(@Path("username") String username);
-
-  @POST("posts/comments/_notify")
-  Call<ConfirmationResponse> notifyCommentOnPost(@Query("permlink") String permlink);
-
-  @POST("posts/votes/_notify")
-  Call<ConfirmationResponse> notifyVoteOnPost(@Body VoteRequestBody voteRequestBody, @Query("permlink") String permlink);
 
   @GET("communities")
   Call<List<CommunityModel>> getCommunities();
@@ -64,23 +50,8 @@ public interface HaprampAPI {
   @GET
   Call<YoutubeResultModel> getYoutubeResults(@Url String url);
 
-  @PUT("users/user")
-  Call<DeviceRegistrationReponse> updateUserDeviceId(@Body DeviceId deviceId);
-
   @Multipart
   @POST("upload")
   Call<FileUploadReponse> uploadFile(@Part MultipartBody.Part file);
-
-  @GET("users/{user_id}/_full")
-  Call<UserModel> getFullUserDetails(@Path("user_id") String user_id);
-
-  @GET("notifications")
-  Call<NotificationResponse> getNotifications(@Query("start") int start, @Query("limit") int limit);
-
-  @POST("notifications/{notification_id}/_mark_as_read")
-  Call<NotificationResponse> markAsRead(@Path("notification_id") int notification_id);
-
-  @POST("notifications/_mark_all_read")
-  Call<NotificationResponse> markAsAllRead();
 
 }

@@ -29,7 +29,7 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.search.FollowCountManager;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.UserProfileFetcher;
-import com.hapramp.steem.models.user.User;
+import com.hapramp.steem.models.User;
 import com.hapramp.steemconnect.SteemConnectUtils;
 import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;

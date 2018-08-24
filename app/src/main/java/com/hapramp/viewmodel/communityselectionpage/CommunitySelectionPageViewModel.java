@@ -2,8 +2,7 @@ package com.hapramp.viewmodel.communityselectionpage;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-
-import com.hapramp.api.DataServer;
+import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.datamodels.CommunitySelectionServerUpdateBody;
 import com.hapramp.steem.CommunitySelectionResponse;
@@ -34,7 +33,7 @@ public class CommunitySelectionPageViewModel extends ViewModel {
   }
 
   private void fetchCommunities() {
-    DataServer.getService().getCommunities()
+    RetrofitServiceGenerator.getService().getCommunities()
       .enqueue(new Callback<List<CommunityModel>>() {
         @Override
         public void onResponse(Call<List<CommunityModel>> call, Response<List<CommunityModel>> response) {
@@ -54,7 +53,7 @@ public class CommunitySelectionPageViewModel extends ViewModel {
 
   public void updateServer(List<Integer> selected) {
     CommunitySelectionServerUpdateBody body = new CommunitySelectionServerUpdateBody(selected);
-    DataServer.getService().updateCommunitySelections(body).enqueue(new Callback<CommunitySelectionResponse>() {
+    RetrofitServiceGenerator.getService().updateCommunitySelections(body).enqueue(new Callback<CommunitySelectionResponse>() {
       @Override
       public void onResponse(Call<CommunitySelectionResponse> call, Response<CommunitySelectionResponse> response) {
         if (response.isSuccessful()) {

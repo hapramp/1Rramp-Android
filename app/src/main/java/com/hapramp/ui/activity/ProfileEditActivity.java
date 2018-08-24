@@ -24,7 +24,7 @@ import com.hapramp.R;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datamodels.response.FileUploadReponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.models.user.User;
+import com.hapramp.steem.models.User;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.GoogleImageFilePathReader;
 import com.hapramp.utils.ImageCacheClearUtils;

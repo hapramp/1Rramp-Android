@@ -16,7 +16,6 @@
             android:layout_height="228dp">
 
             <View
-                android:id="@+id/user_cover_pic_mock"
                 android:layout_width="match_parent"
                 android:layout_height="172dp"
                 android:background="@color/Black12" />

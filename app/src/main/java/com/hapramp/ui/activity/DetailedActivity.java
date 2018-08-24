@@ -40,7 +40,6 @@ import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.push.Notifyer;
 import com.hapramp.steem.Communities;
 import com.hapramp.steem.SteemCommentCreator;
 import com.hapramp.steem.SteemCommentModel;
@@ -453,11 +452,9 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
           String.valueOf(vote), new SteemConnectCallback() {
           @Override
           public void onResponse(String s) {
-            Notifyer.notifyVote(post.getPermlink(), vote);
             mHandler.post(new Runnable() {
               @Override
               public void run() {
-                Log.d("Vote", "voted!!");
                 castingVoteSuccess();
               }
             });
@@ -489,7 +486,6 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
           String.valueOf(0), new SteemConnectCallback() {
             @Override
             public void onResponse(String s) {
-              Notifyer.notifyVote(post.getPermlink(), 0);
               mHandler.post(new Runnable() {
                 @Override
                 public void run() {

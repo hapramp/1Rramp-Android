@@ -22,7 +22,6 @@ import com.hapramp.utils.ImageHandler;
  */
 
 public class CommunityItemView extends FrameLayout {
-
   ImageView communityIv;
   TextView skillSelectionOverlay;
   TextView communityItemTitle;

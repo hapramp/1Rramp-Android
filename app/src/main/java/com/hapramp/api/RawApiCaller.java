@@ -8,7 +8,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.hapramp.steem.models.Feed;
-import com.hapramp.steem.models.user.User;
+import com.hapramp.steem.models.User;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.JsonParser;
 import com.hapramp.utils.VolleyUtils;

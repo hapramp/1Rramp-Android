@@ -2,8 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
 ext.crashlyticsVersion = '2.9.1'
-ext.firebaseVersionNew = '15.0.2'
-ext.firebaseVersionOld = '15.0.0'
 ext.buildToolVersion = '27.0.3'
 ext.supportLibVersion = '27.1.1'
 ext.multidexVersion = '1.0.3'
@@ -49,11 +47,6 @@ android {
     }
 }
 dependencies {
-    implementation "com.google.firebase:firebase-core:$firebaseVersionNew"
-    implementation "com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion"
-    implementation "com.google.firebase:firebase-messaging:$firebaseVersionNew"
-    implementation "com.google.firebase:firebase-storage:$firebaseVersionNew"
-    implementation "com.google.firebase:firebase-auth:$firebaseVersionOld"
     implementation "com.android.support:multidex:$multidexVersion"
     implementation "com.android.support:appcompat-v7:$supportLibVersion"
     implementation "com.android.support:support-v4:$supportLibVersion"
@@ -65,10 +58,8 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     implementation "com.github.bumptech.glide:glide:$glideVersion"
-    implementation 'com.facebook.shimmer:shimmer:0.1.0@aar'
     implementation 'org.apache.commons:commons-lang3:3.7'
     implementation 'com.facebook.network.connectionclass:connectionclass:1.0.1'
-    implementation "com.google.android.gms:play-services-vision:$firebaseVersionOld"
     implementation "info.androidhive:barcode-reader:$barcodeReaderVersion"
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"

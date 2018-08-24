@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.Voter;
-import com.hapramp.steem.models.user.User;
+import com.hapramp.steem.models.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;

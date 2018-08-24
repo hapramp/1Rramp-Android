@@ -24,7 +24,6 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
-import com.hapramp.interfaces.PostCreateCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.SteemPostCreator;
@@ -42,7 +41,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class CreatePostActivity extends AppCompatActivity implements PostCreateCallback, SteemPostCreator.SteemPostCreatorCallback {
+public class CreatePostActivity extends AppCompatActivity implements SteemPostCreator.SteemPostCreatorCallback {
   private static final int REQUEST_IMAGE_SELECTOR = 101;
   private static final int YOUTUBE_RESULT_REQUEST = 107;
   @BindView(R.id.closeBtn)
@@ -301,18 +300,6 @@ public class CreatePostActivity extends AppCompatActivity implements PostCreateC
 
   private void insertYoutube(String videoId) {
     postCreateComponent.setYoutubeThumbnail(videoId);
-  }
-
-  @Override
-  public void onPostCreated(String... jobId) {
-    showPublishingProgressDialog(false, "");
-    close();
-  }
-
-  @Override
-  public void onPostCreateError(String... jobId) {
-    showPublishingProgressDialog(false, "");
-    toast("Failed to create post");
   }
 
   @Override

@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.hapramp.R;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.UserProfileFetcher;
-import com.hapramp.steem.models.user.User;
+import com.hapramp.steem.models.User;
 import com.hapramp.ui.activity.AccountHistoryActivity;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.ReputationCalc;

@@ -9,16 +9,6 @@
 
     </style>
 
-    <style name="HaprampLoginTheme" parent="TextAppearance.AppCompat">
-        <!-- Hint color and label color in FALSE state -->
-        <item name="android:textColorHint">#b5050505</item>
-        <item name="android:textSize">16sp</item>
-        <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
-        <item name="colorAccent">#3d3d3d</item>
-        <item name="colorControlNormal">#ad080808</item>
-        <item name="colorControlActivated">#333333</item>
-    </style>
-
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_background</item>
     </style>
