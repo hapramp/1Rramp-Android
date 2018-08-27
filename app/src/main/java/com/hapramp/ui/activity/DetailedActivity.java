@@ -40,6 +40,7 @@ import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
 import com.hapramp.steem.SteemCommentCreator;
+import com.hapramp.steem.SteemReplyFetcher;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.Voter;
 import com.hapramp.steemconnect4j.SteemConnect;
@@ -53,6 +54,7 @@ import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.RegexUtils;
 import com.hapramp.utils.ShareUtils;
 import com.hapramp.utils.VoteUtils;
+import com.hapramp.views.comments.CommentsItemView;
 import com.hapramp.views.extraa.StarView;
 
 import java.util.ArrayList;
@@ -63,7 +65,7 @@ import butterknife.ButterKnife;
 
 import static android.view.View.VISIBLE;
 
-public class DetailedActivity extends AppCompatActivity implements SteemCommentCreator.SteemCommentCreateCallback {
+public class DetailedActivity extends AppCompatActivity implements SteemCommentCreator.SteemCommentCreateCallback, SteemReplyFetcher.SteemReplyFetchCallback {
   @BindView(R.id.closeBtn)
   TextView closeBtn;
   @BindView(R.id.overflowBtn)
@@ -132,6 +134,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
   private SteemCommentCreator steemCommentCreator;
   private List<CommentModel> comments = new ArrayList<>();
   private SteemConnect steemConnect;
+  private SteemReplyFetcher steemReplyFetcher;
   private Runnable steemCastingVoteExceptionRunnable = new Runnable() {
     @Override
     public void run() {
@@ -160,6 +163,8 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
 
   private void init() {
     mHandler = new Handler();
+    steemReplyFetcher = new SteemReplyFetcher(this);
+    steemReplyFetcher.setSteemReplyFetchCallback(this);
     steemCommentCreator = new SteemCommentCreator();
     steemCommentCreator.setSteemCommentCreateCallback(this);
     progressDialog = new ProgressDialog(this);
@@ -259,9 +264,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
 
   private void bindPostValues() {
     detailsActivityCover.setVisibility(View.GONE);
-    // TODO: 27/08/18 add commentItemView
-//        commentLoadingProgressBar.setVisibility(View.GONE);
-//        addAllCommentsToView(steemCommentModels);
+    steemReplyFetcher.requestReplyForPost(post.getAuthor(), post.getPermlink());
     ImageHandler.loadCircularImage(this, feedOwnerPic,
       String.format(getResources().getString(R.string.steem_user_profile_pic_format), post.getAuthor()));
     feedOwnerTitle.setText(post.getAuthor());
@@ -307,23 +310,10 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
       null);
   }
 
-  private void addAllCommentsToView(List<CommentModel> discussions) {
-    commentsViewContainer.removeAllViews();
-    int commentCount = discussions.size();
-    commentLoadingProgressBar.setVisibility(View.GONE);
-    if (commentCount == 0) {
-      emptyCommentsCaption.setText("No Comments");
-      emptyCommentsCaption.setVisibility(VISIBLE);
-    } else {
-      emptyCommentsCaption.setVisibility(View.GONE);
-    }
-    int range = commentCount > 3 ? 3 : discussions.size();
-    for (int i = 0; i < range; i++) {
-     // addCommentToView(discussions.get(i), i);
-    }
-    if (commentCount > 3) {
-      moreCommentsCaption.setVisibility(VISIBLE);
-    }
+  @Override
+  public void onReplyFetched(List<CommentModel> replies) {
+    this.comments = replies;
+    addAllCommentsToView(replies);
   }
 
   @Override
@@ -355,22 +345,23 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     sendCommentButton.setTypeface(t);
   }
 
-  private void postComment() {
-    String cmnt = commentInputBox.getText().toString().trim();
-    commentInputBox.setText("");
-    if (cmnt.length() > 2) {
-      steemCommentCreator.createComment(cmnt, post.getAuthor(), post.getPermlink());
+  private void addAllCommentsToView(List<CommentModel> discussions) {
+    commentsViewContainer.removeAllViews();
+    int commentCount = discussions.size();
+    commentLoadingProgressBar.setVisibility(View.GONE);
+    if (commentCount == 0) {
+      emptyCommentsCaption.setText("No Comments");
+      emptyCommentsCaption.setVisibility(VISIBLE);
     } else {
-      Toast.makeText(this, "Comment Too Short!!", Toast.LENGTH_LONG).show();
-      return;
+      emptyCommentsCaption.setVisibility(View.GONE);
     }
-//    SteemCommentModel steemCommentModel = new SteemCommentModel(
-//      HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
-//      cmnt, MomentsUtils.getCurrentTime(), 0,
-//      String.format(getResources().getString(R.string.steem_user_profile_pic_format),
-//        HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
-//    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_COMMENT);
-    // commentsViewModel.addComments(steemCommentModel, post.getPermlink());
+    int range = commentCount > 3 ? 3 : discussions.size();
+    for (int i = 0; i < range; i++) {
+      addCommentToView(discussions.get(i), i);
+    }
+    if (commentCount > 3) {
+      moreCommentsCaption.setVisibility(VISIBLE);
+    }
   }
 
   private void attachListenersOnStarView() {
@@ -582,12 +573,37 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     startActivity(intent);
   }
 
-//  private void addCommentToView(SteemCommentModel steemCommentModel, int index) {
-//    CommentView view = new CommentView(this);
-//    view.setComment(steemCommentModel);
-//    commentsViewContainer.addView(view, index,
-//      new ViewGroup.LayoutParams(
-//        ViewGroup.LayoutParams.WRAP_CONTENT,
-//        ViewGroup.LayoutParams.WRAP_CONTENT));
-//  }
+  private void addCommentToView(CommentModel comment, int index) {
+    CommentsItemView commentsItemView = new CommentsItemView(this);
+    commentsItemView.setComment(comment);
+    commentsViewContainer.addView(commentsItemView, index,
+      new ViewGroup.LayoutParams(
+        ViewGroup.LayoutParams.WRAP_CONTENT,
+        ViewGroup.LayoutParams.WRAP_CONTENT));
+  }
+
+  @Override
+  public void onReplyFetchError() {
+
+  }
+
+  private void postComment() {
+    String cmnt = commentInputBox.getText().toString().trim();
+    commentInputBox.setText("");
+    if (cmnt.length() > 2) {
+      steemCommentCreator.createComment(cmnt, post.getAuthor(), post.getPermlink());
+    } else {
+      Toast.makeText(this, "Comment Too Short!!", Toast.LENGTH_LONG).show();
+      return;
+    }
+    // TODO: 27/08/18 add newly created comment to view
+
+//    SteemCommentModel steemCommentModel = new SteemCommentModel(
+//      HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
+//      cmnt, MomentsUtils.getCurrentTime(), 0,
+//      String.format(getResources().getString(R.string.steem_user_profile_pic_format),
+//        HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
+//    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_COMMENT);
+    // commentsViewModel.addComments(steemCommentModel, post.getPermlink());
+  }
 }
