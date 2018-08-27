@@ -10,6 +10,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.hapramp.api.URLS;
 import com.hapramp.datamodels.CommentModel;
+import com.hapramp.steem.models.Voter;
 import com.hapramp.utils.JsonParser;
 import com.hapramp.utils.VolleyUtils;
 
@@ -17,42 +18,39 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/**
- * Created by Ankit on 4/15/2018.
- */
-
-public class SteemReplyFetcher {
+public class SteemVoterFetcher {
   private final Context context;
   private Handler mHandler;
   private JsonParser jsonParser;
-  private SteemReplyFetchCallback steemReplyFetchCallback;
-  private Runnable replyFetchFailedCallback = new Runnable() {
+  private Runnable voterFetchFailedCallback = new Runnable() {
     @Override
     public void run() {
-      if (steemReplyFetchCallback != null) {
-        steemReplyFetchCallback.onReplyFetchError();
+      if (steemVoterFetchCallback != null) {
+        steemVoterFetchCallback.onVotersFetchError();
       }
     }
   };
   private String currentRequestTag;
+  private SteemVotersFetchCallback steemVoterFetchCallback;
 
-  public SteemReplyFetcher(Context context) {
+  public SteemVoterFetcher(Context context) {
     this.context = context;
     jsonParser = new JsonParser();
     this.mHandler = new Handler();
   }
 
   @WorkerThread
-  public void requestReplyForPost(final String authorOfPost, final String permlink) {
-    final String rtag = "reply_" + authorOfPost + permlink;
+  public void requestVoters(final String authorOfPost, final String permlink) {
+    final String rtag = "voters_" + authorOfPost + permlink;
     currentRequestTag = rtag;
-    final String reqBody = "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_content_replies\"," +
-      " \"params\":[\"" + authorOfPost + "\", \"" + permlink + "\"], \"id\":1}";
+    final String reqBody = "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_active_votes\"," +
+      " \"params\":[\""+authorOfPost+"\"," +
+      " \""+permlink+"\"]," +
+      " \"id\":1}";
     StringRequest newBlogRequest = new StringRequest(Request.Method.POST, URLS.STEEMIT_API_URL, new Response.Listener<String>() {
       @Override
       public void onResponse(String response) {
-        parseReplies(response, rtag);
+        parseVoters(response, rtag);
       }
     }, new Response.ErrorListener() {
       @Override
@@ -74,14 +72,14 @@ public class SteemReplyFetcher {
     VolleyUtils.getInstance().addToRequestQueue(newBlogRequest, currentRequestTag, context);
   }
 
-  private void parseReplies(String response, String rtag) {
-    final ArrayList<CommentModel> comments = jsonParser.parseComments(response);
+  private void parseVoters(String response, String rtag) {
+    final ArrayList<Voter> comments = jsonParser.parseVoters(response);
     if (isRequestLive(rtag)) {
       mHandler.post(new Runnable() {
         @Override
         public void run() {
-          if (steemReplyFetchCallback != null) {
-            steemReplyFetchCallback.onReplyFetched(comments);
+          if (steemVoterFetchCallback != null) {
+            steemVoterFetchCallback.onVotersFetched(comments);
           }
         }
       });
@@ -89,19 +87,19 @@ public class SteemReplyFetcher {
   }
 
   private void returnErrorCallback() {
-    mHandler.post(replyFetchFailedCallback);
+    mHandler.post(voterFetchFailedCallback);
   }
 
   private boolean isRequestLive(String requestTag) {
     return this.currentRequestTag.equals(requestTag);
   }
 
-  public void setSteemReplyFetchCallback(SteemReplyFetchCallback steemReplyFetchCallback) {
-    this.steemReplyFetchCallback = steemReplyFetchCallback;
+  public void setSteemVoterFetchCallback(SteemVotersFetchCallback steemVoterFetchCallback) {
+    this.steemVoterFetchCallback = steemVoterFetchCallback;
   }
 
-  public interface SteemReplyFetchCallback {
-    void onReplyFetched(List<CommentModel> replies);
-    void onReplyFetchError();
+  public interface SteemVotersFetchCallback {
+    void onVotersFetched(List<Voter> voters);
+    void onVotersFetchError();
   }
 }

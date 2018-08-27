@@ -19,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.api.RetrofitServiceGenerator;
@@ -103,8 +102,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   TextView walletInfoBtn;
   @BindView(R.id.profile_header_view_real)
   RelativeLayout profileHeaderViewReal;
-  @BindView(R.id.shimmer_view_container)
-  ShimmerFrameLayout shimmerFrameLayout;
   UserProfileFetcher userProfileFetcher;
   private Context mContext;
   private String TICK_TEXT = "\u2713";
@@ -338,15 +335,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 
   public void setUsername(String username) {
     this.mUsername = username;
-    if (shimmerFrameLayout != null) {
-      shimmerFrameLayout.setBaseAlpha(0.1f);
-      shimmerFrameLayout.setDropoff(0.08f);
-      shimmerFrameLayout.setTilt(0f);
-      shimmerFrameLayout.setDuration(2000);
-      shimmerFrameLayout.setIntensity(0.02f);
-      shimmerFrameLayout.setVisibility(VISIBLE);
-      shimmerFrameLayout.startShimmerAnimation();
-    }
     if (username != null) {
       if (!loaded) {
         checkCacheAndLoad();
@@ -375,10 +363,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   }
 
   private void bind(User data) {
-    if (shimmerFrameLayout != null) {
-      shimmerFrameLayout.stopShimmerAnimation();
-      shimmerFrameLayout.setVisibility(GONE);
-    }
     if (profileHeaderViewReal != null) {
       profileHeaderViewReal.setVisibility(VISIBLE);
     }

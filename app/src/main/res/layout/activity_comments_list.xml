@@ -24,10 +24,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="?actionBarSize"
-            android:layout_toEndOf="@+id/backBtn"
+            android:layout_toRightOf="@+id/backBtn"
             android:background="?selectableItemBackgroundBorderless"
             android:gravity="center"
-            android:text="Comments"
+            android:text="Replies"
             android:textColor="@color/Black54"
             android:textSize="16sp" />
 
@@ -58,7 +58,7 @@
     <TextView
         android:padding="4dp"
         android:id="@+id/commentLoadingProgressMessage"
-        android:text="Loading More comments"
+        android:text="Loading comments"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/commentLoadingProgressBar"
         android:layout_width="wrap_content"

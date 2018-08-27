@@ -44,7 +44,6 @@
             android:name=".ui.activity.CreateArticleActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
-
         <activity
             android:name=".ui.activity.ProfileEditActivity"
             android:screenOrientation="portrait" />
@@ -84,6 +83,10 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.FollowListActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.NestedCommentActivity"
             android:screenOrientation="portrait" />
     </application>
 

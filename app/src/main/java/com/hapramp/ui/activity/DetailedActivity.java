@@ -1,8 +1,6 @@
 package com.hapramp.ui.activity;
 
 import android.app.ProgressDialog;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -11,7 +9,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.widget.Space;
 import android.support.v7.app.AppCompatActivity;
@@ -38,11 +35,11 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.datamodels.CommentModel;
 import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
 import com.hapramp.steem.SteemCommentCreator;
-import com.hapramp.steem.SteemCommentModel;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.Voter;
 import com.hapramp.steemconnect4j.SteemConnect;
@@ -56,8 +53,6 @@ import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.RegexUtils;
 import com.hapramp.utils.ShareUtils;
 import com.hapramp.utils.VoteUtils;
-import com.hapramp.viewmodel.comments.CommentsViewModel;
-import com.hapramp.views.comments.CommentView;
 import com.hapramp.views.extraa.StarView;
 
 import java.util.ArrayList;
@@ -135,8 +130,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
   private Feed post;
   private ProgressDialog progressDialog;
   private SteemCommentCreator steemCommentCreator;
-  private List<SteemCommentModel> comments = new ArrayList<>();
-  private CommentsViewModel commentsViewModel;
+  private List<CommentModel> comments = new ArrayList<>();
   private SteemConnect steemConnect;
   private Runnable steemCastingVoteExceptionRunnable = new Runnable() {
     @Override
@@ -167,7 +161,6 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
   private void init() {
     mHandler = new Handler();
     steemCommentCreator = new SteemCommentCreator();
-    commentsViewModel = ViewModelProviders.of(this).get(CommentsViewModel.class);
     steemCommentCreator.setSteemCommentCreateCallback(this);
     progressDialog = new ProgressDialog(this);
     SteemConnect.InstanceBuilder instanceBuilder = new SteemConnect.InstanceBuilder();
@@ -266,14 +259,9 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
 
   private void bindPostValues() {
     detailsActivityCover.setVisibility(View.GONE);
-    commentsViewModel.getSteemComments(post.getAuthor(),
-      post.getPermlink()).observeForever(new Observer<List<SteemCommentModel>>() {
-      @Override
-      public void onChanged(@Nullable List<SteemCommentModel> steemCommentModels) {
-        commentLoadingProgressBar.setVisibility(View.GONE);
-        addAllCommentsToView(steemCommentModels);
-      }
-    });
+    // TODO: 27/08/18 add commentItemView
+//        commentLoadingProgressBar.setVisibility(View.GONE);
+//        addAllCommentsToView(steemCommentModels);
     ImageHandler.loadCircularImage(this, feedOwnerPic,
       String.format(getResources().getString(R.string.steem_user_profile_pic_format), post.getAuthor()));
     feedOwnerTitle.setText(post.getAuthor());
@@ -319,7 +307,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
       null);
   }
 
-  private void addAllCommentsToView(List<SteemCommentModel> discussions) {
+  private void addAllCommentsToView(List<CommentModel> discussions) {
     commentsViewContainer.removeAllViews();
     int commentCount = discussions.size();
     commentLoadingProgressBar.setVisibility(View.GONE);
@@ -331,7 +319,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     }
     int range = commentCount > 3 ? 3 : discussions.size();
     for (int i = 0; i < range; i++) {
-      addCommentToView(discussions.get(i), i);
+     // addCommentToView(discussions.get(i), i);
     }
     if (commentCount > 3) {
       moreCommentsCaption.setVisibility(VISIBLE);
@@ -376,13 +364,13 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
       Toast.makeText(this, "Comment Too Short!!", Toast.LENGTH_LONG).show();
       return;
     }
-    SteemCommentModel steemCommentModel = new SteemCommentModel(
-      HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
-      cmnt, MomentsUtils.getCurrentTime(), 0,
-      String.format(getResources().getString(R.string.steem_user_profile_pic_format),
-        HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
-    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_COMMENT);
-    commentsViewModel.addComments(steemCommentModel, post.getPermlink());
+//    SteemCommentModel steemCommentModel = new SteemCommentModel(
+//      HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
+//      cmnt, MomentsUtils.getCurrentTime(), 0,
+//      String.format(getResources().getString(R.string.steem_user_profile_pic_format),
+//        HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
+//    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_COMMENT);
+    // commentsViewModel.addComments(steemCommentModel, post.getPermlink());
   }
 
   private void attachListenersOnStarView() {
@@ -589,17 +577,17 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     Intent intent = new Intent(DetailedActivity.this, CommentsActivity.class);
     intent.putExtra(Constants.EXTRAA_KEY_POST_AUTHOR, post.getAuthor());
     intent.putExtra(Constants.EXTRAA_KEY_POST_PERMLINK, post.getPermlink());
-    intent.putParcelableArrayListExtra(Constants.EXTRAA_KEY_COMMENTS,
-      (ArrayList<SteemCommentModel>) comments);
+//    intent.putParcelableArrayListExtra(Constants.EXTRAA_KEY_COMMENTS,
+//      (ArrayList<SteemCommentModel>) comments);
     startActivity(intent);
   }
 
-  private void addCommentToView(SteemCommentModel steemCommentModel, int index) {
-    CommentView view = new CommentView(this);
-    view.setComment(steemCommentModel);
-    commentsViewContainer.addView(view, index,
-      new ViewGroup.LayoutParams(
-        ViewGroup.LayoutParams.WRAP_CONTENT,
-        ViewGroup.LayoutParams.WRAP_CONTENT));
-  }
+//  private void addCommentToView(SteemCommentModel steemCommentModel, int index) {
+//    CommentView view = new CommentView(this);
+//    view.setComment(steemCommentModel);
+//    commentsViewContainer.addView(view, index,
+//      new ViewGroup.LayoutParams(
+//        ViewGroup.LayoutParams.WRAP_CONTENT,
+//        ViewGroup.LayoutParams.WRAP_CONTENT));
+//  }
 }

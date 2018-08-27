@@ -10,13 +10,7 @@
         android:layout_height="wrap_content"
         android:background="#ffffff">
 
-        <com.facebook.shimmer.ShimmerFrameLayout
-            android:id="@+id/shimmer_view_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center">
-
-            <RelativeLayout
+        <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -46,7 +40,7 @@
                         android:layout_width="108dp"
                         android:layout_height="16dp"
                         android:layout_above="@+id/reference_line"
-                        android:layout_toEndOf="@+id/feed_owner_pic"
+                        android:layout_toRightOf="@+id/feed_owner_pic"
                         android:background="@color/Black12"
                         android:text=""
                         android:textStyle="bold" />
@@ -56,8 +50,8 @@
                         android:layout_width="84dp"
                         android:layout_height="16dp"
                         android:layout_above="@+id/reference_line"
-                        android:layout_marginStart="4dp"
-                        android:layout_toEndOf="@+id/feed_owner_title"
+                        android:layout_marginLeft="4dp"
+                        android:layout_toRightOf="@+id/feed_owner_title"
                         android:background="@color/Black12" />
 
                     <View
@@ -65,7 +59,7 @@
                         android:layout_width="36dp"
                         android:layout_height="12dp"
                         android:layout_below="@+id/reference_line"
-                        android:layout_toEndOf="@+id/feed_owner_pic"
+                        android:layout_toRightOf="@+id/feed_owner_pic"
                         android:background="@drawable/community_mock_bg"
                         android:text="" />
 
@@ -74,8 +68,8 @@
                         android:layout_width="36dp"
                         android:layout_height="12dp"
                         android:layout_below="@+id/reference_line"
-                        android:layout_marginStart="4dp"
-                        android:layout_toEndOf="@+id/com1"
+                        android:layout_marginLeft="4dp"
+                        android:layout_toRightOf="@+id/com1"
                         android:background="@drawable/community_mock_bg"
                         android:text="" />
 
@@ -84,8 +78,8 @@
                         android:layout_width="36dp"
                         android:layout_height="12dp"
                         android:layout_below="@+id/reference_line"
-                        android:layout_marginStart="4dp"
-                        android:layout_toEndOf="@+id/com2"
+                        android:layout_marginLeft="4dp"
+                        android:layout_toRightOf="@+id/com2"
                         android:background="@drawable/community_mock_bg"
                         android:text="" />
 
@@ -111,7 +105,7 @@
                         android:layout_width="144dp"
                         android:layout_height="16dp"
                         android:background="@color/Black12"
-                        android:paddingStart="8dp"
+                        android:paddingLeft="8dp"
                         android:paddingTop="8dp"
                         android:text=""
                         android:textSize="16sp" />
@@ -163,7 +157,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_below="@+id/post_meta_container"
-                    android:layout_marginStart="16dp">
+                    android:layout_marginLeft="16dp">
 
                     <View
                         android:id="@+id/star_mock"
@@ -177,8 +171,8 @@
                         android:layout_width="48dp"
                         android:layout_height="16dp"
                         android:layout_centerVertical="true"
-                        android:layout_marginStart="4dp"
-                        android:layout_toEndOf="@+id/star_mock"
+                        android:layout_marginLeft="4dp"
+                        android:layout_toRightOf="@+id/star_mock"
                         android:background="@drawable/community_mock_bg"
                         android:text="" />
 
@@ -203,7 +197,7 @@
                             android:id="@+id/comment_count_mock"
                             android:layout_width="48dp"
                             android:layout_height="16dp"
-                            android:layout_marginStart="4dp"
+                            android:layout_marginLeft="4dp"
                             android:background="@drawable/community_mock_bg"
                             android:gravity="center_horizontal"
                             android:text="" />
@@ -213,10 +207,10 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginEnd="16dp"
+                        android:layout_marginRight="16dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
@@ -226,13 +220,12 @@
                             android:layout_height="24dp"
                             android:layout_centerVertical="true"
                             android:background="@drawable/user_pic_moc_bg" />
-
-
+                        
                         <View
                             android:id="@+id/comment_count_mock1"
                             android:layout_width="48dp"
                             android:layout_height="16dp"
-                            android:layout_marginStart="4dp"
+                            android:layout_marginLeft="4dp"
                             android:background="@drawable/community_mock_bg"
                             android:gravity="center_horizontal"
                             android:text="" />
@@ -242,9 +235,6 @@
                 </RelativeLayout>
 
             </RelativeLayout>
-
-        </com.facebook.shimmer.ShimmerFrameLayout>
-
     </FrameLayout>
 
 </RelativeLayout>

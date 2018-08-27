@@ -318,7 +318,7 @@ public class PostItemView extends FrameLayout {
   }
 
   /*
-   *  author of the vote: author of the pose
+   *  author of the vote: author of the post
    *  cancel vote
    * */
   private void deleteVoteOnSteem() {

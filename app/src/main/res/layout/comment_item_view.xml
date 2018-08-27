@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffffff"
     android:padding="8dp">
 
     <ImageView
@@ -53,48 +54,14 @@
         android:textSize="16sp" />
 
     <RelativeLayout
+        android:id="@+id/starAndPayoutContainer"
         android:layout_marginTop="4dp"
-        android:background="@drawable/comment_stats_container_bg"
         android:layout_below="@+id/comment_content"
         android:layout_toRightOf="@+id/comment_owner_pic"
         android:layout_marginLeft="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_centerHorizontal="true">
-
-            <TextView
-                android:id="@+id/commentBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:background="?selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center_vertical"
-                android:text=""
-                android:textColor="@color/Black54"
-                android:textSize="24sp" />
-
-            <TextView
-                android:id="@+id/commentCount"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:layout_marginLeft="8dp"
-                android:layout_toRightOf="@+id/commentBtn"
-                android:background="?selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center"
-                android:lines="1"
-                android:text="34"
-                android:textColor="@color/Black54"
-                android:textSize="12sp" />
-
-        </RelativeLayout>
 
         <TextView
             android:id="@+id/payoutBtn"
@@ -130,10 +97,28 @@
             android:layout_width="wrap_content"
             android:layout_height="46dp"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:animateLayoutChanges="true" />
 
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/moreReplies"
+        android:visibility="gone"
+        android:clickable="true"
+        android:layout_below="@+id/starAndPayoutContainer"
+        android:layout_toRightOf="@+id/comment_owner_pic"
+        android:layout_width="wrap_content"
+        android:text="VIEW 3 MORE REPLIES"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="?selectableItemBackground"
+        android:layout_height="wrap_content" />
+
 
 </RelativeLayout>

@@ -2,7 +2,6 @@ package com.hapramp.api;
 
 import android.content.Context;
 import android.os.Handler;
-
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -20,7 +19,6 @@ public class RawApiCaller {
   Handler mHandler;
   Context context;
   public static final String HAPRAMP_API_URL = URLS.BASE_URL + "curation/tag/";
-  private String STEEMIT_API_URL = "https://api.steemit.com";
   private FeedDataCallback dataCallback;
   private UserMetadataCallback userMetadataCallback;
   private String currentRequestTag = "";
@@ -35,7 +33,7 @@ public class RawApiCaller {
     final String rtag = "latest_post_by_tag_" + tag;
     this.currentRequestTag = rtag;
     final String reqBody = "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_discussions_by_created\", \"params\":[{\"tag\":\"" + tag + "\",\"limit\":8}], \"id\":1}";
-    StringRequest newBlogRequest = new StringRequest(Request.Method.POST, STEEMIT_API_URL, new Response.Listener<String>() {
+    StringRequest newBlogRequest = new StringRequest(Request.Method.POST, URLS.STEEMIT_API_URL, new Response.Listener<String>() {
       @Override
       public void onResponse(String response) {
         parseLatestPostByTag(response, rtag, false);
@@ -85,7 +83,7 @@ public class RawApiCaller {
     final String reqBody = "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_discussions_by_created\"," +
       "\"params\":[{\"start_author\":\"" + start_author + "\",\"start_permlink\":\"" + start_permlink +
       "\",\"tag\":\"" + tag + "\",\"limit\":8}], \"id\":1}";
-    StringRequest newBlogRequest = new StringRequest(Request.Method.POST, STEEMIT_API_URL, new Response.Listener<String>() {
+    StringRequest newBlogRequest = new StringRequest(Request.Method.POST, URLS.STEEMIT_API_URL, new Response.Listener<String>() {
       @Override
       public void onResponse(String response) {
         parseLatestPostByTag(response, rtag, true);
