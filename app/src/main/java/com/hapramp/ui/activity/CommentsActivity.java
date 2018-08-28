@@ -28,6 +28,7 @@ import com.hapramp.ui.adapters.CommentsAdapter;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
+import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.ViewItemDecoration;
 
 import java.util.ArrayList;
@@ -90,7 +91,6 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
     //commentsList = getIntent().getExtras().getParcelableArrayList(Constants.EXTRAA_KEY_COMMENTS);
     postAuthor = getIntent().getExtras().getString(Constants.EXTRAA_KEY_POST_AUTHOR, "");
     postPermlink = getIntent().getExtras().getString(Constants.EXTRAA_KEY_POST_PERMLINK, "");
-    steemReplyFetcher.requestReplyForPost(postAuthor, postPermlink);
     progressDialog = new ProgressDialog(this);
     typeface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
     backBtn.setTypeface(typeface);
@@ -105,6 +105,12 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
     viewItemDecoration.setWantTopOffset(false, 0);
     commentsRecyclerView.addItemDecoration(viewItemDecoration);
     commentsRecyclerView.setAdapter(commentsAdapter);
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+    steemReplyFetcher.requestReplyForPost(postAuthor, postPermlink);
   }
 
   private void attachListeners() {
@@ -151,13 +157,12 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
       Toast.makeText(this, "Comment Too Short!!", Toast.LENGTH_LONG).show();
       return;
     }
-//    SteemCommentModel steemCommentModel = new SteemCommentModel(
-//      HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
-//      cmnt, MomentsUtils.getCurrentTime(), 0,
-//      String.format(getResources().getString(R.string.steem_user_profile_pic_format),
-//        HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
-//    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_COMMENT);
-    //commentsViewModel.addComments(steemCommentModel, postPermlink);
+    //add temp comment to view
+    CommentModel commentModel = new CommentModel();
+    commentModel.setAuthor(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
+    commentModel.setBody(cmnt);
+    commentModel.setCreatedAt(MomentsUtils.getCurrentTime());
+    commentsAdapter.addSingleComment(commentModel);
   }
 
   @Override

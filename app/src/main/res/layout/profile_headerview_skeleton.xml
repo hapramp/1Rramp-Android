@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.facebook.shimmer.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/shimmer_view_container"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center">
-
-    <RelativeLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+    android:id="@+id/profile_header_view_container_mock"
         android:animateLayoutChanges="true">
 
         <RelativeLayout
@@ -70,8 +65,8 @@
             android:layout_width="match_parent"
             android:layout_height="12dp"
             android:layout_below="@+id/profile_user_name_container"
-            android:layout_marginEnd="18dp"
-            android:layout_marginStart="18dp"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp"
             android:layout_marginTop="48dp"
             android:background="@color/Black12"
             android:lineSpacingExtra="2dp" />
@@ -82,8 +77,8 @@
             android:layout_height="12dp"
             android:layout_below="@+id/bio1"
             android:layout_marginBottom="18dp"
-            android:layout_marginEnd="18dp"
-            android:layout_marginStart="18dp"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp"
             android:layout_marginTop="2dp"
             android:background="@color/Black12" />
 
@@ -92,8 +87,8 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/bio"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:background="@color/Black12" />
 
         <LinearLayout
@@ -137,8 +132,8 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/post_stats"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:background="@color/Black12" />
 
         <View
@@ -147,8 +142,8 @@
             android:layout_height="12dp"
             android:layout_below="@+id/divider_bottom_mock"
             android:layout_marginBottom="12sp"
-            android:layout_marginEnd="18sp"
-            android:layout_marginStart="24sp"
+            android:layout_marginLeft="24sp"
+            android:layout_marginRight="18sp"
             android:layout_marginTop="18sp"
             android:background="@color/Black12"
             android:gravity="center_vertical" />
@@ -158,8 +153,8 @@
             android:layout_height="72dp"
             android:layout_below="@+id/interestCaptionMock"
             android:orientation="horizontal"
-            android:paddingEnd="24dp"
-            android:paddingStart="24dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
             android:paddingTop="8dp">
 
 
@@ -171,18 +166,16 @@
             <View
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
                 android:background="@drawable/user_pic_moc_bg" />
 
             <View
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
                 android:background="@drawable/user_pic_moc_bg" />
 
         </LinearLayout>
 
 
     </RelativeLayout>
-
-</com.facebook.shimmer.ShimmerFrameLayout>

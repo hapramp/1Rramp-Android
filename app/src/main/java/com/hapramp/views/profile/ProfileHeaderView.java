@@ -103,6 +103,8 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   @BindView(R.id.profile_header_view_real)
   RelativeLayout profileHeaderViewReal;
   UserProfileFetcher userProfileFetcher;
+  @BindView(R.id.profile_header_view_container_mock)
+  RelativeLayout profileHeaderViewContainerMock;
   private Context mContext;
   private String TICK_TEXT = "\u2713";
   private String mUsername;
@@ -365,6 +367,7 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   private void bind(User data) {
     if (profileHeaderViewReal != null) {
       profileHeaderViewReal.setVisibility(VISIBLE);
+      profileHeaderViewContainerMock.setVisibility(GONE);
     }
     //check for null view(in case view is removed)
     if (usernameTv == null)

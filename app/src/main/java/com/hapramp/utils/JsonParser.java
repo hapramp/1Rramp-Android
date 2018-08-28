@@ -118,7 +118,6 @@ public class JsonParser {
   private CommentModel parseCoreComment(JSONObject rootObject) {
     CommentModel comment = new CommentModel();
     try {
-      JSONObject jsonMetaDataObj = getJsonMetaDataObject(rootObject);
       //author
       String author = rootObject.getString("author");
       //permlink

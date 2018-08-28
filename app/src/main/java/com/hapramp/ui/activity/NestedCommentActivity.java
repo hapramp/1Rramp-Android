@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,6 +25,7 @@ import com.hapramp.steem.SteemReplyFetcher;
 import com.hapramp.ui.adapters.CommentsAdapter;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
+import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.ViewItemDecoration;
 
 import java.util.ArrayList;
@@ -69,6 +71,8 @@ public class NestedCommentActivity extends AppCompatActivity implements SteemCom
   private SteemReplyFetcher steemReplyFetcher;
   private String parentAuthor;
   private String parentPermlink;
+  private String parentTimestamp;
+  private String parentContent;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -79,20 +83,22 @@ public class NestedCommentActivity extends AppCompatActivity implements SteemCom
       Bundle bundle = getIntent().getExtras();
       parentAuthor = bundle.getString(EXTRA_PARENT_AUTHOR, "");
       parentPermlink = bundle.getString(EXTRA_PARENT_PERMLINK, "");
-      String timestamp = bundle.getString(EXTRA_TIMESTAMP, "");
-      String content = bundle.getString(EXTRA_CONTENT, "");
-      init(parentAuthor, timestamp, content, parentPermlink);
+      parentTimestamp = bundle.getString(EXTRA_TIMESTAMP, "");
+      parentContent = bundle.getString(EXTRA_CONTENT, "");
+      init(parentAuthor);
       attachListeners();
     }
   }
 
 
-  private void init(String parentAuthor, String timestamp, String content, String parentPermlink) {
+  private void init(String parentAuthor) {
+    if (parentAuthor.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
+      commentInputContainer.setVisibility(View.GONE);
+    }
     steemReplyFetcher = new SteemReplyFetcher(this);
     steemReplyFetcher.setSteemReplyFetchCallback(this);
     steemCommentCreator = new SteemCommentCreator();
     steemCommentCreator.setSteemCommentCreateCallback(this);
-    steemReplyFetcher.requestReplyForPost(parentAuthor, parentPermlink);
     progressDialog = new ProgressDialog(this);
     typeface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
     backBtn.setTypeface(typeface);
@@ -102,13 +108,26 @@ public class NestedCommentActivity extends AppCompatActivity implements SteemCom
       String.format(getResources().getString(R.string.steem_user_profile_pic_format),
         HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
     commentsAdapter = new CommentsAdapter(this);
-    commentsAdapter.setParentData(parentAuthor, timestamp, content);
+    setParentToCommentAdapter();
     commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     Drawable drawable = ContextCompat.getDrawable(this, R.drawable.comment_item_divider_view);
     viewItemDecoration = new ViewItemDecoration(drawable);
     viewItemDecoration.setWantTopOffset(false, 0);
     commentsRecyclerView.addItemDecoration(viewItemDecoration);
     commentsRecyclerView.setAdapter(commentsAdapter);
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+    steemReplyFetcher.requestReplyForPost(parentAuthor, parentPermlink);
+  }
+  private void setParentToCommentAdapter(){
+    commentsAdapter.setParentData(parentAuthor, parentTimestamp, parentContent);
+  }
+  private void setCommentsToAdapter(List<CommentModel> commentModel){
+    setParentToCommentAdapter();
+    commentsAdapter.addComments(commentModel);
   }
 
   private void attachListeners() {
@@ -135,13 +154,12 @@ public class NestedCommentActivity extends AppCompatActivity implements SteemCom
       Toast.makeText(this, "Comment Too Short!!", Toast.LENGTH_LONG).show();
       return;
     }
-//    SteemCommentModel steemCommentModel = new SteemCommentModel(
-//      HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
-//      cmnt, MomentsUtils.getCurrentTime(), 0,
-//      String.format(getResources().getString(R.string.steem_user_profile_pic_format),
-//        HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
-//    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_COMMENT);
-    //commentsViewModel.addComments(steemCommentModel, postPermlink);
+    //add temp comment to view
+    CommentModel commentModel = new CommentModel();
+    commentModel.setAuthor(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
+    commentModel.setBody(cmnt);
+    commentModel.setCreatedAt(MomentsUtils.getCurrentTime());
+    commentsAdapter.addSingleComment(commentModel);
   }
 
   @Override
@@ -166,7 +184,7 @@ public class NestedCommentActivity extends AppCompatActivity implements SteemCom
 
   @Override
   public void onReplyFetched(List<CommentModel> replies) {
-    commentsAdapter.addComments((ArrayList<CommentModel>) replies);
+   setCommentsToAdapter(replies);
     hideProgressInfo();
   }
 

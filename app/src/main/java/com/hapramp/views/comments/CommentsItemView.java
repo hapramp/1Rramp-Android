@@ -69,6 +69,8 @@ public class CommentsItemView extends FrameLayout implements SteemVoterFetcher.S
   RelativeLayout starAndPayoutContainer;
   @BindView(R.id.moreReplies)
   TextView moreReplies;
+  @BindView(R.id.replyBtn)
+  ImageView replyBtn;
   private Context mContext;
   private Handler mHandler;
   private SteemVoterFetcher steemVoterFetcher;
@@ -138,7 +140,8 @@ public class CommentsItemView extends FrameLayout implements SteemVoterFetcher.S
   }
 
   private void requestVoters(String author, String permlink) {
-    steemVoterFetcher.requestVoters(author, permlink);
+    if (permlink != null)
+      steemVoterFetcher.requestVoters(author, permlink);
   }
 
   private void setSteemEarnings(CommentModel commentModel) {
@@ -161,20 +164,35 @@ public class CommentsItemView extends FrameLayout implements SteemVoterFetcher.S
   }
 
   private void attachListeners() {
+    if (!author.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
+      replyBtn.setVisibility(VISIBLE);
+      replyBtn.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          navigateToNestedCommentPage();
+        }
+      });
+    } else {
+      replyBtn.setVisibility(GONE);
+    }
     moreReplies.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View view) {
-        Intent intent = new Intent(mContext, NestedCommentActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(EXTRA_PARENT_AUTHOR, author);
-        bundle.putString(EXTRA_PARENT_PERMLINK, permlink);
-        bundle.putString(EXTRA_CONTENT, content);
-        bundle.putString(EXTRA_TIMESTAMP, timestamp);
-        intent.putExtras(bundle);
-        mContext.startActivity(intent);
+        navigateToNestedCommentPage();
       }
     });
     attachListenersOnStarView();
+  }
+
+  private void navigateToNestedCommentPage() {
+    Intent intent = new Intent(mContext, NestedCommentActivity.class);
+    Bundle bundle = new Bundle();
+    bundle.putString(EXTRA_PARENT_AUTHOR, author);
+    bundle.putString(EXTRA_PARENT_PERMLINK, permlink);
+    bundle.putString(EXTRA_CONTENT, content);
+    bundle.putString(EXTRA_TIMESTAMP, timestamp);
+    intent.putExtras(bundle);
+    mContext.startActivity(intent);
   }
 
   private void attachListenersOnStarView() {

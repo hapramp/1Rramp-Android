@@ -60,7 +60,7 @@ public class SteemCommentCreator {
       @Override
       public void run() {
         List<String> tag = new ArrayList<>();
-        tag.add("hapramp");
+        tag.add("1ramp");
         String jsonMetadata = new JsonMetadata(tag, null).getJson();
         SteemConnect steemConnect = SteemConnectUtils
           .getSteemConnectInstance(HaprampPreferenceManager.getInstance()

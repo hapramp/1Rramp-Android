@@ -15,6 +15,7 @@ import com.hapramp.utils.MomentsUtils;
 import com.hapramp.views.comments.CommentsItemView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,9 +53,11 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     if (viewType == VIEW_TYPE_COMMENT) {
       v = new CommentsItemView(parent.getContext());
       return new CommentViewHolder(v);
-    } else {
+    } else if (viewType == VIEW_TYPE_PARENT) {
       v = LayoutInflater.from(mContext).inflate(R.layout.parent_comment_view, parent, false);
       return new ParentCommentViewHolder(v);
+    } else {
+      return null;
     }
   }
 
@@ -87,13 +90,13 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
   public void resetList() {
     commentsList.clear();
-    notifyDataSetChanged();
   }
 
-  public void addComments(ArrayList<CommentModel> comments) {
+  public void addComments(List<CommentModel> comments) {
+    resetList();
     commentsList.addAll(comments);
     if (hasParent) {
-      notifyItemInserted(1);
+      notifyItemRangeChanged(1,comments.size());
     } else {
       notifyDataSetChanged();
     }
