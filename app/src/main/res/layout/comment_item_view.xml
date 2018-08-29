@@ -64,42 +64,48 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/payoutBtn"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginTop="12dp"
-            android:layout_toLeftOf="@+id/payoutValue"
-            android:background="@drawable/rs_coin_bg"
-            android:gravity="center"
-            android:text="$"
-            android:textColor="#ffffff"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:id="@+id/payoutBtn"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/rs_coin_bg"
+                android:gravity="center"
+                android:text="$"
+                android:textColor="#ffffff"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/payoutValue"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginLeft="8dp"
+                android:layout_toRightOf="@+id/payoutBtn"
+                android:background="?selectableItemBackground"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:paddingRight="16dp"
+                android:textColor="@color/Black54"
+                android:textSize="12sp" />
+
+        </RelativeLayout>
 
         <ImageView
-            android:src="@drawable/reply"
-            android:layout_width="48dp"
-            android:layout_centerHorizontal="true"
-            android:padding="14dp"
-            android:alpha="0.6"
-            android:clickable="true"
             android:id="@+id/replyBtn"
-            android:background="?selectableItemBackgroundBorderless"
-            android:layout_height="48dp" />
-
-        <TextView
-            android:id="@+id/payoutValue"
-            android:layout_width="wrap_content"
+            android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_alignParentRight="true"
-            android:layout_marginLeft="8dp"
-            android:background="?selectableItemBackground"
+            android:alpha="0.6"
+            android:background="?selectableItemBackgroundBorderless"
             android:clickable="true"
-            android:gravity="center_vertical"
-            android:paddingRight="16dp"
-            android:textColor="@color/Black54"
-            android:textSize="12sp" />
+            android:padding="14dp"
+            android:src="@drawable/reply" />
 
         <com.hapramp.views.extraa.StarView
             android:id="@+id/starView"
