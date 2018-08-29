@@ -59,9 +59,9 @@
         android:layout_below="@+id/comment_content"
         android:layout_toRightOf="@+id/comment_owner_pic"
         android:layout_marginLeft="8dp"
-        android:background="#ffffff"
+        android:layout_height="48dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:background="#ffffff"
         android:orientation="horizontal">
 
         <RelativeLayout
@@ -73,7 +73,7 @@
                 android:id="@+id/payoutBtn"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginTop="12dp"
+                android:layout_centerVertical="true"
                 android:background="@drawable/rs_coin_bg"
                 android:gravity="center"
                 android:text="$"
@@ -96,16 +96,33 @@
 
         </RelativeLayout>
 
-        <ImageView
-            android:id="@+id/replyBtn"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+        <RelativeLayout
+            android:id="@+id/replyBtnContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:alpha="0.6"
             android:background="?selectableItemBackgroundBorderless"
             android:clickable="true"
-            android:padding="14dp"
-            android:src="@drawable/reply" />
+            android:paddingRight="8dp">
+
+            <ImageView
+                android:id="@+id/replyBtn"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_centerVertical="true"
+                android:alpha="0.6"
+                android:padding="8dp"
+                android:src="@drawable/reply" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/replyBtn"
+                android:text="Reply"
+                android:textSize="12sp" />
+
+        </RelativeLayout>
 
         <com.hapramp.views.extraa.StarView
             android:id="@+id/starView"

@@ -71,6 +71,8 @@ public class CommentsItemView extends FrameLayout implements SteemVoterFetcher.S
   TextView moreReplies;
   @BindView(R.id.replyBtn)
   ImageView replyBtn;
+  @BindView(R.id.replyBtnContainer)
+  RelativeLayout replyBtnContainer;
   private Context mContext;
   private Handler mHandler;
   private SteemVoterFetcher steemVoterFetcher;
@@ -165,8 +167,8 @@ public class CommentsItemView extends FrameLayout implements SteemVoterFetcher.S
 
   private void attachListeners() {
     if (!author.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
-      replyBtn.setVisibility(VISIBLE);
-      replyBtn.setOnClickListener(new OnClickListener() {
+      replyBtnContainer.setVisibility(VISIBLE);
+      replyBtnContainer.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View view) {
           navigateToNestedCommentPage();
