@@ -10,7 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
-import com.hapramp.datamodels.response.CompetitionResponse;
+import com.hapramp.models.response.CompetitionResponse;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 

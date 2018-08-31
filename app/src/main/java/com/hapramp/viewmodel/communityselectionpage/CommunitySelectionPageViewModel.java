@@ -4,8 +4,8 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.hapramp.api.DataServer;
-import com.hapramp.datamodels.CommunityModel;
-import com.hapramp.datamodels.CommunitySelectionServerUpdateBody;
+import com.hapramp.models.CommunityModel;
+import com.hapramp.models.CommunitySelectionServerUpdateBody;
 import com.hapramp.steem.CommunitySelectionResponse;
 import com.hapramp.ui.callbacks.communityselection.CommunitySelectionPageCallback;
 

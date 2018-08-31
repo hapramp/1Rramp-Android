@@ -12,7 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
-import com.hapramp.datamodels.CommunityModel;
+import com.hapramp.models.CommunityModel;
 import com.hapramp.ui.activity.CommunitySelectionActivity;
 
 import java.util.List;

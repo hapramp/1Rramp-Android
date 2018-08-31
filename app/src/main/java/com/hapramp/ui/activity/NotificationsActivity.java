@@ -17,7 +17,7 @@ import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.api.DataServer;
-import com.hapramp.datamodels.response.NotificationResponse;
+import com.hapramp.models.response.NotificationResponse;
 import com.hapramp.interfaces.MarkallAsReadNotificationCallback;
 import com.hapramp.interfaces.NotificationCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;

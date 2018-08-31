@@ -6,8 +6,8 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.hapramp.api.DeviceId;
 import com.hapramp.api.DeviceRegistrationReponse;
 import com.hapramp.api.RetrofitServiceGenerator;
-import com.hapramp.datamodels.requests.VoteRequestBody;
-import com.hapramp.datamodels.response.ConfirmationResponse;
+import com.hapramp.models.requests.VoteRequestBody;
+import com.hapramp.models.response.ConfirmationResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;

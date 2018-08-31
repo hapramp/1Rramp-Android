@@ -2,7 +2,7 @@ package com.hapramp.steem;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.hapramp.datamodels.CommunityModel;
+import com.hapramp.models.CommunityModel;
 
 import java.util.List;
 

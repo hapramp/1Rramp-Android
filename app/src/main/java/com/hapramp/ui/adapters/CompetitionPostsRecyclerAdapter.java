@@ -11,7 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
-import com.hapramp.datamodels.response.CompetitionsPostReponse;
+import com.hapramp.models.response.CompetitionsPostReponse;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 

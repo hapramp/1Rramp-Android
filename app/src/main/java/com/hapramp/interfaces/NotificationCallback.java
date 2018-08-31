@@ -1,6 +1,6 @@
 package com.hapramp.interfaces;
 
-import com.hapramp.datamodels.response.NotificationResponse;
+import com.hapramp.models.response.NotificationResponse;
 
 /**
  * Created by Ankit on 12/27/2017.

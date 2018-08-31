@@ -22,10 +22,12 @@ import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.api.RetrofitServiceGenerator;
-import com.hapramp.datamodels.CommunityModel;
-import com.hapramp.datamodels.VerificationDataBody;
-import com.hapramp.datamodels.VerifiedToken;
-import com.hapramp.datamodels.response.UserModel;
+import com.hapramp.datastore.DataStore;
+import com.hapramp.datastore.callbacks.CommunitiesCallback;
+import com.hapramp.models.CommunityModel;
+import com.hapramp.models.VerificationDataBody;
+import com.hapramp.models.VerifiedToken;
+import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steemconnect.SteemConnectUtils;
@@ -68,10 +70,29 @@ public class LoginActivity extends AppCompatActivity {
     setContentView(R.layout.activity_login);
     ButterKnife.bind(this);
     init();
+    test();
     attachListeners();
     checkLastLoginAndMoveAhead();
   }
 
+  public void test() {
+    DataStore dataStore = new DataStore();
+    dataStore.requestUserCommunities("bxute", new CommunitiesCallback() {
+      @Override
+      public void onProcessing() {
+      }
+
+      @Override
+      public void onCommunitiesAvailable(List<CommunityModel> communityModelList, boolean isFreshData) {
+      //  Log.d("CacheTest", "isFresh" + isFreshData + "|  onCommunitiesAvailable " + communityModelList.toString());
+      }
+
+      @Override
+      public void onCommunitiesFetchError(String err) {
+       // Log.d("CacheTest", "error " + err);
+      }
+    });
+  }
   @Override
   protected void onStart() {
     super.onStart();
@@ -88,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
           navigateToHomePage();
         }
       } else {
-       // Toast.makeText(this, "Token expired", Toast.LENGTH_LONG).show();
+
       }
     }
   }

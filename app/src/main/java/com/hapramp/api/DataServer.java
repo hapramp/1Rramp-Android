@@ -1,8 +1,8 @@
 package com.hapramp.api;
 
-import com.hapramp.datamodels.requests.VoteRequestBody;
-import com.hapramp.datamodels.response.NotificationResponse;
-import com.hapramp.datamodels.response.UserModel;
+import com.hapramp.models.requests.VoteRequestBody;
+import com.hapramp.models.response.NotificationResponse;
+import com.hapramp.models.response.UserModel;
 import com.hapramp.interfaces.FullUserDetailsCallback;
 import com.hapramp.interfaces.MarkAsReadNotificationCallback;
 import com.hapramp.interfaces.MarkallAsReadNotificationCallback;

@@ -1,14 +1,14 @@
 package com.hapramp.api;
 
-import com.hapramp.datamodels.CommunityModel;
-import com.hapramp.datamodels.CommunitySelectionServerUpdateBody;
-import com.hapramp.datamodels.VerificationDataBody;
-import com.hapramp.datamodels.VerifiedToken;
-import com.hapramp.datamodels.requests.VoteRequestBody;
-import com.hapramp.datamodels.response.ConfirmationResponse;
-import com.hapramp.datamodels.response.FileUploadReponse;
-import com.hapramp.datamodels.response.NotificationResponse;
-import com.hapramp.datamodels.response.UserModel;
+import com.hapramp.models.CommunityModel;
+import com.hapramp.models.CommunitySelectionServerUpdateBody;
+import com.hapramp.models.VerificationDataBody;
+import com.hapramp.models.VerifiedToken;
+import com.hapramp.models.requests.VoteRequestBody;
+import com.hapramp.models.response.ConfirmationResponse;
+import com.hapramp.models.response.FileUploadReponse;
+import com.hapramp.models.response.NotificationResponse;
+import com.hapramp.models.response.UserModel;
 import com.hapramp.steem.CommunitySelectionResponse;
 import com.hapramp.steem.PostConfirmationModel;
 import com.hapramp.steem.PreProcessingModel;

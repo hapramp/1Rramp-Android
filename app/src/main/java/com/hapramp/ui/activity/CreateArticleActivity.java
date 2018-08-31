@@ -25,7 +25,7 @@ import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.api.URLS;
-import com.hapramp.datamodels.FeaturedImageSelectionModel;
+import com.hapramp.models.FeaturedImageSelectionModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.SteemPostCreator;
