@@ -39,7 +39,6 @@ public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCa
   @BindView(R.id.profileRefreshLayout)
   SwipeRefreshLayout profileRefreshLayout;
   private Context mContext;
-  private Resources resources;
   private ProfileRecyclerAdapter profilePostAdapter;
   private ViewItemDecoration viewItemDecoration;
   private Unbinder unbinder;
@@ -60,7 +59,6 @@ public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCa
   public void onAttach(Context context) {
     super.onAttach(context);
     this.mContext = context;
-    resources = mContext.getResources();
     AnalyticsUtil.getInstance(getActivity()).setCurrentScreen((Activity) mContext, AnalyticsParams.SCREEN_SELF_PROFILE, null);
   }
 

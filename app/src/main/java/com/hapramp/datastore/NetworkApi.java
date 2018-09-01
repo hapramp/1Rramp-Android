@@ -16,19 +16,6 @@ public class NetworkApi {
     client = new OkHttpClient();
   }
 
-  public Response fetchUserCommunities(String url) {
-    try {
-      Request request = new Request.Builder()
-        .url(url)
-        .build();
-      return client.newCall(request).execute();
-    }
-    catch (IOException e) {
-      e.printStackTrace();
-    }
-    return null;
-  }
-
   public Request getRequestWithAuthorization() {
     Request request = new Request.Builder()
       .header("Authorization", "Token " + HaprampPreferenceManager.getInstance().getUserToken())
@@ -41,5 +28,18 @@ public class NetworkApi {
       networkApiInstance = new NetworkApi();
     }
     return networkApiInstance;
+  }
+
+  public Response fetch(String url) {
+    try {
+      Request request = new Request.Builder()
+        .url(url)
+        .build();
+      return client.newCall(request).execute();
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 }

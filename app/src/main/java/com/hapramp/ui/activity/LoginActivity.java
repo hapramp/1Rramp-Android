@@ -79,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
     DataStore dataStore = new DataStore();
     dataStore.requestUserCommunities("bxute", new CommunitiesCallback() {
       @Override
-      public void onProcessing() {
+      public void onWhileWeAreFetchingCommunities() {
       }
 
       @Override

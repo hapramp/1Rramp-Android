@@ -53,7 +53,7 @@ public class URLS {
       "&start_permlink=" + start_permlink;
   }
 
-  public static String userInfoUrl(String username){
+  public static String userProfileUrl(String username){
     return String.format("https://steemit.com/@%s.json", username);
   }
 }

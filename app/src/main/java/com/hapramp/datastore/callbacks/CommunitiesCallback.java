@@ -5,7 +5,7 @@ import com.hapramp.models.CommunityModel;
 import java.util.List;
 
 public interface CommunitiesCallback {
-  void onProcessing();
+  void onWhileWeAreFetchingCommunities();
 
   void onCommunitiesAvailable(List<CommunityModel> communityModelList, boolean isFreshData);
 
