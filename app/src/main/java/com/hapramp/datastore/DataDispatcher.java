@@ -57,7 +57,30 @@ public class DataDispatcher {
     }
   }
 
+  void dispatchCommunityFeed(String response, final boolean isFreshData, final boolean isAppendable,
+                             final UserFeedCallback userFeedCallback) {
+    final List<Feed> feeds = jsonParser.parseCuratedFeed(response);
+    if (userFeedCallback != null) {
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          userFeedCallback.onUserFeedsAvailable(feeds, isFreshData, isAppendable);
+        }
+      });
+    }
+  }
   void dispatchUserFeedsError(final String message, final UserFeedCallback userFeedCallback) {
+    if (userFeedCallback != null) {
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          userFeedCallback.onUserFeedFetchError(message);
+        }
+      });
+    }
+  }
+
+  void dispatchCommunityFeedError(final String message, final UserFeedCallback userFeedCallback) {
     if (userFeedCallback != null) {
       handler.post(new Runnable() {
         @Override

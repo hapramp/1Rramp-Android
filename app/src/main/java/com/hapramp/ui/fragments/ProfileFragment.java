@@ -2,7 +2,6 @@ package com.hapramp.ui.fragments;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,26 +12,26 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
-import com.hapramp.api.RawApiCaller;
+import com.hapramp.datastore.DataStore;
+import com.hapramp.datastore.callbacks.UserFeedCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.ui.adapters.ProfileRecyclerAdapter;
 import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.utils.ViewItemDecoration;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCallback, ProfileRecyclerAdapter.OnLoadMoreListener {
+public class ProfileFragment extends Fragment implements ProfileRecyclerAdapter.OnLoadMoreListener, UserFeedCallback {
   private static final String TAG = ProfileFragment.class.getSimpleName();
   @BindView(R.id.profilePostRv)
   RecyclerView profilePostRv;
@@ -43,7 +42,7 @@ public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCa
   private ViewItemDecoration viewItemDecoration;
   private Unbinder unbinder;
   private LinearLayoutManager llm;
-  private RawApiCaller rawApiCaller;
+  private DataStore dataStore;
   private String username;
   private String last_author;
   private String last_permlink;
@@ -51,15 +50,15 @@ public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCa
 
   public ProfileFragment() {
     Crashlytics.setString(CrashReporterKeys.UI_ACTION, "profile fragment");
-    rawApiCaller = new RawApiCaller(mContext);
-    rawApiCaller.setDataCallback(this);
+    dataStore = new DataStore();
   }
 
   @Override
   public void onAttach(Context context) {
     super.onAttach(context);
     this.mContext = context;
-    AnalyticsUtil.getInstance(getActivity()).setCurrentScreen((Activity) mContext, AnalyticsParams.SCREEN_SELF_PROFILE, null);
+    AnalyticsUtil.getInstance(getActivity()).setCurrentScreen((Activity) mContext,
+      AnalyticsParams.SCREEN_SELF_PROFILE, null);
   }
 
   @Override
@@ -85,7 +84,8 @@ public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCa
   }
 
   private void init() {
-    profilePostAdapter = new ProfileRecyclerAdapter(mContext, HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
+    profilePostAdapter = new ProfileRecyclerAdapter(mContext,
+      HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
     profilePostAdapter.setOnLoadMoreListener(this);
     Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
     viewItemDecoration = new ViewItemDecoration(drawable);
@@ -98,27 +98,46 @@ public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCa
     fetchPosts();
   }
 
-  private void fetchPosts() {
-    rawApiCaller.requestUserBlogs(username);
-  }
-
   private void setScrollListener() {
     profileRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
       @Override
       public void onRefresh() {
-        fetchPosts();
+        refreshPosts();
       }
     });
   }
 
+  private void fetchPosts() {
+    dataStore.requestUserBlog(username, false, this);
+  }
+
+  private void refreshPosts() {
+    dataStore.requestUserBlog(username, true, this);
+  }
+
   public void reloadPosts() {
-    fetchPosts();
+    refreshPosts();
   }
 
   @Override
-  public void onDataLoaded(ArrayList<Feed> feeds,boolean appendable) {
+  public void onLoadMore() {
+    fetchMorePosts();
+  }
+
+  private void fetchMorePosts() {
+    dataStore.requestUserBlog(HaprampPreferenceManager.getInstance()
+      .getCurrentSteemUsername(), last_author, last_permlink, this);
+  }
+
+  @Override
+  public void onWeAreFetchingUserFeed() {
+
+  }
+
+  @Override
+  public void onUserFeedsAvailable(List<Feed> feeds, boolean isFreshData, boolean isAppendable) {
     if (profilePostRv != null) {
-      if (appendable) {
+      if (isAppendable) {
         feeds.remove(0);
         profilePostAdapter.appendPosts(feeds);
       } else {
@@ -138,21 +157,11 @@ public class ProfileFragment extends Fragment implements RawApiCaller.FeedDataCa
   }
 
   @Override
-  public void onDataLoadError() {
+  public void onUserFeedFetchError(String err) {
     if (profileRefreshLayout != null) {
       if (profileRefreshLayout.isRefreshing()) {
         profileRefreshLayout.setRefreshing(false);
       }
     }
-  }
-
-  @Override
-  public void onLoadMore() {
-    fetchMorePosts();
-  }
-
-  private void fetchMorePosts() {
-    rawApiCaller.requestMoreUserBlogs(HaprampPreferenceManager.getInstance()
-      .getCurrentSteemUsername(), last_author, last_permlink);
   }
 }

@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -23,12 +24,13 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.api.RetrofitServiceGenerator;
+import com.hapramp.datastore.DataStore;
+import com.hapramp.datastore.callbacks.UserProfileCallback;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.search.FollowCountManager;
 import com.hapramp.steem.CommunityListWrapper;
-import com.hapramp.steem.UserProfileFetcher;
 import com.hapramp.steem.models.user.User;
 import com.hapramp.steemconnect.SteemConnectUtils;
 import com.hapramp.steemconnect4j.SteemConnect;
@@ -60,7 +62,7 @@ import static com.hapramp.ui.activity.FollowListActivity.EXTRA_KEY_USERNAME;
  * Created by Ankit on 12/30/2017.
  */
 
-public class ProfileHeaderView extends FrameLayout implements FollowCountManager.FollowCountCallback, UserProfileFetcher.UserProfileFetchCallback, CompleteFollowingHelper.FollowingsSyncCompleteListener {
+public class ProfileHeaderView extends FrameLayout implements FollowCountManager.FollowCountCallback, CompleteFollowingHelper.FollowingsSyncCompleteListener, UserProfileCallback {
   @BindView(R.id.profile_wall_pic)
   ImageView profileWallPic;
   @BindView(R.id.profile_pic)
@@ -105,12 +107,10 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   RelativeLayout profileHeaderViewReal;
   @BindView(R.id.shimmer_view_container)
   ShimmerFrameLayout shimmerFrameLayout;
-  UserProfileFetcher userProfileFetcher;
   private Context mContext;
   private String TICK_TEXT = "\u2713";
   private String mUsername;
   private Handler mHandler;
-  private boolean loaded;
   private boolean isFollowed;
   private String me;
   private FollowCountManager followCountManager;
@@ -119,6 +119,7 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   private int followingCount;
   private boolean followInfoAvailable;
   private User cachedUserProfileData;
+  private DataStore dataStore;
 
   public ProfileHeaderView(@NonNull Context context) {
     super(context);
@@ -127,13 +128,11 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 
   private void init(Context context) {
     mContext = context;
-    loaded = false;
+    dataStore = new DataStore();
     View view = LayoutInflater.from(context).inflate(R.layout.profile_header_view, this);
     ButterKnife.bind(this, view);
     mHandler = new Handler();
     attachListeners();
-    userProfileFetcher = new UserProfileFetcher();
-    userProfileFetcher.setUserProfileFetchCallback(this);
     me = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
     followCountManager = new FollowCountManager(this);
     steemConnect = SteemConnectUtils.getSteemConnectInstance(HaprampPreferenceManager.getInstance().getSC2AccessToken());
@@ -348,10 +347,7 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
       shimmerFrameLayout.startShimmerAnimation();
     }
     if (username != null) {
-      if (!loaded) {
-        checkCacheAndLoad();
         fetchUserInfo();
-      }
     }
   }
 
@@ -371,62 +367,12 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 
   private void fetchUserInfo() {
     followCountManager.requestFollowInfo(mUsername);
-    userProfileFetcher.fetchUserProfileFor(mUsername);
+    dataStore.requestUserProfile(mUsername, this);
   }
 
-  private void bind(User data) {
-    if (shimmerFrameLayout != null) {
-      shimmerFrameLayout.stopShimmerAnimation();
-      shimmerFrameLayout.setVisibility(GONE);
-    }
-    if (profileHeaderViewReal != null) {
-      profileHeaderViewReal.setVisibility(VISIBLE);
-    }
-    //check for null view(in case view is removed)
-    if (usernameTv == null)
-      return;
-    String wall_pic_url = data.getCover_image().length() > 0 ? data.getCover_image() :
-      mContext.getResources().getString(R.string.default_wall_pic);
-    String profile_pic = String.format(getResources().getString(R.string.steem_user_profile_pic_format_large), mUsername);
-    if (loaded && cachedUserProfileData != null) {
-      if (!cachedUserProfileData.getCover_image().equals(data.getCover_image())) {
-        ImageHandler.load(mContext, profileWallPic, wall_pic_url);
-      }
+  @Override
+  public void onWeAreFetchingUserProfile() {
 
-      if (!cachedUserProfileData.getProfile_image().equals(data.getProfile_image())) {
-        ImageHandler.loadCircularImage(mContext, profilePic, profile_pic);
-      }
-    } else {
-      ImageHandler.load(mContext, profileWallPic, wall_pic_url);
-      ImageHandler.loadCircularImage(mContext, profilePic, profile_pic);
-    }
-    usernameTv.setText(data.getFullname());
-    hapname.setText(String.format("@%s", data.getUsername()));
-    String _bio = data.getAbout();
-    bio.setText(_bio);
-    setPostsCount(data.getPostCount());
-    if (mUsername.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
-      //self Profile
-      followBtn.setVisibility(GONE);
-      editBtn.setVisibility(VISIBLE);
-      editBtn.setEnabled(true);
-      editBtn.setOnClickListener(new OnClickListener() {
-        @Override
-        public void onClick(View view) {
-          navigateToProfileEditActivity();
-        }
-      });
-      CommunityListWrapper listWrapper = new Gson().fromJson(HaprampPreferenceManager
-        .getInstance().getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
-      if (interestsView != null)
-        interestsView.setCommunities(listWrapper.getCommunityModels(), true);
-    } else {
-      followBtn.setVisibility(VISIBLE);
-      editBtn.setVisibility(GONE);
-      invalidateFollowButton();
-      fetchUserCommunities();
-    }
-    loaded = true;
   }
 
   public void setPostsCount(long count) {
@@ -527,11 +473,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     }
   }
 
-  @Override
-  public void onUserFetched(User user) {
-    bind(user);
-    cacheUserProfile(user);
-  }
 
   private void cacheUserProfile(User user) {
     if (user.getUsername() == null) {
@@ -542,14 +483,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   }
 
   @Override
-  public void onUserFetchError(String e) {
-    failedToFetchSteemInfo();
-  }
-
-  private void failedToFetchSteemInfo() {
-  }
-
-  @Override
   public void onSyncCompleted() {
     try {
       invalidateFollowButton();
@@ -557,5 +490,59 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     catch (Exception e) {
       Crashlytics.log(e.toString());
     }
+  }
+
+  @Override
+  public void onUserProfileAvailable(User user, boolean isFreshData) {
+    bind(user);
+    cacheUserProfile(user);
+  }
+
+  private void bind(User data) {
+    if (shimmerFrameLayout != null) {
+      shimmerFrameLayout.stopShimmerAnimation();
+      shimmerFrameLayout.setVisibility(GONE);
+    }
+    if (profileHeaderViewReal != null) {
+      profileHeaderViewReal.setVisibility(VISIBLE);
+    }
+    //check for null view(in case view is removed)
+    if (usernameTv == null)
+      return;
+    String wall_pic_url = data.getCover_image().length() > 0 ? data.getCover_image() :
+      mContext.getResources().getString(R.string.default_wall_pic);
+    String profile_pic = String.format(getResources().getString(R.string.steem_user_profile_pic_format_large), mUsername);
+    ImageHandler.load(mContext, profileWallPic, wall_pic_url);
+    ImageHandler.loadCircularImage(mContext, profilePic, profile_pic);
+    usernameTv.setText(data.getFullname());
+    hapname.setText(String.format("@%s", data.getUsername()));
+    String _bio = data.getAbout();
+    bio.setText(_bio);
+    setPostsCount(data.getPostCount());
+    if (mUsername.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
+      //self Profile
+      followBtn.setVisibility(GONE);
+      editBtn.setVisibility(VISIBLE);
+      editBtn.setEnabled(true);
+      editBtn.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          navigateToProfileEditActivity();
+        }
+      });
+      CommunityListWrapper listWrapper = new Gson().fromJson(HaprampPreferenceManager
+        .getInstance().getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
+      if (interestsView != null)
+        interestsView.setCommunities(listWrapper.getCommunityModels(), true);
+    } else {
+      followBtn.setVisibility(VISIBLE);
+      editBtn.setVisibility(GONE);
+      invalidateFollowButton();
+      fetchUserCommunities();
+    }
+  }
+
+  @Override
+  public void onUserProfileFetchError(String err) {
   }
 }

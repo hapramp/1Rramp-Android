@@ -234,6 +234,7 @@ public class JSONParser {
   public User parseUser(String userJson) {
     User user = new User();
     try {
+      Log.d("ParsingUser", userJson);
       JSONObject root = new JSONObject(userJson);
       JSONObject userObj = root.getJSONObject("user");
       JSONObject jmd = userObj.getJSONObject("json_metadata");
@@ -243,13 +244,13 @@ public class JSONParser {
           user.setProfile_image(po.getString("profile_image"));
         }
         if (po.has("cover_image")) {
-          user.setCover_image("cover_image");
+          user.setCover_image(po.getString("cover_image"));
         }
         if (po.has("name")) {
           user.setFullname(po.getString("name"));
         }
         if (po.has("location")) {
-          user.setLocation("location");
+          user.setLocation(po.getString("location"));
         }
         if (po.has("about")) {
           user.setAbout(po.getString("about"));
@@ -258,6 +259,7 @@ public class JSONParser {
           user.setWebsite(po.getString("website"));
         }
       }
+      user.setUsername(userObj.getString("name"));
       user.setCreated(userObj.getString("created"));
       user.setCommentCount(userObj.getInt("comment_count"));
       user.setPostCount(userObj.optInt("post_count"));

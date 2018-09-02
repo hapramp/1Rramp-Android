@@ -45,4 +45,10 @@ public class SteemRequestBody {
   public static String globalProperties() {
     return "{\"id\":0,\"jsonrpc\":\"2.0\",\"method\":\"get_dynamic_global_properties\",\"params\":[]}";
   }
+
+  public static String followCountBody(String user) {
+    return "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_follow_count\"," +
+      " \"params\":[\"" + user + "\"]," +
+      " \"id\":1}";
+  }
 }
