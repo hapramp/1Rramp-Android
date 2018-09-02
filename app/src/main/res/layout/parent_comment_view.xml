@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+   android:layout_margin="8dp"
+    android:background="@drawable/parent_comment_bg"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/comment_owner_pic"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@mipmap/hapramp_logo" />
+
+    <TextView
+        android:id="@+id/comment_owner_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_toRightOf="@+id/comment_owner_pic"
+        android:text="bxute"
+        android:textColor="@color/Black54"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/dot_separator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_toRightOf="@+id/comment_owner_username"
+        android:text="\u2022"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/timestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_toRightOf="@+id/dot_separator"
+        android:text="3 days ago"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/comment_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/comment_owner_username"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_toRightOf="@+id/comment_owner_pic"
+        android:text="Hello, this is a test comment. Let me know if the test goes wrong!!"
+        android:textColor="@color/Black87"
+        android:textSize="16sp" />
+
+
+</RelativeLayout>

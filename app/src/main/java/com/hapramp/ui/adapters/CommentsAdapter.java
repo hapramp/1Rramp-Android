@@ -6,16 +6,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
-import com.hapramp.steem.SteemCommentModel;
-import com.hapramp.utils.FontManager;
+import com.hapramp.datamodels.CommentModel;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
+import com.hapramp.views.comments.CommentsItemView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,74 +24,122 @@ import butterknife.ButterKnife;
  * Created by Ankit on 11/13/2017.
  */
 
-public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.CommentViewHolder> {
+public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+  public static final int VIEW_TYPE_COMMENT = 0;
+  public static final int VIEW_TYPE_PARENT = 1;
 
-  private ArrayList<SteemCommentModel> commentsList;
+  private ArrayList<CommentModel> commentsList;
   private Context mContext;
+  private boolean hasParent;
+  private String parentAuthor;
+  private String parentTimestamp;
+  private String parentContent;
 
   public CommentsAdapter(Context mContext) {
     this.mContext = mContext;
     commentsList = new ArrayList<>();
   }
 
-  @Override
-  public CommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    View v = LayoutInflater.from(mContext).inflate(R.layout.comment_view, null);
-    return new CommentViewHolder(v);
+  public void setParentData(String author, String timestamp, String content) {
+    this.hasParent = true;
+    this.parentAuthor = author;
+    this.parentTimestamp = timestamp;
+    this.parentContent = content;
   }
 
   @Override
-  public void onBindViewHolder(CommentViewHolder holder, int position) {
-    holder.bind(commentsList.get(position));
+  public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    View v;
+    if (viewType == VIEW_TYPE_COMMENT) {
+      v = new CommentsItemView(parent.getContext());
+      return new CommentViewHolder(v);
+    } else if (viewType == VIEW_TYPE_PARENT) {
+      v = LayoutInflater.from(mContext).inflate(R.layout.parent_comment_view, parent, false);
+      return new ParentCommentViewHolder(v);
+    } else {
+      return null;
+    }
+  }
+
+  @Override
+  public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    if (holder instanceof ParentCommentViewHolder) {
+      ((ParentCommentViewHolder) holder).setData(parentAuthor, parentTimestamp, parentContent);
+    } else if (holder instanceof CommentViewHolder) {
+      ((CommentViewHolder) holder).bind(commentsList.get(position - (hasParent ? 1 : 0)));
+    }
+  }
+
+  @Override
+  public int getItemViewType(int position) {
+    if (hasParent) {
+      if (position == 0) {
+        return VIEW_TYPE_PARENT;
+      } else {
+        return VIEW_TYPE_COMMENT;
+      }
+    } else {
+      return VIEW_TYPE_COMMENT;
+    }
   }
 
   @Override
   public int getItemCount() {
-    return commentsList != null ? commentsList.size() : 0;
+    return hasParent ? commentsList.size() + 1 : commentsList.size();
   }
 
   public void resetList() {
     commentsList.clear();
-    notifyDataSetChanged();
   }
 
-  public void addComments(ArrayList<SteemCommentModel> comments) {
+  public void addComments(List<CommentModel> comments) {
+    resetList();
     commentsList.addAll(comments);
-    notifyDataSetChanged();
+    if (hasParent) {
+      notifyItemRangeChanged(1,comments.size());
+    } else {
+      notifyDataSetChanged();
+    }
   }
 
-  public void addSingleComment(SteemCommentModel steemCommentModel) {
+  public void addSingleComment(CommentModel steemCommentModel) {
     commentsList.add(0, steemCommentModel);
     notifyItemInserted(0);
   }
 
   class CommentViewHolder extends RecyclerView.ViewHolder {
-    @BindView(R.id.popupMenuDots)
-    TextView popupMenuDots;
-    @BindView(R.id.commentAvatar)
-    ImageView commentAvatar;
-    @BindView(R.id.commentOwnerName)
-    TextView commentOwnerName;
-    @BindView(R.id.commentTv)
-    TextView commentTv;
-    @BindView(R.id.created_time)
-    TextView createdTime;
-
     public CommentViewHolder(View itemView) {
       super(itemView);
-      ButterKnife.bind(this, itemView);
-      popupMenuDots.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     }
 
-    public void bind(SteemCommentModel comment) {
-      ImageHandler.loadCircularImage(mContext, commentAvatar, String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format), comment.commentAuthor));
-      commentOwnerName.setText(comment.getCommentAuthor());
-      if (comment.getCreatedAt().length() > 0) {
-        createdTime.setText(MomentsUtils.getFormattedTime(comment.getCreatedAt()));
-      } else {
-        createdTime.setText("Now");
-      }
-      commentTv.setText(comment.getComment());
+    public void bind(CommentModel comment) {
+      ((CommentsItemView) itemView).setComment(comment);
+    }
+  }
+
+  class ParentCommentViewHolder extends RecyclerView.ViewHolder {
+    @BindView(R.id.comment_owner_pic)
+    ImageView commentOwnerPic;
+    @BindView(R.id.comment_owner_username)
+    TextView commentOwnerUsername;
+    @BindView(R.id.timestamp)
+    TextView timestamp;
+    @BindView(R.id.comment_content)
+    TextView commentContent;
+
+    public ParentCommentViewHolder(View itemView) {
+      super(itemView);
+      ButterKnife.bind(this, itemView);
+    }
+
+    public void setData(String author, String createdAt, String content) {
+      ImageHandler.loadCircularImage(mContext
+        , commentOwnerPic,
+        String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format),
+          author));
+      commentOwnerUsername.setText(author);
+      timestamp.setText(MomentsUtils.getFormattedTime(createdAt));
+      commentContent.setText(content);
     }
   }
 }

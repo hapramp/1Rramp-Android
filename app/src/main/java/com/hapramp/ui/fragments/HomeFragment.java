@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -27,7 +26,6 @@ import com.hapramp.api.RawApiCaller;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.datamodels.response.UserModel;
-import com.hapramp.interfaces.LikePostCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
 import com.hapramp.steem.CommunityListWrapper;
@@ -47,7 +45,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class HomeFragment extends Fragment implements LikePostCallback, FeedListView.FeedListViewListener, RawApiCaller.FeedDataCallback, CommunityFilterView.CommunityFilterCallback {
+public class HomeFragment extends Fragment implements FeedListView.FeedListViewListener, RawApiCaller.FeedDataCallback, CommunityFilterView.CommunityFilterCallback {
   public static final String ALL = "all";
   public static final String TAG = HomeFragment.class.getSimpleName();
   @BindView(R.id.feedListView)
@@ -183,14 +181,6 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
           dialogInterface.dismiss();
         }
       });
-  }
-
-  @Override
-  public void onPostLiked(int postId) {
-  }
-
-  @Override
-  public void onPostLikeError() {
   }
 
   @Override

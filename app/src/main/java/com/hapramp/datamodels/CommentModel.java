@@ -1,93 +1,121 @@
 package com.hapramp.datamodels;
 
-/**
- * Created by Ankit on 12/13/2017.
- */
-
 public class CommentModel {
+  private String author;
+  private String permlink;
+  private String category;
+  private String parentAuthor;
+  private String parentPermlink;
+  private String body;
+  private String createdAt;
+  private int children;
+  private String cashoutTime;
+  private String totalPayoutValue;
+  private String curatorPayoutValue;
+  private String pendingPayoutValue;
+  private String totalPendingPayoutValue;
 
-  public String postPermlink;
-  public String commentId;
-  public String userId;
-  public String userDpUrl;
-  public String userName;
-  public String comment;
-  public String commentTime;
-
-  public CommentModel(String commentId, String userId, String userDpUrl, String userName, String comment, String commentTime) {
-    this.commentId = commentId;
-    this.userId = userId;
-    this.userDpUrl = userDpUrl;
-    this.userName = userName;
-    this.comment = comment;
-    this.commentTime = commentTime;
+  public String getAuthor() {
+    return author;
   }
 
-  public String getPostPermlink() {
-    return postPermlink;
+  public void setAuthor(String author) {
+    this.author = author;
   }
 
-  public void setPostPermlink(String postPermlink) {
-    this.postPermlink = postPermlink;
+  public String getPermlink() {
+    return permlink;
   }
 
-  public String getCommentId() {
-    return commentId;
+  public void setPermlink(String permlink) {
+    this.permlink = permlink;
   }
 
-  public void setCommentId(String commentId) {
-    this.commentId = commentId;
+  public String getCategory() {
+    return category;
   }
 
-  public String getUserId() {
-    return userId;
+  public void setCategory(String category) {
+    this.category = category;
   }
 
-  public void setUserId(String userId) {
-    this.userId = userId;
+  public String getParentAuthor() {
+    return parentAuthor;
   }
 
-  public String getUserDpUrl() {
-    return userDpUrl;
+  public void setParentAuthor(String parentAuthor) {
+    this.parentAuthor = parentAuthor;
   }
 
-  public void setUserDpUrl(String userDpUrl) {
-    this.userDpUrl = userDpUrl;
+  public String getParentPermlink() {
+    return parentPermlink;
   }
 
-  public String getUserName() {
-    return userName;
+  public void setParentPermlink(String parentPermlink) {
+    this.parentPermlink = parentPermlink;
   }
 
-  public void setUserName(String userName) {
-    this.userName = userName;
+  public String getBody() {
+    return body;
   }
 
-  public String getComment() {
-    return comment;
+  public void setBody(String body) {
+    this.body = body;
   }
 
-  public void setComment(String comment) {
-    this.comment = comment;
+  public String getCreatedAt() {
+    return createdAt;
   }
 
-  public String getCommentTime() {
-    return commentTime;
+  public void setCreatedAt(String createdAt) {
+    this.createdAt = createdAt;
   }
 
-  public void setCommentTime(String commentTime) {
-    this.commentTime = commentTime;
+  public int getChildren() {
+    return children;
   }
 
-  @Override
-  public String toString() {
-    return "CommentModel{" +
-      "commentId='" + commentId + '\'' +
-      ", userId='" + userId + '\'' +
-      ", userDpUrl='" + userDpUrl + '\'' +
-      ", userName='" + userName + '\'' +
-      ", comment='" + comment + '\'' +
-      ", commentTime='" + commentTime + '\'' +
-      '}';
+  public void setChildren(int children) {
+    this.children = children;
+  }
+
+  public String getCashoutTime() {
+    return cashoutTime;
+  }
+
+  public void setCashoutTime(String cashoutTime) {
+    this.cashoutTime = cashoutTime;
+  }
+
+  public String getTotalPayoutValue() {
+    return totalPayoutValue;
+  }
+
+  public void setTotalPayoutValue(String totalPayoutValue) {
+    this.totalPayoutValue = totalPayoutValue;
+  }
+
+  public String getCuratorPayoutValue() {
+    return curatorPayoutValue;
+  }
+
+  public void setCuratorPayoutValue(String curatorPayoutValue) {
+    this.curatorPayoutValue = curatorPayoutValue;
+  }
+
+  public String getPendingPayoutValue() {
+    return pendingPayoutValue;
+  }
+
+  public void setPendingPayoutValue(String pendingPayoutValue) {
+    this.pendingPayoutValue = pendingPayoutValue;
+  }
+
+  public String getTotalPendingPayoutValue() {
+    return totalPendingPayoutValue;
+  }
+
+  public void setTotalPendingPayoutValue(String totalPendingPayoutValue) {
+    this.totalPendingPayoutValue = totalPendingPayoutValue;
   }
 }

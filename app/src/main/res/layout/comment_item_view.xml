@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/comment_owner_pic"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@mipmap/hapramp_logo" />
+
+    <TextView
+        android:id="@+id/comment_owner_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_toRightOf="@+id/comment_owner_pic"
+        android:text="bxute"
+        android:textColor="@color/Black54"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/dot_separator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_toRightOf="@+id/comment_owner_username"
+        android:text="\u2022"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/timestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_toRightOf="@+id/dot_separator"
+        android:text="3 days ago"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/comment_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/comment_owner_username"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_toRightOf="@+id/comment_owner_pic"
+        android:text="Hello, this is a test comment. Let me know if the test goes wrong!!"
+        android:textColor="@color/Black87"
+        android:textSize="16sp" />
+
+    <RelativeLayout
+        android:id="@+id/starAndPayoutContainer"
+        android:layout_marginTop="4dp"
+        android:layout_below="@+id/comment_content"
+        android:layout_toRightOf="@+id/comment_owner_pic"
+        android:layout_marginLeft="8dp"
+        android:layout_height="48dp"
+        android:layout_width="match_parent"
+        android:background="#ffffff"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:id="@+id/payoutBtn"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/rs_coin_bg"
+                android:gravity="center"
+                android:text="$"
+                android:textColor="#ffffff"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/payoutValue"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginLeft="8dp"
+                android:layout_toRightOf="@+id/payoutBtn"
+                android:background="?selectableItemBackground"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:paddingRight="16dp"
+                android:textColor="@color/Black54"
+                android:textSize="12sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/replyBtnContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:paddingRight="8dp">
+
+            <ImageView
+                android:id="@+id/replyBtn"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_centerVertical="true"
+                android:alpha="0.6"
+                android:padding="8dp"
+                android:src="@drawable/reply" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/replyBtn"
+                android:text="Reply"
+                android:textSize="12sp" />
+
+        </RelativeLayout>
+
+        <com.hapramp.views.extraa.StarView
+            android:id="@+id/starView"
+            android:layout_width="wrap_content"
+            android:layout_height="46dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:animateLayoutChanges="true" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/moreReplies"
+        android:visibility="gone"
+        android:clickable="true"
+        android:layout_below="@+id/starAndPayoutContainer"
+        android:layout_toRightOf="@+id/comment_owner_pic"
+        android:layout_width="wrap_content"
+        android:text="VIEW 3 MORE REPLIES"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="?selectableItemBackground"
+        android:layout_height="wrap_content" />
+
+
+</RelativeLayout>

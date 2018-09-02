@@ -19,8 +19,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.hapramp.R;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.ui.adapters.HomeFeedsAdapter;
@@ -84,8 +82,6 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
   View hapcoinMock;
   @BindView(R.id.comment_count_mock1)
   View commentCountMock1;
-  @BindView(R.id.shimmer_view_container)
-  ShimmerFrameLayout shimmerViewContainer;
   @BindView(R.id.mock1)
   FrameLayout mock1;
   @BindView(R.id.mockContainer)

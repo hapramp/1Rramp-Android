@@ -3,7 +3,7 @@ package com.hapramp.steem;
 import android.os.Handler;
 
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.models.user.User;
+import com.hapramp.steem.models.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 

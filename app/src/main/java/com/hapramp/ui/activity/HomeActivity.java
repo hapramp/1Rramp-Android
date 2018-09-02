@@ -30,7 +30,7 @@ import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.datamodels.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
-import com.hapramp.steem.models.user.User;
+import com.hapramp.steem.models.User;
 import com.hapramp.ui.fragments.EarningFragment;
 import com.hapramp.ui.fragments.HomeFragment;
 import com.hapramp.ui.fragments.ProfileFragment;

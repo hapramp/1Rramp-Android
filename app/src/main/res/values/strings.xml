@@ -6,45 +6,16 @@
     <string name="onboarding_content_1">Join community</string>
     <string name="onboarding_content_2">Share your innovative content</string>
     <string name="onboarding_content_3">Earn rewards for your work </string>
-    <string name="username_hint"><font size="12">USERNAME</font></string>
-    <string name="password_hint"><font size="12">PASSWORD</font></string>
-    <string name="profile_posts_count_caption">%1$d Post</string>
-    <string name="profile_followers_caption">%1$d Followers</string>
-    <string name="profile_following_count_caption">%1$d Following</string>
-    <string name="Rs">\u20B9</string>
-    <string name="earnedHapcoins">\u20B9 %.1f</string>
-    <string name="post_limit">%1$d/140</string>
     <string name="star_info">%1$.1f from %2$d</string>
-    <string name="commentUrl">http://hapramp.herokuapp.com/api/posts/%1$d/comments?start=1</string>
     <string name="default_wall_pic">https://user-images.githubusercontent.com/10809719/34511255-2d3d8592-f080-11e7-9540-43d153a96c33.png</string>
     <string name="post_subtitle_format">| %1$s</string>
-    <string name="steem_user_api">https://steemit.com/@%1$s.json</string>
     <string name="steem_user_profile_pic_format">https://steemitimages.com/u/%s/avatar</string>
-    <string name="post_created">%1$d Posts Created</string>
     <string name="hapcoins_format">$%1$s Earned</string>
     <string name="comment_format">%1d Comments</string>
-    <string name="post_rated">%1$d Posts Rated</string>
-    <string name="comment_author">By : %1$s</string>
-    <string name="other_comments_format">Comments[%1$d]</string>
-    <string name="other_comment_format">Comment[%1$d]</string>
-    <string name="no_other_comment_format">No Comment</string>
-    <string name="type_here">Type here...</string>
-    <string name="default_user_pic">https://user-images.githubusercontent.com/10809719/38453010-68604fa2-3a6c-11e8-9ba6-0515cd7fbe97.png</string>
     <string name="unregistered_user_profile_msg">User not registered on Hapramp</string>
-    <string name="kajal_subtitle">Kajal Aggarwal (born 19 June 1985) is an Indian film actress and model</string>
-    <string name="kajal_description1">She has established a career in the Telugu and Tamil film industries and has been nominated for four Filmfare Awards South.[3][4][5] In addition to acting, Kajal participates in stage shows and is a celebrity endorser for brands and products.</string>
-    <string name="kajal_description2">Aggarwal made her acting debut with the 2004 Bollywood film Kyun! Ho Gaya Na... and had her first Telugu film release in 2007, Lakshmi Kalyanam. In the same year, she starred in the box office hit Chandamama, which earned her recognition. The 2009 historical fiction Telugu film Magadheera marked a turning point in her career, earning her critical acclaim. It ranks among the highest-grossing Telugu films of all time and fetched her Best Actress nominations at several award ceremonies including Filmfare.</string>
-    <string name="kajal_description3">She subsequently starred in Telugu films such as Darling (2010), Brindavanam (2010), Mr. Perfect (2011), Businessman (2012), Naayak (2013), Baadshah (2013), Govindudu Andarivadele (2014), Temper (2015) and Khaidi No. 150 (2017).[6] Kajal also played the female lead in the high-profile Tamil projects Naan Mahaan Alla (2010), Maattrraan (2012), Thuppakki (2012), Jilla (2014),Vivegam(2017) and Mersal (2017).[7] She made a comeback to Bollywood with Singham (2011), which was a hit, while another film Special 26 (2013) was also a box office success.[8][9]</string>
-    <string name="kajal_description4">Aggarwal made her acting debut in the 2004 Bollywood film Kyun...! Ho Gaya Na, in which she had a minor supporting role as the friend of Diya.[15][16] She appeared in veteran Tamil director Bharathiraja\'s Bommalattam, alongside Arjun Sarja. The film was delayed and released in late 2008.  Aggarwal made her debut in the Telugu film industry and played her first leading role in 2007 in Teja\'s Lakshmi Kalyanam, alongside Kalyan Ram; it did not fare well at the box office. Later that year, she appeared in the Krishna Vamsi-directed Chandamama, which opened to positive reviews and became her first major successful film.[17] In 2008, she had her first Tamil film release, Perarasu\'s action entertainer Pazhani, co-starring Bharath. She had two more Tamil releases that year with Venkat Prabhu’s comedy-thriller Saroja, in which she did a guest appearance, and Bharathiraja\'s investigative thriller Bommalattam. Although the former went on to become a commercial as well as a critical success,[18] both films failed to boost her career as her roles were too insignificant.[19] Her Telugu releases Pourudu and Aatadista opposite Sumanth and Nitin, respectively, did not receive positive reviews, but both were successful at the box office.</string>
-    <string name="kajal_block_info">The Filmfare Awards South is the South Indian segment of the annual Filmfare Awards, presented by The Times Group to honour artistic and technical excellence of professionals in the South Indian film industry.</string>
-    <string name="steemit_url">https://steemit.com/login.html</string>
     <string name="steemit_signup">https://signup.steemit.com/</string>
     <string name="connectivity_lost">Connectivity Lost!</string>
     <string name="connectivity_established">Connection established !</string>
-    <string name="invalid_posting_key">Invalid Posting Key</string>
-    <string name="invalid_credentials">Invalid Credentials</string>
-    <string name="singup_issue">Something Went Wrong While Signing Up</string>
-    <string name="cannot_read_qr_code">Cannot Read QR</string>
     <string name="failed_to_update_communities">Failed to update communities</string>
     <string name="community_updated">Community Updated!</string>
     <string name="failed_to_fetch_communities">Failed to fetch communities</string>

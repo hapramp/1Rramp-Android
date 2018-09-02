@@ -23,7 +23,7 @@ import com.hapramp.R;
 import com.hapramp.datamodels.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
-import com.hapramp.steem.models.user.User;
+import com.hapramp.steem.models.User;
 import com.hapramp.utils.HashTagUtils;
 import com.hapramp.utils.ImageHandler;
 

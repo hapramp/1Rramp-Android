@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 
+
 public class BaseActivity extends AppCompatActivity {
   private ProgressDialog progressDialog;
 
