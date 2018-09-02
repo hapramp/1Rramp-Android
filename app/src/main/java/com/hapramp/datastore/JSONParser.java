@@ -240,24 +240,12 @@ public class JSONParser {
       JSONObject jmd = userObj.getJSONObject("json_metadata");
       if (jmd.has("profile")) {
         JSONObject po = jmd.getJSONObject("profile");
-        if (po.has("profile_image")) {
-          user.setProfile_image(po.getString("profile_image"));
-        }
-        if (po.has("cover_image")) {
-          user.setCover_image(po.getString("cover_image"));
-        }
-        if (po.has("name")) {
-          user.setFullname(po.getString("name"));
-        }
-        if (po.has("location")) {
-          user.setLocation(po.getString("location"));
-        }
-        if (po.has("about")) {
-          user.setAbout(po.getString("about"));
-        }
-        if (po.has("website")) {
-          user.setWebsite(po.getString("website"));
-        }
+        user.setProfile_image(po.optString("profile_image", ""));
+        user.setCover_image(po.optString("cover_image", ""));
+        user.setFullname(po.optString("name", ""));
+        user.setLocation(po.optString("location", ""));
+        user.setAbout(po.optString("about", ""));
+        user.setWebsite(po.optString("website", ""));
       }
       user.setUsername(userObj.getString("name"));
       user.setCreated(userObj.getString("created"));

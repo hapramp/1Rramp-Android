@@ -188,7 +188,9 @@ public class DataStore extends DataDispatcher {
           if (response.isSuccessful()) {
             String res = response.body().string();
             DataCache.cache(url, res);
-            //dispatchUserProfile(res, true, userProfileCallback);
+            if (cachedResponse.length() == 0) {
+              dispatchUserProfile(res, true, userProfileCallback);
+            }
           } else {
             dispatchUserProfileFetchError("Error Code:" + response.code(), userProfileCallback);
           }
