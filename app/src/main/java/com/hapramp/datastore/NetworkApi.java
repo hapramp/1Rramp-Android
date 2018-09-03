@@ -2,10 +2,11 @@ package com.hapramp.datastore;
 
 import com.hapramp.preferences.HaprampPreferenceManager;
 
-import java.io.IOException;
-
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
+import okhttp3.Protocol;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class NetworkApi {
@@ -31,15 +32,45 @@ public class NetworkApi {
   }
 
   public Response fetch(String url) {
+    Request request = null;
     try {
-      Request request = new Request.Builder()
+      request = new Request.Builder()
         .url(url)
         .build();
       return client.newCall(request).execute();
     }
-    catch (IOException e) {
+    catch (Exception e) {
       e.printStackTrace();
+      Response response = new Response
+        .Builder()
+        .request(request)
+        .protocol(Protocol.HTTP_1_0)
+        .message(e.toString())
+        .code(502).build();
+      return response;
     }
-    return null;
+  }
+
+  public Response postAndFetch(String url, String requestBody) {
+    Request request = null;
+    MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    RequestBody body = RequestBody.create(JSON, requestBody);
+    try {
+      request = new Request.Builder()
+        .url(url)
+        .post(body)
+        .build();
+      return client.newCall(request).execute();
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+      Response response = new Response
+        .Builder()
+        .request(request)
+        .protocol(Protocol.HTTP_1_0)
+        .message(e.toString())
+        .code(502).build();
+      return response;
+    }
   }
 }

@@ -21,6 +21,7 @@ public class JSONParser {
   public JSONParser() {
     markdownPreProcessor = new MarkdownPreProcessor();
   }
+
   public List<CommunityModel> parseUserCommunity(String response) {
     List<CommunityModel> communityModels = new ArrayList<>();
     try {
@@ -150,6 +151,21 @@ public class JSONParser {
         return new JSONObject();
       }
     }
+  }
+
+  public ArrayList<Feed> parseSteemFeed(String response) {
+    ArrayList<Feed> feeds = new ArrayList<>();
+    try {
+      JSONObject ro = new JSONObject(response);
+      JSONArray feedsArray = ro.getJSONArray("result");
+      for (int i = 0; i < feedsArray.length(); i++) {
+        feeds.add(parseCoreData((JSONObject) feedsArray.get(i)));
+      }
+    }
+    catch (JSONException e) {
+      e.printStackTrace();
+    }
+    return feeds;
   }
 
   private String extractFeatureImageUrl(JSONObject json_metadata, String body) throws JSONException {

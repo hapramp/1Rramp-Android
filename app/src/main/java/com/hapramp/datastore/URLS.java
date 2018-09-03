@@ -3,10 +3,14 @@ package com.hapramp.datastore;
 public class URLS {
   private static final int FEED_LOADING_LIMIT = 50;
   private static final String BASE_URL = "https://api.hapramp.com/api/v2/";
-  private String STEEMIT_API_URL = "https://api.steemit.com";
+  private static final String STEEMIT_API_URL = "https://api.steemit.com";
 
   public static String userVerificationUrl() {
     return BASE_URL + "login";
+  }
+
+  public static String steemUrl() {
+    return STEEMIT_API_URL;
   }
 
   public static String userCommunityUrl(String username) {

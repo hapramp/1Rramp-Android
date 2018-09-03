@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -23,11 +22,10 @@ import com.crashlytics.android.Crashlytics;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.gson.Gson;
 import com.hapramp.R;
-import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datastore.DataStore;
+import com.hapramp.datastore.callbacks.CommunitiesCallback;
 import com.hapramp.datastore.callbacks.UserProfileCallback;
 import com.hapramp.models.CommunityModel;
-import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.search.FollowCountManager;
 import com.hapramp.steem.CommunityListWrapper;
@@ -44,15 +42,11 @@ import com.hapramp.utils.FollowingsSyncUtils;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.views.skills.InterestsView;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static com.hapramp.ui.activity.FollowListActivity.EXTRA_KEY_FOLLOWERS;
 import static com.hapramp.ui.activity.FollowListActivity.EXTRA_KEY_FOLLOWING;
@@ -351,16 +345,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     }
   }
 
-  private void checkCacheAndLoad() {
-    String json = HaprampPreferenceManager.getInstance().getUserProfile(mUsername);
-    if (json.length() > 0) {
-      cachedUserProfileData = new Gson().fromJson(json, User.class);
-      if (cachedUserProfileData.getUsername() != null) {
-        bind(cachedUserProfileData);
-      }
-    }
-  }
-
   private void syncFollowings() {
     FollowingsSyncUtils.syncFollowings(mContext, this);
   }
@@ -383,22 +367,22 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   }
 
   private void fetchUserCommunities() {
-    RetrofitServiceGenerator.getService().getUserFromUsername(mUsername).enqueue(new Callback<UserModel>() {
+    dataStore.requestUserCommunities(mUsername, new CommunitiesCallback() {
       @Override
-      public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-        if (response.isSuccessful()) {
-          setCommunities(response.body().getCommunityModels());
-        } else {
-          setCommunities(new ArrayList<CommunityModel>());
-        }
+      public void onWhileWeAreFetchingCommunities() {
+
       }
 
       @Override
-      public void onFailure(Call<UserModel> call, Throwable t) {
-        setCommunities(new ArrayList<CommunityModel>());
+      public void onCommunitiesAvailable(List<CommunityModel> communities, boolean isFreshData) {
+        setCommunities(communities);
+      }
+
+      @Override
+      public void onCommunitiesFetchError(String err) {
+
       }
     });
-
   }
 
   private void setCommunities(List<CommunityModel> communities) {

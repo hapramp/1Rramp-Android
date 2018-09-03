@@ -33,7 +33,8 @@ public class DataDispatcher {
     }
   }
 
-  void dispatchUserCommunityError(final String message, final CommunitiesCallback communitiesCallback) {
+  void dispatchUserCommunityError(final String message,
+                                  final CommunitiesCallback communitiesCallback) {
     if (communitiesCallback != null) {
       handler.post(new Runnable() {
         @Override
@@ -44,6 +45,20 @@ public class DataDispatcher {
     }
   }
 
+  void dispatchSteemFeed(String response,
+                         final boolean isFreshData,
+                         final boolean isAppendable,
+                         final UserFeedCallback userFeedCallback) {
+    final List<Feed> feeds = jsonParser.parseSteemFeed(response);
+    if (userFeedCallback != null) {
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          userFeedCallback.onUserFeedsAvailable(feeds, isFreshData, isAppendable);
+        }
+      });
+    }
+  }
   void dispatchUserFeeds(String response, final boolean isFreshData, final boolean isAppendable,
                          final UserFeedCallback userFeedCallback) {
     final List<Feed> feeds = jsonParser.parseUserFeed(response);

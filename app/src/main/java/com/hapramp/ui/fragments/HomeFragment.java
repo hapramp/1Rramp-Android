@@ -233,9 +233,6 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
 
   @Override
   public void onWeAreFetchingUserFeed() {
-    if (feedListView != null) {
-      feedListView.initialLoading();
-    }
   }
 
   @Override

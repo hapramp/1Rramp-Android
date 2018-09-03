@@ -4,20 +4,20 @@ public class SteemRequestBody {
   /*
    * For: New in 1ramp section [Posts with tag hapramp tag]
    * */
-  public static String discussionsByCreated(int limit) {
+  public static String discussionsByCreated(String tag, int limit) {
     return "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_discussions_by_created\"," +
-      " \"params\":[{\"tag\":\"hapramp\",\"limit\":" + limit + "}], \"id\":1}";
+      " \"params\":[{\"tag\":\"" + tag + "\",\"limit\":" + limit + "}], \"id\":1}";
   }
 
-  public static String discussionsByCreated() {
+  public static String discussionsByCreated(String tag) {
     return "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_discussions_by_created\"," +
-      " \"params\":[{\"tag\":\"hapramp\",\"limit\":8}], \"id\":1}";
+      " \"params\":[{\"tag\":\"" + tag + "\",\"limit\":8}], \"id\":1}";
   }
 
-  public static String discussionsByCreated(String start_author, String start_permlink) {
+  public static String discussionsByCreated(String tag, String start_author, String start_permlink) {
     return "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_discussions_by_created\"," +
       "\"params\":[{\"start_author\":\"" + start_author + "\",\"start_permlink\":\"" + start_permlink +
-      "\",\"tag\":\"hapramp\",\"limit\":8}], \"id\":1}";
+      "\",\"tag\":\"" + tag + "\",\"limit\":8}], \"id\":1}";
   }
 
   public static String contentReplies(String author, String permlink) {
