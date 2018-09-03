@@ -24,10 +24,10 @@ import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
+import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.datastore.callbacks.UserProfileCallback;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.search.FollowCountManager;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.models.user.User;
 import com.hapramp.steemconnect.SteemConnectUtils;
@@ -56,7 +56,7 @@ import static com.hapramp.ui.activity.FollowListActivity.EXTRA_KEY_USERNAME;
  * Created by Ankit on 12/30/2017.
  */
 
-public class ProfileHeaderView extends FrameLayout implements FollowCountManager.FollowCountCallback, CompleteFollowingHelper.FollowingsSyncCompleteListener, UserProfileCallback {
+public class ProfileHeaderView extends FrameLayout implements CompleteFollowingHelper.FollowingsSyncCompleteListener, UserProfileCallback, FollowInfoCallback {
   @BindView(R.id.profile_wall_pic)
   ImageView profileWallPic;
   @BindView(R.id.profile_pic)
@@ -107,7 +107,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   private Handler mHandler;
   private boolean isFollowed;
   private String me;
-  private FollowCountManager followCountManager;
   private SteemConnect steemConnect;
   private int followersCount;
   private int followingCount;
@@ -128,7 +127,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     mHandler = new Handler();
     attachListeners();
     me = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-    followCountManager = new FollowCountManager(this);
     steemConnect = SteemConnectUtils.getSteemConnectInstance(HaprampPreferenceManager.getInstance().getSC2AccessToken());
   }
 
@@ -284,12 +282,12 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     showFollowProgress(false);
     setFollowState(true);
     syncFollowings();
-    refreshFollowingInfo();
+    fetchFollowingInfo();
     t("You started following " + mUsername);
   }
 
-  private void refreshFollowingInfo() {
-    followCountManager.requestFollowInfo(mUsername);
+  private void fetchFollowingInfo() {
+    dataStore.requestFollowInfo(mUsername, this);
   }
 
   private void setFollowState(boolean state) {
@@ -307,7 +305,7 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
       showFollowProgress(false);
       setFollowState(false);
       syncFollowings();
-      refreshFollowingInfo();
+      fetchFollowingInfo();
       t("You unfollowed " + mUsername);
     }
     catch (Exception e) {
@@ -350,7 +348,7 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   }
 
   private void fetchUserInfo() {
-    followCountManager.requestFollowInfo(mUsername);
+    fetchFollowingInfo();
     dataStore.requestUserProfile(mUsername, this);
   }
 
@@ -405,20 +403,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     }
   }
 
-  @Override
-  public void onFollowInfo(final int follower, final int followings) {
-    this.followersCount = follower;
-    this.followingCount = followings;
-    followInfoAvailable = true;
-    mHandler.post(new Runnable() {
-      @Override
-      public void run() {
-        setFollowerCount(follower);
-        setFollowingCount(followings);
-      }
-    });
-  }
-
   private void setFollowerCount(int count) {
     String followerText = count > 1 ?
       String.format(getContext().getString(R.string.profile_follower_count_text), count) :
@@ -435,6 +419,20 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     if (followersCountTv != null) {
       followingsCountTv.setText(followingText);
     }
+  }
+
+  @Override
+  public void onFollowInfoAvailable(final int followers, final int followings) {
+    this.followersCount = followers;
+    this.followingCount = followings;
+    followInfoAvailable = true;
+    mHandler.post(new Runnable() {
+      @Override
+      public void run() {
+        setFollowerCount(followers);
+        setFollowingCount(followings);
+      }
+    });
   }
 
   @Override

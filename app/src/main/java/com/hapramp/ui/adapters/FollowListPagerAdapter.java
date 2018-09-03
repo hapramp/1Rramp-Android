@@ -7,7 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.hapramp.search.FollowCountManager;
+import com.hapramp.datastore.DataStore;
+import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.ui.fragments.FollowersFragment;
 import com.hapramp.ui.fragments.FollowingsFragment;
 import com.hapramp.views.UserItemView;
@@ -17,23 +18,41 @@ import java.util.Locale;
 
 import static com.hapramp.ui.activity.FollowListActivity.EXTRA_KEY_USERNAME;
 
-public class FollowListPagerAdapter extends FragmentPagerAdapter implements FollowCountManager.FollowCountCallback {
+public class FollowListPagerAdapter extends FragmentPagerAdapter {
   private final FollowingsFragment followingsFragment;
   private final FollowersFragment followersFragment;
   private final String mUsername;
-  private FollowCountManager followCountManager;
+  final FollowInfoCallback followInfoCallback = new FollowInfoCallback() {
+    @Override
+    public void onFollowInfoAvailable(int followers, int followings) {
+      followersCount = followers;
+      followingCount = followings;
+      mHandler.post(new Runnable() {
+        @Override
+        public void run() {
+          notifyDataSetChanged();
+        }
+      });
+    }
+
+    @Override
+    public void onFollowInfoError(String msg) {
+
+    }
+  };
   ArrayList<Fragment> fragments = new ArrayList<>();
   ArrayList<String> titles = new ArrayList<>();
   private int followingCount;
   private int followersCount;
   private Handler mHandler;
+  private DataStore dataStore;
 
   public FollowListPagerAdapter(FragmentManager fm, String username) {
     super(fm);
     this.mUsername = username;
     mHandler = new Handler();
     Bundle bundle = new Bundle();
-    followCountManager = new FollowCountManager(this);
+    dataStore = new DataStore();
     bundle.putString(EXTRA_KEY_USERNAME, username);
     followingsFragment = new FollowingsFragment();
     followersFragment = new FollowersFragment();
@@ -42,7 +61,7 @@ public class FollowListPagerAdapter extends FragmentPagerAdapter implements Foll
       public void onFollowStateChanged() {
         //inform followings fragment
         followingsFragment.refreshData();
-        followCountManager.requestFollowInfo(mUsername);
+        dataStore.requestFollowInfo(mUsername, followInfoCallback);
       }
     });
     followingsFragment.setFollowStateChangeListener(new UserItemView.FollowStateChangeListener() {
@@ -50,16 +69,16 @@ public class FollowListPagerAdapter extends FragmentPagerAdapter implements Foll
       public void onFollowStateChanged() {
         //inform followers fragment
         followersFragment.refreshData();
-        followCountManager.requestFollowInfo(mUsername);
+        dataStore.requestFollowInfo(mUsername, followInfoCallback);
       }
     });
 
     followingsFragment.setArguments(bundle);
     followersFragment.setArguments(bundle);
-    fragments.add(followingsFragment);
     fragments.add(followersFragment);
-    titles.add("Following");
+    fragments.add(followingsFragment);
     titles.add("Followers");
+    titles.add("Following");
   }
 
   @Override
@@ -76,10 +95,10 @@ public class FollowListPagerAdapter extends FragmentPagerAdapter implements Foll
   @Override
   public CharSequence getPageTitle(int position) {
     if (position == 0) {
-      return String.format(Locale.US, "(%1$d) Following", followingCount);
+      return String.format(Locale.US, "Followers (%1$d) ", followersCount);
     }
     if (position == 1) {
-      return String.format(Locale.US, "(%1$d) Followers", followersCount);
+      return String.format(Locale.US, "Following (%1$d) ", followingCount);
     }
     return titles.get(position);
   }
@@ -89,20 +108,4 @@ public class FollowListPagerAdapter extends FragmentPagerAdapter implements Foll
     this.followingCount = following;
   }
 
-  @Override
-  public void onFollowInfo(int follower, int followings) {
-    this.followersCount = follower;
-    this.followingCount = followings;
-    mHandler.post(new Runnable() {
-      @Override
-      public void run() {
-        notifyDataSetChanged();
-      }
-    });
-  }
-
-  @Override
-  public void onFollowInfoError(String e) {
-
-  }
 }

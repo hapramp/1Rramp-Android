@@ -2,8 +2,10 @@ package com.hapramp.datastore;
 
 
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
+import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.datastore.callbacks.UserFeedCallback;
 import com.hapramp.datastore.callbacks.UserProfileCallback;
+import com.hapramp.datastore.callbacks.UserSearchCallback;
 
 import java.io.IOException;
 
@@ -431,6 +433,70 @@ public class DataStore extends DataDispatcher {
         }
         catch (IOException e) {
           dispatchUserFeedsError("IOException " + e.toString(), userFeedCallback);
+        }
+      }
+    }.start();
+  }
+
+
+  /**
+   * @param username           follow info of username
+   * @param followInfoCallback callback
+   */
+  public void requestFollowInfo(final String username,
+                                final FollowInfoCallback followInfoCallback) {
+    new Thread() {
+      @Override
+      public void run() {
+        String url = URLS.steemUrl();
+        String cacheKey = "steemit_user_follow_info_" + username;
+        String cachedResponse = DataCache.get(cacheKey);
+        if (cachedResponse != null) {
+          dispatchFollowInfo(cachedResponse, followInfoCallback);
+        }
+        try {
+          String requestBody = SteemRequestBody.followCountBody(username);
+          Response response = NetworkApi.getNetworkApiInstance().postAndFetch(url, requestBody);
+          if (response.isSuccessful()) {
+            String res = response.body().string();
+            DataCache.cache(url, res);
+            dispatchFollowInfo(res, followInfoCallback);
+          } else {
+            dispatchFollowInfoError("Error Code:" + response.code(), followInfoCallback);
+          }
+        }
+        catch (IOException e) {
+          dispatchFollowInfo("IOException " + e.toString(), followInfoCallback);
+        }
+      }
+    }.start();
+  }
+
+  /**
+   * @param searchTerm         search usernames matching with searchTerm
+   * @param userSearchCallback callback
+   */
+  public void requestUsernames(final String searchTerm, final UserSearchCallback userSearchCallback) {
+    if (userSearchCallback != null) {
+      userSearchCallback.onSearchingUsernames();
+    }
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          String url = URLS.steemUrl();
+          String requestBody = SteemRequestBody.lookupAccounts(searchTerm);
+          Response response = NetworkApi.getNetworkApiInstance().postAndFetch(url, requestBody);
+          if (response.isSuccessful()) {
+            String res = response.body().string();
+            DataCache.cache(url, res);
+            dispatchUserSearch(res, userSearchCallback);
+          } else {
+            dispatchUserSearchError("Error Code:" + response.code(), userSearchCallback);
+          }
+        }
+        catch (IOException e) {
+          dispatchUserSearchError("IOException " + e.toString(), userSearchCallback);
         }
       }
     }.start();

@@ -1,7 +1,6 @@
 package com.hapramp.ui.activity;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -19,9 +18,8 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
-import com.hapramp.api.FollowingApi;
-import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.search.UserSearchManager;
+import com.hapramp.datastore.DataStore;
+import com.hapramp.datastore.callbacks.UserSearchCallback;
 import com.hapramp.ui.adapters.UserListAdapter;
 import com.hapramp.ui.adapters.ViewPagerAdapter;
 import com.hapramp.utils.ConnectionUtils;
@@ -29,11 +27,12 @@ import com.hapramp.utils.FollowingsSyncUtils;
 import com.hapramp.utils.FontManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class UserSearchActivity extends AppCompatActivity implements UserSearchManager.UserSearchListener{
+public class UserSearchActivity extends AppCompatActivity implements UserSearchCallback {
   private static boolean SEARCH_MODE = false;
   private final String backTextIcon = "\uF04D";
   private final String closeSearchTextIcon = "\uF156";
@@ -62,28 +61,26 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchM
   @BindView(R.id.suggestionsContainer)
   RelativeLayout suggestionsContainer;
   UserListAdapter adapter;
-  UserSearchManager searchManager;
-  private Handler mHandler;
+  DataStore dataStore;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_search);
     ButterKnife.bind(this);
-    initView();
+    init();
     attachListener();
-    initSearchManager();
     fetchFollowingsAndCache();
     AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_USER_SEARCH, null);
   }
 
-  private void initView() {
+  private void init() {
+    dataStore = new DataStore();
     setupViewPager(viewpager);
     tabs.setupWithViewPager(viewpager);
     tabs.setSelectedTabIndicatorHeight((int) (2 * getResources().getDisplayMetrics().density));
     adapter = new UserListAdapter(this);
     suggestionsListView.setAdapter(adapter);
-    mHandler = new Handler();
     backBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     searchBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
   }
@@ -133,10 +130,6 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchM
     });
   }
 
-  private void initSearchManager() {
-    searchManager = new UserSearchManager(this);
-  }
-
   private void fetchFollowingsAndCache() {
     FollowingsSyncUtils.syncFollowings(this);
   }
@@ -151,7 +144,7 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchM
       suggestionsContainer.setVisibility(View.VISIBLE);
     }
     if (ConnectionUtils.isConnected(UserSearchActivity.this)) {
-      searchManager.requestSuggestionsFor(query);
+      dataStore.requestUsernames(query, this);
     } else {
       Toast.makeText(this, "No Connectivity", Toast.LENGTH_LONG).show();
     }
@@ -203,39 +196,35 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchM
   }
 
   @Override
-  public void onPreparing() {
+  public void onSearchingUsernames() {
+    try {
+      suggestionsListView.setVisibility(View.GONE);
+      messagePanel.setVisibility(View.VISIBLE);
+      suggestionsProgressBar.setVisibility(View.VISIBLE);
+      messagePanel.setText("Searching...");
+    }
+    catch (Exception e) {
+    }
   }
 
   @Override
-  public void onPrepared() {
-  }
-
-  @Override
-  public void onSearching() {
-    mHandler.post(new Runnable() {
-      @Override
-      public void run() {
-        suggestionsListView.setVisibility(View.GONE);
-        messagePanel.setVisibility(View.VISIBLE);
-        suggestionsProgressBar.setVisibility(View.VISIBLE);
-        messagePanel.setText("Searching...");
+  public void onUserSuggestionsAvailable(List<String> usernames) {
+    try {
+      if (suggestionsContainer != null) {
+        suggestionsContainer.setVisibility(View.VISIBLE);
       }
-    });
+      suggestionsListView.setVisibility(View.VISIBLE);
+      messagePanel.setVisibility(View.GONE);
+      suggestionsProgressBar.setVisibility(View.GONE);
+      adapter.setUsernames((ArrayList<String>) usernames);
+    }
+    catch (Exception e) {
+
+    }
   }
 
   @Override
-  public void onSearched(final ArrayList<String> suggestions) {
-    mHandler.post(new Runnable() {
-      @Override
-      public void run() {
-        if (suggestionsContainer != null) {
-          suggestionsContainer.setVisibility(View.VISIBLE);
-        }
-        suggestionsListView.setVisibility(View.VISIBLE);
-        messagePanel.setVisibility(View.GONE);
-        suggestionsProgressBar.setVisibility(View.GONE);
-        adapter.setUsernames(suggestions);
-      }
-    });
+  public void onUserSuggestionsError(String msg) {
+
   }
 }

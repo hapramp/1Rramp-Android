@@ -2,10 +2,15 @@ package com.hapramp.datastore;
 
 import android.os.Handler;
 
+import com.google.gson.Gson;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
+import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.datastore.callbacks.UserFeedCallback;
 import com.hapramp.datastore.callbacks.UserProfileCallback;
+import com.hapramp.datastore.callbacks.UserSearchCallback;
 import com.hapramp.models.CommunityModel;
+import com.hapramp.search.models.FollowCountInfo;
+import com.hapramp.search.models.UserSearchResponse;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.user.User;
 
@@ -128,4 +133,58 @@ public class DataDispatcher {
       });
     }
   }
+
+  void dispatchFollowInfo(final String response, final FollowInfoCallback followInfoCallback) {
+    if (followInfoCallback != null) {
+      final FollowCountInfo followCountInfo = new Gson().fromJson(response, FollowCountInfo.class);
+      handler.post(
+        new Runnable() {
+          @Override
+          public void run() {
+            followInfoCallback.onFollowInfoAvailable(followCountInfo.getResult().getFollower_count(),
+              followCountInfo.getResult().getFollowing_count());
+          }
+        }
+      );
+    }
+  }
+
+  void dispatchFollowInfoError(final String error, final FollowInfoCallback followInfoCallback) {
+    if (followInfoCallback != null) {
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          followInfoCallback.onFollowInfoError(error);
+        }
+      });
+    }
+  }
+
+  void dispatchUserSearch(String response, final UserSearchCallback userSearchCallback) {
+    if (userSearchCallback != null) {
+      final UserSearchResponse userSearchResponse = new Gson().fromJson(response, UserSearchResponse.class);
+      handler.post(
+        new Runnable() {
+          @Override
+          public void run() {
+            userSearchCallback.onUserSuggestionsAvailable(userSearchResponse.getResult());
+          }
+        }
+      );
+    }
+  }
+
+  void dispatchUserSearchError(final String error, final UserSearchCallback userSearchCallback){
+    if (userSearchCallback != null) {
+      handler.post(
+        new Runnable() {
+          @Override
+          public void run() {
+            userSearchCallback.onUserSuggestionsError(error);
+          }
+        }
+      );
+    }
+  }
+
 }
