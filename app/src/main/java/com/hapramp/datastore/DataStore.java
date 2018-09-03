@@ -3,6 +3,7 @@ package com.hapramp.datastore;
 
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
 import com.hapramp.datastore.callbacks.FollowInfoCallback;
+import com.hapramp.datastore.callbacks.TransferHistoryCallback;
 import com.hapramp.datastore.callbacks.UserFeedCallback;
 import com.hapramp.datastore.callbacks.UserProfileCallback;
 import com.hapramp.datastore.callbacks.UserSearchCallback;
@@ -476,7 +477,8 @@ public class DataStore extends DataDispatcher {
    * @param searchTerm         search usernames matching with searchTerm
    * @param userSearchCallback callback
    */
-  public void requestUsernames(final String searchTerm, final UserSearchCallback userSearchCallback) {
+  public void requestUsernames(final String searchTerm,
+                               final UserSearchCallback userSearchCallback) {
     if (userSearchCallback != null) {
       userSearchCallback.onSearchingUsernames();
     }
@@ -501,4 +503,33 @@ public class DataStore extends DataDispatcher {
       }
     }.start();
   }
+
+  /**
+   * @param username                transfer history of username.
+   * @param transferHistoryCallback callback
+   */
+  public void requestTransferHistory(final String username, final TransferHistoryCallback transferHistoryCallback) {
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          String url = URLS.steemUrl();
+          String requestBody = SteemRequestBody.transactionState(username);
+          Response response = NetworkApi.getNetworkApiInstance().postAndFetch(url, requestBody);
+          if (response.isSuccessful()) {
+            String res = response.body().string();
+            DataCache.cache(url, res);
+            dispatchTransferHistory(res,username, transferHistoryCallback);
+          } else {
+            dispatchTransferHistoryError("Error Code:" + response.code(), transferHistoryCallback);
+          }
+        }
+        catch (IOException e) {
+          dispatchTransferHistoryError("IOException " + e.toString(), transferHistoryCallback);
+        }
+      }
+    }.start();
+  }
+
 }
+

@@ -5,6 +5,7 @@ import android.os.Handler;
 import com.google.gson.Gson;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
 import com.hapramp.datastore.callbacks.FollowInfoCallback;
+import com.hapramp.datastore.callbacks.TransferHistoryCallback;
 import com.hapramp.datastore.callbacks.UserFeedCallback;
 import com.hapramp.datastore.callbacks.UserProfileCallback;
 import com.hapramp.datastore.callbacks.UserSearchCallback;
@@ -12,8 +13,10 @@ import com.hapramp.models.CommunityModel;
 import com.hapramp.search.models.FollowCountInfo;
 import com.hapramp.search.models.UserSearchResponse;
 import com.hapramp.steem.models.Feed;
+import com.hapramp.steem.models.TransferHistoryModel;
 import com.hapramp.steem.models.user.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DataDispatcher {
@@ -187,4 +190,30 @@ public class DataDispatcher {
     }
   }
 
+  void dispatchTransferHistory(String response,
+                               String username,
+                               final TransferHistoryCallback transferHistoryCallback) {
+    final TransferHistoryParser transferHistoryParser = new TransferHistoryParser();
+    final ArrayList<TransferHistoryModel> transferHistory = transferHistoryParser
+      .parseTransferHistory(response, username);
+    handler.post(new Runnable() {
+      @Override
+      public void run() {
+        transferHistoryCallback.onAccountTransferHistoryAvailable(transferHistory);
+      }
+    });
+  }
+
+  void dispatchTransferHistoryError(final String error, final TransferHistoryCallback transferHistoryCallback) {
+    if (transferHistoryCallback != null) {
+      handler.post(
+        new Runnable() {
+          @Override
+          public void run() {
+            transferHistoryCallback.onAccountTransferHistoryError(error);
+          }
+        }
+      );
+    }
+  }
 }

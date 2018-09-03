@@ -14,7 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
-import com.hapramp.search.TranserHistoryManager;
+import com.hapramp.datastore.TransferHistoryParser;
 import com.hapramp.steem.models.TransferHistoryModel;
 import com.hapramp.ui.activity.ProfileActivity;
 import com.hapramp.utils.Constants;
@@ -92,15 +92,15 @@ public class AccountHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vie
   @Override
   public int getItemViewType(int position) {
     switch (transferHistoryModels.get(position).getOperation()) {
-      case TranserHistoryManager.KEYS.OPERATION_TRANSFER:
+      case TransferHistoryParser.KEYS.OPERATION_TRANSFER:
         return TYPE_TRANSFER;
-      case TranserHistoryManager.KEYS.OPERATION_AUTHOR_REWARD:
+      case TransferHistoryParser.KEYS.OPERATION_AUTHOR_REWARD:
         return TYPE_AUTHOR_REWARD;
-      case TranserHistoryManager.KEYS.OPERATION_CLAIM_REWARD_BALANCE:
+      case TransferHistoryParser.KEYS.OPERATION_CLAIM_REWARD_BALANCE:
         return TYPE_CLAIM;
-      case TranserHistoryManager.KEYS.OPERATION_COMMENT_BENEFACTOR_REWARD:
+      case TransferHistoryParser.KEYS.OPERATION_COMMENT_BENEFACTOR_REWARD:
         return TYPE_COMMENT_BENEFACTOR;
-      case TranserHistoryManager.KEYS.OPERATION_CURATION_REWARD:
+      case TransferHistoryParser.KEYS.OPERATION_CURATION_REWARD:
         return TYPE_CURATION;
     }
     return super.getItemViewType(position);
