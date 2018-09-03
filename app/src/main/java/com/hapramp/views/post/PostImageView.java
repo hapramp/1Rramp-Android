@@ -21,7 +21,7 @@ import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
 import com.hapramp.api.RetrofitServiceGenerator;
-import com.hapramp.datamodels.response.FileUploadReponse;
+import com.hapramp.models.response.FileUploadReponse;
 import com.hapramp.utils.ImageCacheClearUtils;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.ImageRotationHandler;

@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hapramp.R;
-import com.hapramp.datamodels.CommentModel;
+import com.hapramp.models.CommentModel;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.views.comments.CommentsItemView;

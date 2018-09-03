@@ -186,7 +186,7 @@ public class RawApiCaller {
   public void requestUserFeed(String username) {
     final String rtag = "user_feed_" + username;
     this.currentRequestTag = rtag;
-    String url = URLS.BASE_URL + "feeds/user/" + username + "?limit=" + Constants.FEED_LOADING_LIMIT;
+    String url = URLS.BASE_URL + "feeds/user/" + username + "?limit=50";
     StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
       new Response.Listener<String>() {
         @Override
@@ -206,7 +206,7 @@ public class RawApiCaller {
     final String rtag = "more_user_feed_" + username;
     this.currentRequestTag = rtag;
     String url = URLS.BASE_URL + "feeds/user/" + username +
-      "?limit=" + Constants.FEED_LOADING_LIMIT +
+      "?limit=50" +
       "&start_author=" + start_author +
       "&start_permlink=" + start_permlink;
     StringRequest stringRequest = new StringRequest(Request.Method.GET, url,

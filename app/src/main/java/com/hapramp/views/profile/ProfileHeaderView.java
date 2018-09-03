@@ -21,13 +21,13 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.hapramp.R;
-import com.hapramp.api.RetrofitServiceGenerator;
-import com.hapramp.datamodels.CommunityModel;
-import com.hapramp.datamodels.response.UserModel;
+import com.hapramp.datastore.DataStore;
+import com.hapramp.datastore.callbacks.CommunitiesCallback;
+import com.hapramp.datastore.callbacks.FollowInfoCallback;
+import com.hapramp.datastore.callbacks.UserProfileCallback;
+import com.hapramp.models.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.search.FollowCountManager;
 import com.hapramp.steem.CommunityListWrapper;
-import com.hapramp.steem.UserProfileFetcher;
 import com.hapramp.steem.models.User;
 import com.hapramp.steemconnect.SteemConnectUtils;
 import com.hapramp.steemconnect4j.SteemConnect;
@@ -41,15 +41,11 @@ import com.hapramp.utils.FollowingsSyncUtils;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.views.skills.InterestsView;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static com.hapramp.ui.activity.FollowListActivity.EXTRA_KEY_FOLLOWERS;
 import static com.hapramp.ui.activity.FollowListActivity.EXTRA_KEY_FOLLOWING;
@@ -59,7 +55,7 @@ import static com.hapramp.ui.activity.FollowListActivity.EXTRA_KEY_USERNAME;
  * Created by Ankit on 12/30/2017.
  */
 
-public class ProfileHeaderView extends FrameLayout implements FollowCountManager.FollowCountCallback, UserProfileFetcher.UserProfileFetchCallback, CompleteFollowingHelper.FollowingsSyncCompleteListener {
+public class ProfileHeaderView extends FrameLayout implements CompleteFollowingHelper.FollowingsSyncCompleteListener, UserProfileCallback, FollowInfoCallback {
   @BindView(R.id.profile_wall_pic)
   ImageView profileWallPic;
   @BindView(R.id.profile_pic)
@@ -102,22 +98,28 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   TextView walletInfoBtn;
   @BindView(R.id.profile_header_view_real)
   RelativeLayout profileHeaderViewReal;
-  UserProfileFetcher userProfileFetcher;
+  @BindView(R.id.profile_header_container_mock)
+  RelativeLayout profileHeaderContainerMock;
+  @BindView(R.id.bio1)
+  View bio1;
+  @BindView(R.id.divider_bottom_mock)
+  FrameLayout dividerBottomMock;
+  @BindView(R.id.interestCaptionMock)
+  View interestCaptionMock;
   @BindView(R.id.profile_header_view_container_mock)
   RelativeLayout profileHeaderViewContainerMock;
   private Context mContext;
   private String TICK_TEXT = "\u2713";
   private String mUsername;
   private Handler mHandler;
-  private boolean loaded;
   private boolean isFollowed;
   private String me;
-  private FollowCountManager followCountManager;
   private SteemConnect steemConnect;
   private int followersCount;
   private int followingCount;
   private boolean followInfoAvailable;
   private User cachedUserProfileData;
+  private DataStore dataStore;
 
   public ProfileHeaderView(@NonNull Context context) {
     super(context);
@@ -126,15 +128,12 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
 
   private void init(Context context) {
     mContext = context;
-    loaded = false;
+    dataStore = new DataStore();
     View view = LayoutInflater.from(context).inflate(R.layout.profile_header_view, this);
     ButterKnife.bind(this, view);
     mHandler = new Handler();
     attachListeners();
-    userProfileFetcher = new UserProfileFetcher();
-    userProfileFetcher.setUserProfileFetchCallback(this);
     me = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-    followCountManager = new FollowCountManager(this);
     steemConnect = SteemConnectUtils.getSteemConnectInstance(HaprampPreferenceManager.getInstance().getSC2AccessToken());
   }
 
@@ -290,12 +289,12 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     showFollowProgress(false);
     setFollowState(true);
     syncFollowings();
-    refreshFollowingInfo();
+    fetchFollowingInfo();
     t("You started following " + mUsername);
   }
 
-  private void refreshFollowingInfo() {
-    followCountManager.requestFollowInfo(mUsername);
+  private void fetchFollowingInfo() {
+    dataStore.requestFollowInfo(mUsername, this);
   }
 
   private void setFollowState(boolean state) {
@@ -313,7 +312,7 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
       showFollowProgress(false);
       setFollowState(false);
       syncFollowings();
-      refreshFollowingInfo();
+      fetchFollowingInfo();
       t("You unfollowed " + mUsername);
     }
     catch (Exception e) {
@@ -338,20 +337,7 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   public void setUsername(String username) {
     this.mUsername = username;
     if (username != null) {
-      if (!loaded) {
-        checkCacheAndLoad();
-        fetchUserInfo();
-      }
-    }
-  }
-
-  private void checkCacheAndLoad() {
-    String json = HaprampPreferenceManager.getInstance().getUserProfile(mUsername);
-    if (json.length() > 0) {
-      cachedUserProfileData = new Gson().fromJson(json, User.class);
-      if (cachedUserProfileData.getUsername() != null) {
-        bind(cachedUserProfileData);
-      }
+      fetchUserInfo();
     }
   }
 
@@ -360,14 +346,70 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   }
 
   private void fetchUserInfo() {
-    followCountManager.requestFollowInfo(mUsername);
-    userProfileFetcher.fetchUserProfileFor(mUsername);
+    fetchFollowingInfo();
+    dataStore.requestUserProfile(mUsername, this);
+  }
+
+  @Override
+  public void onWeAreFetchingUserProfile() {
+
+  }
+
+  public void setPostsCount(long count) {
+    String text = count > 1 ? count + " Posts" : count + " Post";
+    if (postCounts != null) {
+      postCounts.setText(text);
+    }
+  }
+
+  @Override
+  public void onUserProfileAvailable(User user, boolean isFreshData) {
+    bind(user);
+    cacheUserProfile(user);
+  }
+
+  private void setCommunities(List<CommunityModel> communities) {
+    interestsView.setCommunities(communities, false);
+  }
+
+  private void navigateToProfileEditActivity() {
+    Intent intent = new Intent(mContext, ProfileEditActivity.class);
+    mContext.startActivity(intent);
+  }
+
+  private void userUnfollowFailed() {
+    try {
+      showFollowProgress(false);
+      setFollowState(true);
+      t("Failed to unfollow " + mUsername);
+    }
+    catch (Exception e) {
+      Crashlytics.log(e.toString());
+    }
+  }
+
+  private void setFollowerCount(int count) {
+    String followerText = count > 1 ?
+      String.format(getContext().getString(R.string.profile_follower_count_text), count) :
+      String.format(getContext().getString(R.string.profile_follower_count_text_singular), count);
+    if (followersCountTv != null) {
+      followersCountTv.setText(followerText);
+    }
+  }
+
+  private void setFollowingCount(int count) {
+    String followingText = count > 1 ?
+      String.format(getContext().getString(R.string.profile_following_count_text_plural), count) :
+      String.format(getContext().getString(R.string.profile_following_count_text_singular), count);
+    if (followersCountTv != null) {
+      followingsCountTv.setText(followingText);
+    }
   }
 
   private void bind(User data) {
     if (profileHeaderViewReal != null) {
-      profileHeaderViewReal.setVisibility(VISIBLE);
       profileHeaderViewContainerMock.setVisibility(GONE);
+      profileHeaderViewReal.setVisibility(VISIBLE);
     }
     //check for null view(in case view is removed)
     if (usernameTv == null)
@@ -375,18 +417,8 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     String wall_pic_url = data.getCover_image().length() > 0 ? data.getCover_image() :
       mContext.getResources().getString(R.string.default_wall_pic);
     String profile_pic = String.format(getResources().getString(R.string.steem_user_profile_pic_format_large), mUsername);
-    if (loaded && cachedUserProfileData != null) {
-      if (!cachedUserProfileData.getCover_image().equals(data.getCover_image())) {
-        ImageHandler.load(mContext, profileWallPic, wall_pic_url);
-      }
-
-      if (!cachedUserProfileData.getProfile_image().equals(data.getProfile_image())) {
-        ImageHandler.loadCircularImage(mContext, profilePic, profile_pic);
-      }
-    } else {
-      ImageHandler.load(mContext, profileWallPic, wall_pic_url);
-      ImageHandler.loadCircularImage(mContext, profilePic, profile_pic);
-    }
+    ImageHandler.load(mContext, profileWallPic, wall_pic_url);
+    ImageHandler.loadCircularImage(mContext, profilePic, profile_pic);
     usernameTv.setText(data.getFullname());
     hapname.setText(String.format("@%s", data.getUsername()));
     String _bio = data.getAbout();
@@ -413,85 +445,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
       invalidateFollowButton();
       fetchUserCommunities();
     }
-    loaded = true;
-  }
-
-  public void setPostsCount(long count) {
-    String text = count > 1 ? count + " Posts" : count + " Post";
-    if (postCounts != null) {
-      postCounts.setText(text);
-    }
-  }
-
-  private void fetchUserCommunities() {
-    RetrofitServiceGenerator.getService().getUserFromUsername(mUsername).enqueue(new Callback<UserModel>() {
-      @Override
-      public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-        if (response.isSuccessful()) {
-          setCommunities(response.body().getCommunityModels());
-        } else {
-          setCommunities(new ArrayList<CommunityModel>());
-        }
-      }
-
-      @Override
-      public void onFailure(Call<UserModel> call, Throwable t) {
-        setCommunities(new ArrayList<CommunityModel>());
-      }
-    });
-
-  }
-
-  private void setCommunities(List<CommunityModel> communities) {
-    interestsView.setCommunities(communities, false);
-  }
-
-  private void navigateToProfileEditActivity() {
-    Intent intent = new Intent(mContext, ProfileEditActivity.class);
-    mContext.startActivity(intent);
-  }
-
-  private void userUnfollowFailed() {
-    try {
-      showFollowProgress(false);
-      setFollowState(true);
-      t("Failed to unfollow " + mUsername);
-    }
-    catch (Exception e) {
-      Crashlytics.log(e.toString());
-    }
-  }
-
-  @Override
-  public void onFollowInfo(final int follower, final int followings) {
-    this.followersCount = follower;
-    this.followingCount = followings;
-    followInfoAvailable = true;
-    mHandler.post(new Runnable() {
-      @Override
-      public void run() {
-        setFollowerCount(follower);
-        setFollowingCount(followings);
-      }
-    });
-  }
-
-  private void setFollowerCount(int count) {
-    String followerText = count > 1 ?
-      String.format(getContext().getString(R.string.profile_follower_count_text), count) :
-      String.format(getContext().getString(R.string.profile_follower_count_text_singular), count);
-    if (followersCountTv != null) {
-      followersCountTv.setText(followerText);
-    }
-  }
-
-  private void setFollowingCount(int count) {
-    String followingText = count > 1 ?
-      String.format(getContext().getString(R.string.profile_following_count_text_plural), count) :
-      String.format(getContext().getString(R.string.profile_following_count_text_singular), count);
-    if (followersCountTv != null) {
-      followingsCountTv.setText(followingText);
-    }
   }
 
   @Override
@@ -514,11 +467,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     }
   }
 
-  @Override
-  public void onUserFetched(User user) {
-    bind(user);
-    cacheUserProfile(user);
-  }
 
   private void cacheUserProfile(User user) {
     if (user.getUsername() == null) {
@@ -529,14 +477,6 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
   }
 
   @Override
-  public void onUserFetchError(String e) {
-    failedToFetchSteemInfo();
-  }
-
-  private void failedToFetchSteemInfo() {
-  }
-
-  @Override
   public void onSyncCompleted() {
     try {
       invalidateFollowButton();
@@ -544,5 +484,42 @@ public class ProfileHeaderView extends FrameLayout implements FollowCountManager
     catch (Exception e) {
       Crashlytics.log(e.toString());
     }
+  }
+
+  private void fetchUserCommunities() {
+    dataStore.requestUserCommunities(mUsername, new CommunitiesCallback() {
+      @Override
+      public void onWhileWeAreFetchingCommunities() {
+
+      }
+
+      @Override
+      public void onCommunitiesAvailable(List<CommunityModel> communities, boolean isFreshData) {
+        setCommunities(communities);
+      }
+
+      @Override
+      public void onCommunitiesFetchError(String err) {
+
+      }
+    });
+  }
+
+  @Override
+  public void onUserProfileFetchError(String err) {
+  }
+
+  @Override
+  public void onFollowInfoAvailable(final int followers, final int followings) {
+    this.followersCount = followers;
+    this.followingCount = followings;
+    followInfoAvailable = true;
+    mHandler.post(new Runnable() {
+      @Override
+      public void run() {
+        setFollowerCount(followers);
+        setFollowingCount(followings);
+      }
+    });
   }
 }

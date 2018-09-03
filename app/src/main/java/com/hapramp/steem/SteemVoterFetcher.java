@@ -9,7 +9,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.hapramp.api.URLS;
-import com.hapramp.datamodels.CommentModel;
 import com.hapramp.steem.models.Voter;
 import com.hapramp.utils.JsonParser;
 import com.hapramp.utils.VolleyUtils;

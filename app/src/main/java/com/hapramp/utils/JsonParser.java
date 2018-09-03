@@ -2,7 +2,7 @@ package com.hapramp.utils;
 
 import android.util.Log;
 
-import com.hapramp.datamodels.CommentModel;
+import com.hapramp.models.CommentModel;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.User;
 import com.hapramp.steem.models.Voter;

@@ -11,7 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.hapramp.R;
-import com.hapramp.datamodels.CommunityModel;
+import com.hapramp.models.CommunityModel;
 import com.hapramp.views.post.WrapViewGroup;
 import com.hapramp.views.skills.CommunityItemView;
 

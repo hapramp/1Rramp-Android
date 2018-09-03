@@ -98,23 +98,24 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
   }
 
-  private void removeItemAt(int position) {
-    feeds.remove(position);
-    notifyItemRemoved(position);
-  }
-
   @Override
   public int getItemViewType(int position) {
-    if (position == feeds.size()) {
-      return VIEW_TYPE_LOADING;
-    } else {
+    if (position < getFeedsCount()) {
       return VIEW_TYPE_FEED;
+    } else {
+      return VIEW_TYPE_LOADING;
     }
   }
 
   @Override
   public int getItemCount() {
-    return feeds.size() + 1;
+    int feedsCount = getFeedsCount();
+    return feedsCount > 0 ? feedsCount + 1 : 0;
+  }
+
+  private void removeItemAt(int position) {
+    feeds.remove(position);
+    notifyItemRemoved(position);
   }
 
   public int getFeedsCount() {
@@ -122,8 +123,7 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
   }
 
   public void resetList() {
-    feeds = new ArrayList<>();
-    notifyDataSetChanged();
+    feeds.clear();
   }
 
   public interface OnLoadMoreListener {

@@ -15,7 +15,8 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
-import com.hapramp.api.RawApiCaller;
+import com.hapramp.datastore.DataStore;
+import com.hapramp.datastore.callbacks.UserFeedCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.ui.adapters.ProfileRecyclerAdapter;
@@ -23,12 +24,12 @@ import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ViewItemDecoration;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ProfileActivity extends AppCompatActivity implements RawApiCaller.FeedDataCallback, ProfileRecyclerAdapter.OnLoadMoreListener {
+public class ProfileActivity extends AppCompatActivity implements ProfileRecyclerAdapter.OnLoadMoreListener, UserFeedCallback {
   @BindView(R.id.closeBtn)
   TextView closeBtn;
   @BindView(R.id.toolbar_container)
@@ -43,7 +44,7 @@ public class ProfileActivity extends AppCompatActivity implements RawApiCaller.F
   private ProfileRecyclerAdapter profilePostAdapter;
   private ViewItemDecoration viewItemDecoration;
   private LinearLayoutManager llm;
-  private RawApiCaller rawApiCaller;
+  private DataStore dataStore;
   private String last_author;
   private String last_permlink;
 
@@ -58,8 +59,7 @@ public class ProfileActivity extends AppCompatActivity implements RawApiCaller.F
   }
 
   private void init() {
-    rawApiCaller = new RawApiCaller(this);
-    rawApiCaller.setDataCallback(this);
+    dataStore = new DataStore();
     closeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     if (getIntent() == null) {
       Toast.makeText(this, "No Username Passed", Toast.LENGTH_SHORT).show();
@@ -92,19 +92,37 @@ public class ProfileActivity extends AppCompatActivity implements RawApiCaller.F
     profileRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
       @Override
       public void onRefresh() {
-        fetchPosts();
+        refreshPosts();
       }
     });
   }
 
   private void fetchPosts() {
-    rawApiCaller.requestUserBlogs(username);
+    dataStore.requestUserBlog(username, false, this);
+  }
+
+  private void refreshPosts() {
+    dataStore.requestUserBlog(username, true, this);
   }
 
   @Override
-  public void onDataLoaded(ArrayList<Feed> feeds, boolean appendable) {
+  public void onLoadMore() {
+    fetchMorePosts();
+  }
+
+  private void fetchMorePosts() {
+    dataStore.requestUserBlog(username, last_author, last_permlink, this);
+  }
+
+  @Override
+  public void onWeAreFetchingUserFeed() {
+
+  }
+
+  @Override
+  public void onUserFeedsAvailable(List<Feed> feeds, boolean isFreshData, boolean isAppendable) {
     if (profilePostRv != null) {
-      if (appendable) {
+      if (isAppendable) {
         feeds.remove(0);
         profilePostAdapter.appendPosts(feeds);
       } else {
@@ -124,20 +142,11 @@ public class ProfileActivity extends AppCompatActivity implements RawApiCaller.F
   }
 
   @Override
-  public void onDataLoadError() {
+  public void onUserFeedFetchError(String err) {
     if (profileRefreshLayout != null) {
       if (profileRefreshLayout.isRefreshing()) {
         profileRefreshLayout.setRefreshing(false);
       }
     }
-  }
-
-  @Override
-  public void onLoadMore() {
-    fetchMorePosts();
-  }
-
-  private void fetchMorePosts() {
-    rawApiCaller.requestMoreUserBlogs(username, last_author, last_permlink);
   }
 }

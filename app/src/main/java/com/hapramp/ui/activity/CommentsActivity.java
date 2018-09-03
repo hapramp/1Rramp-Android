@@ -20,7 +20,7 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
-import com.hapramp.datamodels.CommentModel;
+import com.hapramp.models.CommentModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.SteemCommentCreator;
 import com.hapramp.steem.SteemReplyFetcher;

@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.hapramp.datamodels.CommunityModel;
+import com.hapramp.models.CommunityModel;
 import com.hapramp.views.skills.CommunityTabItemView;
 
 import java.util.ArrayList;

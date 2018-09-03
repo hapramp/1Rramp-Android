@@ -11,6 +11,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
@@ -19,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.hapramp.R;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.ui.adapters.HomeFeedsAdapter;
@@ -240,21 +242,15 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
   }
 
   private void setLoadingShimmerVisibility(boolean show) {
-
-   // Log.d("FeedLoadingShimmer", "shown " + show);
     setViewVisibility(show, mockContainer);
-    //shimmerViewContainer.startShimmerAnimation();
-
   }
 
   private void setViewVisibility(boolean show, View view) {
-
     if (show) {
       view.setVisibility(VISIBLE);
     } else {
       view.setVisibility(GONE);
     }
-
   }
 
   public FeedListView(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -265,7 +261,6 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
       wantBottomSpace = typedArray.getBoolean(R.styleable.FeedListView_wantBottomSpaceOffset, false);
       topOffset = typedArray.getInt(R.styleable.FeedListView_topOffset, 108);
       bottomOffset = typedArray.getInt(R.styleable.FeedListView_bottomOffset, 0);
-
     }
     finally {
       typedArray.recycle();

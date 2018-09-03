@@ -26,8 +26,8 @@ import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.api.RawApiCaller;
 import com.hapramp.api.RetrofitServiceGenerator;
-import com.hapramp.datamodels.CommunityModel;
-import com.hapramp.datamodels.response.UserModel;
+import com.hapramp.models.CommunityModel;
+import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.models.User;
@@ -110,8 +110,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     ButterKnife.bind(this);
     saveDeviceWidth();
     RepeatPostCreationUtils.syncLastPostCreationTime();
-    syncCommunities();
-    syncUserCommunities();
     syncUserFollowings();
     setupToolbar();
     initObjects();
@@ -130,49 +128,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   private void syncUserFollowings() {
     FollowingsSyncUtils.syncFollowings(this);
   }
-
-  private void syncCommunities() {
-    RetrofitServiceGenerator.getService().getCommunities().enqueue(new Callback<List<CommunityModel>>() {
-      @Override
-      public void onResponse(Call<List<CommunityModel>> call, Response<List<CommunityModel>> response) {
-        if (response.isSuccessful()) {
-          HaprampPreferenceManager.getInstance().saveAllCommunityListAsJson(new Gson().toJson(new CommunityListWrapper(response.body())));
-          cacheCommunitiesList();
-        }
-      }
-      @Override
-      public void onFailure(Call<List<CommunityModel>> call, Throwable t) {
-      }
-    });
-  }
-
-  private void syncUserCommunities() {
-    RetrofitServiceGenerator.getService().fetchUserCommunities(HaprampPreferenceManager.getInstance().getCurrentSteemUsername()).enqueue(new Callback<UserModel>() {
-      @Override
-      public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-        if (response.isSuccessful()) {
-          if (response.body().getCommunityModels().size() == 0) {
-            HaprampPreferenceManager.getInstance()
-              .saveUserSelectedCommunitiesAsJson(new Gson()
-                .toJson(new CommunityListWrapper(response.body().communityModels)));
-            navigateToCommunitySelectionPage();
-          }
-        }
-      }
-
-      @Override
-      public void onFailure(Call<UserModel> call, Throwable t) {
-
-      }
-    });
-  }
-
-  private void navigateToCommunitySelectionPage() {
-    Intent intent = new Intent(this, CommunitySelectionActivity.class);
-    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-    startActivity(intent);
-  }
-
 
   private void setupToolbar() {
     materialTypface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);

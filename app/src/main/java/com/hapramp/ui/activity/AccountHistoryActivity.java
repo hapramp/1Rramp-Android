@@ -1,7 +1,6 @@
 package com.hapramp.ui.activity;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,9 +10,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
+import com.hapramp.datastore.DataStore;
+import com.hapramp.datastore.TransferHistoryParser;
+import com.hapramp.datastore.callbacks.TransferHistoryCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.search.TranserHistoryManager;
-import com.hapramp.steem.TransferHistoryParser;
 import com.hapramp.steem.models.TransferHistoryModel;
 import com.hapramp.ui.adapters.AccountHistoryAdapter;
 import com.hapramp.utils.AccountHistoryItemDecoration;
@@ -25,7 +25,7 @@ import java.util.Collections;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AccountHistoryActivity extends AppCompatActivity {
+public class AccountHistoryActivity extends AppCompatActivity implements TransferHistoryCallback {
 
   public static final String EXTRA_USERNAME = "username";
   @BindView(R.id.closeBtn)
@@ -41,7 +41,7 @@ public class AccountHistoryActivity extends AppCompatActivity {
   @BindView(R.id.empty_message)
   TextView emptyMessage;
   private AccountHistoryAdapter accountHistoryAdapter;
-  private Handler mHandler;
+  private DataStore dataStore;
   private String mUsername;
 
   @Override
@@ -58,7 +58,7 @@ public class AccountHistoryActivity extends AppCompatActivity {
   }
 
   private void init() {
-    mHandler = new Handler();
+    dataStore = new DataStore();
     closeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     accountHistoryAdapter = new AccountHistoryAdapter(this);
     accountHistoryRv.setLayoutManager(new LinearLayoutManager(this));
@@ -74,25 +74,7 @@ public class AccountHistoryActivity extends AppCompatActivity {
   }
 
   private void fetchHistory(final String username) {
-    final TransferHistoryParser transferHistoryParser = new TransferHistoryParser();
-    final TranserHistoryManager transerHistoryManager = new TranserHistoryManager();
-    transerHistoryManager.setTransferHistoryCallback(new TranserHistoryManager.TransferHistoryCallback() {
-      @Override
-      public void onRawTransferResponse(final String response) {
-        mHandler.post(new Runnable() {
-          @Override
-          public void run() {
-            bindData(transferHistoryParser.parseTransferHistory(response, username));
-          }
-        });
-      }
-
-      @Override
-      public void onRawTransferResponseError(String e) {
-
-      }
-    });
-    transerHistoryManager.requestRawTransferHistory(username);
+   dataStore.requestTransferHistory(username,this);
   }
 
   private void bindData(ArrayList<TransferHistoryModel> transferHistory) {
@@ -106,5 +88,15 @@ public class AccountHistoryActivity extends AppCompatActivity {
     } else {
       emptyMessage.setVisibility(View.VISIBLE);
     }
+  }
+
+  @Override
+  public void onAccountTransferHistoryAvailable(ArrayList<TransferHistoryModel> history) {
+    bindData(history);
+  }
+
+  @Override
+  public void onAccountTransferHistoryError(String error) {
+
   }
 }

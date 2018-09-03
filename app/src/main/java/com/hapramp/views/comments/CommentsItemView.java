@@ -20,7 +20,7 @@ import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
-import com.hapramp.datamodels.CommentModel;
+import com.hapramp.models.CommentModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.SteemVoterFetcher;
 import com.hapramp.steem.models.Voter;
@@ -48,7 +48,8 @@ import static com.hapramp.utils.VoteUtils.getMyVotePercent;
 import static com.hapramp.utils.VoteUtils.getNonZeroVoters;
 import static com.hapramp.utils.VoteUtils.getVotePercentSum;
 
-public class CommentsItemView extends FrameLayout implements SteemVoterFetcher.SteemVotersFetchCallback {
+public class CommentsItemView extends FrameLayout implements
+  SteemVoterFetcher.SteemVotersFetchCallback {
   @BindView(R.id.comment_owner_pic)
   ImageView commentOwnerPic;
   @BindView(R.id.comment_owner_username)

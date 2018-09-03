@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,30 +22,27 @@ import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
-import com.hapramp.api.RawApiCaller;
-import com.hapramp.api.RetrofitServiceGenerator;
-import com.hapramp.datamodels.CommunityModel;
-import com.hapramp.datamodels.response.UserModel;
+import com.hapramp.datastore.DataStore;
+import com.hapramp.datastore.callbacks.UserFeedCallback;
+import com.hapramp.interfaces.LikePostCallback;
+import com.hapramp.models.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.models.Feed;
+import com.hapramp.ui.activity.CommunitySelectionActivity;
 import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.utils.ShadowUtils;
 import com.hapramp.views.CommunityFilterView;
 import com.hapramp.views.feedlist.FeedListView;
-
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-
-public class HomeFragment extends Fragment implements FeedListView.FeedListViewListener, RawApiCaller.FeedDataCallback, CommunityFilterView.CommunityFilterCallback {
+public class HomeFragment extends Fragment implements LikePostCallback, FeedListView.FeedListViewListener, CommunityFilterView.CommunityFilterCallback, UserFeedCallback {
   public static final String ALL = "all";
   public static final String TAG = HomeFragment.class.getSimpleName();
   @BindView(R.id.feedListView)
@@ -60,55 +57,49 @@ public class HomeFragment extends Fragment implements FeedListView.FeedListViewL
   private String mCurrentUser;
   private ProgressDialog progressDialog;
   private AlertDialog alertDialog;
-  private RawApiCaller rawApiCaller;
+  private DataStore dataStore;
   private String last_author;
   private String last_permlink;
 
   public HomeFragment() {
     Crashlytics.setString(CrashReporterKeys.UI_ACTION, "home fragment");
-    rawApiCaller = new RawApiCaller(mContext);
-    rawApiCaller.setDataCallback(this);
+    dataStore = new DataStore();
+  }
+
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                           Bundle savedInstanceState) {
+    View view = inflater.inflate(R.layout.fragment_home, container, false);
+    unbinder = ButterKnife.bind(this, view);
+    if (HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson().length() > 0) {
+      initCategoryView();
+    } else {
+      navigateToCommunitySelectionPage();
+    }
+    return view;
   }
 
   private void initCategoryView() {
     try {
-      Drawable drawable = ShadowUtils.generateBackgroundWithShadow(communityFilterView, R.color.white, R.dimen.communitybar_shadow_radius, R.color.Black12, R.dimen.communitybar_shadow_elevation, Gravity.BOTTOM);
+      Drawable drawable = ShadowUtils.generateBackgroundWithShadow(communityFilterView,
+        R.color.white, R.dimen.communitybar_shadow_radius, R.color.Black12, R.dimen.communitybar_shadow_elevation, Gravity.BOTTOM);
       communityFilterView.setBackground(drawable);
-      CommunityListWrapper cwr = new Gson().fromJson(HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
+      CommunityListWrapper cwr = new Gson().fromJson(HaprampPreferenceManager.getInstance()
+        .getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
+      if (cwr.getCommunityModels().size() == 0) {
+        navigateToCommunitySelectionPage();
+        return;
+      }
       ArrayList<CommunityModel> communityModels = new ArrayList<>();
-      communityModels.add(0, new CommunityModel("", Communities.IMAGE_URI_ALL, Communities.ALL, "", "Feed", 0));
+      communityModels.add(0, new CommunityModel("", Communities.IMAGE_URI_ALL,
+        Communities.ALL, "", "Feed", 0));
       communityModels.addAll(cwr.getCommunityModels());
       communityFilterView.setCommunityFilterCallback(this);
       communityFilterView.addCommunities(communityModels);
     }
     catch (Exception e) {
       Log.e(TAG, e.toString());
-      fetchUserCommunities();
     }
-  }
-
-  private void fetchUserCommunities() {
-    showLoadingProgressBarWithMessage("Getting your communities...");
-    RetrofitServiceGenerator.getService().fetchUserCommunities(mCurrentUser)
-      .enqueue(new Callback<UserModel>() {
-        @Override
-        public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-          hideLoadingProgressBar();
-          if (response.isSuccessful()) {
-            HaprampPreferenceManager.getInstance()
-              .saveUserSelectedCommunitiesAsJson(new Gson()
-                .toJson(new CommunityListWrapper(response.body().communityModels)));
-            initCategoryView();
-          } else {
-            onFailedToFetchUserCommunities();
-          }
-        }
-
-        @Override
-        public void onFailure(Call<UserModel> call, Throwable t) {
-          onFailedToFetchUserCommunities();
-        }
-      });
   }
 
   @Override
@@ -130,17 +121,10 @@ public class HomeFragment extends Fragment implements FeedListView.FeedListViewL
     mCurrentUser = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
   }
 
-  @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                           Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.fragment_home, container, false);
-    unbinder = ButterKnife.bind(this, view);
-    if (HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson().length() > 0) {
-      initCategoryView();
-    } else {
-      fetchUserCommunities();
-    }
-    return view;
+  private void navigateToCommunitySelectionPage() {
+    Intent intent = new Intent(mContext, CommunitySelectionActivity.class);
+    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+    mContext.startActivity(intent);
   }
 
   @Override
@@ -155,9 +139,9 @@ public class HomeFragment extends Fragment implements FeedListView.FeedListViewL
   @Override
   public void onRefreshFeeds() {
     if (currentSelectedTag.equals(Communities.ALL)) {
-      fetchAllPosts();
+      refreshAllPosts();
     } else {
-      fetchCommunityPosts(currentSelectedTag);
+      refreshCommunityPosts(currentSelectedTag);
     }
   }
 
@@ -167,20 +151,12 @@ public class HomeFragment extends Fragment implements FeedListView.FeedListViewL
     unbinder.unbind();
   }
 
-  private void onFailedToFetchUserCommunities() {
-    showAlertDialog("Failed to load your commmunities, Please try again!",
-      "Try Again", new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialogInterface, int i) {
-          fetchUserCommunities();
-        }
-      }, "Cancel",
-      new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialogInterface, int i) {
-          dialogInterface.dismiss();
-        }
-      });
+  @Override
+  public void onPostLiked(int postId) {
+  }
+
+  @Override
+  public void onPostLikeError() {
   }
 
   @Override
@@ -192,38 +168,45 @@ public class HomeFragment extends Fragment implements FeedListView.FeedListViewL
   @Override
   public void onLoadMoreFeeds() {
     if (currentSelectedTag.equals(ALL)) {
-      rawApiCaller.requestMoreUserFeed(HaprampPreferenceManager.getInstance()
-        .getCurrentSteemUsername(), last_author, last_permlink);
+      if (last_author.length() > 0) {
+        dataStore.requestUserFeed(HaprampPreferenceManager.getInstance()
+          .getCurrentSteemUsername(), last_author, last_permlink, this);
+      }
     }
+  }
+
+  private void refreshAllPosts() {
+    dataStore.requestUserFeed(HaprampPreferenceManager.getInstance()
+      .getCurrentSteemUsername(), true, this);
+  }
+
+  private void refreshCommunityPosts(String tag) {
+    tag = tag.replace("hapramp-", "");
+    dataStore.requestCommunityFeed(tag, true, this);
   }
 
   @Override
-  public void onDataLoaded(ArrayList<Feed> feeds, boolean appendableData) {
-    if (feedListView != null) {
-      if (appendableData) {
-        feeds.remove(0);
-        feedListView.loadedMoreFeeds(feeds);
-      } else {
-        feedListView.feedsRefreshed(feeds);
-      }
-      int size = feeds.size();
-      if (feeds.size() > 0) {
-        last_author = feeds.get(size - 1).getAuthor();
-        last_permlink = feeds.get(size - 1).getPermlink();
-      }
+  public void onCommunitySelected(String tag) {
+    feedListView.initialLoading();
+    currentSelectedTag = tag;
+    last_permlink = "";
+    last_author = "";
+    if (tag.equals(Communities.ALL)) {
+      fetchAllPosts();
+    } else {
+      fetchCommunityPosts(tag);
     }
+    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_BROWSE_HOME);
   }
 
   private void fetchAllPosts() {
-    feedListView.feedRefreshing(false);
-    rawApiCaller.requestUserFeed(HaprampPreferenceManager.getInstance()
-      .getCurrentSteemUsername());
+    dataStore.requestUserFeed(HaprampPreferenceManager.getInstance()
+      .getCurrentSteemUsername(), false, this);
   }
 
   private void fetchCommunityPosts(String tag) {
-    feedListView.feedRefreshing(false);
     tag = tag.replace("hapramp-", "");
-    rawApiCaller.requestCuratedFeedsByTag(tag);
+    dataStore.requestCommunityFeed(tag, false, this);
   }
 
   @Override
@@ -246,49 +229,31 @@ public class HomeFragment extends Fragment implements FeedListView.FeedListViewL
     progressBarLoadingRecite.animate().translationY(0);
   }
 
-  private void showLoadingProgressBarWithMessage(String msg) {
-    if (progressDialog == null) {
-      progressDialog = new ProgressDialog(mContext);
-    }
-    progressDialog.setMessage(msg);
-    progressDialog.setCancelable(false);
-    progressDialog.show();
-  }
-
-  private void hideLoadingProgressBar() {
-    if (progressDialog != null) {
-      progressDialog.hide();
-    }
-  }
-
-  private void showAlertDialog(String msg, String positiveButtonText,
-                               DialogInterface.OnClickListener positiveListener,
-                               String negativeButtonText,
-                               DialogInterface.OnClickListener negativeListener) {
-    alertDialog = new AlertDialog.Builder(mContext)
-      .setMessage(msg)
-      .setPositiveButton(positiveButtonText, positiveListener)
-      .setNegativeButton(negativeButtonText, negativeListener)
-      .create();
-    alertDialog.show();
+  @Override
+  public void onWeAreFetchingUserFeed() {
   }
 
   @Override
-  public void onDataLoadError() {
+  public void onUserFeedsAvailable(List<Feed> feeds, boolean isFreshData, boolean isAppendable) {
+    if (feedListView != null) {
+      if (isAppendable) {
+        feeds.remove(0);
+        feedListView.loadedMoreFeeds(feeds);
+      } else {
+        feedListView.feedsRefreshed(feeds);
+      }
+      int size = feeds.size();
+      if (feeds.size() > 0) {
+        last_author = feeds.get(size - 1).getAuthor();
+        last_permlink = feeds.get(size - 1).getPermlink();
+      }
+    }
+  }
+
+  @Override
+  public void onUserFeedFetchError(String err) {
     if (feedListView != null) {
       feedListView.failedToRefresh("");
     }
-  }
-
-  @Override
-  public void onCommunitySelected(String tag) {
-    feedListView.initialLoading();
-    currentSelectedTag = tag;
-    if (tag.equals(Communities.ALL)) {
-      fetchAllPosts();
-    } else {
-      fetchCommunityPosts(tag);
-    }
-    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_BROWSE_HOME);
   }
 }

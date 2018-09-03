@@ -1,6 +1,6 @@
 package com.hapramp.ui.callbacks.communityselection;
 
-import com.hapramp.datamodels.CommunityModel;
+import com.hapramp.models.CommunityModel;
 
 import java.util.List;
 

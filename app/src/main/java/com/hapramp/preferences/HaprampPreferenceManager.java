@@ -107,7 +107,7 @@ public class HaprampPreferenceManager {
   }
 
   public String getAllCommunityAsJson() {
-    return preferences.getString("allCommunity", "{}");
+    return preferences.getString("allCommunity", "");
   }
 
   public void setCommunityTagToNamePair(String tag, String name) {
