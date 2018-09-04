@@ -25,9 +25,8 @@ import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.api.RawApiCaller;
-import com.hapramp.api.RetrofitServiceGenerator;
+import com.hapramp.datastore.DataStore;
 import com.hapramp.models.CommunityModel;
-import com.hapramp.models.response.UserModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.models.User;
@@ -38,16 +37,12 @@ import com.hapramp.ui.fragments.SettingsFragment;
 import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.utils.FollowingsSyncUtils;
 import com.hapramp.utils.FontManager;
-import com.hapramp.utils.RepeatPostCreationUtils;
 import com.hapramp.views.extraa.CreateButtonView;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity implements CreateButtonView.ItemClickListener {
   private final int BOTTOM_MENU_HOME = 7;
@@ -109,7 +104,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     setContentView(R.layout.activity_home);
     ButterKnife.bind(this);
     saveDeviceWidth();
-    RepeatPostCreationUtils.syncLastPostCreationTime();
     syncUserFollowings();
     setupToolbar();
     initObjects();
@@ -117,6 +111,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     postUploadReceiver = new PostUploadReceiver();
     fetchCompleteUserInfo();
     transactFragment(FRAGMENT_HOME);
+    DataStore.requestSyncLastPostCreationTime();
   }
 
   private void saveDeviceWidth() {

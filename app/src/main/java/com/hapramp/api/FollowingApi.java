@@ -16,8 +16,6 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-import hapramp.walletinfo.NetworkUtils;
-
 public class FollowingApi {
   private Context context;
   private Handler mHandler;

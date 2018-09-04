@@ -1,5 +1,6 @@
 package com.hapramp.steem.models;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -33,15 +34,43 @@ public class User {
   private boolean canVote;
   @SerializedName("voting_power")
   private int votingPower;
-
+  @Expose
+  @SerializedName("savings_sbd_balance")
+  private String savings_sbd_balance;
+  @Expose
+  @SerializedName("sbd_balance")
+  private String sbd_balance;
+  @Expose
+  @SerializedName("savings_balance")
+  private String savings_balance;
+  @Expose
+  @SerializedName("balance")
+  private String balance;
+  @Expose
+  @SerializedName("vesting_shares")
+  private String vesting_share;
 
   public User() {
   }
 
-  public User(String username, String fullname, String location,
-              String profile_image, String cover_image, String about,
-              String website, int postCount, long reputation, String created,
-              int commentCount, boolean canVote, int votingPower) {
+  public User(String username,
+              String fullname,
+              String location,
+              String profile_image,
+              String cover_image,
+              String about,
+              String website,
+              int postCount,
+              long reputation,
+              String created,
+              int commentCount,
+              boolean canVote,
+              int votingPower,
+              String savings_sbd_balance,
+              String sbd_balance,
+              String savings_balance,
+              String balance,
+              String vesting_share) {
     this.username = username;
     this.fullname = fullname;
     this.location = location;
@@ -55,6 +84,11 @@ public class User {
     this.commentCount = commentCount;
     this.canVote = canVote;
     this.votingPower = votingPower;
+    this.savings_sbd_balance = savings_sbd_balance;
+    this.sbd_balance = sbd_balance;
+    this.savings_balance = savings_balance;
+    this.balance = balance;
+    this.vesting_share = vesting_share;
   }
 
   public int getCommentCount() {
@@ -63,6 +97,46 @@ public class User {
 
   public void setCommentCount(int commentCount) {
     this.commentCount = commentCount;
+  }
+
+  public String getSavings_sbd_balance() {
+    return savings_sbd_balance;
+  }
+
+  public void setSavings_sbd_balance(String savings_sbd_balance) {
+    this.savings_sbd_balance = savings_sbd_balance;
+  }
+
+  public String getSbd_balance() {
+    return sbd_balance;
+  }
+
+  public void setSbd_balance(String sbd_balance) {
+    this.sbd_balance = sbd_balance;
+  }
+
+  public String getSavings_balance() {
+    return savings_balance;
+  }
+
+  public void setSavings_balance(String savings_balance) {
+    this.savings_balance = savings_balance;
+  }
+
+  public String getBalance() {
+    return balance;
+  }
+
+  public void setBalance(String balance) {
+    this.balance = balance;
+  }
+
+  public String getVesting_share() {
+    return vesting_share;
+  }
+
+  public void setVesting_share(String vesting_share) {
+    this.vesting_share = vesting_share;
   }
 
   public boolean isCanVote() {

@@ -300,6 +300,11 @@ public class JSONParser {
       user.setCanVote(userObj.getBoolean("can_vote"));
       user.setVotingPower(userObj.getInt("voting_power"));
       user.setReputation(userObj.getLong("reputation"));
+      user.setSavings_sbd_balance(userObj.getString("savings_sbd_balance"));
+      user.setSbd_balance(userObj.getString("sbd_balance"));
+      user.setSavings_balance(userObj.getString("savings_balance"));
+      user.setBalance(userObj.getString("balance"));
+      user.setVesting_share(userObj.getString("vesting_shares"));
     }
     catch (JSONException e) {
       e.printStackTrace();

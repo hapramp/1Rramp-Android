@@ -8,6 +8,10 @@ import com.hapramp.datastore.callbacks.TransferHistoryCallback;
 import com.hapramp.datastore.callbacks.UserFeedCallback;
 import com.hapramp.datastore.callbacks.UserProfileCallback;
 import com.hapramp.datastore.callbacks.UserSearchCallback;
+import com.hapramp.datastore.callbacks.UserWalletCallback;
+import com.hapramp.preferences.HaprampPreferenceManager;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -561,6 +565,60 @@ public class DataStore extends DataDispatcher {
         }
         catch (IOException e) {
           dispatchCommentsFetchError("IOException " + e.toString(), commentsCallback);
+        }
+      }
+    }.start();
+  }
+
+  public void requestWalletInfo(final String username, final UserWalletCallback userWalletCallback) {
+    if (userWalletCallback != null) {
+      userWalletCallback.whileWeAreFetchingWalletData();
+    }
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          String steemUrl = URLS.steemUrl();
+          String globalProps = SteemRequestBody.globalProperties();
+          Response globalPropsResponse = NetworkApi.getNetworkApiInstance().postAndFetch(steemUrl,
+            globalProps);
+          String profileUrl = URLS.userProfileUrl(username);
+          Response userReponse = NetworkApi.getNetworkApiInstance().fetch(profileUrl);
+          if (globalPropsResponse.isSuccessful() && userReponse.isSuccessful()) {
+            String globalePropsResponseJson = globalPropsResponse.body().string();
+            String userResponseJson = userReponse.body().string();
+            dispatchWalletInfo(globalePropsResponseJson, userResponseJson, userWalletCallback);
+          } else {
+            dispatchWalletInfoFetchError("Error Code:" +
+              globalPropsResponse.code() +
+              "& " +
+              userReponse.code(), userWalletCallback);
+          }
+        }
+        catch (Exception e) {
+          dispatchWalletInfoFetchError("Error:" + e.toString(), userWalletCallback);
+        }
+      }
+    }.start();
+  }
+
+  public static void requestSyncLastPostCreationTime() {
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          String url = URLS.userProfileUrl(
+            HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
+          Response globalPropsResponse = NetworkApi.getNetworkApiInstance().fetch(url);
+          String responseString = globalPropsResponse.body().string();
+          JSONObject jsonObject = new JSONObject(responseString);
+          String lastPost = jsonObject
+            .getJSONObject("user")
+            .getString("last_root_post");
+          HaprampPreferenceManager.getInstance().setLastPostCreatedAt(lastPost);
+        }
+        catch (Exception e) {
+
         }
       }
     }.start();

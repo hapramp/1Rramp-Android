@@ -1,7 +1,6 @@
 package com.hapramp.datastore;
 
 import android.os.Handler;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.hapramp.datastore.callbacks.CommentsCallback;
@@ -11,16 +10,20 @@ import com.hapramp.datastore.callbacks.TransferHistoryCallback;
 import com.hapramp.datastore.callbacks.UserFeedCallback;
 import com.hapramp.datastore.callbacks.UserProfileCallback;
 import com.hapramp.datastore.callbacks.UserSearchCallback;
+import com.hapramp.datastore.callbacks.UserWalletCallback;
 import com.hapramp.models.CommentModel;
 import com.hapramp.models.CommunityModel;
-import com.hapramp.search.models.FollowCountInfo;
-import com.hapramp.search.models.UserSearchResponse;
+import com.hapramp.models.GlobalProperties;
+import com.hapramp.models.FollowCountInfo;
+import com.hapramp.models.UserSearchResponse;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.TransferHistoryModel;
 import com.hapramp.steem.models.User;
+import com.hapramp.utils.SteemPowerCalc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class DataDispatcher {
   private Handler handler;
@@ -252,6 +255,46 @@ public class DataDispatcher {
           commentsCallback.onCommentsFetchError(err);
         }
       });
+    }
+  }
+
+  void dispatchWalletInfo(String globalPropsJson,
+                          String userProfileJson,
+                          final UserWalletCallback userWalletCallback) {
+    if (userWalletCallback != null) {
+      GlobalProperties globalProperties = new Gson().fromJson(globalPropsJson, GlobalProperties.class);
+      final User user = jsonParser.parseUser(userProfileJson);
+      final double steemPower = SteemPowerCalc.calculateSteemPower(
+        user.getVesting_share(),
+        globalProperties.getResult().getTotal_vesting_fund_steem(),
+        globalProperties.getResult().getTotal_vesting_shares()
+      );
+      handler.post(
+        new Runnable() {
+          @Override
+          public void run() {
+            userWalletCallback.onUser(user);
+            userWalletCallback.onUserSteem(user.getBalance());
+            userWalletCallback.onUserSteemDollar(user.getSbd_balance());
+            userWalletCallback.onUserSavingSteem(user.getSavings_balance());
+            userWalletCallback.onUserSavingSBD(user.getSavings_sbd_balance());
+            userWalletCallback.onUserSteemPower(String.format(Locale.US, "%.2f SP", steemPower));
+          }
+        }
+      );
+    }
+  }
+
+  void dispatchWalletInfoFetchError(final String error, final UserWalletCallback userWalletCallback) {
+    if (userWalletCallback != null) {
+      handler.post(
+        new Runnable() {
+          @Override
+          public void run() {
+            userWalletCallback.onUserWalletDataError(error);
+          }
+        }
+      );
     }
   }
 }

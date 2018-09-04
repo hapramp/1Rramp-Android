@@ -79,9 +79,7 @@ dependencies {
     implementation 'com.github.bxute:CryptoCoinView:v0.5'
     implementation 'com.github.bxute:MarkDEditor:v0.8'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation project(':search')
     implementation project(':youtube_player')
-    implementation project(':WalletInfo')
     implementation project(':lib')
 }
 
