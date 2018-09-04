@@ -30,6 +30,18 @@ public class DataDispatcher {
     jsonParser = new JSONParser();
   }
 
+  void dispatchAllCommunity(String response,final boolean isFresh,final CommunitiesCallback communitiesCallback){
+    final List<CommunityModel> communities = jsonParser.parseAllCommunity(response);
+    if (communitiesCallback != null) {
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          communitiesCallback.onCommunitiesAvailable(communities, isFresh);
+        }
+      });
+    }
+  }
+
   void dispatchUserCommunity(String response, final boolean isFresh,
                              final CommunitiesCallback communitiesCallback) {
     final List<CommunityModel> communities = jsonParser.parseUserCommunity(response);

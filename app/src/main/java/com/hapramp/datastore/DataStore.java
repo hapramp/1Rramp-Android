@@ -30,7 +30,7 @@ public class DataStore extends DataDispatcher {
         String url = URLS.allCommunityUrl();
         String cachedResponse = DataCache.get(url);
         if (cachedResponse != null) {
-          dispatchUserCommunity(cachedResponse, false, communitiesCallback);
+          dispatchAllCommunity(cachedResponse, false, communitiesCallback);
         }
         try {
           Response response = NetworkApi.getNetworkApiInstance().fetch(url);

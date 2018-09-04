@@ -23,6 +23,28 @@ public class JSONParser {
     markdownPreProcessor = new MarkdownPreProcessor();
   }
 
+  public List<CommunityModel> parseAllCommunity(String response) {
+    List<CommunityModel> communityModels = new ArrayList<>();
+    try {
+      JSONObject jsonObject;
+      JSONArray jsonArray = new JSONArray(response);
+      for (int i = 0; i < jsonArray.length(); i++) {
+        jsonObject = jsonArray.getJSONObject(i);
+        communityModels.add(new CommunityModel(
+          jsonObject.getString("description"),
+          jsonObject.getString("image_uri"),
+          jsonObject.getString("tag"),
+          jsonObject.getString("color"),
+          jsonObject.getString("name"),
+          jsonObject.getInt("id")));
+      }
+    }
+    catch (JSONException e) {
+      e.printStackTrace();
+    }
+    return communityModels;
+  }
+
   public List<CommunityModel> parseUserCommunity(String response) {
     List<CommunityModel> communityModels = new ArrayList<>();
     try {
