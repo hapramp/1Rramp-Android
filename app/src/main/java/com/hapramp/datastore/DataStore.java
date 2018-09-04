@@ -37,7 +37,7 @@ public class DataStore extends DataDispatcher {
           if (response.isSuccessful()) {
             String res = response.body().string();
             DataCache.cache(url, res);
-            dispatchUserCommunity(res, true, communitiesCallback);
+            //dispatchUserCommunity(res, true, communitiesCallback);
           } else {
             dispatchUserCommunityError("Error Code:" + response.code(), communitiesCallback);
           }
@@ -71,7 +71,7 @@ public class DataStore extends DataDispatcher {
           if (response.isSuccessful()) {
             String res = response.body().string();
             DataCache.cache(url, res);
-            dispatchUserCommunity(res, true, communitiesCallback);
+            //dispatchUserCommunity(res, true, communitiesCallback);
           } else {
             dispatchUserCommunityError("Error Code:" + response.code(), communitiesCallback);
           }

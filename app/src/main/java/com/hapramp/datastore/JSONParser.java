@@ -48,8 +48,8 @@ public class JSONParser {
   public List<CommunityModel> parseUserCommunity(String response) {
     List<CommunityModel> communityModels = new ArrayList<>();
     try {
-      JSONObject jsonObject = new JSONObject(response);
-      JSONArray jsonArray = jsonObject.getJSONArray("communities");
+      JSONObject jsonObject;
+      JSONArray jsonArray = new JSONArray(response);
       for (int i = 0; i < jsonArray.length(); i++) {
         jsonObject = jsonArray.getJSONObject(i);
         communityModels.add(new CommunityModel(

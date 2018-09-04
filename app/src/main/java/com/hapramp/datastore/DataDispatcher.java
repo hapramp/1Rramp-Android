@@ -1,6 +1,7 @@
 package com.hapramp.datastore;
 
 import android.os.Handler;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.hapramp.datastore.callbacks.CommentsCallback;
@@ -44,6 +45,7 @@ public class DataDispatcher {
 
   void dispatchUserCommunity(String response, final boolean isFresh,
                              final CommunitiesCallback communitiesCallback) {
+    Log.d("DataDispatcher",response);
     final List<CommunityModel> communities = jsonParser.parseUserCommunity(response);
     if (communitiesCallback != null) {
       handler.post(new Runnable() {

@@ -2,6 +2,8 @@ package com.hapramp.viewmodel.communityselectionpage;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.util.Log;
+
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
@@ -54,6 +56,7 @@ public class CommunitySelectionPageViewModel extends ViewModel {
   }
 
   public void updateServer(List<Integer> selected) {
+    Log.d("CommunitySelection",selected.toString());
     CommunitySelectionServerUpdateBody body = new CommunitySelectionServerUpdateBody(selected);
     RetrofitServiceGenerator.getService().updateCommunitySelections(body).enqueue(new Callback<CommunitySelectionResponse>() {
       @Override

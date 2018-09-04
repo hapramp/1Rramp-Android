@@ -33,7 +33,7 @@ public class BaseActivity extends AppCompatActivity {
         progressDialog.setMessage(msg);
         progressDialog.show();
       } else {
-        progressDialog.hide();
+        progressDialog.dismiss();
       }
     }
   }
