@@ -35,12 +35,13 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.datastore.DataStore;
+import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.models.CommentModel;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
 import com.hapramp.steem.SteemCommentCreator;
-import com.hapramp.steem.SteemReplyFetcher;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.Voter;
 import com.hapramp.steemconnect4j.SteemConnect;
@@ -65,7 +66,9 @@ import butterknife.ButterKnife;
 
 import static android.view.View.VISIBLE;
 
-public class DetailedActivity extends AppCompatActivity implements SteemCommentCreator.SteemCommentCreateCallback, SteemReplyFetcher.SteemReplyFetchCallback {
+public class DetailedActivity extends AppCompatActivity implements
+  SteemCommentCreator.SteemCommentCreateCallback,
+  CommentsCallback {
   @BindView(R.id.closeBtn)
   TextView closeBtn;
   @BindView(R.id.overflowBtn)
@@ -128,13 +131,15 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
   TextView hashtagsTv;
   @BindView(R.id.details_activity_cover)
   View detailsActivityCover;
+  @BindView(R.id.comment_btn_container)
+  LinearLayout commentBtnContainer;
   private Handler mHandler;
   private Feed post;
   private ProgressDialog progressDialog;
   private SteemCommentCreator steemCommentCreator;
   private List<CommentModel> comments = new ArrayList<>();
   private SteemConnect steemConnect;
-  private SteemReplyFetcher steemReplyFetcher;
+  private DataStore dataStore;
   private Runnable steemCastingVoteExceptionRunnable = new Runnable() {
     @Override
     public void run() {
@@ -163,8 +168,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
 
   private void init() {
     mHandler = new Handler();
-    steemReplyFetcher = new SteemReplyFetcher(this);
-    steemReplyFetcher.setSteemReplyFetchCallback(this);
+    dataStore = new DataStore();
     steemCommentCreator = new SteemCommentCreator();
     steemCommentCreator.setSteemCommentCreateCallback(this);
     progressDialog = new ProgressDialog(this);
@@ -209,7 +213,7 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         navigateToCommentsPage();
       }
     });
-    commentBtn.setOnClickListener(new View.OnClickListener() {
+    commentBtnContainer.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         navigateToCommentsPage();
@@ -277,12 +281,13 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
     bindVotes(post.getVoters(), post.getPermlink());
     setSteemEarnings(post.getPendingPayoutValue());
+    setCommentCount(post.getChildren());
     attachListenersOnStarView();
     setCommunities(post.getTags());
   }
 
   private void requestReplies() {
-    steemReplyFetcher.requestReplyForPost(post.getAuthor(), post.getPermlink());
+    dataStore.requestComments(post.getAuthor(), post.getPermlink(), this);
   }
 
   private void renderMarkdown(String body) {
@@ -307,17 +312,10 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     });
     webView.getSettings().setLoadWithOverviewMode(true);
     webView.loadDataWithBaseURL("file:///android_asset/",
-      "<link rel=\"stylesheet\" type=\"text/css\" href=\"md_theme.css\" />"+body,
+      "<link rel=\"stylesheet\" type=\"text/css\" href=\"md_theme.css\" />" + body,
       "text/html; charset=utf-8",
       "utf-8",
       null);
-  }
-
-  @Override
-  public void onReplyFetched(List<CommentModel> replies) {
-    this.comments = replies;
-    setCommentCount(replies.size());
-    addAllCommentsToView(replies);
   }
 
   @Override
@@ -353,7 +351,6 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
   private void addAllCommentsToView(List<CommentModel> discussions) {
     commentsViewContainer.removeAllViews();
     int commentCount = discussions.size();
-    commentLoadingProgressBar.setVisibility(View.GONE);
     if (commentCount == 0) {
       emptyCommentsCaption.setText("No Comments");
       emptyCommentsCaption.setVisibility(VISIBLE);
@@ -434,21 +431,21 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
           post.getAuthor(),
           post.getPermlink(),
           String.valueOf(vote), new SteemConnectCallback() {
-          @Override
-          public void onResponse(String s) {
-            mHandler.post(new Runnable() {
-              @Override
-              public void run() {
-                castingVoteSuccess();
-              }
-            });
-          }
+            @Override
+            public void onResponse(String s) {
+              mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                  castingVoteSuccess();
+                }
+              });
+            }
 
-          @Override
-          public void onError(SteemConnectException e) {
-            mHandler.post(steemCastingVoteExceptionRunnable);
-          }
-        });
+            @Override
+            public void onError(SteemConnectException e) {
+              mHandler.post(steemCastingVoteExceptionRunnable);
+            }
+          });
       }
     }.start();
   }
@@ -588,11 +585,6 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
         ViewGroup.LayoutParams.WRAP_CONTENT));
   }
 
-  @Override
-  public void onReplyFetchError() {
-
-  }
-
   private void postComment() {
     String cmnt = commentInputBox.getText().toString().trim();
     commentInputBox.setText("");
@@ -609,5 +601,31 @@ public class DetailedActivity extends AppCompatActivity implements SteemCommentC
     commentModel.setCreatedAt(MomentsUtils.getCurrentTime());
     comments.add(0, commentModel);
     addAllCommentsToView(comments);
+  }
+
+  @Override
+  public void whileWeAreFetchingComments() {
+    if (commentLoadingProgressBar != null) {
+      commentLoadingProgressBar.setVisibility(VISIBLE);
+    }
+  }
+
+  @Override
+  public void onCommentsAvailable(ArrayList<CommentModel> comments) {
+    this.comments = comments;
+    if (commentLoadingProgressBar != null) {
+      commentLoadingProgressBar.setVisibility(View.GONE);
+    }
+    addAllCommentsToView(comments);
+  }
+
+  @Override
+  public void onCommentsFetchError(String error) {
+    if (commentLoadingProgressBar != null) {
+      commentLoadingProgressBar.setVisibility(View.GONE);
+    }
+    if (emptyCommentsCaption != null) {
+      emptyCommentsCaption.setText(R.string.comment_fetch_error_text);
+    }
   }
 }

@@ -1,6 +1,7 @@
 package com.hapramp.datastore;
 
 
+import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
 import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.datastore.callbacks.TransferHistoryCallback;
@@ -531,5 +532,30 @@ public class DataStore extends DataDispatcher {
     }.start();
   }
 
+  public void requestComments(final String author, final String permlink, final CommentsCallback commentsCallback) {
+    if (commentsCallback != null) {
+      commentsCallback.whileWeAreFetchingComments();
+    }
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          String url = URLS.steemUrl();
+          String requestBody = SteemRequestBody.contentReplies(author, permlink);
+          Response response = NetworkApi.getNetworkApiInstance().postAndFetch(url, requestBody);
+          if (response.isSuccessful()) {
+            String res = response.body().string();
+            //DataCache.cache(url, res);
+            dispatchComments(res, commentsCallback);
+          } else {
+            dispatchCommentsFetchError("Error Code:" + response.code(), commentsCallback);
+          }
+        }
+        catch (IOException e) {
+          dispatchCommentsFetchError("IOException " + e.toString(), commentsCallback);
+        }
+      }
+    }.start();
+  }
 }
 

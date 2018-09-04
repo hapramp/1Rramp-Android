@@ -104,7 +104,7 @@ public class JsonParser {
     ArrayList<CommentModel> comments = new ArrayList<>();
     try {
       JSONObject ro = new JSONObject(response);
-      JSONArray commentsArray = ro.getJSONArray("result");
+      JSONArray commentsArray = ro.getJSONArray("discussions");
       for (int i = 0; i < commentsArray.length(); i++) {
         comments.add(parseCoreComment((JSONObject) commentsArray.get(i)));
       }

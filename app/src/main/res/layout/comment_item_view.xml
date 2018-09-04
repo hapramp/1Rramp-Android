@@ -6,12 +6,15 @@
     android:padding="8dp">
 
     <ImageView
+        android:clickable="true"
         android:id="@+id/comment_owner_pic"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:src="@mipmap/hapramp_logo" />
 
     <TextView
+        android:clickable="true"
+        android:background="?selectableItemBackgroundBorderless"
         android:id="@+id/comment_owner_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

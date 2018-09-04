@@ -2,6 +2,7 @@ package com.hapramp.datastore;
 
 import android.util.Log;
 
+import com.hapramp.models.CommentModel;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.User;
@@ -276,4 +277,75 @@ public class JSONParser {
     }
     return user;
   }
+
+  public ArrayList<CommentModel> parseComments(String response) {
+    ArrayList<CommentModel> comments = new ArrayList<>();
+    try {
+      JSONObject ro = new JSONObject(response);
+      JSONArray commentsArray = ro.getJSONArray("result");
+      for (int i = 0; i < commentsArray.length(); i++) {
+        comments.add(parseCoreComment((JSONObject) commentsArray.get(i)));
+      }
+    }
+    catch (JSONException e) {
+      e.printStackTrace();
+    }
+    return comments;
+  }
+
+  private CommentModel parseCoreComment(JSONObject rootObject) {
+    CommentModel comment = new CommentModel();
+    try {
+      //author
+      String author = rootObject.getString("author");
+      //permlink
+      String permlink = rootObject.getString("permlink");
+      //category
+      String category = rootObject.getString("category");
+      //parentAuthor
+      String parentAuthor = rootObject.getString("parent_author");
+      //parent permlink
+      String parentPermlink = rootObject.getString("parent_permlink");
+      //body
+      String body = rootObject.getString("body");
+      //createdAt
+      String createdAt = rootObject.getString("created");
+      //children
+      int children = rootObject.getInt("children");
+      //totalPayoutValue
+      String totalPayoutValue = rootObject.getString("total_payout_value");
+      //curator payout value
+      String curatorPayoutValue = rootObject.getString("curator_payout_value");
+      //root author
+      String rootAuthor = rootObject.getString("root_author");
+      //root permlink
+      String rootPermlink = rootObject.getString("root_permlink");
+      //pending payout value
+      String pendingPayoutValue = rootObject.optString("pending_payout_value", "");
+      //total pending payout value
+      String totalPendingPayoutValue = rootObject.optString("total_pending_payout_value", "");
+      String cashoutTime = rootObject.optString("cashout_time");
+      //author reputation
+      String autorReputation = rootObject.optString("author_reputation", "");
+      comment.setBody(body);
+      comment.setBody(body);
+      comment.setAuthor(author);
+      comment.setPermlink(permlink);
+      comment.setCategory(category);
+      comment.setParentAuthor(parentAuthor);
+      comment.setParentPermlink(parentPermlink);
+      comment.setCreatedAt(createdAt);
+      comment.setChildren(children);
+      comment.setTotalPayoutValue(totalPayoutValue);
+      comment.setCuratorPayoutValue(curatorPayoutValue);
+      comment.setPendingPayoutValue(pendingPayoutValue);
+      comment.setTotalPendingPayoutValue(totalPendingPayoutValue);
+      comment.setCashoutTime(cashoutTime);
+    }
+    catch (JSONException e) {
+      Log.e("JsonParserException", e.toString());
+    }
+    return comment;
+  }
+
 }

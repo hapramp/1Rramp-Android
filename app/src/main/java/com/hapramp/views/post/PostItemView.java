@@ -217,7 +217,9 @@ public class PostItemView extends FrameLayout {
       featuredImageView.setVisibility(GONE);
     }
 
-    ImageHandler.loadCircularImage(mContext, feedOwnerPic, String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format), feed.getAuthor()));
+    ImageHandler.loadCircularImage(mContext, feedOwnerPic,
+      String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format),
+        feed.getAuthor()));
     bindVotes(feed.getVoters(), feed.getPermlink());
     setCommentCount(feed.getChildren());
     attachListenersOnStarView();

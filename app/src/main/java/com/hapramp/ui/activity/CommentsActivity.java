@@ -20,10 +20,11 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.datastore.DataStore;
+import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.models.CommentModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.SteemCommentCreator;
-import com.hapramp.steem.SteemReplyFetcher;
 import com.hapramp.ui.adapters.CommentsAdapter;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
@@ -32,7 +33,6 @@ import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.ViewItemDecoration;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,7 +41,7 @@ import butterknife.ButterKnife;
  * Created by Ankit on 2/9/2018.
  */
 
-public class CommentsActivity extends AppCompatActivity implements SteemCommentCreator.SteemCommentCreateCallback, SteemReplyFetcher.SteemReplyFetchCallback {
+public class CommentsActivity extends AppCompatActivity implements SteemCommentCreator.SteemCommentCreateCallback, CommentsCallback {
   @BindView(R.id.backBtn)
   TextView backBtn;
   @BindView(R.id.toolbar_container)
@@ -71,7 +71,7 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
   private String postAuthor;
   private String postPermlink;
   private SteemCommentCreator steemCommentCreator;
-  private SteemReplyFetcher steemReplyFetcher;
+  private DataStore dataStore;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,8 +84,7 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
   }
 
   private void init() {
-    steemReplyFetcher = new SteemReplyFetcher(this);
-    steemReplyFetcher.setSteemReplyFetchCallback(this);
+    dataStore = new DataStore();
     steemCommentCreator = new SteemCommentCreator();
     steemCommentCreator.setSteemCommentCreateCallback(this);
     //commentsList = getIntent().getExtras().getParcelableArrayList(Constants.EXTRAA_KEY_COMMENTS);
@@ -110,7 +109,7 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
   @Override
   protected void onResume() {
     super.onResume();
-    steemReplyFetcher.requestReplyForPost(postAuthor, postPermlink);
+    dataStore.requestComments(postAuthor, postPermlink, this);
   }
 
   private void attachListeners() {
@@ -165,12 +164,6 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
     commentsAdapter.addSingleComment(commentModel);
   }
 
-  @Override
-  public void onReplyFetched(List<CommentModel> replies) {
-    commentsAdapter.addComments((ArrayList<CommentModel>) replies);
-    hideProgressInfo();
-  }
-
   private void hideProgressInfo() {
     if (commentLoadingProgressBar != null) {
       commentLoadingProgressBar.setVisibility(View.GONE);
@@ -179,7 +172,25 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
   }
 
   @Override
-  public void onReplyFetchError() {
+  public void whileWeAreFetchingComments() {
+    if (commentLoadingProgressBar != null) {
+      commentLoadingProgressBar.setVisibility(View.VISIBLE);
+      commentLoadingProgressMessage.setVisibility(View.VISIBLE);
+    }
+  }
 
+  @Override
+  public void onCommentsAvailable(ArrayList<CommentModel> comments) {
+    commentsAdapter.addComments(comments);
+    hideProgressInfo();
+  }
+
+  @Override
+  public void onCommentsFetchError(String error) {
+    if (commentLoadingProgressBar != null) {
+      commentLoadingProgressBar.setVisibility(View.GONE);
+      commentLoadingProgressMessage.setVisibility(View.VISIBLE);
+      commentLoadingProgressMessage.setText(R.string.comment_fetch_error_text);
+    }
   }
 }
