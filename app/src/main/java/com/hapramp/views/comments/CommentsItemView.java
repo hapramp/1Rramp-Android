@@ -176,7 +176,7 @@ public class CommentsItemView extends FrameLayout implements
         }
       });
     } else {
-      replyBtn.setVisibility(GONE);
+      replyBtnContainer.setVisibility(GONE);
     }
     moreReplies.setOnClickListener(new OnClickListener() {
       @Override
