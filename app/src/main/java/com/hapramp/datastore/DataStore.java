@@ -29,15 +29,19 @@ public class DataStore extends DataDispatcher {
       public void run() {
         String url = URLS.allCommunityUrl();
         String cachedResponse = DataCache.get(url);
+        boolean cachedDataReturned = false;
         if (cachedResponse != null) {
           dispatchAllCommunity(cachedResponse, false, communitiesCallback);
+          cachedDataReturned = true;
         }
         try {
           Response response = NetworkApi.getNetworkApiInstance().fetch(url);
           if (response.isSuccessful()) {
             String res = response.body().string();
             DataCache.cache(url, res);
-            //dispatchUserCommunity(res, true, communitiesCallback);
+            if (!cachedDataReturned) {
+              dispatchUserCommunity(res, true, communitiesCallback);
+            }
           } else {
             dispatchUserCommunityError("Error Code:" + response.code(), communitiesCallback);
           }
@@ -63,15 +67,19 @@ public class DataStore extends DataDispatcher {
       public void run() {
         String url = URLS.userCommunityUrl(username);
         String cachedResponse = DataCache.get(url);
+        boolean cachedDataReturned = false;
         if (cachedResponse != null) {
           dispatchUserCommunity(cachedResponse, false, communitiesCallback);
+          cachedDataReturned = true;
         }
         try {
           Response response = NetworkApi.getNetworkApiInstance().fetch(url);
           if (response.isSuccessful()) {
             String res = response.body().string();
             DataCache.cache(url, res);
-            //dispatchUserCommunity(res, true, communitiesCallback);
+            if (!cachedDataReturned) {
+              dispatchUserCommunity(res, true, communitiesCallback);
+            }
           } else {
             dispatchUserCommunityError("Error Code:" + response.code(), communitiesCallback);
           }

@@ -414,10 +414,12 @@ public class ProfileHeaderView extends FrameLayout implements CompleteFollowingH
     //check for null view(in case view is removed)
     if (usernameTv == null)
       return;
-    String wall_pic_url = data.getCover_image().length() > 0 ? data.getCover_image() :
-      mContext.getResources().getString(R.string.default_wall_pic);
+    if (data.getCover_image() != null) {
+      String wall_pic_url = data.getCover_image().length() > 0 ? data.getCover_image() :
+        mContext.getResources().getString(R.string.default_wall_pic);
+      ImageHandler.load(mContext, profileWallPic, wall_pic_url);
+    }
     String profile_pic = String.format(getResources().getString(R.string.steem_user_profile_pic_format_large), mUsername);
-    ImageHandler.load(mContext, profileWallPic, wall_pic_url);
     ImageHandler.loadCircularImage(mContext, profilePic, profile_pic);
     usernameTv.setText(data.getFullname());
     hapname.setText(String.format("@%s", data.getUsername()));
@@ -437,8 +439,9 @@ public class ProfileHeaderView extends FrameLayout implements CompleteFollowingH
       });
       CommunityListWrapper listWrapper = new Gson().fromJson(HaprampPreferenceManager
         .getInstance().getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
-      if (interestsView != null)
+      if (interestsView != null) {
         interestsView.setCommunities(listWrapper.getCommunityModels(), true);
+      }
     } else {
       followBtn.setVisibility(VISIBLE);
       editBtn.setVisibility(GONE);
@@ -490,7 +493,6 @@ public class ProfileHeaderView extends FrameLayout implements CompleteFollowingH
     dataStore.requestUserCommunities(mUsername, new CommunitiesCallback() {
       @Override
       public void onWhileWeAreFetchingCommunities() {
-
       }
 
       @Override
@@ -500,7 +502,7 @@ public class ProfileHeaderView extends FrameLayout implements CompleteFollowingH
 
       @Override
       public void onCommunitiesFetchError(String err) {
-
+        setCommunities(null);
       }
     });
   }

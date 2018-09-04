@@ -48,10 +48,10 @@ public class JSONParser {
   public List<CommunityModel> parseUserCommunity(String response) {
     List<CommunityModel> communityModels = new ArrayList<>();
     try {
-      JSONObject jsonObject;
-      JSONArray jsonArray = new JSONArray(response);
+      JSONObject ro = new JSONObject(response);
+      JSONArray jsonArray = ro.getJSONArray("communities");
       for (int i = 0; i < jsonArray.length(); i++) {
-        jsonObject = jsonArray.getJSONObject(i);
+        JSONObject jsonObject = jsonArray.getJSONObject(i);
         communityModels.add(new CommunityModel(
           jsonObject.getString("description"),
           jsonObject.getString("image_uri"),
@@ -276,7 +276,7 @@ public class JSONParser {
       Log.d("ParsingUser", userJson);
       JSONObject root = new JSONObject(userJson);
       JSONObject userObj = root.getJSONObject("user");
-      JSONObject jmd = userObj.getJSONObject("json_metadata");
+      JSONObject jmd = getJsonMetaDataObject(userObj);
       if (jmd.has("profile")) {
         JSONObject po = jmd.getJSONObject("profile");
         user.setProfile_image(po.optString("profile_image", ""));
@@ -285,6 +285,13 @@ public class JSONParser {
         user.setLocation(po.optString("location", ""));
         user.setAbout(po.optString("about", ""));
         user.setWebsite(po.optString("website", ""));
+      } else {
+        user.setProfile_image("");
+        user.setCover_image("");
+        user.setFullname("");
+        user.setLocation("");
+        user.setAbout("");
+        user.setWebsite("");
       }
       user.setUsername(userObj.getString("name"));
       user.setCreated(userObj.getString("created"));

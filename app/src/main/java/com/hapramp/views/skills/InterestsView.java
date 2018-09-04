@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +58,7 @@ public class InterestsView extends FrameLayout {
   public void setCommunities(List<CommunityModel> communities, boolean editable) {
     this.communities = communities;
     this.editable = editable;
+    Log.d("InterestView",communities.toString());
     if (communities != null && communities.size() > 0) {
       addViews();
     } else {
@@ -65,11 +67,7 @@ public class InterestsView extends FrameLayout {
   }
 
   private void addViews() {
-    if (parentView.getChildCount() > 0) {
-      // already added, no need to add more duplicate views
-      return;
-    }
-
+    parentView.removeAllViews();
     for (int i = 0; i < communities.size(); i++) {
       final CommunityItemView view = new CommunityItemView(mContext);
       view.setCommunityDetails(communities.get(i));

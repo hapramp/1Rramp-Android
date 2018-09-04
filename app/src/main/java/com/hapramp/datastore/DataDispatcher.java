@@ -45,7 +45,6 @@ public class DataDispatcher {
 
   void dispatchUserCommunity(String response, final boolean isFresh,
                              final CommunitiesCallback communitiesCallback) {
-    Log.d("DataDispatcher",response);
     final List<CommunityModel> communities = jsonParser.parseUserCommunity(response);
     if (communitiesCallback != null) {
       handler.post(new Runnable() {
