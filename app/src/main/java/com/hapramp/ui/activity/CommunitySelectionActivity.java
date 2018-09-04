@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
@@ -107,7 +108,8 @@ public class CommunitySelectionActivity extends BaseActivity implements Communit
           if (communityLoadingProgressBar != null) {
             communityLoadingProgressBar.setVisibility(View.GONE);
           }
-          HaprampPreferenceManager.getInstance().saveAllCommunityListAsJson(new Gson().toJson(new CommunityListWrapper(communityModels)));
+          HaprampPreferenceManager.getInstance()
+            .saveAllCommunityListAsJson(new Gson().toJson(new CommunityListWrapper(communityModels)));
         }
       });
     communityContinueButton.setOnClickListener(new View.OnClickListener() {
@@ -128,7 +130,8 @@ public class CommunitySelectionActivity extends BaseActivity implements Communit
   public void onCommunityUpdated(List<CommunityModel> selectedCommunities) {
     showProgressDialog("", false);
     toast(getString(R.string.community_updated));
-    HaprampPreferenceManager.getInstance().saveUserSelectedCommunitiesAsJson(new Gson().toJson(new CommunityListWrapper(selectedCommunities)));
+    HaprampPreferenceManager.getInstance()
+      .saveUserSelectedCommunitiesAsJson(new Gson().toJson(new CommunityListWrapper(selectedCommunities)));
     navigateToHome();
   }
 

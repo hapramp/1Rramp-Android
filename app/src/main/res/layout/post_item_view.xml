@@ -150,7 +150,7 @@
             android:layout_height="48dp"
             android:layout_marginLeft="8dp"
             android:layout_toRightOf="@+id/commentBtn"
-            android:background="?selectableItemBackground"
+            android:background="?selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"

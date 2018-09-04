@@ -28,7 +28,9 @@ import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;
 import com.hapramp.steemconnect4j.SteemConnectException;
 import com.hapramp.ui.activity.NestedCommentActivity;
+import com.hapramp.ui.activity.ProfileActivity;
 import com.hapramp.utils.ConnectionUtils;
+import com.hapramp.utils.Constants;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.views.extraa.StarView;
@@ -176,7 +178,7 @@ public class CommentsItemView extends FrameLayout implements
         }
       });
     } else {
-      replyBtn.setVisibility(GONE);
+      replyBtnContainer.setVisibility(GONE);
     }
     moreReplies.setOnClickListener(new OnClickListener() {
       @Override
@@ -185,6 +187,24 @@ public class CommentsItemView extends FrameLayout implements
       }
     });
     attachListenersOnStarView();
+    commentOwnerPic.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        navigateToUserProfile(author);
+      }
+    });
+    commentOwnerUsername.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        navigateToUserProfile(author);
+      }
+    });
+  }
+
+  private void navigateToUserProfile(String username) {
+    Intent intent = new Intent(mContext, ProfileActivity.class);
+    intent.putExtra(Constants.EXTRAA_KEY_STEEM_USER_NAME, username);
+    mContext.startActivity(intent);
   }
 
   private void navigateToNestedCommentPage() {

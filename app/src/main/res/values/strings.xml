@@ -28,4 +28,5 @@
     <string name="token_request_loading_message">Loading...</string>
     <string name="community_save_progress_mesaage">Saving your communities...</string>
     <string name="app_exit_alert_message">Exit?</string>
+    <string name="comment_fetch_error_text">Error occurred while fetching comments.</string>
 </resources>

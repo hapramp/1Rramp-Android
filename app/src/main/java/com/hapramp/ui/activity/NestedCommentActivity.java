@@ -8,7 +8,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -18,6 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
+import com.hapramp.datastore.DataStore;
+import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.models.CommentModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.SteemCommentCreator;
@@ -34,7 +35,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class NestedCommentActivity extends AppCompatActivity implements SteemCommentCreator.SteemCommentCreateCallback, SteemReplyFetcher.SteemReplyFetchCallback {
+public class NestedCommentActivity extends AppCompatActivity implements
+  SteemCommentCreator.SteemCommentCreateCallback,
+  CommentsCallback {
 
   public static final String EXTRA_PARENT_AUTHOR = "key.parentauthor";
   public static final String EXTRA_PARENT_PERMLINK = "key.parentpermlink";
@@ -68,7 +71,7 @@ public class NestedCommentActivity extends AppCompatActivity implements SteemCom
   private ProgressDialog progressDialog;
   private Typeface typeface;
   private SteemCommentCreator steemCommentCreator;
-  private SteemReplyFetcher steemReplyFetcher;
+  private DataStore dataStore;
   private String parentAuthor;
   private String parentPermlink;
   private String parentTimestamp;
@@ -95,8 +98,7 @@ public class NestedCommentActivity extends AppCompatActivity implements SteemCom
     if (parentAuthor.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
       commentInputContainer.setVisibility(View.GONE);
     }
-    steemReplyFetcher = new SteemReplyFetcher(this);
-    steemReplyFetcher.setSteemReplyFetchCallback(this);
+    dataStore = new DataStore();
     steemCommentCreator = new SteemCommentCreator();
     steemCommentCreator.setSteemCommentCreateCallback(this);
     progressDialog = new ProgressDialog(this);
@@ -120,7 +122,7 @@ public class NestedCommentActivity extends AppCompatActivity implements SteemCom
   @Override
   protected void onResume() {
     super.onResume();
-    steemReplyFetcher.requestReplyForPost(parentAuthor, parentPermlink);
+    dataStore.requestComments(parentAuthor,parentPermlink,this);
   }
   private void setParentToCommentAdapter(){
     commentsAdapter.setParentData(parentAuthor, parentTimestamp, parentContent);
@@ -182,12 +184,6 @@ public class NestedCommentActivity extends AppCompatActivity implements SteemCom
     }
   }
 
-  @Override
-  public void onReplyFetched(List<CommentModel> replies) {
-   setCommentsToAdapter(replies);
-    hideProgressInfo();
-  }
-
   private void hideProgressInfo() {
     if (commentLoadingProgressBar != null) {
       commentLoadingProgressBar.setVisibility(View.GONE);
@@ -196,7 +192,25 @@ public class NestedCommentActivity extends AppCompatActivity implements SteemCom
   }
 
   @Override
-  public void onReplyFetchError() {
+  public void whileWeAreFetchingComments() {
+    if (commentLoadingProgressBar != null) {
+      commentLoadingProgressBar.setVisibility(View.VISIBLE);
+      commentLoadingProgressMessage.setVisibility(View.VISIBLE);
+    }
+  }
 
+  @Override
+  public void onCommentsAvailable(ArrayList<CommentModel> comments) {
+    setCommentsToAdapter(comments);
+    hideProgressInfo();
+  }
+
+  @Override
+  public void onCommentsFetchError(String error) {
+    if (commentLoadingProgressBar != null) {
+      commentLoadingProgressBar.setVisibility(View.GONE);
+      commentLoadingProgressMessage.setVisibility(View.VISIBLE);
+      commentLoadingProgressMessage.setText(R.string.comment_fetch_error_text);
+    }
   }
 }

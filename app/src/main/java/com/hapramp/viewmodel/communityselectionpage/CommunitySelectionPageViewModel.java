@@ -2,7 +2,11 @@ package com.hapramp.viewmodel.communityselectionpage;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.util.Log;
+
 import com.hapramp.api.RetrofitServiceGenerator;
+import com.hapramp.datastore.DataStore;
+import com.hapramp.datastore.callbacks.CommunitiesCallback;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.models.CommunitySelectionServerUpdateBody;
 import com.hapramp.steem.CommunitySelectionResponse;
@@ -19,7 +23,6 @@ import retrofit2.Response;
  */
 
 public class CommunitySelectionPageViewModel extends ViewModel {
-
   MutableLiveData<List<CommunityModel>> communities;
   CommunitySelectionPageCallback communitySelectionPageCallback;
 
@@ -33,25 +36,27 @@ public class CommunitySelectionPageViewModel extends ViewModel {
   }
 
   private void fetchCommunities() {
-    RetrofitServiceGenerator.getService().getCommunities()
-      .enqueue(new Callback<List<CommunityModel>>() {
-        @Override
-        public void onResponse(Call<List<CommunityModel>> call, Response<List<CommunityModel>> response) {
-          if (response.isSuccessful()) {
-            communities.setValue(response.body());
-          } else {
-            communitySelectionPageCallback.onCommunityFetchFailed();
-          }
-        }
+    DataStore dataStore = new DataStore();
+    dataStore.requestAllCommunities(new CommunitiesCallback() {
+      @Override
+      public void onWhileWeAreFetchingCommunities() {
 
-        @Override
-        public void onFailure(Call<List<CommunityModel>> call, Throwable t) {
-          communitySelectionPageCallback.onCommunityFetchFailed();
-        }
-      });
+      }
+
+      @Override
+      public void onCommunitiesAvailable(List<CommunityModel> communityModelList, boolean isFreshData) {
+        communities.setValue(communityModelList);
+      }
+
+      @Override
+      public void onCommunitiesFetchError(String err) {
+        communitySelectionPageCallback.onCommunityFetchFailed();
+      }
+    });
   }
 
   public void updateServer(List<Integer> selected) {
+    Log.d("CommunitySelection",selected.toString());
     CommunitySelectionServerUpdateBody body = new CommunitySelectionServerUpdateBody(selected);
     RetrofitServiceGenerator.getService().updateCommunitySelections(body).enqueue(new Callback<CommunitySelectionResponse>() {
       @Override

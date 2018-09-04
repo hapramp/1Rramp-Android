@@ -1,6 +1,7 @@
 package com.hapramp.datastore;
 
 
+import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
 import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.datastore.callbacks.TransferHistoryCallback;
@@ -28,15 +29,19 @@ public class DataStore extends DataDispatcher {
       public void run() {
         String url = URLS.allCommunityUrl();
         String cachedResponse = DataCache.get(url);
+        boolean cachedDataReturned = false;
         if (cachedResponse != null) {
-          dispatchUserCommunity(cachedResponse, false, communitiesCallback);
+          dispatchAllCommunity(cachedResponse, false, communitiesCallback);
+          cachedDataReturned = true;
         }
         try {
           Response response = NetworkApi.getNetworkApiInstance().fetch(url);
           if (response.isSuccessful()) {
             String res = response.body().string();
             DataCache.cache(url, res);
-            dispatchUserCommunity(res, true, communitiesCallback);
+            if (!cachedDataReturned) {
+              dispatchUserCommunity(res, true, communitiesCallback);
+            }
           } else {
             dispatchUserCommunityError("Error Code:" + response.code(), communitiesCallback);
           }
@@ -62,15 +67,19 @@ public class DataStore extends DataDispatcher {
       public void run() {
         String url = URLS.userCommunityUrl(username);
         String cachedResponse = DataCache.get(url);
+        boolean cachedDataReturned = false;
         if (cachedResponse != null) {
           dispatchUserCommunity(cachedResponse, false, communitiesCallback);
+          cachedDataReturned = true;
         }
         try {
           Response response = NetworkApi.getNetworkApiInstance().fetch(url);
           if (response.isSuccessful()) {
             String res = response.body().string();
             DataCache.cache(url, res);
-            dispatchUserCommunity(res, true, communitiesCallback);
+            if (!cachedDataReturned) {
+              dispatchUserCommunity(res, true, communitiesCallback);
+            }
           } else {
             dispatchUserCommunityError("Error Code:" + response.code(), communitiesCallback);
           }
@@ -531,5 +540,30 @@ public class DataStore extends DataDispatcher {
     }.start();
   }
 
+  public void requestComments(final String author, final String permlink, final CommentsCallback commentsCallback) {
+    if (commentsCallback != null) {
+      commentsCallback.whileWeAreFetchingComments();
+    }
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          String url = URLS.steemUrl();
+          String requestBody = SteemRequestBody.contentReplies(author, permlink);
+          Response response = NetworkApi.getNetworkApiInstance().postAndFetch(url, requestBody);
+          if (response.isSuccessful()) {
+            String res = response.body().string();
+            //DataCache.cache(url, res);
+            dispatchComments(res, commentsCallback);
+          } else {
+            dispatchCommentsFetchError("Error Code:" + response.code(), commentsCallback);
+          }
+        }
+        catch (IOException e) {
+          dispatchCommentsFetchError("IOException " + e.toString(), commentsCallback);
+        }
+      }
+    }.start();
+  }
 }
 

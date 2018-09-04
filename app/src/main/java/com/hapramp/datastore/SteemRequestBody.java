@@ -21,8 +21,8 @@ public class SteemRequestBody {
   }
 
   public static String contentReplies(String author, String permlink) {
-    return "{\"jsonrpc\":\"2.0\", \"method\":\"tags_api.get_content_replies\"," +
-      " \"params\":{\"author\":\"" + author + "\", \"permlink\":\"" + permlink + "\"}," +
+    return "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_content_replies\"," +
+      " \"params\":[\"" + author + "\", \"" + permlink + "\"]," +
       " \"id\":1}";
   }
 

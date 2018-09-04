@@ -1,14 +1,17 @@
 package com.hapramp.datastore;
 
 import android.os.Handler;
+import android.util.Log;
 
 import com.google.gson.Gson;
+import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
 import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.datastore.callbacks.TransferHistoryCallback;
 import com.hapramp.datastore.callbacks.UserFeedCallback;
 import com.hapramp.datastore.callbacks.UserProfileCallback;
 import com.hapramp.datastore.callbacks.UserSearchCallback;
+import com.hapramp.models.CommentModel;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.search.models.FollowCountInfo;
 import com.hapramp.search.models.UserSearchResponse;
@@ -26,6 +29,18 @@ public class DataDispatcher {
   DataDispatcher() {
     handler = new Handler();
     jsonParser = new JSONParser();
+  }
+
+  void dispatchAllCommunity(String response,final boolean isFresh,final CommunitiesCallback communitiesCallback){
+    final List<CommunityModel> communities = jsonParser.parseAllCommunity(response);
+    if (communitiesCallback != null) {
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          communitiesCallback.onCommunitiesAvailable(communities, isFresh);
+        }
+      });
+    }
   }
 
   void dispatchUserCommunity(String response, final boolean isFresh,
@@ -214,6 +229,29 @@ public class DataDispatcher {
           }
         }
       );
+    }
+  }
+
+  void dispatchComments(String response, final CommentsCallback commentsCallback) {
+    if (commentsCallback != null) {
+      final ArrayList<CommentModel> comments = jsonParser.parseComments(response);
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          commentsCallback.onCommentsAvailable(comments);
+        }
+      });
+    }
+  }
+
+  void dispatchCommentsFetchError(final String err, final CommentsCallback commentsCallback) {
+    if (commentsCallback != null) {
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          commentsCallback.onCommentsFetchError(err);
+        }
+      });
     }
   }
 }
