@@ -1,4 +1,4 @@
-package com.hapramp.search.models;
+package com.hapramp.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

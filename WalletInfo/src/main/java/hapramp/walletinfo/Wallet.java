@@ -86,8 +86,8 @@ public class Wallet {
     mNetworkUtils.setNetworkResponseCallback(new NetworkUtils.NetworkResponseCallback() {
       @Override
       public void onResponse(String response) {
-        GlobalProperties globalProperties = new Gson().fromJson(response, GlobalProperties.class);
-        sendBackResults(globalProperties);
+       // GlobalProperties globalProperties = new Gson().fromJson(response, GlobalProperties.class);
+       // sendBackResults(globalProperties);
       }
 
       @Override

@@ -14,8 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
+import com.hapramp.datastore.DataStore;
+import com.hapramp.datastore.callbacks.UserWalletCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.UserProfileFetcher;
 import com.hapramp.steem.models.User;
 import com.hapramp.ui.activity.AccountHistoryActivity;
 import com.hapramp.utils.ImageHandler;
@@ -27,11 +28,11 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import hapramp.walletinfo.Wallet;
 import xute.cryptocoinview.CoinView;
 import xute.cryptocoinview.Coins;
 
-public class EarningFragment extends Fragment implements Wallet.UserAccountFieldsCallback, UserProfileFetcher.UserProfileFetchCallback {
+public class EarningFragment extends Fragment implements
+  UserWalletCallback {
   public static final String ARG_USERNAME = "username";
   @BindView(R.id.user_image)
   ImageView userImage;
@@ -90,23 +91,22 @@ public class EarningFragment extends Fragment implements Wallet.UserAccountField
   @BindView(R.id.steem_rate)
   CoinView steemRate;
   private Handler mHandler;
-  private Wallet wallet;
+  public static final int VALUES_REQUIRED_BEFORE_CALC = 5;
   private Unbinder unbinder;
   private String mUsername;
   private Context mContext;
-  private UserProfileFetcher userProfileFetcher;
   private double steem;
   private double sbd;
   private double sp;
   private double sbd_rate;
   private double steem_rate;
+  private DataStore dataStore;
+  private boolean estimatedEarningShown = false;
+  private int valuesAvailable = 0;
 
   public EarningFragment() {
     mHandler = new Handler();
-    wallet = new Wallet();
-    userProfileFetcher = new UserProfileFetcher();
-    userProfileFetcher.setUserProfileFetchCallback(this);
-    wallet.setUserAccountFieldsCallback(this);
+    dataStore = new DataStore();
   }
 
   @Override
@@ -116,7 +116,8 @@ public class EarningFragment extends Fragment implements Wallet.UserAccountField
   }
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+  public View onCreateView(LayoutInflater inflater,
+                           ViewGroup container,
                            Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_earning, container, false);
     if (getArguments() != null) {
@@ -130,6 +131,8 @@ public class EarningFragment extends Fragment implements Wallet.UserAccountField
       @Override
       public void onRate(double rate) {
         steem_rate = rate;
+        valuesAvailable++;
+        showEstimatedEarnings();
       }
     });
     sbdRateView.setCoinId(Coins.SBD);
@@ -137,9 +140,10 @@ public class EarningFragment extends Fragment implements Wallet.UserAccountField
       @Override
       public void onRate(double rate) {
         sbd_rate = rate;
+        valuesAvailable++;
+        showEstimatedEarnings();
       }
     });
-    fetchUserInfo();
     fetchWalletInfo();
     attachListener();
     return view;
@@ -151,12 +155,17 @@ public class EarningFragment extends Fragment implements Wallet.UserAccountField
     unbinder.unbind();
   }
 
-  private void fetchUserInfo() {
-    userProfileFetcher.fetchUserProfileFor(mUsername);
-  }
-
-  private void fetchWalletInfo() {
-    wallet.requestUserAccount(mUsername);
+  private void showEstimatedEarnings() {
+    try {
+      estimatedValueProgress.setVisibility(View.GONE);
+      if (VALUES_REQUIRED_BEFORE_CALC <= valuesAvailable) {
+        double total = (steem_rate * (steem + sp)) + sbd * sbd_rate;
+        walletEstAccountValueTv.setText(String.format(Locale.US, "$ %.2f", total));
+        estimatedEarningShown = true;
+      }
+    }
+    catch (Exception e) {
+    }
   }
 
   private void attachListener() {
@@ -170,108 +179,82 @@ public class EarningFragment extends Fragment implements Wallet.UserAccountField
     });
   }
 
+  private void fetchWalletInfo() {
+    dataStore.requestWalletInfo(mUsername, this);
+  }
+
+  @Override
+  public void whileWeAreFetchingWalletData() {
+  }
+
+  @Override
+  public void onUser(User user) {
+    try {
+      bindData(user);
+    }
+    catch (Exception e) {
+    }
+  }
+
   @Override
   public void onUserSteem(final String steem) {
-    mHandler.post(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          steemProgress.setVisibility(View.GONE);
-          walletSteemTv.setText(steem);
-        }
-        catch (Exception e) {
-        }
-      }
-    });
+    this.steem = Double.parseDouble(steem.split(" ")[0]);
+    valuesAvailable++;
+    try {
+      steemProgress.setVisibility(View.GONE);
+      walletSteemTv.setText(steem);
+    }
+    catch (Exception e) {
+    }
   }
 
   @Override
   public void onUserSteemDollar(final String dollar) {
-    mHandler.post(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          steemDollarProgress.setVisibility(View.GONE);
-          walletSteemDollarTv.setText(dollar);
-        }
-        catch (Exception e) {
-        }
-      }
-    });
+    this.sbd = Double.parseDouble(dollar.split(" ")[0]);
+    valuesAvailable++;
+    try {
+      steemDollarProgress.setVisibility(View.GONE);
+      walletSteemDollarTv.setText(dollar);
+    }
+    catch (Exception e) {
+    }
   }
 
   @Override
   public void onUserSteemPower(final String steemPower) {
-    mHandler.post(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          steemPowerProgress.setVisibility(View.GONE);
-          walletSteemPowerTv.setText(steemPower);
-        }
-        catch (Exception e) {
-        }
-      }
-    });
+    this.sp = Double.parseDouble(steemPower.split(" ")[0]);
+    valuesAvailable++;
+    try {
+      steemPowerProgress.setVisibility(View.GONE);
+      walletSteemPowerTv.setText(steemPower);
+      showEstimatedEarnings();
+    }
+    catch (Exception e) {
+    }
   }
 
   @Override
   public void onUserSavingSteem(final String savingSteem) {
-    mHandler.post(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          savingProgress.setVisibility(View.GONE);
-          walletSavingTv.append(savingSteem + ", ");
-        }
-        catch (Exception e) {
-        }
-      }
-    });
+    try {
+      savingProgress.setVisibility(View.GONE);
+      walletSavingTv.append(savingSteem + ", ");
+    }
+    catch (Exception e) {
+    }
   }
 
   @Override
   public void onUserSavingSBD(final String savingSBD) {
-    mHandler.post(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          savingProgress.setVisibility(View.GONE);
-          walletSavingTv.append(savingSBD + " ");
-        }
-        catch (Exception e) {
-        }
-      }
-    });
+    try {
+      savingProgress.setVisibility(View.GONE);
+      walletSavingTv.append(savingSBD + " ");
+    }
+    catch (Exception e) {
+    }
   }
 
   @Override
-  public void onUserEstimatedAccountValue(final String value) {
-    mHandler.post(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          estimatedValueProgress.setVisibility(View.GONE);
-          walletEstAccountValueTv.setText(value);
-        }
-        catch (Exception e) {
-        }
-      }
-    });
-  }
-
-  @Override
-  public void onUsdRates(final double sbd_usd, final double steem_usd) {
-  }
-
-  @Override
-  public void onError(String error) {
-
-  }
-
-  @Override
-  public void onUserFetched(User user) {
-    bindData(user);
+  public void onUserWalletDataError(String error) {
   }
 
   private void bindData(User data) {
@@ -280,17 +263,13 @@ public class EarningFragment extends Fragment implements Wallet.UserAccountField
         username.setText(mUsername);
         userFullname.setText(data.getFullname());
         long rawReputation = Long.valueOf(data.getReputation());
-        userReputation.setText(String.format(Locale.US, "(%.2f)", ReputationCalc.calculateReputation(rawReputation)));
+        userReputation.setText(String.format(Locale.US, "(%.2f)",
+          ReputationCalc.calculateReputation(rawReputation)));
         String profile_pic = String.format(getResources().getString(R.string.steem_user_profile_pic_format_large), mUsername);
         ImageHandler.loadCircularImage(mContext, userImage, profile_pic);
       }
     }
     catch (Exception e) {
     }
-  }
-
-  @Override
-  public void onUserFetchError(String e) {
-
   }
 }

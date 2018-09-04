@@ -26,12 +26,6 @@ public class SteemRequestBody {
       " \"id\":1}";
   }
 
-  public static String followCount(String user) {
-    return "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_follow_count\"," +
-      " \"params\":[\"" + user + "\"]," +
-      " \"id\":1}";
-  }
-
   public static String transactionState(String user) {
     return "{\"id\":5,\"jsonrpc\":\"2.0\",\"method\":\"call\",\"params\":[\"database_api\"," +
       "\"get_state\",[\"/@" + user + "/transfers\"]]}";
