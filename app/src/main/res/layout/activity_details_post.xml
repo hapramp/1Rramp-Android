@@ -95,6 +95,18 @@
 
             </RelativeLayout>
 
+            <TextView
+                android:id="@+id/post_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:visibility="gone"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="32sp" />
+
             <WebView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -104,12 +116,12 @@
                 android:id="@+id/hashtags"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginStart="12dp"
                 android:paddingBottom="4dp"
                 android:paddingTop="4dp"
                 android:textColor="@color/colorAccent"
-                android:textSize="16sp" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/shareBtn"
@@ -325,7 +337,6 @@
     </RelativeLayout>
 
     <View
-        android:visibility="gone"
         android:id="@+id/details_activity_cover"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

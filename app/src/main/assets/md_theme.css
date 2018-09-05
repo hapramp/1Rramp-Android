@@ -8,7 +8,7 @@ html {
 body {
 	color: #444;
 	font-family: 'Helvetica Neue';
-	font-size: 16px;
+	font-size: 18px;
 	line-height: 1.5em;
 	padding: 0;
 	margin-left: 8px;
@@ -73,40 +73,29 @@ max-width: 100%;
 }
 
 h1,h2,h3,h4,h5,h6 {
-    padding:4px;
 	font-weight: normal;
 	color: #111;
 	line-height: 1em;
 }
 
 h4,h5,h6 {
-   padding:4px;
 	font-weight: bold;
 }
 
 h1 {
-    padding:4px;
-	font-size: 2.5em;
+	font-size: 32px;
 }
 
 h2 {
-	font-size: 2em;
+	font-size: 26px;
 }
 
 h3 {
-	font-size: 1.5em;
+	font-size: 22px;
 }
 
 h4 {
-	font-size: 1.2em;
-}
-
-h5 {
-	font-size: 1em;
-}
-
-h6 {
-	font-size: 0.9em;
+	font-size: 18px;
 }
 
 blockquote {
