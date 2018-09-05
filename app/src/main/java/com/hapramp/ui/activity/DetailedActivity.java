@@ -133,6 +133,8 @@ public class DetailedActivity extends AppCompatActivity implements
   View detailsActivityCover;
   @BindView(R.id.comment_btn_container)
   LinearLayout commentBtnContainer;
+  @BindView(R.id.post_title)
+  TextView postTitle;
   private Handler mHandler;
   private Feed post;
   private ProgressDialog progressDialog;
@@ -275,6 +277,11 @@ public class DetailedActivity extends AppCompatActivity implements
     feedOwnerSubtitle.setText(
       String.format(getResources().getString(R.string.post_subtitle_format),
         MomentsUtils.getFormattedTime(post.getCreatedAt())));
+    String title = post.getTitle();
+    if (title != null && title.length() > 0) {
+      postTitle.setVisibility(VISIBLE);
+      postTitle.setText(title);
+    }
     renderMarkdown(post.getBody());
     ImageHandler.loadCircularImage(this, commentCreaterAvatar,
       String.format(getResources().getString(R.string.steem_user_profile_pic_format),
