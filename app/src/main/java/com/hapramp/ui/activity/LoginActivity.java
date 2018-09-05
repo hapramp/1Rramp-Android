@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
@@ -79,25 +80,21 @@ public class LoginActivity extends AppCompatActivity {
       AnalyticsParams.SCREEN_LOGIN, null);
   }
 
-  private void syncAllCommunities() {
-    showShadedProgress(getString(R.string.loading_community_message));
-    dataStore.requestAllCommunities(new CommunitiesCallback() {
-      @Override
-      public void onCommunityFetching() {
-
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (requestCode == ACCESS_TOKEN_REQUEST_CODE) {
+      if (resultCode == RESULT_OK) {
+        //save token
+        String accessToken = data.getStringExtra(Constants.EXTRA_ACCESS_TOKEN);
+        String username = data.getStringExtra(Constants.EXTRA_USERNAME);
+        HaprampPreferenceManager.getInstance()
+          .setTokenExpireTime(AccessTokenValidator.getNextExpiryTime());
+        HaprampPreferenceManager.getInstance().setSC2AccessToken(accessToken);
+        requestUserTokenFromAppServer(accessToken, username);
+      } else {
+        showToast("Login Failed");
       }
-
-      @Override
-      public void onCommunitiesAvailable(List<CommunityModel> communityModelList, boolean isFreshData) {
-        cacheAllCommunities(communityModelList);
-        syncUserSelectedCommunity();
-      }
-
-      @Override
-      public void onCommunitiesFetchError(String err) {
-
-      }
-    });
+    }
   }
 
   private void cacheAllCommunities(List<CommunityModel> communities) {
@@ -198,35 +195,6 @@ public class LoginActivity extends AppCompatActivity {
     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
   }
 
-  private void syncUserSelectedCommunity() {
-    dataStore.requestUserCommunities(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
-      new CommunitiesCallback() {
-        @Override
-        public void onCommunityFetching() {
-
-        }
-
-        @Override
-        public void onCommunitiesAvailable(List<CommunityModel> communities, boolean isFreshData) {
-          hideShadedProgress();
-          if (communities.size() > 0) {
-            HaprampPreferenceManager
-              .getInstance()
-              .saveUserSelectedCommunitiesAsJson(new Gson().
-                toJson(new CommunityListWrapper(communities)));
-            navigateToHomePage();
-          } else {
-            navigateToCommunityPage();
-          }
-        }
-
-        @Override
-        public void onCommunitiesFetchError(String err) {
-          showToast("Failed to get your communities. Try again!");
-        }
-      });
-  }
-
   private void init() {
     Crashlytics.setString(CrashReporterKeys.UI_ACTION, "login init");
     progressDialog = new ProgressDialog(this);
@@ -246,23 +214,6 @@ public class LoginActivity extends AppCompatActivity {
         }
       }
     });
-  }
-
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    if (requestCode == ACCESS_TOKEN_REQUEST_CODE) {
-      if (resultCode == RESULT_OK) {
-        //save token
-        String accessToken = data.getStringExtra(Constants.EXTRA_ACCESS_TOKEN);
-        String username = data.getStringExtra(Constants.EXTRA_USERNAME);
-        HaprampPreferenceManager.getInstance()
-          .setTokenExpireTime(AccessTokenValidator.getNextExpiryTime());
-        HaprampPreferenceManager.getInstance().setSC2AccessToken(accessToken);
-        requestUserTokenFromAppServer(accessToken, username);
-      } else {
-        showToast("Login Failed");
-      }
-    }
   }
 
   private void requestUserTokenFromAppServer(final String userAccessToken, final String username) {
@@ -297,9 +248,59 @@ public class LoginActivity extends AppCompatActivity {
     });
   }
 
+  private void syncAllCommunities() {
+    showShadedProgress(getString(R.string.loading_community_message));
+    dataStore.requestAllCommunities(new CommunitiesCallback() {
+      @Override
+      public void onCommunityFetching() {
+
+      }
+
+      @Override
+      public void onCommunitiesAvailable(List<CommunityModel> communityModelList, boolean isFreshData) {
+        cacheAllCommunities(communityModelList);
+        syncUserSelectedCommunity();
+      }
+
+      @Override
+      public void onCommunitiesFetchError(String err) {
+        navigateToCommunityPage();
+      }
+    });
+  }
+
   private void hideProgressDialog() {
     if (progressDialog != null) {
       progressDialog.dismiss();
     }
+  }
+
+  private void syncUserSelectedCommunity() {
+    showShadedProgress(getString(R.string.loading_community_message));
+    dataStore.requestUserCommunities(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
+      new CommunitiesCallback() {
+        @Override
+        public void onCommunityFetching() {
+        }
+
+        @Override
+        public void onCommunitiesAvailable(List<CommunityModel> communities, boolean isFreshData) {
+          hideShadedProgress();
+          if (communities.size() > 0) {
+            HaprampPreferenceManager
+              .getInstance()
+              .saveUserSelectedCommunitiesAsJson(new Gson().
+                toJson(new CommunityListWrapper(communities)));
+            navigateToHomePage();
+          } else {
+            navigateToCommunityPage();
+          }
+        }
+
+        @Override
+        public void onCommunitiesFetchError(String err) {
+          showToast("Failed to get your communities. Try again!");
+        }
+      });
   }
 }
