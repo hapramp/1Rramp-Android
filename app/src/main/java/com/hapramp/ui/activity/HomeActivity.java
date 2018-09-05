@@ -111,6 +111,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     attachListeners();
     postUploadReceiver = new PostUploadReceiver();
     fetchCompleteUserInfo();
+    DataStore.performAllCommunitySync();
     DataStore.requestSyncLastPostCreationTime();
   }
 

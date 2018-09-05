@@ -70,7 +70,6 @@ public class LoginActivity extends AppCompatActivity {
     ButterKnife.bind(this);
     init();
     attachListeners();
-    checkLastLoginAndMoveAhead();
   }
 
   @Override
@@ -80,34 +79,9 @@ public class LoginActivity extends AppCompatActivity {
       AnalyticsParams.SCREEN_LOGIN, null);
   }
 
-  private void checkLastLoginAndMoveAhead() {
-    if (HaprampPreferenceManager.getInstance().isLoggedIn()) {
-        if (HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson().length() == 0) {
-          syncAllCommunities();
-        } else {
-          navigateToHomePage();
-        }
-    }
-  }
-
   private void syncAllCommunities() {
-    dataStore.requestAllCommunities(new CommunitiesCallback() {
-      @Override
-      public void onWhileWeAreFetchingCommunities() {
-        showShadedProgress(getString(R.string.loading_community_message));
-      }
-
-      @Override
-      public void onCommunitiesAvailable(List<CommunityModel> communityModelList, boolean isFreshData) {
-        cacheAllCommunities(communityModelList);
-        syncUserSelectedCommunity();
-      }
-
-      @Override
-      public void onCommunitiesFetchError(String err) {
-
-      }
-    });
+    DataStore.performAllCommunitySync();
+    syncUserSelectedCommunity();
   }
 
   private void attachListeners() {
@@ -123,12 +97,6 @@ public class LoginActivity extends AppCompatActivity {
         openSteemitSignUp();
       }
     });
-  }
-
-  private void cacheAllCommunities(List<CommunityModel> communities) {
-    HaprampPreferenceManager.getInstance()
-      .saveUserSelectedCommunitiesAsJson(new Gson()
-        .toJson(new CommunityListWrapper(communities)));
   }
 
   private void navigateToHomePage() {

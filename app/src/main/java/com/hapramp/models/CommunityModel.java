@@ -3,7 +3,6 @@ package com.hapramp.models;
 import com.google.gson.annotations.SerializedName;
 
 public class CommunityModel {
-
   @SerializedName("description")
   private String mDescription;
   @SerializedName("image_uri")

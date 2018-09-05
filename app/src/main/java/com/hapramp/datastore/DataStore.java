@@ -1,8 +1,7 @@
 package com.hapramp.datastore;
 
 
-import android.util.Log;
-
+import com.google.gson.Gson;
 import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
 import com.hapramp.datastore.callbacks.FollowInfoCallback;
@@ -13,11 +12,14 @@ import com.hapramp.datastore.callbacks.UserFeedCallback;
 import com.hapramp.datastore.callbacks.UserProfileCallback;
 import com.hapramp.datastore.callbacks.UserSearchCallback;
 import com.hapramp.datastore.callbacks.UserWalletCallback;
+import com.hapramp.models.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.CommunityListWrapper;
 
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.Response;
 
@@ -692,5 +694,29 @@ public class DataStore extends DataDispatcher {
     }.start();
   }
 
+  public static void performAllCommunitySync() {
+    new DataStore().requestAllCommunities(new CommunitiesCallback() {
+      @Override
+      public void onWhileWeAreFetchingCommunities() {
+      }
+
+      @Override
+      public void onCommunitiesAvailable(List<CommunityModel> communities, boolean isFreshData) {
+        for (int i = 0; i < communities.size(); i++) {
+          CommunityModel cm = communities.get(i);
+          HaprampPreferenceManager.getInstance().setCommunityTagToColorPair(cm.getmTag(), cm.getmColor());
+          HaprampPreferenceManager.getInstance().setCommunityTagToNamePair(cm.getmTag(), cm.getmName());
+        }
+        HaprampPreferenceManager.getInstance()
+          .saveAllCommunityListAsJson(new Gson()
+            .toJson(new CommunityListWrapper(communities)));
+      }
+
+      @Override
+      public void onCommunitiesFetchError(String err) {
+
+      }
+    });
+  }
 }
 
