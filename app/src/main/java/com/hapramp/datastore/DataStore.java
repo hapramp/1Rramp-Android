@@ -4,6 +4,8 @@ package com.hapramp.datastore;
 import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
 import com.hapramp.datastore.callbacks.FollowInfoCallback;
+import com.hapramp.datastore.callbacks.FollowersCallback;
+import com.hapramp.datastore.callbacks.FollowingsCallback;
 import com.hapramp.datastore.callbacks.TransferHistoryCallback;
 import com.hapramp.datastore.callbacks.UserFeedCallback;
 import com.hapramp.datastore.callbacks.UserProfileCallback;
@@ -521,7 +523,8 @@ public class DataStore extends DataDispatcher {
    * @param username                transfer history of username.
    * @param transferHistoryCallback callback
    */
-  public void requestTransferHistory(final String username, final TransferHistoryCallback transferHistoryCallback) {
+  public void requestTransferHistory(final String username,
+                                     final TransferHistoryCallback transferHistoryCallback) {
     new Thread() {
       @Override
       public void run() {
@@ -544,7 +547,9 @@ public class DataStore extends DataDispatcher {
     }.start();
   }
 
-  public void requestComments(final String author, final String permlink, final CommentsCallback commentsCallback) {
+  public void requestComments(final String author,
+                              final String permlink,
+                              final CommentsCallback commentsCallback) {
     if (commentsCallback != null) {
       commentsCallback.whileWeAreFetchingComments();
     }
@@ -570,7 +575,8 @@ public class DataStore extends DataDispatcher {
     }.start();
   }
 
-  public void requestWalletInfo(final String username, final UserWalletCallback userWalletCallback) {
+  public void requestWalletInfo(final String username,
+                                final UserWalletCallback userWalletCallback) {
     if (userWalletCallback != null) {
       userWalletCallback.whileWeAreFetchingWalletData();
     }
@@ -623,5 +629,66 @@ public class DataStore extends DataDispatcher {
       }
     }.start();
   }
+
+  /**
+   * @param username          fetch followers of @username
+   * @param startFromUser     start offset for followers
+   * @param followersCallback callback
+   */
+  public void requestFollowers(final String username,
+                               final String startFromUser,
+                               final FollowersCallback followersCallback) {
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          String steemUrl = URLS.steemUrl();
+          String followersReqBody = SteemRequestBody.followersListBody(username, startFromUser);
+          Response followersResponse = NetworkApi.getNetworkApiInstance().postAndFetch(steemUrl,
+            followersReqBody);
+          if (followersResponse.isSuccessful()) {
+            String followersResponseJson = followersResponse.body().string();
+            dispatchFollowers(followersResponseJson, followersCallback);
+          } else {
+            dispatchFollowersFetchError("Error Code :" + followersResponse.code(), followersCallback);
+          }
+        }
+        catch (Exception e) {
+          dispatchFollowersFetchError("Error " + e.toString(), followersCallback);
+        }
+      }
+    }.start();
+  }
+
+  /**
+   * @param username          fetch followings of @username
+   * @param startFromUser     start offset for followers
+   * @param followingsCallback callback
+   */
+  public void requestFollowings(final String username,
+                                final String startFromUser,
+                                final FollowingsCallback followingsCallback) {
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          String steemUrl = URLS.steemUrl();
+          String followingsReqBody = SteemRequestBody.followingsListBody(username, startFromUser);
+          Response followingsResponse = NetworkApi.getNetworkApiInstance().postAndFetch(steemUrl,
+            followingsReqBody);
+          if (followingsResponse.isSuccessful()) {
+            String followersResponseJson = followingsResponse.body().string();
+            dispatchFollowings(followersResponseJson, followingsCallback);
+          } else {
+            dispatchFollowingsFetchError("Error Code :" + followingsResponse.code(), followingsCallback);
+          }
+        }
+        catch (Exception e) {
+          dispatchFollowingsFetchError("Error " + e.toString(), followingsCallback);
+        }
+      }
+    }.start();
+  }
+
 }
 

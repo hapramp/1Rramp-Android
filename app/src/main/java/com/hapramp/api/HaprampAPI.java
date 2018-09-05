@@ -32,9 +32,6 @@ public interface HaprampAPI {
   @POST("login")
   Call<VerifiedToken> verifyUser(@Body VerificationDataBody verificationDataBody);
 
-  @GET("users/usernames/{username}")
-  Call<UserModel> fetchUserCommunities(@Path("username") String username);
-
   @GET("communities")
   Call<List<CommunityModel>> getCommunities();
 
@@ -43,9 +40,6 @@ public interface HaprampAPI {
 
   @GET
   Call<FeedWrapper> getFeedFromSteem(@Url String url);
-
-  @GET("users/usernames/{username}")
-  Call<UserModel> getUserFromUsername(@Path("username") String username);
 
   @GET
   Call<YoutubeResultModel> getYoutubeResults(@Url String url);

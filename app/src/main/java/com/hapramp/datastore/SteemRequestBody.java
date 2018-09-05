@@ -45,4 +45,18 @@ public class SteemRequestBody {
       " \"params\":[\"" + user + "\"]," +
       " \"id\":1}";
   }
+
+  public static String followersListBody(String username, String startUser) {
+    startUser = startUser == null ? null : "\"" + startUser + "\"";
+    return "{\"jsonrpc\":\"2.0\"," +
+      " \"method\":\"condenser_api.get_followers\"," +
+      " \"params\":[\"" + username + "\"," + startUser + ",\"blog\",20], \"id\":1}";
+  }
+
+  public static String followingsListBody(String username, String startUser) {
+    startUser = startUser == null ? null : "\"" + startUser + "\"";
+    return "{\"jsonrpc\":\"2.0\"," +
+      " \"method\":\"condenser_api.get_following\"," +
+      " \"params\":[\"" + username + "\"," + startUser + ",\"blog\",20], \"id\":1}";
+  }
 }

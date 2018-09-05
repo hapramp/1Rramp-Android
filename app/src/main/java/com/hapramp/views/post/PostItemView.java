@@ -221,6 +221,7 @@ public class PostItemView extends FrameLayout {
       String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format),
         feed.getAuthor()));
     bindVotes(feed.getVoters(), feed.getPermlink());
+    Log.d("PostItemView", feed.getVoters().toString());
     setCommentCount(feed.getChildren());
     attachListenersOnStarView();
     attachListerOnAuthorHeader();

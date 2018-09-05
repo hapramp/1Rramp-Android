@@ -24,8 +24,8 @@ import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.hapramp.R;
-import com.hapramp.api.RawApiCaller;
 import com.hapramp.datastore.DataStore;
+import com.hapramp.datastore.callbacks.UserProfileCallback;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
@@ -96,7 +96,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   private EarningFragment earningFragment;
   private ProgressDialog progressDialog;
   private PostUploadReceiver postUploadReceiver;
-  private RawApiCaller rawApiCaller;
+  private DataStore dataStore;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -104,13 +104,13 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     setContentView(R.layout.activity_home);
     ButterKnife.bind(this);
     saveDeviceWidth();
+    initObjects();
+    transactFragment(FRAGMENT_HOME);
     syncUserFollowings();
     setupToolbar();
-    initObjects();
     attachListeners();
     postUploadReceiver = new PostUploadReceiver();
     fetchCompleteUserInfo();
-    transactFragment(FRAGMENT_HOME);
     DataStore.requestSyncLastPostCreationTime();
   }
 
@@ -136,13 +136,13 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   private void initObjects() {
     Crashlytics.setString(CrashReporterKeys.UI_ACTION, "home init");
     Crashlytics.setUserIdentifier(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
+    dataStore = new DataStore();
     fragmentManager = getSupportFragmentManager();
     homeFragment = new HomeFragment();
     profileFragment = new ProfileFragment();
     settingsFragment = new SettingsFragment();
     earningFragment = new EarningFragment();
     progressDialog = new ProgressDialog(this);
-    rawApiCaller = new RawApiCaller(this);
   }
 
   private void attachListeners() {
@@ -171,7 +171,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
 
 
     bottomBarCompetition.setOnClickListener(new View.OnClickListener() {
-
       @Override
       public void onClick(View v) {
         if (lastMenuSelection == BOTTOM_MENU_EARNINGS)
@@ -216,13 +215,23 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   }
 
   private void fetchCompleteUserInfo() {
-    rawApiCaller.setUserMetadataCallback(new RawApiCaller.UserMetadataCallback() {
+    dataStore.requestUserProfile(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
+      new UserProfileCallback() {
       @Override
-      public void onUserMetadataLoaded(User user) {
+      public void onWeAreFetchingUserProfile() {
+
+      }
+
+      @Override
+      public void onUserProfileAvailable(User user, boolean isFreshData) {
         HaprampPreferenceManager.getInstance().saveCurrentUserInfoAsJson(new Gson().toJson(user));
       }
+
+      @Override
+      public void onUserProfileFetchError(String err) {
+
+      }
     });
-    rawApiCaller.requestUserMetadata(this, HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
   }
 
   private void transactFragment(int fragment) {
