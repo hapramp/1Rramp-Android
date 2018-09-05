@@ -89,6 +89,7 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
   private String youtubeId = null;
   private boolean mediaSelected = false;
   private MediaSelectorListener mediaSelectorListener;
+  private String defaultText;
 
   public PostCreateComponent(@NonNull Context context) {
     super(context);
@@ -316,6 +317,10 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
     club1.setVisibility(GONE);
     club2.setVisibility(GONE);
     club3.setVisibility(GONE);
+  }
+
+  public void setDefaultText(String defaultText) {
+    content.setText(defaultText);
   }
 
   public interface MediaSelectorListener {
