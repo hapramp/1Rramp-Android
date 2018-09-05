@@ -217,6 +217,7 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
     body = postCreateComponent.getBody();
     tags = postCreateComponent.getSelectedCommunityTags();
     tags.addAll(getHashTagsFromBody(body));
+    body = HashTagUtils.cleanHashTagsFromBody(body);
     images = postCreateComponent.getImageList();
   }
 
