@@ -69,7 +69,7 @@ import static android.view.View.VISIBLE;
 public class DetailedActivity extends AppCompatActivity implements
   SteemCommentCreator.SteemCommentCreateCallback,
   CommentsCallback {
-  @BindView(R.id.closeBtn)
+  @BindView(R.id.backBtn)
   TextView closeBtn;
   @BindView(R.id.overflowBtn)
   TextView overflowBtn;

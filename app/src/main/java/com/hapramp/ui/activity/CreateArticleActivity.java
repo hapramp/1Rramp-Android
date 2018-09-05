@@ -47,7 +47,7 @@ import xute.markdeditor.Styles.TextComponentStyle;
 public class CreateArticleActivity extends AppCompatActivity implements SteemPostCreator.SteemPostCreatorCallback, EditorControlBar.EditorControlListener {
 
   private static final int REQUEST_IMAGE_SELECTOR = 119;
-  @BindView(R.id.closeBtn)
+  @BindView(R.id.backBtn)
   TextView closeBtn;
   @BindView(R.id.previewButton)
   TextView previewButton;

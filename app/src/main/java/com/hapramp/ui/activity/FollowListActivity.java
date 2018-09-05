@@ -20,7 +20,7 @@ public class FollowListActivity extends AppCompatActivity {
   public static final String EXTRA_KEY_USERNAME = "username";
   public static final String EXTRA_KEY_FOLLOWING = "followin";
   public static final String EXTRA_KEY_FOLLOWERS = "followers";
-  @BindView(R.id.closeBtn)
+  @BindView(R.id.backBtn)
   TextView closeBtn;
   @BindView(R.id.toolbar_container)
   RelativeLayout toolbarContainer;

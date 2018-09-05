@@ -30,7 +30,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ProfileActivity extends AppCompatActivity implements ProfileRecyclerAdapter.OnLoadMoreListener, UserFeedCallback {
-  @BindView(R.id.closeBtn)
+  @BindView(R.id.backBtn)
   TextView closeBtn;
   @BindView(R.id.toolbar_container)
   RelativeLayout toolbarContainer;

@@ -44,7 +44,7 @@ import butterknife.ButterKnife;
 public class CreatePostActivity extends AppCompatActivity implements SteemPostCreator.SteemPostCreatorCallback {
   private static final int REQUEST_IMAGE_SELECTOR = 101;
   private static final int YOUTUBE_RESULT_REQUEST = 107;
-  @BindView(R.id.closeBtn)
+  @BindView(R.id.backBtn)
   TextView closeBtn;
   @BindView(R.id.postButton)
   TextView postButton;

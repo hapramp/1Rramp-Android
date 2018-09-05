@@ -12,12 +12,12 @@
         android:background="#ffffff">
 
         <TextView
-            android:id="@+id/closeBtn"
+            android:id="@+id/backBtn"
             android:layout_width="?actionBarSize"
             android:layout_height="?actionBarSize"
             android:background="?selectableItemBackgroundBorderless"
             android:gravity="center"
-            android:text=""
+            android:text=""
             android:textSize="24sp" />
 
         <TextView
