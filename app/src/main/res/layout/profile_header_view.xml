@@ -83,7 +83,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/usernameTv"
-                android:text="ankit Kumar"
                 android:textStyle="bold" />
 
         </RelativeLayout>
@@ -143,7 +142,6 @@
             android:layout_marginRight="18dp"
             android:layout_marginLeft="18dp"
             android:layout_marginTop="48dp"
-            android:hint="Your Bio Here..."
             android:lineSpacingExtra="2dp"
             android:textColor="@color/Black54"
             android:textColorHint="@color/Black38"
