@@ -175,7 +175,7 @@ public class DataStore extends DataDispatcher {
         String url = URLS.userBlogUrl(username);
         String cachedResponse = DataCache.get(url);
         boolean cachedDataReturned = false;
-        if (cachedResponse != null) {
+        if (cachedResponse != null && !refresh) {
           dispatchUserFeeds(cachedResponse, false, false, userFeedCallback);
           cachedDataReturned = true;
         }

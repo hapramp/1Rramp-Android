@@ -128,7 +128,7 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     } else {
       this.feeds = newPosts;
       hasChanceOfMoreFeeds = true;
-      notifyItemInserted(1);
+      notifyItemRangeChanged(1, newPosts.size());
     }
   }
 
