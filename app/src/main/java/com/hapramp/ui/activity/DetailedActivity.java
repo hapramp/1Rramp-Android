@@ -512,20 +512,22 @@ public class DetailedActivity extends AppCompatActivity implements
   private void setCommunities(List<String> communities) {
     if (communities == null)
       return;
-
     List<CommunityModel> cm = new ArrayList<>();
     StringBuilder hashtags = new StringBuilder();
     for (int i = 0; i < communities.size(); i++) {
-      if (Communities.doesCommunityExists(communities.get(i))) {
+      String tag = communities.get(i);
+      if (Communities.doesCommunityExists(tag)) {
         cm.add(new CommunityModel("", "", communities.get(i),
           HaprampPreferenceManager.getInstance().getCommunityColorFromTag(communities.get(i)),
           HaprampPreferenceManager.getInstance().getCommunityNameFromTag(communities.get(i)),
           0
         ));
       } else {
-        hashtags.append("<b>  #</b>")
-          .append(communities.get(i))
-          .append("  ");
+        if (!tag.equals("hapramp")) {
+          hashtags.append("<b>  #</b>")
+            .append(tag)
+            .append("  ");
+        }
       }
     }
     addCommunitiesToLayout(cm);
