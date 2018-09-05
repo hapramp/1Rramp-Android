@@ -14,13 +14,8 @@ import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
-import com.hapramp.api.RawApiCaller;
-import com.hapramp.steem.models.Feed;
 import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.views.feedlist.FeedListView;
-
-import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -29,12 +24,12 @@ import butterknife.Unbinder;
  * Created by Ankit on 4/14/2018.
  */
 
-public class TrendingFragment extends Fragment implements FeedListView.FeedListViewListener, RawApiCaller.FeedDataCallback {
+public class TrendingFragment extends Fragment implements
+  FeedListView.FeedListViewListener{
   @BindView(R.id.feedListView)
   FeedListView feedListView;
   Unbinder unbinder;
   private Context context;
-  private RawApiCaller rawApiCaller;
 
   @Override
   public void onAttach(Context context) {
@@ -47,8 +42,6 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Crashlytics.setString(CrashReporterKeys.UI_ACTION, "trending fragment");
-    rawApiCaller = new RawApiCaller(context);
-    rawApiCaller.setDataCallback(this);
     setRetainInstance(true);
   }
 
@@ -99,19 +92,5 @@ public class TrendingFragment extends Fragment implements FeedListView.FeedListV
   @Override
   public void onShowCommunityList() {
     //NA
-  }
-
-  @Override
-  public void onDataLoaded(ArrayList<Feed> feeds, boolean appendableData) {
-    if (feedListView != null) {
-      feedListView.feedsRefreshed(feeds);
-    }
-  }
-
-  @Override
-  public void onDataLoadError() {
-    if (feedListView != null) {
-      feedListView.failedToRefresh("");
-    }
   }
 }

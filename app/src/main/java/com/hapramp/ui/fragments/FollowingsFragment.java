@@ -6,13 +6,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.hapramp.R;
-import com.hapramp.api.FollowingApi;
+import com.hapramp.datastore.DataStore;
+import com.hapramp.datastore.callbacks.FollowingsCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.ui.adapters.UserRecyclerAdapter;
 import com.hapramp.views.UserItemView;
@@ -28,13 +28,15 @@ import static com.hapramp.ui.activity.FollowListActivity.EXTRA_KEY_USERNAME;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FollowingsFragment extends Fragment implements FollowingApi.FollowingCallback, UserItemView.FollowStateChangeListener {
+public class FollowingsFragment extends Fragment implements
+  UserItemView.FollowStateChangeListener,
+  FollowingsCallback {
   @BindView(R.id.followingsRv)
   RecyclerView followingsRecyclerView;
   Unbinder unbinder;
   private String username;
   private UserRecyclerAdapter userRecyclerAdapter;
-  private FollowingApi followingsApi;
+  private DataStore dataStore;
   private Context mContext;
   private String lastUser;
   private boolean isThisInitialFetch;
@@ -68,8 +70,7 @@ public class FollowingsFragment extends Fragment implements FollowingApi.Followi
   }
 
   private void initFollowingsApi() {
-    followingsApi = new FollowingApi(mContext);
-    followingsApi.setFollowingCallback(this);
+    dataStore = new DataStore();
   }
 
   private void initRecyclerView() {
@@ -87,31 +88,13 @@ public class FollowingsFragment extends Fragment implements FollowingApi.Followi
 
   private void fetchFollowingsList(String startFrom) {
     isThisInitialFetch = (startFrom == null);
-    followingsApi.requestFollowings(username, startFrom);
+    dataStore.requestFollowings(username, startFrom, this);
   }
 
   @Override
   public void onDestroyView() {
     super.onDestroyView();
     unbinder.unbind();
-  }
-
-  @Override
-  public void onFollowings(ArrayList<String> followings) {
-    if (isThisInitialFetch) {
-      userRecyclerAdapter.setUsers(followings);
-    } else {
-      followings.remove(0);
-      userRecyclerAdapter.appendUsers(followings);
-    }
-    if (followings.size() > 0) {
-      lastUser = followings.get(followings.size() - 1);
-    }
-  }
-
-  @Override
-  public void onError() {
-
   }
 
   @Override
@@ -130,4 +113,21 @@ public class FollowingsFragment extends Fragment implements FollowingApi.Followi
     fetchFollowingsList(null);
   }
 
+  @Override
+  public void onFollowingsAvailable(ArrayList<String> followings) {
+    if (isThisInitialFetch) {
+      userRecyclerAdapter.setUsers(followings);
+    } else {
+      followings.remove(0);
+      userRecyclerAdapter.appendUsers(followings);
+    }
+    if (followings.size() > 0) {
+      lastUser = followings.get(followings.size() - 1);
+    }
+  }
+
+  @Override
+  public void onFollowingsFetchError(String err) {
+
+  }
 }

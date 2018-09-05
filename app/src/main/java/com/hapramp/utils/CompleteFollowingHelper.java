@@ -1,23 +1,21 @@
 package com.hapramp.utils;
 
 import android.content.Context;
-import android.util.Log;
-
-import com.hapramp.api.FollowingApi;
+import com.hapramp.datastore.DataStore;
+import com.hapramp.datastore.callbacks.FollowingsCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
 
 import java.util.ArrayList;
 
-public class CompleteFollowingHelper implements FollowingApi.FollowingCallback {
-  private final FollowingApi followingApi;
+public class CompleteFollowingHelper implements FollowingsCallback {
+  private final DataStore dataStore;
   ArrayList<String> followingList;
   private String lastUserInResult;
   private String myUsername;
   private FollowingsSyncCompleteListener followingsSyncCompleteListener;
 
   public CompleteFollowingHelper(Context context) {
-    followingApi = new FollowingApi(context);
-    followingApi.setFollowingCallback(this);
+    dataStore = new DataStore();
     followingList = new ArrayList<>();
     myUsername = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
   }
@@ -27,13 +25,15 @@ public class CompleteFollowingHelper implements FollowingApi.FollowingCallback {
   }
 
   private void fetchFollowingsFrom(String startUser) {
-    Log.d("FollowingsList", "loading from:" + startUser);
-    followingApi.requestFollowings(myUsername, startUser);
+    dataStore.requestFollowings(myUsername,startUser,this);
+  }
+
+  public void setFollowingsSyncCompleteListener(FollowingsSyncCompleteListener followingsSyncCompleteListener) {
+    this.followingsSyncCompleteListener = followingsSyncCompleteListener;
   }
 
   @Override
-  public void onFollowings(ArrayList<String> followings) {
-    Log.d("FollowingsList", "loaded :" + followings.size());
+  public void onFollowingsAvailable(ArrayList<String> followings) {
     if (lastUserInResult == null) {
       followingList.addAll(followings);
     } else {
@@ -56,12 +56,8 @@ public class CompleteFollowingHelper implements FollowingApi.FollowingCallback {
   }
 
   @Override
-  public void onError() {
+  public void onFollowingsFetchError(String err) {
 
-  }
-
-  public void setFollowingsSyncCompleteListener(FollowingsSyncCompleteListener followingsSyncCompleteListener) {
-    this.followingsSyncCompleteListener = followingsSyncCompleteListener;
   }
 
   public interface FollowingsSyncCompleteListener {

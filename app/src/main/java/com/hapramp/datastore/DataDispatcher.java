@@ -6,6 +6,8 @@ import com.google.gson.Gson;
 import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
 import com.hapramp.datastore.callbacks.FollowInfoCallback;
+import com.hapramp.datastore.callbacks.FollowersCallback;
+import com.hapramp.datastore.callbacks.FollowingsCallback;
 import com.hapramp.datastore.callbacks.TransferHistoryCallback;
 import com.hapramp.datastore.callbacks.UserFeedCallback;
 import com.hapramp.datastore.callbacks.UserProfileCallback;
@@ -13,13 +15,17 @@ import com.hapramp.datastore.callbacks.UserSearchCallback;
 import com.hapramp.datastore.callbacks.UserWalletCallback;
 import com.hapramp.models.CommentModel;
 import com.hapramp.models.CommunityModel;
-import com.hapramp.models.GlobalProperties;
 import com.hapramp.models.FollowCountInfo;
+import com.hapramp.models.GlobalProperties;
 import com.hapramp.models.UserSearchResponse;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.TransferHistoryModel;
 import com.hapramp.steem.models.User;
 import com.hapramp.utils.SteemPowerCalc;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -295,6 +301,68 @@ public class DataDispatcher {
           }
         }
       );
+    }
+  }
+
+  void dispatchFollowers(final String response, final FollowersCallback followersCallback) {
+    if (followersCallback != null) {
+      final ArrayList<String> followers = new ArrayList<>();
+      try {
+        JSONArray results = new JSONObject(response).getJSONArray("result");
+        for (int i = 0; i < results.length(); i++) {
+          followers.add(results.getJSONObject(i).getString("follower"));
+        }
+      }
+      catch (JSONException e) {
+      }
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          followersCallback.onFollowersAvailable(followers);
+        }
+      });
+    }
+  }
+
+  void dispatchFollowings(final String response, final FollowingsCallback followingsCallback) {
+    if (followingsCallback != null) {
+      final ArrayList<String> followings = new ArrayList<>();
+      try {
+        JSONArray results = new JSONObject(response).getJSONArray("result");
+        for (int i = 0; i < results.length(); i++) {
+          followings.add(results.getJSONObject(i).getString("following"));
+        }
+      }
+      catch (JSONException e) {
+      }
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          followingsCallback.onFollowingsAvailable(followings);
+        }
+      });
+    }
+  }
+
+  void dispatchFollowersFetchError(final String error, final FollowersCallback followersCallback) {
+    if (followersCallback != null) {
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          followersCallback.onFollowersFetchError(error);
+        }
+      });
+    }
+  }
+
+  void dispatchFollowingsFetchError(final String error, final FollowingsCallback followingsCallback) {
+    if (followingsCallback != null) {
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          followingsCallback.onFollowingsFetchError(error);
+        }
+      });
     }
   }
 }

@@ -19,8 +19,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HaprampApiClient {
   private static Retrofit retrofit = null;
-  private static int size1 = 131072;
-  private static int size2 = 262144;
   private static int size3 = 524288;
 
   public static Retrofit getClient(final String token) {
