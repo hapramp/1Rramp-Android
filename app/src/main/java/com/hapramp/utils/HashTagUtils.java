@@ -36,4 +36,9 @@ public class HashTagUtils {
     }
     return matched.toLowerCase();
   }
+
+  public static String cleanHashTagsFromBody(String body) {
+    String hastag_pattern = "(^| |\\n|>)#([A-Za-z\\-]+\\b)(?!;)";
+    return body.replaceAll(hastag_pattern, "");
+  }
 }
