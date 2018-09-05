@@ -24,6 +24,7 @@ import com.hapramp.models.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
 import com.hapramp.steem.models.User;
+import com.hapramp.utils.Constants;
 import com.hapramp.utils.HashTagUtils;
 import com.hapramp.utils.ImageHandler;
 
@@ -243,9 +244,7 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
   }
 
   public String getContent() {
-    return content.getText().toString().trim() + "<hr><center><h4>\n" +
-      "<a href=\"https://1ramp.io\"><img src=\"https://ipfs.busy.org/ipfs/QmTFN4mf55SRZkP8Ug7jXVP3sXAmH7sd35zMNwLFpgGqNU\"/></a><br><a href=\"https://play.google.com/store/apps/details?id=com.hapramp\">Try 1Ramp Android Now!</a>\n" +
-      "</h4></center>";
+    return content.getText().toString().trim() + Constants.FOOTER_TEXT;
   }
 
   public boolean isMediaSelected() {

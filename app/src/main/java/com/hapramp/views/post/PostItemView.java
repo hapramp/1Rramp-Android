@@ -221,7 +221,6 @@ public class PostItemView extends FrameLayout {
       String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format),
         feed.getAuthor()));
     bindVotes(feed.getVoters(), feed.getPermlink());
-    Log.d("PostItemView", feed.getVoters().toString());
     setCommentCount(feed.getChildren());
     attachListenersOnStarView();
     attachListerOnAuthorHeader();
@@ -425,10 +424,6 @@ public class PostItemView extends FrameLayout {
     return mFeed.getPermlink();
   }
 
-  public String getFullPermlinkAsString() {
-    return String.format("%1$s/%2$s", getAuthor(), getPermlinkAsString());
-  }
-
   private boolean isContentEllipsised(TextView textView) {
     Layout layout = textView.getLayout();
     if (layout != null) {
@@ -440,20 +435,6 @@ public class PostItemView extends FrameLayout {
       }
     }
     return false;
-  }
-
-  private void checkEllipseAndInvalidateReadMoreButton(final TextView target, final TextView readMoreBtn) {
-    ViewTreeObserver vto = target.getViewTreeObserver();
-    vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-      @Override
-      public void onGlobalLayout() {
-        if (isContentEllipsised(target)) {
-          readMoreBtn.setVisibility(VISIBLE);
-        } else {
-          readMoreBtn.setVisibility(GONE);
-        }
-      }
-    });
   }
 
   private void fetchUpdatedBalance() {

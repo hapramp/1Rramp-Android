@@ -28,6 +28,7 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.utils.ConnectionUtils;
+import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.GoogleImageFilePathReader;
 import com.hapramp.utils.MomentsUtils;
@@ -193,9 +194,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     SteemPostCreator steemPostCreator = new SteemPostCreator();
     steemPostCreator.setSteemPostCreatorCallback(this);
     //add footer
-    body = body + "<hr><center><h4>\n" +
-      "<a href=\"https://1ramp.io\"><img src=\"https://ipfs.busy.org/ipfs/QmTFN4mf55SRZkP8Ug7jXVP3sXAmH7sd35zMNwLFpgGqNU\"/></a><br><a href=\"https://play.google.com/store/apps/details?id=com.hapramp\">Try 1Ramp Android Now!</a>\n" +
-      "</h4></center>";
+    body = body + Constants.FOOTER_TEXT;
     steemPostCreator.createPost(body, title, images, tags, generated_permalink);
   }
 
