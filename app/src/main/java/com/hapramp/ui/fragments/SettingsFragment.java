@@ -33,6 +33,8 @@ public class SettingsFragment extends Fragment {
   TextView logoutBtn;
   @BindView(R.id.tos)
   TextView tos;
+  @BindView(R.id.invite_btn)
+  TextView inviteBtn;
   private Context mContext;
 
   public SettingsFragment() {
@@ -58,6 +60,12 @@ public class SettingsFragment extends Fragment {
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+    inviteBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        inviteAFriend();
+      }
+    });
     logoutBtn.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -78,6 +86,15 @@ public class SettingsFragment extends Fragment {
     });
   }
 
+  private void inviteAFriend() {
+    Intent intent = new Intent(Intent.ACTION_SEND);
+    intent.putExtra(Intent.EXTRA_TEXT,
+      "Join communities, share your work and earn rewards on 1Ramp." +
+      " Steem powered social media for creators. Try it now! at https://goo.gl/AADhaC");
+    intent.setType("text/plain");
+    startActivity(Intent.createChooser(intent, "Invite a friend"));
+  }
+
   private void openTermsPage() {
     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.1ramp.io/terms.html"));
     startActivity(browserIntent);
@@ -87,7 +104,7 @@ public class SettingsFragment extends Fragment {
     new AlertDialog.Builder(mContext)
       .setTitle("Logout")
       .setMessage("Do you want to Logout ? ")
-      .setPositiveButton("LOGOUT", new DialogInterface.OnClickListener() {
+      .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
           logout();
