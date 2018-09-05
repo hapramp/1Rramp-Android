@@ -28,6 +28,7 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.utils.ConnectionUtils;
+import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.GoogleImageFilePathReader;
 import com.hapramp.utils.MomentsUtils;
@@ -192,6 +193,8 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     showPublishingProgressDialog(true, "Publishing...");
     SteemPostCreator steemPostCreator = new SteemPostCreator();
     steemPostCreator.setSteemPostCreatorCallback(this);
+    //add footer
+    body = body + Constants.FOOTER_TEXT;
     steemPostCreator.createPost(body, title, images, tags, generated_permalink);
   }
 

@@ -24,6 +24,7 @@ import com.hapramp.models.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
 import com.hapramp.steem.models.User;
+import com.hapramp.utils.Constants;
 import com.hapramp.utils.HashTagUtils;
 import com.hapramp.utils.ImageHandler;
 
@@ -243,7 +244,7 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
   }
 
   public String getContent() {
-    return content.getText().toString().trim();
+    return content.getText().toString().trim() + Constants.FOOTER_TEXT;
   }
 
   public boolean isMediaSelected() {
@@ -261,7 +262,7 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
   }
 
   public boolean isContentEnough() {
-    return getContent().length() > 0;
+    return content.getText().toString().trim().length() > 0;
   }
 
   public void setMediaSelectorListener(MediaSelectorListener mediaSelectorListener) {
