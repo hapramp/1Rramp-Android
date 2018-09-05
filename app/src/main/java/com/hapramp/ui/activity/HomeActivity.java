@@ -103,9 +103,9 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_home);
     ButterKnife.bind(this);
-    saveDeviceWidth();
     initObjects();
     transactFragment(FRAGMENT_HOME);
+    saveDeviceWidth();
     syncUserFollowings();
     setupToolbar();
     attachListeners();

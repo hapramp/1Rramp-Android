@@ -82,14 +82,11 @@ public class LoginActivity extends AppCompatActivity {
 
   private void checkLastLoginAndMoveAhead() {
     if (HaprampPreferenceManager.getInstance().isLoggedIn()) {
-      if (!AccessTokenValidator.isTokenExpired()) {
         if (HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson().length() == 0) {
           syncAllCommunities();
         } else {
           navigateToHomePage();
         }
-      } else {
-      }
     }
   }
 
