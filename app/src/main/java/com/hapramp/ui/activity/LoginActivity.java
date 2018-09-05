@@ -80,8 +80,35 @@ public class LoginActivity extends AppCompatActivity {
   }
 
   private void syncAllCommunities() {
-    DataStore.performAllCommunitySync();
-    syncUserSelectedCommunity();
+    showShadedProgress(getString(R.string.loading_community_message));
+    dataStore.requestAllCommunities(new CommunitiesCallback() {
+      @Override
+      public void onCommunityFetching() {
+
+      }
+
+      @Override
+      public void onCommunitiesAvailable(List<CommunityModel> communityModelList, boolean isFreshData) {
+        cacheAllCommunities(communityModelList);
+        syncUserSelectedCommunity();
+      }
+
+      @Override
+      public void onCommunitiesFetchError(String err) {
+
+      }
+    });
+  }
+
+  private void cacheAllCommunities(List<CommunityModel> communities) {
+    for (int i = 0; i < communities.size(); i++) {
+      CommunityModel cm = communities.get(i);
+      HaprampPreferenceManager.getInstance().setCommunityTagToColorPair(cm.getmTag(), cm.getmColor());
+      HaprampPreferenceManager.getInstance().setCommunityTagToNamePair(cm.getmTag(), cm.getmName());
+    }
+    HaprampPreferenceManager.getInstance()
+      .saveAllCommunityListAsJson(new Gson()
+        .toJson(new CommunityListWrapper(communities)));
   }
 
   private void attachListeners() {
@@ -175,7 +202,7 @@ public class LoginActivity extends AppCompatActivity {
     dataStore.requestUserCommunities(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
       new CommunitiesCallback() {
         @Override
-        public void onWhileWeAreFetchingCommunities() {
+        public void onCommunityFetching() {
 
         }
 
@@ -261,6 +288,7 @@ public class LoginActivity extends AppCompatActivity {
 
       @Override
       public void onFailure(Call<VerifiedToken> call, Throwable t) {
+        hideShadedProgress();
         Crashlytics.log("LoginError:" + t.toString());
         Toast.makeText(LoginActivity.this, "Verification failed!!",
           Toast.LENGTH_LONG).show();

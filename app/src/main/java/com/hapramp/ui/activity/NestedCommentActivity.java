@@ -192,7 +192,7 @@ public class NestedCommentActivity extends AppCompatActivity implements
   }
 
   @Override
-  public void whileWeAreFetchingComments() {
+  public void onCommentsFetching() {
     if (commentLoadingProgressBar != null) {
       commentLoadingProgressBar.setVisibility(View.VISIBLE);
       commentLoadingProgressMessage.setVisibility(View.VISIBLE);

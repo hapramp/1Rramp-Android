@@ -4,7 +4,7 @@ import com.hapramp.steem.models.User;
 
 
 public interface UserProfileCallback {
-  void onWeAreFetchingUserProfile();
+  void onUserProfileFetching();
 
   void onUserProfileAvailable(User user, boolean isFreshData);
 

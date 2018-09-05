@@ -3,7 +3,7 @@ package com.hapramp.datastore.callbacks;
 import com.hapramp.steem.models.User;
 
 public interface UserWalletCallback {
-  void whileWeAreFetchingWalletData();
+  void onFetchingWalletInfo();
 
   void onUser(User user);
 

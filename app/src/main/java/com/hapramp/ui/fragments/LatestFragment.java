@@ -114,7 +114,7 @@ public class LatestFragment extends Fragment implements FeedListView.FeedListVie
   }
 
   @Override
-  public void onWeAreFetchingUserFeed() {
+  public void onFeedsFetching() {
 
   }
 

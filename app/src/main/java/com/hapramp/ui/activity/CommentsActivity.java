@@ -172,7 +172,7 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
   }
 
   @Override
-  public void whileWeAreFetchingComments() {
+  public void onCommentsFetching() {
     if (commentLoadingProgressBar != null) {
       commentLoadingProgressBar.setVisibility(View.VISIBLE);
       commentLoadingProgressMessage.setVisibility(View.VISIBLE);

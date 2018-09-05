@@ -115,7 +115,7 @@ public class ProfileActivity extends AppCompatActivity implements ProfileRecycle
   }
 
   @Override
-  public void onWeAreFetchingUserFeed() {
+  public void onFeedsFetching() {
 
   }
 
