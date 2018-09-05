@@ -131,7 +131,7 @@ public class ProfileFragment extends Fragment implements ProfileRecyclerAdapter.
   }
 
   @Override
-  public void onWeAreFetchingUserFeed() {
+  public void onFeedsFetching() {
 
   }
 

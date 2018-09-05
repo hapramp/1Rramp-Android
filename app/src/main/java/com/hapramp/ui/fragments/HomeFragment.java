@@ -230,7 +230,7 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
   }
 
   @Override
-  public void onWeAreFetchingUserFeed() {
+  public void onFeedsFetching() {
   }
 
   @Override

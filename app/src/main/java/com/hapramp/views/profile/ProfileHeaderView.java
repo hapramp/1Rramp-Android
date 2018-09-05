@@ -351,7 +351,7 @@ public class ProfileHeaderView extends FrameLayout implements CompleteFollowingH
   }
 
   @Override
-  public void onWeAreFetchingUserProfile() {
+  public void onUserProfileFetching() {
 
   }
 
@@ -492,7 +492,7 @@ public class ProfileHeaderView extends FrameLayout implements CompleteFollowingH
   private void fetchUserCommunities() {
     dataStore.requestUserCommunities(mUsername, new CommunitiesCallback() {
       @Override
-      public void onWhileWeAreFetchingCommunities() {
+      public void onCommunityFetching() {
       }
 
       @Override

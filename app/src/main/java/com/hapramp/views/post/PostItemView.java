@@ -473,7 +473,7 @@ public class PostItemView extends FrameLayout {
   }
 
   private void setCommunities(List<String> communities) {
-    // community name + community color
+    Log.d("Binding",communities.toString());
     List<CommunityModel> cm = new ArrayList<>();
     for (int i = 0; i < communities.size(); i++) {
       if (Communities.doesCommunityExists(communities.get(i))) {
@@ -488,6 +488,7 @@ public class PostItemView extends FrameLayout {
   }
 
   private void addCommunitiesToLayout(List<CommunityModel> cms) {
+   // Log.d("Binding",cms.toString());
     int size = cms.size();
     resetVisibility();
     if (size > 0) {

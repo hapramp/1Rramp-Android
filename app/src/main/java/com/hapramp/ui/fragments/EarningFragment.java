@@ -184,7 +184,7 @@ public class EarningFragment extends Fragment implements
   }
 
   @Override
-  public void whileWeAreFetchingWalletData() {
+  public void onFetchingWalletInfo() {
   }
 
   @Override

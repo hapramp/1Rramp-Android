@@ -104,6 +104,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     setContentView(R.layout.activity_home);
     ButterKnife.bind(this);
     initObjects();
+    DataStore.performAllCommunitySync();
     transactFragment(FRAGMENT_HOME);
     saveDeviceWidth();
     syncUserFollowings();
@@ -218,7 +219,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     dataStore.requestUserProfile(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
       new UserProfileCallback() {
       @Override
-      public void onWeAreFetchingUserProfile() {
+      public void onUserProfileFetching() {
 
       }
 

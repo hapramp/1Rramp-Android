@@ -5,7 +5,7 @@ import com.hapramp.models.CommentModel;
 import java.util.ArrayList;
 
 public interface CommentsCallback {
-  void whileWeAreFetchingComments();
+  void onCommentsFetching();
 
   void onCommentsAvailable(ArrayList<CommentModel> comments);
 

@@ -5,7 +5,7 @@ import com.hapramp.steem.models.Feed;
 import java.util.List;
 
 public interface UserFeedCallback {
-  void onWeAreFetchingUserFeed();
+  void onFeedsFetching();
 
   void onUserFeedsAvailable(List<Feed> communityModelList, boolean isFreshData, boolean isAppendable);
 

@@ -39,7 +39,7 @@ public class CommunitySelectionPageViewModel extends ViewModel {
     DataStore dataStore = new DataStore();
     dataStore.requestAllCommunities(new CommunitiesCallback() {
       @Override
-      public void onWhileWeAreFetchingCommunities() {
+      public void onCommunityFetching() {
 
       }
 

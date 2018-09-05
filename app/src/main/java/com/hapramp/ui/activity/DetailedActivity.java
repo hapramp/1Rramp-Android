@@ -613,7 +613,7 @@ public class DetailedActivity extends AppCompatActivity implements
   }
 
   @Override
-  public void whileWeAreFetchingComments() {
+  public void onCommentsFetching() {
     if (commentLoadingProgressBar != null) {
       commentLoadingProgressBar.setVisibility(VISIBLE);
     }

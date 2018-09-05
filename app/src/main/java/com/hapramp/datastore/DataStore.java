@@ -1,8 +1,7 @@
 package com.hapramp.datastore;
 
 
-import android.util.Log;
-
+import com.google.gson.Gson;
 import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
 import com.hapramp.datastore.callbacks.FollowInfoCallback;
@@ -13,11 +12,14 @@ import com.hapramp.datastore.callbacks.UserFeedCallback;
 import com.hapramp.datastore.callbacks.UserProfileCallback;
 import com.hapramp.datastore.callbacks.UserSearchCallback;
 import com.hapramp.datastore.callbacks.UserWalletCallback;
+import com.hapramp.models.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.CommunityListWrapper;
 
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.Response;
 
@@ -25,12 +27,37 @@ public class DataStore extends DataDispatcher {
 
   private String currentFeedRequestTag;
 
+  public static void performAllCommunitySync() {
+    new DataStore().requestAllCommunities(new CommunitiesCallback() {
+      @Override
+      public void onCommunityFetching() {
+      }
+
+      @Override
+      public void onCommunitiesAvailable(List<CommunityModel> communities, boolean isFreshData) {
+        for (int i = 0; i < communities.size(); i++) {
+          CommunityModel cm = communities.get(i);
+          HaprampPreferenceManager.getInstance().setCommunityTagToColorPair(cm.getmTag(), cm.getmColor());
+          HaprampPreferenceManager.getInstance().setCommunityTagToNamePair(cm.getmTag(), cm.getmName());
+        }
+        HaprampPreferenceManager.getInstance()
+          .saveAllCommunityListAsJson(new Gson()
+            .toJson(new CommunityListWrapper(communities)));
+      }
+
+      @Override
+      public void onCommunitiesFetchError(String err) {
+
+      }
+    });
+  }
+
   /**
    * @param communitiesCallback callback
    */
   public void requestAllCommunities(final CommunitiesCallback communitiesCallback) {
     if (communitiesCallback != null) {
-      communitiesCallback.onWhileWeAreFetchingCommunities();
+      communitiesCallback.onCommunityFetching();
     }
     new Thread() {
       @Override
@@ -68,7 +95,7 @@ public class DataStore extends DataDispatcher {
   public void requestUserCommunities(final String username,
                                      final CommunitiesCallback communitiesCallback) {
     if (communitiesCallback != null) {
-      communitiesCallback.onWhileWeAreFetchingCommunities();
+      communitiesCallback.onCommunityFetching();
     }
     new Thread() {
       @Override
@@ -100,6 +127,14 @@ public class DataStore extends DataDispatcher {
   }
 
   /**
+   * @param requestTag check whether requestTag is currentRequestTag or not.
+   * @return true when given request tag in still the live request.
+   */
+  private boolean isFeedRequestLive(String requestTag) {
+    return this.currentFeedRequestTag.equals(requestTag);
+  }
+
+  /**
    * @param username         feed of username
    * @param refresh          Whether want to refresh data after fetched from network.
    *                         This has significant effect when user manually refresh the data
@@ -112,7 +147,7 @@ public class DataStore extends DataDispatcher {
     final String rtag = "user_feed_initial";
     this.currentFeedRequestTag = rtag;
     if (userFeedCallback != null) {
-      userFeedCallback.onWeAreFetchingUserFeed();
+      userFeedCallback.onFeedsFetching();
     }
     new Thread() {
       @Override
@@ -153,14 +188,6 @@ public class DataStore extends DataDispatcher {
   }
 
   /**
-   * @param requestTag check whether requestTag is currentRequestTag or not.
-   * @return true when given request tag in still the live request.
-   */
-  private boolean isFeedRequestLive(String requestTag) {
-    return this.currentFeedRequestTag.equals(requestTag);
-  }
-
-  /**
    * @param username         blog for username
    * @param refresh          Whether want to refresh data after fetched from network.
    * @param userFeedCallback callback
@@ -169,7 +196,7 @@ public class DataStore extends DataDispatcher {
                               final boolean refresh,
                               final UserFeedCallback userFeedCallback) {
     if (userFeedCallback != null) {
-      userFeedCallback.onWeAreFetchingUserFeed();
+      userFeedCallback.onFeedsFetching();
     }
     new Thread() {
       @Override
@@ -217,7 +244,7 @@ public class DataStore extends DataDispatcher {
                               final String start_permlink,
                               final UserFeedCallback userFeedCallback) {
     if (userFeedCallback != null) {
-      userFeedCallback.onWeAreFetchingUserFeed();
+      userFeedCallback.onFeedsFetching();
     }
     new Thread() {
       @Override
@@ -255,7 +282,7 @@ public class DataStore extends DataDispatcher {
   public void requestUserProfile(final String username,
                                  final UserProfileCallback userProfileCallback) {
     if (userProfileCallback != null) {
-      userProfileCallback.onWeAreFetchingUserProfile();
+      userProfileCallback.onUserProfileFetching();
     }
     new Thread() {
       @Override
@@ -291,7 +318,7 @@ public class DataStore extends DataDispatcher {
     final String rtag = "more_user_feed_" + start_author + "_" + start_permlink;
     this.currentFeedRequestTag = rtag;
     if (userFeedCallback != null) {
-      userFeedCallback.onWeAreFetchingUserFeed();
+      userFeedCallback.onFeedsFetching();
     }
     new Thread() {
       @Override
@@ -328,7 +355,7 @@ public class DataStore extends DataDispatcher {
     final String rtag = "community_feed_" + tag;
     this.currentFeedRequestTag = rtag;
     if (userFeedCallback != null) {
-      userFeedCallback.onWeAreFetchingUserFeed();
+      userFeedCallback.onFeedsFetching();
     }
     new Thread() {
       @Override
@@ -368,7 +395,7 @@ public class DataStore extends DataDispatcher {
     final String rtag = "new_on_hapramp";
     this.currentFeedRequestTag = rtag;
     if (userFeedCallback != null) {
-      userFeedCallback.onWeAreFetchingUserFeed();
+      userFeedCallback.onFeedsFetching();
     }
     new Thread() {
       @Override
@@ -398,52 +425,6 @@ public class DataStore extends DataDispatcher {
                 //want to refresh
                 dispatchSteemFeed(res, true, false, userFeedCallback);
               }
-            }
-          } else {
-            dispatchUserFeedsError("Error Code:" + response.code(), userFeedCallback);
-          }
-        }
-        catch (IOException e) {
-          dispatchUserFeedsError("IOException " + e.toString(), userFeedCallback);
-        }
-      }
-    }.start();
-  }
-
-  /**
-   * @param tag              posts with tag.
-   * @param start_author     post start from author.
-   * @param start_permlink   post start from permlink
-   * @param userFeedCallback callback
-   */
-  public void requestPostsNewOn1Ramp(final String tag,
-                                     final String start_author,
-                                     final String start_permlink,
-                                     final UserFeedCallback userFeedCallback) {
-    final String rtag = "new_on_hapramp";
-    this.currentFeedRequestTag = rtag;
-    if (userFeedCallback != null) {
-      userFeedCallback.onWeAreFetchingUserFeed();
-    }
-    new Thread() {
-      @Override
-      public void run() {
-        String url = URLS.steemUrl();
-        String cacheKey = "steemit_response_more_" + start_author + "_" + start_permlink;
-        String cachedResponse = DataCache.get(cacheKey);
-        boolean cachedDataReturned = false;
-        if (cachedResponse != null && isFeedRequestLive(rtag)) {
-          dispatchUserFeeds(cachedResponse, false, true, userFeedCallback);
-          cachedDataReturned = true;
-        }
-        try {
-          String requestBody = SteemRequestBody.discussionsByCreated(tag, start_author, start_permlink);
-          Response response = NetworkApi.getNetworkApiInstance().postAndFetch(url, requestBody);
-          if (response.isSuccessful()) {
-            String res = response.body().string();
-            DataCache.cache(url, res);
-            if (isFeedRequestLive(rtag) && !cachedDataReturned) {
-              dispatchSteemFeed(res, true, true, userFeedCallback);
             }
           } else {
             dispatchUserFeedsError("Error Code:" + response.code(), userFeedCallback);
@@ -549,11 +530,57 @@ public class DataStore extends DataDispatcher {
     }.start();
   }
 
+  /**
+   * @param tag              posts with tag.
+   * @param start_author     post start from author.
+   * @param start_permlink   post start from permlink
+   * @param userFeedCallback callback
+   */
+  public void requestPostsNewOn1Ramp(final String tag,
+                                     final String start_author,
+                                     final String start_permlink,
+                                     final UserFeedCallback userFeedCallback) {
+    final String rtag = "new_on_hapramp";
+    this.currentFeedRequestTag = rtag;
+    if (userFeedCallback != null) {
+      userFeedCallback.onFeedsFetching();
+    }
+    new Thread() {
+      @Override
+      public void run() {
+        String url = URLS.steemUrl();
+        String cacheKey = "steemit_response_more_" + start_author + "_" + start_permlink;
+        String cachedResponse = DataCache.get(cacheKey);
+        boolean cachedDataReturned = false;
+        if (cachedResponse != null && isFeedRequestLive(rtag)) {
+          dispatchUserFeeds(cachedResponse, false, true, userFeedCallback);
+          cachedDataReturned = true;
+        }
+        try {
+          String requestBody = SteemRequestBody.discussionsByCreated(tag, start_author, start_permlink);
+          Response response = NetworkApi.getNetworkApiInstance().postAndFetch(url, requestBody);
+          if (response.isSuccessful()) {
+            String res = response.body().string();
+            DataCache.cache(url, res);
+            if (isFeedRequestLive(rtag) && !cachedDataReturned) {
+              dispatchSteemFeed(res, true, true, userFeedCallback);
+            }
+          } else {
+            dispatchUserFeedsError("Error Code:" + response.code(), userFeedCallback);
+          }
+        }
+        catch (IOException e) {
+          dispatchUserFeedsError("IOException " + e.toString(), userFeedCallback);
+        }
+      }
+    }.start();
+  }
+
   public void requestComments(final String author,
                               final String permlink,
                               final CommentsCallback commentsCallback) {
     if (commentsCallback != null) {
-      commentsCallback.whileWeAreFetchingComments();
+      commentsCallback.onCommentsFetching();
     }
     new Thread() {
       @Override
@@ -572,39 +599,6 @@ public class DataStore extends DataDispatcher {
         }
         catch (IOException e) {
           dispatchCommentsFetchError("IOException " + e.toString(), commentsCallback);
-        }
-      }
-    }.start();
-  }
-
-  public void requestWalletInfo(final String username,
-                                final UserWalletCallback userWalletCallback) {
-    if (userWalletCallback != null) {
-      userWalletCallback.whileWeAreFetchingWalletData();
-    }
-    new Thread() {
-      @Override
-      public void run() {
-        try {
-          String steemUrl = URLS.steemUrl();
-          String globalProps = SteemRequestBody.globalProperties();
-          Response globalPropsResponse = NetworkApi.getNetworkApiInstance().postAndFetch(steemUrl,
-            globalProps);
-          String profileUrl = URLS.userProfileUrl(username);
-          Response userReponse = NetworkApi.getNetworkApiInstance().fetch(profileUrl);
-          if (globalPropsResponse.isSuccessful() && userReponse.isSuccessful()) {
-            String globalePropsResponseJson = globalPropsResponse.body().string();
-            String userResponseJson = userReponse.body().string();
-            dispatchWalletInfo(globalePropsResponseJson, userResponseJson, userWalletCallback);
-          } else {
-            dispatchWalletInfoFetchError("Error Code:" +
-              globalPropsResponse.code() +
-              "& " +
-              userReponse.code(), userWalletCallback);
-          }
-        }
-        catch (Exception e) {
-          dispatchWalletInfoFetchError("Error:" + e.toString(), userWalletCallback);
         }
       }
     }.start();
@@ -692,5 +686,37 @@ public class DataStore extends DataDispatcher {
     }.start();
   }
 
+  public void requestWalletInfo(final String username,
+                                final UserWalletCallback userWalletCallback) {
+    if (userWalletCallback != null) {
+      userWalletCallback.onFetchingWalletInfo();
+    }
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          String steemUrl = URLS.steemUrl();
+          String globalProps = SteemRequestBody.globalProperties();
+          Response globalPropsResponse = NetworkApi.getNetworkApiInstance().postAndFetch(steemUrl,
+            globalProps);
+          String profileUrl = URLS.userProfileUrl(username);
+          Response userReponse = NetworkApi.getNetworkApiInstance().fetch(profileUrl);
+          if (globalPropsResponse.isSuccessful() && userReponse.isSuccessful()) {
+            String globalePropsResponseJson = globalPropsResponse.body().string();
+            String userResponseJson = userReponse.body().string();
+            dispatchWalletInfo(globalePropsResponseJson, userResponseJson, userWalletCallback);
+          } else {
+            dispatchWalletInfoFetchError("Error Code:" +
+              globalPropsResponse.code() +
+              "& " +
+              userReponse.code(), userWalletCallback);
+          }
+        }
+        catch (Exception e) {
+          dispatchWalletInfoFetchError("Error:" + e.toString(), userWalletCallback);
+        }
+      }
+    }.start();
+  }
 }
 

@@ -70,7 +70,6 @@ public class LoginActivity extends AppCompatActivity {
     ButterKnife.bind(this);
     init();
     attachListeners();
-    checkLastLoginAndMoveAhead();
   }
 
   @Override
@@ -80,21 +79,12 @@ public class LoginActivity extends AppCompatActivity {
       AnalyticsParams.SCREEN_LOGIN, null);
   }
 
-  private void checkLastLoginAndMoveAhead() {
-    if (HaprampPreferenceManager.getInstance().isLoggedIn()) {
-        if (HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson().length() == 0) {
-          syncAllCommunities();
-        } else {
-          navigateToHomePage();
-        }
-    }
-  }
-
   private void syncAllCommunities() {
+    showShadedProgress(getString(R.string.loading_community_message));
     dataStore.requestAllCommunities(new CommunitiesCallback() {
       @Override
-      public void onWhileWeAreFetchingCommunities() {
-        showShadedProgress(getString(R.string.loading_community_message));
+      public void onCommunityFetching() {
+
       }
 
       @Override
@@ -110,6 +100,17 @@ public class LoginActivity extends AppCompatActivity {
     });
   }
 
+  private void cacheAllCommunities(List<CommunityModel> communities) {
+    for (int i = 0; i < communities.size(); i++) {
+      CommunityModel cm = communities.get(i);
+      HaprampPreferenceManager.getInstance().setCommunityTagToColorPair(cm.getmTag(), cm.getmColor());
+      HaprampPreferenceManager.getInstance().setCommunityTagToNamePair(cm.getmTag(), cm.getmName());
+    }
+    HaprampPreferenceManager.getInstance()
+      .saveAllCommunityListAsJson(new Gson()
+        .toJson(new CommunityListWrapper(communities)));
+  }
+
   private void attachListeners() {
     loginButton.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -123,12 +124,6 @@ public class LoginActivity extends AppCompatActivity {
         openSteemitSignUp();
       }
     });
-  }
-
-  private void cacheAllCommunities(List<CommunityModel> communities) {
-    HaprampPreferenceManager.getInstance()
-      .saveUserSelectedCommunitiesAsJson(new Gson()
-        .toJson(new CommunityListWrapper(communities)));
   }
 
   private void navigateToHomePage() {
@@ -207,7 +202,7 @@ public class LoginActivity extends AppCompatActivity {
     dataStore.requestUserCommunities(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
       new CommunitiesCallback() {
         @Override
-        public void onWhileWeAreFetchingCommunities() {
+        public void onCommunityFetching() {
 
         }
 
@@ -293,6 +288,7 @@ public class LoginActivity extends AppCompatActivity {
 
       @Override
       public void onFailure(Call<VerifiedToken> call, Throwable t) {
+        hideShadedProgress();
         Crashlytics.log("LoginError:" + t.toString());
         Toast.makeText(LoginActivity.this, "Verification failed!!",
           Toast.LENGTH_LONG).show();
