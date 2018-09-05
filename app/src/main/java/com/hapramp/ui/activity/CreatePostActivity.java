@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -79,6 +80,27 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
     getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     steemPostCreator = new SteemPostCreator();
     steemPostCreator.setSteemPostCreatorCallback(this);
+    Intent intent = getIntent();
+    String action = intent.getAction();
+    String type = intent.getType();
+    if (Intent.ACTION_SEND.equals(action) && type != null) {
+      if ("text/plain".equals(type)) {
+        handleSendText(intent);
+      } else if (type.startsWith("image/")) {
+        handleSendImage(intent);
+      }
+    }
+  }
+
+  private void handleSendText(Intent intent) {
+    String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+    postCreateComponent.setDefaultText(sharedText);
+  }
+
+  private void handleSendImage(Intent intent) {
+    Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+    intent.setData(imageUri);
+    handleImageResult(intent);
   }
 
   private void initProgressDialog() {
