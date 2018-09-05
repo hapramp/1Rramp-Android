@@ -1,7 +1,6 @@
 package com.hapramp.datastore;
 
 import android.os.Handler;
-
 import com.google.gson.Gson;
 import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;

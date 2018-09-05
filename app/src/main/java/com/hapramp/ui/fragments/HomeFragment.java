@@ -71,6 +71,7 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
                            Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_home, container, false);
     unbinder = ButterKnife.bind(this, view);
+    fetchAllPosts();
     if (HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson().length() > 0) {
       initCategoryView();
     } else {
@@ -133,7 +134,6 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
     feedListView.setFeedListViewListener(this);
     feedListView.initialLoading();
     feedListView.setTopMarginForShimmer(104);
-    fetchAllPosts();
   }
 
   @Override

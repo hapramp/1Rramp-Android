@@ -2,6 +2,7 @@ package com.hapramp.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.hapramp.main.HapRampMain;
 
@@ -30,5 +31,10 @@ public class DataStoreCachePreference {
 
   public String getResponse(String url) {
     return preferences.getString("response_" + url, null);
+  }
+
+  public void clearCaches() {
+    editor.clear();
+    editor.apply();
   }
 }

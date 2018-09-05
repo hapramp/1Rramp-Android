@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.multidex.MultiDexApplication;
 
 import com.google.firebase.FirebaseApp;
+import com.hapramp.preferences.HaprampPreferenceManager;
 
 /**
  * Created by Ankit on 5/16/2017.
