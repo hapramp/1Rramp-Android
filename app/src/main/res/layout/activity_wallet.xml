@@ -16,7 +16,7 @@
 
 
     <TextView
-        android:id="@+id/closeBtn"
+        android:id="@+id/backBtn"
         android:layout_width="?actionBarSize"
         android:layout_height="?actionBarSize"
         android:background="?selectableItemBackgroundBorderless"

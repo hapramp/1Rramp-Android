@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.hapramp.R;
 import com.hapramp.datastore.DataStore;
-import com.hapramp.datastore.TransferHistoryParser;
 import com.hapramp.datastore.callbacks.TransferHistoryCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.TransferHistoryModel;
@@ -28,7 +27,7 @@ import butterknife.ButterKnife;
 public class AccountHistoryActivity extends AppCompatActivity implements TransferHistoryCallback {
 
   public static final String EXTRA_USERNAME = "username";
-  @BindView(R.id.closeBtn)
+  @BindView(R.id.backBtn)
   TextView closeBtn;
   @BindView(R.id.toolbar_container)
   RelativeLayout toolbarContainer;

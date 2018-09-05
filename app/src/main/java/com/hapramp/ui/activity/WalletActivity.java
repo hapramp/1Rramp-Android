@@ -15,7 +15,7 @@ import butterknife.ButterKnife;
 
 public class WalletActivity extends AppCompatActivity {
   public static final String EXTRA_USERNAME = "username";
-  @BindView(R.id.closeBtn)
+  @BindView(R.id.backBtn)
   TextView closeBtn;
 
   @Override
