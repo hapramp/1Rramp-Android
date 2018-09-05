@@ -243,7 +243,9 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
   }
 
   public String getContent() {
-    return content.getText().toString().trim();
+    return content.getText().toString().trim() + "<hr><center><h4>\n" +
+      "<a href=\"https://1ramp.io\"><img src=\"https://ipfs.busy.org/ipfs/QmTFN4mf55SRZkP8Ug7jXVP3sXAmH7sd35zMNwLFpgGqNU\"/></a><br><a href=\"https://play.google.com/store/apps/details?id=com.hapramp\">Try 1Ramp Android Now!</a>\n" +
+      "</h4></center>";
   }
 
   public boolean isMediaSelected() {
@@ -261,7 +263,7 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
   }
 
   public boolean isContentEnough() {
-    return getContent().length() > 0;
+    return content.getText().toString().trim().length() > 0;
   }
 
   public void setMediaSelectorListener(MediaSelectorListener mediaSelectorListener) {
