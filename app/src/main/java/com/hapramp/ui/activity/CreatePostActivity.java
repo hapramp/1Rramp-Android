@@ -138,7 +138,7 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
   }
 
   private void close() {
-    finish();
+    closeCreatePostPage();
     overridePendingTransition(R.anim.slide_down_enter, R.anim.slide_down_exit);
   }
 
@@ -337,9 +337,13 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
     new Handler().postDelayed(new Runnable() {
       @Override
       public void run() {
-        finish();
+        closeCreatePostPage();
       }
     }, 1000);
+  }
+
+  private void closeCreatePostPage() {
+    finish();
   }
 
   @Override

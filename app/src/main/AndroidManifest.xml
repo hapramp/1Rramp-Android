@@ -39,6 +39,7 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.activity.CreatePostActivity"
+            android:parentActivityName=".ui.activity.HomeActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.CreateArticleActivity"
