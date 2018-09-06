@@ -17,12 +17,14 @@ public class ReceiveImageActivity extends AppCompatActivity {
     if (HaprampPreferenceManager.getInstance().isLoggedIn()) {
       Intent intent = getIntent();
       Intent cpi = new Intent(this, CreatePostActivity.class);
+      cpi.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
       cpi.setAction(intent.getAction());
       cpi.setType(intent.getType());
       cpi.putExtras(intent.getExtras());
       startActivity(cpi);
     } else {
       Intent loginIntent = new Intent(this, LoginActivity.class);
+      loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
       startActivity(loginIntent);
       finish();
     }
