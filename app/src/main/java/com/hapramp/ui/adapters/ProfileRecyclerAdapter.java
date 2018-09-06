@@ -86,8 +86,10 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
   }
 
   private void removeItemAt(int pos) {
-    feeds.remove(pos - 1);
-    notifyItemRemoved(pos);
+    if (feeds.size() > pos) {
+      feeds.remove(pos - 1);
+      notifyItemRemoved(pos);
+    }
   }
 
   @Override
@@ -126,7 +128,7 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     if (newPosts.size() == 0) {
       hasChanceOfMoreFeeds = false;
     } else {
-      this.feeds = newPosts;
+      this.feeds = new ArrayList<>(newPosts);
       hasChanceOfMoreFeeds = true;
       notifyItemRangeChanged(1, newPosts.size());
     }
