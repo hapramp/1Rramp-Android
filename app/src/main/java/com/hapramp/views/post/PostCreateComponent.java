@@ -221,8 +221,9 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
         .append(postImageView.getDownloadUrl())
         .append(")\\n");
     } else if (youtubeId != null) {
-      stringBuilder.append(String.format("\n<iframe src=\"http://www.youtube.com/embed/%s\"" +
-        " width=\"560\" height=\"315\" frameborder=\"0\" allowfullscreen></iframe>\n", youtubeId));
+      stringBuilder.append(String.format("\n<div class=\"videoWrapper\">" +
+        "<iframe src=\"https://www.youtube.com/embed/%s?rel=0&hd=1\"" +
+        " width=\"560\" height=\"349\" frameborder=\"0\" allowfullscreen></iframe></div>\n", youtubeId));
     }
     if (getContent().length() > 0) {
       stringBuilder
