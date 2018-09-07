@@ -105,7 +105,6 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     articleCategoryView.initCategory();
     editorControlBar.setEditorControlListener(this);
     editorControlBar.setEditor(markDEditor);
-    markDEditor.setHeading(TextComponentStyle.H1);
     markDEditor.setServerInfo(URLS.BASE_URL, HaprampPreferenceManager.getInstance().getUserToken());
   }
 

@@ -309,11 +309,14 @@ public class DetailedActivity extends AppCompatActivity implements
       @Override
       public boolean shouldOverrideUrlLoading(WebView view, String url) {
         if (url != null) {
-          view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-          return true;
+          if (url.matches(Constants.URL_REGEX)) {
+            view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+            return true;
+          }
         } else {
           return true;
         }
+        return true;
       }
     });
     webView.getSettings().setLoadWithOverviewMode(true);
