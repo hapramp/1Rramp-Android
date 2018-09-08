@@ -134,6 +134,11 @@ public class EarningFragment extends Fragment implements
         valuesAvailable++;
         showEstimatedEarnings();
       }
+
+      @Override
+      public void onErrorFetchingRate() {
+
+      }
     });
     sbdRateView.setCoinId(Coins.SBD);
     sbdRateView.setRateCallback(new CoinView.RateCallback() {
@@ -142,6 +147,11 @@ public class EarningFragment extends Fragment implements
         sbd_rate = rate;
         valuesAvailable++;
         showEstimatedEarnings();
+      }
+
+      @Override
+      public void onErrorFetchingRate() {
+
       }
     });
     fetchWalletInfo();
