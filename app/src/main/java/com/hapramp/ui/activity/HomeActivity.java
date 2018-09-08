@@ -38,6 +38,7 @@ import com.hapramp.ui.fragments.SettingsFragment;
 import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.utils.FollowingsSyncUtils;
 import com.hapramp.utils.FontManager;
+import com.hapramp.utils.WalletOperationMethods;
 import com.hapramp.views.extraa.CreateButtonView;
 
 import java.util.List;
@@ -114,6 +115,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     postUploadReceiver = new PostUploadReceiver();
     fetchCompleteUserInfo();
     DataStore.requestSyncLastPostCreationTime();
+    WalletOperationMethods.testUrls();
   }
 
   private void saveDeviceWidth() {
