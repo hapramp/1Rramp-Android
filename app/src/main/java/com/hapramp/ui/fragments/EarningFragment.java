@@ -29,7 +29,6 @@ import com.hapramp.ui.activity.AccountHistoryActivity;
 import com.hapramp.ui.activity.PowerDownActivity;
 import com.hapramp.ui.activity.PowerUpActivity;
 import com.hapramp.ui.activity.TransferActivity;
-import com.hapramp.utils.Constants;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.ReputationCalc;
 import com.hapramp.views.extraa.BubbleProgressBar;
@@ -433,8 +432,8 @@ public class EarningFragment extends Fragment implements
         rewardExists = true;
       }
       if (vestsReward > 0) {
-        rewardPanelText.append(String.format(Locale.US, "%.4f SP",
-          vestsReward / Constants.SP_TO_VESTS_RATE));
+        rewardPanelText.append(String.format(Locale.US, "%.3f SP",
+          vestsReward / HaprampPreferenceManager.getInstance().getVestsPerSteem()));
         rewardExists = true;
       }
       if (rewardExists) {

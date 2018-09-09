@@ -137,7 +137,7 @@ public class TransferActivity extends AppCompatActivity {
 
   private boolean validateAmount() {
     if (usernameEt.getText().toString().trim().length() == 0) {
-      toast("Enter username");
+      toast("Username missing");
       return false;
     }
     String inputAmount = amountEt.getText().toString();

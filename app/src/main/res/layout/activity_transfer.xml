@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/appBar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -62,7 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/username_label"
             android:layout_marginLeft="12dp"
-            android:hint="username"
+            android:hint="Recipient's username"
             android:layout_marginTop="16dp"
             android:paddingBottom="16dp"
             android:textSize="14sp"
@@ -87,7 +86,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/amount_label"
             android:layout_marginLeft="12dp"
-            android:hint="amount to send"
+            android:hint="Amount to send"
             android:layout_marginTop="16dp"
             android:paddingBottom="16dp"
             android:textSize="14sp"
@@ -148,7 +147,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:gravity="center"
-            android:text="MESSAGE (MEMO)"
+            android:text="MEMO"
             android:textStyle="bold"
             android:textColor="@color/Black54"
             android:textSize="14sp" />
@@ -159,7 +158,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/memo_label"
             android:layout_marginLeft="12dp"
-            android:hint="message"
+            android:hint="Memo"
             android:layout_marginTop="16dp"
             android:paddingBottom="16dp"
             android:textSize="14sp"

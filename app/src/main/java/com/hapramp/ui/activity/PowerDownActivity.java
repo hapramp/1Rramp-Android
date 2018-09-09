@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
+import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.WalletOperations;
@@ -92,7 +93,7 @@ public class PowerDownActivity extends AppCompatActivity {
     }
     double amount = Double.parseDouble(inputAmount);
     if (amount == 0) {
-      toast("Amount should be greater than 0");
+      toast("Amount should be greater than or equal to 0.001");
       return false;
     }
     if (amount > mSPBalance) {
@@ -115,6 +116,6 @@ public class PowerDownActivity extends AppCompatActivity {
   }
 
   private String getVests(double amount) {
-    return String.format("%s VESTS", amount * Constants.SP_TO_VESTS_RATE);
+    return String.format("%s VESTS", amount * HaprampPreferenceManager.getInstance().getVestsPerSteem());
   }
 }
