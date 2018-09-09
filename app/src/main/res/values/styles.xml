@@ -18,4 +18,9 @@
         <item name="android:dropDownHorizontalOffset">0dp</item>
     </style>
 
+    <style name="MyEditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="colorControlActivated">@color/colorPrimary</item>
+        <item name="colorControlNormal">#1f000000</item>
+    </style>
+
 </resources>

@@ -23,9 +23,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
-            android:layout_toEndOf="@+id/user_image"
+            android:layout_toRightOf="@+id/user_image"
             android:text="----" />
 
         <LinearLayout
@@ -33,8 +33,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/username"
-            android:layout_marginStart="8dp"
-            android:layout_toEndOf="@+id/user_image"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@+id/user_image"
             android:orientation="horizontal">
 
             <TextView
@@ -51,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
                 android:text="(--)"
                 android:textColor="@color/Black87"
                 android:textSize="14sp"
@@ -59,25 +59,8 @@
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/see_history_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@+id/infor_card"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/claim_reward_bg"
-            android:paddingBottom="8dp"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp"
-            android:paddingTop="8dp"
-            android:text="Go To History"
-            android:textAllCaps="true"
-            android:textColor="#a1afba"
-            android:textSize="16sp" />
-
         <android.support.v7.widget.CardView
-            android:id="@+id/infor_card"
+            android:id="@+id/account_info_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/user_image"
@@ -94,25 +77,26 @@
                     android:id="@+id/steem_icon"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:alpha="0.7"
                     android:padding="18dp"
                     android:src="@drawable/steem_icon" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="64dp"
-                    android:layout_toEndOf="@+id/steem_icon"
+                    android:layout_toRightOf="@+id/steem_icon"
                     android:gravity="center_vertical"
                     android:text="Steem"
-                    android:textSize="16sp" />
+                    android:textColor="#dd000000"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:id="@+id/divider1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/steem_icon"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
                     android:src="@drawable/wallet_item_divider" />
 
                 <ImageView
@@ -120,7 +104,6 @@
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:layout_below="@+id/divider1"
-                    android:alpha="0.7"
                     android:padding="18dp"
                     android:src="@drawable/sp_icon" />
 
@@ -128,18 +111,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="64dp"
                     android:layout_below="@+id/divider1"
-                    android:layout_toEndOf="@+id/steem_icon"
+                    android:layout_toRightOf="@+id/steem_icon"
                     android:gravity="center_vertical"
                     android:text="Steem Power"
-                    android:textSize="16sp" />
+                    android:textColor="#dd000000"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:id="@+id/divider2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/steem_power_icon"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
                     android:src="@drawable/wallet_item_divider" />
 
                 <ImageView
@@ -147,7 +132,6 @@
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:layout_below="@+id/divider2"
-                    android:alpha="0.7"
                     android:padding="18dp"
                     android:src="@drawable/steem_dollar" />
 
@@ -155,18 +139,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="64dp"
                     android:layout_below="@+id/divider2"
-                    android:layout_toEndOf="@+id/steem_icon"
+                    android:layout_toRightOf="@+id/steem_icon"
                     android:gravity="center_vertical"
                     android:text="Steem Dollar"
-                    android:textSize="16sp" />
+                    android:textColor="#dd000000"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:id="@+id/divider3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/steem_dollar_icon"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
                     android:src="@drawable/wallet_item_divider" />
 
                 <ImageView
@@ -174,7 +160,6 @@
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:layout_below="@+id/divider3"
-                    android:alpha="0.7"
                     android:padding="18dp"
                     android:src="@drawable/savings" />
 
@@ -182,18 +167,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="64dp"
                     android:layout_below="@+id/divider3"
-                    android:layout_toEndOf="@+id/steem_icon"
+                    android:layout_toRightOf="@+id/steem_icon"
                     android:gravity="center_vertical"
                     android:text="Savings"
-                    android:textSize="16sp" />
+                    android:textColor="#dd000000"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:id="@+id/divider4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/steem_saving_icon"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
                     android:src="@drawable/wallet_item_divider" />
 
                 <ImageView
@@ -201,7 +188,6 @@
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:layout_below="@+id/divider4"
-                    android:alpha="0.7"
                     android:padding="18dp"
                     android:src="@drawable/account_value_icon" />
 
@@ -209,124 +195,253 @@
                     android:layout_width="wrap_content"
                     android:layout_height="64dp"
                     android:layout_below="@+id/divider4"
-                    android:layout_toEndOf="@+id/steem_icon"
+                    android:layout_toRightOf="@+id/steem_icon"
                     android:gravity="center_vertical"
                     android:text="Est. Account Value"
-                    android:textSize="16sp" />
+                    android:textColor="#dd000000"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/wallet_steem_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="64dp"
-                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:gravity="center_vertical"
-                    android:paddingEnd="16dp"
-                    android:paddingStart="16dp"
-                    android:textColor="@color/Black87"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/wallet_steem_power_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="64dp"
-                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:layout_below="@+id/divider1"
                     android:gravity="center_vertical"
-                    android:paddingEnd="16dp"
-                    android:paddingStart="16dp"
-                    android:textColor="@color/Black87"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/wallet_steem_dollar_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="64dp"
-                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:layout_below="@+id/divider2"
                     android:gravity="center_vertical"
-                    android:paddingEnd="16dp"
-                    android:paddingStart="16dp"
-                    android:textColor="@color/Black87"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/wallet_saving_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="64dp"
-                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:layout_below="@+id/divider3"
                     android:gravity="center_vertical"
-                    android:paddingEnd="16dp"
-                    android:paddingStart="16dp"
-                    android:textColor="@color/Black87"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/wallet_est_account_value_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="64dp"
-                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:layout_below="@+id/divider4"
                     android:gravity="center_vertical"
-                    android:paddingEnd="16dp"
-                    android:paddingStart="16dp"
-                    android:textColor="@color/Black87"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="14sp" />
 
                 <com.hapramp.views.extraa.BubbleProgressBar
                     android:id="@+id/steem_progress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="16dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="16dp"
                     android:layout_marginTop="28dp" />
 
                 <com.hapramp.views.extraa.BubbleProgressBar
                     android:id="@+id/steem_power_progress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:layout_below="@+id/divider1"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
                     android:layout_marginTop="28dp" />
 
                 <com.hapramp.views.extraa.BubbleProgressBar
                     android:id="@+id/steem_dollar_progress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:layout_below="@+id/divider2"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
                     android:layout_marginTop="28dp" />
 
                 <com.hapramp.views.extraa.BubbleProgressBar
                     android:id="@+id/saving_progress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:layout_below="@+id/divider3"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
                     android:layout_marginTop="28dp" />
 
                 <com.hapramp.views.extraa.BubbleProgressBar
                     android:id="@+id/estimated_value_progress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:layout_below="@+id/divider4"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
                     android:layout_marginTop="28dp" />
-
             </RelativeLayout>
 
         </android.support.v7.widget.CardView>
+
+        <RelativeLayout
+            android:id="@+id/account_operation_button_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_below="@+id/account_info_card">
+
+            <RelativeLayout
+                android:id="@+id/claim_reward_btn"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:clickable="true"
+                android:visibility="gone"
+                android:background="#dd000000">
+
+                <TextView
+                    android:id="@+id/lablel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:paddingTop="8dp"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:text="CLAIM REWARD"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:id="@+id/rewardPanelTv"
+                    android:layout_below="@+id/lablel"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:paddingTop="8dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/transfer_btn"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_below="@+id/claim_reward_btn"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/filled_btn_bg"
+                android:elevation="1dp"
+                android:clickable="true"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="TRANSFER"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/power_up_btn"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_below="@+id/transfer_btn"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/empty_btn_bg"
+                android:elevation="1dp"
+                android:clickable="true"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="POWER UP"
+                    android:textColor="#000000"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_marginBottom="4dp"
+                android:id="@+id/power_down_btn"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_below="@+id/power_up_btn"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/empty_btn_bg"
+                android:elevation="1dp"
+                android:clickable="true"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="POWER DOWN"
+                    android:textColor="#000000"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/history_btn"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_below="@+id/account_operation_button_container"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/empty_btn_bg"
+            android:clickable="true"
+            android:elevation="1dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="TRANSACTIONS"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
 
         <xute.cryptocoinview.CoinView
             android:id="@+id/sbd_rate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/see_history_btn"
-            android:layout_marginTop="8dp" />
+            android:layout_below="@+id/history_btn"
+            android:layout_marginTop="16dp" />
 
         <xute.cryptocoinview.CoinView
             android:id="@+id/steem_rate"
@@ -334,7 +449,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/sbd_rate"
             android:layout_marginBottom="64dp"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="16dp" />
 
     </RelativeLayout>
 

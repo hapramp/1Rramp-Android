@@ -1,6 +1,7 @@
 package com.hapramp.datastore;
 
 import android.os.Handler;
+
 import com.google.gson.Gson;
 import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
@@ -283,7 +284,11 @@ public class DataDispatcher {
             userWalletCallback.onUserSteemDollar(user.getSbd_balance());
             userWalletCallback.onUserSavingSteem(user.getSavings_balance());
             userWalletCallback.onUserSavingSBD(user.getSavings_sbd_balance());
-            userWalletCallback.onUserSteemPower(String.format(Locale.US, "%.2f SP", steemPower));
+            userWalletCallback.onUserRewards(
+              user.getSbdRewardBalance(),
+              user.getSteemRewardBalance(),
+              user.getVestsRewardBalance());
+            userWalletCallback.onUserSteemPower(String.format(Locale.US, "%.3f SP", steemPower));
           }
         }
       );
