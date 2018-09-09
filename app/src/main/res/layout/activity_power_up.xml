@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/appBar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/action_bar_container"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="#ffffff">
+
+        <TextView
+            android:id="@+id/backBtn"
+            android:layout_width="56dp"
+            android:layout_height="match_parent"
+            android:background="?selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:text=""
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/action_bar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="?actionBarSize"
+            android:layout_toRightOf="@+id/backBtn"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="POWER UP"
+            android:textColor="@color/Black54"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/action_bar_container"
+        android:layout_marginTop="4dp"
+        android:paddingBottom="24dp"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/amount_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="AMOUNT"
+            android:textStyle="bold"
+            android:textColor="@color/Black54"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/amount_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/amount_label"
+            android:layout_marginLeft="12dp"
+            android:hint="Amount"
+            android:layout_marginTop="16dp"
+            android:paddingBottom="16dp"
+            android:textSize="14sp"
+            android:inputType="numberDecimal"
+            android:theme="@style/MyEditTextStyle" />
+
+        <TextView
+            android:id="@+id/balanceTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/amount_et"
+            android:textSize="12sp"
+            android:layout_marginLeft="16dp"
+            android:textColor="@color/colorPrimary"/>
+
+        <TextView
+            android:id="@+id/continueBtn"
+            android:text="CONTINUE"
+            android:layout_marginLeft="16dp"
+            android:background="@drawable/filled_btn_bg"
+            android:elevation="1dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:layout_marginTop="24dp"
+            android:layout_below="@+id/balanceTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/cancelBtn"
+            android:text="CANCEL"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@+id/continueBtn"
+            android:background="@drawable/black_filled_btn_bg"
+            android:elevation="1dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:layout_marginTop="24dp"
+            android:layout_below="@+id/balanceTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

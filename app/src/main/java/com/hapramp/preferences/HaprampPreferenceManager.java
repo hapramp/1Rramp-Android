@@ -204,4 +204,13 @@ public class HaprampPreferenceManager {
     editor.putInt("image_load_down_grade_factor", downGradeFactor);
     editor.apply();
   }
+
+  public void saveVestsPerSteem(double vestsPerSteem) {
+    editor.putFloat("vests_per_steem", (float) vestsPerSteem);
+    editor.apply();
+  }
+
+  public float getVestsPerSteem() {
+    return preferences.getFloat("vests_per_steem", 0);
+  }
 }

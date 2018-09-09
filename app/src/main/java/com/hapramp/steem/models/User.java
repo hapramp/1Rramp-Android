@@ -49,6 +49,17 @@ public class User {
   @Expose
   @SerializedName("vesting_shares")
   private String vesting_share;
+  @Expose
+  @SerializedName("reward_sbd_balance")
+  private String sbdRewardBalance;
+
+  @Expose
+  @SerializedName("reward_steem_balance")
+  private String steemRewardBalance;
+
+  @Expose
+  @SerializedName("reward_vesting_balance")
+  private String vestsRewardBalance;
 
   public User() {
   }
@@ -70,7 +81,10 @@ public class User {
               String sbd_balance,
               String savings_balance,
               String balance,
-              String vesting_share) {
+              String vesting_share,
+              String sbdRewardBalance,
+              String steemRewardBalance,
+              String vestsRewardBalance) {
     this.username = username;
     this.fullname = fullname;
     this.location = location;
@@ -89,6 +103,33 @@ public class User {
     this.savings_balance = savings_balance;
     this.balance = balance;
     this.vesting_share = vesting_share;
+    this.sbdRewardBalance = sbdRewardBalance;
+    this.steemRewardBalance = steemRewardBalance;
+    this.vestsRewardBalance = vestsRewardBalance;
+  }
+
+  public String getSbdRewardBalance() {
+    return sbdRewardBalance;
+  }
+
+  public void setSbdRewardBalance(String sbdRewardBalance) {
+    this.sbdRewardBalance = sbdRewardBalance;
+  }
+
+  public String getSteemRewardBalance() {
+    return steemRewardBalance;
+  }
+
+  public void setSteemRewardBalance(String steemRewardBalance) {
+    this.steemRewardBalance = steemRewardBalance;
+  }
+
+  public String getVestsRewardBalance() {
+    return vestsRewardBalance;
+  }
+
+  public void setVestsRewardBalance(String vestsRewardBalance) {
+    this.vestsRewardBalance = vestsRewardBalance;
   }
 
   public int getCommentCount() {

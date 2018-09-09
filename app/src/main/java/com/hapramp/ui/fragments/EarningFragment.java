@@ -1,5 +1,6 @@
 package com.hapramp.ui.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,14 +12,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hapramp.R;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.UserWalletCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.User;
+import com.hapramp.steemconnect.SteemConnectUtils;
+import com.hapramp.steemconnect4j.SteemConnect;
+import com.hapramp.steemconnect4j.SteemConnectCallback;
+import com.hapramp.steemconnect4j.SteemConnectException;
 import com.hapramp.ui.activity.AccountHistoryActivity;
+import com.hapramp.ui.activity.PowerDownActivity;
+import com.hapramp.ui.activity.PowerUpActivity;
+import com.hapramp.ui.activity.TransferActivity;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.ReputationCalc;
 import com.hapramp.views.extraa.BubbleProgressBar;
@@ -44,8 +54,8 @@ public class EarningFragment extends Fragment implements
   TextView userReputation;
   @BindView(R.id.user_fullname_container)
   LinearLayout userFullnameContainer;
-  @BindView(R.id.see_history_btn)
-  TextView seeHistoryBtn;
+  @BindView(R.id.history_btn)
+  RelativeLayout seeHistoryBtn;
   @BindView(R.id.steem_icon)
   ImageView steemIcon;
   @BindView(R.id.divider1)
@@ -84,12 +94,26 @@ public class EarningFragment extends Fragment implements
   BubbleProgressBar savingProgress;
   @BindView(R.id.estimated_value_progress)
   BubbleProgressBar estimatedValueProgress;
-  @BindView(R.id.infor_card)
+  @BindView(R.id.account_info_card)
   CardView inforCard;
   @BindView(R.id.sbd_rate)
   CoinView sbdRateView;
   @BindView(R.id.steem_rate)
   CoinView steemRate;
+  @BindView(R.id.lablel)
+  TextView lablel;
+  @BindView(R.id.claim_reward_btn)
+  RelativeLayout claimRewardBtn;
+  @BindView(R.id.transfer_btn)
+  RelativeLayout transferBtn;
+  @BindView(R.id.power_up_btn)
+  RelativeLayout powerUpBtn;
+  @BindView(R.id.power_down_btn)
+  RelativeLayout powerDownBtn;
+  @BindView(R.id.account_operation_button_container)
+  RelativeLayout accountOperationButtonContainer;
+  @BindView(R.id.rewardPanelTv)
+  TextView rewardPanelTv;
   private Handler mHandler;
   public static final int VALUES_REQUIRED_BEFORE_CALC = 5;
   private Unbinder unbinder;
@@ -101,8 +125,12 @@ public class EarningFragment extends Fragment implements
   private double sbd_rate;
   private double steem_rate;
   private DataStore dataStore;
-  private boolean estimatedEarningShown = false;
   private int valuesAvailable = 0;
+  private String finalSBDReward;
+  private String finalSteemReward;
+  private String finalVestsReward;
+  private ProgressDialog progressDialog;
+
 
   public EarningFragment() {
     mHandler = new Handler();
@@ -120,12 +148,16 @@ public class EarningFragment extends Fragment implements
                            ViewGroup container,
                            Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_earning, container, false);
+    unbinder = ButterKnife.bind(this, view);
+    initProgressDialog();
     if (getArguments() != null) {
       mUsername = getArguments().getString(ARG_USERNAME);
     } else {
       mUsername = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
     }
-    unbinder = ButterKnife.bind(this, view);
+    if (!mUsername.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
+      accountOperationButtonContainer.setVisibility(View.GONE);
+    }
     steemRate.setCoinId(Coins.STEEM);
     steemRate.setRateCallback(new CoinView.RateCallback() {
       @Override
@@ -159,6 +191,10 @@ public class EarningFragment extends Fragment implements
     return view;
   }
 
+  private void initProgressDialog() {
+    progressDialog = new ProgressDialog(mContext);
+    progressDialog.setCancelable(false);
+  }
   @Override
   public void onDestroyView() {
     super.onDestroyView();
@@ -171,11 +207,16 @@ public class EarningFragment extends Fragment implements
       if (VALUES_REQUIRED_BEFORE_CALC <= valuesAvailable) {
         double total = (steem_rate * (steem + sp)) + sbd * sbd_rate;
         walletEstAccountValueTv.setText(String.format(Locale.US, "$ %.2f", total));
-        estimatedEarningShown = true;
       }
     }
     catch (Exception e) {
     }
+  }
+
+  private void fetchWalletInfo() {
+    disableWalletActions();
+    walletSavingTv.setText("");
+    dataStore.requestWalletInfo(mUsername, this);
   }
 
   private void attachListener() {
@@ -187,10 +228,102 @@ public class EarningFragment extends Fragment implements
         mContext.startActivity(intent);
       }
     });
+
+    powerUpBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        Bundle bundle = new Bundle();
+        bundle.putString(TransferActivity.EXTRA_STEEM_BALANCE, walletSteemTv.getText().toString());
+        Intent intent = new Intent(mContext, PowerUpActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+      }
+    });
+
+    powerDownBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        Bundle bundle = new Bundle();
+        bundle.putString(PowerDownActivity.EXTRA_SP_BALANCE, walletSteemPowerTv.getText().toString());
+        Intent intent = new Intent(mContext, PowerDownActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+      }
+    });
+
+    transferBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        Bundle bundle = new Bundle();
+        bundle.putString(TransferActivity.EXTRA_STEEM_BALANCE, walletSteemTv.getText().toString());
+        bundle.putString(TransferActivity.EXTRA_SBD_BALANCE, walletSteemDollarTv.getText().toString());
+        Intent intent = new Intent(mContext, TransferActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+      }
+    });
+
+    claimRewardBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        requestClaimReward();
+      }
+    });
   }
 
-  private void fetchWalletInfo() {
-    dataStore.requestWalletInfo(mUsername, this);
+  private void disableWalletActions() {
+    try {
+      transferBtn.setEnabled(false);
+      powerDownBtn.setEnabled(false);
+      powerUpBtn.setEnabled(false);
+      claimRewardBtn.setEnabled(false);
+    }
+    catch (Exception e) {
+
+    }
+  }
+
+  private void requestClaimReward() {
+    if (progressDialog != null) {
+      progressDialog.setMessage("Claiming Reward...");
+      progressDialog.show();
+    }
+    final SteemConnect steemConnect = SteemConnectUtils
+      .getSteemConnectInstance(HaprampPreferenceManager.getInstance().getSC2AccessToken());
+    new Thread() {
+      @Override
+      public void run() {
+        steemConnect.claimRewardBalance(
+          HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
+          finalSteemReward,
+          finalSBDReward,
+          finalVestsReward,
+          new SteemConnectCallback() {
+            @Override
+            public void onResponse(String s) {
+              mHandler.post(
+                new Runnable() {
+                  @Override
+                  public void run() {
+                    rewardClaimed();
+                  }
+                }
+              );
+            }
+
+            @Override
+            public void onError(SteemConnectException e) {
+              mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                  rewardClaimedFailed();
+                }
+              });
+            }
+          }
+        );
+      }
+    }.start();
   }
 
   @Override
@@ -218,16 +351,12 @@ public class EarningFragment extends Fragment implements
     }
   }
 
-  @Override
-  public void onUserSteemDollar(final String dollar) {
-    this.sbd = Double.parseDouble(dollar.split(" ")[0]);
-    valuesAvailable++;
-    try {
-      steemDollarProgress.setVisibility(View.GONE);
-      walletSteemDollarTv.setText(dollar);
+  private void rewardClaimed() {
+    if (progressDialog != null) {
+      progressDialog.dismiss();
     }
-    catch (Exception e) {
-    }
+    Toast.makeText(mContext, "Successfully claimed reward!", Toast.LENGTH_LONG).show();
+    fetchWalletInfo();
   }
 
   @Override
@@ -253,6 +382,26 @@ public class EarningFragment extends Fragment implements
     }
   }
 
+  private void rewardClaimedFailed() {
+    if (progressDialog != null) {
+      progressDialog.dismiss();
+    }
+    Toast.makeText(mContext, "Failed to claim reward!", Toast.LENGTH_LONG).show();
+  }
+
+  @Override
+  public void onUserSteemDollar(final String dollar) {
+    this.sbd = Double.parseDouble(dollar.split(" ")[0]);
+    valuesAvailable++;
+    try {
+      steemDollarProgress.setVisibility(View.GONE);
+      walletSteemDollarTv.setText(dollar);
+      enableWalletActions();
+    }
+    catch (Exception e) {
+    }
+  }
+
   @Override
   public void onUserSavingSBD(final String savingSBD) {
     try {
@@ -260,6 +409,68 @@ public class EarningFragment extends Fragment implements
       walletSavingTv.append(savingSBD + " ");
     }
     catch (Exception e) {
+    }
+  }
+
+  @Override
+  public void onUserRewards(String _sbdReward, String _steemReward, String _rewardVests) {
+    StringBuilder rewardPanelText = new StringBuilder();
+    boolean rewardExists = false;
+    double sbdReward = Double.parseDouble(_sbdReward.split(" ")[0]);
+    double steemReward = Double.parseDouble(_steemReward.split(" ")[0]);
+    double vestsReward = Double.parseDouble(_rewardVests.split(" ")[0]);
+    finalSBDReward = _sbdReward;
+    finalSteemReward = _steemReward;
+    finalVestsReward = _rewardVests;
+    try {
+      if (sbdReward > 0) {
+        rewardPanelText.append(finalSBDReward);
+        rewardExists = true;
+      }
+      if (steemReward > 0) {
+        rewardPanelText.append(finalSteemReward);
+        rewardExists = true;
+      }
+      if (vestsReward > 0) {
+        rewardPanelText.append(String.format(Locale.US, "%.3f SP",
+          vestsReward / HaprampPreferenceManager.getInstance().getVestsPerSteem()));
+        rewardExists = true;
+      }
+      if (rewardExists) {
+        showAndEnableRewardButton();
+        rewardPanelTv.setText(rewardPanelText.toString());
+      } else {
+        hideRewardButton();
+      }
+    }
+    catch (Exception e) {
+
+    }
+  }
+
+  private void showAndEnableRewardButton() {
+    if (claimRewardBtn != null) {
+      claimRewardBtn.setVisibility(View.VISIBLE);
+      claimRewardBtn.setEnabled(true);
+    }
+  }
+
+  private void hideRewardButton() {
+    if (claimRewardBtn != null) {
+      claimRewardBtn.setVisibility(View.GONE);
+      claimRewardBtn.setEnabled(false);
+    }
+  }
+
+  private void enableWalletActions() {
+    try {
+      transferBtn.setEnabled(true);
+      powerDownBtn.setEnabled(true);
+      powerUpBtn.setEnabled(true);
+      claimRewardBtn.setEnabled(true);
+    }
+    catch (Exception e) {
+
     }
   }
 
@@ -272,7 +483,7 @@ public class EarningFragment extends Fragment implements
       if (data != null) {
         username.setText(mUsername);
         userFullname.setText(data.getFullname());
-        long rawReputation = Long.valueOf(data.getReputation());
+        long rawReputation = data.getReputation();
         userReputation.setText(String.format(Locale.US, "(%.2f)",
           ReputationCalc.calculateReputation(rawReputation)));
         String profile_pic = String.format(getResources().getString(R.string.steem_user_profile_pic_format_large), mUsername);

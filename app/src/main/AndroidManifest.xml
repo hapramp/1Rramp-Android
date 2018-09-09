@@ -88,18 +88,31 @@
         <activity
             android:name=".ui.activity.NestedCommentActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ReceiveImageActivity">
+        <activity android:name=".ui.activity.ReceiveImageActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="image/*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.activity.PowerUpActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.PowerDownActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.TransferActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

@@ -115,7 +115,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     postUploadReceiver = new PostUploadReceiver();
     fetchCompleteUserInfo();
     DataStore.requestSyncLastPostCreationTime();
-    WalletOperationMethods.testUrls();
   }
 
   private void saveDeviceWidth() {

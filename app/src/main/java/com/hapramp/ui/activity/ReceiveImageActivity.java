@@ -1,10 +1,11 @@
-package com.hapramp;
+package com.hapramp.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
 
+import com.hapramp.R;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.ui.activity.CreatePostActivity;
 import com.hapramp.ui.activity.HomeActivity;

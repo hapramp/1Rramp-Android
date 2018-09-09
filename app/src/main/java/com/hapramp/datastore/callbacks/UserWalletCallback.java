@@ -17,5 +17,7 @@ public interface UserWalletCallback {
 
   void onUserSavingSBD(String savingSBD);
 
+  void onUserRewards(String sbdReward, String steemReward, String rewardVests);
+
   void onUserWalletDataError(String error);
 }
