@@ -101,7 +101,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     setContentView(R.layout.activity_home);
     ButterKnife.bind(this);
     initObjects();
-    syncBasiInfo();
+    syncBasicInfo();
     transactFragment(FRAGMENT_HOME);
     saveDeviceWidth();
     setupToolbar();
@@ -142,7 +142,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     bottomBarSettings.setTypeface(materialTypface);
   }
 
-  private void syncBasiInfo() {
+  private void syncBasicInfo() {
     if (HaprampPreferenceManager.getInstance().getCurrentUserInfoAsJson().length() == 0) {
       showInterruptedProgressBar("Fetching profile info...");
     }
