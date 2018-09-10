@@ -14,22 +14,20 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.UserProfileCallback;
-import com.hapramp.models.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.models.User;
 import com.hapramp.ui.fragments.EarningFragment;
 import com.hapramp.ui.fragments.HomeFragment;
@@ -38,10 +36,7 @@ import com.hapramp.ui.fragments.SettingsFragment;
 import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.utils.FollowingsSyncUtils;
 import com.hapramp.utils.FontManager;
-import com.hapramp.utils.WalletOperationMethods;
 import com.hapramp.views.extraa.CreateButtonView;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -106,22 +101,32 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     setContentView(R.layout.activity_home);
     ButterKnife.bind(this);
     initObjects();
-    DataStore.performAllCommunitySync();
+    syncBasicInfo();
     transactFragment(FRAGMENT_HOME);
     saveDeviceWidth();
-    syncUserFollowings();
     setupToolbar();
     attachListeners();
     postUploadReceiver = new PostUploadReceiver();
-    fetchCompleteUserInfo();
-    DataStore.requestSyncLastPostCreationTime();
+  }
+
+  private void initObjects() {
+    Crashlytics.setString(CrashReporterKeys.UI_ACTION, "home init");
+    Crashlytics.setUserIdentifier(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
+    dataStore = new DataStore();
+    fragmentManager = getSupportFragmentManager();
+    homeFragment = new HomeFragment();
+    profileFragment = new ProfileFragment();
+    settingsFragment = new SettingsFragment();
+    earningFragment = new EarningFragment();
+    progressDialog = new ProgressDialog(this);
+    progressDialog.setCancelable(false);
   }
 
   private void saveDeviceWidth() {
     Resources resources = getResources();
     DisplayMetrics displayMetrics = resources.getDisplayMetrics();
     int deviceWidth = displayMetrics.widthPixels;
-    HaprampPreferenceManager.getInstance().setDEviceWidth(deviceWidth);
+    HaprampPreferenceManager.getInstance().setDeviceWidth(deviceWidth);
   }
 
   private void syncUserFollowings() {
@@ -137,16 +142,14 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     bottomBarSettings.setTypeface(materialTypface);
   }
 
-  private void initObjects() {
-    Crashlytics.setString(CrashReporterKeys.UI_ACTION, "home init");
-    Crashlytics.setUserIdentifier(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
-    dataStore = new DataStore();
-    fragmentManager = getSupportFragmentManager();
-    homeFragment = new HomeFragment();
-    profileFragment = new ProfileFragment();
-    settingsFragment = new SettingsFragment();
-    earningFragment = new EarningFragment();
-    progressDialog = new ProgressDialog(this);
+  private void syncBasicInfo() {
+    if (HaprampPreferenceManager.getInstance().getCurrentUserInfoAsJson().length() == 0) {
+      showInterruptedProgressBar("Fetching profile info...");
+    }
+    fetchCompleteUserInfo();
+    DataStore.performAllCommunitySync();
+    DataStore.requestSyncLastPostCreationTime();
+    syncUserFollowings();
   }
 
   private void attachListeners() {
@@ -218,24 +221,11 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     });
   }
 
-  private void fetchCompleteUserInfo() {
-    dataStore.requestUserProfile(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
-      new UserProfileCallback() {
-      @Override
-      public void onUserProfileFetching() {
-
-      }
-
-      @Override
-      public void onUserProfileAvailable(User user, boolean isFreshData) {
-        HaprampPreferenceManager.getInstance().saveCurrentUserInfoAsJson(new Gson().toJson(user));
-      }
-
-      @Override
-      public void onUserProfileFetchError(String err) {
-
-      }
-    });
+  private void showInterruptedProgressBar(String msg) {
+    if (progressDialog != null) {
+      progressDialog.setMessage(msg);
+      progressDialog.show();
+    }
   }
 
   private void transactFragment(int fragment) {
@@ -277,15 +267,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     }
   }
 
-  private void cacheCommunitiesList() {
-    CommunityListWrapper communityListWrapper = new Gson().fromJson(HaprampPreferenceManager.getInstance().getAllCommunityAsJson(), CommunityListWrapper.class);
-    List<CommunityModel> communities = communityListWrapper.getCommunityModels();
-    for (int i = 0; i < communities.size(); i++) {
-      HaprampPreferenceManager.getInstance().setCommunityTagToColorPair(communities.get(i).getmTag(), communities.get(i).getmColor());
-      HaprampPreferenceManager.getInstance().setCommunityTagToNamePair(communities.get(i).getmTag(), communities.get(i).getmName());
-    }
-  }
-
   private void swapSelection(int newSelectedMenu) {
     if (newSelectedMenu == lastMenuSelection)
       return;
@@ -295,43 +276,33 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
         bottomBarHome.setTextColor(getResources().getColor(R.color.colorPrimary));
         bottomBarHomeText.setTextColor(getResources().getColor(R.color.colorPrimary));
         lastMenuSelection = BOTTOM_MENU_HOME;
-
         break;
       case BOTTOM_MENU_COMP:
         bottomBarCompetition.setTextColor(getResources().getColor(R.color.colorPrimary));
         bottomBarCompetitionText.setTextColor(getResources().getColor(R.color.colorPrimary));
         lastMenuSelection = BOTTOM_MENU_COMP;
-
         break;
       case BOTTOM_MENU_PROFILE:
         bottomBarProfile.setTextColor(getResources().getColor(R.color.colorPrimary));
         bottomBarProfileText.setTextColor(getResources().getColor(R.color.colorPrimary));
         lastMenuSelection = BOTTOM_MENU_PROFILE;
-
         break;
-
       case BOTTOM_MENU_SETTINGS:
         bottomBarSettings.setTextColor(getResources().getColor(R.color.colorPrimary));
         bottomBarSettingsText.setTextColor(getResources().getColor(R.color.colorPrimary));
         lastMenuSelection = BOTTOM_MENU_SETTINGS;
-
         break;
-
       case BOTTOM_MENU_EARNINGS:
-
         bottomBarCompetition.setTextColor(getResources().getColor(R.color.colorPrimary));
         bottomBarCompetitionText.setTextColor(getResources().getColor(R.color.colorPrimary));
         lastMenuSelection = BOTTOM_MENU_EARNINGS;
-
         break;
-
       default:
         break;
     }
   }
 
   private void resetLastSelection(int lastMenuSelection) {
-
     switch (lastMenuSelection) {
       case BOTTOM_MENU_HOME:
         bottomBarHome.setTextColor(Color.parseColor("#818080"));
@@ -395,6 +366,35 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     public void onReceive(Context context, Intent intent) {
       if (profileFragment.isAdded())
         profileFragment.reloadPosts();
+    }
+  }
+
+  private void fetchCompleteUserInfo() {
+    dataStore.requestUserProfile(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
+      new UserProfileCallback() {
+      @Override
+      public void onUserProfileFetching() {
+
+      }
+
+      @Override
+      public void onUserProfileAvailable(User user, boolean isFreshData) {
+        HaprampPreferenceManager.getInstance().saveCurrentUserInfoAsJson(new Gson().toJson(user));
+        hideInterruptedProgressBar();
+      }
+
+      @Override
+      public void onUserProfileFetchError(String err) {
+        hideInterruptedProgressBar();
+        Toast.makeText(HomeActivity.this, "Failed to fetch profile info",
+          Toast.LENGTH_LONG).show();
+      }
+    });
+  }
+
+  private void hideInterruptedProgressBar() {
+    if (progressDialog != null) {
+      progressDialog.dismiss();
     }
   }
 }
