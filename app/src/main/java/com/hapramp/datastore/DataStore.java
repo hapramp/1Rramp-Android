@@ -383,7 +383,6 @@ public class DataStore extends DataDispatcher {
                 //want to refresh
                 dispatchCommunityFeed(res, true, false, userFeedCallback);
               }
-              dispatchCommunityFeed(res, true, false, userFeedCallback);
             }
           } else {
             dispatchCommunityFeedError("Error Code:" + response.code(), userFeedCallback);
