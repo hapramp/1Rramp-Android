@@ -362,16 +362,27 @@ public class DataStore extends DataDispatcher {
       public void run() {
         String url = URLS.curationUrl(tag);
         String cachedResponse = DataCache.get(url);
+        boolean cachedDataReturned = false;
         if (cachedResponse != null && isFeedRequestLive(rtag) && !refresh) {
           dispatchCommunityFeed(cachedResponse, false, false, userFeedCallback);
+          cachedDataReturned = true;
         }
         try {
           Response response = NetworkApi.getNetworkApiInstance().fetch(url);
           if (response.isSuccessful()) {
             String res = response.body().string();
             DataCache.cache(url, res);
-            if (isFeedRequestLive(rtag) && refresh) {
-              dispatchCommunityFeed(res, true, false, userFeedCallback);
+            if (isFeedRequestLive(rtag)) {
+              if (!refresh && !cachedDataReturned) {
+                //no refresh requested but no cache found, so we de-respect the refresh-denial
+                // and return the fresh data.
+                dispatchCommunityFeed(res, true, false, userFeedCallback);
+                return;
+              }
+              if (refresh) {
+                //want to refresh
+                dispatchCommunityFeed(res, true, false, userFeedCallback);
+              }
             }
           } else {
             dispatchCommunityFeedError("Error Code:" + response.code(), userFeedCallback);
