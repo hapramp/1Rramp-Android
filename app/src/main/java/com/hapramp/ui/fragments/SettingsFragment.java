@@ -1,11 +1,13 @@
 package com.hapramp.ui.fragments;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -13,12 +15,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steemconnect.SteemConnectUtils;
+import com.hapramp.steemconnect4j.SteemConnect;
+import com.hapramp.steemconnect4j.SteemConnectCallback;
+import com.hapramp.steemconnect4j.SteemConnectException;
 import com.hapramp.ui.activity.LoginActivity;
+import com.hapramp.utils.ConnectionUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,6 +44,7 @@ public class SettingsFragment extends Fragment {
   @BindView(R.id.invite_btn)
   TextView inviteBtn;
   private Context mContext;
+  private ProgressDialog progressDialog;
 
   public SettingsFragment() {
   }
@@ -52,9 +61,14 @@ public class SettingsFragment extends Fragment {
                            Bundle savedInstanceState) {
     // Inflate the layout for this fragment
     View view = inflater.inflate(R.layout.fragment_settings, container, false);
+    initProgressDialog();
     unbinder = ButterKnife.bind(this, view);
     return view;
+  }
 
+  private void initProgressDialog() {
+    progressDialog = new ProgressDialog(mContext);
+    progressDialog.setCancelable(false);
   }
 
   @Override
@@ -115,9 +129,68 @@ public class SettingsFragment extends Fragment {
   }
 
   private void logout() {
-    //clear preferences
     AnalyticsUtil.logEvent(AnalyticsParams.EVENT_LOGOUT);
-    HaprampPreferenceManager.getInstance().clearPreferences();
+    revokeAccessToken();
+  }
+
+  private void revokeAccessToken() {
+    if (!ConnectionUtils.isConnected(mContext)) {
+      Toast.makeText(mContext, "Cannot revoke Token. Please connect to internet!",
+        Toast.LENGTH_LONG).show();
+      return;
+    }
+    final Handler mHanlder = new Handler();
+    showLogoutProgress();
+    final SteemConnect steemConnect = SteemConnectUtils.getSteemConnectInstance(
+      HaprampPreferenceManager.getInstance().getSC2AccessToken()
+    );
+    new Thread() {
+      @Override
+      public void run() {
+        steemConnect.revokeToken(new SteemConnectCallback() {
+          @Override
+          public void onResponse(String s) {
+            mHanlder.post(
+              new Runnable() {
+                @Override
+                public void run() {
+                  hideLogoutProgress();
+                  HaprampPreferenceManager.getInstance().clearPreferences();
+                  navigateToLoginPage();
+                }
+              }
+            );
+          }
+
+          @Override
+          public void onError(final SteemConnectException e) {
+            mHanlder.post(new Runnable() {
+              @Override
+              public void run() {
+                hideLogoutProgress();
+                Toast.makeText(mContext, "Failed to logout", Toast.LENGTH_LONG).show();
+              }
+            });
+          }
+        });
+      }
+    }.start();
+  }
+
+  private void showLogoutProgress() {
+    if (progressDialog != null) {
+      progressDialog.setMessage("Logging out...");
+      progressDialog.show();
+    }
+  }
+
+  private void hideLogoutProgress() {
+    if (progressDialog != null) {
+      progressDialog.dismiss();
+    }
+  }
+
+  private void navigateToLoginPage() {
     Intent intent = new Intent(mContext, LoginActivity.class);
     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
     startActivity(intent);
