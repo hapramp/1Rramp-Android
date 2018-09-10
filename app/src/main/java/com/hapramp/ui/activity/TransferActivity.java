@@ -48,8 +48,6 @@ public class TransferActivity extends AppCompatActivity {
   TextView continueBtn;
   @BindView(R.id.cancelBtn)
   TextView cancelBtn;
-  @BindView(R.id.appBar)
-  RelativeLayout appBar;
   @BindView(R.id.currency_selector_sbd)
   TextView currencySelectorSbd;
   @BindView(R.id.currency_selector_steem)
