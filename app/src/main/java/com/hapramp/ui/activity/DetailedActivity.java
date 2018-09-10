@@ -32,6 +32,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
@@ -60,6 +61,7 @@ import com.hapramp.views.extraa.StarView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -122,7 +124,7 @@ public class DetailedActivity extends AppCompatActivity implements
   @BindView(R.id.payoutBtn)
   TextView hapcoinBtn;
   @BindView(R.id.payoutValue)
-  TextView hapcoinsCount;
+  TextView payoutValueTv;
   @BindView(R.id.starView)
   StarView starView;
   @BindView(R.id.postMetaContainer)
@@ -287,7 +289,7 @@ public class DetailedActivity extends AppCompatActivity implements
       String.format(getResources().getString(R.string.steem_user_profile_pic_format),
         HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
     bindVotes(post.getVoters(), post.getPermlink());
-    setSteemEarnings(post.getPendingPayoutValue());
+    setSteemEarnings(post);
     setCommentCount(post.getChildren());
     attachListenersOnStarView();
     setCommunities(post.getTags());
@@ -568,9 +570,22 @@ public class DetailedActivity extends AppCompatActivity implements
     }
   }
 
-  private void setSteemEarnings(String payout) {
-    if (hapcoinsCount != null && payout != null) {
-      hapcoinsCount.setText(String.format(getResources().getString(R.string.hapcoins_format), payout.substring(0, payout.indexOf(' '))));
+  private void setSteemEarnings(Feed feed) {
+    try {
+      String briefPayoutValueString;
+      double pendingPayoutValue = Double.parseDouble(feed.getPendingPayoutValue().split(" ")[0]);
+      double totalPayoutValue = Double.parseDouble(feed.getTotalPayoutValue().split(" ")[0]);
+      double curatorPayoutValue = Double.parseDouble(feed.getCuratorPayoutValue().split(" ")[0]);
+      if (pendingPayoutValue > 0) {
+        briefPayoutValueString = String.format(Locale.US, "$%1$.3f", pendingPayoutValue);
+      } else {
+        //cashed out
+        briefPayoutValueString = String.format(Locale.US, "$%1$.3f", totalPayoutValue + curatorPayoutValue);
+      }
+      payoutValueTv.setText(briefPayoutValueString);
+    }
+    catch (Exception e) {
+      Crashlytics.log(e.toString());
     }
   }
 
