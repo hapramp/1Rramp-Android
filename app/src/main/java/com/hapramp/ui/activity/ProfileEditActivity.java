@@ -86,7 +86,6 @@ public class ProfileEditActivity extends AppCompatActivity implements ImageRotat
   private final int PROFILE_IMAGE_UID = 1203;
   private ImageRotationHandler imageRotationHandler;
   private Handler mHandler;
-  private int REQUEST_IMAGE_SELECTOR = 109;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
