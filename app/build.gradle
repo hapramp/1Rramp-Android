@@ -75,7 +75,7 @@ dependencies {
     testImplementation "org.robolectric:shadows-multidex:$roboelectricVersion"
     implementation 'android.arch.lifecycle:extensions:1.1.1'
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
-    implementation 'com.github.hapramp:steemconnect4j:v1.3.1'
+    implementation 'com.github.hapramp:steemconnect4j:v1.3.2'
     implementation 'com.github.bxute:CryptoCoinView:v0.6'
     implementation 'com.github.bxute:MarkDEditor:v0.9'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
