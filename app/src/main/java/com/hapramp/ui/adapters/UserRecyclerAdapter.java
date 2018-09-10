@@ -91,6 +91,11 @@ public class UserRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
   }
 
   @Override
+  public long getItemId(int position) {
+    return position;
+  }
+
+  @Override
   public int getItemCount() {
     return users.size() + 1;
   }

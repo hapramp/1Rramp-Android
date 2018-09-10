@@ -14,8 +14,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -79,7 +77,6 @@ public class UserItemView extends FrameLayout {
         mContext.startActivity(i);
       }
     });
-
   }
 
   private boolean isFollowed() {
@@ -98,6 +95,25 @@ public class UserItemView extends FrameLayout {
       })
       .setNegativeButton("No", null);
     builder.show();
+  }
+
+  public UserItemView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
+    init(context);
+  }
+
+  private void init(Context context) {
+    this.mContext = context;
+    View view = LayoutInflater.from(context).inflate(R.layout.user_suggestions_item_row, this);
+    ButterKnife.bind(this, view);
+    mHandler = new Handler();
+    me = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+    steemConnect = SteemConnectUtils.getSteemConnectInstance(HaprampPreferenceManager.getInstance().getSC2AccessToken());
+    attachListeners();
+  }
+
+  private String getUsername() {
+    return this.mUsername;
   }
 
   private void requestFollowOnSteem() {
@@ -134,10 +150,6 @@ public class UserItemView extends FrameLayout {
     }.start();
   }
 
-  private String getUsername() {
-    return this.mUsername;
-  }
-
   private void showProgress(boolean show) {
     try {
       if (show) {
@@ -153,6 +165,20 @@ public class UserItemView extends FrameLayout {
     catch (Exception e) {
       Crashlytics.log(e.toString());
     }
+  }
+
+  private void userFollowedOnSteem() {
+    showProgress(false);
+    alreadyFollowed();
+    syncFollowings();
+    if (followStateChangeListener != null) {
+      followStateChangeListener.onFollowStateChanged();
+    }
+  }
+
+  private void userFollowFailed() {
+    showProgress(false);
+    notFollowed();
   }
 
   private void requestUnFollowOnSteem() {
@@ -175,7 +201,7 @@ public class UserItemView extends FrameLayout {
             }
 
             @Override
-            public void onError(SteemConnectException e) {
+            public void onError(final SteemConnectException e) {
               mHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -189,33 +215,6 @@ public class UserItemView extends FrameLayout {
     }.start();
   }
 
-  private void init(Context context) {
-    this.mContext = context;
-    View view = LayoutInflater.from(context).inflate(R.layout.user_suggestions_item_row, this);
-    ButterKnife.bind(this, view);
-    mHandler = new Handler();
-    me = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-    steemConnect = SteemConnectUtils.getSteemConnectInstance(HaprampPreferenceManager.getInstance().getSC2AccessToken());
-    attachListeners();
-  }
-
-  private void userFollowFailed() {
-    showProgress(false);
-    notFollowed();
-    t("Failed to follow " + getUsername());
-  }
-
-  public UserItemView(@NonNull Context context, @Nullable AttributeSet attrs) {
-    super(context, attrs);
-    init(context);
-  }
-
-  private void userUnfollowFailed() {
-    showProgress(false);
-    alreadyFollowed();
-    t("Failed to unfollow " + getUsername());
-  }
-
   private void alreadyFollowed() {
     followUnfollowBtn.setText("Unfollow");
     followUnfollowBtn.setSelected(true);
@@ -226,10 +225,6 @@ public class UserItemView extends FrameLayout {
   public UserItemView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     init(context);
-  }
-
-  private void t(String s) {
-    Toast.makeText(mContext, s, Toast.LENGTH_LONG).show();
   }
 
   private void notFollowed() {
@@ -275,21 +270,15 @@ public class UserItemView extends FrameLayout {
     if (followStateChangeListener != null) {
       followStateChangeListener.onFollowStateChanged();
     }
-    t("You unfollowed " + getUsername());
   }
 
   private void syncFollowings() {
     FollowingsSyncUtils.syncFollowings(mContext);
   }
 
-  private void userFollowedOnSteem() {
+  private void userUnfollowFailed() {
     showProgress(false);
     alreadyFollowed();
-    syncFollowings();
-    if (followStateChangeListener != null) {
-      followStateChangeListener.onFollowStateChanged();
-    }
-    t("You started following " + getUsername());
   }
 
   public void setFollowStateChangeListener(FollowStateChangeListener followStateChangeListener) {
