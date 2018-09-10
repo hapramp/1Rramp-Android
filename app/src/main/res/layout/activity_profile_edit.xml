@@ -65,8 +65,9 @@
                     android:background="#eeeeee"
                     android:id="@+id/profile_wall_pic"
                     android:layout_width="match_parent"
-                    android:layout_height="96dp"
-                    android:scaleType="fitXY" />
+                    android:layout_height="wrap_content"
+                    android:minHeight="144dp"
+                    android:scaleType="fitCenter" />
 
                 <ProgressBar
                     android:id="@+id/cover_image_upload_progress_bar"

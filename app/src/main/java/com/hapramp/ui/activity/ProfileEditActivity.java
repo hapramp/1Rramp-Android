@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hapramp.R;
@@ -85,6 +86,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ImageRotat
   private final int PROFILE_IMAGE_UID = 1203;
   private ImageRotationHandler imageRotationHandler;
   private Handler mHandler;
+  private int REQUEST_IMAGE_SELECTOR = 109;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -158,7 +160,6 @@ public class ProfileEditActivity extends AppCompatActivity implements ImageRotat
       @Override
       public void onClick(View view) {
         String url = collectDataAndBuildUrl();
-        Log.d("ProfileEdit", url);
         openBrowserForUpdate(url);
       }
     });
@@ -169,9 +170,8 @@ public class ProfileEditActivity extends AppCompatActivity implements ImageRotat
       if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, requestCode);
       } else {
-        Intent intent = new Intent();
+        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, requestCode);
       }
     }
@@ -357,17 +357,24 @@ public class ProfileEditActivity extends AppCompatActivity implements ImageRotat
         if (response.isSuccessful()) {
           if (uid == COVER_IMAGE_UID) {
             newCoverImageDownloadUrl = response.body().getDownloadUrl();
+            toast("Cover image uploaded successfully!");
+            hideCoverImageProgress();
           } else if (uid == PROFILE_IMAGE_UID) {
+            toast("Profile image uploaded successfully!");
             newProfileImageDownloadUrl = response.body().getDownloadUrl();
+            hideDpProgress();
           }
         } else {
           if (uid == COVER_IMAGE_UID) {
             newCoverImageDownloadUrl = null;
+            toast("Failed to upload cover image!");
+            hideCoverImageProgress();
           } else {
             newProfileImageDownloadUrl = null;
+            toast("Failed to upload profile image!");
+            hideDpProgress();
           }
         }
-        hideCoverImageProgress();
         if (fileShouldBeDeleted) {
           ImageCacheClearUtils.deleteImage(filePath);
         }
@@ -377,11 +384,16 @@ public class ProfileEditActivity extends AppCompatActivity implements ImageRotat
       public void onFailure(Call<FileUploadReponse> call, Throwable t) {
         if (uid == COVER_IMAGE_UID) {
           newCoverImageDownloadUrl = null;
+          hideCoverImageProgress();
         } else {
           newProfileImageDownloadUrl = null;
+          hideDpProgress();
         }
-        hideCoverImageProgress();
       }
     });
+  }
+
+  private void toast(String msg) {
+    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
   }
 }

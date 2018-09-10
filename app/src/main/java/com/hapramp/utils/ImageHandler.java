@@ -54,9 +54,9 @@ public class ImageHandler {
             int targetHeight = width * resource.getIntrinsicHeight() / resource.getIntrinsicWidth();
             if (imageView.getLayoutParams().height != targetHeight) {
               imageView.getLayoutParams().height = targetHeight;
-              imageView.setImageDrawable(resource);
               imageView.requestLayout();
             }
+            imageView.setImageDrawable(resource);
             return true;
           }
         })
@@ -71,7 +71,7 @@ public class ImageHandler {
     try {
       RequestOptions options = new RequestOptions()
         .fitCenter()
-        .diskCacheStrategy(DiskCacheStrategy.ALL)
+        .diskCacheStrategy(DiskCacheStrategy.NONE)
         .priority(Priority.HIGH);
       Glide.with(context)
         .load(filePath)
@@ -92,14 +92,13 @@ public class ImageHandler {
                                          Target<Drawable> target,
                                          DataSource dataSource,
                                          boolean isFirstResource) {
-            //NetworkQualityUtils.stopstartNetworkSampling();
             int width = imageView.getMeasuredWidth();
             int targetHeight = width * resource.getIntrinsicHeight() / resource.getIntrinsicWidth();
             if (imageView.getLayoutParams().height != targetHeight) {
               imageView.getLayoutParams().height = targetHeight;
-              imageView.setImageDrawable(resource);
               imageView.requestLayout();
             }
+            imageView.setImageDrawable(resource);
             return true;
           }
         })
