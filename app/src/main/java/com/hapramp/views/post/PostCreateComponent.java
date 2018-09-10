@@ -18,12 +18,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
-import com.hapramp.steem.models.User;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.HashTagUtils;
 import com.hapramp.utils.ImageHandler;
@@ -103,10 +101,10 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
     ButterKnife.bind(this, view);
     inlinePostCommunityView.initCategory();
     inlinePostCommunityView.setCommunitySelectionChangeListener(this);
-    User steemUser = new Gson().fromJson(HaprampPreferenceManager.getInstance().getCurrentUserInfoAsJson(), User.class);
-    String pic_url = steemUser.getProfile_image();
+    String pic_url = String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format),
+      HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
     ImageHandler.loadCircularImage(context, feedOwnerPic, pic_url);
-    feedOwnerTitle.setText(steemUser.getFullname());
+    feedOwnerTitle.setText(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
     attachTextListeners();
     postImageView.setImageActionListener(new PostImageView.ImageActionListener() {
       @Override

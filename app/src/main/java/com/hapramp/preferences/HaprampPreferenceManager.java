@@ -186,7 +186,7 @@ public class HaprampPreferenceManager {
     editor.apply();
   }
 
-  public void setDEviceWidth(int width) {
+  public void setDeviceWidth(int width) {
     editor.putInt("deviceWidth", width);
     editor.apply();
   }
