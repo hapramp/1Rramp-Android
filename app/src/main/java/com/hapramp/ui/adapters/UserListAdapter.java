@@ -37,5 +37,4 @@ public class UserListAdapter extends ArrayAdapter<String> {
     ((UserItemView) v).setUsername(usernames.get(position));
     return v;
   }
-
 }
