@@ -75,7 +75,7 @@ public class DataStore extends DataDispatcher {
             String res = response.body().string();
             DataCache.cache(url, res);
             if (!cachedDataReturned) {
-              dispatchUserCommunity(res, true, communitiesCallback);
+              dispatchAllCommunity(res, true, communitiesCallback);
             }
           } else {
             dispatchUserCommunityError("Error Code:" + response.code(), communitiesCallback);
