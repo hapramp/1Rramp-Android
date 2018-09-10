@@ -199,9 +199,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
       }
     });
 
-
     bottomBarSettings.setOnClickListener(new View.OnClickListener() {
-
       @Override
       public void onClick(View v) {
         if (lastMenuSelection == BOTTOM_MENU_SETTINGS)
