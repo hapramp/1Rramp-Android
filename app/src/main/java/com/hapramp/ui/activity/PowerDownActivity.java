@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import com.hapramp.R;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.WalletOperations;
 
@@ -92,7 +91,7 @@ public class PowerDownActivity extends AppCompatActivity {
       return false;
     }
     double amount = Double.parseDouble(inputAmount);
-    if (amount < 0) {
+    if (amount < 0.001) {
       toast("Amount should be greater than or equal to 0.001");
       return false;
     }
