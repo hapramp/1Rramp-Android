@@ -25,7 +25,6 @@ import com.hapramp.utils.FontManager;
  */
 
 public class StarView extends FrameLayout {
-
   private static final long REVEAL_DELAY = 500;
   private static final float REVEAL_START_OFFSET = 84;
   private static final long HIDE_RATING_BAR_DELAY = 4000;

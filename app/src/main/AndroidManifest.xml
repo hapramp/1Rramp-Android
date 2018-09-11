@@ -113,6 +113,7 @@
         <activity
             android:name=".ui.activity.TransferActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".ui.activity.VotersListActivity"></activity>
     </application>
 
 </manifest>
