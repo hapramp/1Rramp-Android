@@ -92,7 +92,7 @@ public class PowerDownActivity extends AppCompatActivity {
       return false;
     }
     double amount = Double.parseDouble(inputAmount);
-    if (amount == 0) {
+    if (amount < 0) {
       toast("Amount should be greater than or equal to 0.001");
       return false;
     }
