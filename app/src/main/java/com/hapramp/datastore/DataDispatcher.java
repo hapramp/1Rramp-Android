@@ -140,7 +140,7 @@ public class DataDispatcher {
 
   void dispatchUserProfile(final String response, final boolean isFresh, final UserProfileCallback userProfileCallback) {
     if (userProfileCallback != null) {
-      final User user = jsonParser.parseUser(response);
+      final User user = jsonParser.parseRawUserJson(response);
       handler.post(new Runnable() {
         @Override
         public void run() {
@@ -269,7 +269,7 @@ public class DataDispatcher {
                           final UserWalletCallback userWalletCallback) {
     if (userWalletCallback != null) {
       GlobalProperties globalProperties = new Gson().fromJson(globalPropsJson, GlobalProperties.class);
-      final User user = jsonParser.parseUser(userProfileJson);
+      final User user = jsonParser.parseRawUserJson(userProfileJson);
       final double steemPower = SteemPowerCalc.calculateSteemPower(
         user.getVesting_share(),
         globalProperties.getResult().getTotal_vesting_fund_steem(),
