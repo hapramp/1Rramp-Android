@@ -273,12 +273,35 @@ public class JSONParser {
     return feeds;
   }
 
-  public User parseUser(String userJson) {
+  public User parseRawUserJson(String userJson) {
     User user = new User();
     try {
-      Log.d("ParsingUser", userJson);
       JSONObject root = new JSONObject(userJson);
       JSONObject userObj = root.getJSONObject("user");
+      user = parseCoreUserJson(userObj);
+    }
+    catch (JSONException e) {
+      e.printStackTrace();
+    }
+    return user;
+  }
+
+  public User parseSC2UserJson(String response){
+    User user = new User();
+    try {
+      JSONObject root = new JSONObject(response);
+      JSONObject userObj = root.getJSONObject("account");
+      user = parseCoreUserJson(userObj);
+    }
+    catch (JSONException e) {
+      e.printStackTrace();
+    }
+    return user;
+  }
+
+  public User parseCoreUserJson(JSONObject userObj) {
+    User user = new User();
+    try {
       JSONObject jmd = getJsonMetaDataObject(userObj);
       if (jmd.has("profile")) {
         JSONObject po = jmd.getJSONObject("profile");
