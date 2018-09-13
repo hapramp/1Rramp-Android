@@ -31,6 +31,9 @@ public class VotersListActivity extends AppCompatActivity {
   RelativeLayout actionBarContainer;
   @BindView(R.id.voters_recyclerview)
   RecyclerView votersRecyclerview;
+  public String quote;
+  public String base;
+  private ArrayList<Voter> voters;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +55,7 @@ public class VotersListActivity extends AppCompatActivity {
   }
 
   private void initList() {
-    ArrayList<Voter> voters = getIntent().getParcelableArrayListExtra(EXTRA_VOTERS);
+    voters = getIntent().getParcelableArrayListExtra(EXTRA_VOTERS);
     votersRecyclerview.setLayoutManager(new LinearLayoutManager(this));
     VoterListAdapter voterListAdapter = new VoterListAdapter();
     votersRecyclerview.setAdapter(voterListAdapter);

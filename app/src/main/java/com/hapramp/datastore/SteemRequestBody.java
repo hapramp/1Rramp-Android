@@ -40,6 +40,27 @@ public class SteemRequestBody {
     return "{\"id\":0,\"jsonrpc\":\"2.0\",\"method\":\"get_dynamic_global_properties\",\"params\":[]}";
   }
 
+  public static String rewardFund() {
+    return "{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"get_reward_fund\",\"params\":[\"post\"]}";
+  }
+
+  public static String medianPriceHistory() {
+    return "{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"get_current_median_history_price\",\"params\":[]}";
+  }
+
+  public static String userAccounts(String[] users) {
+    StringBuilder stringBuilder = new StringBuilder();
+    int len = users.length;
+    for (int i = 0; i < len; i++) {
+      stringBuilder.append("\"").append(users[i]).append("\"");
+      if (i != len - 1) {
+        stringBuilder.append(",");
+      }
+    }
+    return "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_accounts\"," +
+      " \"params\":[[" + stringBuilder.toString() + "]], \"id\":1}";
+  }
+
   public static String followCountBody(String user) {
     return "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_follow_count\"," +
       " \"params\":[\"" + user + "\"]," +

@@ -8,16 +8,19 @@ import com.hapramp.datastore.callbacks.CommunitiesCallback;
 import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.datastore.callbacks.FollowersCallback;
 import com.hapramp.datastore.callbacks.FollowingsCallback;
+import com.hapramp.datastore.callbacks.RewardFundMedianPriceCallback;
 import com.hapramp.datastore.callbacks.TransferHistoryCallback;
 import com.hapramp.datastore.callbacks.UserFeedCallback;
 import com.hapramp.datastore.callbacks.UserProfileCallback;
 import com.hapramp.datastore.callbacks.UserSearchCallback;
+import com.hapramp.datastore.callbacks.UserVestedShareCallback;
 import com.hapramp.datastore.callbacks.UserWalletCallback;
 import com.hapramp.models.CommentModel;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.models.FollowCountInfo;
 import com.hapramp.models.GlobalProperties;
 import com.hapramp.models.UserSearchResponse;
+import com.hapramp.models.VestedShareModel;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.TransferHistoryModel;
 import com.hapramp.steem.models.User;
@@ -365,6 +368,68 @@ public class DataDispatcher {
         @Override
         public void run() {
           followingsCallback.onFollowingsFetchError(error);
+        }
+      });
+    }
+  }
+
+  void dispatchRewardFundAndMedianHistory(String reward_fund_response, String price_median,
+                                          final RewardFundMedianPriceCallback rewardFundMedianPriceCallback) {
+    if (rewardFundMedianPriceCallback != null) {
+      try {
+        JSONObject rewardObject = new JSONObject(reward_fund_response);
+        JSONObject priceObject = new JSONObject(price_median);
+        JSONObject result = priceObject.getJSONObject("result");
+        final String base = result.getString("base");
+        final String quote = result.getString("quote");
+        result = rewardObject.getJSONObject("result");
+        final String reward_balance = result.getString("reward_balance");
+        final String recent_claims = result.getString("recent_claims");
+        handler.post(
+          new Runnable() {
+            @Override
+            public void run() {
+              rewardFundMedianPriceCallback.onFeedHistoryDataAvailable(reward_balance, recent_claims, base, quote);
+            }
+          }
+        );
+      }
+      catch (JSONException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  void dispatchMedianPriceError(final String error,
+                                final RewardFundMedianPriceCallback rewardFundMedianPriceCallback) {
+    if (rewardFundMedianPriceCallback != null) {
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          rewardFundMedianPriceCallback.onError(error);
+        }
+      });
+    }
+  }
+
+  void dispatchVestedShareData(String response, final UserVestedShareCallback vestedShareCallback) {
+    if (vestedShareCallback != null) {
+      final ArrayList<VestedShareModel> vestedShareModels = jsonParser.parseAllUsersVestedShare(response);
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          vestedShareCallback.onUserAccountsVestedShareDataAvailable(vestedShareModels);
+        }
+      });
+    }
+  }
+
+  void dispatchVestedShareError(final String err, final UserVestedShareCallback vestedShareCallback) {
+    if (vestedShareCallback != null) {
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          vestedShareCallback.onVestedShareDataError(err);
         }
       });
     }

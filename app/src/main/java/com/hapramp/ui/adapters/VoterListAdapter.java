@@ -21,6 +21,10 @@ import butterknife.ButterKnife;
 public class VoterListAdapter extends RecyclerView.Adapter<VoterListAdapter.VoterItemViewHolder> {
   private ArrayList<VoterData> votersData;
 
+  public VoterListAdapter() {
+    this.votersData = new ArrayList<>();
+  }
+
   public void setVotersData(ArrayList<VoterData> votersData) {
     this.votersData = votersData;
     notifyDataSetChanged();

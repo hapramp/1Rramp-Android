@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.hapramp.models.CommentModel;
 import com.hapramp.models.CommunityModel;
+import com.hapramp.models.VestedShareModel;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.User;
 import com.hapramp.steem.models.Voter;
@@ -387,4 +388,27 @@ public class JSONParser {
     return comment;
   }
 
+  public ArrayList<VestedShareModel> parseAllUsersVestedShare(String response) {
+    ArrayList<VestedShareModel> vestedShareModels = new ArrayList<>();
+    try {
+      JSONArray results = new JSONObject(response).getJSONArray("result");
+      for (int i = 0; i < results.length(); i++) {
+        JSONObject uo = results.getJSONObject(i);
+        String username = uo.getString("name");
+        String receivedVests = uo.getString("received_vesting_shares");
+        String delegatedVests = uo.getString("delegated_vesting_shares");
+        String userVests = uo.getString("vesting_shares");
+        int vp = uo.getInt("voting_power");
+        vestedShareModels.add(new VestedShareModel(userVests,
+          username,
+          vp,
+          receivedVests,
+          delegatedVests));
+      }
+    }
+    catch (JSONException e) {
+
+    }
+    return vestedShareModels;
+  }
 }
