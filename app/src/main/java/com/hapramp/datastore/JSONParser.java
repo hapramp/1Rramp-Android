@@ -310,6 +310,8 @@ public class JSONParser {
       user.setVestsRewardBalance(userObj.getString("reward_vesting_balance"));
       user.setBalance(userObj.getString("balance"));
       user.setVesting_share(userObj.getString("vesting_shares"));
+      user.setReceived_vesting_shares(userObj.getString("received_vesting_shares"));
+      user.setDelegated_vesting_shares(userObj.getString("delegated_vesting_shares"));
     }
     catch (JSONException e) {
       e.printStackTrace();
