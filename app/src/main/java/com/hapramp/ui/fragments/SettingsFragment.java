@@ -43,6 +43,8 @@ public class SettingsFragment extends Fragment {
   TextView tos;
   @BindView(R.id.invite_btn)
   TextView inviteBtn;
+  @BindView(R.id.helpBtn)
+  TextView helpBtn;
   private Context mContext;
   private ProgressDialog progressDialog;
 
@@ -85,6 +87,12 @@ public class SettingsFragment extends Fragment {
         showAlertDialogForLogout();
       }
     });
+    helpBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        openHelpPage();
+      }
+    });
     feedbackBtn.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -99,11 +107,16 @@ public class SettingsFragment extends Fragment {
     });
   }
 
+  private void openHelpPage() {
+    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.1ramp.io/faq.html"));
+    startActivity(browserIntent);
+  }
+
   private void inviteAFriend() {
     Intent intent = new Intent(Intent.ACTION_SEND);
     intent.putExtra(Intent.EXTRA_TEXT,
       "Join communities, share your work and earn rewards on 1Ramp." +
-      " Steem powered social media for creators. Try it now! at https://goo.gl/AADhaC");
+        " Steem powered social media for creators. Try it now! at https://goo.gl/AADhaC");
     intent.setType("text/plain");
     startActivity(Intent.createChooser(intent, "Invite a friend"));
   }
@@ -143,6 +156,7 @@ public class SettingsFragment extends Fragment {
     final SteemConnect steemConnect = SteemConnectUtils.getSteemConnectInstance(
       HaprampPreferenceManager.getInstance().getSC2AccessToken()
     );
+    HaprampPreferenceManager.getInstance().clearPreferences();
     new Thread() {
       @Override
       public void run() {
@@ -154,7 +168,6 @@ public class SettingsFragment extends Fragment {
                 @Override
                 public void run() {
                   hideLogoutProgress();
-                  HaprampPreferenceManager.getInstance().clearPreferences();
                   navigateToLoginPage();
                 }
               }
