@@ -332,6 +332,8 @@ public class JSONParser {
       user.setSbdRewardBalance(userObj.getString("reward_sbd_balance"));
       user.setSteemRewardBalance(userObj.getString("reward_steem_balance"));
       user.setVestsRewardBalance(userObj.getString("reward_vesting_balance"));
+      user.setReceived_vesting_shares(userObj.getString("received_vesting_shares"));
+      user.setDelegated_vesting_shares(userObj.getString("delegated_vesting_shares"));
       user.setBalance(userObj.getString("balance"));
       user.setVesting_share(userObj.getString("vesting_shares"));
     }

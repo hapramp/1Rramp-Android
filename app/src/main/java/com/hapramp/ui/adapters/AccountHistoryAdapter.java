@@ -206,8 +206,9 @@ public class AccountHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vie
       timestamp.setText(MomentsUtils.getFormattedTime(transferHistoryModel.getTimeStamp()));
       double sbd = Double.parseDouble(authorReward.getSbd_payout().split(" ")[0]);
       double steem = Double.parseDouble(authorReward.getSteem_payout().split(" ")[0]);
+      double vests = Double.parseDouble(authorReward.getVesting_payout().split(" ")[0]);
       double sp = SteemPowerCalc.calculateSteemPower(
-        authorReward.getVesting_payout(),
+        vests,
         transferHistoryModel.getTotal_vesting_fund_steem(),
         transferHistoryModel.getTotal_vesting_shares());
 
@@ -280,8 +281,9 @@ public class AccountHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vie
       timestamp.setText(MomentsUtils.getFormattedTime(transferHistoryModel.getTimeStamp()));
       double sbd = Double.parseDouble(claimRewardBalance.getReward_sbd().split(" ")[0]);
       double steem = Double.parseDouble(claimRewardBalance.getReward_steem().split(" ")[0]);
+      double vests = Double.parseDouble(claimRewardBalance.getReward_vests().split(" ")[0]);
       double sp = SteemPowerCalc.calculateSteemPower(
-        claimRewardBalance.getReward_vests(),
+        vests,
         transferHistoryModel.getTotal_vesting_fund_steem(),
         transferHistoryModel.getTotal_vesting_shares());
 
@@ -320,8 +322,9 @@ public class AccountHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void bind(TransferHistoryModel transferHistoryModel) {
       TransferHistoryModel.CurationReward curationReward = transferHistoryModel.getCurationReward();
       timestamp.setText(MomentsUtils.getFormattedTime(transferHistoryModel.getTimeStamp()));
+      double vests = Double.parseDouble(curationReward.getReward().split(" ")[0]);
       double sp = SteemPowerCalc.calculateSteemPower(
-        curationReward.getReward(),
+        vests,
         transferHistoryModel.getTotal_vesting_fund_steem(),
         transferHistoryModel.getTotal_vesting_shares());
       steemPowerTv.setText(String.format(Locale.US, "%.3f SP", sp));

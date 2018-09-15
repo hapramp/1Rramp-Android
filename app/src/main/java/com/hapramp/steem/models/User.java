@@ -56,7 +56,12 @@ public class User {
   @Expose
   @SerializedName("reward_steem_balance")
   private String steemRewardBalance;
-
+  @Expose
+  @SerializedName("delegated_vesting_shares")
+  private String delegated_vesting_shares;
+  @Expose
+  @SerializedName("received_vesting_shares")
+  private String received_vesting_shares;
   @Expose
   @SerializedName("reward_vesting_balance")
   private String vestsRewardBalance;
@@ -64,27 +69,7 @@ public class User {
   public User() {
   }
 
-  public User(String username,
-              String fullname,
-              String location,
-              String profile_image,
-              String cover_image,
-              String about,
-              String website,
-              int postCount,
-              long reputation,
-              String created,
-              int commentCount,
-              boolean canVote,
-              int votingPower,
-              String savings_sbd_balance,
-              String sbd_balance,
-              String savings_balance,
-              String balance,
-              String vesting_share,
-              String sbdRewardBalance,
-              String steemRewardBalance,
-              String vestsRewardBalance) {
+  public User(String username, String fullname, String location, String profile_image, String cover_image, String about, String website, int postCount, long reputation, String created, int commentCount, boolean canVote, int votingPower, String savings_sbd_balance, String sbd_balance, String savings_balance, String balance, String vesting_share, String sbdRewardBalance, String steemRewardBalance, String delegated_vesting_shares, String received_vesting_shares, String vestsRewardBalance) {
     this.username = username;
     this.fullname = fullname;
     this.location = location;
@@ -105,115 +90,13 @@ public class User {
     this.vesting_share = vesting_share;
     this.sbdRewardBalance = sbdRewardBalance;
     this.steemRewardBalance = steemRewardBalance;
+    this.delegated_vesting_shares = delegated_vesting_shares;
+    this.received_vesting_shares = received_vesting_shares;
     this.vestsRewardBalance = vestsRewardBalance;
-  }
-
-  public String getSbdRewardBalance() {
-    return sbdRewardBalance;
-  }
-
-  public void setSbdRewardBalance(String sbdRewardBalance) {
-    this.sbdRewardBalance = sbdRewardBalance;
-  }
-
-  public String getSteemRewardBalance() {
-    return steemRewardBalance;
-  }
-
-  public void setSteemRewardBalance(String steemRewardBalance) {
-    this.steemRewardBalance = steemRewardBalance;
-  }
-
-  public String getVestsRewardBalance() {
-    return vestsRewardBalance;
-  }
-
-  public void setVestsRewardBalance(String vestsRewardBalance) {
-    this.vestsRewardBalance = vestsRewardBalance;
-  }
-
-  public int getCommentCount() {
-    return commentCount;
-  }
-
-  public void setCommentCount(int commentCount) {
-    this.commentCount = commentCount;
-  }
-
-  public String getSavings_sbd_balance() {
-    return savings_sbd_balance;
-  }
-
-  public void setSavings_sbd_balance(String savings_sbd_balance) {
-    this.savings_sbd_balance = savings_sbd_balance;
-  }
-
-  public String getSbd_balance() {
-    return sbd_balance;
-  }
-
-  public void setSbd_balance(String sbd_balance) {
-    this.sbd_balance = sbd_balance;
-  }
-
-  public String getSavings_balance() {
-    return savings_balance;
-  }
-
-  public void setSavings_balance(String savings_balance) {
-    this.savings_balance = savings_balance;
-  }
-
-  public String getBalance() {
-    return balance;
-  }
-
-  public void setBalance(String balance) {
-    this.balance = balance;
-  }
-
-  public String getVesting_share() {
-    return vesting_share;
-  }
-
-  public void setVesting_share(String vesting_share) {
-    this.vesting_share = vesting_share;
-  }
-
-  public boolean isCanVote() {
-    return canVote;
-  }
-
-  public void setCanVote(boolean canVote) {
-    this.canVote = canVote;
-  }
-
-  public int getVotingPower() {
-    return votingPower;
-  }
-
-  public void setVotingPower(int votingPower) {
-    this.votingPower = votingPower;
-  }
-
-  public String getCreated() {
-    return created;
-  }
-
-  public void setCreated(String created) {
-    this.created = created;
   }
 
   public String getUsername() {
     return username;
-  }
-
-  public String getWebsite() {
-    return website;
-  }
-
-  public void setWebsite(String website) {
-    this.website = website;
   }
 
   public void setUsername(String username) {
@@ -260,6 +143,14 @@ public class User {
     this.about = about;
   }
 
+  public String getWebsite() {
+    return website;
+  }
+
+  public void setWebsite(String website) {
+    this.website = website;
+  }
+
   public int getPostCount() {
     return postCount;
   }
@@ -276,17 +167,115 @@ public class User {
     this.reputation = reputation;
   }
 
-  @Override
-  public String toString() {
-    return "User{" +
-      "username='" + username + '\'' +
-      ", fullname='" + fullname + '\'' +
-      ", location='" + location + '\'' +
-      ", profile_image='" + profile_image + '\'' +
-      ", cover_image='" + cover_image + '\'' +
-      ", about='" + about + '\'' +
-      ", postCount=" + postCount +
-      ", reputation='" + reputation + '\'' +
-      '}';
+  public String getCreated() {
+    return created;
+  }
+
+  public void setCreated(String created) {
+    this.created = created;
+  }
+
+  public int getCommentCount() {
+    return commentCount;
+  }
+
+  public void setCommentCount(int commentCount) {
+    this.commentCount = commentCount;
+  }
+
+  public boolean isCanVote() {
+    return canVote;
+  }
+
+  public void setCanVote(boolean canVote) {
+    this.canVote = canVote;
+  }
+
+  public int getVotingPower() {
+    return votingPower;
+  }
+
+  public void setVotingPower(int votingPower) {
+    this.votingPower = votingPower;
+  }
+
+  public String getSavings_sbd_balance() {
+    return savings_sbd_balance;
+  }
+
+  public void setSavings_sbd_balance(String savings_sbd_balance) {
+    this.savings_sbd_balance = savings_sbd_balance;
+  }
+
+  public String getSbd_balance() {
+    return sbd_balance;
+  }
+
+  public void setSbd_balance(String sbd_balance) {
+    this.sbd_balance = sbd_balance;
+  }
+
+  public String getSavings_balance() {
+    return savings_balance;
+  }
+
+  public void setSavings_balance(String savings_balance) {
+    this.savings_balance = savings_balance;
+  }
+
+  public String getBalance() {
+    return balance;
+  }
+
+  public void setBalance(String balance) {
+    this.balance = balance;
+  }
+
+  public String getVesting_share() {
+    return vesting_share;
+  }
+
+  public void setVesting_share(String vesting_share) {
+    this.vesting_share = vesting_share;
+  }
+
+  public String getSbdRewardBalance() {
+    return sbdRewardBalance;
+  }
+
+  public void setSbdRewardBalance(String sbdRewardBalance) {
+    this.sbdRewardBalance = sbdRewardBalance;
+  }
+
+  public String getSteemRewardBalance() {
+    return steemRewardBalance;
+  }
+
+  public void setSteemRewardBalance(String steemRewardBalance) {
+    this.steemRewardBalance = steemRewardBalance;
+  }
+
+  public String getDelegated_vesting_shares() {
+    return delegated_vesting_shares;
+  }
+
+  public void setDelegated_vesting_shares(String delegated_vesting_shares) {
+    this.delegated_vesting_shares = delegated_vesting_shares;
+  }
+
+  public String getReceived_vesting_shares() {
+    return received_vesting_shares;
+  }
+
+  public void setReceived_vesting_shares(String received_vesting_shares) {
+    this.received_vesting_shares = received_vesting_shares;
+  }
+
+  public String getVestsRewardBalance() {
+    return vestsRewardBalance;
+  }
+
+  public void setVestsRewardBalance(String vestsRewardBalance) {
+    this.vestsRewardBalance = vestsRewardBalance;
   }
 }
