@@ -7,10 +7,12 @@ import com.hapramp.datastore.callbacks.CommunitiesCallback;
 import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.datastore.callbacks.FollowersCallback;
 import com.hapramp.datastore.callbacks.FollowingsCallback;
+import com.hapramp.datastore.callbacks.RewardFundMedianPriceCallback;
 import com.hapramp.datastore.callbacks.TransferHistoryCallback;
 import com.hapramp.datastore.callbacks.UserFeedCallback;
 import com.hapramp.datastore.callbacks.UserProfileCallback;
 import com.hapramp.datastore.callbacks.UserSearchCallback;
+import com.hapramp.datastore.callbacks.UserVestedShareCallback;
 import com.hapramp.datastore.callbacks.UserWalletCallback;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -725,6 +727,54 @@ public class DataStore extends DataDispatcher {
         }
         catch (Exception e) {
           dispatchWalletInfoFetchError("Error:" + e.toString(), userWalletCallback);
+        }
+      }
+    }.start();
+  }
+
+  public void requestRewardFundAndMedianHistory(final RewardFundMedianPriceCallback rewardFundMedianPriceCallback) {
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          String steemUrl = URLS.steemUrl();
+          String globalProps = SteemRequestBody.rewardFund();
+          String medianPriceHistory = SteemRequestBody.medianPriceHistory();
+          Response rewardFundResponse = NetworkApi.getNetworkApiInstance().postAndFetch(steemUrl,
+            globalProps);
+          Response medianPriceResponse = NetworkApi.getNetworkApiInstance().postAndFetch(steemUrl,
+            medianPriceHistory);
+          if (rewardFundResponse.isSuccessful() && medianPriceResponse.isSuccessful()) {
+            String rewardResponseJson = rewardFundResponse.body().string();
+            String priceResponseJson = medianPriceResponse.body().string();
+            dispatchRewardFundAndMedianHistory(rewardResponseJson, priceResponseJson,
+              rewardFundMedianPriceCallback);
+          }
+        }
+        catch (Exception e) {
+          dispatchMedianPriceError("Error:" + e.toString(), rewardFundMedianPriceCallback);
+        }
+      }
+    }.start();
+  }
+
+  public void requestUserAccounts(final String[] users,
+                                  final UserVestedShareCallback vestedShareCallback){
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          String steemUrl = URLS.steemUrl();
+          String globalProps = SteemRequestBody.userAccounts(users);
+          Response vestedShareResponse = NetworkApi.getNetworkApiInstance().postAndFetch(steemUrl,
+            globalProps);
+          if (vestedShareResponse.isSuccessful()) {
+            String vestedResponseJson = vestedShareResponse.body().string();
+            dispatchVestedShareData(vestedResponseJson,vestedShareCallback);
+          }
+        }
+        catch (Exception e) {
+          dispatchVestedShareError("Error:" + e.toString(), vestedShareCallback);
         }
       }
     }.start();
