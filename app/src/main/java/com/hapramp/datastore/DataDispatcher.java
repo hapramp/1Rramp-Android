@@ -271,13 +271,21 @@ public class DataDispatcher {
                           String userProfileJson,
                           final UserWalletCallback userWalletCallback) {
     if (userWalletCallback != null) {
+
       GlobalProperties globalProperties = new Gson().fromJson(globalPropsJson, GlobalProperties.class);
-      final User user = jsonParser.parseRawUserJson(userProfileJson);
+      final User user = jsonParser.parseUser(userProfileJson);
+
+      double totalVestingShare =
+        Double.valueOf(user.getVesting_share().split(" ")[0]) +
+          Double.valueOf(user.getReceived_vesting_shares().split(" ")[0]) -
+          Double.valueOf(user.getDelegated_vesting_shares().split(" ")[0]);
+
       final double steemPower = SteemPowerCalc.calculateSteemPower(
-        user.getVesting_share(),
+        totalVestingShare,
         globalProperties.getResult().getTotal_vesting_fund_steem(),
         globalProperties.getResult().getTotal_vesting_shares()
       );
+
       handler.post(
         new Runnable() {
           @Override
