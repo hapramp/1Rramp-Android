@@ -43,15 +43,16 @@
         android:background="@color/Black12" />
 
     <TextView
-            android:id="@+id/logoutBtn"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:gravity="center"
-            android:text="Logout"
+        android:id="@+id/helpBtn"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="?selectableItemBackground"
+        android:clickable="true"
         android:textColor="@color/Black87"
-            android:clickable="true"
-            android:background="?selectableItemBackground"
-            android:textSize="16sp" />
+        android:gravity="center"
+        android:text="Help"
+        android:textSize="16sp" />
+
 
     <View
         android:layout_width="match_parent"
@@ -68,6 +69,25 @@
         android:clickable="true"
         android:gravity="center"
         android:text="Terms of service"
+        android:textColor="@color/Black87"
+        android:textSize="16sp" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/Black12" />
+
+    <TextView
+        android:id="@+id/logoutBtn"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="?selectableItemBackground"
+        android:clickable="true"
+        android:gravity="center"
+        android:text="Logout"
         android:textColor="@color/Black87"
         android:textSize="16sp" />
 

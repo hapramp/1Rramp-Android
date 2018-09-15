@@ -9,11 +9,13 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -26,9 +28,13 @@ import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.datastore.DataStore;
-import com.hapramp.datastore.callbacks.UserProfileCallback;
+import com.hapramp.datastore.JSONParser;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.User;
+import com.hapramp.steemconnect.SteemConnectUtils;
+import com.hapramp.steemconnect4j.SteemConnect;
+import com.hapramp.steemconnect4j.SteemConnectCallback;
+import com.hapramp.steemconnect4j.SteemConnectException;
 import com.hapramp.ui.fragments.EarningFragment;
 import com.hapramp.ui.fragments.HomeFragment;
 import com.hapramp.ui.fragments.ProfileFragment;
@@ -122,6 +128,46 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     progressDialog.setCancelable(false);
   }
 
+  private void syncBasicInfo() {
+    if (HaprampPreferenceManager.getInstance().getCurrentUserInfoAsJson().length() == 0) {
+      showInterruptedProgressBar("Fetching profile info...");
+    }
+    checkTokenValidity();
+    DataStore.performAllCommunitySync();
+    DataStore.requestSyncLastPostCreationTime();
+    syncUserFollowings();
+  }
+
+  private void checkTokenValidity() {
+    final SteemConnect steemConnect = SteemConnectUtils
+      .getSteemConnectInstance(HaprampPreferenceManager.getInstance().getSC2AccessToken());
+    final Handler mHandler = new Handler();
+    new Thread() {
+      @Override
+      public void run() {
+        steemConnect.me(new SteemConnectCallback() {
+          @Override
+          public void onResponse(String response) {
+            JSONParser jsonParser = new JSONParser();
+            final User user = jsonParser.parseSC2UserJson(response);
+            HaprampPreferenceManager.getInstance().saveCurrentUserInfoAsJson(new Gson().toJson(user));
+            hideInterruptedProgressBar();
+          }
+
+          @Override
+          public void onError(final SteemConnectException e) {
+            mHandler.post(new Runnable() {
+              @Override
+              public void run() {
+                logout();
+              }
+            });
+          }
+        });
+      }
+    }.start();
+  }
+
   private void saveDeviceWidth() {
     Resources resources = getResources();
     DisplayMetrics displayMetrics = resources.getDisplayMetrics();
@@ -142,14 +188,12 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     bottomBarSettings.setTypeface(materialTypface);
   }
 
-  private void syncBasicInfo() {
-    if (HaprampPreferenceManager.getInstance().getCurrentUserInfoAsJson().length() == 0) {
-      showInterruptedProgressBar("Fetching profile info...");
-    }
-    fetchCompleteUserInfo();
-    DataStore.performAllCommunitySync();
-    DataStore.requestSyncLastPostCreationTime();
-    syncUserFollowings();
+  private void logout() {
+    Toast.makeText(this, "Token Expired! Please login again.", Toast.LENGTH_LONG).show();
+    HaprampPreferenceManager.getInstance().clearPreferences();
+    Intent intent = new Intent(this, LoginActivity.class);
+    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+    startActivity(intent);
   }
 
   private void attachListeners() {
@@ -365,29 +409,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
       if (profileFragment.isAdded())
         profileFragment.reloadPosts();
     }
-  }
-
-  private void fetchCompleteUserInfo() {
-    dataStore.requestUserProfile(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
-      new UserProfileCallback() {
-      @Override
-      public void onUserProfileFetching() {
-
-      }
-
-      @Override
-      public void onUserProfileAvailable(User user, boolean isFreshData) {
-        HaprampPreferenceManager.getInstance().saveCurrentUserInfoAsJson(new Gson().toJson(user));
-        hideInterruptedProgressBar();
-      }
-
-      @Override
-      public void onUserProfileFetchError(String err) {
-        hideInterruptedProgressBar();
-        Toast.makeText(HomeActivity.this, "Failed to fetch profile info",
-          Toast.LENGTH_LONG).show();
-      }
-    });
   }
 
   private void hideInterruptedProgressBar() {

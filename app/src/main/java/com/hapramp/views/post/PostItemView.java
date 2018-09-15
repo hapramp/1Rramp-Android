@@ -14,7 +14,6 @@ import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -41,6 +40,7 @@ import com.hapramp.steemconnect4j.SteemConnectException;
 import com.hapramp.ui.activity.CommentsActivity;
 import com.hapramp.ui.activity.DetailedActivity;
 import com.hapramp.ui.activity.ProfileActivity;
+import com.hapramp.ui.activity.VotersListActivity;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
@@ -292,6 +292,19 @@ public class PostItemView extends FrameLayout {
         return true;
       }
     });
+
+    payoutValueTv.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        openVotersList();
+      }
+    });
+  }
+
+  private void openVotersList() {
+    Intent intent = new Intent(mContext, VotersListActivity.class);
+    intent.putParcelableArrayListExtra(VotersListActivity.EXTRA_VOTERS,mFeed.getVoters());
+    mContext.startActivity(intent);
   }
 
   private void bindVotes(List<Voter> votes, String permlink) {
