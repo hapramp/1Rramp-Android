@@ -38,7 +38,7 @@ public class CommunitySelectionView extends FrameLayout {
 
   private void init(Context context) {
     this.mContext = context;
-    View view = LayoutInflater.from(mContext).inflate(R.layout.community_view_container, this);
+    View view = LayoutInflater.from(mContext).inflate(R.layout.interest_view, this);
     parentView = view.findViewById(R.id.viewWrapper);
     selectedCommunityIds = new ArrayList<>();
     ButterKnife.bind(this, view);

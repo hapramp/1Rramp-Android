@@ -37,7 +37,7 @@ public class InterestsView extends FrameLayout {
   }
 
   private void init() {
-    View view = LayoutInflater.from(mContext).inflate(R.layout.community_view_container, this);
+    View view = LayoutInflater.from(mContext).inflate(R.layout.interest_view, this);
     parentView = view.findViewById(R.id.viewWrapper);
     noInterestMessage = view.findViewById(R.id.no_interest_msg);
   }
@@ -65,6 +65,7 @@ public class InterestsView extends FrameLayout {
       }
     } else {
       noInterestMessage.setVisibility(VISIBLE);
+      noInterestMessage.setText(mContext.getResources().getString(R.string.unregistered_user_profile_msg));
     }
   }
 

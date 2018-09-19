@@ -40,7 +40,7 @@ public class PostCommunityView extends FrameLayout {
   }
 
   private void init() {
-    View view = LayoutInflater.from(mContext).inflate(R.layout.community_view_container, this);
+    View view = LayoutInflater.from(mContext).inflate(R.layout.interest_view, this);
     rootView = view.findViewById(R.id.viewWrapper);
     selectedTags = new ArrayList<>();
     selectedTags.add(Communities.TAG_HAPRAMP);

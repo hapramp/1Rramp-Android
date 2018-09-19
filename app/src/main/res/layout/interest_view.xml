@@ -16,8 +16,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginLeft="4dp"
-        android:text="@string/unregistered_user_profile_msg"
         android:textColor="@color/Black54"
+        android:paddingRight="4dp"
         android:visibility="gone" />
 
 </FrameLayout>

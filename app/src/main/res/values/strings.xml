@@ -12,7 +12,7 @@
     <string name="steem_user_profile_pic_format">https://steemitimages.com/u/%s/avatar</string>
     <string name="hapcoins_format">$%1$s Earned</string>
     <string name="comment_format">%1d Comments</string>
-    <string name="unregistered_user_profile_msg">User not registered on Hapramp</string>
+    <string name="unregistered_user_profile_msg"> User not registered on 1ramp </string>
     <string name="steemit_signup">https://signup.steemit.com/</string>
     <string name="connectivity_lost">Connectivity Lost!</string>
     <string name="connectivity_established">Connection established !</string>
