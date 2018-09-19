@@ -143,7 +143,7 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     } else {
       hasChanceOfMoreFeeds = true;
       feeds.addAll(appendable);
-      notifyItemInserted(oldSize + 1);
+      notifyItemRangeChanged(oldSize + 1, appendable.size());
     }
   }
 
