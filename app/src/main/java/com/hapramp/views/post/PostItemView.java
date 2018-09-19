@@ -1,12 +1,14 @@
 package com.hapramp.views.post;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.text.Layout;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -567,7 +569,7 @@ public class PostItemView extends FrameLayout {
       @Override
       public boolean onMenuItemClick(MenuItem item) {
         if (item.getItemId() == R.id.delete_post) {
-          deleteThisPostItem();
+          showAlertDialogForDelete();
           return true;
         } else if (item.getItemId() == R.id.share) {
           ShareUtils.shareMixedContent(mContext, mFeed);
@@ -587,6 +589,20 @@ public class PostItemView extends FrameLayout {
       }
     }
     return activeVoteCount;
+  }
+
+  private void showAlertDialogForDelete() {
+    new AlertDialog.Builder(mContext)
+      .setTitle("Delete Post")
+      .setMessage("Do you want to Delete ? ")
+      .setPositiveButton("Yes, Delete", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+          deleteThisPostItem();
+        }
+      })
+      .setNegativeButton("Cancel", null)
+      .show();
   }
 
   private void deleteThisPostItem() {
