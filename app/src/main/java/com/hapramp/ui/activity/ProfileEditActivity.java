@@ -325,7 +325,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ImageRotat
   }
 
   @Override
-  public void onImageRotationFixed(final String filePath, final boolean fileShouldBeDeleted, final int uid) {
+  public void onImageRotationFixed(final String filePath, final boolean fileShouldBeDeleted, final long uid) {
     mHandler.post(new Runnable() {
       @Override
       public void run() {
@@ -346,7 +346,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ImageRotat
     }
   }
 
-  private void startUploading(final String filePath, final boolean fileShouldBeDeleted, final int uid) {
+  private void startUploading(final String filePath, final boolean fileShouldBeDeleted, final long uid) {
     File file = new File(filePath);
     final RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
     MultipartBody.Part body = MultipartBody.Part.createFormData("upload", file.getName(), requestFile);

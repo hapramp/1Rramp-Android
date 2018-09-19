@@ -18,7 +18,7 @@ public class ImageRotationHandler {
     this.mContext = context;
   }
 
-  public void checkOrientationAndFixImage(final String imagePath, final int uid) {
+  public void checkOrientationAndFixImage(final String imagePath, final long uid) {
     new Thread() {
       @Override
       public void run() {
@@ -69,7 +69,7 @@ public class ImageRotationHandler {
     return bitmap;
   }
 
-  private void saveRotatedBitampAndSendBackResults(Bitmap bitmap, String originalPath, int uid) {
+  private void saveRotatedBitampAndSendBackResults(Bitmap bitmap, String originalPath, long uid) {
     if (bitmap == null) {
       performCallback(originalPath, false, uid);
     } else {
@@ -97,7 +97,7 @@ public class ImageRotationHandler {
     }
   }
 
-  private void performCallback(String filePath, boolean needsToBeCleaned, int uid) {
+  private void performCallback(String filePath, boolean needsToBeCleaned, long uid) {
     if (imageRotationOperationListner != null) {
       imageRotationOperationListner.onImageRotationFixed(filePath, needsToBeCleaned, uid);
     }
@@ -108,6 +108,6 @@ public class ImageRotationHandler {
   }
 
   public interface ImageRotationOperationListner {
-    void onImageRotationFixed(String filePath, boolean fileShouldBeDeleted, int uid);
+    void onImageRotationFixed(String filePath, boolean fileShouldBeDeleted, long uid);
   }
 }
