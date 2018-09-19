@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -39,6 +40,7 @@ import com.hapramp.ui.fragments.EarningFragment;
 import com.hapramp.ui.fragments.HomeFragment;
 import com.hapramp.ui.fragments.ProfileFragment;
 import com.hapramp.ui.fragments.SettingsFragment;
+import com.hapramp.utils.Constants;
 import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.utils.FollowingsSyncUtils;
 import com.hapramp.utils.FontManager;
@@ -90,7 +92,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   @BindView(R.id.haprampIcon)
   ImageView haprampIcon;
   private int lastMenuSelection = BOTTOM_MENU_HOME;
-  private Fragment currentVisibleFragment;
   private Typeface materialTypface;
   private FragmentManager fragmentManager;
   private HomeFragment homeFragment;
@@ -98,9 +99,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   private SettingsFragment settingsFragment;
   private EarningFragment earningFragment;
   private ProgressDialog progressDialog;
-  private PostUploadReceiver postUploadReceiver;
-  private DataStore dataStore;
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -112,13 +110,11 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     saveDeviceWidth();
     setupToolbar();
     attachListeners();
-    postUploadReceiver = new PostUploadReceiver();
   }
 
   private void initObjects() {
     Crashlytics.setString(CrashReporterKeys.UI_ACTION, "home init");
     Crashlytics.setUserIdentifier(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
-    dataStore = new DataStore();
     fragmentManager = getSupportFragmentManager();
     homeFragment = new HomeFragment();
     profileFragment = new ProfileFragment();
@@ -273,7 +269,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   private void transactFragment(int fragment) {
     switch (fragment) {
       case FRAGMENT_HOME:
-        currentVisibleFragment = homeFragment;
         fragmentManager.beginTransaction()
           .addToBackStack("home")
           .replace(R.id.contentPlaceHolder, homeFragment)
@@ -281,7 +276,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
         break;
 
       case FRAGMENT_PROFILE:
-        currentVisibleFragment = profileFragment;
         fragmentManager.beginTransaction()
           .addToBackStack("profile")
           .replace(R.id.contentPlaceHolder, profileFragment)
@@ -289,7 +283,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
         break;
       case FRAGMENT_SETTINGS:
 
-        currentVisibleFragment = settingsFragment;
         fragmentManager.beginTransaction()
           .addToBackStack("setting")
           .replace(R.id.contentPlaceHolder, settingsFragment)
@@ -298,7 +291,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
 
       case FRAGMENT_EARNINGS:
 
-        currentVisibleFragment = earningFragment;
         fragmentManager.beginTransaction()
           .addToBackStack("earning")
           .replace(R.id.contentPlaceHolder, earningFragment)
@@ -401,14 +393,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     Intent intent = new Intent(this, CreatePostActivity.class);
     startActivity(intent);
     overridePendingTransition(R.anim.slide_up_enter, R.anim.slide_up_exit);
-  }
-
-  private class PostUploadReceiver extends BroadcastReceiver {
-    @Override
-    public void onReceive(Context context, Intent intent) {
-      if (profileFragment.isAdded())
-        profileFragment.reloadPosts();
-    }
   }
 
   private void hideInterruptedProgressBar() {
