@@ -105,7 +105,7 @@ public class NestedCommentActivity extends AppCompatActivity implements
     typeface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
     backBtn.setTypeface(typeface);
     sendButton.setTypeface(typeface);
-    commentInputBox.setHint("Reply @" + parentAuthor);
+    commentInputBox.setText(String.format("@%s", parentAuthor));
     ImageHandler.loadCircularImage(this, commentCreaterAvatar,
       String.format(getResources().getString(R.string.steem_user_profile_pic_format),
         HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));

@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -12,13 +14,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
+import com.hapramp.analytics.AnalyticsParams;
+import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.datastore.DataStore;
+import com.hapramp.datastore.callbacks.UserSearchCallback;
+import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.WalletOperations;
+import com.hapramp.views.UserMentionSuggestionListView;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TransferActivity extends AppCompatActivity {
+public class TransferActivity extends AppCompatActivity implements UserSearchCallback {
 
   public static final String EXTRA_SBD_BALANCE = "extra_sbd_balance";
   public static final String EXTRA_STEEM_BALANCE = "extra_steem_balance";
@@ -54,10 +64,14 @@ public class TransferActivity extends AppCompatActivity {
   TextView currencySelectorSteem;
   @BindView(R.id.currency_selector_container)
   RelativeLayout currencySelectorContainer;
+  @BindView(R.id.user_suggestions)
+  UserMentionSuggestionListView userMentionsSuggestionsView;
+
   private int currentCurrencyMode = 0;
   private double mSteemBalance = 0;
   private double mSBDBalance = 0;
   private String finalTransferAmount = "";
+  DataStore dataStore;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +80,7 @@ public class TransferActivity extends AppCompatActivity {
     ButterKnife.bind(this);
     collectExtra();
     attachListeners();
+    dataStore = new DataStore();
     backBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
   }
 
@@ -81,6 +96,37 @@ public class TransferActivity extends AppCompatActivity {
   }
 
   private void attachListeners() {
+    usernameEt.addTextChangedListener(new TextWatcher() {
+      @Override
+      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+      }
+
+      @Override
+      public void onTextChanged(CharSequence s, int start, int before, int count) {
+        String searchTerm = usernameEt.getText().toString().trim().toLowerCase();
+        if (searchTerm.length() > 0 && usernameEt.getSelectionEnd() > 0) {
+          fetchSuggestions(searchTerm);
+        } else {
+          userMentionsSuggestionsView.setVisibility(View.GONE);
+        }
+      }
+
+      @Override
+      public void afterTextChanged(Editable s) {
+
+      }
+    });
+    userMentionsSuggestionsView.setMentionsSuggestionPickListener(new UserMentionSuggestionListView.MentionsSuggestionPickListener() {
+      @Override
+      public void onUserPicked(String username) {
+        if (userMentionsSuggestionsView != null) {
+          userMentionsSuggestionsView.setVisibility(View.GONE);
+          usernameEt.setText(username);
+          amountEt.requestFocus();
+        }
+      }
+    });
     backBtn.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -114,6 +160,15 @@ public class TransferActivity extends AppCompatActivity {
         finish();
       }
     });
+  }
+
+  private void fetchSuggestions(String query) {
+    if (ConnectionUtils.isConnected(TransferActivity.this)) {
+      dataStore.requestUsernames(query, this);
+    } else {
+      Toast.makeText(this, "No Connectivity", Toast.LENGTH_LONG).show();
+    }
+    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_SEARCH_USER);
   }
 
   private void setCurrencyMode(int mode) {
@@ -176,5 +231,23 @@ public class TransferActivity extends AppCompatActivity {
 
   private void toast(String msg) {
     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+  }
+
+  @Override
+  public void onSearchingUsernames() {
+
+  }
+
+  @Override
+  public void onUserSuggestionsAvailable(List<String> users) {
+    if (userMentionsSuggestionsView != null) {
+      userMentionsSuggestionsView.setVisibility(View.VISIBLE);
+      userMentionsSuggestionsView.addSuggestions(users);
+    }
+  }
+
+  @Override
+  public void onUserSuggestionsError(String msg) {
+
   }
 }

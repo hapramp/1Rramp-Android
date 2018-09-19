@@ -148,7 +148,6 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchC
     } else {
       Toast.makeText(this, "No Connectivity", Toast.LENGTH_LONG).show();
     }
-
     AnalyticsUtil.logEvent(AnalyticsParams.EVENT_SEARCH_USER);
   }
 
