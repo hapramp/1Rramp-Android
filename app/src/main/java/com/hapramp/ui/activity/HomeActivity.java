@@ -1,6 +1,8 @@
 package com.hapramp.ui.activity;
 
 import android.app.ProgressDialog;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -39,9 +42,11 @@ import com.hapramp.ui.fragments.EarningFragment;
 import com.hapramp.ui.fragments.HomeFragment;
 import com.hapramp.ui.fragments.ProfileFragment;
 import com.hapramp.ui.fragments.SettingsFragment;
+import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.utils.FollowingsSyncUtils;
 import com.hapramp.utils.FontManager;
+import com.hapramp.viewmodel.common.ConnectivityViewModel;
 import com.hapramp.views.extraa.CreateButtonView;
 
 import butterknife.BindView;
@@ -89,6 +94,10 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   LinearLayout bottombarContainer;
   @BindView(R.id.haprampIcon)
   ImageView haprampIcon;
+  @BindView(R.id.connectivity_text)
+  TextView connectivityText;
+  @BindView(R.id.connectivity_message_container)
+  FrameLayout connectivityMessageContainer;
   private int lastMenuSelection = BOTTOM_MENU_HOME;
   private Fragment currentVisibleFragment;
   private Typeface materialTypface;
@@ -100,6 +109,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   private ProgressDialog progressDialog;
   private PostUploadReceiver postUploadReceiver;
   private DataStore dataStore;
+  private ConnectivityViewModel connectivityViewModel;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +122,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     saveDeviceWidth();
     setupToolbar();
     attachListeners();
+    observeConnection();
     postUploadReceiver = new PostUploadReceiver();
   }
 
@@ -138,34 +149,18 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     syncUserFollowings();
   }
 
-  private void checkTokenValidity() {
-    final SteemConnect steemConnect = SteemConnectUtils
-      .getSteemConnectInstance(HaprampPreferenceManager.getInstance().getSC2AccessToken());
-    final Handler mHandler = new Handler();
-    new Thread() {
+  private void observeConnection() {
+    connectivityViewModel = ViewModelProviders.of(this).get(ConnectivityViewModel.class);
+    connectivityViewModel.getConnectivityState().observeForever(new Observer<Boolean>() {
       @Override
-      public void run() {
-        steemConnect.me(new SteemConnectCallback() {
-          @Override
-          public void onResponse(String response) {
-            JSONParser jsonParser = new JSONParser();
-            final User user = jsonParser.parseSC2UserJson(response);
-            HaprampPreferenceManager.getInstance().saveCurrentUserInfoAsJson(new Gson().toJson(user));
-            hideInterruptedProgressBar();
-          }
-
-          @Override
-          public void onError(final SteemConnectException e) {
-            mHandler.post(new Runnable() {
-              @Override
-              public void run() {
-                logout();
-              }
-            });
-          }
-        });
+      public void onChanged(@Nullable Boolean isConnected) {
+        if (isConnected) {
+          hideConnectivityBar();
+        } else {
+          revealConnectivityBar();
+        }
       }
-    }.start();
+    });
   }
 
   private void saveDeviceWidth() {
@@ -415,6 +410,56 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     if (progressDialog != null) {
       progressDialog.dismiss();
     }
+  }
+
+  private void hideConnectivityBar() {
+    try {
+      connectivityMessageContainer.setVisibility(View.GONE);
+    }
+    catch (Exception e) {
+      Log.d("Exception", e.toString());
+    }
+  }
+
+  private void revealConnectivityBar() {
+    try {
+      connectivityMessageContainer.setVisibility(View.VISIBLE);
+    }
+    catch (Exception e) {
+      Log.d("Exception", e.toString());
+    }
+  }
+
+  private void checkTokenValidity() {
+    final SteemConnect steemConnect = SteemConnectUtils
+      .getSteemConnectInstance(HaprampPreferenceManager.getInstance().getSC2AccessToken());
+    final Handler mHandler = new Handler();
+    new Thread() {
+      @Override
+      public void run() {
+        steemConnect.me(new SteemConnectCallback() {
+          @Override
+          public void onResponse(String response) {
+            JSONParser jsonParser = new JSONParser();
+            final User user = jsonParser.parseSC2UserJson(response);
+            HaprampPreferenceManager.getInstance().saveCurrentUserInfoAsJson(new Gson().toJson(user));
+            hideInterruptedProgressBar();
+          }
+
+          @Override
+          public void onError(final SteemConnectException e) {
+            mHandler.post(new Runnable() {
+              @Override
+              public void run() {
+                if (ConnectionUtils.isConnected(HomeActivity.this)) {
+                  logout();
+                }
+              }
+            });
+          }
+        });
+      }
+    }.start();
   }
 }
 

@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.MomentsUtils;
 
@@ -24,9 +25,6 @@ import com.hapramp.utils.MomentsUtils;
  */
 
 public class CreateButtonView extends FrameLayout {
-
-
-  private static final long REVEAL_DELAY = 1500;
   private static final int POST_BUTTON_TRANSLATION_Y = 24;
   private static final int ARTICLE_BUTTON_TRANSLATION_Y = 40;
   private final int ADD_BUTTON_ROTATION_DELAY = 300;
@@ -46,11 +44,9 @@ public class CreateButtonView extends FrameLayout {
   public CreateButtonView(@NonNull Context context) {
     super(context);
     init(context);
-
   }
 
   private void init(Context context) {
-
     this.mContext = context;
     View v = LayoutInflater.from(context).inflate(R.layout.create_new_button_view, this);
     createArticleBtn = v.findViewById(R.id.createArticleBtn);
@@ -58,7 +54,6 @@ public class CreateButtonView extends FrameLayout {
     plusBtn = v.findViewById(R.id.plusBtn);
     overlay = v.findViewById(R.id.overlay);
     root = v.findViewById(R.id.root);
-
     plusBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     plusBtn.setOnClickListener(new OnClickListener() {
       @Override
@@ -66,7 +61,6 @@ public class CreateButtonView extends FrameLayout {
         AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CLICKS_CREATE_BUTTON);
         if (MomentsUtils.isAllowedToCreatePost()) {
           if (isFloating) {
-            // hide
             hideFloatingButton();
           } else {
             showFloatingButtons();
@@ -80,21 +74,20 @@ public class CreateButtonView extends FrameLayout {
     createArticleBtn.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-
         hideFloatingButton();
         if (itemClickListener != null) {
+          checkConnection();
           itemClickListener.onCreateArticleButtonClicked();
         }
-
       }
     });
 
     createPostBtn.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-
         hideFloatingButton();
         if (itemClickListener != null) {
+          checkConnection();
           itemClickListener.onCreatePostButtonClicked();
         }
       }
@@ -102,16 +95,18 @@ public class CreateButtonView extends FrameLayout {
 
   }
 
-  private void hideFloatingButton() {
+  private void checkConnection() {
+    if (!ConnectionUtils.isConnected(mContext)) {
+      Toast.makeText(mContext, "Internet Connection Required!", Toast.LENGTH_LONG).show();
+      return;
+    }
+  }
 
-    // hide Overlay
+  private void hideFloatingButton() {
     hideOverlay();
     root.setClickable(false);
-    // remove buttons
     createPostBtn.setVisibility(GONE);
     createArticleBtn.setVisibility(GONE);
-
-    // bump the buttons
     createPostBtn.animate()
       .setInterpolator(new OvershootInterpolator(FLOATING_BUTTONOVERSHOOT_TENSION))
       .translationY(0)
@@ -126,38 +121,28 @@ public class CreateButtonView extends FrameLayout {
       .setDuration(FLOATING_BUTTON_DELAY)
       .start();
 
-    // re-gain the rotated +
     plusBtn.animate()
       .setInterpolator(new OvershootInterpolator(ADD_BUTTON_OVERSHOOT_TENSION))
       .rotation(0f)
       .setDuration(ADD_BUTTON_ROTATION_DELAY)
       .start();
 
-    //set isFloating
     isFloating = false;
-
   }
 
   private void showFloatingButtons() {
-
-    //todo animate button with spring effect
-    // show the overlay
     showOverlay();
     root.setClickable(true);
     createArticleBtn.setVisibility(VISIBLE);
     createPostBtn.setVisibility(VISIBLE);
-
     createPostBtn.setClickable(true);
     createArticleBtn.setClickable(true);
-
-    // rotate + button
     plusBtn.animate()
       .setInterpolator(new OvershootInterpolator(ADD_BUTTON_OVERSHOOT_TENSION))
       .rotation(ADD_BUTTON_ROTATION_ANGLE)
       .setDuration(ADD_BUTTON_ROTATION_DELAY)
       .start();
 
-    // bump the buttons
     createPostBtn.animate()
       .setInterpolator(new OvershootInterpolator(FLOATING_BUTTONOVERSHOOT_TENSION))
       .translationY(-(getShiftAmount(POST_BUTTON_TRANSLATION_Y)))
@@ -172,9 +157,7 @@ public class CreateButtonView extends FrameLayout {
       .setDuration(FLOATING_BUTTON_DELAY)
       .start();
 
-    // set floating
     isFloating = true;
-
   }
 
   private void hideOverlay() {
@@ -190,75 +173,11 @@ public class CreateButtonView extends FrameLayout {
   }
 
   private void revertOverlayReveal() {
-    // View to reveal -> ratingBarContainer
-    // width of view
-       /* int w = overlay.getWidth();
-        // height of view
-        int h = overlay.getHeight();
-
-        // radius of reveal
-        int endRadius = (int) Math.hypot(w, h);
-
-        int cx = w/2;
-        int cy = h-getShiftAmount(24);
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            overlay.setVisibility(View.VISIBLE);
-            Animator revealAnimator = ViewAnimationUtils.createCircularReveal(overlay, cx, cy,endRadius,0);
-            revealAnimator.setInterpolator(new DecelerateInterpolator(5f));
-            revealAnimator.setDuration(REVEAL_DELAY);
-            revealAnimator.addListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    overlay.setVisibility(GONE);
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
-            });
-            revealAnimator.start();
-
-        } else {*/
     overlay.setVisibility(View.GONE);
-    //}
   }
 
   private void revealOverlay() {
-//        // View to reveal -> ratingBarContainer
-//        // width of view
-//        int w = overlay.getWidth();
-//        // height of view
-//        int h = overlay.getHeight();
-//
-//        // radius of reveal
-//        int endRadius = (int) Math.hypot(w, h);
-//
-//        int cx = w/2;
-//        int cy = h - getShiftAmount(24);
-//
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-//            overlay.setVisibility(View.VISIBLE);
-//            Animator revealAnimator = ViewAnimationUtils.createCircularReveal(overlay, cx, cy, 0, endRadius);
-//            revealAnimator.setInterpolator(new DecelerateInterpolator(2f));
-//            revealAnimator.setDuration(REVEAL_DELAY);
-//            revealAnimator.start();
-//
-//        } else {
     overlay.setVisibility(View.VISIBLE);
-    //}
-
   }
 
   public int dpToPx(int dp) {
@@ -274,7 +193,6 @@ public class CreateButtonView extends FrameLayout {
   public CreateButtonView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     init(context);
-
   }
 
   public void setItemClickListener(ItemClickListener itemClickListener) {

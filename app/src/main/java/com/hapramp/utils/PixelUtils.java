@@ -26,13 +26,11 @@ public class PixelUtils {
   }
 
   public static int getWidth() {
-
     WindowManager wm = (WindowManager) HapRampMain.getContext().getSystemService(Context.WINDOW_SERVICE);
     Display display = wm.getDefaultDisplay();
     Point size = new Point();
     display.getSize(size);
     return size.x / 2;
-
   }
 
   public static DisplayMetrics getDimension(Context context) {

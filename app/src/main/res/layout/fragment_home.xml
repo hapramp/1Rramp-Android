@@ -22,7 +22,6 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="12dp"
-        android:layout_below="@+id/sectionsRv"
         android:indeterminate="true"
         android:padding="0dp"
         android:visibility="gone" />
