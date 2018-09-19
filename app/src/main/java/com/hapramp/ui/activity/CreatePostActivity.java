@@ -238,6 +238,8 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
   private void preparePost() {
     generated_permalink = PermlinkGenerator.getPermlink();
     body = postCreateComponent.getBody();
+    // add footer
+    body = body + Constants.FOOTER_TEXT;
     tags = postCreateComponent.getSelectedCommunityTags();
     tags.addAll(getHashTagsFromBody(body));
     body = HashTagUtils.cleanHashTagsFromBody(body);
