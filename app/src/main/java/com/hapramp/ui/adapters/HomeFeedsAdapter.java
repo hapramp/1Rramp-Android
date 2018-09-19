@@ -60,7 +60,7 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     } else {
       hasChanceOfMoreFeeds = true;
       feeds.addAll(additionalFeeds);
-      notifyItemInserted(oldSize);
+      notifyItemRangeChanged(oldSize, additionalFeeds.size());
     }
   }
 
