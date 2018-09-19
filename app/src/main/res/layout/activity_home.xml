@@ -5,6 +5,31 @@
     android:layout_height="match_parent"
     tools:context=".ui.activity.HomeActivity">
 
+    <FrameLayout
+        android:id="@+id/contentPlaceHolder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/action_bar_container" />
+
+    <FrameLayout
+        android:layout_marginTop="56dp"
+        android:id="@+id/connectivity_message_container"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:visibility="gone"
+        android:background="#aa515151">
+
+        <TextView
+            android:id="@+id/connectivity_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="No Internet connection!"
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
+
+    </FrameLayout>
+
     <RelativeLayout
         android:id="@+id/action_bar_container"
         android:layout_width="match_parent"
@@ -30,18 +55,11 @@
     </RelativeLayout>
 
     <FrameLayout
-        android:id="@+id/contentPlaceHolder"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/action_bar_container" />
-
-    <FrameLayout
         android:id="@+id/toolbar_drop_shadow"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/action_bar_container"
         android:background="@drawable/toolbar_shadow" />
-
 
     <TextView
         android:layout_width="match_parent"
@@ -62,6 +80,5 @@
         android:layout_alignParentBottom="true"
         android:layout_below="@+id/action_bar_container"
         android:layout_centerHorizontal="true" />
-
 
 </RelativeLayout>
