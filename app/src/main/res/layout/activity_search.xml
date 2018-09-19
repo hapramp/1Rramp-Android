@@ -29,6 +29,8 @@
             android:layout_toRightOf="@+id/backBtn"
             android:layout_toLeftOf="@+id/searchBtn"
             android:background="#ffffff"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:hint="Search user.."
             android:imeOptions="actionSearch"
             android:textColorHint="@color/Black38"
