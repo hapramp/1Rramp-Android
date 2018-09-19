@@ -43,7 +43,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import xute.markdeditor.EditorControlBar;
 import xute.markdeditor.MarkDEditor;
-import xute.markdeditor.Styles.TextComponentStyle;
 
 public class CreateArticleActivity extends AppCompatActivity implements SteemPostCreator.SteemPostCreatorCallback, EditorControlBar.EditorControlListener {
 
