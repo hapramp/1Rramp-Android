@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
@@ -81,6 +82,7 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchC
     tabs.setSelectedTabIndicatorHeight((int) (2 * getResources().getDisplayMetrics().density));
     adapter = new UserListAdapter(this);
     suggestionsListView.setAdapter(adapter);
+    hideKeyboardByDefault();
     backBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     searchBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
   }
@@ -128,6 +130,10 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchC
         }
       }
     });
+  }
+
+  private void hideKeyboardByDefault() {
+    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
   }
 
   private void fetchFollowingsAndCache() {
