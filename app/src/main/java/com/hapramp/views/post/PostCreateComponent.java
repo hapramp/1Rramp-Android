@@ -243,7 +243,7 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
   }
 
   public String getContent() {
-    return content.getText().toString().trim() + Constants.FOOTER_TEXT;
+    return content.getText().toString().trim();
   }
 
   public boolean isMediaSelected() {
