@@ -205,7 +205,7 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
         if (postCreateComponent.isMediaUploaded()) {
           return true;
         } else {
-          toast("Please wait while we upload your image.");
+          toast("Please wait until the upload is complete...");
           return false;
         }
       } else {
