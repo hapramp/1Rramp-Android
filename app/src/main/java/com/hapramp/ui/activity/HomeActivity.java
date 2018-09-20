@@ -3,20 +3,14 @@ package com.hapramp.ui.activity;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -43,6 +37,7 @@ import com.hapramp.ui.fragments.EarningFragment;
 import com.hapramp.ui.fragments.HomeFragment;
 import com.hapramp.ui.fragments.ProfileFragment;
 import com.hapramp.ui.fragments.SettingsFragment;
+import com.hapramp.utils.BackstackManager;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.utils.FollowingsSyncUtils;
@@ -68,7 +63,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   @BindView(R.id.bottomBar_home)
   TextView bottomBarHome;
   @BindView(R.id.bottomBar_competition)
-  TextView bottomBarCompetition;
+  TextView bottomBarEarnings;
   @BindView(R.id.createNewBtn)
   CreateButtonView createButtonView;
   @BindView(R.id.bottomBar_profile)
@@ -108,7 +103,8 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   private EarningFragment earningFragment;
   private ProgressDialog progressDialog;
   private ConnectivityViewModel connectivityViewModel;
-  
+  private boolean backPressedOnce = false;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -116,6 +112,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     ButterKnife.bind(this);
     initObjects();
     syncBasicInfo();
+    BackstackManager.pushItem(FRAGMENT_HOME);
     transactFragment(FRAGMENT_HOME);
     saveDeviceWidth();
     setupToolbar();
@@ -174,7 +171,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     materialTypface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
     searchIcon.setTypeface(materialTypface);
     bottomBarHome.setTypeface(materialTypface);
-    bottomBarCompetition.setTypeface(materialTypface);
+    bottomBarEarnings.setTypeface(materialTypface);
     bottomBarProfile.setTypeface(materialTypface);
     bottomBarSettings.setTypeface(materialTypface);
   }
@@ -194,7 +191,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
         // check for the current selection
         if (lastMenuSelection == BOTTOM_MENU_HOME)
           return;
-        swapSelection(BOTTOM_MENU_HOME);
+        BackstackManager.pushItem(FRAGMENT_HOME);
         transactFragment(FRAGMENT_HOME);
       }
     });
@@ -206,18 +203,18 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
         // check for the current selection
         if (lastMenuSelection == BOTTOM_MENU_HOME)
           return;
-        swapSelection(BOTTOM_MENU_HOME);
+        BackstackManager.pushItem(FRAGMENT_HOME);
         transactFragment(FRAGMENT_HOME);
       }
     });
 
 
-    bottomBarCompetition.setOnClickListener(new View.OnClickListener() {
+    bottomBarEarnings.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         if (lastMenuSelection == BOTTOM_MENU_EARNINGS)
           return;
-        swapSelection(BOTTOM_MENU_EARNINGS);
+        BackstackManager.pushItem(FRAGMENT_EARNINGS);
         transactFragment(FRAGMENT_EARNINGS);
       }
     });
@@ -229,7 +226,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
       public void onClick(View v) {
         if (lastMenuSelection == BOTTOM_MENU_PROFILE)
           return;
-        swapSelection(BOTTOM_MENU_PROFILE);
+        BackstackManager.pushItem(FRAGMENT_PROFILE);
         transactFragment(FRAGMENT_PROFILE);
       }
     });
@@ -239,7 +236,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
       public void onClick(View v) {
         if (lastMenuSelection == BOTTOM_MENU_SETTINGS)
           return;
-        swapSelection(BOTTOM_MENU_SETTINGS);
+        BackstackManager.pushItem(FRAGMENT_SETTINGS);
         transactFragment(FRAGMENT_SETTINGS);
       }
     });
@@ -261,9 +258,36 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     }
   }
 
+  @Override
+  public void onBackPressed() {
+    int topItem = BackstackManager.getTop();
+    if (topItem == FRAGMENT_HOME) {
+      showExistAlert();
+    } else {
+      BackstackManager.popItem();
+      transactFragment(BackstackManager.getTop());
+    }
+  }
+
+  private void showExistAlert() {
+    if (backPressedOnce) {
+      finish();
+      return;
+    }
+    backPressedOnce = true;
+    Toast.makeText(this, "Press back once more to exit", Toast.LENGTH_SHORT).show();
+    new Handler().postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        backPressedOnce = false;
+      }
+    }, 2000);
+  }
+
   private void transactFragment(int fragment) {
     switch (fragment) {
       case FRAGMENT_HOME:
+        swapSelection(BOTTOM_MENU_HOME);
         fragmentManager.beginTransaction()
           .addToBackStack("home")
           .replace(R.id.contentPlaceHolder, homeFragment)
@@ -271,13 +295,14 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
         break;
 
       case FRAGMENT_PROFILE:
+        swapSelection(BOTTOM_MENU_PROFILE);
         fragmentManager.beginTransaction()
           .addToBackStack("profile")
           .replace(R.id.contentPlaceHolder, profileFragment)
           .commit();
         break;
       case FRAGMENT_SETTINGS:
-
+        swapSelection(BOTTOM_MENU_SETTINGS);
         fragmentManager.beginTransaction()
           .addToBackStack("setting")
           .replace(R.id.contentPlaceHolder, settingsFragment)
@@ -285,7 +310,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
         break;
 
       case FRAGMENT_EARNINGS:
-
+        swapSelection(BOTTOM_MENU_EARNINGS);
         fragmentManager.beginTransaction()
           .addToBackStack("earning")
           .replace(R.id.contentPlaceHolder, earningFragment)
@@ -307,7 +332,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
         lastMenuSelection = BOTTOM_MENU_HOME;
         break;
       case BOTTOM_MENU_COMP:
-        bottomBarCompetition.setTextColor(getResources().getColor(R.color.colorPrimary));
+        bottomBarEarnings.setTextColor(getResources().getColor(R.color.colorPrimary));
         bottomBarCompetitionText.setTextColor(getResources().getColor(R.color.colorPrimary));
         lastMenuSelection = BOTTOM_MENU_COMP;
         break;
@@ -322,7 +347,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
         lastMenuSelection = BOTTOM_MENU_SETTINGS;
         break;
       case BOTTOM_MENU_EARNINGS:
-        bottomBarCompetition.setTextColor(getResources().getColor(R.color.colorPrimary));
+        bottomBarEarnings.setTextColor(getResources().getColor(R.color.colorPrimary));
         bottomBarCompetitionText.setTextColor(getResources().getColor(R.color.colorPrimary));
         lastMenuSelection = BOTTOM_MENU_EARNINGS;
         break;
@@ -338,7 +363,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
         bottomBarHomeText.setTextColor(Color.parseColor("#818080"));
         break;
       case BOTTOM_MENU_COMP:
-        bottomBarCompetition.setTextColor(Color.parseColor("#818080"));
+        bottomBarEarnings.setTextColor(Color.parseColor("#818080"));
         bottomBarCompetitionText.setTextColor(Color.parseColor("#818080"));
         break;
       case BOTTOM_MENU_PROFILE:
@@ -350,30 +375,12 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
         bottomBarSettingsText.setTextColor(Color.parseColor("#818080"));
         break;
       case BOTTOM_MENU_EARNINGS:
-        bottomBarCompetition.setTextColor(Color.parseColor("#818080"));
+        bottomBarEarnings.setTextColor(Color.parseColor("#818080"));
         bottomBarCompetitionText.setTextColor(Color.parseColor("#818080"));
         break;
       default:
         break;
     }
-  }
-
-  @Override
-  public void onBackPressed() {
-    showExistAlert();
-  }
-
-  private void showExistAlert() {
-    AlertDialog.Builder builder = new AlertDialog.Builder(this)
-      .setTitle(R.string.app_exit_alert_message)
-      .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-          finish();
-        }
-      })
-      .setNegativeButton("No", null);
-    builder.show();
   }
 
   @Override
