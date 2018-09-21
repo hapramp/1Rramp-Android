@@ -305,7 +305,7 @@ public class PostItemView extends FrameLayout {
 
   private void openVotersList() {
     Intent intent = new Intent(mContext, VotersListActivity.class);
-    intent.putParcelableArrayListExtra(VotersListActivity.EXTRA_VOTERS,mFeed.getVoters());
+    intent.putParcelableArrayListExtra(VotersListActivity.EXTRA_VOTERS, mFeed.getVoters());
     mContext.startActivity(intent);
   }
 
@@ -536,7 +536,7 @@ public class PostItemView extends FrameLayout {
     commentCount.setText(String.format(getResources().getString(R.string.comment_format), count));
   }
 
-  private void addMeAsVoter(int percent){
+  private void addMeAsVoter(int percent) {
     Voter voter = new Voter();
     voter.setPercent(percent);
     voter.setVoter(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
@@ -545,7 +545,7 @@ public class PostItemView extends FrameLayout {
     mFeed.addVoter(voter);
   }
 
-  private void removeMeFromVoterList(){
+  private void removeMeFromVoterList() {
     Voter voter = new Voter();
     voter.setPercent(0);
     voter.setVoter(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
