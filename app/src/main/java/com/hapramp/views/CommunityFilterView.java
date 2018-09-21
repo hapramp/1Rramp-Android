@@ -32,7 +32,7 @@ public class CommunityFilterView extends FrameLayout {
 
   private void init(Context context) {
     this.mContext = context;
-    View view = LayoutInflater.from(context).inflate(R.layout.commmunity_filter_view, this);
+    View view = LayoutInflater.from(context).inflate(R.layout.community_filter_view, this);
     ButterKnife.bind(this, view);
   }
 
@@ -56,6 +56,8 @@ public class CommunityFilterView extends FrameLayout {
       itemView.setIndex(i);
       if (i == 0) {
         itemView.setSelected(true);
+      } else {
+        itemView.setSelected(false);
       }
       container.addView(itemView, i);
     }

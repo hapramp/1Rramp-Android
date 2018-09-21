@@ -1,11 +1,10 @@
 package com.hapramp.views.skills;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -14,17 +13,19 @@ import android.widget.TextView;
 
 import com.hapramp.R;
 import com.hapramp.models.CommunityModel;
-import com.hapramp.utils.FontManager;
-import com.hapramp.utils.ImageHandler;
+import com.hapramp.utils.CommunityUtils;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by Ankit on 6/22/2017.
  */
 
 public class CommunityItemView extends FrameLayout {
-  ImageView communityIv;
-  TextView skillSelectionOverlay;
-  TextView communityItemTitle;
+  ImageView communityIcon;
+  FrameLayout communityBackground;
+  TextView communityTitle;
   private Context mContext;
   private CommunityModel mCommunity;
 
@@ -36,10 +37,9 @@ public class CommunityItemView extends FrameLayout {
   private void init(Context context) {
     this.mContext = context;
     View view = LayoutInflater.from(context).inflate(R.layout.community_selection_item_view, this);
-    communityIv = view.findViewById(R.id.skills_bg_image);
-    skillSelectionOverlay = view.findViewById(R.id.skill_selection_overlay);
-    communityItemTitle = view.findViewById(R.id.skill_title);
-    skillSelectionOverlay.setTypeface(new FontManager().getTypeFace(FontManager.FONT_MATERIAL));
+    communityIcon = view.findViewById(R.id.community_icon);
+    communityBackground = view.findViewById(R.id.community_background);
+    communityTitle = view.findViewById(R.id.community_title);
   }
 
   public CommunityItemView(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -54,46 +54,27 @@ public class CommunityItemView extends FrameLayout {
 
   public void setSelection(boolean selected) {
     if (selected) {
-      skillSelectionOverlay.setVisibility(VISIBLE);
+      communityBackground.setBackgroundResource(CommunityUtils.getFilledBackground(mCommunity.getCommunityId()));
     } else {
-      skillSelectionOverlay.setVisibility(GONE);
+      communityBackground.setBackgroundResource(CommunityUtils.getBorder(mCommunity.getCommunityId()));
     }
   }
 
-  public String getCommunityTitle() {
-    return mCommunity.getmName();
-  }
-
-  private void setCommunityTitle(String title) {
-    communityItemTitle.setText(title);
-  }
-
   public int getCommunityId() {
-    return mCommunity.getmId();
+    return mCommunity.getCommunityId();
   }
 
   public void setCommunityDetails(CommunityModel communityModel) {
     this.mCommunity = communityModel;
-    // set Image
-    setCommunityImage(mCommunity.getmImageUri());
-    // set Overlay Color
-    setCommunityOverlayColor(mCommunity.getmColor());
-    // setTitle
+    setCommunityImage(CommunityUtils.getCommunityIcon(communityModel.getCommunityId()));
     setCommunityTitle(mCommunity.getmName());
   }
 
-  private void setCommunityImage(String imageUri) {
-    ImageHandler.loadCircularImage(mContext, communityIv, imageUri);
+  private void setCommunityImage(int resId) {
+    communityIcon.setImageResource(resId);
   }
 
-  private void setCommunityOverlayColor(String color) {
-    setOverlayColor(color);
+  private void setCommunityTitle(String title) {
+    communityTitle.setText(title);
   }
-
-  private void setOverlayColor(String color) {
-    GradientDrawable background = (GradientDrawable) skillSelectionOverlay.getBackground();
-    background.setColor(Color.parseColor(color));
-  }
-
-
 }

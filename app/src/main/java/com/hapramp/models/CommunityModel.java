@@ -65,7 +65,7 @@ public class CommunityModel {
     this.mName = mName;
   }
 
-  public int getmId() {
+  public int getCommunityId() {
     return mId;
   }
 

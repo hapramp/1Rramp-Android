@@ -3,9 +3,13 @@
     android:layout_width="match_parent"
     android:scrollbars="none"
     android:layout_height="100dp">
+
     <LinearLayout
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal" />
+
 </HorizontalScrollView>

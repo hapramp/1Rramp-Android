@@ -15,4 +15,14 @@
     <color name="ConnectivityRed">#9b1836</color>
     <color name="white">#ffffff</color>
 
+    <color name="art">#ffeb3b</color>
+    <color name="dance">#9c27b0</color>
+    <color name="literature">#607d8b</color>
+    <color name="film">#795548</color>
+    <color name="photography">#2196f3</color>
+    <color name="music">#ef5350</color>
+    <color name="fashion">#283593</color>
+    <color name="design">#0097a7</color>
+    <color name="travel">#8bc34a</color>
+
 </resources>

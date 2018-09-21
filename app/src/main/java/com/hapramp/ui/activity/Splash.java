@@ -25,7 +25,7 @@ public class Splash extends AppCompatActivity {
   }
 
   private void navigateToHomePage() {
-    Intent i = new Intent(this, HomeActivity.class);
+    Intent i = new Intent(this, CommunitySelectionActivity.class);
     startActivity(i);
     finish();
   }

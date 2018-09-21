@@ -14,6 +14,8 @@ import android.widget.TextView;
 import com.hapramp.R;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.ui.activity.CommunitySelectionActivity;
+import com.hapramp.views.InterestGridViewGroup;
+import com.hapramp.views.InterestItemView;
 
 import java.util.List;
 
@@ -25,10 +27,10 @@ import static com.hapramp.ui.activity.CommunitySelectionActivity.EXTRA_PRESELECT
 
 public class InterestsView extends FrameLayout {
   private Context mContext;
-  private ViewGroup parentView;
+  private InterestGridViewGroup parentView;
   private List<CommunityModel> communities;
   private TextView noInterestMessage;
-  private boolean editable;
+  private boolean showEditButton;
 
   public InterestsView(@NonNull Context context) {
     super(context);
@@ -56,7 +58,7 @@ public class InterestsView extends FrameLayout {
 
   public void setCommunities(List<CommunityModel> communities, boolean editable) {
     this.communities = communities;
-    this.editable = editable;
+    this.showEditButton = editable;
     if (communities != null) {
       if (communities.size() > 0) {
         addViews();
@@ -71,23 +73,25 @@ public class InterestsView extends FrameLayout {
 
   private void addViews() {
     parentView.removeAllViews();
+    int childCount = showEditButton ? communities.size() + 1 : communities.size();
+    parentView.setChildInfo(4, childCount);
     for (int i = 0; i < communities.size(); i++) {
-      final CommunityItemView view = new CommunityItemView(mContext);
-      view.setCommunityDetails(communities.get(i));
-      view.setSelection(false);
+      final InterestItemView view = new InterestItemView(mContext);
+      view.setInterestDetails(communities.get(i));
+      view.setSelection(true);
       parentView.addView(view, i,
         new ViewGroup.LayoutParams(
           ViewGroup.LayoutParams.WRAP_CONTENT,
           ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
-    if (editable) {
+    if (showEditButton) {
       //add edit icon with click listener
-      final CommunityItemView editCommunityItem = new CommunityItemView(mContext);
-      CommunityModel communityModel = new CommunityModel("Add or Remove Community",
-        "android.resource://com.hapramp/drawable/edit_community",
-        "", "#77938d8d", "Edit Community", 404);
-      editCommunityItem.setCommunityDetails(communityModel);
+      final InterestItemView editCommunityItem = new InterestItemView(mContext);
+      CommunityModel communityModel = new CommunityModel("Add/Remove Community",
+        "",
+        "", "", "Edit Community", 404);
+      editCommunityItem.setInterestDetails(communityModel);
       editCommunityItem.setSelection(false);
       editCommunityItem.setOnClickListener(new OnClickListener() {
         @Override

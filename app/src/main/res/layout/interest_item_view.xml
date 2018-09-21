@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="64dp"
+    android:background="?selectableItemBackgroundBorderless"
+    android:layout_height="64dp">
+
+    <FrameLayout
+        android:id="@+id/interest_background"
+        android:layout_width="48dp"
+        android:layout_centerHorizontal="true"
+        android:layout_height="48dp"
+        android:background="@drawable/art_border">
+
+        <ImageView
+            android:id="@+id/interest_icon"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="center"
+            android:src="@drawable/art_filled" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/interest_title"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Photography"
+        android:textSize="10sp"
+        android:textColor="@color/Black87" />
+</RelativeLayout>
