@@ -424,11 +424,15 @@ public class EarningFragment extends Fragment implements
     finalVestsReward = _rewardVests;
     try {
       if (sbdReward > 0) {
-        rewardPanelText.append(finalSBDReward);
+        rewardPanelText
+          .append(finalSBDReward)
+          .append(" ");
         rewardExists = true;
       }
       if (steemReward > 0) {
-        rewardPanelText.append(finalSteemReward);
+        rewardPanelText
+          .append(finalSteemReward)
+          .append(" ");
         rewardExists = true;
       }
       if (vestsReward > 0) {
