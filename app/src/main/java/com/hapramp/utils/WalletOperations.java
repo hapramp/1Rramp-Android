@@ -5,6 +5,7 @@ import com.hapramp.steemconnect4j.SteemConnect;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.hapramp.utils.WalletOperationMethods.OPERATION_DELEGATE;
 import static com.hapramp.utils.WalletOperationMethods.OPERATION_POWER_DOWN;
 import static com.hapramp.utils.WalletOperationMethods.OPERATION_POWER_UP;
 import static com.hapramp.utils.WalletOperationMethods.OPERATION_TRANSFER;
@@ -35,5 +36,15 @@ public class WalletOperations {
     Map<String,String> pd = new HashMap<>();
     pd.put("vesting_shares",vests);
    return steemConnect.sign(OPERATION_POWER_DOWN,pd,"");
+  }
+
+  public static String getDelegateUrl(String sender, String receiver, String vests) {
+    SteemConnect steemConnect = SteemConnectUtils
+      .getSteemConnectInstance();
+    Map<String, String> pd = new HashMap<>();
+    pd.put("delegator", sender);
+    pd.put("delegatee", receiver);
+    pd.put("vesting_shares", vests);
+    return steemConnect.sign(OPERATION_DELEGATE, pd, "");
   }
 }
