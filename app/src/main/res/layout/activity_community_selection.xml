@@ -1,34 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:background="@color/white"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/action_bar_title"
-        android:layout_width="wrap_content"
-        android:layout_height="?actionBarSize"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:padding="8dp"
-        android:text="PICK YOUR COMMUNITIES"
-        android:textColor="@color/Black54"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+    <RelativeLayout
+        android:id="@+id/action_bar_container"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize">
+
+        <ImageView
+            android:id="@+id/backBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:padding="14dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/back" />
+
+        <TextView
+            android:id="@+id/action_bar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="?actionBarSize"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="PICK YOUR COMMUNITY (ATLEAST 1)"
+            android:textColor="@color/Black87"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
 
     <com.hapramp.views.CommunitySelectionView
         android:id="@+id/communitySelectionView"
-        android:layout_width="360dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/action_bar_title"
+        android:layout_below="@+id/action_bar_container"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp" />
-
+        android:layout_marginTop="36dp" />
 
     <FrameLayout
         android:id="@+id/toolbar_drop_shadow"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@+id/action_bar_title"
+        android:layout_below="@+id/action_bar_container"
         android:background="@drawable/toolbar_shadow" />
 
     <ProgressBar
@@ -36,6 +52,7 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/communityLoadingProgressBar"
         android:layout_width="wrap_content"
+        android:layout_marginTop="36dp"
         android:layout_height="wrap_content" />
 
     <TextView
@@ -49,7 +66,7 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/filled_btn_bg"
         android:clickable="true"
-        android:elevation="2dp"
+        android:elevation="1dp"
         android:enabled="false"
         android:focusable="true"
         android:paddingBottom="8dp"

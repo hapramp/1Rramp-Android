@@ -1,35 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp">
+    android:layout_width="80dp"
+    android:background="?selectableItemBackgroundBorderless"
+    android:layout_height="104dp">
 
-    <ImageView
-        android:id="@+id/skills_bg_image"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_centerHorizontal="true" />
-
-    <TextView
-        android:id="@+id/skill_selection_overlay"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+    <FrameLayout
+        android:id="@+id/community_background"
+        android:layout_width="80dp"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/skill_selection_overlat"
-        android:gravity="center"
-        android:text=""
-        android:textColor="#ffffff"
-        android:textSize="36sp"
-        android:visibility="visible" />
+        android:layout_height="80dp"
+        android:background="@drawable/art_border">
+
+        <ImageView
+            android:id="@+id/community_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:src="@drawable/art_filled" />
+
+    </FrameLayout>
 
     <TextView
-        android:id="@+id/skill_title"
-        android:layout_width="wrap_content"
+        android:id="@+id/community_title"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/skills_bg_image"
         android:layout_centerHorizontal="true"
-        android:padding="8dp"
-        android:textColor="@color/Black87"
-        android:textSize="12sp" />
-
+        android:layout_width="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Photography"
+        android:textColor="@color/Black87" />
 </RelativeLayout>

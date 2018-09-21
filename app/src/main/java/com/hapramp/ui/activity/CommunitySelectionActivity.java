@@ -5,9 +5,9 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -48,6 +48,8 @@ public class CommunitySelectionActivity extends BaseActivity implements Communit
   TextView communityContinueButton;
   @BindView(R.id.communityLoadingProgressBar)
   ProgressBar communityLoadingProgressBar;
+  @BindView(R.id.backBtn)
+  ImageView backBtn;
   private CommunitySelectionPageViewModel communitySelectionPageViewModel;
 
   @Override
@@ -64,6 +66,7 @@ public class CommunitySelectionActivity extends BaseActivity implements Communit
     ButterKnife.bind(this);
     boolean editable = getIntent().getBooleanExtra(EXTRA_PRESELECTED_MODE, false);
     setMode(editable);
+    init(false);
   }
 
   private void setMode(boolean editable) {
@@ -117,6 +120,13 @@ public class CommunitySelectionActivity extends BaseActivity implements Communit
       public void onClick(View v) {
         showProgressDialog(getString(R.string.community_save_progress_mesaage), true);
         communitySelectionPageViewModel.updateServer(communitySelectionView.getSelectionList());
+      }
+    });
+
+    backBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        finish();
       }
     });
   }

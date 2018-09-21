@@ -1,41 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="68dp"
-    android:layout_height="88dp">
+    android:layout_width="64dp"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp">
 
-    <ImageView
-        android:id="@+id/skills_bg_image"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
+    <FrameLayout
+        android:id="@+id/community_background"
+        android:layout_width="48dp"
         android:layout_centerHorizontal="true"
-        android:padding="10dp" />
+        android:layout_height="48dp"
+        android:background="@drawable/art_border">
+
+        <ImageView
+            android:id="@+id/community_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:src="@drawable/art_filled" />
+
+    </FrameLayout>
 
     <TextView
-        android:id="@+id/skill_title"
-        android:layout_width="match_parent"
+        android:id="@+id/community_title"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:gravity="center_horizontal"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp"
-        android:text="Photography"
+        android:layout_width="wrap_content"
+        android:layout_below="@+id/community_background"
+        android:layout_marginTop="8dp"
         android:textColor="@color/Black87"
         android:textSize="10sp" />
-
-    <FrameLayout
-        android:id="@+id/selector_overlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#b0fdfdfd"
-        android:visibility="visible" />
-
-    <FrameLayout
-        android:id="@+id/selection_tab_indicator"
-        android:layout_width="match_parent"
-        android:layout_height="1.5dp"
-        android:layout_alignParentBottom="true"
-        android:background="@color/colorPrimary"
-        android:visibility="gone" />
 
 </RelativeLayout>

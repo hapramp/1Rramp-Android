@@ -4,15 +4,16 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
 import com.hapramp.models.CommunityModel;
-import com.hapramp.views.post.WrapViewGroup;
 import com.hapramp.views.skills.CommunityItemView;
 
 import java.util.ArrayList;
@@ -22,12 +23,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class CommunitySelectionView extends FrameLayout {
-
-  @BindView(R.id.viewWrapper)
-  WrapViewGroup viewWrapper;
+  CommunityGridViewGroup communityGridViewGroup;
+  TextView noInterestMsg;
 
   private Context mContext;
-  private ViewGroup parentView;
   private ArrayList<Integer> selectedCommunityIds;
   private List<CommunityModel> mCommunityList;
 
@@ -38,10 +37,10 @@ public class CommunitySelectionView extends FrameLayout {
 
   private void init(Context context) {
     this.mContext = context;
-    View view = LayoutInflater.from(mContext).inflate(R.layout.interest_view, this);
-    parentView = view.findViewById(R.id.viewWrapper);
+    View view = LayoutInflater.from(mContext).inflate(R.layout.community_view, this);
     selectedCommunityIds = new ArrayList<>();
-    ButterKnife.bind(this, view);
+    communityGridViewGroup = view.findViewById(R.id.viewWrapper);
+    noInterestMsg = view.findViewById(R.id.no_interest_msg);
   }
 
   public CommunitySelectionView(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -63,22 +62,24 @@ public class CommunitySelectionView extends FrameLayout {
     this.mCommunityList = communityList;
     selectedCommunityIds.clear();
     for (int i = 0; i < preselectedCommunity.size(); i++) {
-      selectedCommunityIds.add(preselectedCommunity.get(i).getmId());
+      selectedCommunityIds.add(preselectedCommunity.get(i).getCommunityId());
     }
     addViews();
   }
 
   private CommunitySelectionListener communitySelectionListener;
+
   public List<Integer> getSelectionList() {
     return selectedCommunityIds;
   }
 
   private void addViews() {
-    parentView.removeAllViews();
+    communityGridViewGroup.removeAllViews();
+    communityGridViewGroup.setChildInfo(3,mCommunityList.size());
     for (int i = 0; i < mCommunityList.size(); i++) {
       final CommunityItemView view = new CommunityItemView(mContext);
       view.setCommunityDetails(mCommunityList.get(i));
-      view.setSelection((selectedCommunityIds.indexOf(mCommunityList.get(i).getmId()) > -1));
+      view.setSelection((selectedCommunityIds.indexOf(mCommunityList.get(i).getCommunityId()) > -1));
       view.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -99,7 +100,7 @@ public class CommunitySelectionView extends FrameLayout {
           }
         }
       });
-      parentView.addView(view, i,
+      communityGridViewGroup.addView(view, i,
         new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 

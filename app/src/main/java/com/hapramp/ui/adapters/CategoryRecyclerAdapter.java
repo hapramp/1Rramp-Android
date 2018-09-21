@@ -65,7 +65,7 @@ public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecycl
 
       categoryItemView.setCommunity(model);
 
-      if (selectedCommunityId == model.getmId()) {
+      if (selectedCommunityId == model.getCommunityId()) {
         categoryItemView.setSelected(true);
       } else {
         categoryItemView.setSelected(false);
@@ -74,7 +74,7 @@ public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecycl
       categoryItemView.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-          selectedCommunityId = model.getmId();
+          selectedCommunityId = model.getCommunityId();
           notifyDataSetChanged();
           categoryItemClickListener.onCategoryClicked(model.getmTag());
         }

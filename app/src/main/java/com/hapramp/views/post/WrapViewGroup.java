@@ -88,10 +88,10 @@ public class WrapViewGroup extends ViewGroup {
       if (i == 0) {
         measureHeight = currentChildHeight;
       }
-      tmpWidth += child.getMeasuredWidth() + child.getPaddingStart() + child.getPaddingEnd();
+      tmpWidth += child.getMeasuredWidth() + child.getPaddingLeft() + child.getPaddingRight();
       if (tmpWidth > mAvailableWidth) {
         measureHeight += currentChildHeight + child.getPaddingTop() + child.getPaddingBottom();
-        tmpWidth = child.getMeasuredWidth() + child.getPaddingStart() + child.getPaddingEnd();
+        tmpWidth = child.getMeasuredWidth() + child.getPaddingTop() + child.getPaddingRight();
       }
     }
     if (childCount == 0) {
