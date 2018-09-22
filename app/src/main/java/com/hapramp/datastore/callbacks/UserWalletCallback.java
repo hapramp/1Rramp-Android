@@ -11,7 +11,7 @@ public interface UserWalletCallback {
 
   void onUserSteemDollar(String dollar);
 
-  void onUserSteemPower(String steemPower);
+  void onUserSteemPower(String steemPowerOwned, String steemPowerDelegated, String steemPowerReceived);
 
   void onUserSavingSteem(String savingSteem);
 

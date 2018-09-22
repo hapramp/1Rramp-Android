@@ -26,6 +26,7 @@ import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;
 import com.hapramp.steemconnect4j.SteemConnectException;
 import com.hapramp.ui.activity.AccountHistoryActivity;
+import com.hapramp.ui.activity.DelegateActivity;
 import com.hapramp.ui.activity.PowerDownActivity;
 import com.hapramp.ui.activity.PowerUpActivity;
 import com.hapramp.ui.activity.TransferActivity;
@@ -114,6 +115,8 @@ public class EarningFragment extends Fragment implements
   RelativeLayout accountOperationButtonContainer;
   @BindView(R.id.rewardPanelTv)
   TextView rewardPanelTv;
+  @BindView(R.id.delegate_btn)
+  RelativeLayout delegateBtn;
   private Handler mHandler;
   public static final int VALUES_REQUIRED_BEFORE_CALC = 5;
   private Unbinder unbinder;
@@ -121,7 +124,7 @@ public class EarningFragment extends Fragment implements
   private Context mContext;
   private double steem;
   private double sbd;
-  private double sp;
+  private double sp_owned;
   private double sbd_rate;
   private double steem_rate;
   private DataStore dataStore;
@@ -130,6 +133,8 @@ public class EarningFragment extends Fragment implements
   private String finalSteemReward;
   private String finalVestsReward;
   private ProgressDialog progressDialog;
+  private double sp_delegated;
+  private double sp_received;
 
 
   public EarningFragment() {
@@ -195,19 +200,28 @@ public class EarningFragment extends Fragment implements
     progressDialog = new ProgressDialog(mContext);
     progressDialog.setCancelable(false);
   }
+
   @Override
   public void onDestroyView() {
     super.onDestroyView();
     unbinder.unbind();
   }
 
-  private void showEstimatedEarnings() {
+  @Override
+  public void onUserSteemPower(final String steemPowerOwned,
+                               final String steemPowerDelegated,
+                               final String steemPowerReceived) {
+    this.sp_owned = Double.parseDouble(steemPowerOwned.split(" ")[0]);
+    this.sp_delegated = Double.parseDouble(steemPowerDelegated.split(" ")[0]);
+    this.sp_received = Double.parseDouble(steemPowerReceived.split(" ")[0]);
+
+    valuesAvailable++;
     try {
-      estimatedValueProgress.setVisibility(View.GONE);
-      if (VALUES_REQUIRED_BEFORE_CALC <= valuesAvailable) {
-        double total = (steem_rate * (steem + sp)) + sbd * sbd_rate;
-        walletEstAccountValueTv.setText(String.format(Locale.US, "$ %.2f", total));
-      }
+      steemPowerProgress.setVisibility(View.GONE);
+      walletSteemPowerTv.setText(String.format(Locale.US, "%.3f (+%s)",
+        (sp_owned + sp_received - sp_delegated),
+        sp_received));
+      showEstimatedEarnings();
     }
     catch (Exception e) {
     }
@@ -219,56 +233,16 @@ public class EarningFragment extends Fragment implements
     dataStore.requestWalletInfo(mUsername, this);
   }
 
-  private void attachListener() {
-    seeHistoryBtn.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        Intent intent = new Intent(mContext, AccountHistoryActivity.class);
-        intent.putExtra(AccountHistoryActivity.EXTRA_USERNAME, mUsername);
-        mContext.startActivity(intent);
+  private void showEstimatedEarnings() {
+    try {
+      estimatedValueProgress.setVisibility(View.GONE);
+      if (VALUES_REQUIRED_BEFORE_CALC <= valuesAvailable) {
+        double total = (steem_rate * (steem + sp_owned)) + sbd * sbd_rate;
+        walletEstAccountValueTv.setText(String.format(Locale.US, "$ %.2f", total));
       }
-    });
-
-    powerUpBtn.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        Bundle bundle = new Bundle();
-        bundle.putString(TransferActivity.EXTRA_STEEM_BALANCE, walletSteemTv.getText().toString());
-        Intent intent = new Intent(mContext, PowerUpActivity.class);
-        intent.putExtras(bundle);
-        startActivity(intent);
-      }
-    });
-
-    powerDownBtn.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        Bundle bundle = new Bundle();
-        bundle.putString(PowerDownActivity.EXTRA_SP_BALANCE, walletSteemPowerTv.getText().toString());
-        Intent intent = new Intent(mContext, PowerDownActivity.class);
-        intent.putExtras(bundle);
-        startActivity(intent);
-      }
-    });
-
-    transferBtn.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        Bundle bundle = new Bundle();
-        bundle.putString(TransferActivity.EXTRA_STEEM_BALANCE, walletSteemTv.getText().toString());
-        bundle.putString(TransferActivity.EXTRA_SBD_BALANCE, walletSteemDollarTv.getText().toString());
-        Intent intent = new Intent(mContext, TransferActivity.class);
-        intent.putExtras(bundle);
-        startActivity(intent);
-      }
-    });
-
-    claimRewardBtn.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        requestClaimReward();
-      }
-    });
+    }
+    catch (Exception e) {
+    }
   }
 
   private void disableWalletActions() {
@@ -276,6 +250,7 @@ public class EarningFragment extends Fragment implements
       transferBtn.setEnabled(false);
       powerDownBtn.setEnabled(false);
       powerUpBtn.setEnabled(false);
+      delegateBtn.setEnabled(false);
       claimRewardBtn.setEnabled(false);
     }
     catch (Exception e) {
@@ -359,17 +334,66 @@ public class EarningFragment extends Fragment implements
     fetchWalletInfo();
   }
 
-  @Override
-  public void onUserSteemPower(final String steemPower) {
-    this.sp = Double.parseDouble(steemPower.split(" ")[0]);
-    valuesAvailable++;
-    try {
-      steemPowerProgress.setVisibility(View.GONE);
-      walletSteemPowerTv.setText(steemPower);
-      showEstimatedEarnings();
-    }
-    catch (Exception e) {
-    }
+  private void attachListener() {
+    seeHistoryBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        Intent intent = new Intent(mContext, AccountHistoryActivity.class);
+        intent.putExtra(AccountHistoryActivity.EXTRA_USERNAME, mUsername);
+        mContext.startActivity(intent);
+      }
+    });
+
+    powerUpBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        Bundle bundle = new Bundle();
+        bundle.putString(TransferActivity.EXTRA_STEEM_BALANCE, walletSteemTv.getText().toString());
+        Intent intent = new Intent(mContext, PowerUpActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+      }
+    });
+
+    powerDownBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        Bundle bundle = new Bundle();
+        bundle.putString(PowerDownActivity.EXTRA_SP_BALANCE, (sp_owned - sp_delegated) + " SP");
+        Intent intent = new Intent(mContext, PowerDownActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+      }
+    });
+
+    delegateBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        Bundle bundle = new Bundle();
+        bundle.putString(PowerDownActivity.EXTRA_SP_BALANCE, (sp_owned - sp_delegated) + " SP");
+        Intent intent = new Intent(mContext, DelegateActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+      }
+    });
+    transferBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        Bundle bundle = new Bundle();
+        bundle.putString(TransferActivity.EXTRA_STEEM_BALANCE, walletSteemTv.getText().toString());
+        bundle.putString(TransferActivity.EXTRA_SBD_BALANCE, walletSteemDollarTv.getText().toString());
+        Intent intent = new Intent(mContext, TransferActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+      }
+    });
+
+    claimRewardBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        requestClaimReward();
+      }
+    });
   }
 
   @Override
@@ -471,6 +495,7 @@ public class EarningFragment extends Fragment implements
       transferBtn.setEnabled(true);
       powerDownBtn.setEnabled(true);
       powerUpBtn.setEnabled(true);
+      delegateBtn.setEnabled(true);
       claimRewardBtn.setEnabled(true);
     }
     catch (Exception e) {

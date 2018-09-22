@@ -413,6 +413,29 @@
 
             </RelativeLayout>
 
+            <RelativeLayout
+                android:layout_marginBottom="4dp"
+                android:id="@+id/delegate_btn"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_below="@+id/power_down_btn"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/empty_btn_bg"
+                android:elevation="1dp"
+                android:clickable="true"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="DELEGATE"
+                    android:textColor="#000000"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
         </RelativeLayout>
 
         <RelativeLayout

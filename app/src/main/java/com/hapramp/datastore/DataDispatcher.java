@@ -273,12 +273,19 @@ public class DataDispatcher {
     if (userWalletCallback != null) {
       GlobalProperties globalProperties = new Gson().fromJson(globalPropsJson, GlobalProperties.class);
       final User user = jsonParser.parseRawUserJson(userProfileJson);
-      double totalVestingShare =
-        Double.valueOf(user.getVesting_share().split(" ")[0]) +
-          Double.valueOf(user.getReceived_vesting_shares().split(" ")[0]) -
-          Double.valueOf(user.getDelegated_vesting_shares().split(" ")[0]);
-      final double steemPower = SteemPowerCalc.calculateSteemPower(
-        totalVestingShare,
+
+      final double steemPowerOwned = SteemPowerCalc.calculateSteemPower(
+        Double.valueOf(user.getVesting_share().split(" ")[0]),
+        globalProperties.getResult().getTotal_vesting_fund_steem(),
+        globalProperties.getResult().getTotal_vesting_shares());
+
+      final double steemPowerDelegated = SteemPowerCalc.calculateSteemPower(
+        Double.valueOf(user.getDelegated_vesting_shares().split(" ")[0]),
+        globalProperties.getResult().getTotal_vesting_fund_steem(),
+        globalProperties.getResult().getTotal_vesting_shares());
+
+      final double steemPowerReceived = SteemPowerCalc.calculateSteemPower(
+        Double.valueOf(user.getReceived_vesting_shares().split(" ")[0]),
         globalProperties.getResult().getTotal_vesting_fund_steem(),
         globalProperties.getResult().getTotal_vesting_shares());
 
@@ -295,7 +302,10 @@ public class DataDispatcher {
               user.getSbdRewardBalance(),
               user.getSteemRewardBalance(),
               user.getVestsRewardBalance());
-            userWalletCallback.onUserSteemPower(String.format(Locale.US, "%.3f SP", steemPower));
+            userWalletCallback.onUserSteemPower(String.format(Locale.US, "%.3f SP", steemPowerOwned),
+              String.format(Locale.US, "%.3f SP", steemPowerDelegated),
+              String.format(Locale.US, "%.3f SP", steemPowerReceived)
+            );
           }
         }
       );

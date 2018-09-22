@@ -15,6 +15,8 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.WalletOperations;
 
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -115,6 +117,7 @@ public class PowerDownActivity extends AppCompatActivity {
   }
 
   private String getVests(double amount) {
-    return String.format("%s VESTS", amount * HaprampPreferenceManager.getInstance().getVestsPerSteem());
+    return String.format(Locale.US,
+      "%.4f VESTS", amount * HaprampPreferenceManager.getInstance().getVestsPerSteem());
   }
 }
