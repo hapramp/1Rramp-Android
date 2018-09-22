@@ -12,62 +12,82 @@
         android:background="#dfffffff"
         android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/createArticleBtn"
-        android:layout_width="87dp"
-        android:layout_height="32dp"
-        android:layout_above="@+id/createPostBtn"
-        android:layout_centerHorizontal="true"
+    <RelativeLayout
+        android:id="@+id/blog_btn"
+        android:layout_width="128dp"
+        android:layout_height="48dp"
+        android:layout_above="@+id/photo_btn"
         android:alpha="0"
-        android:background="@drawable/create_post_floating_btn_bg"
+        android:background="@drawable/empty_btn_bg"
+        android:layout_centerHorizontal="true"
         android:clickable="false"
-        android:focusable="false"
-        android:gravity="center"
-        android:paddingBottom="8dp"
-        android:paddingEnd="20dp"
-        android:paddingStart="20dp"
-        android:paddingTop="8dp"
-        android:text="BLOG"
-        android:textColor="@color/Black38"
-        android:textSize="14sp"
-        android:visibility="gone" />
+        android:elevation="2dp">
 
-    <TextView
-        android:id="@+id/createPostBtn"
-        android:layout_width="87dp"
-        android:layout_height="32dp"
+        <ImageView
+            android:id="@+id/blog_icon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/filled_btn_bg"
+            android:padding="12dp"
+            android:src="@drawable/literature_filled" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@+id/blog_icon"
+            android:text="Blog"
+            android:textColor="@color/Black54"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/photo_btn"
+        android:layout_width="128dp"
+        android:layout_height="48dp"
         android:layout_above="@+id/plusBtn"
-        android:layout_centerHorizontal="true"
         android:alpha="0"
-        android:background="@drawable/create_post_floating_btn_bg"
+        android:background="@drawable/empty_btn_bg"
+        android:layout_centerHorizontal="true"
         android:clickable="false"
-        android:focusable="false"
-        android:gravity="center"
-        android:paddingBottom="8dp"
-        android:paddingEnd="20dp"
-        android:paddingStart="20dp"
-        android:paddingTop="8dp"
-        android:text="POST"
-        android:textColor="@color/Black38"
-        android:textSize="14sp"
-        android:visibility="visible" />
+        android:elevation="2dp">
 
+        <ImageView
+            android:id="@+id/photo_icon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/filled_btn_bg"
+            android:padding="12dp"
+            android:src="@drawable/camera" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@+id/photo_icon"
+            android:text="Photo"
+            android:textColor="@color/Black54"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/plusBtn"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="4dp"
         android:background="@drawable/home_more_btn_selector"
         android:clickable="true"
         android:elevation="4dp"
         android:gravity="center"
         android:text=""
         android:textColor="#ffffff"
-        android:textSize="22sp" />
-
+        android:textSize="24sp" />
 
 </RelativeLayout>

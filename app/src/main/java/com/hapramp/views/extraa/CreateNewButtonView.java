@@ -24,16 +24,16 @@ import com.hapramp.utils.MomentsUtils;
  * Created by Ankit on 12/19/2017.
  */
 
-public class CreateButtonView extends FrameLayout {
+public class CreateNewButtonView extends FrameLayout {
   private static final int POST_BUTTON_TRANSLATION_Y = 24;
   private static final int ARTICLE_BUTTON_TRANSLATION_Y = 40;
-  private final int ADD_BUTTON_ROTATION_DELAY = 300;
-  private final int FLOATING_BUTTON_DELAY = 100;
-  private final float ADD_BUTTON_OVERSHOOT_TENSION = 5f;
-  private final float FLOATING_BUTTONOVERSHOOT_TENSION = 5f;
+  private final int ADD_BUTTON_ROTATION_DELAY = 200;
+  private final int FLOATING_BUTTON_DELAY = 200;
+  private final float ADD_BUTTON_OVERSHOOT_TENSION = 2f;
+  private final float FLOATING_BUTTONOVERSHOOT_TENSION = 2f;
   private final float ADD_BUTTON_ROTATION_ANGLE = 45f;
-  TextView createArticleBtn;
-  TextView createPostBtn;
+  RelativeLayout addBlogBtn;
+  RelativeLayout addPhotoBtn;
   TextView plusBtn;
   FrameLayout overlay;
   RelativeLayout root;
@@ -41,7 +41,7 @@ public class CreateButtonView extends FrameLayout {
   private boolean isFloating;
   private ItemClickListener itemClickListener;
 
-  public CreateButtonView(@NonNull Context context) {
+  public CreateNewButtonView(@NonNull Context context) {
     super(context);
     init(context);
   }
@@ -49,8 +49,8 @@ public class CreateButtonView extends FrameLayout {
   private void init(Context context) {
     this.mContext = context;
     View v = LayoutInflater.from(context).inflate(R.layout.create_new_button_view, this);
-    createArticleBtn = v.findViewById(R.id.createArticleBtn);
-    createPostBtn = v.findViewById(R.id.createPostBtn);
+    addBlogBtn = v.findViewById(R.id.blog_btn);
+    addPhotoBtn = v.findViewById(R.id.photo_btn);
     plusBtn = v.findViewById(R.id.plusBtn);
     overlay = v.findViewById(R.id.overlay);
     root = v.findViewById(R.id.root);
@@ -71,7 +71,7 @@ public class CreateButtonView extends FrameLayout {
       }
     });
 
-    createArticleBtn.setOnClickListener(new OnClickListener() {
+    addBlogBtn.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
         hideFloatingButton();
@@ -82,7 +82,7 @@ public class CreateButtonView extends FrameLayout {
       }
     });
 
-    createPostBtn.setOnClickListener(new OnClickListener() {
+    addPhotoBtn.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
         hideFloatingButton();
@@ -95,26 +95,21 @@ public class CreateButtonView extends FrameLayout {
 
   }
 
-  private void checkConnection() {
-    if (!ConnectionUtils.isConnected(mContext)) {
-      Toast.makeText(mContext, "Internet Connection Required!", Toast.LENGTH_LONG).show();
-      return;
-    }
-  }
-
   private void hideFloatingButton() {
     hideOverlay();
     root.setClickable(false);
-    createPostBtn.setVisibility(GONE);
-    createArticleBtn.setVisibility(GONE);
-    createPostBtn.animate()
+    addPhotoBtn.setClickable(false);
+    addBlogBtn.setClickable(false);
+    addPhotoBtn.setVisibility(GONE);
+    addBlogBtn.setVisibility(GONE);
+    addPhotoBtn.animate()
       .setInterpolator(new OvershootInterpolator(FLOATING_BUTTONOVERSHOOT_TENSION))
       .translationY(0)
       .alpha(0)
       .setDuration(FLOATING_BUTTON_DELAY)
       .start();
 
-    createArticleBtn.animate()
+    addBlogBtn.animate()
       .setInterpolator(new OvershootInterpolator(FLOATING_BUTTONOVERSHOOT_TENSION))
       .alpha(0)
       .translationY(0)
@@ -127,37 +122,49 @@ public class CreateButtonView extends FrameLayout {
       .setDuration(ADD_BUTTON_ROTATION_DELAY)
       .start();
 
+    overlay.animate().alpha(0).setDuration(FLOATING_BUTTON_DELAY).start();
     isFloating = false;
   }
 
   private void showFloatingButtons() {
     showOverlay();
     root.setClickable(true);
-    createArticleBtn.setVisibility(VISIBLE);
-    createPostBtn.setVisibility(VISIBLE);
-    createPostBtn.setClickable(true);
-    createArticleBtn.setClickable(true);
+    addPhotoBtn.setClickable(true);
+    addBlogBtn.setClickable(true);
+    addBlogBtn.setVisibility(VISIBLE);
+    addPhotoBtn.setVisibility(VISIBLE);
+    addPhotoBtn.setClickable(true);
+    addBlogBtn.setClickable(true);
     plusBtn.animate()
       .setInterpolator(new OvershootInterpolator(ADD_BUTTON_OVERSHOOT_TENSION))
       .rotation(ADD_BUTTON_ROTATION_ANGLE)
       .setDuration(ADD_BUTTON_ROTATION_DELAY)
       .start();
 
-    createPostBtn.animate()
+    addPhotoBtn.animate()
       .setInterpolator(new OvershootInterpolator(FLOATING_BUTTONOVERSHOOT_TENSION))
       .translationY(-(getShiftAmount(POST_BUTTON_TRANSLATION_Y)))
       .alpha(1)
       .setDuration(FLOATING_BUTTON_DELAY)
       .start();
 
-    createArticleBtn.animate()
+    addBlogBtn.animate()
       .setInterpolator(new OvershootInterpolator(FLOATING_BUTTONOVERSHOOT_TENSION))
       .alpha(1)
       .translationY(-(getShiftAmount(ARTICLE_BUTTON_TRANSLATION_Y)))
       .setDuration(FLOATING_BUTTON_DELAY)
       .start();
 
+    overlay.animate().alpha(1).setDuration(FLOATING_BUTTON_DELAY).start();
+
     isFloating = true;
+  }
+
+  private void checkConnection() {
+    if (!ConnectionUtils.isConnected(mContext)) {
+      Toast.makeText(mContext, "Internet Connection Required!", Toast.LENGTH_LONG).show();
+      return;
+    }
   }
 
   private void hideOverlay() {
@@ -184,13 +191,13 @@ public class CreateButtonView extends FrameLayout {
     return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
   }
 
-  public CreateButtonView(@NonNull Context context, @Nullable AttributeSet attrs) {
+  public CreateNewButtonView(@NonNull Context context, @Nullable AttributeSet attrs) {
     super(context, attrs);
     init(context);
 
   }
 
-  public CreateButtonView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+  public CreateNewButtonView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     init(context);
   }

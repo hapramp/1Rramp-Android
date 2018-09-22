@@ -36,22 +36,38 @@
         android:layout_height="?actionBarSize"
         android:background="#ffffff">
 
-        <TextView
+        <ImageView
             android:id="@+id/search_icon"
             android:layout_width="?actionBarSize"
             android:layout_height="match_parent"
             android:clickable="true"
             android:gravity="center"
-            android:text=""
-            android:textSize="24sp" />
+            android:alpha="0.8"
+            android:background="?selectableItemBackgroundBorderless"
+            android:padding="18dp"
+            android:src="@drawable/search" />
 
         <ImageView
             android:id="@+id/haprampIcon"
             android:layout_width="?actionBarSize"
             android:layout_height="?actionBarSize"
             android:layout_centerHorizontal="true"
-            android:layout_margin="16dp"
+            android:padding="16dp"
+            android:background="?selectableItemBackgroundBorderless"
             android:src="@drawable/hapramp_logo_trans" />
+
+        <ImageView
+            android:id="@+id/notification_icon"
+            android:layout_width="?actionBarSize"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:alpha="0.8"
+            android:background="?selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:gravity="center"
+            android:padding="18dp"
+            android:src="@drawable/notify" />
+
     </RelativeLayout>
 
     <FrameLayout
@@ -73,7 +89,7 @@
 
     <include layout="@layout/home_bottom_bar" />
 
-    <com.hapramp.views.extraa.CreateButtonView
+    <com.hapramp.views.extraa.CreateNewButtonView
         android:id="@+id/createNewBtn"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

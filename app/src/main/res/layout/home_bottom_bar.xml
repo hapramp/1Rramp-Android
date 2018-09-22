@@ -11,77 +11,38 @@
         android:scaleType="centerCrop"
         android:src="@drawable/bottom_bar_shadow" />
 
-
     <LinearLayout
         android:id="@+id/bottombar_container"
         android:layout_width="match_parent"
-        android:layout_height="54dp"
+        android:layout_height="48dp"
         android:layout_alignParentBottom="true"
         android:background="#ffffff"
         android:orientation="horizontal"
         android:weightSum="5">
 
-        <FrameLayout
+        <ImageView
+            android:id="@+id/bottomBar_home"
             android:layout_width="0dp"
-            android:layout_height="54dp"
-            android:layout_gravity="bottom"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#ffffff">
+            android:background="?selectableItemBackgroundBorderless"
+            android:gravity="center_horizontal"
+            android:padding="14dp"
+            android:src="@drawable/home_icon_selected"
+            android:text=""
+            android:textColor="@color/colorPrimary" />
 
-            <TextView
-                android:id="@+id/bottomBar_home"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="?selectableItemBackgroundBorderless"
-                android:gravity="center_horizontal"
-                android:paddingTop="8dp"
-                android:text=""
-                android:textColor="@color/colorPrimary"
-                android:textSize="24sp" />
-
-            <TextView
-                android:id="@+id/bottomBar_home_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:gravity="center_horizontal"
-                android:paddingBottom="8dp"
-                android:text="Home"
-                android:textColor="@color/colorPrimary"
-                android:textSize="10sp" />
-
-        </FrameLayout>
-
-        <FrameLayout
+        <ImageView
+            android:id="@+id/bottomBar_wallet"
             android:layout_width="0dp"
-            android:layout_height="54dp"
-            android:layout_gravity="bottom"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#ffffff">
-
-            <TextView
-                android:id="@+id/bottomBar_competition"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="?selectableItemBackgroundBorderless"
-                android:gravity="center_horizontal"
-                android:paddingTop="8dp"
-                android:text=""
-                android:textColor="#818080"
-                android:textSize="24sp" />
-
-
-            <TextView
-                android:id="@+id/bottomBar_competition_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:gravity="center_horizontal"
-                android:paddingBottom="8dp"
-                android:text="Earning"
-                android:textSize="10sp" />
-
-        </FrameLayout>
+            android:background="?selectableItemBackgroundBorderless"
+            android:gravity="center_horizontal"
+            android:padding="14dp"
+            android:src="@drawable/wallet_icon"
+            android:text=""
+            android:textColor="#818080" />
 
         <FrameLayout
             android:layout_width="0dp"
@@ -90,69 +51,31 @@
 
         </FrameLayout>
 
-
-        <FrameLayout
+        <ImageView
+            android:id="@+id/bottomBar_profile"
             android:layout_width="0dp"
-            android:layout_height="54dp"
-            android:layout_gravity="bottom"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#ffffff">
-
-            <TextView
-                android:id="@+id/bottomBar_profile"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="?selectableItemBackgroundBorderless"
-                android:gravity="center_horizontal"
-                android:paddingTop="8dp"
-                android:text=""
-                android:textColor="#818080"
-                android:textSize="24sp" />
-
-            <TextView
-                android:id="@+id/bottomBar_profile_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:gravity="center_horizontal"
-                android:paddingBottom="8dp"
-                android:text="Profile"
-                android:textSize="10sp" />
-
-        </FrameLayout>
+            android:background="?selectableItemBackgroundBorderless"
+            android:gravity="center_horizontal"
+            android:padding="14dp"
+            android:src="@drawable/user_icon"
+            android:text=""
+            android:textColor="#818080" />
 
 
-        <FrameLayout
+        <ImageView
+            android:id="@+id/bottomBar_settings"
             android:layout_width="0dp"
-            android:layout_height="54dp"
-            android:layout_gravity="bottom"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#ffffff">
-
-            <TextView
-                android:id="@+id/bottomBar_settings"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="?selectableItemBackgroundBorderless"
-                android:gravity="center_horizontal"
-                android:paddingTop="8dp"
-                android:text=""
-                android:textColor="#818080"
-                android:textSize="24sp" />
-
-            <TextView
-                android:id="@+id/bottomBar_settings_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:gravity="center_horizontal"
-                android:paddingBottom="8dp"
-                android:text="Settings"
-                android:textSize="10sp" />
-
-        </FrameLayout>
+            android:background="?selectableItemBackgroundBorderless"
+            android:gravity="center_horizontal"
+            android:padding="14dp"
+            android:src="@drawable/settings_icon"
+            android:text=""
+            android:textColor="#818080" />
 
     </LinearLayout>
-
 
 </RelativeLayout>

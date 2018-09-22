@@ -35,6 +35,7 @@ import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.utils.ShadowUtils;
 import com.hapramp.views.CommunityFilterView;
 import com.hapramp.views.feedlist.FeedListView;
+
 import java.util.ArrayList;
 import java.util.List;
 
