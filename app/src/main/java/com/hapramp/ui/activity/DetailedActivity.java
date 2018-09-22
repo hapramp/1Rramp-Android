@@ -424,6 +424,11 @@ public class DetailedActivity extends AppCompatActivity implements
         public void onVoteDeleted(String full_permlink) {
           deleteVoteOnSteem();
         }
+
+        @Override
+        public void onVoteDescription(String msg) {
+
+        }
       });
   }
 

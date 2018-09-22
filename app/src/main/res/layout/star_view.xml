@@ -6,29 +6,30 @@
     android:background="@color/white"
     android:gravity="center_vertical">
 
-
-    <TextView
+    <ImageView
         android:id="@+id/starIndicator"
-        android:layout_width="wrap_content"
+        android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_centerVertical="true"
         android:gravity="center_vertical"
-        android:paddingRight="2dp"
+        android:background="?selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:paddingBottom="12dp"
+        android:paddingTop="12dp"
         android:text=""
         android:textColor="@color/Black54"
-        android:textSize="24sp" />
+        android:src="@drawable/star" />
 
     <TextView
-        android:id="@+id/starInfo"
+        android:id="@+id/rateLabel"
         android:layout_width="wrap_content"
-        android:layout_height="36dp"
-        android:layout_marginLeft="4dp"
+        android:layout_height="match_parent"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/starIndicator"
         android:gravity="center_vertical"
-        android:text=""
+        android:text="Rate"
         android:textColor="@color/Black54"
-        android:textSize="12sp" />
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/ratingError"
@@ -53,29 +54,25 @@
     <RelativeLayout
         android:id="@+id/ratingBarContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:animateLayoutChanges="true"
+        android:layout_centerVertical="true"
         android:background="@color/white"
         android:clickable="true"
-        android:paddingBottom="4dp"
-        android:paddingRight="8dp"
-        android:paddingLeft="8dp"
-        android:paddingTop="4dp"
         android:visibility="gone">
 
-        <RatingBar
+        <com.hapramp.views.CustomRatingBar
             android:id="@+id/ratingBar"
-            style="?android:attr/ratingBarStyleIndicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
+            android:layout_width="144dp"
+            android:layout_height="32dp"
             android:alpha="1"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:clickable="true"
             android:focusable="true"
             android:isIndicator="false"
             android:numStars="5"
-            android:rating="0"
-            android:stepSize="1"
+            android:rating="4"
             android:visibility="visible" />
 
         <TextView
@@ -83,6 +80,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="8dp"
             android:background="?selectableItemBackgroundBorderless"
             android:clickable="true"

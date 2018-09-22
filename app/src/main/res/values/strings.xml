@@ -6,7 +6,7 @@
     <string name="onboarding_content_1">Join community</string>
     <string name="onboarding_content_2">Share your innovative content</string>
     <string name="onboarding_content_3">Earn rewards for your work </string>
-    <string name="star_info">%1$.1f from %2$d</string>
+    <string name="star_info">%1$.1f star from %2$d</string>
     <string name="default_wall_pic">https://user-images.githubusercontent.com/10809719/34511255-2d3d8592-f080-11e7-9540-43d153a96c33.png</string>
     <string name="post_subtitle_format">| %1$s</string>
     <string name="steem_user_profile_pic_format">https://steemitimages.com/u/%s/avatar</string>
