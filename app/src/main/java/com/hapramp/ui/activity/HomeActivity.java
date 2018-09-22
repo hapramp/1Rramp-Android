@@ -5,7 +5,6 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -43,12 +42,12 @@ import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.utils.FollowingsSyncUtils;
 import com.hapramp.utils.FontManager;
 import com.hapramp.viewmodel.common.ConnectivityViewModel;
-import com.hapramp.views.extraa.CreateButtonView;
+import com.hapramp.views.extraa.CreateNewButtonView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeActivity extends AppCompatActivity implements CreateButtonView.ItemClickListener {
+public class HomeActivity extends AppCompatActivity implements CreateNewButtonView.ItemClickListener {
   private final int BOTTOM_MENU_HOME = 7;
   private final int BOTTOM_MENU_COMP = 8;
   private final int BOTTOM_MENU_PROFILE = 9;
@@ -58,42 +57,36 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   private final int FRAGMENT_PROFILE = 14;
   private final int FRAGMENT_SETTINGS = 15;
   private final int FRAGMENT_EARNINGS = 16;
-  @BindView(R.id.search_icon)
-  TextView searchIcon;
-  @BindView(R.id.bottomBar_home)
-  TextView bottomBarHome;
-  @BindView(R.id.bottomBar_competition)
-  TextView bottomBarEarnings;
-  @BindView(R.id.createNewBtn)
-  CreateButtonView createButtonView;
-  @BindView(R.id.bottomBar_profile)
-  TextView bottomBarProfile;
-  @BindView(R.id.bottomBar_settings)
-  TextView bottomBarSettings;
-  @BindView(R.id.action_bar_container)
-  RelativeLayout actionBarContainer;
   @BindView(R.id.contentPlaceHolder)
   FrameLayout contentPlaceHolder;
-  @BindView(R.id.bottomBar_home_text)
-  TextView bottomBarHomeText;
-  @BindView(R.id.bottomBar_competition_text)
-  TextView bottomBarCompetitionText;
-  @BindView(R.id.bottomBar_profile_text)
-  TextView bottomBarProfileText;
-  @BindView(R.id.bottomBar_settings_text)
-  TextView bottomBarSettingsText;
-  @BindView(R.id.toolbar_drop_shadow)
-  FrameLayout toolbarDropShadow;
-  @BindView(R.id.shadow)
-  ImageView shadow;
-  @BindView(R.id.bottombar_container)
-  LinearLayout bottombarContainer;
-  @BindView(R.id.haprampIcon)
-  ImageView haprampIcon;
   @BindView(R.id.connectivity_text)
   TextView connectivityText;
   @BindView(R.id.connectivity_message_container)
   FrameLayout connectivityMessageContainer;
+  @BindView(R.id.search_icon)
+  ImageView searchIcon;
+  @BindView(R.id.haprampIcon)
+  ImageView haprampIcon;
+  @BindView(R.id.notification_icon)
+  ImageView notificationIcon;
+  @BindView(R.id.action_bar_container)
+  RelativeLayout actionBarContainer;
+  @BindView(R.id.toolbar_drop_shadow)
+  FrameLayout toolbarDropShadow;
+  @BindView(R.id.shadow)
+  ImageView shadow;
+  @BindView(R.id.bottomBar_home)
+  ImageView bottomBarHome;
+  @BindView(R.id.bottomBar_wallet)
+  ImageView bottomBarWallet;
+  @BindView(R.id.bottomBar_profile)
+  ImageView bottomBarProfile;
+  @BindView(R.id.bottomBar_settings)
+  ImageView bottomBarSettings;
+  @BindView(R.id.bottombar_container)
+  LinearLayout bottombarContainer;
+  @BindView(R.id.createNewBtn)
+  CreateNewButtonView createNewBtn;
   private int lastMenuSelection = BOTTOM_MENU_HOME;
   private Typeface materialTypface;
   private FragmentManager fragmentManager;
@@ -169,11 +162,6 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
 
   private void setupToolbar() {
     materialTypface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
-    searchIcon.setTypeface(materialTypface);
-    bottomBarHome.setTypeface(materialTypface);
-    bottomBarEarnings.setTypeface(materialTypface);
-    bottomBarProfile.setTypeface(materialTypface);
-    bottomBarSettings.setTypeface(materialTypface);
   }
 
   private void logout() {
@@ -209,7 +197,7 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     });
 
 
-    bottomBarEarnings.setOnClickListener(new View.OnClickListener() {
+    bottomBarWallet.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         if (lastMenuSelection == BOTTOM_MENU_EARNINGS)
@@ -240,7 +228,9 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
         transactFragment(FRAGMENT_SETTINGS);
       }
     });
-    createButtonView.setItemClickListener(this);
+
+    createNewBtn.setItemClickListener(this);
+
     searchIcon.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -327,28 +317,23 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
     resetLastSelection(lastMenuSelection);
     switch (newSelectedMenu) {
       case BOTTOM_MENU_HOME:
-        bottomBarHome.setTextColor(getResources().getColor(R.color.colorPrimary));
-        bottomBarHomeText.setTextColor(getResources().getColor(R.color.colorPrimary));
+        bottomBarHome.setImageResource(R.drawable.home_icon_selected);
         lastMenuSelection = BOTTOM_MENU_HOME;
         break;
       case BOTTOM_MENU_COMP:
-        bottomBarEarnings.setTextColor(getResources().getColor(R.color.colorPrimary));
-        bottomBarCompetitionText.setTextColor(getResources().getColor(R.color.colorPrimary));
+        bottomBarWallet.setImageResource(R.drawable.wallet_icon_selected);
         lastMenuSelection = BOTTOM_MENU_COMP;
         break;
       case BOTTOM_MENU_PROFILE:
-        bottomBarProfile.setTextColor(getResources().getColor(R.color.colorPrimary));
-        bottomBarProfileText.setTextColor(getResources().getColor(R.color.colorPrimary));
+        bottomBarProfile.setImageResource(R.drawable.user_icon_selected);
         lastMenuSelection = BOTTOM_MENU_PROFILE;
         break;
       case BOTTOM_MENU_SETTINGS:
-        bottomBarSettings.setTextColor(getResources().getColor(R.color.colorPrimary));
-        bottomBarSettingsText.setTextColor(getResources().getColor(R.color.colorPrimary));
+        bottomBarSettings.setImageResource(R.drawable.settings_icon_selected);
         lastMenuSelection = BOTTOM_MENU_SETTINGS;
         break;
       case BOTTOM_MENU_EARNINGS:
-        bottomBarEarnings.setTextColor(getResources().getColor(R.color.colorPrimary));
-        bottomBarCompetitionText.setTextColor(getResources().getColor(R.color.colorPrimary));
+        bottomBarWallet.setImageResource(R.drawable.wallet_icon_selected);
         lastMenuSelection = BOTTOM_MENU_EARNINGS;
         break;
       default:
@@ -359,24 +344,19 @@ public class HomeActivity extends AppCompatActivity implements CreateButtonView.
   private void resetLastSelection(int lastMenuSelection) {
     switch (lastMenuSelection) {
       case BOTTOM_MENU_HOME:
-        bottomBarHome.setTextColor(Color.parseColor("#818080"));
-        bottomBarHomeText.setTextColor(Color.parseColor("#818080"));
+        bottomBarHome.setImageResource(R.drawable.home_icon);
         break;
       case BOTTOM_MENU_COMP:
-        bottomBarEarnings.setTextColor(Color.parseColor("#818080"));
-        bottomBarCompetitionText.setTextColor(Color.parseColor("#818080"));
+        bottomBarWallet.setImageResource(R.drawable.wallet_icon);
         break;
       case BOTTOM_MENU_PROFILE:
-        bottomBarProfile.setTextColor(Color.parseColor("#818080"));
-        bottomBarProfileText.setTextColor(Color.parseColor("#818080"));
+        bottomBarProfile.setImageResource(R.drawable.user_icon);
         break;
       case BOTTOM_MENU_SETTINGS:
-        bottomBarSettings.setTextColor(Color.parseColor("#818080"));
-        bottomBarSettingsText.setTextColor(Color.parseColor("#818080"));
+        bottomBarSettings.setImageResource(R.drawable.settings_icon);
         break;
       case BOTTOM_MENU_EARNINGS:
-        bottomBarEarnings.setTextColor(Color.parseColor("#818080"));
-        bottomBarCompetitionText.setTextColor(Color.parseColor("#818080"));
+        bottomBarWallet.setImageResource(R.drawable.wallet_icon);
         break;
       default:
         break;
