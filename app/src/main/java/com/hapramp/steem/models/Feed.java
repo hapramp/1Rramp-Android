@@ -210,18 +210,6 @@ public class Feed implements Parcelable {
     this.featuredImageUrl = featuredImageUrl;
   }
 
-  public void addVoter(Voter voter) {
-    voters.add(voter);
-  }
-
-  public void removeVoter(String voter) {
-    for (int i = 0; i < voter.length(); i++) {
-      if (voters.get(i).getVoter().equals(voter)) {
-        voters.get(i).setPercent(0);
-      }
-    }
-  }
-
   public String getFormat() {
     return format;
   }

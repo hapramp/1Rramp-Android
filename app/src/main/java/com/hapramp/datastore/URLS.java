@@ -4,9 +4,11 @@ public class URLS {
   private static final int FEED_LOADING_LIMIT = 50;
   private static final String BASE_URL = "https://api.hapramp.com/api/v2/";
   private static final String STEEMIT_API_URL = "https://api.steemit.com";
+  private static final String STEEMIT_URL = "https://steemit.com/";
 
-  public static String userVerificationUrl() {
-    return BASE_URL + "login";
+  public static String singlePostFetchUrl(String category, String author, String permlink) {
+    String _category = category.length() > 0 ? category + "/" : "";
+    return String.format("%s%s@%s/%s.json", STEEMIT_URL, _category, author, permlink);
   }
 
   public static String steemUrl() {

@@ -9,6 +9,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.hapramp.R;
+import com.hapramp.api.URLS;
 import com.hapramp.utils.Constants;
 
 import java.io.UnsupportedEncodingException;
@@ -42,7 +43,15 @@ public class WebloginActivity extends AppCompatActivity {
     progressDialog.show();
   }
 
-  private void initWebView(String loginUrl) {
+  @Override
+  protected void onPause() {
+    super.onPause();
+    if (progressDialog != null) {
+      progressDialog.dismiss();
+    }
+  }
+
+  private void initWebView(final String loginUrl) {
     webView.getSettings().setJavaScriptEnabled(true);
     webView.getSettings().setDomStorageEnabled(true);
     webView.setWebChromeClient(new WebChromeClient() {
@@ -57,18 +66,23 @@ public class WebloginActivity extends AppCompatActivity {
       @Override
       public boolean shouldOverrideUrlLoading(WebView view, String url) {
         try {
-          Map<String, String> urlMap = splitQuery(new URL(url));
-          if (urlMap.containsKey(Constants.EXTRA_ACCESS_TOKEN)) {
-            sendBackResult(urlMap.get(Constants.EXTRA_USERNAME), urlMap.get(Constants.EXTRA_ACCESS_TOKEN));
-          } else {
-            sendBackError();
+          //check for redirect url
+          if (url.contains(URLS.HAPRAMP_REDIRECT_URL)) {
+            Map<String, String> urlMap = splitQuery(new URL(url));
+            if (urlMap.containsKey(Constants.EXTRA_ACCESS_TOKEN)) {
+              sendBackResult(urlMap.get(Constants.EXTRA_USERNAME), urlMap.get(Constants.EXTRA_ACCESS_TOKEN));
+            } else {
+              sendBackError();
+            }
           }
         }
         catch (UnsupportedEncodingException e) {
           e.printStackTrace();
+          sendBackError();
         }
         catch (MalformedURLException e) {
           e.printStackTrace();
+          sendBackError();
         }
         return false;
       }
@@ -84,7 +98,8 @@ public class WebloginActivity extends AppCompatActivity {
         String[] pairs = query.split("&");
         for (String pair : pairs) {
           int idx = pair.indexOf("=");
-          query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+          query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"),
+            URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
         }
       }
     }

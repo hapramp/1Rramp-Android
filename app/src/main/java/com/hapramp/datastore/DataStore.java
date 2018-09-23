@@ -8,6 +8,7 @@ import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.datastore.callbacks.FollowersCallback;
 import com.hapramp.datastore.callbacks.FollowingsCallback;
 import com.hapramp.datastore.callbacks.RewardFundMedianPriceCallback;
+import com.hapramp.datastore.callbacks.SinglePostCallback;
 import com.hapramp.datastore.callbacks.TransferHistoryCallback;
 import com.hapramp.datastore.callbacks.UserFeedCallback;
 import com.hapramp.datastore.callbacks.UserProfileCallback;
@@ -343,10 +344,8 @@ public class DataStore extends DataDispatcher {
       public void run() {
         String url = URLS.curationUrl(tag);
         String cachedResponse = DataCache.get(url);
-        boolean cachedDataReturned = false;
         if (cachedResponse != null && isFeedRequestLive(rtag) && !refresh) {
           dispatchCommunityFeed(cachedResponse, false, false, userFeedCallback);
-          cachedDataReturned = true;
         }
         try {
           Response response = NetworkApi.getNetworkApiInstance().fetch(url);
@@ -354,16 +353,7 @@ public class DataStore extends DataDispatcher {
             String res = response.body().string();
             DataCache.cache(url, res);
             if (isFeedRequestLive(rtag)) {
-              if (!refresh && !cachedDataReturned) {
-                //no refresh requested but no cache found, so we de-respect the refresh-denial
-                // and return the fresh data.
-                dispatchCommunityFeed(res, true, false, userFeedCallback);
-                return;
-              }
-              if (refresh) {
-                //want to refresh
-                dispatchCommunityFeed(res, true, false, userFeedCallback);
-              }
+              dispatchCommunityFeed(res, true, false, userFeedCallback);
             }
           } else {
             dispatchCommunityFeedError("Error Code:" + response.code(), userFeedCallback);
@@ -754,6 +744,27 @@ public class DataStore extends DataDispatcher {
         }
         catch (Exception e) {
           dispatchVestedShareError("Error:" + e.toString(), vestedShareCallback);
+        }
+      }
+    }.start();
+  }
+
+  public void requestSingleFeed(final String category, final String author, final String permlink, final SinglePostCallback singlePostCallback) {
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          String steemUrl = URLS.singlePostFetchUrl(category, author, permlink);
+          Response singlePostResponse = NetworkApi.getNetworkApiInstance().fetch(steemUrl);
+          if (singlePostResponse.isSuccessful()) {
+            String vestedResponseJson = singlePostResponse.body().string();
+            dispatchSinglePost(vestedResponseJson, singlePostCallback);
+          } else {
+            dispatchSinglePostError("Error:" + singlePostResponse.body().toString(), singlePostCallback);
+          }
+        }
+        catch (Exception e) {
+          dispatchSinglePostError("Error:" + e.toString(), singlePostCallback);
         }
       }
     }.start();

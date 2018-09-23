@@ -44,8 +44,8 @@ public class InterestGridViewGroup  extends ViewGroup {
     this.mCols = cols;
     verticalSpaceBetweenChild = PixelUtils.dpToPx(12);
     horizontalSpaceBetweenChild = PixelUtils.dpToPx(8);
-    singleChildHeight = PixelUtils.dpToPx(64);
-    singleChildWidth = PixelUtils.dpToPx(64);
+    singleChildHeight = PixelUtils.dpToPx(72);
+    singleChildWidth = PixelUtils.dpToPx(72);
     int rows = getRows(childs);
     measureHeight = singleChildHeight * rows + ((rows - 1) * verticalSpaceBetweenChild);
     measureWidth = mCols * singleChildWidth + (mCols - 1) * horizontalSpaceBetweenChild;

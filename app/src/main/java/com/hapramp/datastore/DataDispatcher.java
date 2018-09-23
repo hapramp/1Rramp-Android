@@ -9,6 +9,7 @@ import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.datastore.callbacks.FollowersCallback;
 import com.hapramp.datastore.callbacks.FollowingsCallback;
 import com.hapramp.datastore.callbacks.RewardFundMedianPriceCallback;
+import com.hapramp.datastore.callbacks.SinglePostCallback;
 import com.hapramp.datastore.callbacks.TransferHistoryCallback;
 import com.hapramp.datastore.callbacks.UserFeedCallback;
 import com.hapramp.datastore.callbacks.UserProfileCallback;
@@ -444,6 +445,29 @@ public class DataDispatcher {
         @Override
         public void run() {
           vestedShareCallback.onVestedShareDataError(err);
+        }
+      });
+    }
+  }
+
+  void dispatchSinglePost(String singlePostResponse, final SinglePostCallback singlePostCallback) {
+    if (singlePostCallback != null) {
+      final Feed feed = jsonParser.parseSingleFeed(singlePostResponse);
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          singlePostCallback.onPostFetched(feed);
+        }
+      });
+    }
+  }
+
+  void dispatchSinglePostError(final String err, final SinglePostCallback singlePostCallback) {
+    if (singlePostCallback != null) {
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          singlePostCallback.onPostFetchError(err);
         }
       });
     }
