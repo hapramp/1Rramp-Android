@@ -43,12 +43,12 @@ import com.hapramp.ui.activity.CommentsActivity;
 import com.hapramp.ui.activity.DetailedActivity;
 import com.hapramp.ui.activity.ProfileActivity;
 import com.hapramp.ui.activity.VotersListActivity;
-import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.ShareUtils;
+import com.hapramp.views.VoterPeekView;
 import com.hapramp.views.extraa.StarView;
 
 import java.util.ArrayList;
@@ -87,27 +87,31 @@ public class PostItemView extends FrameLayout {
   @BindView(R.id.popupMenuDots)
   TextView popupMenuDots;
   @BindView(R.id.featured_image_post)
-  ImageView featuredImageView;
-  @BindView(R.id.post_title)
-  TextView postTitle;
-  @BindView(R.id.post_snippet)
-  TextView postSnippet;
-  @BindView(R.id.readMoreBtn)
-  TextView readMoreBtn;
-  @BindView(R.id.commentBtn)
-  TextView commentBtn;
-  @BindView(R.id.commentCount)
-  TextView commentCount;
-  @BindView(R.id.payoutBtn)
-  TextView hapcoinBtn;
-  @BindView(R.id.payoutValue)
-  TextView payoutValueTv;
-  @BindView(R.id.starView)
-  StarView starView;
+  ImageView featuredImagePost;
   @BindView(R.id.youtube_indicator)
   ImageView youtubeIndicator;
   @BindView(R.id.image_container)
   RelativeLayout imageContainer;
+  @BindView(R.id.post_title)
+  TextView postTitle;
+  @BindView(R.id.post_snippet)
+  TextView postSnippet;
+  @BindView(R.id.starView)
+  StarView starView;
+  @BindView(R.id.divider)
+  View divider;
+  @BindView(R.id.comment_icon)
+  ImageView commentIcon;
+  @BindView(R.id.comment_count)
+  TextView commentCount;
+  @BindView(R.id.dollar_icon)
+  ImageView dollarIcon;
+  @BindView(R.id.payoutValue)
+  TextView payoutValue;
+  @BindView(R.id.rating_desc)
+  TextView ratingDesc;
+  @BindView(R.id.voters_peek_view)
+  VoterPeekView votersPeekView;
   private Context mContext;
   private Feed mFeed;
   private Handler mHandler;
@@ -136,23 +140,28 @@ public class PostItemView extends FrameLayout {
     this.mContext = context;
     View view = LayoutInflater.from(mContext).inflate(R.layout.post_item_view, this);
     ButterKnife.bind(this, view);
-    hapcoinBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-    commentBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     popupMenuDots.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     mHandler = new Handler();
+    attachListeners();
+    SteemConnect.InstanceBuilder instanceBuilder = new SteemConnect.InstanceBuilder();
+    instanceBuilder.setAcessToken(HaprampPreferenceManager.getInstance().getSC2AccessToken());
+    steemConnect = instanceBuilder.build();
+  }
+
+  private void attachListeners() {
     postTitle.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View view) {
         navigateToDetailsPage();
       }
     });
-    commentBtn.setOnClickListener(new OnClickListener() {
+    commentIcon.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
         navigateToDetailsPage();
       }
     });
-    featuredImageView.setOnClickListener(new OnClickListener() {
+    featuredImagePost.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
         navigateToDetailsPage();
@@ -164,21 +173,19 @@ public class PostItemView extends FrameLayout {
         navigateToDetailsPage();
       }
     });
-    readMoreBtn.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        navigateToDetailsPage();
-      }
-    });
     postSnippet.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
         navigateToDetailsPage();
       }
     });
-    SteemConnect.InstanceBuilder instanceBuilder = new SteemConnect.InstanceBuilder();
-    instanceBuilder.setAcessToken(HaprampPreferenceManager.getInstance().getSC2AccessToken());
-    steemConnect = instanceBuilder.build();
+
+    votersPeekView.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        openVotersList();
+      }
+    });
   }
 
   private void navigateToDetailsPage() {
@@ -197,6 +204,12 @@ public class PostItemView extends FrameLayout {
     init(context);
   }
 
+  private void openVotersList() {
+    Intent intent = new Intent(mContext, VotersListActivity.class);
+    intent.putParcelableArrayListExtra(VotersListActivity.EXTRA_VOTERS, mFeed.getVoters());
+    mContext.startActivity(intent);
+  }
+
   private void bind(final Feed feed) {
     this.mFeed = feed;
     postSnippet.setVisibility(VISIBLE);
@@ -213,10 +226,10 @@ public class PostItemView extends FrameLayout {
     }
 
     if (feed.getFeaturedImageUrl().length() > 0) {
-      featuredImageView.setVisibility(VISIBLE);
-      ImageHandler.load(mContext, featuredImageView, feed.getFeaturedImageUrl());
+      featuredImagePost.setVisibility(VISIBLE);
+      ImageHandler.load(mContext, featuredImagePost, feed.getFeaturedImageUrl());
     } else {
-      featuredImageView.setVisibility(GONE);
+      featuredImagePost.setVisibility(GONE);
     }
 
     ImageHandler.loadCircularImage(mContext, feedOwnerPic,
@@ -224,27 +237,8 @@ public class PostItemView extends FrameLayout {
         feed.getAuthor()));
     bindVotes(feed.getVoters(), feed.getPermlink());
     setCommentCount(feed.getChildren());
-    attachListenersOnStarView();
     attachListerOnAuthorHeader();
     attachListenerForOverlowIcon();
-  }
-
-  private void setSteemEarnings(Feed feed) {
-    try {
-      double pendingPayoutValue = Double.parseDouble(feed.getPendingPayoutValue().split(" ")[0]);
-      double totalPayoutValue = Double.parseDouble(feed.getTotalPayoutValue().split(" ")[0]);
-      double curatorPayoutValue = Double.parseDouble(feed.getCuratorPayoutValue().split(" ")[0]);
-      if (pendingPayoutValue > 0) {
-        briefPayoutValueString = String.format(Locale.US, "$%1$.3f", pendingPayoutValue);
-      } else {
-        //cashed out
-        briefPayoutValueString = String.format(Locale.US, "$%1$.3f", totalPayoutValue + curatorPayoutValue);
-      }
-      payoutValueTv.setText(briefPayoutValueString);
-    }
-    catch (Exception e) {
-      Crashlytics.log(e.toString());
-    }
   }
 
   private void attachListenerForOverlowIcon() {
@@ -271,42 +265,22 @@ public class PostItemView extends FrameLayout {
     });
   }
 
-  private void attachListenersOnStarView() {
-    starView.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        if (ConnectionUtils.isConnected(mContext)) {
-          starView.onStarIndicatorTapped();
-        } else {
-          Toast.makeText(mContext, "Check Network Connection", Toast.LENGTH_LONG).show();
-        }
+  private void setSteemEarnings(Feed feed) {
+    try {
+      double pendingPayoutValue = Double.parseDouble(feed.getPendingPayoutValue().split(" ")[0]);
+      double totalPayoutValue = Double.parseDouble(feed.getTotalPayoutValue().split(" ")[0]);
+      double curatorPayoutValue = Double.parseDouble(feed.getCuratorPayoutValue().split(" ")[0]);
+      if (pendingPayoutValue > 0) {
+        briefPayoutValueString = String.format(Locale.US, "%1$.3f", pendingPayoutValue);
+      } else {
+        //cashed out
+        briefPayoutValueString = String.format(Locale.US, "%1$.3f", totalPayoutValue + curatorPayoutValue);
       }
-    });
-
-    starView.setOnLongClickListener(new OnLongClickListener() {
-      @Override
-      public boolean onLongClick(View v) {
-        if (ConnectionUtils.isConnected(mContext)) {
-          starView.onStarIndicatorLongPressed();
-        } else {
-          Toast.makeText(mContext, "Check Network Connection", Toast.LENGTH_LONG).show();
-        }
-        return true;
-      }
-    });
-
-    payoutValueTv.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        openVotersList();
-      }
-    });
-  }
-
-  private void openVotersList() {
-    Intent intent = new Intent(mContext, VotersListActivity.class);
-    intent.putParcelableArrayListExtra(VotersListActivity.EXTRA_VOTERS, mFeed.getVoters());
-    mContext.startActivity(intent);
+      payoutValue.setText(briefPayoutValueString);
+    }
+    catch (Exception e) {
+      Crashlytics.log(e.toString());
+    }
   }
 
   private void bindVotes(List<Voter> votes, String permlink) {
@@ -314,6 +288,7 @@ public class PostItemView extends FrameLayout {
     boolean amIVoted = checkForMyVote(votes);
     long myVotePercent = amIVoted ? getMyVotePercent(votes) : 0;
     long totalVotes = getNonZeroVoters(votes);
+    votersPeekView.setVoters(votes);
     starView.setVoteState(
       new StarView.Vote(
         amIVoted,
@@ -331,7 +306,13 @@ public class PostItemView extends FrameLayout {
         public void onVoteDeleted(String full_permlink) {
           deleteVoteOnSteem();
         }
+
+        @Override
+        public void onVoteDescription(String msg) {
+          ratingDesc.setText(msg);
+        }
       });
+
   }
 
   /*
@@ -533,7 +514,7 @@ public class PostItemView extends FrameLayout {
   private PostActionListener postActionListener;
 
   private void setCommentCount(int count) {
-    commentCount.setText(String.format(getResources().getString(R.string.comment_format), count));
+    commentCount.setText(String.valueOf(count));
   }
 
   private void addMeAsVoter(int percent) {
