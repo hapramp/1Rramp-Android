@@ -12,16 +12,16 @@
         android:layout_marginBottom="4dp"
         android:background="#ffffff">
 
-        <TextView
+        <ImageView
             android:id="@+id/backBtn"
-            android:layout_width="?actionBarSize"
-            android:layout_height="?actionBarSize"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="?selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            android:gravity="center"
-            android:text=""
-            android:textSize="24sp" />
+            android:layout_centerVertical="true"
+            android:padding="14dp"
+            android:src="@drawable/back" />
 
 
         <TextView
@@ -31,17 +31,16 @@
             android:layout_toRightOf="@+id/backBtn"
             android:gravity="center"
             android:textColor="@color/Black87"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
     </RelativeLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/profileRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/toolbar_container"
-        android:animateLayoutChanges="true"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/profilePostRv"
@@ -51,4 +50,9 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
+    <ProgressBar
+        android:id="@+id/profile_loading_progress_bar"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </RelativeLayout>

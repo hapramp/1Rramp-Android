@@ -348,6 +348,10 @@ public class StarView extends FrameLayout {
     Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
   }
 
+  public String getVoteDescription() {
+    return getRatingDescriptionWithAverage();
+  }
+
   public interface onVoteUpdateCallback {
 
     void onVoted(String permlink, int vote);

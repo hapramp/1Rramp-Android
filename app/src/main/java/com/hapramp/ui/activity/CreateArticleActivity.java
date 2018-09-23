@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,7 +49,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
 
   private static final int REQUEST_IMAGE_SELECTOR = 119;
   @BindView(R.id.backBtn)
-  TextView closeBtn;
+  ImageView closeBtn;
   @BindView(R.id.previewButton)
   TextView previewButton;
   @BindView(R.id.nextButton)
@@ -56,7 +57,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   @BindView(R.id.meta_toolbar_container)
   RelativeLayout meta_toolbarContainer;
   @BindView(R.id.backBtnFromArticleMeta)
-  TextView backBtnFromArticleMeta;
+  ImageView backBtnFromArticleMeta;
   @BindView(R.id.publishButton)
   TextView publishButton;
   @BindView(R.id.toolbar_container)
@@ -98,8 +99,6 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   }
 
   private void init() {
-    closeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-    backBtnFromArticleMeta.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     progressDialog = new ProgressDialog(this);
     articleCategoryView.initCategory();
     editorControlBar.setEditorControlListener(this);

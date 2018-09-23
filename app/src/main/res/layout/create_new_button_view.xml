@@ -29,7 +29,7 @@
             android:layout_height="48dp"
             android:background="@drawable/filled_btn_bg"
             android:padding="12dp"
-            android:src="@drawable/literature_filled" />
+            android:src="@drawable/blog_icon_filled" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -45,7 +45,7 @@
 
     <RelativeLayout
         android:id="@+id/photo_btn"
-        android:layout_width="128dp"
+        android:layout_width="144dp"
         android:layout_height="48dp"
         android:layout_above="@+id/plusBtn"
         android:alpha="0"
@@ -60,7 +60,7 @@
             android:layout_height="48dp"
             android:background="@drawable/filled_btn_bg"
             android:padding="12dp"
-            android:src="@drawable/camera" />
+            android:src="@drawable/image_icon_filled" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -68,7 +68,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="16dp"
             android:layout_toRightOf="@+id/photo_icon"
-            android:text="Photo"
+            android:text="Short Post"
             android:textColor="@color/Black54"
             android:textSize="14sp" />
 
@@ -76,8 +76,8 @@
 
     <TextView
         android:id="@+id/plusBtn"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
@@ -88,6 +88,6 @@
         android:gravity="center"
         android:text=""
         android:textColor="#ffffff"
-        android:textSize="24sp" />
+        android:textSize="22sp" />
 
 </RelativeLayout>

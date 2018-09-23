@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -47,7 +48,7 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
   private static final int REQUEST_IMAGE_SELECTOR = 101;
   private static final int YOUTUBE_RESULT_REQUEST = 107;
   @BindView(R.id.backBtn)
-  TextView closeBtn;
+  ImageView closeBtn;
   @BindView(R.id.postButton)
   TextView postButton;
   @BindView(R.id.toolbar_container)
@@ -77,7 +78,6 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
   }
 
   private void init() {
-    closeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     steemPostCreator = new SteemPostCreator();
     steemPostCreator.setSteemPostCreatorCallback(this);

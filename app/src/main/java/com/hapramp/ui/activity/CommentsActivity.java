@@ -43,7 +43,7 @@ import butterknife.ButterKnife;
 
 public class CommentsActivity extends AppCompatActivity implements SteemCommentCreator.SteemCommentCreateCallback, CommentsCallback {
   @BindView(R.id.backBtn)
-  TextView backBtn;
+  ImageView backBtn;
   @BindView(R.id.toolbar_container)
   RelativeLayout toolbarContainer;
   @BindView(R.id.noCommentsCaption)
@@ -92,7 +92,6 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
     postPermlink = getIntent().getExtras().getString(Constants.EXTRAA_KEY_POST_PERMLINK, "");
     progressDialog = new ProgressDialog(this);
     typeface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
-    backBtn.setTypeface(typeface);
     sendButton.setTypeface(typeface);
     ImageHandler.loadCircularImage(this, commentCreaterAvatar,
       String.format(getResources().getString(R.string.steem_user_profile_pic_format),

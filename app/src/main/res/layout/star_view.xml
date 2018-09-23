@@ -28,7 +28,7 @@
         android:layout_toRightOf="@+id/starIndicator"
         android:gravity="center_vertical"
         android:text="Rate"
-        android:textColor="@color/Black54"
+        android:textColor="@color/Black87"
         android:textSize="14sp" />
 
     <TextView
@@ -82,6 +82,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:background="?selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"

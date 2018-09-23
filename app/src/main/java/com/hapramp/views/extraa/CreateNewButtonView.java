@@ -46,11 +46,34 @@ public class CreateNewButtonView extends FrameLayout {
     init(context);
   }
 
+  private OnClickListener photoClickListener = new OnClickListener() {
+    @Override
+    public void onClick(View view) {
+      hideFloatingButton();
+      if (itemClickListener != null) {
+        checkConnection();
+        itemClickListener.onCreatePostButtonClicked();
+      }
+    }
+  };
+  private OnClickListener articleClickListener = new OnClickListener() {
+    @Override
+    public void onClick(View view) {
+      hideFloatingButton();
+      if (itemClickListener != null) {
+        checkConnection();
+        itemClickListener.onCreateArticleButtonClicked();
+      }
+    }
+  };
+
   private void init(Context context) {
     this.mContext = context;
     View v = LayoutInflater.from(context).inflate(R.layout.create_new_button_view, this);
     addBlogBtn = v.findViewById(R.id.blog_btn);
     addPhotoBtn = v.findViewById(R.id.photo_btn);
+    addPhotoBtn.setClickable(false);
+    addBlogBtn.setClickable(false);
     plusBtn = v.findViewById(R.id.plusBtn);
     overlay = v.findViewById(R.id.overlay);
     root = v.findViewById(R.id.root);
@@ -70,29 +93,6 @@ public class CreateNewButtonView extends FrameLayout {
         }
       }
     });
-
-    addBlogBtn.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        hideFloatingButton();
-        if (itemClickListener != null) {
-          checkConnection();
-          itemClickListener.onCreateArticleButtonClicked();
-        }
-      }
-    });
-
-    addPhotoBtn.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        hideFloatingButton();
-        if (itemClickListener != null) {
-          checkConnection();
-          itemClickListener.onCreatePostButtonClicked();
-        }
-      }
-    });
-
   }
 
   private void hideFloatingButton() {
@@ -102,6 +102,8 @@ public class CreateNewButtonView extends FrameLayout {
     addBlogBtn.setClickable(false);
     addPhotoBtn.setVisibility(GONE);
     addBlogBtn.setVisibility(GONE);
+    addBlogBtn.setOnClickListener(null);
+    addPhotoBtn.setOnClickListener(null);
     addPhotoBtn.animate()
       .setInterpolator(new OvershootInterpolator(FLOATING_BUTTONOVERSHOOT_TENSION))
       .translationY(0)
@@ -133,8 +135,8 @@ public class CreateNewButtonView extends FrameLayout {
     addBlogBtn.setClickable(true);
     addBlogBtn.setVisibility(VISIBLE);
     addPhotoBtn.setVisibility(VISIBLE);
-    addPhotoBtn.setClickable(true);
-    addBlogBtn.setClickable(true);
+    addBlogBtn.setOnClickListener(articleClickListener);
+    addPhotoBtn.setOnClickListener(photoClickListener);
     plusBtn.animate()
       .setInterpolator(new OvershootInterpolator(ADD_BUTTON_OVERSHOOT_TENSION))
       .rotation(ADD_BUTTON_ROTATION_ANGLE)

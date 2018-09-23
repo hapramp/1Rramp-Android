@@ -72,6 +72,10 @@ public class Voter implements Parcelable {
     this.reputation = reputation;
   }
 
+  public String getReputation() {
+    return reputation;
+  }
+
   public void setVoteTime(String voteTime) {
     this.voteTime = voteTime;
   }

@@ -62,6 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="256dp"
+            android:clickable="true"
             android:layout_marginBottom="16dp"
             android:background="#20919191"
             android:scaleType="fitCenter"
@@ -101,6 +102,7 @@
         android:lineSpacingExtra="2dp"
         android:maxHeight="36dp"
         android:maxLines="4"
+        android:clickable="true"
         android:textColor="@color/Black54"
         android:textSize="14sp"
         android:visibility="gone" />

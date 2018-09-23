@@ -63,7 +63,7 @@ public class CommentsItemView extends FrameLayout implements
   @BindView(R.id.comment_content)
   TextView commentContent;
   @BindView(R.id.payoutBtn)
-  TextView payoutBtn;
+  ImageView payoutBtn;
   @BindView(R.id.payoutValue)
   TextView payoutValue;
   @BindView(R.id.starView)
@@ -156,10 +156,10 @@ public class CommentsItemView extends FrameLayout implements
       double curatorPayoutValue = Double.parseDouble(commentModel.getCuratorPayoutValue().split(" ")[0]);
       String briefPayoutValueString;
       if (pendingPayoutValue > 0) {
-        briefPayoutValueString = String.format(Locale.US, "$%1$.3f", pendingPayoutValue);
+        briefPayoutValueString = String.format(Locale.US, "%1$.3f", pendingPayoutValue);
       } else {
         //cashed out
-        briefPayoutValueString = String.format(Locale.US, "$%1$.3f", totalPayoutValue + curatorPayoutValue);
+        briefPayoutValueString = String.format(Locale.US, "%1$.3f", totalPayoutValue + curatorPayoutValue);
       }
       payoutValue.setText(briefPayoutValueString);
     }

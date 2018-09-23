@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +28,7 @@ import java.util.List;
 
 public class PostCommunityView extends FrameLayout {
 
-  private ViewGroup rootView;
+  private WrapViewGroup rootView;
   private Context mContext;
   private List<CommunityModel> communities;
   private ArrayList<String> selectedTags;
@@ -40,7 +41,7 @@ public class PostCommunityView extends FrameLayout {
   }
 
   private void init() {
-    View view = LayoutInflater.from(mContext).inflate(R.layout.community_view, this);
+    View view = LayoutInflater.from(mContext).inflate(R.layout.post_community_view, this);
     rootView = view.findViewById(R.id.viewWrapper);
     selectedTags = new ArrayList<>();
     selectedTags.add(Communities.TAG_HAPRAMP);
@@ -76,6 +77,7 @@ public class PostCommunityView extends FrameLayout {
   public void initCategory() {
     CommunityListWrapper cr = new Gson().fromJson(HaprampPreferenceManager.getInstance().getAllCommunityAsJson(), CommunityListWrapper.class);
     communities = cr.getCommunityModels();
+    Log.d("PostCommunityView","init post category view");
     addViews();
   }
 

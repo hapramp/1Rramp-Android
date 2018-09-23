@@ -288,7 +288,7 @@ public class PostItemView extends FrameLayout {
     boolean amIVoted = checkForMyVote(votes);
     long myVotePercent = amIVoted ? getMyVotePercent(votes) : 0;
     long totalVotes = getNonZeroVoters(votes);
-    votersPeekView.setVoters(votes);
+    updateVotersPeekView(votes);
     starView.setVoteState(
       new StarView.Vote(
         amIVoted,
@@ -312,7 +312,13 @@ public class PostItemView extends FrameLayout {
           ratingDesc.setText(msg);
         }
       });
+    ratingDesc.setText(starView.getVoteDescription());
+  }
 
+  private void updateVotersPeekView(List<Voter> voters) {
+    if (votersPeekView != null) {
+      votersPeekView.setVoters(voters);
+    }
   }
 
   /*
@@ -524,15 +530,12 @@ public class PostItemView extends FrameLayout {
     voter.setVoteTime("");
     voter.setReputation("");
     mFeed.addVoter(voter);
+    updateVotersPeekView(mFeed.getVoters());
   }
 
   private void removeMeFromVoterList() {
-    Voter voter = new Voter();
-    voter.setPercent(0);
-    voter.setVoter(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
-    voter.setVoteTime("");
-    voter.setReputation("");
-    mFeed.removeVoter(voter);
+    mFeed.removeVoter(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
+    updateVotersPeekView(mFeed.getVoters());
   }
 
   private void showPopup() {
@@ -618,10 +621,8 @@ public class PostItemView extends FrameLayout {
   public void setPostActionListener(PostActionListener postActionListener) {
     this.postActionListener = postActionListener;
   }
-
   public interface PostActionListener {
     void onPostDeleted();
   }
-
 }
 

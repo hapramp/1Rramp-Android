@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -12,7 +13,7 @@ import com.hapramp.R;
 import com.hapramp.models.VoterData;
 import com.hapramp.steem.models.Voter;
 import com.hapramp.ui.adapters.VoterListAdapter;
-import com.hapramp.utils.FontManager;
+import com.hapramp.utils.ReputationCalc;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -24,7 +25,7 @@ public class VotersListActivity extends AppCompatActivity {
 
   public static final String EXTRA_VOTERS = "extra_voters";
   @BindView(R.id.backBtn)
-  TextView backBtn;
+  ImageView backBtn;
   @BindView(R.id.action_bar_title)
   TextView actionBarTitle;
   @BindView(R.id.action_bar_container)
@@ -41,7 +42,6 @@ public class VotersListActivity extends AppCompatActivity {
     setContentView(R.layout.activity_voters_list);
     ButterKnife.bind(this);
     attachListeners();
-    backBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     initList();
   }
 
@@ -66,7 +66,8 @@ public class VotersListActivity extends AppCompatActivity {
     ArrayList<VoterData> processedData = new ArrayList<>();
     for (int i = 0; i < voters.size(); i++) {
       processedData.add(new VoterData(voters.get(i).getVoter(),
-        String.format(Locale.US, "%d%%", voters.get(i).getPercent() / 100), ""));
+        String.format(Locale.US, "%d%%", voters.get(i).getPercent() / 100),
+        String.format(Locale.US, "(%.2f)", ReputationCalc.calculateReputation(Long.valueOf(voters.get(i).getReputation())))));
     }
     return processedData;
   }

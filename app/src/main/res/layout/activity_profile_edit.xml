@@ -17,14 +17,14 @@
                 android:layout_marginBottom="4dp"
                 android:background="#ffffff">
 
-                <TextView
+                <ImageView
                     android:id="@+id/backButton"
-                    android:layout_width="?actionBarSize"
-                    android:layout_height="?actionBarSize"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:background="?selectableItemBackgroundBorderless"
-                    android:gravity="center"
-                    android:text=""
-                    android:textSize="24sp" />
+                    android:layout_centerVertical="true"
+                    android:padding="14dp"
+                    android:src="@drawable/back" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -34,7 +34,7 @@
                     android:textColor="@color/Black87"
                     android:layout_toRightOf="@+id/backButton"
                     android:text="Edit Profile"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/saveButton"

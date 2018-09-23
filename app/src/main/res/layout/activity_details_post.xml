@@ -8,25 +8,25 @@
         android:layout_height="?actionBarSize"
         android:background="#ffffff">
 
-        <TextView
+        <ImageView
             android:id="@+id/backBtn"
-            android:layout_width="?actionBarSize"
-            android:layout_height="?actionBarSize"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="?selectableItemBackgroundBorderless"
-            android:gravity="center"
-            android:text=""
-            android:textSize="24sp" />
+            android:layout_centerVertical="true"
+            android:padding="14dp"
+            android:src="@drawable/back" />
 
-        <TextView
+        <ImageView
             android:id="@+id/overflowBtn"
-            android:layout_width="?actionBarSize"
-            android:layout_height="?actionBarSize"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_alignParentRight="true"
             android:background="?selectableItemBackgroundBorderless"
             android:clickable="true"
-            android:gravity="center"
-            android:text=""
-            android:textSize="24sp" />
+            android:layout_centerVertical="true"
+            android:padding="14dp"
+            android:src="@drawable/more" />
 
     </RelativeLayout>
 
@@ -265,8 +265,7 @@
             android:layout_height="56dp"
             android:layout_below="@+id/shadow"
             android:background="#ffffff"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp"
+            android:paddingRight="16dp"
             android:visibility="visible">
 
             <LinearLayout
@@ -274,19 +273,18 @@
                 android:clickable="true"
                 android:background="?selectableItemBackgroundBorderless"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="56dp"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:orientation="horizontal">
 
-                <TextView
+                <ImageView
                     android:id="@+id/commentBtn"
-                    android:layout_width="wrap_content"
+                    android:layout_width="24dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:text=""
                     android:textColor="@color/Black54"
-                    android:textSize="24sp" />
+                    android:src="@drawable/comment" />
 
                 <TextView
                     android:id="@+id/commentCount"
@@ -295,25 +293,21 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="8dp"
                     android:lines="1"
-                    android:text="0 Comments"
-                    android:textColor="@color/Black54"
+                    android:text="0"
+                    android:textColor="@color/Black87"
                     android:textSize="12sp" />
 
             </LinearLayout>
 
-            <TextView
+            <ImageView
                 android:id="@+id/payoutBtn"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="24dp"
                 android:layout_toLeftOf="@+id/payoutValue"
-                android:background="@drawable/rs_coin_bg"
                 android:gravity="center"
-                android:text="$"
-                android:textColor="#ffffff"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:src="@drawable/dollor" />
 
             <TextView
                 android:id="@+id/payoutValue"
@@ -321,9 +315,8 @@
                 android:layout_height="48dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="8dp"
                 android:gravity="center_vertical"
-                android:textColor="@color/Black54"
+                android:textColor="@color/Black87"
                 android:textSize="12sp" />
 
             <com.hapramp.views.extraa.StarView

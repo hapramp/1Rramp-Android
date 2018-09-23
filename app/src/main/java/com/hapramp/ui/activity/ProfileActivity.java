@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +23,6 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.ui.adapters.ProfileRecyclerAdapter;
 import com.hapramp.utils.Constants;
-import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ViewItemDecoration;
 
 import java.util.List;
@@ -31,7 +32,7 @@ import butterknife.ButterKnife;
 
 public class ProfileActivity extends AppCompatActivity implements ProfileRecyclerAdapter.OnLoadMoreListener, UserFeedCallback {
   @BindView(R.id.backBtn)
-  TextView closeBtn;
+  ImageView closeBtn;
   @BindView(R.id.toolbar_container)
   RelativeLayout toolbarContainer;
   @BindView(R.id.profilePostRv)
@@ -40,6 +41,8 @@ public class ProfileActivity extends AppCompatActivity implements ProfileRecycle
   TextView profileUserName;
   @BindView(R.id.profileRefreshLayout)
   SwipeRefreshLayout profileRefreshLayout;
+  @BindView(R.id.profile_loading_progress_bar)
+  ProgressBar profileLoadingProgressBar;
   private String username;
   private ProfileRecyclerAdapter profilePostAdapter;
   private ViewItemDecoration viewItemDecoration;
@@ -60,7 +63,6 @@ public class ProfileActivity extends AppCompatActivity implements ProfileRecycle
 
   private void init() {
     dataStore = new DataStore();
-    closeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     if (getIntent() == null) {
       Toast.makeText(this, "No Username Passed", Toast.LENGTH_SHORT).show();
       return;
@@ -98,10 +100,16 @@ public class ProfileActivity extends AppCompatActivity implements ProfileRecycle
   }
 
   private void fetchPosts() {
+    if (profileLoadingProgressBar != null) {
+      profileLoadingProgressBar.setVisibility(View.VISIBLE);
+    }
     dataStore.requestUserBlog(username, false, this);
   }
 
   private void refreshPosts() {
+    if (profileLoadingProgressBar != null) {
+      profileLoadingProgressBar.setVisibility(View.VISIBLE);
+    }
     dataStore.requestUserBlog(username, true, this);
   }
 
@@ -126,6 +134,10 @@ public class ProfileActivity extends AppCompatActivity implements ProfileRecycle
         feeds.remove(0);
         profilePostAdapter.appendPosts(feeds);
       } else {
+        showContent(true);
+        if (profileLoadingProgressBar != null) {
+          profileLoadingProgressBar.setVisibility(View.GONE);
+        }
         profilePostAdapter.setPosts(feeds);
         if (profileRefreshLayout != null) {
           if (profileRefreshLayout.isRefreshing()) {
@@ -143,9 +155,23 @@ public class ProfileActivity extends AppCompatActivity implements ProfileRecycle
 
   @Override
   public void onUserFeedFetchError(String err) {
+    showContent(false);
+    if (profileLoadingProgressBar != null) {
+      profileLoadingProgressBar.setVisibility(View.GONE);
+    }
     if (profileRefreshLayout != null) {
       if (profileRefreshLayout.isRefreshing()) {
         profileRefreshLayout.setRefreshing(false);
+      }
+    }
+  }
+
+  private void showContent(boolean show) {
+    if (profileRefreshLayout != null) {
+      if (show) {
+        profileRefreshLayout.setVisibility(View.VISIBLE);
+      } else {
+        profileRefreshLayout.setVisibility(View.GONE);
       }
     }
   }
