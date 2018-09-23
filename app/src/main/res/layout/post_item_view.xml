@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
-    android:background="@color/white"
-    android:paddingBottom="8dp">
+    android:background="@color/white">
 
     <ImageView
         android:id="@+id/feed_owner_pic"
@@ -63,6 +62,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="256dp"
+            android:clickable="true"
+            android:layout_marginBottom="16dp"
             android:background="#20919191"
             android:scaleType="fitCenter"
             android:visibility="gone" />
@@ -85,14 +86,13 @@
         android:layout_below="@+id/image_container"
         android:layout_marginRight="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="18sp"
         android:visibility="visible" />
 
     <TextView
         android:id="@+id/post_snippet"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/post_title"
         android:layout_marginRight="16dp"
@@ -102,100 +102,103 @@
         android:lineSpacingExtra="2dp"
         android:maxHeight="36dp"
         android:maxLines="4"
+        android:clickable="true"
         android:textColor="@color/Black54"
         android:textSize="14sp"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/readMoreBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/post_snippet"
-        android:layout_marginRight="16dp"
-        android:layout_marginLeft="16dp"
-        android:background="?selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center"
-        android:paddingBottom="8dp"
-        android:paddingRight="8dp"
-        android:paddingTop="8dp"
-        android:text="READ MORE"
-        android:textColor="@color/colorPrimary"
-        android:textSize="14sp"
-        android:textStyle="bold"
         android:visibility="gone" />
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/rate_info_container"
+        android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_below="@+id/readMoreBtn"
-        android:layout_centerHorizontal="true">
+        android:layout_below="@+id/post_snippet"
+        android:layout_marginRight="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="8dp">
 
         <TextView
-            android:id="@+id/commentBtn"
+            android:id="@+id/rating_desc"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:background="?selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center_vertical"
-            android:text=""
-            android:textColor="@color/Black54"
-            android:textSize="24sp" />
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="4dp"
+            android:layout_toLeftOf="@+id/voters_peek_view"
+            android:textColor="@color/Black54" />
 
-        <TextView
-            android:id="@+id/commentCount"
+        <com.hapramp.views.VoterPeekView
+            android:id="@+id/voters_peek_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="8dp"
+            android:clickable="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:layout_centerVertical="true" />
+
+        <com.hapramp.views.extraa.StarView
+            android:id="@+id/starView"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:layout_marginLeft="8dp"
-            android:layout_toRightOf="@+id/commentBtn"
-            android:background="?selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:lines="1"
-            android:text="0 Comments"
-            android:textColor="@color/Black54"
-            android:textSize="12sp" />
+            android:animateLayoutChanges="true" />
 
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/payoutBtn"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_below="@+id/readMoreBtn"
-        android:layout_marginTop="12dp"
-        android:layout_toLeftOf="@+id/payoutValue"
-        android:background="@drawable/rs_coin_bg"
-        android:gravity="center"
-        android:text="$"
-        android:textColor="#ffffff"
-        android:textSize="14sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/payoutValue"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:background="?selectableItemBackground"
-        android:clickable="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/readMoreBtn"
-        android:layout_marginLeft="8dp"
-        android:gravity="center_vertical"
-        android:paddingRight="16dp"
-        android:textColor="@color/Black54"
-        android:textSize="12sp" />
-
-    <com.hapramp.views.extraa.StarView
-        android:id="@+id/starView"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_below="@+id/readMoreBtn"
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/rate_info_container"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:animateLayoutChanges="true" />
+        android:background="#d7d7d7" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@+id/divider"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp">
+
+        <ImageView
+            android:id="@+id/comment_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:padding="4dp"
+            android:src="@drawable/comment" />
+
+        <TextView
+            android:id="@+id/comment_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/comment_icon"
+            android:text="0"
+            android:layout_marginLeft="4dp"
+            android:textColor="@color/Black54"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/dollar_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@+id/comment_count"
+            android:padding="4dp"
+            android:src="@drawable/dollor" />
+
+        <TextView
+            android:id="@+id/payoutValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/dollar_icon"
+            android:text="0"
+            android:textColor="@color/Black54"
+            android:textSize="16sp" />
+    </RelativeLayout>
 
 </RelativeLayout>

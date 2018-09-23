@@ -27,6 +27,7 @@ public class CommunityUtils {
   public static final int FASHION_FILLED_BG = R.drawable.fashion_filled_bg;
   public static final int DESIGN_FILLED_BG = R.drawable.design_filled_bg;
   //borders
+  public static final int BLACK_BORDER = R.drawable.black_border;
   public static final int FEED_BORDER = R.drawable.feed_border;
   public static final int ART_BORDER = R.drawable.art_border;
   public static final int DANCE_BORDER = R.drawable.dance_border;
@@ -40,29 +41,7 @@ public class CommunityUtils {
   public static final int EDIT_BORDER = R.drawable.edit_community_border;
 
   public static int getBorder(int com_id) {
-    switch (com_id) {
-      case 0:
-        return FEED_BORDER;
-      case 1:
-        return ART_BORDER;
-      case 2:
-        return DANCE_BORDER;
-      case 3:
-        return TRAVEL_BORDER;
-      case 4:
-        return LITERATURE_BORDER;
-      case 5:
-        return FILM_BORDER;
-      case 6:
-        return PHOTOGRAPHY_BORDER;
-      case 7:
-        return FASHION_BORDER;
-      case 8:
-        return DESIGN_BORDER;
-      case 404:
-        return EDIT_BORDER;
-    }
-    return -1;
+    return BLACK_BORDER;
   }
 
   public static int getFilledBackground(int com_id) {

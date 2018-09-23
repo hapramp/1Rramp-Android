@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -25,7 +26,6 @@ import com.hapramp.ui.adapters.UserListAdapter;
 import com.hapramp.ui.adapters.ViewPagerAdapter;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FollowingsSyncUtils;
-import com.hapramp.utils.FontManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,11 +38,11 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchC
   private final String backTextIcon = "\uF04D";
   private final String closeSearchTextIcon = "\uF156";
   @BindView(R.id.backBtn)
-  TextView backBtn;
+  ImageView backBtn;
   @BindView(R.id.searchInput)
   EditText usernameSearchInputField;
   @BindView(R.id.searchBtn)
-  TextView searchBtn;
+  ImageView searchBtn;
   @BindView(R.id.action_bar_container)
   RelativeLayout actionBarContainer;
   @BindView(R.id.suggestionsListView)
@@ -83,8 +83,6 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchC
     adapter = new UserListAdapter(this);
     suggestionsListView.setAdapter(adapter);
     hideKeyboardByDefault();
-    backBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-    searchBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
   }
 
   private void attachListener() {
@@ -164,7 +162,7 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchC
     }
     //change back icon to cross
     if (backBtn != null) {
-      backBtn.setText(closeSearchTextIcon);
+      backBtn.setImageResource(R.drawable.close_icon);
     }
   }
 
@@ -180,7 +178,7 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchC
     }
     //change cross icon to back
     if (backBtn != null) {
-      backBtn.setText(backTextIcon);
+      backBtn.setImageResource(R.drawable.back);
     }
   }
 

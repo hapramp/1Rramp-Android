@@ -44,7 +44,7 @@ public class NestedCommentActivity extends AppCompatActivity implements
   public static final String EXTRA_TIMESTAMP = "key.timestamp";
   public static final String EXTRA_CONTENT = "key.content";
   @BindView(R.id.backBtn)
-  TextView backBtn;
+  ImageView backBtn;
   @BindView(R.id.toolbar_container)
   RelativeLayout toolbarContainer;
   @BindView(R.id.noCommentsCaption)
@@ -103,7 +103,6 @@ public class NestedCommentActivity extends AppCompatActivity implements
     steemCommentCreator.setSteemCommentCreateCallback(this);
     progressDialog = new ProgressDialog(this);
     typeface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
-    backBtn.setTypeface(typeface);
     sendButton.setTypeface(typeface);
     commentInputBox.setText(String.format("@%s", parentAuthor));
     ImageHandler.loadCircularImage(this, commentCreaterAvatar,

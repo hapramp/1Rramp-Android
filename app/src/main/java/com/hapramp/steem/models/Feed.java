@@ -214,8 +214,12 @@ public class Feed implements Parcelable {
     voters.add(voter);
   }
 
-  public void removeVoter(Voter voter) {
-    voters.remove(voter);
+  public void removeVoter(String voter) {
+    for (int i = 0; i < voter.length(); i++) {
+      if (voters.get(i).getVoter().equals(voter)) {
+        voters.get(i).setPercent(0);
+      }
+    }
   }
 
   public String getFormat() {

@@ -72,9 +72,9 @@ public class DetailedActivity extends AppCompatActivity implements
   SteemCommentCreator.SteemCommentCreateCallback,
   CommentsCallback {
   @BindView(R.id.backBtn)
-  TextView closeBtn;
+  ImageView backBtn;
   @BindView(R.id.overflowBtn)
-  TextView overflowBtn;
+  ImageView overflowBtn;
   @BindView(R.id.toolbar_container)
   RelativeLayout toolbarContainer;
   @BindView(R.id.feed_owner_pic)
@@ -93,8 +93,12 @@ public class DetailedActivity extends AppCompatActivity implements
   TextView club1;
   @BindView(R.id.post_header_container)
   RelativeLayout postHeaderContainer;
+  @BindView(R.id.post_title)
+  TextView postTitle;
   @BindView(R.id.markdownView)
   WebView webView;
+  @BindView(R.id.hashtags)
+  TextView hashtagsView;
   @BindView(R.id.shareBtn)
   TextView shareBtn;
   @BindView(R.id.commentsViewContainer)
@@ -110,7 +114,7 @@ public class DetailedActivity extends AppCompatActivity implements
   @BindView(R.id.commentInputBox)
   EditText commentInputBox;
   @BindView(R.id.sendButton)
-  TextView sendCommentButton;
+  TextView sendButton;
   @BindView(R.id.mockCommentParentView)
   RelativeLayout mockCommentParentView;
   @BindView(R.id.scroller)
@@ -118,25 +122,21 @@ public class DetailedActivity extends AppCompatActivity implements
   @BindView(R.id.shadow)
   ImageView shadow;
   @BindView(R.id.commentBtn)
-  TextView commentBtn;
+  ImageView commentBtn;
   @BindView(R.id.commentCount)
   TextView commentCount;
+  @BindView(R.id.comment_btn_container)
+  LinearLayout commentBtnContainer;
   @BindView(R.id.payoutBtn)
-  TextView hapcoinBtn;
+  ImageView payoutBtn;
   @BindView(R.id.payoutValue)
-  TextView payoutValueTv;
+  TextView payoutValue;
   @BindView(R.id.starView)
   StarView starView;
   @BindView(R.id.postMetaContainer)
   RelativeLayout postMetaContainer;
-  @BindView(R.id.hashtags)
-  TextView hashtagsTv;
   @BindView(R.id.details_activity_cover)
   View detailsActivityCover;
-  @BindView(R.id.comment_btn_container)
-  LinearLayout commentBtnContainer;
-  @BindView(R.id.post_title)
-  TextView postTitle;
   private Handler mHandler;
   private Feed post;
   private ProgressDialog progressDialog;
@@ -187,7 +187,7 @@ public class DetailedActivity extends AppCompatActivity implements
   }
 
   private void attachListener() {
-    closeBtn.setOnClickListener(new View.OnClickListener() {
+    backBtn.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         finish();
@@ -205,7 +205,7 @@ public class DetailedActivity extends AppCompatActivity implements
         navigateToCommentsPage();
       }
     });
-    sendCommentButton.setOnClickListener(new View.OnClickListener() {
+    sendButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         postComment();
@@ -335,7 +335,7 @@ public class DetailedActivity extends AppCompatActivity implements
 
   private void setCommentCount(int count) {
     if (commentCount != null) {
-      commentCount.setText(String.format(getResources().getString(R.string.comment_format), count));
+      commentCount.setText(String.valueOf(count));
     }
   }
 
@@ -352,11 +352,7 @@ public class DetailedActivity extends AppCompatActivity implements
 
   private void setTypefaces() {
     Typeface t = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
-    closeBtn.setTypeface(t);
-    overflowBtn.setTypeface(t);
-    commentBtn.setTypeface(t);
-    hapcoinBtn.setTypeface(t);
-    sendCommentButton.setTypeface(t);
+    sendButton.setTypeface(t);
   }
 
   private void addAllCommentsToView(List<CommentModel> discussions) {
@@ -423,6 +419,11 @@ public class DetailedActivity extends AppCompatActivity implements
         @Override
         public void onVoteDeleted(String full_permlink) {
           deleteVoteOnSteem();
+        }
+
+        @Override
+        public void onVoteDescription(String msg) {
+
         }
       });
   }
@@ -542,7 +543,7 @@ public class DetailedActivity extends AppCompatActivity implements
       }
     }
     addCommunitiesToLayout(cm);
-    hashtagsTv.setText(Html.fromHtml(hashtags.toString()));
+    hashtagsView.setText(Html.fromHtml(hashtags.toString()));
   }
 
   private void addCommunitiesToLayout(List<CommunityModel> cms) {
@@ -577,12 +578,12 @@ public class DetailedActivity extends AppCompatActivity implements
       double totalPayoutValue = Double.parseDouble(feed.getTotalPayoutValue().split(" ")[0]);
       double curatorPayoutValue = Double.parseDouble(feed.getCuratorPayoutValue().split(" ")[0]);
       if (pendingPayoutValue > 0) {
-        briefPayoutValueString = String.format(Locale.US, "$%1$.3f", pendingPayoutValue);
+        briefPayoutValueString = String.format(Locale.US, "%1$.3f", pendingPayoutValue);
       } else {
         //cashed out
-        briefPayoutValueString = String.format(Locale.US, "$%1$.3f", totalPayoutValue + curatorPayoutValue);
+        briefPayoutValueString = String.format(Locale.US, "%1$.3f", totalPayoutValue + curatorPayoutValue);
       }
-      payoutValueTv.setText(briefPayoutValueString);
+      payoutValue.setText(briefPayoutValueString);
     }
     catch (Exception e) {
       Crashlytics.log(e.toString());

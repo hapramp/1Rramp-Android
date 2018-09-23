@@ -1,6 +1,7 @@
 package com.hapramp.ui.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,7 +12,11 @@ import android.widget.TextView;
 
 import com.hapramp.R;
 import com.hapramp.models.VoterData;
+import com.hapramp.ui.activity.ProfileActivity;
+import com.hapramp.utils.Constants;
 import com.hapramp.utils.ImageHandler;
+
+import org.commonmark.node.Text;
 
 import java.util.ArrayList;
 
@@ -54,24 +59,36 @@ public class VoterListAdapter extends RecyclerView.Adapter<VoterListAdapter.Vote
     ImageView voterImageview;
     @BindView(R.id.voter_name)
     TextView voterName;
-    @BindView(R.id.vote_value)
-    TextView voteValue;
     @BindView(R.id.vote_percent)
     TextView votePercent;
+    @BindView(R.id.reputation)
+    TextView reputation;
 
     public VoterItemViewHolder(View itemView) {
       super(itemView);
       ButterKnife.bind(this, itemView);
     }
 
-    public void bind(VoterData voterData) {
+    public void bind(final VoterData voterData) {
       Context context = itemView.getContext();
       ImageHandler.loadCircularImage(context, voterImageview,
         String.format(context.getResources().getString(R.string.steem_user_profile_pic_format),
           voterData.getUsername()));
       voterName.setText(voterData.getUsername());
-      voteValue.setText(voterData.getVoteValue());
       votePercent.setText(voterData.getPerecent());
+      reputation.setText(voterData.getReputation());
+      itemView.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          navigateToProfile(itemView.getContext(), voterData.getUsername());
+        }
+      });
+    }
+
+    private void navigateToProfile(Context context, String username) {
+      Intent intent = new Intent(context, ProfileActivity.class);
+      intent.putExtra(Constants.EXTRAA_KEY_STEEM_USER_NAME, username);
+      context.startActivity(intent);
     }
   }
 }

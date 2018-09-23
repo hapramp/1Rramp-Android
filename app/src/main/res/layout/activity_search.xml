@@ -11,16 +11,17 @@
         android:layout_height="?actionBarSize"
         android:background="#ffffff">
 
-        <TextView
+        <ImageView
             android:id="@+id/backBtn"
-            android:layout_width="56dp"
-            android:layout_height="match_parent"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="?selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
+            android:layout_centerVertical="true"
             android:gravity="center"
-            android:text=""
-            android:textSize="24sp" />
+            android:padding="14dp"
+            android:src="@drawable/back" />
 
         <EditText
             android:id="@+id/searchInput"
@@ -36,18 +37,17 @@
             android:textColorHint="@color/Black38"
             android:textSize="14sp" />
 
-        <TextView
+        <ImageView
             android:id="@+id/searchBtn"
-            android:layout_width="56dp"
-            android:layout_height="match_parent"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:background="?selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            android:gravity="center"
-            android:text=""
-            android:textColor="@color/Black54"
-            android:textSize="24sp" />
+            android:padding="14dp"
+            android:src="@drawable/search" />
 
 
     </RelativeLayout>

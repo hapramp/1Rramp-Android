@@ -11,36 +11,37 @@
         android:layout_height="?actionBarSize"
         android:background="#ffffff">
 
-        <TextView
+        <ImageView
             android:id="@+id/backBtn"
-            android:layout_width="?actionBarSize"
-            android:layout_height="?actionBarSize"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="?selectableItemBackgroundBorderless"
-            android:gravity="center"
-            android:text=""
-            android:textSize="24sp" />
+            android:layout_centerVertical="true"
+            android:padding="14dp"
+            android:src="@drawable/back" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
             android:layout_toRightOf="@+id/backBtn"
             android:text="Post"
-            android:textSize="18sp" />
+            android:textColor="@color/Black87"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/postButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
             android:background="@drawable/light_btn_bg"
             android:gravity="center"
             android:paddingBottom="6dp"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp"
+            android:paddingRight="16dp"
+            android:paddingLeft="16dp"
             android:paddingTop="6dp"
             android:text="PUBLISH"
             android:textColor="@color/colorPrimary"

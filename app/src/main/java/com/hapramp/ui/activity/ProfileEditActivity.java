@@ -47,7 +47,7 @@ public class ProfileEditActivity extends AppCompatActivity implements ImageRotat
   private static final int USER_PROFILE_IMAGE_REQUEST = 102;
   private static final int USER_COVER_IMAGE_REQUEST = 103;
   @BindView(R.id.backButton)
-  TextView backButton;
+  ImageView backButton;
   @BindView(R.id.saveButton)
   TextView saveButton;
   @BindView(R.id.toolbar_container)
@@ -101,7 +101,6 @@ public class ProfileEditActivity extends AppCompatActivity implements ImageRotat
     imageRotationHandler.setImageRotationOperationListner(this);
     dpEditButton.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-    backButton.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     String userJson = HaprampPreferenceManager.getInstance().getUserProfile(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
     User user = new Gson().fromJson(userJson, User.class);
     bindUserData(user);
