@@ -17,11 +17,11 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.analytics.EventReporter;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.UserFeedCallback;
 import com.hapramp.interfaces.LikePostCallback;
@@ -31,7 +31,6 @@ import com.hapramp.steem.Communities;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.ui.activity.CommunitySelectionActivity;
-import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.utils.ShadowUtils;
 import com.hapramp.views.CommunityFilterView;
 import com.hapramp.views.feedlist.FeedListView;
@@ -63,7 +62,7 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
   private String last_permlink;
 
   public HomeFragment() {
-    Crashlytics.setString(CrashReporterKeys.UI_ACTION, "home fragment");
+    EventReporter.addEvent(AnalyticsParams.EVENT_BROWSE_HOME);
     dataStore = new DataStore();
   }
 

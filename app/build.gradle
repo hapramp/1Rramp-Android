@@ -36,7 +36,7 @@ android {
         applicationId "com.hapramp"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 44
+        versionCode 46
         versionName "0.0.15"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
@@ -52,6 +52,8 @@ dependencies {
     implementation "com.android.support:multidex:$multidexVersion"
     implementation "com.google.firebase:firebase-core:$firebaseVersionNew"
     implementation "com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion"
+    implementation 'com.google.firebase:firebase-messaging:17.3.2'
+    implementation 'com.google.firebase:firebase-database:16.0.2'
     implementation "com.android.support:appcompat-v7:$supportLibVersion"
     implementation "com.android.support:support-v4:$supportLibVersion"
     implementation "com.android.support:design:$supportLibVersion"

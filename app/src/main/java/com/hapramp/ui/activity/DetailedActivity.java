@@ -35,7 +35,7 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
-import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.analytics.EventReporter;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.models.CommentModel;
@@ -167,7 +167,7 @@ public class DetailedActivity extends AppCompatActivity implements
     collectExtras();
     setTypefaces();
     attachListener();
-    AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_DETAILED_POST, null);
+    EventReporter.addEvent(AnalyticsParams.SCREEN_DETAILED_POST);
   }
 
   private void init() {

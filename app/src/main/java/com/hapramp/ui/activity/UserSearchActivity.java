@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.analytics.EventReporter;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.UserSearchCallback;
 import com.hapramp.ui.adapters.UserListAdapter;
@@ -72,7 +73,7 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchC
     init();
     attachListener();
     fetchFollowingsAndCache();
-    AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_USER_SEARCH, null);
+    EventReporter.addEvent(AnalyticsParams.SCREEN_USER_SEARCH);
   }
 
   private void init() {

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
@@ -17,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
+import com.hapramp.analytics.AnalyticsParams;
+import com.hapramp.analytics.EventReporter;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.UserWalletCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -140,6 +143,12 @@ public class EarningFragment extends Fragment implements
   public EarningFragment() {
     mHandler = new Handler();
     dataStore = new DataStore();
+  }
+
+  @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    EventReporter.addEvent(AnalyticsParams.EVENT_BROWSE_EARNINGS);
   }
 
   @Override

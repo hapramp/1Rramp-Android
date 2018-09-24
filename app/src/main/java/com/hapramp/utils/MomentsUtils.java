@@ -25,6 +25,13 @@ public class MomentsUtils {
     return dateFormat.format(calendar.getTime());
   }
 
+  public static String getDate() {
+    Calendar calendar = Calendar.getInstance();
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
+    return dateFormat.format(calendar.getTime());
+  }
+
   public static String getTimeLeftInPostCreation() {
     long deadline = HaprampPreferenceManager.getInstance().nextPostCreationAllowedAt();
     return getFormattedTime(getTimeFromMillis(deadline));

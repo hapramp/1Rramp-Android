@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
@@ -20,7 +19,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
-import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.analytics.EventReporter;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
@@ -76,8 +75,7 @@ public class LoginActivity extends AppCompatActivity {
   @Override
   protected void onStart() {
     super.onStart();
-    AnalyticsUtil.getInstance(this).setCurrentScreen(this,
-      AnalyticsParams.SCREEN_LOGIN, null);
+    EventReporter.addEvent(AnalyticsParams.SCREEN_LOGIN);
   }
 
   @Override
@@ -196,7 +194,6 @@ public class LoginActivity extends AppCompatActivity {
   }
 
   private void init() {
-    Crashlytics.setString(CrashReporterKeys.UI_ACTION, "login init");
     progressDialog = new ProgressDialog(this);
     dataStore = new DataStore();
     getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);

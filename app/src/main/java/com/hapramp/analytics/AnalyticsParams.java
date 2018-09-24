@@ -6,6 +6,7 @@ package com.hapramp.analytics;
 
 public class AnalyticsParams {
   public static final String SCREEN_LOGIN = "login_page";
+  public static final String STEEMCONNECT_LOGIN = "steemconnect_login";
   public static final String SCREEN_COMMUNITY = "community_selection_page";
   public static final String SCREEN_HOME = "home";
   public static final String SCREEN_EARNING = "earning_page";
@@ -42,4 +43,6 @@ public class AnalyticsParams {
   public static final String EVENT_VOTE = "voted_feed";
   public static final String EVENT_SEARCH_USER = "search_user";
   public static final String EVENT_BROWSE_EARNINGS = "browse_earnings";
+  public static final String EVENT_PROFILE_SELF = "self_profile";
+  public static final String SCREEN_NESTED_COMMENTS = "nested_comments";
 }

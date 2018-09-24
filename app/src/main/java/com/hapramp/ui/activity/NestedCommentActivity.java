@@ -17,6 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
+import com.hapramp.analytics.AnalyticsParams;
+import com.hapramp.analytics.EventReporter;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.models.CommentModel;
@@ -82,6 +84,7 @@ public class NestedCommentActivity extends AppCompatActivity implements
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_comments_list);
     ButterKnife.bind(this);
+    EventReporter.addEvent(AnalyticsParams.SCREEN_NESTED_COMMENTS);
     if (getIntent() != null) {
       Bundle bundle = getIntent().getExtras();
       parentAuthor = bundle.getString(EXTRA_PARENT_AUTHOR, "");

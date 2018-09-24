@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.analytics.EventReporter;
 import com.hapramp.api.URLS;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.PermlinkGenerator;
@@ -94,8 +95,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     ButterKnife.bind(this);
     init();
     attachListeners();
-    AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_BLOG_CREATION, null);
-    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_OPENS_ARTICLE_CREATE);
+    EventReporter.addEvent(AnalyticsParams.EVENT_OPENS_ARTICLE_CREATE);
   }
 
   private void init() {
