@@ -19,8 +19,8 @@
             <ImageView
                 android:id="@+id/profile_wall_pic"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scaleType="fitCenter" />
+                android:layout_height="144dp"
+                android:scaleType="centerCrop" />
 
             <FrameLayout
                 android:layout_below="@+id/profile_wall_pic"
@@ -236,9 +236,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/interestCaption"
-            android:layout_marginBottom="16dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginLeft="16dp" />
+            android:layout_margin="16dp" />
 
         <TextView
             android:id="@+id/postsCaption"

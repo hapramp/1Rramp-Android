@@ -22,6 +22,7 @@ import com.hapramp.R;
  * Created by Ankit on 12/17/2017.
  */
 public class ImageHandler {
+
   public static void load(Context context, final ImageView imageView, String _uri) {
     String final_url = "https://steemitimages.com/0x0/" + _uri;
     //NetworkQualityUtils.startNetworkSampling();
@@ -56,6 +57,43 @@ public class ImageHandler {
               imageView.getLayoutParams().height = targetHeight;
               imageView.requestLayout();
             }
+            imageView.setImageDrawable(resource);
+            return true;
+          }
+        })
+        .into(imageView);
+    }
+    catch (Exception e) {
+      Crashlytics.logException(e);
+    }
+  }
+
+  public static void loadUnOverridden(Context context, final ImageView imageView, String _uri) {
+    String final_url = "https://steemitimages.com/0x0/" + _uri;
+    try {
+      RequestOptions options = new RequestOptions()
+        .fitCenter()
+        .diskCacheStrategy(DiskCacheStrategy.ALL)
+        .priority(Priority.HIGH);
+      Glide.with(context)
+        .load(final_url)
+        .apply(options)
+        .listener(new RequestListener<Drawable>() {
+          @Override
+          public boolean onLoadFailed(@Nullable GlideException e,
+                                      Object model,
+                                      Target<Drawable> target,
+                                      boolean isFirstResource) {
+            Crashlytics.logException(e);
+            return false;
+          }
+
+          @Override
+          public boolean onResourceReady(Drawable resource,
+                                         Object model,
+                                         Target<Drawable> target,
+                                         DataSource dataSource,
+                                         boolean isFirstResource) {
             imageView.setImageDrawable(resource);
             return true;
           }
@@ -151,4 +189,5 @@ public class ImageHandler {
       Crashlytics.logException(e);
     }
   }
+
 }

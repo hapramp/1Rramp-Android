@@ -2,19 +2,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="72dp"
     android:background="?selectableItemBackgroundBorderless"
-    android:layout_height="72dp">
+    android:layout_height="84dp">
 
     <FrameLayout
         android:id="@+id/interest_background"
-        android:layout_width="48dp"
+        android:layout_width="56dp"
         android:layout_centerHorizontal="true"
-        android:layout_height="48dp"
+        android:layout_height="56dp"
+        android:padding="16dp"
         android:background="@drawable/art_border">
 
         <ImageView
             android:id="@+id/interest_icon"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
             android:src="@drawable/art_filled" />
 
@@ -25,8 +26,10 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:textSize="10sp"
-        android:layout_marginTop="4dp"
+       android:layout_below="@+id/interest_background"
+        android:textSize="12sp"
+        android:text="Edit"
+        android:layout_marginTop="6dp"
         android:textColor="@color/Black87" />
+
 </RelativeLayout>
