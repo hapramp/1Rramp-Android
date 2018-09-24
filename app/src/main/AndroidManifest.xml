@@ -28,6 +28,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <activity
             android:name=".ui.activity.LoginActivity"
             android:screenOrientation="portrait" />
@@ -129,6 +130,7 @@
         <activity
             android:name=".ui.activity.DelegateActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".ui.activity.NotificationActivity"></activity>
     </application>
 
 </manifest>
