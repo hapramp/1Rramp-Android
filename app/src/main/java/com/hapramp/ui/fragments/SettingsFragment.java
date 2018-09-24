@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.analytics.EventReporter;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steemconnect.SteemConnectUtils;
 import com.hapramp.steemconnect4j.SteemConnect;
@@ -56,7 +57,7 @@ public class SettingsFragment extends Fragment {
   public void onAttach(Context context) {
     super.onAttach(context);
     this.mContext = context;
-    AnalyticsUtil.getInstance(getActivity()).setCurrentScreen((Activity) context, AnalyticsParams.SCREEN_SETTINGS, null);
+    EventReporter.addEvent(AnalyticsParams.SCREEN_SETTINGS);
   }
 
   @Override
@@ -142,7 +143,8 @@ public class SettingsFragment extends Fragment {
   }
 
   private void logout() {
-    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_LOGOUT);
+    EventReporter.addEvent(AnalyticsParams.EVENT_LOGOUT);
+    EventReporter.reportEvent(mContext);
     revokeAccessToken();
   }
 

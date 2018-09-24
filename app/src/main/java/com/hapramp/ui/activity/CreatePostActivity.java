@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.analytics.EventReporter;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.SteemPostCreator;
@@ -73,8 +74,7 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
     init();
     initProgressDialog();
     attachListener();
-    AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_POST_CREATION, null);
-    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_OPENS_POST_CREATE);
+    EventReporter.addEvent(AnalyticsParams.EVENT_OPENS_POST_CREATE);
   }
 
   private void init() {

@@ -9,6 +9,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.hapramp.R;
+import com.hapramp.analytics.AnalyticsParams;
+import com.hapramp.analytics.EventReporter;
 import com.hapramp.api.URLS;
 import com.hapramp.utils.Constants;
 
@@ -29,6 +31,7 @@ public class WebloginActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_weblogin);
     webView = findViewById(R.id.webview);
+    EventReporter.addEvent(AnalyticsParams.STEEMCONNECT_LOGIN);
     String loginUrl = getIntent().getStringExtra(Constants.EXTRA_LOGIN_URL);
     initProgressDialog();
     initWebView(loginUrl);

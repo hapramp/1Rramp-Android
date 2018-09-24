@@ -13,11 +13,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 
 import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.analytics.EventReporter;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.UserFeedCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -50,7 +52,7 @@ public class ProfileFragment extends Fragment implements ProfileRecyclerAdapter.
 
 
   public ProfileFragment() {
-    Crashlytics.setString(CrashReporterKeys.UI_ACTION, "profile fragment");
+    EventReporter.addEvent(AnalyticsParams.EVENT_BROWSE_HOME);
     dataStore = new DataStore();
   }
 
@@ -66,6 +68,7 @@ public class ProfileFragment extends Fragment implements ProfileRecyclerAdapter.
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setRetainInstance(true);
+    EventReporter.addEvent(AnalyticsParams.EVENT_PROFILE_SELF);
     username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
   }
 

@@ -15,7 +15,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
-import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.analytics.EventReporter;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
@@ -55,8 +55,7 @@ public class CommunitySelectionActivity extends BaseActivity implements Communit
   @Override
   protected void onStart() {
     super.onStart();
-    AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_COMMUNITY, null);
-    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_COMMUNITY_SELECTION);
+    EventReporter.addEvent(AnalyticsParams.SCREEN_COMMUNITY);
   }
 
   @Override
@@ -94,7 +93,6 @@ public class CommunitySelectionActivity extends BaseActivity implements Communit
   }
 
   private void init(final boolean editable) {
-    Crashlytics.setString(CrashReporterKeys.UI_ACTION, "community selection init");
     communitySelectionView.setCommunitySelectionListener(this);
     communitySelectionPageViewModel = ViewModelProviders.of(this).get(CommunitySelectionPageViewModel.class);
     communitySelectionPageViewModel.getCommunities(this)

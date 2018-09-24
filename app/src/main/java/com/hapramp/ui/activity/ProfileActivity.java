@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.analytics.EventReporter;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.UserFeedCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -58,7 +59,7 @@ public class ProfileActivity extends AppCompatActivity implements ProfileRecycle
     ButterKnife.bind(this);
     init();
     attachListeners();
-    AnalyticsUtil.getInstance(this).setCurrentScreen(this, AnalyticsParams.SCREEN_PROFILE, null);
+    EventReporter.addEvent(AnalyticsParams.SCREEN_PROFILE);
   }
 
   private void init() {

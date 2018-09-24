@@ -21,9 +21,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.hapramp.R;
+import com.hapramp.analytics.EventReporter;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.JSONParser;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -38,7 +38,6 @@ import com.hapramp.ui.fragments.ProfileFragment;
 import com.hapramp.ui.fragments.SettingsFragment;
 import com.hapramp.utils.BackstackManager;
 import com.hapramp.utils.ConnectionUtils;
-import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.utils.FollowingsSyncUtils;
 import com.hapramp.utils.FontManager;
 import com.hapramp.viewmodel.common.ConnectivityViewModel;
@@ -114,8 +113,6 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
   }
 
   private void initObjects() {
-    Crashlytics.setString(CrashReporterKeys.UI_ACTION, "home init");
-    Crashlytics.setUserIdentifier(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
     fragmentManager = getSupportFragmentManager();
     homeFragment = new HomeFragment();
     profileFragment = new ProfileFragment();
@@ -129,6 +126,7 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
     if (HaprampPreferenceManager.getInstance().getCurrentUserInfoAsJson().length() == 0) {
       showInterruptedProgressBar("Fetching profile info...");
     }
+    EventReporter.reportDeviceId();
     checkTokenValidity();
     DataStore.performAllCommunitySync();
     DataStore.requestSyncLastPostCreationTime();
@@ -265,6 +263,7 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
       return;
     }
     backPressedOnce = true;
+    EventReporter.reportEvent(this);
     Toast.makeText(this, "Press back once more to exit", Toast.LENGTH_SHORT).show();
     new Handler().postDelayed(new Runnable() {
       @Override
