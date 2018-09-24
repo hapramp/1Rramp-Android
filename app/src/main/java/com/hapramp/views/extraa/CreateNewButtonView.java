@@ -158,7 +158,12 @@ public class CreateNewButtonView extends FrameLayout {
       .start();
 
     overlay.animate().alpha(1).setDuration(FLOATING_BUTTON_DELAY).start();
-
+    overlay.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        hideFloatingButton();
+      }
+    });
     isFloating = true;
   }
 
