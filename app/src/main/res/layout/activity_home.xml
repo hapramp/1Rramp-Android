@@ -66,6 +66,7 @@
             android:clickable="true"
             android:gravity="center"
             android:padding="18dp"
+            android:visibility="gone"
             android:src="@drawable/notify" />
 
     </RelativeLayout>

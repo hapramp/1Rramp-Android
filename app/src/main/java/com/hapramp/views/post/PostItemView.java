@@ -27,13 +27,12 @@ import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
-import com.hapramp.api.RetrofitServiceGenerator;
-import com.hapramp.api.URLS;
+import com.hapramp.datastore.DataStore;
+import com.hapramp.datastore.callbacks.SinglePostCallback;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
 import com.hapramp.steem.models.Feed;
-import com.hapramp.steem.models.FeedWrapper;
 import com.hapramp.steem.models.Voter;
 import com.hapramp.steemconnect.SteemConnectUtils;
 import com.hapramp.steemconnect4j.SteemConnect;
@@ -57,9 +56,6 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static com.hapramp.utils.VoteUtils.checkForMyVote;
 import static com.hapramp.utils.VoteUtils.getMyVotePercent;
@@ -116,6 +112,7 @@ public class PostItemView extends FrameLayout {
   private Feed mFeed;
   private Handler mHandler;
   private SteemConnect steemConnect;
+  private DataStore dataStore;
   private String briefPayoutValueString = "$";
 
   private Runnable steemCastingVoteExceptionRunnable = new Runnable() {
@@ -142,10 +139,10 @@ public class PostItemView extends FrameLayout {
     ButterKnife.bind(this, view);
     popupMenuDots.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     mHandler = new Handler();
+    dataStore = new DataStore();
     attachListeners();
-    SteemConnect.InstanceBuilder instanceBuilder = new SteemConnect.InstanceBuilder();
-    instanceBuilder.setAcessToken(HaprampPreferenceManager.getInstance().getSC2AccessToken());
-    steemConnect = instanceBuilder.build();
+    steemConnect = SteemConnectUtils.getSteemConnectInstance(HaprampPreferenceManager
+      .getInstance().getSC2AccessToken());
   }
 
   private void attachListeners() {
@@ -339,11 +336,10 @@ public class PostItemView extends FrameLayout {
         steemConnect.vote(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(), getAuthor(), getPermlinkAsString(), String.valueOf(0), new SteemConnectCallback() {
           @Override
           public void onResponse(String s) {
-            removeMeFromVoterList();
+            updatePostFromBlockchain();
             mHandler.post(new Runnable() {
               @Override
               public void run() {
-                Log.d("Vote", "un voted!!");
                 voteDeleteSuccess();
               }
             });
@@ -358,6 +354,21 @@ public class PostItemView extends FrameLayout {
     }.start();
   }
 
+  private void updatePostFromBlockchain() {
+    dataStore.requestSingleFeed(mFeed.getCategory(), mFeed.getAuthor(), mFeed.getPermlink(), new SinglePostCallback() {
+      @Override
+      public void onPostFetched(Feed feed) {
+        if (feed != null) {
+          bind(feed);
+        }
+      }
+
+      @Override
+      public void onPostFetchError(String err) {
+      }
+    });
+  }
+
   private void castingVoteFailed() {
     if (starView != null) {
       starView.failedToCastVote();
@@ -368,7 +379,6 @@ public class PostItemView extends FrameLayout {
     if (starView != null) {
       starView.castedVoteSuccessfully();
     }
-    fetchUpdatedBalance();
   }
 
   private void voteDeleteFailed() {
@@ -381,7 +391,6 @@ public class PostItemView extends FrameLayout {
     if (starView != null) {
       starView.deletedVoteSuccessfully();
     }
-    fetchUpdatedBalance();
   }
 
   private void performVoteOnSteem(final int vote) {
@@ -397,10 +406,11 @@ public class PostItemView extends FrameLayout {
     new Thread() {
       @Override
       public void run() {
-        steemConnect.vote(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(), getAuthor(), getPermlinkAsString(), String.valueOf(vote), new SteemConnectCallback() {
+        steemConnect.vote(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
+          getAuthor(), getPermlinkAsString(), String.valueOf(vote), new SteemConnectCallback() {
           @Override
           public void onResponse(String s) {
-            addMeAsVoter(vote);
+            updatePostFromBlockchain();
             mHandler.post(new Runnable() {
               @Override
               public void run() {
@@ -437,22 +447,6 @@ public class PostItemView extends FrameLayout {
       }
     }
     return false;
-  }
-
-  private void fetchUpdatedBalance() {
-    String url = String.format(URLS.STEEM_USER_FEED_URL, mFeed.getUrl());
-    RetrofitServiceGenerator.getService().getFeedFromSteem(url).enqueue(new Callback<FeedWrapper>() {
-      @Override
-      public void onResponse(Call<FeedWrapper> call, Response<FeedWrapper> response) {
-        if (response.isSuccessful()) {
-          setSteemEarnings(response.body().getFeed());
-        }
-      }
-
-      @Override
-      public void onFailure(Call<FeedWrapper> call, Throwable t) {
-      }
-    });
   }
 
   private void setCommunities(List<String> communities) {
@@ -521,21 +515,6 @@ public class PostItemView extends FrameLayout {
 
   private void setCommentCount(int count) {
     commentCount.setText(String.valueOf(count));
-  }
-
-  private void addMeAsVoter(int percent) {
-    Voter voter = new Voter();
-    voter.setPercent(percent);
-    voter.setVoter(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
-    voter.setVoteTime("");
-    voter.setReputation("");
-    mFeed.addVoter(voter);
-    updateVotersPeekView(mFeed.getVoters());
-  }
-
-  private void removeMeFromVoterList() {
-    mFeed.removeVoter(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
-    updateVotersPeekView(mFeed.getVoters());
   }
 
   private void showPopup() {

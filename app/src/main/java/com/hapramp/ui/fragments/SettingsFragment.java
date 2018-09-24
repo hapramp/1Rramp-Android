@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -176,11 +177,11 @@ public class SettingsFragment extends Fragment {
 
           @Override
           public void onError(final SteemConnectException e) {
+            Log.d("PostItemView", "Logout Error " + e.toString());
             mHanlder.post(new Runnable() {
               @Override
               public void run() {
                 hideLogoutProgress();
-                Toast.makeText(mContext, "Failed to logout", Toast.LENGTH_LONG).show();
               }
             });
           }

@@ -422,6 +422,7 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
             mHandler.post(new Runnable() {
               @Override
               public void run() {
+                hideInterruptedProgressBar();
                 if (ConnectionUtils.isConnected(HomeActivity.this)) {
                   logout();
                 }

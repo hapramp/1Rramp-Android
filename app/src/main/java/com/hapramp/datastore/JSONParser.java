@@ -76,7 +76,7 @@ public class JSONParser {
       JSONArray jsonArray = root.getJSONArray("posts");
       for (int i = 0; i < jsonArray.length(); i++) {
         JSONObject co = jsonArray.getJSONObject(i);
-        feeds.add(parseCoreData(co));
+        feeds.add(parseCoreFeedData(co));
       }
     }
     catch (JSONException e) {
@@ -85,7 +85,7 @@ public class JSONParser {
     return feeds;
   }
 
-  private Feed parseCoreData(JSONObject rootObject) {
+  private Feed parseCoreFeedData(JSONObject rootObject) {
     Feed feed = new Feed();
     try {
       JSONObject jsonMetaDataObj = getJsonMetaDataObject(rootObject);
@@ -185,7 +185,7 @@ public class JSONParser {
       JSONObject ro = new JSONObject(response);
       JSONArray feedsArray = ro.getJSONArray("result");
       for (int i = 0; i < feedsArray.length(); i++) {
-        feeds.add(parseCoreData((JSONObject) feedsArray.get(i)));
+        feeds.add(parseCoreFeedData((JSONObject) feedsArray.get(i)));
       }
     }
     catch (JSONException e) {
@@ -264,7 +264,7 @@ public class JSONParser {
     try {
       JSONArray rootArray = new JSONArray(response);
       for (int i = 0; i < rootArray.length(); i++) {
-        feeds.add(parseCoreData((JSONObject) rootArray.get(i)));
+        feeds.add(parseCoreFeedData((JSONObject) rootArray.get(i)));
       }
     }
     catch (JSONException e) {
@@ -435,5 +435,17 @@ public class JSONParser {
 
     }
     return vestedShareModels;
+  }
+
+  public Feed parseSingleFeed(String singlePostResponse) {
+    Feed feed = null;
+    try {
+      JSONObject jsonObject = new JSONObject(singlePostResponse);
+      feed = parseCoreFeedData(jsonObject.getJSONObject("post"));
+    }
+    catch (JSONException e) {
+      Log.d("JSONException", e.toString());
+    }
+    return feed;
   }
 }
