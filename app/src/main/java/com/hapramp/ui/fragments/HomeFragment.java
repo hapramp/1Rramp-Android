@@ -31,6 +31,7 @@ import com.hapramp.steem.Communities;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.ui.activity.CommunitySelectionActivity;
+import com.hapramp.utils.CommunitySortUtils;
 import com.hapramp.utils.ShadowUtils;
 import com.hapramp.views.CommunityFilterView;
 import com.hapramp.views.feedlist.FeedListView;
@@ -94,6 +95,7 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
       ArrayList<CommunityModel> communityModels = new ArrayList<>();
       communityModels.add(0, new CommunityModel("", Communities.IMAGE_URI_ALL,
         Communities.ALL, "", "Feed", 0));
+      CommunitySortUtils.sortCommunity(cwr.getCommunityModels());
       communityModels.addAll(cwr.getCommunityModels());
       communityFilterView.setCommunityFilterCallback(this);
       communityFilterView.addCommunities(communityModels);
