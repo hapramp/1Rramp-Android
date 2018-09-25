@@ -45,6 +45,7 @@ public class Feed implements Parcelable {
   private String totalPendingPayoutValue;
   private String cashOutTime;
   private ArrayList<Voter> voters;
+  private ArrayList<Voter> activeVoters;
   private String authorReputation;
 
   @Override
@@ -86,6 +87,12 @@ public class Feed implements Parcelable {
     } else {
       voters = null;
     }
+    if (in.readByte() == 0x01) {
+      activeVoters = new ArrayList<Voter>();
+      in.readList(activeVoters, Voter.class.getClassLoader());
+    } else {
+      activeVoters = null;
+    }
     authorReputation = in.readString();
   }
 
@@ -126,6 +133,12 @@ public class Feed implements Parcelable {
     } else {
       dest.writeByte((byte) (0x01));
       dest.writeList(voters);
+    }
+    if (activeVoters == null) {
+      dest.writeByte((byte) (0x00));
+    } else {
+      dest.writeByte((byte) (0x01));
+      dest.writeList(activeVoters);
     }
     dest.writeString(authorReputation);
   }
@@ -304,6 +317,14 @@ public class Feed implements Parcelable {
 
   public void setTotalPendingPayoutValue(String totalPendingPayoutValue) {
     this.totalPendingPayoutValue = totalPendingPayoutValue;
+  }
+
+  public ArrayList<Voter> getActiveVoters() {
+    return activeVoters;
+  }
+
+  public void setActiveVoters(ArrayList<Voter> activeVoters) {
+    this.activeVoters = activeVoters;
   }
 
   public ArrayList<Voter> getVoters() {

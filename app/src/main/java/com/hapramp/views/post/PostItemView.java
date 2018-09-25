@@ -221,17 +221,16 @@ public class PostItemView extends FrameLayout {
     } else {
       postTitle.setVisibility(GONE);
     }
-
     if (feed.getFeaturedImageUrl().length() > 0) {
       featuredImagePost.setVisibility(VISIBLE);
       ImageHandler.load(mContext, featuredImagePost, feed.getFeaturedImageUrl());
     } else {
       featuredImagePost.setVisibility(GONE);
     }
-
     ImageHandler.loadCircularImage(mContext, feedOwnerPic,
       String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format),
         feed.getAuthor()));
+    updateVotersPeekView(feed.getActiveVoters());
     bindVotes(feed.getVoters(), feed.getPermlink());
     setCommentCount(feed.getChildren());
     attachListerOnAuthorHeader();
@@ -285,7 +284,6 @@ public class PostItemView extends FrameLayout {
     boolean amIVoted = checkForMyVote(votes);
     long myVotePercent = amIVoted ? getMyVotePercent(votes) : 0;
     long totalVotes = getNonZeroVoters(votes);
-    updateVotersPeekView(votes);
     starView.setVoteState(
       new StarView.Vote(
         amIVoted,

@@ -133,6 +133,7 @@ public class JSONParser {
       String cashoutTime = rootObject.optString("cashout_time");
       //voters
       ArrayList<Voter> voters = readVoters(rootObject);
+      ArrayList<Voter> activeVoters = extractActiveVoters(voters);
       //author reputation
       String autorReputation = rootObject.optString("author_reputation", "");
       feed.setBody(body);
@@ -158,12 +159,23 @@ public class JSONParser {
       feed.setTotalPendingPayoutValue(totalPendingPayoutValue);
       feed.setCashOutTime(cashoutTime);
       feed.setVoters(voters);
+      feed.setActiveVoters(activeVoters);
       feed.setAuthorReputation(autorReputation);
     }
     catch (JSONException e) {
       Log.e("JsonParserException", e.toString());
     }
     return feed;
+  }
+
+  private ArrayList<Voter> extractActiveVoters(ArrayList<Voter> voters) {
+    ArrayList<Voter> av = new ArrayList<>();
+    for (int i = 0; i < voters.size(); i++) {
+      if (voters.get(i).getPercent() > 0) {
+        av.add(voters.get(i));
+      }
+    }
+    return av;
   }
 
   private JSONObject getJsonMetaDataObject(JSONObject jsonObject) throws JSONException {
