@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -415,13 +414,20 @@ public class ProfileHeaderView extends FrameLayout implements CompleteFollowingH
     //check for null view(in case view is removed)
     if (usernameTv == null)
       return;
+    String wallPicUrl = mContext.getResources().getString(R.string.default_wall_pic);
     if (data.getCover_image() != null) {
-      String wall_pic_url = data.getCover_image().length() > 0 ? data.getCover_image() :
-        mContext.getResources().getString(R.string.default_wall_pic);
-      ImageHandler.load(mContext, profileWallPic, wall_pic_url);
+      if (data.getCover_image().length() > 0) {
+        wallPicUrl = data.getCover_image();
+      }
     }
-    String profile_pic = String.format(getResources().getString(R.string.steem_user_profile_pic_format_large), mUsername);
-    ImageHandler.loadCircularImage(mContext, profilePic, profile_pic);
+    ImageHandler.loadUnOverridden(mContext, profileWallPic, wallPicUrl);
+    String profileImageUrl = String.format(getResources().getString(R.string.steem_user_profile_pic_format_large), mUsername);
+    if (data.getProfile_image() == null) {
+      if (data.getProfile_image().length() > 0) {
+        profileImageUrl = data.getProfile_image();
+      }
+    }
+    ImageHandler.loadCircularImage(mContext, profilePic, profileImageUrl);
     usernameTv.setText(data.getFullname());
     hapname.setText(String.format("@%s", data.getUsername()));
     String _bio = data.getAbout();

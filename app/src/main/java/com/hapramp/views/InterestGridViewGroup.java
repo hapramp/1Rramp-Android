@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
+import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.PixelUtils;
 
 public class InterestGridViewGroup  extends ViewGroup {
@@ -42,10 +43,13 @@ public class InterestGridViewGroup  extends ViewGroup {
 
   public void setChildInfo(int cols, int childs) {
     this.mCols = cols;
-    verticalSpaceBetweenChild = PixelUtils.dpToPx(12);
-    horizontalSpaceBetweenChild = PixelUtils.dpToPx(8);
-    singleChildHeight = PixelUtils.dpToPx(72);
+    singleChildHeight = PixelUtils.dpToPx(84);
     singleChildWidth = PixelUtils.dpToPx(72);
+    int width = HaprampPreferenceManager.getInstance().getDeviceWidth();
+    int availableWidth = width - 2 * PixelUtils.dpToPx(16);
+    availableWidth = availableWidth - singleChildWidth * cols;
+    horizontalSpaceBetweenChild = availableWidth / 3;
+    verticalSpaceBetweenChild = horizontalSpaceBetweenChild;
     int rows = getRows(childs);
     measureHeight = singleChildHeight * rows + ((rows - 1) * verticalSpaceBetweenChild);
     measureWidth = mCols * singleChildWidth + (mCols - 1) * horizontalSpaceBetweenChild;

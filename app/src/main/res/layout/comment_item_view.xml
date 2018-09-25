@@ -58,16 +58,17 @@
         android:layout_marginTop="4dp"
         android:layout_below="@+id/comment_content"
         android:layout_toRightOf="@+id/comment_owner_pic"
-        android:layout_marginLeft="8dp"
         android:layout_height="48dp"
         android:layout_width="match_parent"
         android:background="#ffffff"
         android:orientation="horizontal">
 
         <RelativeLayout
+            android:id="@+id/payout_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true">
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@+id/upvote_count">
 
             <ImageView
                 android:id="@+id/payoutBtn"
@@ -84,58 +85,52 @@
                 android:background="?selectableItemBackground"
                 android:clickable="true"
                 android:gravity="center_vertical"
-                android:textColor="@color/Black54"
+                android:textColor="@color/Black87"
                 android:textSize="12sp" />
 
         </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/replyBtnContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
+        <ImageView
+            android:id="@+id/replyBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="16dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/payout_container"
             android:background="?selectableItemBackgroundBorderless"
             android:clickable="true"
-            android:paddingRight="8dp">
+            android:padding="12dp"
+            android:src="@drawable/reply" />
 
-            <ImageView
-                android:id="@+id/replyBtn"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_centerVertical="true"
-                android:padding="8dp"
-                android:src="@drawable/reply" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:layout_centerVertical="true"
-                android:gravity="center_vertical"
-                android:layout_toRightOf="@+id/replyBtn"
-                android:text="Reply"
-                android:textSize="12sp" />
-
-        </RelativeLayout>
-
-        <com.hapramp.views.extraa.StarView
-            android:id="@+id/starView"
-            android:layout_width="wrap_content"
-            android:layout_height="46dp"
+        <ImageView
+            android:id="@+id/upvote"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_centerVertical="true"
-            android:layout_marginRight="16dp"
-            android:animateLayoutChanges="true" />
+            android:background="?selectableItemBackgroundBorderless"
+            android:padding="14dp"
+            android:src="@drawable/like" />
+
+        <TextView
+            android:id="@+id/upvote_count"
+            android:layout_width="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/upvote"
+            android:text="0"
+            android:textColor="@color/Black87" />
 
     </RelativeLayout>
 
     <TextView
         android:id="@+id/moreReplies"
-        android:visibility="gone"
+        android:textColor="@color/pink"
         android:clickable="true"
         android:layout_below="@+id/starAndPayoutContainer"
         android:layout_toRightOf="@+id/comment_owner_pic"
         android:layout_width="wrap_content"
         android:text="VIEW 3 MORE REPLIES"
-        android:textColor="@color/colorPrimary"
+        android:visibility="gone"
         android:textStyle="bold"
         android:textSize="14sp"
         android:paddingTop="8dp"
@@ -144,6 +139,5 @@
         android:layout_marginBottom="8dp"
         android:background="?selectableItemBackground"
         android:layout_height="wrap_content" />
-
 
 </RelativeLayout>

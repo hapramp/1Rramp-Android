@@ -237,6 +237,18 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
         overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit);
       }
     });
+
+    notificationIcon.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        navigateToNotificationPage();
+      }
+    });
+  }
+
+  private void navigateToNotificationPage() {
+    Intent intent = new Intent(this, NotificationActivity.class);
+    startActivity(intent);
   }
 
   private void showInterruptedProgressBar(String msg) {

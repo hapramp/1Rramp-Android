@@ -17,9 +17,9 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
-        android:layout_toEndOf="@+id/commentCreaterAvatar"
+        android:layout_toRightOf="@+id/commentCreaterAvatar"
         android:background="@drawable/comment_input_view_background_cover">
 
 
@@ -28,30 +28,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginStart="16dp"
-            android:layout_toStartOf="@+id/sendButton"
+            android:layout_marginLeft="16dp"
+            android:layout_toLeftOf="@+id/sendButton"
             android:background="@drawable/blank_input_bg"
             android:hint="Write a comment..."
             android:minHeight="36dp"
             android:paddingBottom="8dp"
-            android:paddingEnd="16dp"
-            android:paddingStart="0dp"
+            android:paddingRight="16dp"
+            android:paddingLeft="0dp"
             android:paddingTop="8dp"
             android:textSize="14sp" />
 
         <TextView
             android:id="@+id/sendButton"
-            android:layout_width="48dp"
+            android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:background="?selectableItemBackgroundBorderless"
             android:clickable="true"
-            android:focusable="true"
             android:gravity="center"
-            android:text=""
-            android:textColor="@color/Black54"
-            android:textSize="20sp" />
+            android:text="Send"
+            android:alpha="0.6"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:textStyle="bold"
+            android:textColor="@color/pink"
+            android:textSize="14sp" />
 
     </RelativeLayout>
 

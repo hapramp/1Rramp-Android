@@ -91,8 +91,6 @@ public class CommentsActivity extends AppCompatActivity implements SteemCommentC
     postAuthor = getIntent().getExtras().getString(Constants.EXTRAA_KEY_POST_AUTHOR, "");
     postPermlink = getIntent().getExtras().getString(Constants.EXTRAA_KEY_POST_PERMLINK, "");
     progressDialog = new ProgressDialog(this);
-    typeface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
-    sendButton.setTypeface(typeface);
     ImageHandler.loadCircularImage(this, commentCreaterAvatar,
       String.format(getResources().getString(R.string.steem_user_profile_pic_format),
         HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));

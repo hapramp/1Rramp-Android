@@ -61,12 +61,11 @@
             android:layout_width="?actionBarSize"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:alpha="0"
+            android:alpha="1"
             android:background="?selectableItemBackgroundBorderless"
             android:clickable="true"
             android:gravity="center"
             android:padding="18dp"
-            android:visibility="gone"
             android:src="@drawable/notify" />
 
     </RelativeLayout>

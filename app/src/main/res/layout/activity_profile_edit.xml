@@ -138,70 +138,80 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="Name"
-                    android:textSize="16sp"
-                    android:textColor="@color/Black87"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="@color/Black54"
+                    android:textSize="14sp" />
 
                 <EditText
                     android:id="@+id/nameEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Your display name"
+                    android:layout_marginTop="16dp"
+                    android:paddingBottom="16dp"
                     android:textColor="@color/Black87"
-                    android:textSize="16sp" />
+                    android:textSize="14sp"
+                    android:theme="@style/MyEditTextStyle" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="About Me"
-                    android:textSize="16sp"
-                    android:textColor="@color/Black87"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="@color/Black54"
+                    android:textSize="14sp" />
 
                 <EditText
                     android:id="@+id/aboutMeEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Something about you..."
+                    android:layout_marginTop="16dp"
+                    android:paddingBottom="16dp"
                     android:textColor="@color/Black87"
-                    android:textSize="16sp" />
+                    android:textSize="14sp"
+                    android:theme="@style/MyEditTextStyle"  />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="Location"
-                    android:textSize="16sp"
-                    android:textColor="@color/Black87"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="@color/Black54"
+                    android:textSize="14sp"/>
 
                 <EditText
                     android:id="@+id/locationEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Location"
-                    android:lineSpacingExtra="2dp"
+                    android:layout_marginTop="16dp"
+                    android:paddingBottom="16dp"
                     android:textColor="@color/Black87"
-                    android:textSize="16sp" />
+                    android:textSize="14sp"
+                    android:theme="@style/MyEditTextStyle"  />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="Website"
-                    android:textSize="16sp"
-                    android:textColor="@color/Black87"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="@color/Black54"
+                    android:textSize="14sp"/>
 
                 <EditText
                     android:id="@+id/websiteEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="http://"
-                    android:lineSpacingExtra="2dp"
+                    android:layout_marginTop="16dp"
+                    android:paddingBottom="16dp"
                     android:textColor="@color/Black87"
-                    android:textSize="16sp" />
+                    android:textSize="14sp"
+                    android:theme="@style/MyEditTextStyle"  />
             </LinearLayout>
         </RelativeLayout>
 </ScrollView>
