@@ -351,8 +351,6 @@ public class DetailedActivity extends AppCompatActivity implements
   }
 
   private void setTypefaces() {
-    Typeface t = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
-    sendButton.setTypeface(t);
   }
 
   private void addAllCommentsToView(List<CommentModel> discussions) {
