@@ -44,62 +44,64 @@ public class NotificationHandler {
    */
   public static void handleNotification(RemoteMessage remoteMessage) {
     try {
-      boolean isForeground = new ForegroundCheckTask().execute(HapRampMain.getContext()).get(2, TimeUnit.SECONDS);
       BaseNotificationModel baseNotificationModel = NotificationParser.parseNotification(remoteMessage.getData());
       if (baseNotificationModel != null) {
-        baseNotificationModel.setNotificationId(String.valueOf(System.currentTimeMillis()));
-        FirebaseNotificationStore.saveNotification(baseNotificationModel);
-        if (!isForeground) {
-          switch (baseNotificationModel.getType()) {
-            case NotificationKey.NOTIFICATION_TYPE_FOLLOW:
+        if (baseNotificationModel.getType() != null) {
+          baseNotificationModel.setNotificationId(String.valueOf(System.currentTimeMillis()));
+          FirebaseNotificationStore.saveNotification(baseNotificationModel);
+          boolean isForeground = new ForegroundCheckTask().execute(HapRampMain.getContext()).get(2, TimeUnit.SECONDS);
+          if (!isForeground) {
+            switch (baseNotificationModel.getType()) {
+              case NotificationKey.NOTIFICATION_TYPE_FOLLOW:
 
-              showProfileDirectedNotification(
-                baseNotificationModel.getNotificationId(),
-                ((FollowNotificationModel) baseNotificationModel).follower);
+                showProfileDirectedNotification(
+                  baseNotificationModel.getNotificationId(),
+                  ((FollowNotificationModel) baseNotificationModel).follower);
 
-              break;
-            case NotificationKey.NOTIFICATION_TYPE_REBLOG:
+                break;
+              case NotificationKey.NOTIFICATION_TYPE_REBLOG:
 
-              showReblogDirectedNotification(
-                baseNotificationModel.getNotificationId(),
-                ((ReblogNotificationModel) baseNotificationModel).account,
-                ((ReblogNotificationModel) baseNotificationModel).permlink
-              );
+                showReblogDirectedNotification(
+                  baseNotificationModel.getNotificationId(),
+                  ((ReblogNotificationModel) baseNotificationModel).account,
+                  ((ReblogNotificationModel) baseNotificationModel).permlink
+                );
 
-              break;
-            case NotificationKey.NOTIFICATION_TYPE_REPLY:
+                break;
+              case NotificationKey.NOTIFICATION_TYPE_REPLY:
 
-              showCommentDirectedNotification(
-                baseNotificationModel.getNotificationId(),
-                ((ReplyNotificationModel) baseNotificationModel).author,
-                ((ReplyNotificationModel) baseNotificationModel).permlink);
+                showCommentDirectedNotification(
+                  baseNotificationModel.getNotificationId(),
+                  ((ReplyNotificationModel) baseNotificationModel).author,
+                  ((ReplyNotificationModel) baseNotificationModel).permlink);
 
-              break;
-            case NotificationKey.NOTIFICATION_TYPE_VOTE:
+                break;
+              case NotificationKey.NOTIFICATION_TYPE_VOTE:
 
-              showVoteDirectedNotification(
-                baseNotificationModel.getNotificationId(),
-                ((VoteNotificationModel) baseNotificationModel).voter,
-                ((VoteNotificationModel) baseNotificationModel).permlink);
+                showVoteDirectedNotification(
+                  baseNotificationModel.getNotificationId(),
+                  ((VoteNotificationModel) baseNotificationModel).voter,
+                  ((VoteNotificationModel) baseNotificationModel).permlink);
 
-              break;
-            case NotificationKey.NOTIFICATION_TYPE_TRANSFER:
-              showTransferDirectedNotification(
-                baseNotificationModel.getNotificationId(),
-                ((TransferNotificationModel) baseNotificationModel).sender,
-                ((TransferNotificationModel) baseNotificationModel).memo,
-                ((TransferNotificationModel) baseNotificationModel).amount
-              );
-              break;
+                break;
+              case NotificationKey.NOTIFICATION_TYPE_TRANSFER:
+                showTransferDirectedNotification(
+                  baseNotificationModel.getNotificationId(),
+                  ((TransferNotificationModel) baseNotificationModel).sender,
+                  ((TransferNotificationModel) baseNotificationModel).memo,
+                  ((TransferNotificationModel) baseNotificationModel).amount
+                );
+                break;
 
-            case NotificationKey.NOTIFICATION_TYPE_MENTION:
+              case NotificationKey.NOTIFICATION_TYPE_MENTION:
 
-              showMentionDirectedNotification(
-                baseNotificationModel.getNotificationId(),
-                ((MentionNotificationModel) baseNotificationModel).author,
-                ((MentionNotificationModel) baseNotificationModel).permlink
-              );
-              break;
+                showMentionDirectedNotification(
+                  baseNotificationModel.getNotificationId(),
+                  ((MentionNotificationModel) baseNotificationModel).author,
+                  ((MentionNotificationModel) baseNotificationModel).permlink
+                );
+                break;
+            }
           }
         }
       }
