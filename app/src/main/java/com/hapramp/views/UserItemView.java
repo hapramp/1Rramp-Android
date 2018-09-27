@@ -8,12 +8,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -137,6 +139,7 @@ public class UserItemView extends FrameLayout {
 
             @Override
             public void onError(SteemConnectException e) {
+              Log.d("UserFollow-follow", e.toString());
               mHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -202,6 +205,7 @@ public class UserItemView extends FrameLayout {
 
             @Override
             public void onError(final SteemConnectException e) {
+              Log.d("UserFollow-Unfollow", e.toString());
               mHandler.post(new Runnable() {
                 @Override
                 public void run() {

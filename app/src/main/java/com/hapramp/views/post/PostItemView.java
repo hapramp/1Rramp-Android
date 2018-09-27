@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.Layout;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -353,7 +352,7 @@ public class PostItemView extends FrameLayout {
   }
 
   private void updatePostFromBlockchain() {
-    dataStore.requestSingleFeed(mFeed.getCategory(), mFeed.getAuthor(), mFeed.getPermlink(), new SinglePostCallback() {
+    dataStore.requestSingleFeed(mFeed.getAuthor(), mFeed.getPermlink(), new SinglePostCallback() {
       @Override
       public void onPostFetched(Feed feed) {
         if (feed != null) {

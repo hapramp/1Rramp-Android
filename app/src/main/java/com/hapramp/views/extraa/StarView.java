@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -88,7 +89,6 @@ public class StarView extends FrameLayout {
     cancelRateBtn = v.findViewById(R.id.cancelBtn);
     ratingError.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     cancelRateBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-    ratingBarContainer.getLayoutTransition().enableTransitionType(LayoutTransition.APPEARING);
     setRatingBarListener();
     mHandler = new Handler();
     cancelRateBtn.setOnClickListener(new OnClickListener() {

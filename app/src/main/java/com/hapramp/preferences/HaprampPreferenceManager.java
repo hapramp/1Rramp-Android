@@ -213,4 +213,13 @@ public class HaprampPreferenceManager {
   public float getVestsPerSteem() {
     return preferences.getFloat("vests_per_steem", 0);
   }
+
+  public boolean isUserTopicSubscribed() {
+    return preferences.getBoolean("user_topic_subs", false);
+  }
+
+  public void setUserTopicSubscribed(boolean subscribed) {
+    editor.putBoolean("user_topic_subs", subscribed);
+    editor.apply();
+  }
 }

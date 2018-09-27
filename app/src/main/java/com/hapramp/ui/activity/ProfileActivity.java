@@ -7,6 +7,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -16,10 +17,10 @@ import android.widget.Toast;
 
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
-import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.analytics.EventReporter;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.UserFeedCallback;
+import com.hapramp.notification.FirebaseNotificationStore;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.ui.adapters.ProfileRecyclerAdapter;
@@ -31,7 +32,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ProfileActivity extends AppCompatActivity implements ProfileRecyclerAdapter.OnLoadMoreListener, UserFeedCallback {
+public class ProfileActivity extends AppCompatActivity implements ProfileRecyclerAdapter.OnLoadMoreListener,
+  UserFeedCallback {
   @BindView(R.id.backBtn)
   ImageView closeBtn;
   @BindView(R.id.toolbar_container)
@@ -63,12 +65,17 @@ public class ProfileActivity extends AppCompatActivity implements ProfileRecycle
   }
 
   private void init() {
+    username = getIntent().getExtras().getString(Constants.EXTRAA_KEY_STEEM_USER_NAME,
+      HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
+    String notifId = getIntent().getExtras().getString(Constants.EXTRAA_KEY_NOTIFICATION_ID, null);
+    if (notifId != null) {
+      FirebaseNotificationStore.markAsRead(notifId);
+    }
     dataStore = new DataStore();
     if (getIntent() == null) {
       Toast.makeText(this, "No Username Passed", Toast.LENGTH_SHORT).show();
       return;
     }
-    username = getIntent().getExtras().getString(Constants.EXTRAA_KEY_STEEM_USER_NAME, HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
     profilePostAdapter = new ProfileRecyclerAdapter(this, username);
     profilePostAdapter.setOnLoadMoreListener(this);
     llm = new LinearLayoutManager(this);
@@ -86,7 +93,7 @@ public class ProfileActivity extends AppCompatActivity implements ProfileRecycle
     closeBtn.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        finish();
+        ProfileActivity.super.onBackPressed();
       }
     });
   }

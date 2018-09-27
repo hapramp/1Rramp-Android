@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -12,11 +13,12 @@ import android.widget.TextView;
 import com.hapramp.R;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.TransferHistoryCallback;
+import com.hapramp.notification.FirebaseNotificationStore;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.TransferHistoryModel;
 import com.hapramp.ui.adapters.AccountHistoryAdapter;
 import com.hapramp.utils.AccountHistoryItemDecoration;
-import com.hapramp.utils.FontManager;
+import com.hapramp.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,7 +30,7 @@ public class AccountHistoryActivity extends AppCompatActivity implements Transfe
 
   public static final String EXTRA_USERNAME = "username";
   @BindView(R.id.backBtn)
-  TextView closeBtn;
+  ImageView closeBtn;
   @BindView(R.id.toolbar_container)
   RelativeLayout toolbarContainer;
   @BindView(R.id.accountHistoryRv)
@@ -51,14 +53,17 @@ public class AccountHistoryActivity extends AppCompatActivity implements Transfe
     init();
     if (getIntent().getExtras() != null) {
       mUsername = getIntent().getExtras().getString(EXTRA_USERNAME, HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
+      String notifId = getIntent().getExtras().getString(Constants.EXTRAA_KEY_NOTIFICATION_ID, null);
       toolbarTitle.setText(String.format("%s's Account History", mUsername));
       fetchHistory(mUsername);
+      if (notifId != null) {
+        FirebaseNotificationStore.markAsRead(notifId);
+      }
     }
   }
 
   private void init() {
     dataStore = new DataStore();
-    closeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     accountHistoryAdapter = new AccountHistoryAdapter(this);
     accountHistoryRv.setLayoutManager(new LinearLayoutManager(this));
     AccountHistoryItemDecoration itemDecoration = new AccountHistoryItemDecoration();

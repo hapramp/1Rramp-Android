@@ -26,6 +26,7 @@ import com.hapramp.datastore.callbacks.CommunitiesCallback;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.models.VerificationDataBody;
 import com.hapramp.models.VerifiedToken;
+import com.hapramp.notification.NotificationSubscriber;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steemconnect.SteemConnectUtils;
@@ -33,7 +34,6 @@ import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectException;
 import com.hapramp.utils.AccessTokenValidator;
 import com.hapramp.utils.Constants;
-import com.hapramp.utils.CrashReporterKeys;
 import com.hapramp.viewmodel.common.ConnectivityViewModel;
 
 import java.util.List;
@@ -225,6 +225,7 @@ public class LoginActivity extends AppCompatActivity {
           HaprampPreferenceManager.getInstance().saveCurrentSteemUsername(username);
           HaprampPreferenceManager.getInstance().saveUserToken(response.body().token);
           HaprampPreferenceManager.getInstance().setLoggedIn(true);
+          NotificationSubscriber.subscribeForUserTopic();
           syncAllCommunities();
         } else {
           Crashlytics.log("LoginError:" + response.toString());

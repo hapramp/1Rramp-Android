@@ -68,6 +68,20 @@
             android:padding="18dp"
             android:src="@drawable/notify" />
 
+        <TextView
+            android:text="1"
+            android:visibility="gone"
+            android:id="@+id/notification_count"
+            android:textColor="@color/white"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/notification_badge_count"
+            android:layout_width="18dp"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="12dp"
+            android:layout_height="18dp" />
+
     </RelativeLayout>
 
     <FrameLayout

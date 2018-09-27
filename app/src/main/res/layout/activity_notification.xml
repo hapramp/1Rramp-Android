@@ -33,17 +33,31 @@
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/no_notification_message"
+        android:visibility="gone"
         android:layout_centerInParent="true"
-        android:text="Comming Soon!"
+        android:text="No Notification"
         android:textSize="14sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_below="@+id/toolbar_container"
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/toolbar_container"
         android:background="@drawable/toolbar_shadow" />
+
 
 </RelativeLayout>

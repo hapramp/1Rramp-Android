@@ -3,10 +3,9 @@ package com.hapramp.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Adapter;
 
-import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.EventReporter;
+import com.hapramp.notification.NotificationHandler;
 import com.hapramp.preferences.DataStoreCachePreference;
 import com.hapramp.preferences.HaprampPreferenceManager;
 
@@ -16,6 +15,7 @@ public class Splash extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     DataStoreCachePreference.getInstance();
+    NotificationHandler.createNotificationChannel(this);
     EventReporter.setOpenTime();
     EventReporter.addEvent("splash");
     if (HaprampPreferenceManager.getInstance().isLoggedIn()) {
