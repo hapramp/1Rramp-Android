@@ -49,11 +49,11 @@
             android:clickable="true"
             android:gravity="center"
             android:text="Send"
-            android:alpha="0.6"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:textStyle="bold"
-            android:textColor="@color/pink"
+            android:enabled="false"
+            android:textColor="@color/pale_pink"
             android:textSize="14sp" />
 
     </RelativeLayout>

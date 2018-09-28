@@ -131,8 +131,8 @@ public class CommentsItemView extends FrameLayout implements
     commentContent.setText(comment.getBody());
     if (comment.getChildren() > 0) {
       moreReplies.setVisibility(VISIBLE);
-      moreReplies.setText(String.format(Locale.US, "VIEW %d %s", comment.getChildren(),
-        (comment.getChildren() > 1 ? "REPLIES" : "REPLY")));
+      moreReplies.setText(String.format(Locale.US, "View %d %s", comment.getChildren(),
+        (comment.getChildren() > 1 ? "replies" : "reply")));
     } else {
       moreReplies.setVisibility(GONE);
     }

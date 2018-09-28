@@ -15,6 +15,7 @@
     <color name="ConnectivityRed">#9b1836</color>
     <color name="white">#ffffff</color>
     <color name="pink">#ff6b95</color>
+    <color name="pale_pink">#8eff6b95</color>
     <color name="art">#ffeb3b</color>
     <color name="dance">#9c27b0</color>
     <color name="literature">#607d8b</color>

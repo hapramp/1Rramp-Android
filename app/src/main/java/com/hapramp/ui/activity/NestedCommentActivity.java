@@ -1,6 +1,7 @@
 package com.hapramp.ui.activity;
 
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -8,6 +9,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,9 +27,7 @@ import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.models.CommentModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.SteemCommentCreator;
-import com.hapramp.steem.SteemReplyFetcher;
 import com.hapramp.ui.adapters.CommentsAdapter;
-import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.ViewItemDecoration;
@@ -143,6 +144,28 @@ public class NestedCommentActivity extends AppCompatActivity implements
       @Override
       public void onClick(View v) {
         finish();
+      }
+    });
+    commentInputBox.addTextChangedListener(new TextWatcher() {
+      @Override
+      public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+      }
+
+      @Override
+      public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        if (charSequence.toString().trim().length() > 0) {
+          sendButton.setTextColor(Color.parseColor("#ff6b95"));
+          sendButton.setEnabled(true);
+        } else {
+          sendButton.setTextColor(Color.parseColor("#8eff6b95"));
+          sendButton.setEnabled(false);
+        }
+      }
+
+      @Override
+      public void afterTextChanged(Editable editable) {
+
       }
     });
   }

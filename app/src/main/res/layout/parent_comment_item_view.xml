@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-   android:layout_margin="8dp"
-    android:background="@drawable/parent_comment_bg"
+    android:background="@color/white"
     android:padding="8dp">
 
     <ImageView

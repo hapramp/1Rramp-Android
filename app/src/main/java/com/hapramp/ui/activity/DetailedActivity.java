@@ -11,7 +11,9 @@ import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v4.widget.Space;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.MenuItem;
@@ -298,6 +300,27 @@ public class DetailedActivity extends AppCompatActivity implements
       @Override
       public void onClick(View v) {
         navigateToUserProfile();
+      }
+    });
+    commentInputBox.addTextChangedListener(new TextWatcher() {
+      @Override
+      public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+      }
+
+      @Override
+      public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        if (charSequence.toString().trim().length() > 0) {
+          sendButton.setTextColor(Color.parseColor("#ff6b95"));
+          sendButton.setEnabled(true);
+        } else {
+          sendButton.setTextColor(Color.parseColor("#8eff6b95"));
+          sendButton.setEnabled(false);
+        }
+      }
+
+      @Override
+      public void afterTextChanged(Editable editable) {
+
       }
     });
   }
