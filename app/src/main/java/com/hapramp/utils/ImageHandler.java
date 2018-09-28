@@ -18,6 +18,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
+
 /**
  * Created by Ankit on 12/17/2017.
  */
