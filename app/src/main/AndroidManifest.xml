@@ -43,10 +43,12 @@
         </activity>
         <activity
             android:name=".ui.activity.ProfileActivity"
+            android:parentActivityName=".ui.activity.HomeActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.DetailedActivity"
             android:screenOrientation="portrait"
+            android:parentActivityName=".ui.activity.HomeActivity"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.activity.CreatePostActivity"
@@ -92,6 +94,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.AccountHistoryActivity"
+            android:parentActivityName=".ui.activity.HomeActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.FollowListActivity"
@@ -123,6 +126,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.TransferActivity"
+            android:parentActivityName=".ui.activity.HomeActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.VotersListActivity"
@@ -130,7 +134,7 @@
         <activity
             android:name=".ui.activity.DelegateActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.activity.NotificationActivity"></activity>
+        <activity android:name=".ui.activity.NotificationActivity" />
     </application>
 
 </manifest>

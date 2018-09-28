@@ -1,6 +1,11 @@
 package com.hapramp.datastore;
 
 public class SteemRequestBody {
+
+  public static String getSinglePostBody(String author, String permlink) {
+    return "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_content\", \"params\":[\"" + author + "\"," +
+      " \"" + permlink + "\"], \"id\":1}";
+  }
   /*
    * For: New in 1ramp section [Posts with tag hapramp tag]
    * */

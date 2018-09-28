@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -21,11 +22,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.analytics.EventReporter;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.JSONParser;
+import com.hapramp.notification.FirebaseNotificationStore;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.User;
 import com.hapramp.steemconnect.SteemConnectUtils;
@@ -42,6 +47,9 @@ import com.hapramp.utils.FollowingsSyncUtils;
 import com.hapramp.utils.FontManager;
 import com.hapramp.viewmodel.common.ConnectivityViewModel;
 import com.hapramp.views.extraa.CreateNewButtonView;
+
+import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -86,14 +94,16 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
   LinearLayout bottombarContainer;
   @BindView(R.id.createNewBtn)
   CreateNewButtonView createNewBtn;
+  @BindView(R.id.notification_count)
+  TextView notificationCount;
   private int lastMenuSelection = BOTTOM_MENU_HOME;
-  private Typeface materialTypface;
   private FragmentManager fragmentManager;
   private HomeFragment homeFragment;
   private ProfileFragment profileFragment;
   private SettingsFragment settingsFragment;
   private EarningFragment earningFragment;
   private ProgressDialog progressDialog;
+  private Handler mHandler;
   private ConnectivityViewModel connectivityViewModel;
   private boolean backPressedOnce = false;
 
@@ -107,12 +117,13 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
     BackstackManager.pushItem(FRAGMENT_HOME);
     transactFragment(FRAGMENT_HOME);
     saveDeviceWidth();
-    setupToolbar();
     attachListeners();
     observeConnection();
+    listenToNotifications();
   }
 
   private void initObjects() {
+    mHandler = new Handler();
     fragmentManager = getSupportFragmentManager();
     homeFragment = new HomeFragment();
     profileFragment = new ProfileFragment();
@@ -156,10 +167,6 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
 
   private void syncUserFollowings() {
     FollowingsSyncUtils.syncFollowings(this);
-  }
-
-  private void setupToolbar() {
-    materialTypface = FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL);
   }
 
   private void logout() {
@@ -444,5 +451,45 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
       }
     }.start();
   }
-}
 
+  private void listenToNotifications() {
+    FirebaseNotificationStore.getNotificationsListNode().addValueEventListener(new ValueEventListener() {
+      @Override
+      public void onDataChange(final @NonNull DataSnapshot dataSnapshot) {
+        mHandler.post(new Runnable() {
+          @Override
+          public void run() {
+            if (dataSnapshot.exists()) {
+              retrieveNotifications((Map<String, Object>) dataSnapshot.getValue());
+            } else {
+              notificationCount.setVisibility(View.GONE);
+            }
+          }
+        });
+      }
+
+      @Override
+      public void onCancelled(@NonNull DatabaseError databaseError) {
+      }
+    });
+  }
+
+  private void retrieveNotifications(Map<String, Object> notifs) {
+    int unread = 0;
+    for (Map.Entry<String, Object> entry : notifs.entrySet()) {
+      Map map = (Map) entry.getValue();
+      if (!(Boolean) map.get("read")) {
+        unread++;
+      }
+    }
+    if (notificationCount != null) {
+      if (unread == 0) {
+        notificationCount.setVisibility(View.GONE);
+      } else {
+        notificationCount.setVisibility(View.VISIBLE);
+        String c = unread > 10 ? "9+" : String.format(Locale.US, "%d", unread);
+        notificationCount.setText(c);
+      }
+    }
+  }
+}

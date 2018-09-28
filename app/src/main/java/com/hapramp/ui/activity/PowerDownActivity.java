@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +25,7 @@ public class PowerDownActivity extends AppCompatActivity {
 
   public static final String EXTRA_SP_BALANCE = "extra_sp_balance";
   @BindView(R.id.backBtn)
-  TextView backBtn;
+  ImageView backBtn;
   @BindView(R.id.action_bar_title)
   TextView actionBarTitle;
   @BindView(R.id.action_bar_container)
@@ -51,7 +52,6 @@ public class PowerDownActivity extends AppCompatActivity {
     ButterKnife.bind(this);
     collectExtra();
     attachListeners();
-    backBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
   }
 
   private void collectExtra() {

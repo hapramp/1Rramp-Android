@@ -9,17 +9,14 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:background="#ffffff">
-
-        <TextView
+        <ImageView
             android:id="@+id/backBtn"
-            android:layout_width="56dp"
-            android:layout_height="match_parent"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="?selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:text=""
-            android:textSize="24sp" />
+            android:layout_centerVertical="true"
+            android:padding="14dp"
+            android:src="@drawable/back" />
 
         <TextView
             android:id="@+id/action_bar_title"
@@ -29,9 +26,9 @@
             android:gravity="center"
             android:padding="8dp"
             android:text="POWER DOWN"
-            android:textColor="@color/Black54"
+            android:textColor="@color/Black87"
             android:textSize="14sp"
-            android:textStyle="bold" />
+            />
 
     </RelativeLayout>
 

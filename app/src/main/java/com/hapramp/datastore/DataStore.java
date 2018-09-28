@@ -1,6 +1,8 @@
 package com.hapramp.datastore;
 
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
@@ -749,13 +751,15 @@ public class DataStore extends DataDispatcher {
     }.start();
   }
 
-  public void requestSingleFeed(final String category, final String author, final String permlink, final SinglePostCallback singlePostCallback) {
+  public void requestSingleFeed(final String author, final String permlink, final SinglePostCallback singlePostCallback) {
     new Thread() {
       @Override
       public void run() {
         try {
-          String steemUrl = URLS.singlePostFetchUrl(category, author, permlink);
-          Response singlePostResponse = NetworkApi.getNetworkApiInstance().fetch(steemUrl);
+          String steemUrl = URLS.steemUrl();
+          String requestBody = SteemRequestBody.getSinglePostBody(author, permlink);
+          Log.d("DataStore", "Url " + steemUrl + " request body " + requestBody);
+          Response singlePostResponse = NetworkApi.getNetworkApiInstance().postAndFetch(steemUrl, requestBody);
           if (singlePostResponse.isSuccessful()) {
             String vestedResponseJson = singlePostResponse.body().string();
             dispatchSinglePost(vestedResponseJson, singlePostCallback);

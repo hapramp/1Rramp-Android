@@ -64,6 +64,7 @@ public class EventReporter {
   public static void reportDeviceId() {
     String token = FirebaseInstanceId.getInstance().getToken();
     EventReportUtils
-      .getDeviceIdNode(HaprampPreferenceManager.getInstance().getCurrentSteemUsername()).setValue(token);
+      .getDeviceIdNode(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())
+      .setValue(token);
   }
 }

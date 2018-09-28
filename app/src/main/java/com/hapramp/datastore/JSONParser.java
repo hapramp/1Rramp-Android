@@ -453,7 +453,7 @@ public class JSONParser {
     Feed feed = null;
     try {
       JSONObject jsonObject = new JSONObject(singlePostResponse);
-      feed = parseCoreFeedData(jsonObject.getJSONObject("post"));
+      feed = parseCoreFeedData(jsonObject.getJSONObject("result"));
     }
     catch (JSONException e) {
       Log.d("JSONException", e.toString());

@@ -13,7 +13,6 @@
         <RelativeLayout
             android:id="@+id/profile_header_container"
             android:layout_width="match_parent"
-            android:animateLayoutChanges="true"
             android:layout_height="wrap_content">
 
             <ImageView

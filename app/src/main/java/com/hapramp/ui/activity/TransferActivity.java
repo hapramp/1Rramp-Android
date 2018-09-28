@@ -9,6 +9,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +36,7 @@ public class TransferActivity extends AppCompatActivity implements UserSearchCal
   public static final int Cmode_sbd = 0;
   public static final int Cmode_steem = 1;
   @BindView(R.id.backBtn)
-  TextView backBtn;
+  ImageView backBtn;
   @BindView(R.id.action_bar_title)
   TextView actionBarTitle;
   @BindView(R.id.action_bar_container)
@@ -81,7 +82,6 @@ public class TransferActivity extends AppCompatActivity implements UserSearchCal
     collectExtra();
     attachListeners();
     dataStore = new DataStore();
-    backBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
   }
 
   private void collectExtra() {

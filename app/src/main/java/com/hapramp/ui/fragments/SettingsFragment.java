@@ -22,6 +22,7 @@ import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.analytics.EventReporter;
+import com.hapramp.notification.NotificationSubscriber;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steemconnect.SteemConnectUtils;
 import com.hapramp.steemconnect4j.SteemConnect;
@@ -159,6 +160,7 @@ public class SettingsFragment extends Fragment {
     final SteemConnect steemConnect = SteemConnectUtils.getSteemConnectInstance(
       HaprampPreferenceManager.getInstance().getSC2AccessToken()
     );
+    NotificationSubscriber.unsubscribeForUserTopic();
     HaprampPreferenceManager.getInstance().clearPreferences();
     new Thread() {
       @Override

@@ -28,21 +28,24 @@ android {
     }
 
     signingConfigs {
-        debug {}
         release {
+        }
+        localdebug {
         }
     }
     defaultConfig {
         applicationId "com.hapramp"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 46
+        versionCode 50
         versionName "0.0.15"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
     buildTypes {
-        debug {}
+        debug {
+            signingConfig signingConfigs.debug
+        }
         release {
             //signingConfig signingConfigs.release
         }

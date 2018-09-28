@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -38,8 +37,10 @@ import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.EventReporter;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.CommentsCallback;
+import com.hapramp.datastore.callbacks.SinglePostCallback;
 import com.hapramp.models.CommentModel;
 import com.hapramp.models.CommunityModel;
+import com.hapramp.notification.FirebaseNotificationStore;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
 import com.hapramp.steem.SteemCommentCreator;
@@ -50,7 +51,6 @@ import com.hapramp.steemconnect4j.SteemConnectCallback;
 import com.hapramp.steemconnect4j.SteemConnectException;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
-import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.RegexUtils;
@@ -137,6 +137,8 @@ public class DetailedActivity extends AppCompatActivity implements
   RelativeLayout postMetaContainer;
   @BindView(R.id.details_activity_cover)
   View detailsActivityCover;
+  @BindView(R.id.feed_loading_progress_bar)
+  ProgressBar feedLoadingProgressBar;
   private Handler mHandler;
   private Feed post;
   private ProgressDialog progressDialog;
@@ -182,8 +184,59 @@ public class DetailedActivity extends AppCompatActivity implements
   }
 
   private void collectExtras() {
-    post = getIntent().getExtras().getParcelable(Constants.EXTRAA_KEY_POST_DATA);
-    bindPostValues();
+    Bundle bundle = getIntent().getExtras();
+    if (bundle.getParcelable(Constants.EXTRAA_KEY_POST_DATA) != null) {
+      post = bundle.getParcelable(Constants.EXTRAA_KEY_POST_DATA);
+      bindPostValues(post);
+      return;
+    }
+
+    if (bundle.getString(Constants.EXTRAA_KEY_POST_AUTHOR) != null) {
+      String author = bundle.getString(Constants.EXTRAA_KEY_POST_AUTHOR);
+      String permlink = bundle.getString(Constants.EXTRAA_KEY_POST_PERMLINK);
+      String notifId = getIntent().getExtras().getString(Constants.EXTRAA_KEY_NOTIFICATION_ID, null);
+      if (notifId != null) {
+        FirebaseNotificationStore.markAsRead(notifId);
+      }
+      showFeedLoading(true);
+      requestSingleFeed(author, permlink);
+    }
+  }
+
+  private void bindPostValues(Feed feed) {
+    this.post = feed;
+    showFeedLoading(false);
+    requestReplies();
+    ImageHandler.loadCircularImage(this, feedOwnerPic,
+      String.format(getResources().getString(R.string.steem_user_profile_pic_format), post.getAuthor()));
+    feedOwnerTitle.setText(post.getAuthor());
+    feedOwnerSubtitle.setText(
+      String.format(getResources().getString(R.string.post_subtitle_format),
+        MomentsUtils.getFormattedTime(post.getCreatedAt())));
+    String title = post.getTitle();
+    if (title != null && title.length() > 0) {
+      postTitle.setVisibility(VISIBLE);
+      postTitle.setText(title);
+    }
+    renderMarkdown(post.getBody());
+    ImageHandler.loadCircularImage(this, commentCreaterAvatar,
+      String.format(getResources().getString(R.string.steem_user_profile_pic_format),
+        HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
+    bindVotes(post.getVoters(), post.getPermlink());
+    setSteemEarnings(post);
+    setCommentCount(post.getChildren());
+    attachListenersOnStarView();
+    setCommunities(post.getTags());
+  }
+
+  private void showFeedLoading(boolean loading) {
+    if (loading) {
+      detailsActivityCover.setVisibility(VISIBLE);
+      feedLoadingProgressBar.setVisibility(VISIBLE);
+    } else {
+      detailsActivityCover.setVisibility(View.GONE);
+      feedLoadingProgressBar.setVisibility(View.GONE);
+    }
   }
 
   private void attachListener() {
@@ -270,33 +323,23 @@ public class DetailedActivity extends AppCompatActivity implements
     popup.show();
   }
 
-  private void bindPostValues() {
-    detailsActivityCover.setVisibility(View.GONE);
-    requestReplies();
-    ImageHandler.loadCircularImage(this, feedOwnerPic,
-      String.format(getResources().getString(R.string.steem_user_profile_pic_format), post.getAuthor()));
-    feedOwnerTitle.setText(post.getAuthor());
-    feedOwnerSubtitle.setText(
-      String.format(getResources().getString(R.string.post_subtitle_format),
-        MomentsUtils.getFormattedTime(post.getCreatedAt())));
-    String title = post.getTitle();
-    if (title != null && title.length() > 0) {
-      postTitle.setVisibility(VISIBLE);
-      postTitle.setText(title);
-    }
-    renderMarkdown(post.getBody());
-    ImageHandler.loadCircularImage(this, commentCreaterAvatar,
-      String.format(getResources().getString(R.string.steem_user_profile_pic_format),
-        HaprampPreferenceManager.getInstance().getCurrentSteemUsername()));
-    bindVotes(post.getVoters(), post.getPermlink());
-    setSteemEarnings(post);
-    setCommentCount(post.getChildren());
-    attachListenersOnStarView();
-    setCommunities(post.getTags());
+  private void requestSingleFeed(String author, String permlink) {
+    dataStore.requestSingleFeed(author, permlink, new SinglePostCallback() {
+      @Override
+      public void onPostFetched(Feed feed) {
+        bindPostValues(feed);
+        showFeedLoading(false);
+      }
+
+      @Override
+      public void onPostFetchError(String err) {
+
+      }
+    });
   }
 
   private void requestReplies() {
-    dataStore.requestComments(post.getAuthor(), post.getPermlink(), this);
+    dataStore.requestComments(this.post.getAuthor(), this.post.getPermlink(), this);
   }
 
   private void renderMarkdown(String body) {
