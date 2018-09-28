@@ -222,10 +222,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/divider_bottom"
             android:gravity="center_vertical"
-            android:paddingBottom="12sp"
+            android:layout_marginTop="28dp"
             android:paddingRight="18sp"
             android:paddingLeft="24sp"
-            android:paddingTop="18sp"
             android:text="Interests"
             android:textColor="@color/colorPrimary"
             android:textSize="14sp" />
@@ -243,14 +242,15 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/interestsView"
             android:background="@color/LightBlack"
-            android:paddingBottom="18dp"
+            android:paddingBottom="8dp"
             android:paddingRight="16dp"
             android:paddingLeft="16dp"
-            android:paddingTop="28dp"
+            android:paddingTop="32dp"
             android:text="POSTS"
             android:textColor="@color/Black54"
             android:textStyle="bold" />
 
     </RelativeLayout>
+
     <include layout="@layout/profile_headerview_skeleton" />
 </FrameLayout>
