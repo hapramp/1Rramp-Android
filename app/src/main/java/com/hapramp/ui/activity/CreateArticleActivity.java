@@ -264,9 +264,8 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
 
   @Override
   public void onPostCreationFailedOnSteem(String msg) {
-    toast(msg);
+    toast("Cannot Create Blog");
     showPublishingProgressDialog(false, "");
-    Log.d(CreateArticleActivity.class.getSimpleName(), msg);
   }
 
   @Override

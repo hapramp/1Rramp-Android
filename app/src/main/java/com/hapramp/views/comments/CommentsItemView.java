@@ -1,17 +1,22 @@
 package com.hapramp.views.comments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,6 +77,9 @@ public class CommentsItemView extends FrameLayout implements
   TextView moreReplies;
   @BindView(R.id.replyBtn)
   ImageView replyBtn;
+  @BindView(R.id.popupMenuDots)
+  ImageView popUpMenuDots;
+
   private Context mContext;
   private Handler mHandler;
   private SteemVoterFetcher steemVoterFetcher;
@@ -120,7 +128,6 @@ public class CommentsItemView extends FrameLayout implements
     this.permlink = comment.getPermlink();
     this.timestamp = comment.getCreatedAt();
     this.content = comment.getBody();
-
     ImageHandler.loadCircularImage(mContext
       , commentOwnerPic,
       String.format(getResources().getString(R.string.steem_user_profile_pic_format),
@@ -140,10 +147,7 @@ public class CommentsItemView extends FrameLayout implements
     attachListeners();
   }
 
-  private void requestVoters(String author, String permlink) {
-    if (permlink != null)
-      steemVoterFetcher.requestVoters(author, permlink);
-  }
+  private CommentActionListener commentActionListener;
 
   private void setSteemEarnings(CommentModel commentModel) {
     try {
@@ -287,8 +291,19 @@ public class CommentsItemView extends FrameLayout implements
     }.start();
   }
 
+  private void requestVoters(String author, String permlink) {
+    if (permlink != null) {
+      steemVoterFetcher.requestVoters(author, permlink);
+    }
+  }
+
   private void setVoteCount(int count) {
     upvoteCount.setText(String.valueOf(count));
+    if (count == 0 && author.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
+      showOptionMenuEnabled(true);
+    } else {
+      showOptionMenuEnabled(false);
+    }
   }
 
   private void setVoteState(boolean voted) {
@@ -336,8 +351,95 @@ public class CommentsItemView extends FrameLayout implements
     setVoteState(true);
   }
 
+  private void showOptionMenuEnabled(boolean show) {
+    if (popUpMenuDots != null) {
+      if (show) {
+        popUpMenuDots.setVisibility(VISIBLE);
+        popUpMenuDots.setOnClickListener(new OnClickListener() {
+          @Override
+          public void onClick(View view) {
+            showPopup();
+          }
+        });
+      } else {
+        popUpMenuDots.setVisibility(GONE);
+        popUpMenuDots.setOnClickListener(null);
+      }
+    }
+  }
+
+  private void showPopup() {
+    int menu_res_id = R.menu.post_menu_delete;
+    ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(getContext(), R.style.PopupMenuOverlapAnchor);
+    PopupMenu popup = new PopupMenu(contextThemeWrapper, popUpMenuDots);
+    popup.getMenuInflater().inflate(menu_res_id, popup.getMenu());
+    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+      @Override
+      public boolean onMenuItemClick(MenuItem item) {
+        if (item.getItemId() == R.id.comment_delete) {
+          showAlertDialogForDelete();
+          return true;
+        }
+        return false;
+      }
+    });
+    popup.show();
+  }
+
+  private void showAlertDialogForDelete() {
+    new AlertDialog.Builder(mContext)
+      .setTitle("Delete Comment")
+      .setMessage("Do you want to Delete ? ")
+      .setPositiveButton("Yes, Delete", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+          deleteThisComment();
+        }
+      })
+      .setNegativeButton("Cancel", null)
+      .show();
+  }
+
+  private void deleteThisComment() {
+    if (commentActionListener != null) {
+      commentActionListener.onCommentDeleted();
+    }
+    new Thread() {
+      @Override
+      public void run() {
+        SteemConnect steemConnect = SteemConnectUtils
+          .getSteemConnectInstance(HaprampPreferenceManager
+            .getInstance().getSC2AccessToken());
+        steemConnect.delete(author, permlink, new SteemConnectCallback() {
+          @Override
+          public void onResponse(String response) {
+          }
+
+          @Override
+          public void onError(final SteemConnectException e) {
+            mHandler.post(new Runnable() {
+              @Override
+              public void run() {
+                Log.d("CommentDelete", e.toString());
+                Toast.makeText(mContext, "Error occurred while deleting comment.", Toast.LENGTH_LONG).show();
+              }
+            });
+          }
+        });
+      }
+    }.start();
+  }
+
   @Override
   public void onVotersFetchError() {
 
+  }
+
+  public void setCommenttActionListener(CommentActionListener commenttActionListener) {
+    this.commentActionListener = commenttActionListener;
+  }
+
+  public interface CommentActionListener {
+    void onCommentDeleted();
   }
 }

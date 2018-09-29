@@ -5,59 +5,84 @@
     android:background="#ffffff"
     android:padding="8dp">
 
-    <ImageView
-        android:clickable="true"
-        android:id="@+id/comment_owner_pic"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:src="@mipmap/hapramp_logo" />
+    <RelativeLayout
+        android:id="@+id/top_container"
+        android:layout_width="match_parent"
+        android:layout_height="48dp">
 
-    <TextView
-        android:clickable="true"
-        android:background="?selectableItemBackgroundBorderless"
-        android:id="@+id/comment_owner_username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_toRightOf="@+id/comment_owner_pic"
-        android:textColor="@color/Black54"
-        android:textSize="14sp" />
 
-    <TextView
-        android:id="@+id/dot_separator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_toRightOf="@+id/comment_owner_username"
-        android:text="\u2022"
-        android:textSize="14sp" />
+        <ImageView
+            android:id="@+id/comment_owner_pic"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            android:src="@drawable/circular_image_placeholder" />
 
-    <TextView
-        android:id="@+id/timestamp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_toRightOf="@+id/dot_separator"
-        android:textSize="14sp" />
+        <TextView
+            android:id="@+id/comment_owner_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@+id/comment_owner_pic"
+            android:background="?selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:text="Ankit Kumar"
+            android:textColor="@color/Black54"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/dot_separator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="4dp"
+            android:layout_toRightOf="@+id/comment_owner_username"
+            android:text="\u2022"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="4dp"
+            android:layout_toRightOf="@+id/dot_separator"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/comment_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/comment_owner_username"
+        android:layout_below="@+id/top_container"
         android:layout_marginLeft="8dp"
+        android:layout_marginRight="36dp"
         android:layout_marginTop="4dp"
-        android:layout_toRightOf="@+id/comment_owner_pic"
-        android:textColor="@color/Black87"
+        android:textColor="@color/Black54"
         android:textSize="16sp" />
+
+    <ImageView
+        android:id="@+id/popupMenuDots"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentRight="true"
+        android:alpha="0.6"
+        android:background="?selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="16dp"
+        android:src="@drawable/more"
+        android:visibility="gone" />
 
     <RelativeLayout
         android:id="@+id/starAndPayoutContainer"
         android:layout_marginTop="4dp"
         android:layout_below="@+id/comment_content"
-        android:layout_toRightOf="@+id/comment_owner_pic"
         android:layout_height="48dp"
         android:layout_width="match_parent"
         android:background="#ffffff"
@@ -118,6 +143,7 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/upvote"
             android:text="0"
+            android:layout_marginLeft="-8dp"
             android:textColor="@color/Black87" />
 
     </RelativeLayout>
@@ -127,7 +153,6 @@
         android:textColor="@color/pink"
         android:clickable="true"
         android:layout_below="@+id/starAndPayoutContainer"
-        android:layout_toRightOf="@+id/comment_owner_pic"
         android:layout_width="wrap_content"
         android:text="VIEW 3 MORE REPLIES"
         android:visibility="gone"

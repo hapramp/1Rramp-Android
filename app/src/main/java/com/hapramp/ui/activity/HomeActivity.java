@@ -5,7 +5,6 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -44,7 +43,6 @@ import com.hapramp.ui.fragments.SettingsFragment;
 import com.hapramp.utils.BackstackManager;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FollowingsSyncUtils;
-import com.hapramp.utils.FontManager;
 import com.hapramp.viewmodel.common.ConnectivityViewModel;
 import com.hapramp.views.extraa.CreateNewButtonView;
 
@@ -149,7 +147,7 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
     connectivityViewModel.getConnectivityState().observeForever(new Observer<Boolean>() {
       @Override
       public void onChanged(@Nullable Boolean isConnected) {
-        if (isConnected) {
+        if (ConnectionUtils.isConnected(HomeActivity.this)) {
           hideConnectivityBar();
         } else {
           revealConnectivityBar();

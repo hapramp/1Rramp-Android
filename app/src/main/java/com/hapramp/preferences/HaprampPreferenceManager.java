@@ -186,15 +186,14 @@ public class HaprampPreferenceManager {
     editor.apply();
   }
 
-  public void setDeviceWidth(int width) {
-    editor.putInt("deviceWidth", width);
-    editor.apply();
-  }
-
   public int getDeviceWidth() {
     return preferences.getInt("deviceWidth", 0);
   }
 
+  public void setDeviceWidth(int width) {
+    editor.putInt("deviceWidth", width);
+    editor.apply();
+  }
 
   public int getImageDowngradeFactor() {
     return preferences.getInt("image_load_down_grade_factor", 2);
@@ -221,5 +220,14 @@ public class HaprampPreferenceManager {
   public void setUserTopicSubscribed(boolean subscribed) {
     editor.putBoolean("user_topic_subs", subscribed);
     editor.apply();
+  }
+
+  public void setShowPushNotifications(boolean subscribe) {
+    editor.putBoolean("show_notifications", subscribe);
+    editor.apply();
+  }
+
+  public boolean shouldShowPushNotifications() {
+    return preferences.getBoolean("show_notifications", true);
   }
 }

@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import android.text.Layout;
 import android.util.AttributeSet;
 import android.view.ContextThemeWrapper;
@@ -80,7 +81,7 @@ public class PostItemView extends FrameLayout {
   @BindView(R.id.club1)
   TextView club1;
   @BindView(R.id.popupMenuDots)
-  TextView popupMenuDots;
+  ImageView popupMenuDots;
   @BindView(R.id.featured_image_post)
   ImageView featuredImagePost;
   @BindView(R.id.youtube_indicator)
@@ -136,7 +137,6 @@ public class PostItemView extends FrameLayout {
     this.mContext = context;
     View view = LayoutInflater.from(mContext).inflate(R.layout.post_item_view, this);
     ButterKnife.bind(this, view);
-    popupMenuDots.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
     mHandler = new Handler();
     dataStore = new DataStore();
     attachListeners();
@@ -303,10 +303,10 @@ public class PostItemView extends FrameLayout {
 
         @Override
         public void onVoteDescription(String msg) {
-          ratingDesc.setText(msg);
+          ratingDesc.setText(Html.fromHtml(msg));
         }
       });
-    ratingDesc.setText(starView.getVoteDescription());
+    ratingDesc.setText(Html.fromHtml(starView.getVoteDescription()));
   }
 
   private void updateVotersPeekView(List<Voter> voters) {

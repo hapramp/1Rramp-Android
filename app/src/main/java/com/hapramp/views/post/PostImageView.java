@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -19,6 +18,7 @@ import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
+import com.hapramp.api.ProgressRequestBody;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.models.response.FileUploadReponse;
 import com.hapramp.utils.ImageCacheClearUtils;
@@ -26,12 +26,11 @@ import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.ImageRotationHandler;
 
 import java.io.File;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.MediaType;
 import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -40,7 +39,8 @@ import retrofit2.Response;
  * Created by Ankit on 2/5/2018.
  */
 
-public class PostImageView extends FrameLayout implements ImageRotationHandler.ImageRotationOperationListner {
+public class PostImageView extends FrameLayout implements ImageRotationHandler.ImageRotationOperationListner, ProgressRequestBody.UploadCallbacks {
+  private final int MAX_RETRY_COUNT = 5;
   @BindView(R.id.image)
   ImageView image;
   @BindView(R.id.informationTv)
@@ -55,7 +55,6 @@ public class PostImageView extends FrameLayout implements ImageRotationHandler.I
   private String downloadUrl;
   private ImageActionListener imageActionListener;
   private Context mContext;
-  private final int MAX_RETRY_COUNT = 5;
   private int retryCount = 0;
   private Handler mHandler;
   private ImageRotationHandler imageRotationHandler;
@@ -160,6 +159,7 @@ public class PostImageView extends FrameLayout implements ImageRotationHandler.I
     informationTv.setVisibility(VISIBLE);
     informationTv.setText("Processing...");
     currentImageUID = System.currentTimeMillis();
+    actionContainer.setVisibility(VISIBLE);
     imageRotationHandler.checkOrientationAndFixImage(filePath, currentImageUID);
   }
 
@@ -170,6 +170,7 @@ public class PostImageView extends FrameLayout implements ImageRotationHandler.I
         return;
       progressBar.setVisibility(VISIBLE);
       informationTv.setText("Retrying image upload...");
+      actionContainer.setVisibility(VISIBLE);
       startUploading(filePath, fileNeedsToBeDeleted, uid);
     }
   }
@@ -188,12 +189,9 @@ public class PostImageView extends FrameLayout implements ImageRotationHandler.I
 
   private void startUploading(final String filePath, final boolean fileShouldBeDeleted, final long imageUID) {
     try {
-      if (informationTv != null) {
-        informationTv.setText("Uploading...");
-      }
       final File file = new File(filePath);
-      final RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
-      MultipartBody.Part body = MultipartBody.Part.createFormData("upload", file.getName(), requestFile);
+      ProgressRequestBody fileBody = new ProgressRequestBody(file, this);
+      MultipartBody.Part body = MultipartBody.Part.createFormData("upload", file.getName(), fileBody);
       fileUploadReponseCall = RetrofitServiceGenerator.getService().uploadFile(body);
       fileUploadReponseCall.enqueue(new Callback<FileUploadReponse>() {
         @Override
@@ -252,8 +250,31 @@ public class PostImageView extends FrameLayout implements ImageRotationHandler.I
     this.imageActionListener = imageActionListener;
   }
 
+  @Override
+  public void onProgressUpdate(int percentage) {
+    if (informationTv != null) {
+      informationTv.setText(String.format(Locale.US, "Uploaded %d%%", percentage));
+      progressBar.setProgress(percentage);
+    }
+  }
+
+  @Override
+  public void onError() {
+
+  }
+
+  @Override
+  public void onProcessing() {
+  }
+
+  @Override
+  public void onFinish() {
+
+  }
+
   public interface ImageActionListener {
     void onImageRemoved();
+
     void onImageUploaded(String downloadUrl);
   }
 }

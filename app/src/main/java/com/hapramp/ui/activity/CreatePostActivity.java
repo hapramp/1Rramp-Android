@@ -14,7 +14,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -32,7 +31,6 @@ import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
-import com.hapramp.utils.FontManager;
 import com.hapramp.utils.GoogleImageFilePathReader;
 import com.hapramp.utils.HashTagUtils;
 import com.hapramp.utils.MomentsUtils;
@@ -351,8 +349,7 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
 
   @Override
   public void onPostCreationFailedOnSteem(String msg) {
-    toast(msg);
+    toast("Cannot Create Post");
     showPublishingProgressDialog(false, "");
-    Log.d(CreatePostActivity.class.getSimpleName(), msg);
   }
 }

@@ -65,16 +65,32 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   }
 
   @Override
-  public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+  public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
     if (holder instanceof CommentViewHolder) {
-      ((CommentViewHolder) holder).bind(commentsList.get(position));
+      ((CommentViewHolder) holder).bind(commentsList.get(position), new CommentsItemView.CommentActionListener() {
+        @Override
+        public void onCommentDeleted() {
+          removeItemAt(position);
+        }
+      });
     } else if (holder instanceof NestedCommentItemViewHolder) {
       //if hasParent
-      ((NestedCommentItemViewHolder) holder).bind(commentsList.get(position - (hasParent ? 1 : 0)));
+      final int p = position - (hasParent ? 1 : 0);
+      ((NestedCommentItemViewHolder) holder).bind(commentsList.get(p), new CommentsItemView.CommentActionListener() {
+        @Override
+        public void onCommentDeleted() {
+          removeItemAt(p);
+        }
+      });
     } else if (holder instanceof ParentCommentItemViewHolder) {
       //if hasParent
       ((ParentCommentItemViewHolder) holder).bind(parentAuthor, parentContent, parentTimestamp);
     }
+  }
+
+  private void removeItemAt(int p) {
+    commentsList.remove(p);
+    notifyItemRemoved(p);
   }
 
   @Override
@@ -119,8 +135,9 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       super(itemView);
     }
 
-    public void bind(CommentModel comment) {
+    public void bind(CommentModel comment, CommentsItemView.CommentActionListener commentActionListener) {
       ((CommentsItemView) itemView).setComment(comment);
+      ((CommentsItemView) itemView).setCommenttActionListener(commentActionListener);
     }
   }
 
@@ -133,8 +150,9 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       ButterKnife.bind(this, itemView);
     }
 
-    public void bind(CommentModel commentModel) {
+    public void bind(CommentModel commentModel, CommentsItemView.CommentActionListener commentActionListener) {
       commentsItemView.setComment(commentModel);
+      commentsItemView.setCommenttActionListener(commentActionListener);
     }
   }
 

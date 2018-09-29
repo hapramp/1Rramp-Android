@@ -50,6 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="8dp"
         android:layout_below="@+id/actionContainer"
-        android:indeterminate="true" />
+        android:indeterminate="false"
+        android:max="100"/>
 
 </RelativeLayout>

@@ -23,4 +23,7 @@
         <item name="colorControlNormal">#1f000000</item>
     </style>
 
+    <style name="SwitchTheme" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
 </resources>

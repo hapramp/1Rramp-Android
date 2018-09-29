@@ -1,6 +1,5 @@
 package com.hapramp.ui.fragments;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,12 +14,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
-import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.analytics.EventReporter;
 import com.hapramp.notification.NotificationSubscriber;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -37,19 +38,35 @@ import butterknife.Unbinder;
 
 
 public class SettingsFragment extends Fragment {
-  Unbinder unbinder;
-  @BindView(R.id.feedback_btn)
-  TextView feedbackBtn;
-  @BindView(R.id.logoutBtn)
-  TextView logoutBtn;
-  @BindView(R.id.tos)
-  TextView tos;
-  @BindView(R.id.invite_btn)
-  TextView inviteBtn;
-  @BindView(R.id.helpBtn)
-  TextView helpBtn;
+  @BindView(R.id.img_notification)
+  ImageView imgNotification;
+  @BindView(R.id.push_notification_row)
+  RelativeLayout pushNotificationRow;
+  @BindView(R.id.img_friend)
+  ImageView imgFriend;
+  @BindView(R.id.invite_a_friend_row)
+  RelativeLayout inviteAFriendRow;
+  @BindView(R.id.img_feedback)
+  ImageView imgFeedback;
+  @BindView(R.id.feedback_row)
+  RelativeLayout feedbackRow;
+  @BindView(R.id.img_help)
+  ImageView imgHelp;
+  @BindView(R.id.help_row)
+  RelativeLayout helpRow;
+  @BindView(R.id.img_terms)
+  ImageView imgTerms;
+  @BindView(R.id.term_row)
+  RelativeLayout termRow;
+  @BindView(R.id.img_logout)
+  ImageView imgLogout;
+  @BindView(R.id.logout_row)
+  RelativeLayout logoutRow;
+  @BindView(R.id.push_notification_switch)
+  Switch pushNotificationSwitch;
   private Context mContext;
   private ProgressDialog progressDialog;
+  private Unbinder unbinder;
 
   public SettingsFragment() {
   }
@@ -78,36 +95,52 @@ public class SettingsFragment extends Fragment {
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    inviteBtn.setOnClickListener(new View.OnClickListener() {
+    if (HaprampPreferenceManager.getInstance().isUserTopicSubscribed()) {
+      pushNotificationSwitch.setChecked(true);
+    } else {
+      pushNotificationSwitch.setChecked(false);
+    }
+    inviteAFriendRow.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
         inviteAFriend();
       }
     });
-    logoutBtn.setOnClickListener(new View.OnClickListener() {
+    logoutRow.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         showAlertDialogForLogout();
       }
     });
-    helpBtn.setOnClickListener(new View.OnClickListener() {
+    helpRow.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
         openHelpPage();
       }
     });
-    feedbackBtn.setOnClickListener(new View.OnClickListener() {
+    feedbackRow.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
         shareFeedbackOrReportIssue();
       }
     });
-    tos.setOnClickListener(new View.OnClickListener() {
+    termRow.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
         openTermsPage();
       }
     });
+
+    pushNotificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+      @Override
+      public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+        showPushNotifications(isChecked);
+      }
+    });
+  }
+
+  private void showPushNotifications(boolean subscribe) {
+    HaprampPreferenceManager.getInstance().setShowPushNotifications(subscribe);
   }
 
   private void openHelpPage() {
