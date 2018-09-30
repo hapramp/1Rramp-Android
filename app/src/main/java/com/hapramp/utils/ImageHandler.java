@@ -24,9 +24,14 @@ import com.hapramp.R;
  */
 public class ImageHandler {
 
+  /**
+   * Loads image and override/invalidate the size of Target ImageView.
+   * @param context    application context.
+   * @param imageView  Target ImageView
+   * @param _uri       url of image.
+   */
   public static void load(Context context, final ImageView imageView, String _uri) {
     String final_url = "https://steemitimages.com/0x0/" + _uri;
-    //NetworkQualityUtils.startNetworkSampling();
     try {
       RequestOptions options = new RequestOptions()
         .fitCenter()
@@ -51,7 +56,6 @@ public class ImageHandler {
                                          Target<Drawable> target,
                                          DataSource dataSource,
                                          boolean isFirstResource) {
-            //NetworkQualityUtils.stopstartNetworkSampling();
             int width = imageView.getMeasuredWidth();
             int targetHeight = width * resource.getIntrinsicHeight() / resource.getIntrinsicWidth();
             if (imageView.getLayoutParams().height != targetHeight) {
@@ -69,6 +73,12 @@ public class ImageHandler {
     }
   }
 
+  /**
+   * Loads image without overriding/invalidating the size of Target ImageView.
+   * @param context    application context.
+   * @param imageView  Target ImageView
+   * @param _uri       url of image.
+   */
   public static void loadUnOverridden(Context context, final ImageView imageView, String _uri) {
     String final_url = "https://steemitimages.com/0x0/" + _uri;
     try {
@@ -106,6 +116,12 @@ public class ImageHandler {
     }
   }
 
+  /**
+   * Loads image from local disk/path.
+   * @param context    application context.
+   * @param imageView  Target ImageView
+   * @param filePath   local path of image.
+   */
   public static void loadFilePath(Context context, final ImageView imageView, String filePath) {
     try {
       RequestOptions options = new RequestOptions()
@@ -148,6 +164,12 @@ public class ImageHandler {
     }
   }
 
+  /**
+   * loads image in circular shape.
+   * @param context    application context.
+   * @param imageView  Target ImageView
+   * @param url         url of image.
+   */
   public static void loadCircularImage(final Context context, final ImageView imageView, String url) {
     try {
       RequestOptions options = new RequestOptions()
@@ -155,7 +177,6 @@ public class ImageHandler {
         .placeholder(R.drawable.circular_image_placeholder)
         .diskCacheStrategy(DiskCacheStrategy.ALL)
         .priority(Priority.HIGH);
-      //NetworkQualityUtils.startNetworkSampling();
       Glide.with(context)
         .asBitmap()
         .load(url)
@@ -179,7 +200,6 @@ public class ImageHandler {
             RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory
               .create(context.getResources(), resource);
             circularBitmapDrawable.setCircular(true);
-            //NetworkQualityUtils.stopstartNetworkSampling();
             imageView.setImageDrawable(circularBitmapDrawable);
             return true;
           }
@@ -190,5 +210,4 @@ public class ImageHandler {
       Crashlytics.logException(e);
     }
   }
-
 }
