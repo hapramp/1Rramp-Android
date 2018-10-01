@@ -6,89 +6,198 @@
     android:orientation="vertical"
     tools:context=".ui.fragments.SettingsFragment">
 
-    <TextView
-        android:id="@+id/invite_btn"
+    <RelativeLayout
+        android:id="@+id/push_notification_row"
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+
+        <ImageView
+            android:id="@+id/img_notification"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:src="@drawable/notify" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:layout_toRightOf="@+id/img_notification"
+            android:text="Push Notification"
+            android:textColor="@color/Black87" />
+
+        <Switch
+            android:id="@+id/push_notification_switch"
+            android:theme="@style/SwitchTheme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="14dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/Black12" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/invite_a_friend_row"
+        android:background="?selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="?selectableItemBackground"
-        android:clickable="true"
-        android:gravity="center"
-        android:text="Invite a friend"
-        android:textColor="@color/Black87"
-        android:textSize="16sp" />
+        android:clickable="true">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@color/Black12" />
+        <ImageView
+            android:id="@+id/img_friend"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:src="@drawable/invite" />
 
-    <TextView
-        android:id="@+id/feedback_btn"
-        android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:layout_toRightOf="@+id/img_friend"
+            android:text="Invite a Friend"
+            android:textColor="@color/Black87" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/Black12" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/feedback_row"
         android:layout_height="56dp"
         android:background="?selectableItemBackground"
-        android:clickable="true"
-        android:gravity="center"
-        android:text="Give feedback"
-        android:textColor="@color/Black87"
-        android:textSize="16sp" />
-
-    <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@color/Black12" />
+        android:clickable="true">
 
-    <TextView
-        android:id="@+id/helpBtn"
-        android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/img_feedback"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:src="@drawable/blog_icon_filled" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:layout_toRightOf="@+id/img_feedback"
+            android:text="Give Feedback"
+            android:textColor="@color/Black87" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/Black12" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/help_row"
         android:layout_height="56dp"
         android:background="?selectableItemBackground"
-        android:clickable="true"
-        android:textColor="@color/Black87"
-        android:gravity="center"
-        android:text="Help"
-        android:textSize="16sp" />
-
-
-    <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@color/Black12" />
+        android:clickable="true">
 
-    <TextView
-        android:id="@+id/tos"
-        android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/img_help"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:src="@drawable/help_icon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:layout_toRightOf="@+id/img_help"
+            android:text="Help"
+            android:textColor="@color/Black87" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/Black12" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/term_row"
         android:layout_height="56dp"
         android:background="?selectableItemBackground"
-        android:clickable="true"
-        android:gravity="center"
-        android:text="Terms of service"
-        android:textColor="@color/Black87"
-        android:textSize="16sp" />
-
-
-    <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@color/Black12" />
+        android:clickable="true">
 
-    <TextView
-        android:id="@+id/logoutBtn"
-        android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/img_terms"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:src="@drawable/terms" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:layout_toRightOf="@+id/img_terms"
+            android:text="Terms of Use"
+            android:textColor="@color/Black87" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/Black12" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/logout_row"
         android:layout_height="56dp"
         android:background="?selectableItemBackground"
-        android:clickable="true"
-        android:gravity="center"
-        android:text="Logout"
-        android:textColor="@color/Black87"
-        android:textSize="16sp" />
+        android:layout_width="match_parent"
+        android:clickable="true">
+
+        <ImageView
+            android:id="@+id/img_logout"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:src="@drawable/logout" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:layout_toRightOf="@+id/img_logout"
+            android:text="Logout"
+            android:textColor="@color/Black87" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/Black12" />
+    </RelativeLayout>
+
 
 </LinearLayout>

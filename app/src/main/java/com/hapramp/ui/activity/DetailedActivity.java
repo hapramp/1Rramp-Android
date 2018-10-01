@@ -11,8 +11,9 @@ import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v4.widget.Space;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.Html;
-import android.util.Log;
+import android.text.TextWatcher;
 import android.view.ContextThemeWrapper;
 import android.view.MenuItem;
 import android.view.View;
@@ -56,6 +57,7 @@ import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.RegexUtils;
 import com.hapramp.utils.ShareUtils;
 import com.hapramp.utils.VoteUtils;
+import com.hapramp.views.VoterPeekView;
 import com.hapramp.views.comments.CommentsItemView;
 import com.hapramp.views.extraa.StarView;
 
@@ -139,6 +141,10 @@ public class DetailedActivity extends AppCompatActivity implements
   View detailsActivityCover;
   @BindView(R.id.feed_loading_progress_bar)
   ProgressBar feedLoadingProgressBar;
+  @BindView(R.id.rating_desc)
+  TextView ratingDesc;
+  @BindView(R.id.voters_peek_view)
+  VoterPeekView votersPeekView;
   private Handler mHandler;
   private Feed post;
   private ProgressDialog progressDialog;
@@ -218,6 +224,7 @@ public class DetailedActivity extends AppCompatActivity implements
       postTitle.setVisibility(VISIBLE);
       postTitle.setText(title);
     }
+    updateVotersPeekView(feed.getActiveVoters());
     renderMarkdown(post.getBody());
     ImageHandler.loadCircularImage(this, commentCreaterAvatar,
       String.format(getResources().getString(R.string.steem_user_profile_pic_format),
@@ -237,6 +244,253 @@ public class DetailedActivity extends AppCompatActivity implements
       detailsActivityCover.setVisibility(View.GONE);
       feedLoadingProgressBar.setVisibility(View.GONE);
     }
+  }
+
+  private void updateVotersPeekView(List<Voter> voters) {
+    if (votersPeekView != null) {
+      votersPeekView.setVoters(voters);
+    }
+  }
+
+  private void navigateToUserProfile() {
+    Intent intent = new Intent(this, ProfileActivity.class);
+    intent.putExtra(Constants.EXTRAA_KEY_STEEM_USER_NAME, post.getAuthor());
+    startActivity(intent);
+  }
+
+  private void bindVotes(List<Voter> votes, String permlink) {
+    long votePercentSum = VoteUtils.getVotePercentSum(votes);
+    boolean amIVoted = VoteUtils.checkForMyVote(votes);
+    long myVotePercent = amIVoted ? VoteUtils.getMyVotePercent(votes) : 0;
+    long totalVotes = VoteUtils.getNonZeroVoters(votes);
+    starView.setVoteState(
+      new StarView.Vote(
+        amIVoted,
+        permlink,
+        myVotePercent,
+        totalVotes,
+        votePercentSum))
+      .setOnVoteUpdateCallback(new StarView.onVoteUpdateCallback() {
+        @Override
+        public void onVoted(String full_permlink, int _vote) {
+          performVoteOnSteem(_vote);
+        }
+
+        @Override
+        public void onVoteDeleted(String full_permlink) {
+          deleteVoteOnSteem();
+        }
+
+        @Override
+        public void onVoteDescription(String msg) {
+          ratingDesc.setText(Html.fromHtml(msg));
+        }
+      });
+    ratingDesc.setText(Html.fromHtml(starView.getVoteDescription()));
+  }
+
+  private void showPopup() {
+    ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(this,
+      R.style.PopupMenuOverlapAnchor);
+    PopupMenu popup = new PopupMenu(contextThemeWrapper, overflowBtn);
+    popup.getMenuInflater().inflate(R.menu.popup_post, popup.getMenu());
+    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+      @Override
+      public boolean onMenuItemClick(MenuItem item) {
+        ShareUtils.shareMixedContent(DetailedActivity.this, post);
+        return true;
+      }
+    });
+    popup.show();
+  }
+
+  private void requestSingleFeed(String author, String permlink) {
+    dataStore.requestSingleFeed(author, permlink, new SinglePostCallback() {
+      @Override
+      public void onPostFetched(Feed feed) {
+        bindPostValues(feed);
+        showFeedLoading(false);
+      }
+
+      @Override
+      public void onPostFetchError(String err) {
+
+      }
+    });
+  }
+
+  private void renderMarkdown(String body) {
+    body = RegexUtils.getHtmlContent(body);
+    webView.setWebChromeClient(new WebChromeClient());
+    webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+    webView.getSettings().setJavaScriptEnabled(true);
+    webView.getSettings().setPluginState(WebSettings.PluginState.ON);
+    webView.setWebChromeClient(new WebChromeClient());
+    webView.getSettings().setAllowFileAccess(true);
+    webView.setWebViewClient(new WebViewClient() {
+      @Override
+      public boolean shouldOverrideUrlLoading(WebView view, String url) {
+        if (url != null) {
+          if (url.matches(Constants.URL_REGEX)) {
+            view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+            return true;
+          }
+        } else {
+          return true;
+        }
+        return true;
+      }
+    });
+    webView.getSettings().setLoadWithOverviewMode(true);
+    webView.loadDataWithBaseURL("file:///android_asset/",
+      "<link rel=\"stylesheet\" type=\"text/css\" href=\"md_theme.css\" />" + body,
+      "text/html; charset=utf-8",
+      "utf-8",
+      null);
+  }
+
+  @Override
+  public void onCommentCreateProcessing() {
+  }
+
+  @Override
+  public void onCommentCreated() {
+    hideProgress();
+    requestReplies();
+  }
+
+  private void requestReplies() {
+    dataStore.requestComments(this.post.getAuthor(), this.post.getPermlink(), this);
+  }
+
+  @Override
+  public void onCommentCreateFailed() {
+    hideProgress();
+  }
+
+  private void hideProgress() {
+    if (progressDialog != null) {
+      progressDialog.dismiss();
+    }
+  }
+
+  private void setCommentCount(int count) {
+    if (commentCount != null) {
+      commentCount.setText(String.valueOf(count));
+    }
+  }
+
+  private void setTypefaces() {
+  }
+
+  private void attachListenersOnStarView() {
+    starView.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        if (ConnectionUtils.isConnected(DetailedActivity.this)) {
+          starView.onStarIndicatorTapped();
+        } else {
+          Toast.makeText(DetailedActivity.this, "Check Network Connection", Toast.LENGTH_LONG).show();
+        }
+      }
+    });
+
+    starView.setOnLongClickListener(new View.OnLongClickListener() {
+      @Override
+      public boolean onLongClick(View v) {
+        if (ConnectionUtils.isConnected(DetailedActivity.this)) {
+          starView.onStarIndicatorLongPressed();
+        } else {
+          Toast.makeText(DetailedActivity.this, "Check Network Connection", Toast.LENGTH_LONG).show();
+        }
+        return true;
+      }
+    });
+  }
+
+  private void performVoteOnSteem(final int vote) {
+    starView.voteProcessing();
+    new Handler().postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        starView.castedVoteTemporarily();
+      }
+    }, 500);
+    new Thread() {
+      @Override
+      public void run() {
+        steemConnect.vote(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
+          post.getAuthor(),
+          post.getPermlink(),
+          String.valueOf(vote), new SteemConnectCallback() {
+            @Override
+            public void onResponse(String s) {
+              mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                  updatePostFromBlockchain();
+                  castingVoteSuccess();
+                }
+              });
+            }
+
+            @Override
+            public void onError(SteemConnectException e) {
+              mHandler.post(steemCastingVoteExceptionRunnable);
+            }
+          });
+      }
+    }.start();
+  }
+
+  private void deleteVoteOnSteem() {
+    starView.voteProcessing();
+    new Handler().postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        starView.deletedVoteTemporarily();
+      }
+    }, 500);
+    new Thread() {
+      @Override
+      public void run() {
+        steemConnect.vote(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
+          post.getAuthor(),
+          post.getPermlink(),
+          String.valueOf(0), new SteemConnectCallback() {
+            @Override
+            public void onResponse(String s) {
+              mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                  updatePostFromBlockchain();
+                  voteDeleteSuccess();
+                }
+              });
+            }
+
+            @Override
+            public void onError(SteemConnectException e) {
+              mHandler.post(steemCancellingVoteExceptionRunnable);
+            }
+          });
+      }
+    }.start();
+  }
+
+  private void updatePostFromBlockchain() {
+    dataStore.requestSingleFeed(post.getAuthor(), post.getPermlink(), new SinglePostCallback() {
+      @Override
+      public void onPostFetched(Feed feed) {
+        if (feed != null) {
+          bindPostValues(feed);
+        }
+      }
+
+      @Override
+      public void onPostFetchError(String err) {
+      }
+    });
   }
 
   private void attachListener() {
@@ -300,242 +554,41 @@ public class DetailedActivity extends AppCompatActivity implements
         navigateToUserProfile();
       }
     });
+
+    votersPeekView.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        openVotersList();
+      }
+    });
+
+    commentInputBox.addTextChangedListener(new TextWatcher() {
+      @Override
+      public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+      }
+
+      @Override
+      public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        if (charSequence.toString().trim().length() > 0) {
+          sendButton.setTextColor(Color.parseColor("#ff6b95"));
+          sendButton.setEnabled(true);
+        } else {
+          sendButton.setTextColor(Color.parseColor("#8eff6b95"));
+          sendButton.setEnabled(false);
+        }
+      }
+
+      @Override
+      public void afterTextChanged(Editable editable) {
+
+      }
+    });
   }
 
-  private void navigateToUserProfile() {
-    Intent intent = new Intent(this, ProfileActivity.class);
-    intent.putExtra(Constants.EXTRAA_KEY_STEEM_USER_NAME, post.getAuthor());
+  private void openVotersList() {
+    Intent intent = new Intent(this, VotersListActivity.class);
+    intent.putParcelableArrayListExtra(VotersListActivity.EXTRA_VOTERS, post.getVoters());
     startActivity(intent);
-  }
-
-  private void showPopup() {
-    ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(this,
-      R.style.PopupMenuOverlapAnchor);
-    PopupMenu popup = new PopupMenu(contextThemeWrapper, overflowBtn);
-    popup.getMenuInflater().inflate(R.menu.popup_post, popup.getMenu());
-    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-      @Override
-      public boolean onMenuItemClick(MenuItem item) {
-        ShareUtils.shareMixedContent(DetailedActivity.this, post);
-        return true;
-      }
-    });
-    popup.show();
-  }
-
-  private void requestSingleFeed(String author, String permlink) {
-    dataStore.requestSingleFeed(author, permlink, new SinglePostCallback() {
-      @Override
-      public void onPostFetched(Feed feed) {
-        bindPostValues(feed);
-        showFeedLoading(false);
-      }
-
-      @Override
-      public void onPostFetchError(String err) {
-
-      }
-    });
-  }
-
-  private void requestReplies() {
-    dataStore.requestComments(this.post.getAuthor(), this.post.getPermlink(), this);
-  }
-
-  private void renderMarkdown(String body) {
-    body = RegexUtils.getHtmlContent(body);
-    webView.setWebChromeClient(new WebChromeClient());
-    webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-    webView.getSettings().setJavaScriptEnabled(true);
-    webView.getSettings().setPluginState(WebSettings.PluginState.ON);
-    webView.setWebChromeClient(new WebChromeClient());
-    webView.getSettings().setAllowFileAccess(true);
-    webView.setWebViewClient(new WebViewClient() {
-      @Override
-      public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        if (url != null) {
-          if (url.matches(Constants.URL_REGEX)) {
-            view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-            return true;
-          }
-        } else {
-          return true;
-        }
-        return true;
-      }
-    });
-    webView.getSettings().setLoadWithOverviewMode(true);
-    webView.loadDataWithBaseURL("file:///android_asset/",
-      "<link rel=\"stylesheet\" type=\"text/css\" href=\"md_theme.css\" />" + body,
-      "text/html; charset=utf-8",
-      "utf-8",
-      null);
-  }
-
-  @Override
-  public void onCommentCreateProcessing() {
-  }
-
-  private void setCommentCount(int count) {
-    if (commentCount != null) {
-      commentCount.setText(String.valueOf(count));
-    }
-  }
-
-  @Override
-  public void onCommentCreateFailed() {
-    hideProgress();
-  }
-
-  private void hideProgress() {
-    if (progressDialog != null) {
-      progressDialog.dismiss();
-    }
-  }
-
-  private void setTypefaces() {
-  }
-
-  private void addAllCommentsToView(List<CommentModel> discussions) {
-    commentsViewContainer.removeAllViews();
-    int commentCount = discussions.size();
-    if (commentCount == 0) {
-      emptyCommentsCaption.setText("No Comments");
-      emptyCommentsCaption.setVisibility(VISIBLE);
-    } else {
-      emptyCommentsCaption.setVisibility(View.GONE);
-    }
-    int range = commentCount > 3 ? 3 : discussions.size();
-    for (int i = 0; i < range; i++) {
-      addCommentToView(discussions.get(i), i);
-    }
-    if (commentCount > 3) {
-      moreCommentsCaption.setVisibility(VISIBLE);
-    }
-  }
-
-  private void attachListenersOnStarView() {
-    starView.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        if (ConnectionUtils.isConnected(DetailedActivity.this)) {
-          starView.onStarIndicatorTapped();
-        } else {
-          Toast.makeText(DetailedActivity.this, "Check Network Connection", Toast.LENGTH_LONG).show();
-        }
-      }
-    });
-
-    starView.setOnLongClickListener(new View.OnLongClickListener() {
-      @Override
-      public boolean onLongClick(View v) {
-        if (ConnectionUtils.isConnected(DetailedActivity.this)) {
-          starView.onStarIndicatorLongPressed();
-        } else {
-          Toast.makeText(DetailedActivity.this, "Check Network Connection", Toast.LENGTH_LONG).show();
-        }
-        return true;
-      }
-    });
-  }
-
-  private void bindVotes(List<Voter> votes, String permlink) {
-    long votePercentSum = VoteUtils.getVotePercentSum(votes);
-    boolean amIVoted = VoteUtils.checkForMyVote(votes);
-    long myVotePercent = amIVoted ? VoteUtils.getMyVotePercent(votes) : 0;
-    long totalVotes = VoteUtils.getNonZeroVoters(votes);
-    starView.setVoteState(
-      new StarView.Vote(
-        amIVoted,
-        permlink,
-        myVotePercent,
-        totalVotes,
-        votePercentSum))
-      .setOnVoteUpdateCallback(new StarView.onVoteUpdateCallback() {
-        @Override
-        public void onVoted(String full_permlink, int _vote) {
-          performVoteOnSteem(_vote);
-        }
-
-        @Override
-        public void onVoteDeleted(String full_permlink) {
-          deleteVoteOnSteem();
-        }
-
-        @Override
-        public void onVoteDescription(String msg) {
-
-        }
-      });
-  }
-
-  private void performVoteOnSteem(final int vote) {
-    starView.voteProcessing();
-    new Handler().postDelayed(new Runnable() {
-      @Override
-      public void run() {
-        starView.castedVoteTemporarily();
-      }
-    }, 500);
-    new Thread() {
-      @Override
-      public void run() {
-        steemConnect.vote(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
-          post.getAuthor(),
-          post.getPermlink(),
-          String.valueOf(vote), new SteemConnectCallback() {
-            @Override
-            public void onResponse(String s) {
-              mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                  castingVoteSuccess();
-                }
-              });
-            }
-
-            @Override
-            public void onError(SteemConnectException e) {
-              mHandler.post(steemCastingVoteExceptionRunnable);
-            }
-          });
-      }
-    }.start();
-  }
-
-  private void deleteVoteOnSteem() {
-    starView.voteProcessing();
-    new Handler().postDelayed(new Runnable() {
-      @Override
-      public void run() {
-        starView.deletedVoteTemporarily();
-      }
-    }, 500);
-    new Thread() {
-      @Override
-      public void run() {
-        steemConnect.vote(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
-          post.getAuthor(),
-          post.getPermlink(),
-          String.valueOf(0), new SteemConnectCallback() {
-            @Override
-            public void onResponse(String s) {
-              mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                  Log.d("Vote", "un voted!!");
-                  voteDeleteSuccess();
-                }
-              });
-            }
-
-            @Override
-            public void onError(SteemConnectException e) {
-              mHandler.post(steemCancellingVoteExceptionRunnable);
-            }
-          });
-      }
-    }.start();
   }
 
   private void castingVoteFailed() {
@@ -631,26 +684,11 @@ public class DetailedActivity extends AppCompatActivity implements
     }
   }
 
-  @Override
-  public void onCommentCreated() {
-    hideProgress();
-    requestReplies();
-  }
-
   private void navigateToCommentsPage() {
     Intent intent = new Intent(DetailedActivity.this, CommentsActivity.class);
     intent.putExtra(Constants.EXTRAA_KEY_POST_AUTHOR, post.getAuthor());
     intent.putExtra(Constants.EXTRAA_KEY_POST_PERMLINK, post.getPermlink());
     startActivity(intent);
-  }
-
-  private void addCommentToView(CommentModel comment, int index) {
-    CommentsItemView commentsItemView = new CommentsItemView(this);
-    commentsItemView.setComment(comment);
-    commentsViewContainer.addView(commentsItemView, index,
-      new ViewGroup.LayoutParams(
-        ViewGroup.LayoutParams.WRAP_CONTENT,
-        ViewGroup.LayoutParams.WRAP_CONTENT));
   }
 
   private void postComment() {
@@ -685,6 +723,49 @@ public class DetailedActivity extends AppCompatActivity implements
       commentLoadingProgressBar.setVisibility(View.GONE);
     }
     addAllCommentsToView(comments);
+  }
+
+  private void addAllCommentsToView(List<CommentModel> discussions) {
+    commentsViewContainer.removeAllViews();
+    int commentCount = discussions.size();
+    if (commentCount == 0) {
+      emptyCommentsCaption.setText("No Comments");
+      emptyCommentsCaption.setVisibility(VISIBLE);
+    } else {
+      emptyCommentsCaption.setVisibility(View.GONE);
+    }
+    int range = commentCount > 3 ? 3 : discussions.size();
+    for (int i = 0; i < range; i++) {
+      addCommentToView(discussions.get(i), i);
+    }
+    if (commentCount > 3) {
+      moreCommentsCaption.setVisibility(VISIBLE);
+    }
+  }
+
+  private void addCommentToView(CommentModel comment, final int index) {
+    CommentsItemView commentsItemView = new CommentsItemView(this);
+    commentsItemView.setCommenttActionListener(new CommentsItemView.CommentActionListener() {
+      @Override
+      public void onCommentDeleted() {
+        removeCommentAt(index);
+      }
+    });
+    commentsItemView.setComment(comment);
+    commentsViewContainer.addView(commentsItemView, index,
+      new ViewGroup.LayoutParams(
+        ViewGroup.LayoutParams.WRAP_CONTENT,
+        ViewGroup.LayoutParams.WRAP_CONTENT));
+  }
+
+  private void removeCommentAt(int index) {
+    try {
+      if (commentsViewContainer != null) {
+        commentsViewContainer.removeViewAt(index);
+      }
+    }
+    catch (Exception e) {
+    }
   }
 
   @Override

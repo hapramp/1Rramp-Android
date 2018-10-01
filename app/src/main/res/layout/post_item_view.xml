@@ -37,18 +37,17 @@
         android:layout_below="@+id/feed_owner_title"
         android:layout_toRightOf="@+id/feed_owner_pic" />
 
-    <TextView
+    <ImageView
+        android:alpha="0.6"
         android:id="@+id/popupMenuDots"
         android:layout_width="48dp"
         android:layout_height="64dp"
+        android:padding="16dp"
         android:layout_alignParentRight="true"
         android:background="?selectableItemBackgroundBorderless"
         android:clickable="true"
         android:focusable="true"
-        android:gravity="center"
-        android:text=""
-        android:textColor="@color/Black38"
-        android:textSize="24sp" />
+        android:src="@drawable/more" />
 
     <RelativeLayout
         android:id="@+id/image_container"

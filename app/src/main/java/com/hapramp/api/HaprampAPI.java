@@ -32,14 +32,8 @@ public interface HaprampAPI {
   @POST("login")
   Call<VerifiedToken> verifyUser(@Body VerificationDataBody verificationDataBody);
 
-  @GET("communities")
-  Call<List<CommunityModel>> getCommunities();
-
   @PUT("users/communities")
   Call<CommunitySelectionResponse> updateCommunitySelections(@Body CommunitySelectionServerUpdateBody body);
-
-  @GET
-  Call<FeedWrapper> getFeedFromSteem(@Url String url);
 
   @GET
   Call<YoutubeResultModel> getYoutubeResults(@Url String url);

@@ -42,8 +42,6 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchC
   ImageView backBtn;
   @BindView(R.id.searchInput)
   EditText usernameSearchInputField;
-  @BindView(R.id.searchBtn)
-  ImageView searchBtn;
   @BindView(R.id.action_bar_container)
   RelativeLayout actionBarContainer;
   @BindView(R.id.suggestionsListView)
@@ -87,6 +85,13 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchC
   }
 
   private void attachListener() {
+    usernameSearchInputField.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        usernameSearchInputField.setCursorVisible(true);
+      }
+    });
+
     usernameSearchInputField.addTextChangedListener(new TextWatcher() {
       @Override
       public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -99,23 +104,14 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchC
         if (searchTerm.length() > 0) {
           fetchSuggestions(searchTerm);
           setSearchMode();
+        } else {
+          hideKeyboardByDefault();
         }
       }
 
       @Override
       public void afterTextChanged(Editable s) {
 
-      }
-    });
-
-    searchBtn.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        String searchTerm = usernameSearchInputField.getText().toString();
-        if (searchTerm.length() >= 0) {
-          fetchSuggestions(searchTerm);
-          setSearchMode();
-        }
       }
     });
 
@@ -131,10 +127,6 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchC
     });
   }
 
-  private void hideKeyboardByDefault() {
-    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-  }
-
   private void fetchFollowingsAndCache() {
     FollowingsSyncUtils.syncFollowings(this);
   }
@@ -142,6 +134,12 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchC
   private void setupViewPager(ViewPager viewPager) {
     ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
     viewPager.setAdapter(adapter);
+  }
+
+  private void hideKeyboardByDefault() {
+    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    usernameSearchInputField.clearFocus();
+    usernameSearchInputField.setCursorVisible(false);
   }
 
   private void fetchSuggestions(String query) {
@@ -175,7 +173,7 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchC
     }
     //clear search view
     if (usernameSearchInputField != null) {
-      usernameSearchInputField.setText("");
+      usernameSearchInputField.clearComposingText();
     }
     //change cross icon to back
     if (backBtn != null) {

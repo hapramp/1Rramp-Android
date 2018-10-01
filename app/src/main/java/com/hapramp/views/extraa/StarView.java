@@ -1,12 +1,10 @@
 package com.hapramp.views.extraa;
 
-import android.animation.LayoutTransition;
 import android.content.Context;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -173,7 +171,7 @@ public class StarView extends FrameLayout {
   private String getRatingDescriptionWithAverage() {
     float voteSum = getVoteSumFromVotePercentSum(currentState.getTotalVotePercentSum());
     int _totalUser = (int) currentState.getTotalVotedUsers();
-    return _totalUser > 0 ? String.format(mContext.getResources().getString(R.string.star_info),
+    return _totalUser > 0 ? String.format("<font color=\"black\">%1$.1f star </font>from %2$d",
       ((voteSum) / _totalUser), _totalUser) : "";
   }
 

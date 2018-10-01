@@ -50,7 +50,7 @@ public class NotificationHandler {
           baseNotificationModel.setNotificationId(String.valueOf(System.currentTimeMillis()));
           FirebaseNotificationStore.saveNotification(baseNotificationModel);
           boolean isForeground = new ForegroundCheckTask().execute(HapRampMain.getContext()).get(2, TimeUnit.SECONDS);
-          if (!isForeground) {
+          if (!isForeground && HaprampPreferenceManager.getInstance().shouldShowPushNotifications()) {
             switch (baseNotificationModel.getType()) {
               case NotificationKey.NOTIFICATION_TYPE_FOLLOW:
 
@@ -142,7 +142,7 @@ public class NotificationHandler {
     String author = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
     String title = "Reblog";
     String content = reblogger + " rebloged your post";
-    PendingIntent pendingIntent = getPostNotificationPendingIntent(context,notificationId, author, permlink);
+    PendingIntent pendingIntent = getPostNotificationPendingIntent(context, notificationId, author, permlink);
     addNotificationToTray(HapRampMain.getContext(), pendingIntent, title, content);
   }
 
@@ -178,15 +178,15 @@ public class NotificationHandler {
 
   /**
    * @param notificationId
-   * @param sender user who sent the amount.
-   * @param memo   message attached with the transfer
-   * @param amount amount being transferred
+   * @param sender         user who sent the amount.
+   * @param memo           message attached with the transfer
+   * @param amount         amount being transferred
    */
   private static void showTransferDirectedNotification(String notificationId, String sender, String memo, String amount) {
     Context context = HapRampMain.getContext();
     String title = "Transfer";
     String content = sender + " sent you " + amount + "\n \"" + memo + "\"\n";
-    PendingIntent pendingIntent = getTransferPendingIntent(context,notificationId);
+    PendingIntent pendingIntent = getTransferPendingIntent(context, notificationId);
     addNotificationToTray(HapRampMain.getContext(), pendingIntent, title, content);
   }
 
@@ -238,7 +238,7 @@ public class NotificationHandler {
                                                                 String permlink) {
     Intent intent = new Intent(context, DetailedActivity.class);
     Bundle bundle = new Bundle();
-    bundle.putString(Constants.EXTRAA_KEY_NOTIFICATION_ID,notificationId);
+    bundle.putString(Constants.EXTRAA_KEY_NOTIFICATION_ID, notificationId);
     bundle.putString(Constants.EXTRAA_KEY_POST_AUTHOR, author);
     bundle.putString(Constants.EXTRAA_KEY_POST_PERMLINK, permlink);
     intent.putExtras(bundle);
@@ -252,7 +252,7 @@ public class NotificationHandler {
     Bundle bundle = new Bundle();
     String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
     bundle.putString(EXTRA_USERNAME, username);
-    bundle.putString(Constants.EXTRAA_KEY_NOTIFICATION_ID,notificationId);
+    bundle.putString(Constants.EXTRAA_KEY_NOTIFICATION_ID, notificationId);
     intent.putExtras(bundle);
     TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
     stackBuilder.addNextIntentWithParentStack(intent);

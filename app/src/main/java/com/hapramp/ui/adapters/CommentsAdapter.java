@@ -26,7 +26,8 @@ import butterknife.ButterKnife;
 
 public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
   public static final int VIEW_TYPE_COMMENT = 0;
-  public static final int VIEW_TYPE_PARENT = 1;
+  public static final int VIEW_TYPE_NESTED_COMMENT = 1;
+  public static final int VIEW_TYPE_PARENT_COMMENT = 2;
 
   private ArrayList<CommentModel> commentsList;
   private Context mContext;
@@ -53,30 +54,52 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     if (viewType == VIEW_TYPE_COMMENT) {
       v = new CommentsItemView(parent.getContext());
       return new CommentViewHolder(v);
-    } else if (viewType == VIEW_TYPE_PARENT) {
-      v = LayoutInflater.from(mContext).inflate(R.layout.parent_comment_view, parent, false);
-      return new ParentCommentViewHolder(v);
-    } else {
-      return null;
+    } else if (viewType == VIEW_TYPE_NESTED_COMMENT) {
+      v = LayoutInflater.from(mContext).inflate(R.layout.nested_comment_item_view, parent, false);
+      return new NestedCommentItemViewHolder(v);
+    } else if (viewType == VIEW_TYPE_PARENT_COMMENT) {
+      v = LayoutInflater.from(mContext).inflate(R.layout.parent_comment_item_view, parent, false);
+      return new ParentCommentItemViewHolder(v);
     }
+    return null;
   }
 
   @Override
-  public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-    if (holder instanceof ParentCommentViewHolder) {
-      ((ParentCommentViewHolder) holder).setData(parentAuthor, parentTimestamp, parentContent);
-    } else if (holder instanceof CommentViewHolder) {
-      ((CommentViewHolder) holder).bind(commentsList.get(position - (hasParent ? 1 : 0)));
+  public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+    if (holder instanceof CommentViewHolder) {
+      ((CommentViewHolder) holder).bind(commentsList.get(position), new CommentsItemView.CommentActionListener() {
+        @Override
+        public void onCommentDeleted() {
+          removeItemAt(position);
+        }
+      });
+    } else if (holder instanceof NestedCommentItemViewHolder) {
+      //if hasParent
+      final int p = position - (hasParent ? 1 : 0);
+      ((NestedCommentItemViewHolder) holder).bind(commentsList.get(p), new CommentsItemView.CommentActionListener() {
+        @Override
+        public void onCommentDeleted() {
+          removeItemAt(p);
+        }
+      });
+    } else if (holder instanceof ParentCommentItemViewHolder) {
+      //if hasParent
+      ((ParentCommentItemViewHolder) holder).bind(parentAuthor, parentContent, parentTimestamp);
     }
+  }
+
+  private void removeItemAt(int p) {
+    commentsList.remove(p);
+    notifyItemRemoved(p);
   }
 
   @Override
   public int getItemViewType(int position) {
     if (hasParent) {
       if (position == 0) {
-        return VIEW_TYPE_PARENT;
+        return VIEW_TYPE_PARENT_COMMENT;
       } else {
-        return VIEW_TYPE_COMMENT;
+        return VIEW_TYPE_NESTED_COMMENT;
       }
     } else {
       return VIEW_TYPE_COMMENT;
@@ -112,34 +135,50 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       super(itemView);
     }
 
-    public void bind(CommentModel comment) {
+    public void bind(CommentModel comment, CommentsItemView.CommentActionListener commentActionListener) {
       ((CommentsItemView) itemView).setComment(comment);
+      ((CommentsItemView) itemView).setCommenttActionListener(commentActionListener);
     }
   }
 
-  class ParentCommentViewHolder extends RecyclerView.ViewHolder {
+  class NestedCommentItemViewHolder extends RecyclerView.ViewHolder {
+    @BindView(R.id.comment_item)
+    CommentsItemView commentsItemView;
+
+    public NestedCommentItemViewHolder(View itemView) {
+      super(itemView);
+      ButterKnife.bind(this, itemView);
+    }
+
+    public void bind(CommentModel commentModel, CommentsItemView.CommentActionListener commentActionListener) {
+      commentsItemView.setComment(commentModel);
+      commentsItemView.setCommenttActionListener(commentActionListener);
+    }
+  }
+
+  class ParentCommentItemViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.comment_owner_pic)
     ImageView commentOwnerPic;
     @BindView(R.id.comment_owner_username)
     TextView commentOwnerUsername;
     @BindView(R.id.timestamp)
-    TextView timestamp;
+    TextView timestampTv;
     @BindView(R.id.comment_content)
     TextView commentContent;
 
-    public ParentCommentViewHolder(View itemView) {
+    public ParentCommentItemViewHolder(View itemView) {
       super(itemView);
       ButterKnife.bind(this, itemView);
     }
 
-    public void setData(String author, String createdAt, String content) {
+    public void bind(String author, String body, String timestamp) {
       ImageHandler.loadCircularImage(mContext
         , commentOwnerPic,
         String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format),
           author));
+      timestampTv.setText(MomentsUtils.getFormattedTime(timestamp));
       commentOwnerUsername.setText(author);
-      timestamp.setText(MomentsUtils.getFormattedTime(createdAt));
-      commentContent.setText(content);
+      commentContent.setText(body);
     }
   }
 }

@@ -123,22 +123,46 @@
                 android:textColor="@color/colorAccent"
                 android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/shareBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <RelativeLayout
                 android:layout_marginLeft="16dp"
+                android:layout_marginRight="12dp"
                 android:layout_marginTop="24dp"
-                android:background="@drawable/filled_btn_bg"
-                android:paddingBottom="6dp"
-                android:paddingEnd="16dp"
-                android:paddingStart="16dp"
-                android:paddingTop="6dp"
-                android:text="Share"
-                android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
+                <TextView
+                    android:id="@+id/rating_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="4dp"
+                    android:layout_toLeftOf="@+id/voters_peek_view"
+                    android:textColor="@color/Black54" />
 
+                <com.hapramp.views.VoterPeekView
+                    android:id="@+id/voters_peek_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:clickable="true" />
+
+                <TextView
+                    android:id="@+id/shareBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/filled_btn_bg"
+                    android:paddingBottom="6dp"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingTop="6dp"
+                    android:layout_centerVertical="true"
+                    android:text="Share"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+            </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/mockCommentParentView"
                 android:layout_width="match_parent"
@@ -191,11 +215,11 @@
                         android:clickable="true"
                         android:gravity="center"
                         android:text="Send"
-                        android:alpha="0.6"
+                        android:enabled="false"
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp"
                         android:textStyle="bold"
-                        android:textColor="@color/pink"
+                        android:textColor="@color/pale_pink"
                         android:textSize="14sp" />
 
                 </RelativeLayout>
