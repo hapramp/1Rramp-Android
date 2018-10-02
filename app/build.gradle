@@ -38,7 +38,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 27
         versionCode 51
-        versionName "0.0.15"
+        versionName "0.0.16"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -83,7 +83,6 @@ dependencies {
     implementation 'com.github.bxute:CryptoCoinView:v0.6'
     implementation 'com.github.bxute:MarkDEditor:v0.10'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation project(':youtube_player')
     implementation project(':lib')
 }
 

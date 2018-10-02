@@ -97,9 +97,6 @@
             android:name=".ui.activity.UserSearchActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".youtube.YoutubeVideoSelectorActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ui.activity.OnBoardingActivity"
             android:screenOrientation="portrait" />
         <activity

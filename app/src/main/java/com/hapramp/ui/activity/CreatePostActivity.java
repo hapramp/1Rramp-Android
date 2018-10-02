@@ -325,7 +325,7 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
       handleImageResult(data);
     }
 
-    if (requestCode == REQUEST_CAPTURE_IMAGE) {
+    if (requestCode == REQUEST_CAPTURE_IMAGE && resultCode == RESULT_OK) {
       addImage(cameraImageFilePath);
     }
   }

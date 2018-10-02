@@ -90,7 +90,7 @@
                     android:layout_below="@+id/image_selector"
                     android:layout_centerHorizontal="true"
                     android:padding="8dp"
-                    android:text="Select Image"
+                    android:text="Gallery"
                     android:textColor="@color/Black54"
                     android:textSize="16sp" />
 
