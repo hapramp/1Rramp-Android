@@ -6,4 +6,10 @@
         <attr name="wantBottomSpaceOffset" format="boolean" />
         <attr name="bottomOffset" format="integer" />
     </declare-styleable>
+
+    <declare-styleable name="CustomProgressBar">
+        <attr name="primaryColor" format="string"/>
+        <attr name="secondaryColor" format="string"/>
+        <attr name="progressHeight" format="integer"/>
+    </declare-styleable>
 </resources>

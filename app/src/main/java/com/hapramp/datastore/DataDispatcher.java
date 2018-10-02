@@ -44,7 +44,7 @@ public class DataDispatcher {
     jsonParser = new JSONParser();
   }
 
-  void dispatchAllCommunity(String response,final boolean isFresh,final CommunitiesCallback communitiesCallback){
+  void dispatchAllCommunity(String response, final boolean isFresh, final CommunitiesCallback communitiesCallback) {
     final List<CommunityModel> communities = jsonParser.parseAllCommunity(response);
     if (communitiesCallback != null) {
       handler.post(new Runnable() {
@@ -95,6 +95,7 @@ public class DataDispatcher {
       });
     }
   }
+
   void dispatchUserFeeds(String response, final boolean isFreshData, final boolean isAppendable,
                          final UserFeedCallback userFeedCallback) {
     final List<Feed> feeds = jsonParser.parseUserFeed(response);
@@ -120,6 +121,7 @@ public class DataDispatcher {
       });
     }
   }
+
   void dispatchUserFeedsError(final String message, final UserFeedCallback userFeedCallback) {
     if (userFeedCallback != null) {
       handler.post(new Runnable() {
@@ -205,7 +207,7 @@ public class DataDispatcher {
     }
   }
 
-  void dispatchUserSearchError(final String error, final UserSearchCallback userSearchCallback){
+  void dispatchUserSearchError(final String error, final UserSearchCallback userSearchCallback) {
     if (userSearchCallback != null) {
       handler.post(
         new Runnable() {

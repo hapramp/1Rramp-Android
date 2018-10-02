@@ -1,14 +1,13 @@
 package com.hapramp.datastore;
 
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
 import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.datastore.callbacks.FollowersCallback;
 import com.hapramp.datastore.callbacks.FollowingsCallback;
+import com.hapramp.datastore.callbacks.ResourceCreditCallback;
 import com.hapramp.datastore.callbacks.RewardFundMedianPriceCallback;
 import com.hapramp.datastore.callbacks.SinglePostCallback;
 import com.hapramp.datastore.callbacks.TransferHistoryCallback;
@@ -93,6 +92,28 @@ public class DataStore extends DataDispatcher {
     }.start();
   }
 
+  public static void requestSyncLastPostCreationTime() {
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          String url = URLS.userProfileUrl(
+            HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
+          Response globalPropsResponse = NetworkApi.getNetworkApiInstance().fetch(url);
+          String responseString = globalPropsResponse.body().string();
+          JSONObject jsonObject = new JSONObject(responseString);
+          String lastPost = jsonObject
+            .getJSONObject("user")
+            .getString("last_root_post");
+          HaprampPreferenceManager.getInstance().setLastPostCreatedAt(lastPost);
+        }
+        catch (Exception e) {
+
+        }
+      }
+    }.start();
+  }
+
   /**
    * @param username            communities for username
    * @param communitiesCallback callback
@@ -132,14 +153,6 @@ public class DataStore extends DataDispatcher {
   }
 
   /**
-   * @param requestTag check whether requestTag is currentRequestTag or not.
-   * @return true when given request tag in still the live request.
-   */
-  private boolean isFeedRequestLive(String requestTag) {
-    return this.currentFeedRequestTag.equals(requestTag);
-  }
-
-  /**
    * @param username         feed of username
    * @param refresh          Whether want to refresh data after fetched from network.
    *                         This has significant effect when user manually refresh the data
@@ -168,7 +181,7 @@ public class DataStore extends DataDispatcher {
             String res = response.body().string();
             DataCache.cache(url, res);
             if (isFeedRequestLive(rtag)) {
-                dispatchUserFeeds(res, true, false, userFeedCallback);
+              dispatchUserFeeds(res, true, false, userFeedCallback);
             }
           } else {
             dispatchUserFeedsError("Error Code:" + response.code(), userFeedCallback);
@@ -179,6 +192,14 @@ public class DataStore extends DataDispatcher {
         }
       }
     }.start();
+  }
+
+  /**
+   * @param requestTag check whether requestTag is currentRequestTag or not.
+   * @return true when given request tag in still the live request.
+   */
+  private boolean isFeedRequestLive(String requestTag) {
+    return this.currentFeedRequestTag.equals(requestTag);
   }
 
   /**
@@ -421,7 +442,6 @@ public class DataStore extends DataDispatcher {
     }.start();
   }
 
-
   /**
    * @param username           follow info of username
    * @param followInfoCallback callback
@@ -502,7 +522,7 @@ public class DataStore extends DataDispatcher {
           if (response.isSuccessful()) {
             String res = response.body().string();
             DataCache.cache(url, res);
-            dispatchTransferHistory(res,username, transferHistoryCallback);
+            dispatchTransferHistory(res, username, transferHistoryCallback);
           } else {
             dispatchTransferHistoryError("Error Code:" + response.code(), transferHistoryCallback);
           }
@@ -588,28 +608,6 @@ public class DataStore extends DataDispatcher {
     }.start();
   }
 
-  public static void requestSyncLastPostCreationTime() {
-    new Thread() {
-      @Override
-      public void run() {
-        try {
-          String url = URLS.userProfileUrl(
-            HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
-          Response globalPropsResponse = NetworkApi.getNetworkApiInstance().fetch(url);
-          String responseString = globalPropsResponse.body().string();
-          JSONObject jsonObject = new JSONObject(responseString);
-          String lastPost = jsonObject
-            .getJSONObject("user")
-            .getString("last_root_post");
-          HaprampPreferenceManager.getInstance().setLastPostCreatedAt(lastPost);
-        }
-        catch (Exception e) {
-
-        }
-      }
-    }.start();
-  }
-
   /**
    * @param username          fetch followers of @username
    * @param startFromUser     start offset for followers
@@ -641,8 +639,8 @@ public class DataStore extends DataDispatcher {
   }
 
   /**
-   * @param username          fetch followings of @username
-   * @param startFromUser     start offset for followers
+   * @param username           fetch followings of @username
+   * @param startFromUser      start offset for followers
    * @param followingsCallback callback
    */
   public void requestFollowings(final String username,
@@ -730,7 +728,7 @@ public class DataStore extends DataDispatcher {
   }
 
   public void requestUserAccounts(final String[] users,
-                                  final UserVestedShareCallback vestedShareCallback){
+                                  final UserVestedShareCallback vestedShareCallback) {
     new Thread() {
       @Override
       public void run() {
@@ -741,7 +739,7 @@ public class DataStore extends DataDispatcher {
             globalProps);
           if (vestedShareResponse.isSuccessful()) {
             String vestedResponseJson = vestedShareResponse.body().string();
-            dispatchVestedShareData(vestedResponseJson,vestedShareCallback);
+            dispatchVestedShareData(vestedResponseJson, vestedShareCallback);
           }
         }
         catch (Exception e) {
@@ -758,7 +756,6 @@ public class DataStore extends DataDispatcher {
         try {
           String steemUrl = URLS.steemUrl();
           String requestBody = SteemRequestBody.getSinglePostBody(author, permlink);
-          Log.d("DataStore", "Url " + steemUrl + " request body " + requestBody);
           Response singlePostResponse = NetworkApi.getNetworkApiInstance().postAndFetch(steemUrl, requestBody);
           if (singlePostResponse.isSuccessful()) {
             String vestedResponseJson = singlePostResponse.body().string();
@@ -773,5 +770,6 @@ public class DataStore extends DataDispatcher {
       }
     }.start();
   }
+
 }
 

@@ -4,12 +4,14 @@ import android.util.Log;
 
 import com.hapramp.models.CommentModel;
 import com.hapramp.models.CommunityModel;
+import com.hapramp.models.ResourceCreditModel;
 import com.hapramp.models.VestedShareModel;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.User;
 import com.hapramp.steem.models.Voter;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.MarkdownPreProcessor;
+import com.hapramp.utils.MomentsUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -103,7 +105,7 @@ public class JSONParser {
       String title = rootObject.getString("title");
       //body
       String body = rootObject.getString("body");
-      body = body.replace(Constants.FOOTER_TEXT,"");
+      body = body.replace(Constants.FOOTER_TEXT, "");
       //featured image
       String featureImageUrl = extractFeatureImageUrl(jsonMetaDataObj, body);
       //format
@@ -168,16 +170,6 @@ public class JSONParser {
     return feed;
   }
 
-  private ArrayList<Voter> extractActiveVoters(ArrayList<Voter> voters) {
-    ArrayList<Voter> av = new ArrayList<>();
-    for (int i = 0; i < voters.size(); i++) {
-      if (voters.get(i).getPercent() > 0) {
-        av.add(voters.get(i));
-      }
-    }
-    return av;
-  }
-
   private JSONObject getJsonMetaDataObject(JSONObject jsonObject) throws JSONException {
     if (jsonObject.get("json_metadata") instanceof JSONObject) {
       return jsonObject.getJSONObject("json_metadata");
@@ -189,21 +181,6 @@ public class JSONParser {
         return new JSONObject();
       }
     }
-  }
-
-  public ArrayList<Feed> parseSteemFeed(String response) {
-    ArrayList<Feed> feeds = new ArrayList<>();
-    try {
-      JSONObject ro = new JSONObject(response);
-      JSONArray feedsArray = ro.getJSONArray("result");
-      for (int i = 0; i < feedsArray.length(); i++) {
-        feeds.add(parseCoreFeedData((JSONObject) feedsArray.get(i)));
-      }
-    }
-    catch (JSONException e) {
-      e.printStackTrace();
-    }
-    return feeds;
   }
 
   private String extractFeatureImageUrl(JSONObject json_metadata, String body) throws JSONException {
@@ -267,8 +244,33 @@ public class JSONParser {
     return voters;
   }
 
+  private ArrayList<Voter> extractActiveVoters(ArrayList<Voter> voters) {
+    ArrayList<Voter> av = new ArrayList<>();
+    for (int i = 0; i < voters.size(); i++) {
+      if (voters.get(i).getPercent() > 0) {
+        av.add(voters.get(i));
+      }
+    }
+    return av;
+  }
+
   private String getCleanedBody(String dirtyBody) {
     return markdownPreProcessor.getCleanContent(dirtyBody);
+  }
+
+  public ArrayList<Feed> parseSteemFeed(String response) {
+    ArrayList<Feed> feeds = new ArrayList<>();
+    try {
+      JSONObject ro = new JSONObject(response);
+      JSONArray feedsArray = ro.getJSONArray("result");
+      for (int i = 0; i < feedsArray.length(); i++) {
+        feeds.add(parseCoreFeedData((JSONObject) feedsArray.get(i)));
+      }
+    }
+    catch (JSONException e) {
+      e.printStackTrace();
+    }
+    return feeds;
   }
 
   public ArrayList<Feed> parseCuratedFeed(String response) {
@@ -290,19 +292,6 @@ public class JSONParser {
     try {
       JSONObject root = new JSONObject(userJson);
       JSONObject userObj = root.getJSONObject("user");
-      user = parseCoreUserJson(userObj);
-    }
-    catch (JSONException e) {
-      e.printStackTrace();
-    }
-    return user;
-  }
-
-  public User parseSC2UserJson(String response){
-    User user = new User();
-    try {
-      JSONObject root = new JSONObject(response);
-      JSONObject userObj = root.getJSONObject("account");
       user = parseCoreUserJson(userObj);
     }
     catch (JSONException e) {
@@ -348,6 +337,19 @@ public class JSONParser {
       user.setDelegated_vesting_shares(userObj.getString("delegated_vesting_shares"));
       user.setBalance(userObj.getString("balance"));
       user.setVesting_share(userObj.getString("vesting_shares"));
+    }
+    catch (JSONException e) {
+      e.printStackTrace();
+    }
+    return user;
+  }
+
+  public User parseSC2UserJson(String response) {
+    User user = new User();
+    try {
+      JSONObject root = new JSONObject(response);
+      JSONObject userObj = root.getJSONObject("account");
+      user = parseCoreUserJson(userObj);
     }
     catch (JSONException e) {
       e.printStackTrace();

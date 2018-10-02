@@ -44,14 +44,18 @@ public class NotificationActivity extends AppCompatActivity {
   ProgressBar progressBar;
   @BindView(R.id.listView)
   RecyclerView recyclerView;
+  @BindView(R.id.markAsReadBtn)
+  TextView markAsReadBtn;
   private Handler mHandler;
   private NotificationAdapter notificationAdapter;
+  private ArrayList<BaseNotificationModel> mNotifications;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_notification);
     ButterKnife.bind(this);
+    mNotifications = new ArrayList<>();
     DividerItemDecoration itemDecor = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
     Drawable drawable = getResources().getDrawable(R.drawable.notification_divider);
     itemDecor.setDrawable(drawable);
@@ -101,7 +105,11 @@ public class NotificationActivity extends AppCompatActivity {
       BaseNotificationModel baseNotificationModel = NotificationParser.parseNotification(map);
       if (baseNotificationModel != null) {
         baseNotificationModel.setNotificationId(entry.getKey());
-        baseNotificationModel.setRead((Boolean) map.get(NODE_IS_READ));
+        boolean isRead = (Boolean) map.get(NODE_IS_READ);
+        if(!isRead){
+          enableReadMarkButton();
+        }
+        baseNotificationModel.setRead(isRead);
         notifications.add(0, baseNotificationModel);
       }
     }
@@ -111,12 +119,45 @@ public class NotificationActivity extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
         NotificationSortUtils.sortNotification(notifications);
         Collections.reverse(notifications);
+        mNotifications = notifications;
         notificationAdapter.setNotificationModels(notifications);
       } else {
         recyclerView.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
         noNotificationMessage.setVisibility(View.VISIBLE);
+        disableReadMarkButton();
       }
     }
+  }
+
+  private void enableReadMarkButton() {
+    try {
+      markAsReadBtn.setVisibility(View.VISIBLE);
+      markAsReadBtn.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          markAllAsRead();
+        }
+      });
+    }
+    catch (Exception e) {
+
+    }
+  }
+
+  private void disableReadMarkButton() {
+    try {
+      markAsReadBtn.setVisibility(View.GONE);
+    }
+    catch (Exception e) {
+
+    }
+  }
+
+  private void markAllAsRead() {
+    for (int i = 0; i < mNotifications.size(); i++) {
+      FirebaseNotificationStore.markAsRead(mNotifications.get(i).getNotificationId());
+    }
+    disableReadMarkButton();
   }
 }
