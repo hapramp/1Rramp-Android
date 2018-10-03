@@ -1,12 +1,13 @@
 # 1Ramp Android App [![Build Status](https://travis-ci.org/hapramp/1Rramp-Android.svg?branch=master)](https://travis-ci.org/hapramp/1Rramp-Android) [![Discord](https://img.shields.io/discord/456730715598618624.svg)](https://discord.gg/r9vwcHe)
 [<img src="https://user-images.githubusercontent.com/10809719/45163411-05b78680-b20e-11e8-9891-f0b8b6fcf23b.png" height="62px" width="161px"/>](https://play.google.com/store/apps/details?id=com.hapramp)
 
-![header](https://user-images.githubusercontent.com/10809719/46407786-a6c23000-c72d-11e8-841a-d5ffea056c50.png)
+![header](https://user-images.githubusercontent.com/10809719/46408112-a7a79180-c72e-11e8-8232-0b972ea4195c.png)
 
 1Ramp is a Steem Blockchain based social media for the creative communities. This is the Android application for users to use the platform.
 
-![screenshot_1](https://user-images.githubusercontent.com/10809719/46407787-a7f35d00-c72d-11e8-9448-0c1f2b9564a0.png)
-![screenshot_2](https://user-images.githubusercontent.com/10809719/46407788-a88bf380-c72d-11e8-88fe-a029eb38d0e3.png)
+![screenshot_1](https://user-images.githubusercontent.com/10809719/46408113-a7a79180-c72e-11e8-8d2f-ac6771e5211d.png)
+![screenshot_2](https://user-images.githubusercontent.com/10809719/46408114-a8402800-c72e-11e8-8b51-1ac3730bdb2d.png)
+
 
 
 ### If you are a User.
