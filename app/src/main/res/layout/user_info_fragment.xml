@@ -185,7 +185,7 @@
                     android:clickable="true"
                     android:gravity="center"
                     android:padding="16dp"
-                    android:text="0 Followings"
+                    android:text="0 Following"
                     android:textColor="@color/Black38"
                     android:textStyle="bold" />
 

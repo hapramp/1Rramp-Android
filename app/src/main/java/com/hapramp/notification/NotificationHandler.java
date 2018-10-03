@@ -141,7 +141,7 @@ public class NotificationHandler {
     //you are the author of the post
     String author = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
     String title = "Reblog";
-    String content = reblogger + " rebloged your post";
+    String content = reblogger + " shared your post";
     PendingIntent pendingIntent = getPostNotificationPendingIntent(context, notificationId, author, permlink);
     addNotificationToTray(HapRampMain.getContext(), pendingIntent, title, content);
   }
@@ -185,7 +185,7 @@ public class NotificationHandler {
   private static void showTransferDirectedNotification(String notificationId, String sender, String memo, String amount) {
     Context context = HapRampMain.getContext();
     String title = "Transfer";
-    String content = sender + " sent you " + amount + "\n \"" + memo + "\"\n";
+    String content = sender + " sent you " + amount + "\n\"" + memo + "\"\n";
     PendingIntent pendingIntent = getTransferPendingIntent(context, notificationId);
     addNotificationToTray(HapRampMain.getContext(), pendingIntent, title, content);
   }
@@ -200,7 +200,7 @@ public class NotificationHandler {
     //you are the author of the post
     String author = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
     String title = "Mention";
-    String content = mentioner + " Mentioned you in a post";
+    String content = mentioner + " mentioned you in a post";
     PendingIntent pendingIntent = getPostNotificationPendingIntent(context, notificationId, author, permlink);
     addNotificationToTray(HapRampMain.getContext(), pendingIntent, title, content);
   }
