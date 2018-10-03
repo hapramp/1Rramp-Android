@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hapramp">
+
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -17,6 +22,18 @@
         android:roundIcon="@mipmap/hapramp_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.hapramp.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths">
+            </meta-data>
+        </provider>
+
         <service android:name=".analytics.HaprampInstanceIdService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
@@ -46,8 +63,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.DetailedActivity"
-            android:screenOrientation="portrait"
             android:parentActivityName=".ui.activity.HomeActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.activity.CreatePostActivity"
@@ -78,9 +95,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.UserSearchActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".youtube.YoutubeVideoSelectorActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.OnBoardingActivity"

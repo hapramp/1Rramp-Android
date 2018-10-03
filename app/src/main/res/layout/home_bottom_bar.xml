@@ -40,7 +40,7 @@
             android:background="?selectableItemBackgroundBorderless"
             android:gravity="center_horizontal"
             android:padding="14dp"
-            android:src="@drawable/wallet_icon"
+            android:src="@drawable/competition"
             android:text=""
             android:textColor="#818080" />
 

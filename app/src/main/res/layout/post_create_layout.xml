@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/reference_line"
-            android:layout_toEndOf="@+id/feed_owner_pic"
+            android:layout_toRightOf="@+id/feed_owner_pic"
             android:text="Username"
             android:textColor="@color/Black87"
             android:textStyle="bold" />
@@ -40,8 +40,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/reference_line"
-            android:layout_toEndOf="@+id/feed_owner_title"
-            android:paddingStart="4sp"
+            android:layout_toRightOf="@+id/feed_owner_title"
+            android:paddingLeft="4sp"
             android:text="| Just Now"
             android:textColor="@color/Black54" />
 
@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/reference_line"
-            android:layout_toEndOf="@+id/feed_owner_pic" />
+            android:layout_toRightOf="@+id/feed_owner_pic" />
 
 
     </RelativeLayout>
@@ -81,8 +81,8 @@
                     android:layout_centerInParent="true"
                     android:background="?selectableItemBackgroundBorderless"
                     android:clickable="true"
-                    android:padding="16dp"
-                    android:src="@drawable/post_image_insert" />
+                    android:padding="20dp"
+                    android:src="@drawable/image_icon" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -90,7 +90,7 @@
                     android:layout_below="@+id/image_selector"
                     android:layout_centerHorizontal="true"
                     android:padding="8dp"
-                    android:text="Select Image"
+                    android:text="Gallery"
                     android:textColor="@color/Black54"
                     android:textSize="16sp" />
 
@@ -110,22 +110,22 @@
                 android:layout_weight="1">
 
                 <ImageView
-                    android:id="@+id/video_selector"
+                    android:id="@+id/camera_capture"
                     android:layout_width="96dp"
                     android:layout_height="96dp"
                     android:layout_centerInParent="true"
                     android:background="?selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:padding="16dp"
-                    android:src="@drawable/post_youtube_insert" />
+                    android:src="@drawable/camera_icon" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/video_selector"
+                    android:layout_below="@+id/camera_capture"
                     android:layout_centerHorizontal="true"
                     android:padding="8dp"
-                    android:text="Select Youtube Video"
+                    android:text="Camera"
                     android:textColor="@color/Black54"
                     android:textSize="16sp" />
 
@@ -165,13 +165,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/remove_video_bg"
                 android:clickable="true"
                 android:paddingBottom="4dp"
-                android:paddingEnd="8dp"
-                android:paddingStart="8dp"
+                android:paddingRight="8dp"
+                android:paddingLeft="8dp"
                 android:paddingTop="4dp"
                 android:text="Remove"
                 android:textColor="#ffffff"
@@ -220,8 +220,8 @@
                 android:id="@+id/inline_category_caption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:text="SELECT COMMUNITY"
                 android:textColor="@color/colorAccent"

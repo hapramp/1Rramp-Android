@@ -7,6 +7,8 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
+import xute.markdeditor.MarkDEditor;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -89,5 +91,12 @@ public class CommunitiesUnitTest {
     System.out.println(HashTagUtils.reformatHashTag(tag4));
     assertEquals("cruelday",HashTagUtils.reformatHashTag(tag4));
 
+  }
+
+  @Test
+  public void tf(){
+    String n = "15.54%";
+    int a = Math.round(Float.valueOf(n.replace("%","")));
+    System.out.println(a);
   }
 }

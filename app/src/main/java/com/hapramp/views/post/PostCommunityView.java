@@ -63,21 +63,9 @@ public class PostCommunityView extends FrameLayout {
     return selectedTags;
   }
 
-  public void setSelectionAt(int index, boolean isSelected) {
-    CategoryTextView categoryTextView = (CategoryTextView) rootView.getChildAt(index);
-    if (isSelected) {
-      categoryTextView.setSelected(true);
-      selectedTags.add((String) categoryTextView.getTag());
-    } else {
-      categoryTextView.setSelected(false);
-      selectedTags.remove(index);
-    }
-  }
-
   public void initCategory() {
     CommunityListWrapper cr = new Gson().fromJson(HaprampPreferenceManager.getInstance().getAllCommunityAsJson(), CommunityListWrapper.class);
     communities = cr.getCommunityModels();
-    Log.d("PostCommunityView","init post category view");
     addViews();
   }
 
@@ -89,7 +77,6 @@ public class PostCommunityView extends FrameLayout {
       view.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {
-
           int index = selectedTags.indexOf(view.getTag());
           if (index == -1) {
             // select it
@@ -97,7 +84,7 @@ public class PostCommunityView extends FrameLayout {
               Toast.makeText(mContext, "Maximum 3 Communities", Toast.LENGTH_LONG).show();
             } else {
               view.setSelected(true);
-              selectedTags.add((String) view.getTag());
+              selectedTags.add(0, (String) view.getTag());
             }
           } else {
             view.setSelected(false);
@@ -115,7 +102,6 @@ public class PostCommunityView extends FrameLayout {
           ViewGroup.LayoutParams.WRAP_CONTENT,
           ViewGroup.LayoutParams.WRAP_CONTENT));
     }
-
   }
 
   public void setCommunitySelectionChangeListener(CommunitySelectionChangeListener communitySelectionChangeListener) {
@@ -125,5 +111,4 @@ public class PostCommunityView extends FrameLayout {
   public interface CommunitySelectionChangeListener {
     void onCommunitySelectionChanged(List<String> communities);
   }
-
 }

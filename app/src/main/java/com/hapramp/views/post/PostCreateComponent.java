@@ -22,7 +22,6 @@ import com.hapramp.R;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
-import com.hapramp.utils.Constants;
 import com.hapramp.utils.HashTagUtils;
 import com.hapramp.utils.ImageHandler;
 
@@ -58,8 +57,8 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
   ImageView imageSelector;
   @BindView(R.id.central_divider)
   FrameLayout centralDivider;
-  @BindView(R.id.video_selector)
-  ImageView videoSelector;
+  @BindView(R.id.camera_capture)
+  ImageView cameraCapture;
   @BindView(R.id.placeholder)
   LinearLayout placeholder;
   @BindView(R.id.postImageView)
@@ -71,7 +70,7 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
   @BindView(R.id.btn_remove)
   TextView btnRemove;
   @BindView(R.id.youtube_item_container)
-  RelativeLayout youtubeItemContainer;
+  RelativeLayout cameraItemContainer;
   @BindView(R.id.content)
   EditText content;
   @BindView(R.id.inline_category_caption)
@@ -85,7 +84,6 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
   @BindView(R.id.hashtags_container)
   RelativeLayout hashtagsContainer;
   private Context mContext;
-  private String youtubeId = null;
   private boolean mediaSelected = false;
   private MediaSelectorListener mediaSelectorListener;
   private String defaultText;
@@ -122,9 +120,8 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
     btnRemove.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        youtubeId = null;
         mediaSelected = false;
-        youtubeItemContainer.setVisibility(GONE);
+        cameraItemContainer.setVisibility(GONE);
         placeholder.setVisibility(VISIBLE);
       }
     });
@@ -138,11 +135,11 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
       }
     });
 
-    videoSelector.setOnClickListener(new OnClickListener() {
+    cameraCapture.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View view) {
         if (mediaSelectorListener != null) {
-          mediaSelectorListener.onYoutubeVideoOptionSelected();
+          mediaSelectorListener.onCameraImageSelected();
         }
       }
     });
@@ -186,25 +183,11 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
     init(context);
   }
 
-  public void setYoutubeThumbnail(String videoId) {
-    youtubeItemContainer.setVisibility(VISIBLE);
-    placeholder.setVisibility(GONE);
-    this.youtubeId = videoId;
-    mediaSelected = true;
-    postImageView.scaleAndHideMainView();
-    ImageHandler.load(mContext, youtubeThumbnailIv, getYoutubeThumbnailUrl(videoId));
-  }
-
-  private String getYoutubeThumbnailUrl(String videoKey) {
-    return String.format("https://i.ytimg.com/vi/%s/hqdefault.jpg", videoKey);
-  }
-
   public void setImageResource(String filePath) {
     placeholder.setVisibility(GONE);
     mediaSelected = true;
     postImageView.setImageSource(filePath);
-    youtubeId = null;
-    youtubeItemContainer.setVisibility(GONE);
+    cameraItemContainer.setVisibility(GONE);
   }
 
   public List<String> getSelectedCommunityTags() {
@@ -213,15 +196,11 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
 
   public String getBody() {
     StringBuilder stringBuilder = new StringBuilder();
-    if (postImageView.getDownloadUrl() != null && youtubeId == null) {
+    if (postImageView.getDownloadUrl() != null) {
       stringBuilder
         .append("\\n![Hapramp Image](")
         .append(postImageView.getDownloadUrl())
         .append(")\\n");
-    } else if (youtubeId != null) {
-      stringBuilder.append(String.format("\n<div class=\"videoWrapper\">" +
-        "<iframe src=\"https://www.youtube.com/embed/%s?rel=0&hd=1\"" +
-        " width=\"560\" height=\"349\" frameborder=\"0\" allowfullscreen></iframe></div>\n", youtubeId));
     }
     if (getContent().length() > 0) {
       stringBuilder
@@ -232,18 +211,16 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
     return stringBuilder.toString();
   }
 
-  public List<String> getImageList() {
-    List<String> images = new ArrayList<>();
-    if (postImageView.getDownloadUrl() != null && youtubeId == null) {
-      images.add(postImageView.getDownloadUrl());
-    } else if (youtubeId != null) {
-      images.add(String.format("https://img.youtube.com/vi/%s/0.jpg", youtubeId));
-    }
-    return images;
-  }
-
   public String getContent() {
     return content.getText().toString().trim();
+  }
+
+  public List<String> getImageList() {
+    List<String> images = new ArrayList<>();
+    if (postImageView.getDownloadUrl() != null) {
+      images.add(postImageView.getDownloadUrl());
+    }
+    return images;
   }
 
   public boolean isMediaSelected() {
@@ -251,13 +228,7 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
   }
 
   public boolean isMediaUploaded() {
-    if (youtubeId == null) {
-      //check for uploaded image
-      return postImageView.getDownloadUrl() != null;
-    } else {
-      //video is already uploaded!
-      return true;
-    }
+    return postImageView.getDownloadUrl() != null;
   }
 
   public boolean isContentEnough() {
@@ -326,6 +297,6 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
   public interface MediaSelectorListener {
     void onImageInsertOptionSelected();
 
-    void onYoutubeVideoOptionSelected();
+    void onCameraImageSelected();
   }
 }

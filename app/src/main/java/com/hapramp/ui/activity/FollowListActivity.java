@@ -5,8 +5,8 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.hapramp.R;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -21,13 +21,14 @@ public class FollowListActivity extends AppCompatActivity {
   public static final String EXTRA_KEY_FOLLOWING = "followin";
   public static final String EXTRA_KEY_FOLLOWERS = "followers";
   @BindView(R.id.backBtn)
-  TextView closeBtn;
+  ImageView backBtn;
   @BindView(R.id.toolbar_container)
   RelativeLayout toolbarContainer;
   @BindView(R.id.tabs)
   TabLayout tabs;
   @BindView(R.id.viewpager)
   ViewPager viewpager;
+
   private String username;
   private int followers;
   private int following;
@@ -50,8 +51,7 @@ public class FollowListActivity extends AppCompatActivity {
     setupViewPager(viewpager);
     tabs.setupWithViewPager(viewpager);
     tabs.setSelectedTabIndicatorHeight((int) (2 * getResources().getDisplayMetrics().density));
-    closeBtn.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-    closeBtn.setOnClickListener(new View.OnClickListener() {
+    backBtn.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
         finish();
@@ -61,7 +61,7 @@ public class FollowListActivity extends AppCompatActivity {
 
   private void setupViewPager(ViewPager viewPager) {
     FollowListPagerAdapter adapter = new FollowListPagerAdapter(getSupportFragmentManager(), username);
-    adapter.setFollowInfo(followers,following);
+    adapter.setFollowInfo(followers, following);
     viewPager.setAdapter(adapter);
   }
 }

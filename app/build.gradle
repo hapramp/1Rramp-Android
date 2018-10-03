@@ -37,8 +37,8 @@ android {
         applicationId "com.hapramp"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 50
-        versionName "0.0.15"
+        versionCode 51
+        versionName "0.0.16"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -71,17 +71,18 @@ dependencies {
     implementation 'com.facebook.network.connectionclass:connectionclass:1.0.1'
     implementation "info.androidhive:barcode-reader:$barcodeReaderVersion"
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'com.android.support:support-v4:27.1.1'
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"
     testImplementation "junit:junit:$junitVersion"
     testImplementation "org.robolectric:robolectric:$roboelectricVersion"
     testImplementation "org.robolectric:shadows-multidex:$roboelectricVersion"
     implementation 'android.arch.lifecycle:extensions:1.1.1'
+    implementation 'org.jsoup:jsoup:1.11.3'
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
     implementation 'com.github.hapramp:steemconnect4j:v1.3.2'
     implementation 'com.github.bxute:CryptoCoinView:v0.6'
     implementation 'com.github.bxute:MarkDEditor:v0.10'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation project(':youtube_player')
     implementation project(':lib')
 }
 

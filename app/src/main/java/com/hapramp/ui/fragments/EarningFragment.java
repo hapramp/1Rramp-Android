@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,8 +32,6 @@ import com.hapramp.ui.activity.DelegateActivity;
 import com.hapramp.ui.activity.PowerDownActivity;
 import com.hapramp.ui.activity.PowerUpActivity;
 import com.hapramp.ui.activity.TransferActivity;
-import com.hapramp.utils.ImageHandler;
-import com.hapramp.utils.ReputationCalc;
 import com.hapramp.views.extraa.BubbleProgressBar;
 
 import java.util.Locale;
@@ -48,18 +45,6 @@ import xute.cryptocoinview.Coins;
 public class EarningFragment extends Fragment implements
   UserWalletCallback {
   public static final String ARG_USERNAME = "username";
-  @BindView(R.id.user_image)
-  ImageView userImage;
-  @BindView(R.id.username)
-  TextView username;
-  @BindView(R.id.user_fullname)
-  TextView userFullname;
-  @BindView(R.id.user_reputation)
-  TextView userReputation;
-  @BindView(R.id.user_fullname_container)
-  LinearLayout userFullnameContainer;
-  @BindView(R.id.history_btn)
-  RelativeLayout seeHistoryBtn;
   @BindView(R.id.steem_icon)
   ImageView steemIcon;
   @BindView(R.id.divider1)
@@ -99,13 +84,11 @@ public class EarningFragment extends Fragment implements
   @BindView(R.id.estimated_value_progress)
   BubbleProgressBar estimatedValueProgress;
   @BindView(R.id.account_info_card)
-  CardView inforCard;
-  @BindView(R.id.sbd_rate)
-  CoinView sbdRateView;
-  @BindView(R.id.steem_rate)
-  CoinView steemRate;
+  CardView accountInfoCard;
   @BindView(R.id.lablel)
   TextView lablel;
+  @BindView(R.id.rewardPanelTv)
+  TextView rewardPanelTv;
   @BindView(R.id.claim_reward_btn)
   RelativeLayout claimRewardBtn;
   @BindView(R.id.transfer_btn)
@@ -114,12 +97,16 @@ public class EarningFragment extends Fragment implements
   RelativeLayout powerUpBtn;
   @BindView(R.id.power_down_btn)
   RelativeLayout powerDownBtn;
-  @BindView(R.id.account_operation_button_container)
-  RelativeLayout accountOperationButtonContainer;
-  @BindView(R.id.rewardPanelTv)
-  TextView rewardPanelTv;
   @BindView(R.id.delegate_btn)
   RelativeLayout delegateBtn;
+  @BindView(R.id.account_operation_button_container)
+  RelativeLayout accountOperationButtonContainer;
+  @BindView(R.id.history_btn)
+  RelativeLayout historyBtn;
+  @BindView(R.id.sbd_rate)
+  CoinView sbdRate;
+  @BindView(R.id.steem_rate)
+  CoinView steemRate;
   private Handler mHandler;
   public static final int VALUES_REQUIRED_BEFORE_CALC = 5;
   private Unbinder unbinder;
@@ -148,6 +135,7 @@ public class EarningFragment extends Fragment implements
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    setRetainInstance(true);
     EventReporter.addEvent(AnalyticsParams.EVENT_BROWSE_EARNINGS);
   }
 
@@ -186,8 +174,8 @@ public class EarningFragment extends Fragment implements
 
       }
     });
-    sbdRateView.setCoinId(Coins.SBD);
-    sbdRateView.setRateCallback(new CoinView.RateCallback() {
+    sbdRate.setCoinId(Coins.SBD);
+    sbdRate.setRateCallback(new CoinView.RateCallback() {
       @Override
       public void onRate(double rate) {
         sbd_rate = rate;
@@ -344,7 +332,7 @@ public class EarningFragment extends Fragment implements
   }
 
   private void attachListener() {
-    seeHistoryBtn.setOnClickListener(new View.OnClickListener() {
+    historyBtn.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
         Intent intent = new Intent(mContext, AccountHistoryActivity.class);
@@ -517,18 +505,6 @@ public class EarningFragment extends Fragment implements
   }
 
   private void bindData(User data) {
-    try {
-      if (data != null) {
-        username.setText(mUsername);
-        userFullname.setText(data.getFullname());
-        long rawReputation = data.getReputation();
-        userReputation.setText(String.format(Locale.US, "(%.2f)",
-          ReputationCalc.calculateReputation(rawReputation)));
-        String profile_pic = String.format(getResources().getString(R.string.steem_user_profile_pic_format_large), mUsername);
-        ImageHandler.loadCircularImage(mContext, userImage, profile_pic);
-      }
-    }
-    catch (Exception e) {
-    }
+
   }
 }

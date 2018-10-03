@@ -8,10 +8,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -35,17 +38,21 @@ import com.hapramp.utils.GoogleImageFilePathReader;
 import com.hapramp.utils.HashTagUtils;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.views.post.PostCreateComponent;
-import com.hapramp.youtube.YoutubeVideoSelectorActivity;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class CreatePostActivity extends AppCompatActivity implements SteemPostCreator.SteemPostCreatorCallback {
   private static final int REQUEST_IMAGE_SELECTOR = 101;
-  private static final int YOUTUBE_RESULT_REQUEST = 107;
+  private static final int REQUEST_CAPTURE_IMAGE = 100;
   @BindView(R.id.backBtn)
   ImageView closeBtn;
   @BindView(R.id.postButton)
@@ -63,6 +70,7 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
   private SteemPostCreator steemPostCreator;
   private List<String> images;
   private String body;
+  private String cameraImageFilePath;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -89,17 +97,6 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
         handleSendImage(intent);
       }
     }
-  }
-
-  private void handleSendText(Intent intent) {
-    String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-    postCreateComponent.setDefaultText(sharedText);
-  }
-
-  private void handleSendImage(Intent intent) {
-    Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-    intent.setData(imageUri);
-    handleImageResult(intent);
   }
 
   private void initProgressDialog() {
@@ -129,11 +126,22 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
       }
 
       @Override
-      public void onYoutubeVideoOptionSelected() {
-        openVideoSelector();
+      public void onCameraImageSelected() {
+        checkCameraPermission();
       }
     });
 
+  }
+
+  private void handleSendText(Intent intent) {
+    String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+    postCreateComponent.setDefaultText(sharedText);
+  }
+
+  private void handleSendImage(Intent intent) {
+    Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+    intent.setData(imageUri);
+    handleImageResult(intent);
   }
 
   private void close() {
@@ -154,18 +162,37 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
     }
   }
 
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    if (requestCode == REQUEST_IMAGE_SELECTOR && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
-      handleImageResult(data);
+  private void openGallery() {
+    try {
+      if (ActivityCompat.checkSelfPermission(CreatePostActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+        &&
+        ActivityCompat.checkSelfPermission(CreatePostActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        ActivityCompat.requestPermissions(CreatePostActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_SELECTOR);
+      } else {
+        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        startActivityForResult(intent, REQUEST_IMAGE_SELECTOR);
+      }
     }
-
-    if (requestCode == YOUTUBE_RESULT_REQUEST && resultCode == Activity.RESULT_OK) {
-      String videoId = data.getStringExtra(YoutubeVideoSelectorActivity.EXTRA_VIDEO_KEY);
-      insertYoutube(videoId);
+    catch (Exception e) {
+      e.printStackTrace();
     }
   }
 
+  private void checkCameraPermission() {
+    try {
+      if (ActivityCompat.checkSelfPermission(CreatePostActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+        &&
+        ActivityCompat.checkSelfPermission(CreatePostActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+        ActivityCompat.requestPermissions(CreatePostActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAPTURE_IMAGE);
+      } else {
+        openCameraIntent();
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
 
   private void handleImageResult(final Intent intent) {
     final Handler handler = new Handler();
@@ -183,14 +210,8 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
     }.start();
   }
 
-  private void addImage(String filePath) {
-    postCreateComponent.setImageResource(filePath);
-  }
-
-
-  private void openVideoSelector() {
-    Intent youtubeIntent = new Intent(this, YoutubeVideoSelectorActivity.class);
-    startActivityForResult(youtubeIntent, YOUTUBE_RESULT_REQUEST);
+  private void closeCreatePostPage() {
+    finish();
   }
 
   private void showConnectivityError() {
@@ -244,33 +265,68 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
     images = postCreateComponent.getImageList();
   }
 
-  private ArrayList<String> getHashTagsFromBody(String body) {
-    return HashTagUtils.getHashTags(body);
-  }
-
   private void sendPostToSteemBlockChain() {
     showPublishingProgressDialog(true, "Publishing...");
     steemPostCreator.createPost(body, "", images, tags, generated_permalink);
+  }
+
+  private void openCameraIntent() {
+    Intent pictureIntent = new Intent(
+      MediaStore.ACTION_IMAGE_CAPTURE);
+    if (pictureIntent.resolveActivity(getPackageManager()) != null) {
+      File photoFile = null;
+      try {
+        photoFile = createImageFile();
+      }
+      catch (IOException ex) {
+
+      }
+      if (photoFile != null) {
+        Uri photoURI = FileProvider.getUriForFile(this, "com.hapramp.provider", photoFile);
+        pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+          photoURI);
+        startActivityForResult(pictureIntent,
+          REQUEST_CAPTURE_IMAGE);
+      }
+    }
+  }
+
+  private void addImage(String filePath) {
+    postCreateComponent.setImageResource(filePath);
   }
 
   private void toast(String s) {
     Toast.makeText(this, s, Toast.LENGTH_LONG).show();
   }
 
+  private ArrayList<String> getHashTagsFromBody(String body) {
+    return HashTagUtils.getHashTags(body);
+  }
+
+  private File createImageFile() throws IOException {
+    String timeStamp =
+      new SimpleDateFormat("yyyyMMdd_HHmmss",
+        Locale.getDefault()).format(new Date());
+    String imageFileName = "IMG_" + timeStamp + "_";
+    File storageDir =
+      getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+    File image = File.createTempFile(
+      imageFileName,  /* prefix */
+      ".jpg",         /* suffix */
+      storageDir      /* directory */
+    );
+    cameraImageFilePath = image.getAbsolutePath();
+    return image;
+  }
+
   @Override
-  public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
-    switch (requestCode) {
-      case REQUEST_IMAGE_SELECTOR:
-        // If request is cancelled, the result arrays are empty.
-        if (grantResults.length > 0
-          && grantResults[0] == PackageManager.PERMISSION_GRANTED
-          && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-          openGallery();
-        } else {
-          //do something like displaying a message that he didn`t allow the app to access gallery and you wont be able to let him select from gallery
-          toast("Permission not granted to access images.");
-        }
-        break;
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (requestCode == REQUEST_IMAGE_SELECTOR && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+      handleImageResult(data);
+    }
+
+    if (requestCode == REQUEST_CAPTURE_IMAGE && resultCode == RESULT_OK) {
+      addImage(cameraImageFilePath);
     }
   }
 
@@ -289,20 +345,31 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
     super.onResume();
   }
 
-  private void openGallery() {
-    try {
-      if (ActivityCompat.checkSelfPermission(CreatePostActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-        &&
-        ActivityCompat.checkSelfPermission(CreatePostActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-        ActivityCompat.requestPermissions(CreatePostActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_SELECTOR);
-      } else {
-        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        intent.setType("image/*");
-        startActivityForResult(intent, REQUEST_IMAGE_SELECTOR);
-      }
-    }
-    catch (Exception e) {
-      e.printStackTrace();
+  @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    switch (requestCode) {
+      case REQUEST_IMAGE_SELECTOR:
+        // If request is cancelled, the result arrays are empty.
+        if (grantResults.length > 0
+          && grantResults[0] == PackageManager.PERMISSION_GRANTED
+          && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+          openGallery();
+        } else {
+          //do something like displaying a message that he didn`t allow the app to access gallery and you wont be able to let him select from gallery
+          toast("Permission not granted to access images.");
+        }
+        break;
+      case REQUEST_CAPTURE_IMAGE:
+        // If request is cancelled, the result arrays are empty.
+        if (grantResults.length > 0
+          && grantResults[0] == PackageManager.PERMISSION_GRANTED
+          && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+          openCameraIntent();
+        } else {
+          //do something like displaying a message that he didn`t allow the app to access gallery and you wont be able to let him select from gallery
+          toast("Permission not granted to capture images.");
+        }
+        break;
     }
   }
 
@@ -318,10 +385,6 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
       })
       .setNegativeButton("No", null);
     builder.show();
-  }
-
-  private void insertYoutube(String videoId) {
-    postCreateComponent.setYoutubeThumbnail(videoId);
   }
 
   @Override
@@ -343,13 +406,9 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
     }, 1000);
   }
 
-  private void closeCreatePostPage() {
-    finish();
-  }
-
   @Override
   public void onPostCreationFailedOnSteem(String msg) {
-    toast("Cannot Create Post");
+    toast("Cannot create post.");
     showPublishingProgressDialog(false, "");
   }
 }

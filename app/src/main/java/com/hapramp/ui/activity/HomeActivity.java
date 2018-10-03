@@ -29,6 +29,7 @@ import com.hapramp.R;
 import com.hapramp.analytics.EventReporter;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.JSONParser;
+import com.hapramp.datastore.WebScrapper;
 import com.hapramp.notification.FirebaseNotificationStore;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.User;
@@ -36,7 +37,7 @@ import com.hapramp.steemconnect.SteemConnectUtils;
 import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;
 import com.hapramp.steemconnect4j.SteemConnectException;
-import com.hapramp.ui.fragments.EarningFragment;
+import com.hapramp.ui.fragments.CompetitionFragment;
 import com.hapramp.ui.fragments.HomeFragment;
 import com.hapramp.ui.fragments.ProfileFragment;
 import com.hapramp.ui.fragments.SettingsFragment;
@@ -57,11 +58,11 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
   private final int BOTTOM_MENU_COMP = 8;
   private final int BOTTOM_MENU_PROFILE = 9;
   private final int BOTTOM_MENU_SETTINGS = 10;
-  private final int BOTTOM_MENU_EARNINGS = 11;
+  private final int BOTTOM_MENU_COMPETITIONS = 11;
   private final int FRAGMENT_HOME = 12;
   private final int FRAGMENT_PROFILE = 14;
   private final int FRAGMENT_SETTINGS = 15;
-  private final int FRAGMENT_EARNINGS = 16;
+  private final int FRAGMENT_COMPETITIONS = 16;
   @BindView(R.id.contentPlaceHolder)
   FrameLayout contentPlaceHolder;
   @BindView(R.id.connectivity_text)
@@ -83,7 +84,7 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
   @BindView(R.id.bottomBar_home)
   ImageView bottomBarHome;
   @BindView(R.id.bottomBar_wallet)
-  ImageView bottomBarWallet;
+  ImageView bottomBarCompetition;
   @BindView(R.id.bottomBar_profile)
   ImageView bottomBarProfile;
   @BindView(R.id.bottomBar_settings)
@@ -99,7 +100,7 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
   private HomeFragment homeFragment;
   private ProfileFragment profileFragment;
   private SettingsFragment settingsFragment;
-  private EarningFragment earningFragment;
+  private CompetitionFragment competitionFragment;
   private ProgressDialog progressDialog;
   private Handler mHandler;
   private ConnectivityViewModel connectivityViewModel;
@@ -125,8 +126,9 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
     fragmentManager = getSupportFragmentManager();
     homeFragment = new HomeFragment();
     profileFragment = new ProfileFragment();
+    profileFragment.setUsername(HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
     settingsFragment = new SettingsFragment();
-    earningFragment = new EarningFragment();
+    competitionFragment = new CompetitionFragment();
     progressDialog = new ProgressDialog(this);
     progressDialog.setCancelable(false);
   }
@@ -179,7 +181,6 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
     haprampIcon.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        // check for the current selection
         if (lastMenuSelection == BOTTOM_MENU_HOME)
           return;
         BackstackManager.pushItem(FRAGMENT_HOME);
@@ -200,13 +201,13 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
     });
 
 
-    bottomBarWallet.setOnClickListener(new View.OnClickListener() {
+    bottomBarCompetition.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        if (lastMenuSelection == BOTTOM_MENU_EARNINGS)
+        if (lastMenuSelection == BOTTOM_MENU_COMPETITIONS)
           return;
-        BackstackManager.pushItem(FRAGMENT_EARNINGS);
-        transactFragment(FRAGMENT_EARNINGS);
+        BackstackManager.pushItem(FRAGMENT_COMPETITIONS);
+        transactFragment(FRAGMENT_COMPETITIONS);
       }
     });
 
@@ -315,11 +316,11 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
           .commit();
         break;
 
-      case FRAGMENT_EARNINGS:
-        swapSelection(BOTTOM_MENU_EARNINGS);
+      case FRAGMENT_COMPETITIONS:
+        swapSelection(BOTTOM_MENU_COMPETITIONS);
         fragmentManager.beginTransaction()
-          .addToBackStack("earning")
-          .replace(R.id.contentPlaceHolder, earningFragment)
+          .addToBackStack("competitions")
+          .replace(R.id.contentPlaceHolder, competitionFragment)
           .commit();
         break;
       default:
@@ -336,10 +337,6 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
         bottomBarHome.setImageResource(R.drawable.home_icon_selected);
         lastMenuSelection = BOTTOM_MENU_HOME;
         break;
-      case BOTTOM_MENU_COMP:
-        bottomBarWallet.setImageResource(R.drawable.wallet_icon_selected);
-        lastMenuSelection = BOTTOM_MENU_COMP;
-        break;
       case BOTTOM_MENU_PROFILE:
         bottomBarProfile.setImageResource(R.drawable.user_icon_selected);
         lastMenuSelection = BOTTOM_MENU_PROFILE;
@@ -348,9 +345,9 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
         bottomBarSettings.setImageResource(R.drawable.settings_icon_selected);
         lastMenuSelection = BOTTOM_MENU_SETTINGS;
         break;
-      case BOTTOM_MENU_EARNINGS:
-        bottomBarWallet.setImageResource(R.drawable.wallet_icon_selected);
-        lastMenuSelection = BOTTOM_MENU_EARNINGS;
+      case BOTTOM_MENU_COMPETITIONS:
+        bottomBarCompetition.setImageResource(R.drawable.competition_filled);
+        lastMenuSelection = BOTTOM_MENU_COMPETITIONS;
         break;
       default:
         break;
@@ -362,17 +359,14 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
       case BOTTOM_MENU_HOME:
         bottomBarHome.setImageResource(R.drawable.home_icon);
         break;
-      case BOTTOM_MENU_COMP:
-        bottomBarWallet.setImageResource(R.drawable.wallet_icon);
-        break;
       case BOTTOM_MENU_PROFILE:
         bottomBarProfile.setImageResource(R.drawable.user_icon);
         break;
       case BOTTOM_MENU_SETTINGS:
         bottomBarSettings.setImageResource(R.drawable.settings_icon);
         break;
-      case BOTTOM_MENU_EARNINGS:
-        bottomBarWallet.setImageResource(R.drawable.wallet_icon);
+      case BOTTOM_MENU_COMPETITIONS:
+        bottomBarCompetition.setImageResource(R.drawable.competition);
         break;
       default:
         break;

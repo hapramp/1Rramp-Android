@@ -22,11 +22,11 @@
                 android:scaleType="centerCrop" />
 
             <FrameLayout
-                android:layout_below="@+id/profile_wall_pic"
-                android:layout_marginTop="-60dp"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                android:layout_centerHorizontal="true">
+                android:layout_below="@+id/profile_wall_pic"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-60dp">
 
                 <ImageView
                     android:id="@+id/profile_pic"
@@ -49,8 +49,8 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:paddingBottom="8dp"
-                android:paddingRight="16dp"
                 android:paddingLeft="16dp"
+                android:paddingRight="16dp"
                 android:paddingTop="8dp"
                 android:text="Go To Wallet"
                 android:textAllCaps="true"
@@ -139,8 +139,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/profile_user_name_container"
             android:layout_marginBottom="18dp"
-            android:layout_marginRight="18dp"
             android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp"
             android:layout_marginTop="48dp"
             android:lineSpacingExtra="2dp"
             android:textColor="@color/Black54"
@@ -153,8 +153,8 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/bio"
-            android:layout_marginRight="16dp"
             android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:background="@color/Black12" />
 
         <LinearLayout
@@ -182,10 +182,10 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/post_counts"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:padding="16dp"
                 android:background="?selectableItemBackground"
                 android:clickable="true"
+                android:gravity="center"
+                android:padding="16dp"
                 android:text="0 Followers"
                 android:textColor="@color/Black38"
                 android:textStyle="bold" />
@@ -197,10 +197,10 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/followers_count"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:padding="16dp"
                 android:background="?selectableItemBackground"
                 android:clickable="true"
+                android:gravity="center"
+                android:padding="16dp"
                 android:text="0 Followings"
                 android:textColor="@color/Black38"
                 android:textStyle="bold" />
@@ -212,8 +212,8 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/post_stats"
-            android:layout_marginRight="16dp"
             android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:background="@color/Black12" />
 
         <TextView
@@ -221,10 +221,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/divider_bottom"
-            android:gravity="center_vertical"
             android:layout_marginTop="28dp"
-            android:paddingRight="18sp"
+            android:gravity="center_vertical"
             android:paddingLeft="24sp"
+            android:paddingRight="18sp"
             android:text="Interests"
             android:textColor="@color/colorPrimary"
             android:textSize="14sp" />
@@ -243,8 +243,8 @@
             android:layout_below="@+id/interestsView"
             android:background="@color/LightBlack"
             android:paddingBottom="8dp"
-            android:paddingRight="16dp"
             android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             android:paddingTop="32dp"
             android:text="POSTS"
             android:textColor="@color/Black54"
