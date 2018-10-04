@@ -55,7 +55,7 @@
         android:id="@+id/no_notification_message"
         android:visibility="gone"
         android:layout_centerInParent="true"
-        android:text="No Notification"
+        android:text="No Notifications"
         android:textSize="14sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

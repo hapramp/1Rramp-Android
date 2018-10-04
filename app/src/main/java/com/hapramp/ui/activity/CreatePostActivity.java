@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -180,17 +181,21 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
   }
 
   private void checkCameraPermission() {
-    try {
-      if (ActivityCompat.checkSelfPermission(CreatePostActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-        &&
-        ActivityCompat.checkSelfPermission(CreatePostActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-        ActivityCompat.requestPermissions(CreatePostActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAPTURE_IMAGE);
-      } else {
-        openCameraIntent();
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      try {
+        if (ActivityCompat.checkSelfPermission(CreatePostActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+          &&
+          ActivityCompat.checkSelfPermission(CreatePostActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+          ActivityCompat.requestPermissions(CreatePostActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAPTURE_IMAGE);
+        } else {
+          openCameraIntent();
+        }
       }
-    }
-    catch (Exception e) {
-      e.printStackTrace();
+      catch (Exception e) {
+        e.printStackTrace();
+      }
+    }else{
+      openCameraIntent();
     }
   }
 
@@ -271,8 +276,7 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
   }
 
   private void openCameraIntent() {
-    Intent pictureIntent = new Intent(
-      MediaStore.ACTION_IMAGE_CAPTURE);
+    Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
     if (pictureIntent.resolveActivity(getPackageManager()) != null) {
       File photoFile = null;
       try {
