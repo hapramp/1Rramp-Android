@@ -38,6 +38,7 @@ import com.hapramp.utils.Constants;
 import com.hapramp.utils.GoogleImageFilePathReader;
 import com.hapramp.utils.HashTagUtils;
 import com.hapramp.utils.MomentsUtils;
+import com.hapramp.utils.PostHashTagPreprocessor;
 import com.hapramp.views.post.PostCreateComponent;
 
 import java.io.File;
@@ -262,9 +263,10 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
   private void preparePost() {
     generated_permalink = PermlinkGenerator.getPermlink();
     body = postCreateComponent.getBody();
-    // add footer
     body = body + Constants.FOOTER_TEXT;
     tags = postCreateComponent.getSelectedCommunityTags();
+    tags = PostHashTagPreprocessor.processHashtags(tags);
+    //add custom in-line hashtags entered in body.
     tags.addAll(getHashTagsFromBody(body));
     body = HashTagUtils.cleanHashTagsFromBody(body);
     images = postCreateComponent.getImageList();
