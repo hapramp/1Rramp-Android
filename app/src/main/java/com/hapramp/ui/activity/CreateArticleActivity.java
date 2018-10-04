@@ -34,6 +34,7 @@ import com.hapramp.utils.Constants;
 import com.hapramp.utils.FontManager;
 import com.hapramp.utils.GoogleImageFilePathReader;
 import com.hapramp.utils.MomentsUtils;
+import com.hapramp.utils.PostHashTagPreprocessor;
 import com.hapramp.views.editor.LinkInsertDialog;
 import com.hapramp.views.hashtag.CustomHashTagInput;
 import com.hapramp.views.post.PostCommunityView;
@@ -150,12 +151,13 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     title = articleTitleEt.getText().toString().trim();
     generated_permalink = PermlinkGenerator.getPermlink(title);
     tags = (ArrayList<String>) articleCategoryView.getSelectedTags();
+    tags = PostHashTagPreprocessor.processHashtags(tags);
+    includeCustomTags(tags);
     body = markDEditor.getMarkdownContent();
     images = getImageLinks();
     if (validArticle()) {
       sendPostToSteemBlockChain();
     }
-    includeCustomTags(tags);
   }
 
   private List<String> getImageLinks() {

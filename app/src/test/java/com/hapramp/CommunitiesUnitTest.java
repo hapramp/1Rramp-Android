@@ -7,8 +7,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-import xute.markdeditor.MarkDEditor;
-
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -74,29 +72,22 @@ public class CommunitiesUnitTest {
   }
 
   @Test
-  public void testHashTagReFormatting(){
+  public void testHashTagReFormatting() {
     String tag1 = "Nice";
     String tag2 = "#done";
     String tag3 = "###ForMyWork";
     String tag4 = "#####CruelDay";
     System.out.println(HashTagUtils.reformatHashTag(tag1));
-    assertEquals("nice",HashTagUtils.reformatHashTag(tag1));
+    assertEquals("nice", HashTagUtils.reformatHashTag(tag1));
 
     System.out.println(HashTagUtils.reformatHashTag(tag2));
-    assertEquals("done",HashTagUtils.reformatHashTag(tag2));
+    assertEquals("done", HashTagUtils.reformatHashTag(tag2));
 
     System.out.println(HashTagUtils.reformatHashTag(tag3));
-    assertEquals("formywork",HashTagUtils.reformatHashTag(tag3));
+    assertEquals("formywork", HashTagUtils.reformatHashTag(tag3));
 
     System.out.println(HashTagUtils.reformatHashTag(tag4));
-    assertEquals("cruelday",HashTagUtils.reformatHashTag(tag4));
-
+    assertEquals("cruelday", HashTagUtils.reformatHashTag(tag4));
   }
 
-  @Test
-  public void tf(){
-    String n = "15.54%";
-    int a = Math.round(Float.valueOf(n.replace("%","")));
-    System.out.println(a);
-  }
 }
