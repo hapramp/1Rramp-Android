@@ -17,61 +17,63 @@ public class NotificationParser {
       if (map != null) {
         baseNotificationType = new BaseNotificationModel();
         String type = map.get(NotificationKey.KEY_TYPE);
-        baseNotificationType.setType(type);
-        if (type.equals(NotificationKey.NOTIFICATION_TYPE_FOLLOW)) {
+        if (type != null) {
+          baseNotificationType.setType(type);
+          if (type.equals(NotificationKey.NOTIFICATION_TYPE_FOLLOW)) {
 
-          baseNotificationType = new FollowNotificationModel(
-            String.valueOf(map.get(NotificationKey.KEY_TYPE)),
-            String.valueOf(map.get(NotificationKey.KEY_FOLLOWER)),
-            String.valueOf(map.get(NotificationKey.KEY_TIMESTAMP)));
+            baseNotificationType = new FollowNotificationModel(
+              String.valueOf(map.get(NotificationKey.KEY_TYPE)),
+              String.valueOf(map.get(NotificationKey.KEY_FOLLOWER)),
+              String.valueOf(map.get(NotificationKey.KEY_TIMESTAMP)));
 
-        } else if (type.equals(NotificationKey.NOTIFICATION_TYPE_VOTE)) {
+          } else if (type.equals(NotificationKey.NOTIFICATION_TYPE_VOTE)) {
 
-          baseNotificationType = new VoteNotificationModel(
-            String.valueOf(map.get(NotificationKey.KEY_TYPE)),
-            String.valueOf(map.get(NotificationKey.KEY_VOTER)),
-            String.valueOf(map.get(NotificationKey.KEY_PERMLINK)),
-            String.valueOf(map.get(NotificationKey.KEY_WEIGHT)),
-            String.valueOf(map.get(NotificationKey.KEY_TIMESTAMP)),
-            String.valueOf(map.get(NotificationKey.KEY_PARENT_PERMLINK))
-          );
+            baseNotificationType = new VoteNotificationModel(
+              String.valueOf(map.get(NotificationKey.KEY_TYPE)),
+              String.valueOf(map.get(NotificationKey.KEY_VOTER)),
+              String.valueOf(map.get(NotificationKey.KEY_PERMLINK)),
+              String.valueOf(map.get(NotificationKey.KEY_WEIGHT)),
+              String.valueOf(map.get(NotificationKey.KEY_TIMESTAMP)),
+              String.valueOf(map.get(NotificationKey.KEY_PARENT_PERMLINK))
+            );
 
-        } else if (type.equals(NotificationKey.NOTIFICATION_TYPE_MENTION)) {
+          } else if (type.equals(NotificationKey.NOTIFICATION_TYPE_MENTION)) {
 
-          baseNotificationType = new MentionNotificationModel(
-            String.valueOf(map.get(NotificationKey.KEY_TYPE)),
-            Boolean.valueOf(map.get(NotificationKey.KEY_IS_ROOT_POST)),
-            String.valueOf(map.get(NotificationKey.KEY_AUTHOR)),
-            String.valueOf(map.get(NotificationKey.KEY_PARENT_PERMLINK)),
-            String.valueOf(map.get(NotificationKey.KEY_PERMLINK)),
-            String.valueOf(map.get(NotificationKey.KEY_TIMESTAMP)));
+            baseNotificationType = new MentionNotificationModel(
+              String.valueOf(map.get(NotificationKey.KEY_TYPE)),
+              Boolean.valueOf(map.get(NotificationKey.KEY_IS_ROOT_POST)),
+              String.valueOf(map.get(NotificationKey.KEY_AUTHOR)),
+              String.valueOf(map.get(NotificationKey.KEY_PARENT_PERMLINK)),
+              String.valueOf(map.get(NotificationKey.KEY_PERMLINK)),
+              String.valueOf(map.get(NotificationKey.KEY_TIMESTAMP)));
 
-        } else if (type.equals(NotificationKey.NOTIFICATION_TYPE_REBLOG)) {
+          } else if (type.equals(NotificationKey.NOTIFICATION_TYPE_REBLOG)) {
 
-          baseNotificationType = new ReblogNotificationModel(
-            String.valueOf(map.get(NotificationKey.KEY_TYPE)),
-            String.valueOf(map.get(NotificationKey.KEY_ACCOUNT)),
-            String.valueOf(map.get(NotificationKey.KEY_PERMLINK)),
-            String.valueOf(map.get(NotificationKey.KEY_TIMESTAMP)),
-            String.valueOf(map.get(NotificationKey.KEY_PARENT_PERMLINK)));
+            baseNotificationType = new ReblogNotificationModel(
+              String.valueOf(map.get(NotificationKey.KEY_TYPE)),
+              String.valueOf(map.get(NotificationKey.KEY_ACCOUNT)),
+              String.valueOf(map.get(NotificationKey.KEY_PERMLINK)),
+              String.valueOf(map.get(NotificationKey.KEY_TIMESTAMP)),
+              String.valueOf(map.get(NotificationKey.KEY_PARENT_PERMLINK)));
 
-        } else if (type.equals(NotificationKey.NOTIFICATION_TYPE_REPLY)) {
+          } else if (type.equals(NotificationKey.NOTIFICATION_TYPE_REPLY)) {
 
-          baseNotificationType = new ReplyNotificationModel(
-            String.valueOf(map.get(NotificationKey.KEY_TYPE)),
-            String.valueOf(map.get(NotificationKey.KEY_PARENT_PERMLINK)),
-            String.valueOf(map.get(NotificationKey.KEY_AUTHOR)),
-            String.valueOf(map.get(NotificationKey.KEY_PERMLINK)),
-            String.valueOf(map.get(NotificationKey.KEY_TIMESTAMP)));
+            baseNotificationType = new ReplyNotificationModel(
+              String.valueOf(map.get(NotificationKey.KEY_TYPE)),
+              String.valueOf(map.get(NotificationKey.KEY_PARENT_PERMLINK)),
+              String.valueOf(map.get(NotificationKey.KEY_AUTHOR)),
+              String.valueOf(map.get(NotificationKey.KEY_PERMLINK)),
+              String.valueOf(map.get(NotificationKey.KEY_TIMESTAMP)));
 
-        } else if (type.equals(NotificationKey.NOTIFICATION_TYPE_TRANSFER)) {
+          } else if (type.equals(NotificationKey.NOTIFICATION_TYPE_TRANSFER)) {
 
-          baseNotificationType = new TransferNotificationModel(map.get(NotificationKey.KEY_TYPE),
-            String.valueOf(map.get(NotificationKey.KEY_SENDER)),
-            String.valueOf(map.get(NotificationKey.KEY_AMOUNT)),
-            String.valueOf(map.get(NotificationKey.KEY_MEMO)),
-            String.valueOf(map.get(NotificationKey.KEY_TIMESTAMP)));
+            baseNotificationType = new TransferNotificationModel(map.get(NotificationKey.KEY_TYPE),
+              String.valueOf(map.get(NotificationKey.KEY_SENDER)),
+              String.valueOf(map.get(NotificationKey.KEY_AMOUNT)),
+              String.valueOf(map.get(NotificationKey.KEY_MEMO)),
+              String.valueOf(map.get(NotificationKey.KEY_TIMESTAMP)));
 
+          }
         }
       }
     }

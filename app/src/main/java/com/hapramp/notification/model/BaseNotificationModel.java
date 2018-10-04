@@ -1,19 +1,11 @@
 package com.hapramp.notification.model;
 
 public class BaseNotificationModel {
-  public String type;
-  public boolean read;
-  public String notificationId;
+  public String type = "";
+  public boolean read = false;
+  public String notificationId = "";
 
   public BaseNotificationModel() {
-  }
-
-  public boolean isRead() {
-    return read;
-  }
-
-  public void setRead(boolean read) {
-    this.read = read;
   }
 
   public BaseNotificationModel(String type, String notificationId) {
@@ -23,6 +15,14 @@ public class BaseNotificationModel {
 
   public BaseNotificationModel(String type) {
     this.type = type;
+  }
+
+  public boolean isRead() {
+    return read;
+  }
+
+  public void setRead(boolean read) {
+    this.read = read;
   }
 
   public String getNotificationId() {
