@@ -18,6 +18,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -167,7 +168,7 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
   private void openGallery() {
     try {
       if (ActivityCompat.checkSelfPermission(CreatePostActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-        &&
+        ||
         ActivityCompat.checkSelfPermission(CreatePostActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
         ActivityCompat.requestPermissions(CreatePostActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_SELECTOR);
       } else {
@@ -185,7 +186,7 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       try {
         if (ActivityCompat.checkSelfPermission(CreatePostActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-          &&
+          ||
           ActivityCompat.checkSelfPermission(CreatePostActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
           ActivityCompat.requestPermissions(CreatePostActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAPTURE_IMAGE);
         } else {

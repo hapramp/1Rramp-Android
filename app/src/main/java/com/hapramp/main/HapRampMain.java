@@ -2,6 +2,7 @@ package com.hapramp.main;
 
 import android.content.Context;
 import android.support.multidex.MultiDexApplication;
+import android.widget.Toast;
 
 import com.google.firebase.FirebaseApp;
 import com.hapramp.utils.FingerprintManager;
@@ -14,9 +15,6 @@ public class HapRampMain extends MultiDexApplication {
 
   private static Context context;
   private static String fp;
-  public static Context getContext() {
-    return context;
-  }
 
   public static String getFp() {
     return fp;
@@ -27,5 +25,9 @@ public class HapRampMain extends MultiDexApplication {
     HapRampMain.context = getApplicationContext();
     FirebaseApp.initializeApp(context);
     fp = FingerprintManager.getCertificateSHA1Fingerprint(context);
+  }
+
+  public static Context getContext() {
+    return context;
   }
 }

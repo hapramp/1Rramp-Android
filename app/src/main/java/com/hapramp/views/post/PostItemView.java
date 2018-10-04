@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.text.Layout;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -43,7 +44,6 @@ import com.hapramp.ui.activity.DetailedActivity;
 import com.hapramp.ui.activity.ProfileActivity;
 import com.hapramp.ui.activity.VotersListActivity;
 import com.hapramp.utils.Constants;
-import com.hapramp.utils.FontManager;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.ShareUtils;
@@ -127,6 +127,7 @@ public class PostItemView extends FrameLayout {
       voteDeleteFailed();
     }
   };
+  private PostActionListener postActionListener;
 
   public PostItemView(@NonNull Context context) {
     super(context);
@@ -190,6 +191,12 @@ public class PostItemView extends FrameLayout {
     mContext.startActivity(detailsIntent);
   }
 
+  private void openVotersList() {
+    Intent intent = new Intent(mContext, VotersListActivity.class);
+    intent.putParcelableArrayListExtra(VotersListActivity.EXTRA_VOTERS, mFeed.getVoters());
+    mContext.startActivity(intent);
+  }
+
   public PostItemView(@NonNull Context context, @Nullable AttributeSet attrs) {
     super(context, attrs);
     init(context);
@@ -198,12 +205,6 @@ public class PostItemView extends FrameLayout {
   public PostItemView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     init(context);
-  }
-
-  private void openVotersList() {
-    Intent intent = new Intent(mContext, VotersListActivity.class);
-    intent.putParcelableArrayListExtra(VotersListActivity.EXTRA_VOTERS, mFeed.getVoters());
-    mContext.startActivity(intent);
   }
 
   private void bind(final Feed feed) {
@@ -405,22 +406,22 @@ public class PostItemView extends FrameLayout {
       public void run() {
         steemConnect.vote(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
           getAuthor(), getPermlinkAsString(), String.valueOf(vote), new SteemConnectCallback() {
-          @Override
-          public void onResponse(String s) {
-            updatePostFromBlockchain();
-            mHandler.post(new Runnable() {
-              @Override
-              public void run() {
-                castingVoteSuccess();
-              }
-            });
-          }
+            @Override
+            public void onResponse(String s) {
+              updatePostFromBlockchain();
+              mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                  castingVoteSuccess();
+                }
+              });
+            }
 
-          @Override
-          public void onError(SteemConnectException e) {
-            mHandler.post(steemCastingVoteExceptionRunnable);
-          }
-        });
+            @Override
+            public void onError(SteemConnectException e) {
+              mHandler.post(steemCastingVoteExceptionRunnable);
+            }
+          });
       }
     }.start();
   }
@@ -507,8 +508,6 @@ public class PostItemView extends FrameLayout {
   public void setPostData(Feed postData) {
     bind(postData);
   }
-
-  private PostActionListener postActionListener;
 
   private void setCommentCount(int count) {
     commentCount.setText(String.valueOf(count));
@@ -597,6 +596,7 @@ public class PostItemView extends FrameLayout {
   public void setPostActionListener(PostActionListener postActionListener) {
     this.postActionListener = postActionListener;
   }
+
   public interface PostActionListener {
     void onPostDeleted();
   }

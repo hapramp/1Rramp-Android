@@ -95,7 +95,7 @@ public class SettingsFragment extends Fragment {
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    if (HaprampPreferenceManager.getInstance().isUserTopicSubscribed()) {
+    if (HaprampPreferenceManager.getInstance().shouldShowPushNotifications()) {
       pushNotificationSwitch.setChecked(true);
     } else {
       pushNotificationSwitch.setChecked(false);
