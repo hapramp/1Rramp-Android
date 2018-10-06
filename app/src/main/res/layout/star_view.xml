@@ -70,7 +70,7 @@
             android:focusable="true"
             android:isIndicator="false"
             android:numStars="5"
-            android:rating="4"
+            android:stepSize="1"
             android:visibility="visible" />
 
         <TextView
