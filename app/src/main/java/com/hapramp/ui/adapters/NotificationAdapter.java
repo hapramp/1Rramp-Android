@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hapramp.R;
-import com.hapramp.notification.FirebaseNotificationStore;
 import com.hapramp.notification.model.BaseNotificationModel;
 import com.hapramp.notification.model.FollowNotificationModel;
 import com.hapramp.notification.model.MentionNotificationModel;
@@ -164,8 +164,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     ImageView userImage;
     @BindView(R.id.text)
     TextView text;
-    @BindView(R.id.markAsReadBtn)
-    TextView markAsReadBtn;
 
     public FollowItemViewHolder(View itemView) {
       super(itemView);
@@ -185,17 +183,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             followNotificationModel.getNotificationId());
         }
       });
-      if (followNotificationModel.isRead()) {
-        markAsReadBtn.setVisibility(View.GONE);
-      } else {
-        markAsReadBtn.setVisibility(View.VISIBLE);
-        markAsReadBtn.setOnClickListener(new View.OnClickListener() {
-          @Override
-          public void onClick(View view) {
-            FirebaseNotificationStore.markAsRead(followNotificationModel.getNotificationId());
-          }
-        });
-      }
     }
   }
 
@@ -204,8 +191,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     ImageView userImage;
     @BindView(R.id.text)
     TextView text;
-    @BindView(R.id.markAsReadBtn)
-    TextView markAsReadBtn;
     @BindView(R.id.timestamp)
     TextView timestamp;
 
@@ -220,28 +205,17 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
       ImageHandler.loadCircularImage(itemView.getContext(), userImage, userImageUrl);
       text.setText(String.format("%s Mentioned you in a post", mentionNotificationModel.getAuthor()));
       timestamp.setText(MomentsUtils.getFormattedTime(mentionNotificationModel.getTimestamp()));
-      //you are the author of the post
-      final String author = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
       itemView.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+          //you are the author of the post
+          final String author = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
           navigateToDetailsPage(itemView.getContext(),
             mentionNotificationModel.getNotificationId(),
             author,
             mentionNotificationModel.getPermlink());
         }
       });
-      if (mentionNotificationModel.isRead()) {
-        markAsReadBtn.setVisibility(View.GONE);
-      } else {
-        markAsReadBtn.setVisibility(View.VISIBLE);
-        markAsReadBtn.setOnClickListener(new View.OnClickListener() {
-          @Override
-          public void onClick(View view) {
-            FirebaseNotificationStore.markAsRead(mentionNotificationModel.getNotificationId());
-          }
-        });
-      }
     }
   }
 
@@ -250,8 +224,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     ImageView userImage;
     @BindView(R.id.text)
     TextView text;
-    @BindView(R.id.markAsReadBtn)
-    TextView markAsReadBtn;
     @BindView(R.id.timestamp)
     TextView timestamp;
 
@@ -266,28 +238,17 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
       ImageHandler.loadCircularImage(itemView.getContext(), userImage, userImageUrl);
       text.setText(String.format("%s Reblogged your post", reblogNotificationModel.getAccount()));
       timestamp.setText(MomentsUtils.getFormattedTime(reblogNotificationModel.getTimestamp()));
-      //you are the author of the post
-      final String author = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
       itemView.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+          //you are the author of the post
+          final String author = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
           navigateToDetailsPage(itemView.getContext(),
             reblogNotificationModel.getNotificationId(),
             author,
             reblogNotificationModel.getPermlink());
         }
       });
-      if (reblogNotificationModel.isRead()) {
-        markAsReadBtn.setVisibility(View.GONE);
-      } else {
-        markAsReadBtn.setVisibility(View.VISIBLE);
-        markAsReadBtn.setOnClickListener(new View.OnClickListener() {
-          @Override
-          public void onClick(View view) {
-            FirebaseNotificationStore.markAsRead(reblogNotificationModel.getNotificationId());
-          }
-        });
-      }
     }
   }
 
@@ -296,8 +257,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     ImageView userImage;
     @BindView(R.id.text)
     TextView text;
-    @BindView(R.id.markAsReadBtn)
-    TextView markAsReadBtn;
     @BindView(R.id.timestamp)
     TextView timestamp;
 
@@ -312,28 +271,17 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
       ImageHandler.loadCircularImage(itemView.getContext(), userImage, userImageUrl);
       text.setText(String.format("%s Replied on your post.", replyNotificationModel.getAuthor()));
       timestamp.setText(MomentsUtils.getFormattedTime(replyNotificationModel.getTimestamp()));
-      //you are the author of the post
-      final String author = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
       itemView.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+          //you are the author of the post
+          final String author = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
           navigateToDetailsPage(itemView.getContext(),
             replyNotificationModel.getNotificationId(),
             author,
             replyNotificationModel.getPermlink());
         }
       });
-      if (replyNotificationModel.isRead()) {
-        markAsReadBtn.setVisibility(View.GONE);
-      } else {
-        markAsReadBtn.setVisibility(View.VISIBLE);
-        markAsReadBtn.setOnClickListener(new View.OnClickListener() {
-          @Override
-          public void onClick(View view) {
-            FirebaseNotificationStore.markAsRead(replyNotificationModel.getNotificationId());
-          }
-        });
-      }
     }
   }
 
@@ -342,8 +290,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     ImageView userImage;
     @BindView(R.id.text)
     TextView text;
-    @BindView(R.id.markAsReadBtn)
-    TextView markAsReadBtn;
     @BindView(R.id.timestamp)
     TextView timestamp;
 
@@ -366,17 +312,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             transferNotificationModel.getNotificationId());
         }
       });
-      if (transferNotificationModel.isRead()) {
-        markAsReadBtn.setVisibility(View.GONE);
-      } else {
-        markAsReadBtn.setVisibility(View.VISIBLE);
-        markAsReadBtn.setOnClickListener(new View.OnClickListener() {
-          @Override
-          public void onClick(View view) {
-            FirebaseNotificationStore.markAsRead(transferNotificationModel.getNotificationId());
-          }
-        });
-      }
     }
   }
 
@@ -385,8 +320,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     ImageView userImage;
     @BindView(R.id.text)
     TextView text;
-    @BindView(R.id.markAsReadBtn)
-    TextView markAsReadBtn;
     @BindView(R.id.timestamp)
     TextView timestamp;
 
@@ -401,28 +334,17 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
       ImageHandler.loadCircularImage(itemView.getContext(), userImage, userImageUrl);
       timestamp.setText(MomentsUtils.getFormattedTime(voteNotificationModel.getTimestamp()));
       text.setText(String.format("%s Voted your post", voteNotificationModel.getVoter()));
-      //you are the author of the post
-      final String author = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
       itemView.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+          //you are the author of the post
+          final String author = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
           navigateToDetailsPage(itemView.getContext(),
             voteNotificationModel.getNotificationId(),
             author,
             voteNotificationModel.getPermlink());
         }
       });
-      if (voteNotificationModel.isRead()) {
-        markAsReadBtn.setVisibility(View.GONE);
-      } else {
-        markAsReadBtn.setVisibility(View.VISIBLE);
-        markAsReadBtn.setOnClickListener(new View.OnClickListener() {
-          @Override
-          public void onClick(View view) {
-            FirebaseNotificationStore.markAsRead(voteNotificationModel.getNotificationId());
-          }
-        });
-      }
     }
   }
 

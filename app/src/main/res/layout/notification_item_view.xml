@@ -31,20 +31,4 @@
         android:textColor="@color/Black87"
         android:textSize="14sp" />
 
-    <TextView
-        android:id="@+id/markAsReadBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="12dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/light_btn_bg"
-        android:paddingBottom="4dp"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:paddingTop="4dp"
-        android:text="Mark Read"
-        android:textColor="@color/colorPrimary"
-        android:visibility="gone" />
-
 </RelativeLayout>
