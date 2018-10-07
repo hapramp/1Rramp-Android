@@ -2,6 +2,7 @@ package com.hapramp.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
 import com.hapramp.analytics.EventReporter;
@@ -16,8 +17,7 @@ public class Splash extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     DataStoreCachePreference.getInstance();
     NotificationHandler.createNotificationChannel(this);
-    EventReporter.setOpenTime();
-    EventReporter.addEvent("splash");
+    performTasksDelayed();
     if (HaprampPreferenceManager.getInstance().isLoggedIn()) {
       navigateToHomePage();
       return;
@@ -27,6 +27,18 @@ public class Splash extends AppCompatActivity {
     } else {
       navigateToOnBoarding();
     }
+  }
+
+  private void performTasksDelayed() {
+    new Handler().postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        EventReporter.setOpenTime();
+        EventReporter.addEvent("splash");
+        EventReporter.reportDeviceId();
+        EventReporter.reportOpenEvent();
+      }
+    },4000);
   }
 
   private void navigateToHomePage() {

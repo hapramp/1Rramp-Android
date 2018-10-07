@@ -74,6 +74,7 @@ public class NotificationActivity extends AppCompatActivity {
   }
 
   private void listenToNotifications() {
+ try{
     FirebaseNotificationStore.getNotificationsListNode().addValueEventListener(new ValueEventListener() {
       @Override
       public void onDataChange(final @NonNull DataSnapshot dataSnapshot) {
@@ -88,15 +89,20 @@ public class NotificationActivity extends AppCompatActivity {
               markAsReadBtn.setVisibility(View.GONE);
               noNotificationMessage.setVisibility(View.VISIBLE);
             }
-          }
-        });
-      }
+          });
+        }
 
-      @Override
-      public void onCancelled(@NonNull DatabaseError databaseError) {
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-      }
-    });
+        }
+      });
+    }
+    catch (Exception e) {
+      recyclerView.setVisibility(View.GONE);
+      progressBar.setVisibility(View.GONE);
+      noNotificationMessage.setVisibility(View.VISIBLE);
+    }
   }
 
   private void retrieveNotifications(Map<String, Object> notifs) {
@@ -107,7 +113,7 @@ public class NotificationActivity extends AppCompatActivity {
       if (baseNotificationModel != null) {
         baseNotificationModel.setNotificationId(entry.getKey());
         boolean isRead = (Boolean) map.get(NODE_IS_READ);
-        if(!isRead){
+        if (!isRead) {
           enableReadMarkButton();
         }
         baseNotificationModel.setRead(isRead);
