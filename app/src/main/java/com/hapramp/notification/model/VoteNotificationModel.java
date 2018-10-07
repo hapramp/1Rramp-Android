@@ -7,7 +7,7 @@ public class VoteNotificationModel extends BaseNotificationModel {
   public String permlink;
   public String weight;
   public String timestamp;
-  public String parentPermlink;
+  public String parent_permlink;
 
   public VoteNotificationModel(String type, String voter, String permlink, String weight, String timestamp, String parentPermlink) {
     this.type = type;
@@ -15,41 +15,15 @@ public class VoteNotificationModel extends BaseNotificationModel {
     this.permlink = permlink;
     this.weight = weight;
     this.timestamp = timestamp;
-    this.parentPermlink = parentPermlink;
+    this.parent_permlink = parentPermlink;
   }
 
-  public String getParentPermlink() {
-    return parentPermlink;
-  }
-
-  public void setParentPermlink(String parentPermlink) {
-    this.parentPermlink = parentPermlink;
-  }
-
-  public VoteNotificationModel(String type, String notificationId, String type1, String voter, String permlink, String weight, String timestamp, String parentPermlink) {
-    super(type, notificationId);
-    this.type = type1;
-    this.voter = voter;
-    this.permlink = permlink;
-    this.weight = weight;
-    this.timestamp = timestamp;
-    this.parentPermlink = parentPermlink;
-  }
-
-  public VoteNotificationModel(String type, String type1, String voter, String permlink, String weight, String timestamp, String parentPermlink) {
-    super(type);
-    this.type = type1;
-    this.voter = voter;
-    this.permlink = permlink;
-    this.weight = weight;
-    this.timestamp = timestamp;
-    this.parentPermlink = parentPermlink;
-  }
-
+  @Override
   public String getType() {
     return type;
   }
 
+  @Override
   public void setType(String type) {
     this.type = type;
   }
@@ -84,6 +58,14 @@ public class VoteNotificationModel extends BaseNotificationModel {
 
   public void setTimestamp(String timestamp) {
     this.timestamp = timestamp;
+  }
+
+  public String getParent_permlink() {
+    return parent_permlink;
+  }
+
+  public void setParent_permlink(String parent_permlink) {
+    this.parent_permlink = parent_permlink;
   }
 
   @Override

@@ -146,6 +146,8 @@ public class DetailedActivity extends AppCompatActivity implements
   TextView ratingDesc;
   @BindView(R.id.voters_peek_view)
   VoterPeekView votersPeekView;
+  @BindView(R.id.gotoParentBtn)
+  TextView gotoParentBtn;
   private Handler mHandler;
   private Feed post;
   private ProgressDialog progressDialog;
@@ -201,13 +203,39 @@ public class DetailedActivity extends AppCompatActivity implements
     if (bundle.getString(Constants.EXTRAA_KEY_POST_AUTHOR) != null) {
       String author = bundle.getString(Constants.EXTRAA_KEY_POST_AUTHOR);
       String permlink = bundle.getString(Constants.EXTRAA_KEY_POST_PERMLINK);
+      final String parentPermlink = bundle.getString(Constants.EXTRAA_KEY_PARENT_PERMLINK, "");
       String notifId = getIntent().getExtras().getString(Constants.EXTRAA_KEY_NOTIFICATION_ID, null);
+      Log.d("DetailedPost",parentPermlink+" ---");
+      if (parentPermlink.length() > 0) {
+        //show goto parent button
+        if (gotoParentBtn != null) {
+          gotoParentBtn.setVisibility(View.VISIBLE);
+          gotoParentBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+              String me = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+              if (me.length() > 0) {
+                openDetailsPage(me,parentPermlink);
+              }
+            }
+          });
+        }
+      }
       if (notifId != null) {
         FirebaseNotificationStore.markAsRead(notifId);
       }
       showFeedLoading(true);
       requestSingleFeed(author, permlink);
     }
+  }
+
+  private void openDetailsPage(String author, String permlink) {
+    Intent intent = new Intent(this, DetailedActivity.class);
+    Bundle bundle = new Bundle();
+    bundle.putString(Constants.EXTRAA_KEY_POST_AUTHOR, author);
+    bundle.putString(Constants.EXTRAA_KEY_POST_PERMLINK, permlink);
+    intent.putExtras(bundle);
+    startActivity(intent);
   }
 
   private void bindPostValues(Feed feed) {
@@ -360,10 +388,6 @@ public class DetailedActivity extends AppCompatActivity implements
     requestReplies();
   }
 
-  private void requestReplies() {
-    dataStore.requestComments(this.post.getAuthor(), this.post.getPermlink(), this);
-  }
-
   @Override
   public void onCommentCreateFailed() {
     hideProgress();
@@ -373,6 +397,10 @@ public class DetailedActivity extends AppCompatActivity implements
     if (progressDialog != null) {
       progressDialog.dismiss();
     }
+  }
+
+  private void requestReplies() {
+    dataStore.requestComments(this.post.getAuthor(), this.post.getPermlink(), this);
   }
 
   private void setCommentCount(int count) {

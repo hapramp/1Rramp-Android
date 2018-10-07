@@ -5,40 +5,40 @@ public class ReblogNotificationModel  extends BaseNotificationModel {
   public String account;
   public String permlink;
   public String timestamp;
-  public String parentPermlink;
+  public String parent_permlink;
 
-  public ReblogNotificationModel(String type, String account, String permlink, String timestamp, String parentPermlink) {
+  public ReblogNotificationModel(String type, String account, String permlink, String timestamp, String parent_permlink) {
     this.type = type;
     this.account = account;
     this.permlink = permlink;
     this.timestamp = timestamp;
-    this.parentPermlink = parentPermlink;
+    this.parent_permlink = parent_permlink;
   }
 
   public String getParentPermlink() {
-    return parentPermlink;
+    return parent_permlink;
   }
 
-  public void setParentPermlink(String parentPermlink) {
-    this.parentPermlink = parentPermlink;
+  public void setParentPermlink(String parent_permlink) {
+    this.parent_permlink = parent_permlink;
   }
 
-  public ReblogNotificationModel(String type, String notificationId, String type1, String account, String permlink, String timestamp, String parentPermlink) {
+  public ReblogNotificationModel(String type, String notificationId, String type1, String account, String permlink, String timestamp, String parent_permlink) {
     super(type, notificationId);
     this.type = type1;
     this.account = account;
     this.permlink = permlink;
     this.timestamp = timestamp;
-    this.parentPermlink = parentPermlink;
+    this.parent_permlink = parent_permlink;
   }
 
-  public ReblogNotificationModel(String type, String type1, String account, String permlink, String timestamp, String parentPermlink) {
+  public ReblogNotificationModel(String type, String type1, String account, String permlink, String timestamp, String parent_permlink) {
     super(type);
     this.type = type1;
     this.account = account;
     this.permlink = permlink;
     this.timestamp = timestamp;
-    this.parentPermlink = parentPermlink;
+    this.parent_permlink = parent_permlink;
   }
 
   public String getType() {
@@ -80,7 +80,7 @@ public class ReblogNotificationModel  extends BaseNotificationModel {
       ", account='" + account + '\'' +
       ", permlink='" + permlink + '\'' +
       ", timestamp='" + timestamp + '\'' +
-      ", parentPermlink='" + parentPermlink + '\'' +
+      ", parent_permlink='" + parent_permlink + '\'' +
       '}';
   }
 }

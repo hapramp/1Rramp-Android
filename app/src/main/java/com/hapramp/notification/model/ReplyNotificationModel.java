@@ -1,6 +1,5 @@
 package com.hapramp.notification.model;
 
-import com.google.gson.Gson;
 
 public class ReplyNotificationModel  extends BaseNotificationModel {
   public String type;
