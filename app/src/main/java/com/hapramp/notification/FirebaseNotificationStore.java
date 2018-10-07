@@ -23,15 +23,17 @@ public class FirebaseNotificationStore {
         String rootNode = HapRampMain.getFp();
         Looper.prepare();
         String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        firebaseDatabase
-          .getReference()
-          .child(rootNode)
-          .child(NODE_NOTIFICATIONS)
-          .child(username)
-          .child(baseNotificationModel.getNotificationId())
-          .setValue(baseNotificationModel);
-        Looper.loop();
+        if (username.length() > 0) {
+          FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+          firebaseDatabase
+            .getReference()
+            .child(rootNode)
+            .child(NODE_NOTIFICATIONS)
+            .child(username)
+            .child(baseNotificationModel.getNotificationId())
+            .setValue(baseNotificationModel);
+          Looper.loop();
+        }
       }
     }.start();
   }
@@ -39,38 +41,42 @@ public class FirebaseNotificationStore {
   public static DatabaseReference getNotificationsListNode() {
     String rootNode = HapRampMain.getFp();
     String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    return firebaseDatabase
-      .getReference()
-      .child(rootNode)
-      .child(NODE_NOTIFICATIONS)
-      .child(username);
+    if (username.length() > 0) {
+      FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+      return firebaseDatabase
+        .getReference()
+        .child(rootNode)
+        .child(NODE_NOTIFICATIONS)
+        .child(username);
+    }
+    return null;
   }
 
 
   public static void markAsRead(String notifId) {
     String rootNode = HapRampMain.getFp();
     String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+    if (username.length() > 0) {
+      final DatabaseReference notificationRef = FirebaseDatabase.getInstance()
+        .getReference()
+        .child(rootNode)
+        .child(NODE_NOTIFICATIONS)
+        .child(username)
+        .child(notifId);
 
-    final DatabaseReference notificationRef = FirebaseDatabase.getInstance()
-      .getReference()
-      .child(rootNode)
-      .child(NODE_NOTIFICATIONS)
-      .child(username)
-      .child(notifId);
-
-    notificationRef.addListenerForSingleValueEvent(new ValueEventListener() {
-      @Override
-      public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-        if (dataSnapshot.exists()) {
-          notificationRef.child(NODE_IS_READ).setValue(true);
+      notificationRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+          if (dataSnapshot.exists()) {
+            notificationRef.child(NODE_IS_READ).setValue(true);
+          }
         }
-      }
 
-      @Override
-      public void onCancelled(@NonNull DatabaseError databaseError) {
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-      }
-    });
+        }
+      });
+    }
   }
 }

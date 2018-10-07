@@ -29,7 +29,6 @@ import com.hapramp.R;
 import com.hapramp.analytics.EventReporter;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.JSONParser;
-import com.hapramp.datastore.WebScrapper;
 import com.hapramp.notification.FirebaseNotificationStore;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.User;
@@ -137,7 +136,6 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
     if (HaprampPreferenceManager.getInstance().getCurrentUserInfoAsJson().length() == 0) {
       showInterruptedProgressBar("Fetching profile info...");
     }
-    EventReporter.reportDeviceId();
     checkTokenValidity();
     DataStore.performAllCommunitySync();
     DataStore.requestSyncLastPostCreationTime();
@@ -281,7 +279,7 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
       return;
     }
     backPressedOnce = true;
-    EventReporter.reportEvent(this);
+    EventReporter.reportEventSession(this);
     Toast.makeText(this, "Press back once more to exit", Toast.LENGTH_SHORT).show();
     new Handler().postDelayed(new Runnable() {
       @Override
@@ -445,25 +443,30 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
   }
 
   private void listenToNotifications() {
-    FirebaseNotificationStore.getNotificationsListNode().addValueEventListener(new ValueEventListener() {
-      @Override
-      public void onDataChange(final @NonNull DataSnapshot dataSnapshot) {
-        mHandler.post(new Runnable() {
-          @Override
-          public void run() {
-            if (dataSnapshot.exists()) {
-              retrieveNotifications((Map<String, Object>) dataSnapshot.getValue());
-            } else {
-              notificationCount.setVisibility(View.GONE);
+    try {
+      FirebaseNotificationStore.getNotificationsListNode().addValueEventListener(new ValueEventListener() {
+        @Override
+        public void onDataChange(final @NonNull DataSnapshot dataSnapshot) {
+          mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+              if (dataSnapshot.exists()) {
+                retrieveNotifications((Map<String, Object>) dataSnapshot.getValue());
+              } else {
+                notificationCount.setVisibility(View.GONE);
+              }
             }
-          }
-        });
-      }
+          });
+        }
 
-      @Override
-      public void onCancelled(@NonNull DatabaseError databaseError) {
-      }
-    });
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+        }
+      });
+    }
+    catch (Exception e) {
+      notificationCount.setVisibility(View.GONE);
+    }
   }
 
   private void retrieveNotifications(Map<String, Object> notifs) {
