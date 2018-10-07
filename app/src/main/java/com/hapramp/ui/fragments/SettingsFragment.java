@@ -178,7 +178,7 @@ public class SettingsFragment extends Fragment {
 
   private void logout() {
     EventReporter.addEvent(AnalyticsParams.EVENT_LOGOUT);
-    EventReporter.reportEvent(mContext);
+    EventReporter.reportEventSession(mContext);
     revokeAccessToken();
   }
 
