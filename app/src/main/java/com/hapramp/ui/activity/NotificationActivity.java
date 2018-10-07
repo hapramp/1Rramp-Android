@@ -74,20 +74,21 @@ public class NotificationActivity extends AppCompatActivity {
   }
 
   private void listenToNotifications() {
- try{
-    FirebaseNotificationStore.getNotificationsListNode().addValueEventListener(new ValueEventListener() {
-      @Override
-      public void onDataChange(final @NonNull DataSnapshot dataSnapshot) {
-        mHandler.post(new Runnable() {
-          @Override
-          public void run() {
-            if (dataSnapshot.exists()) {
-              retrieveNotifications((Map<String, Object>) dataSnapshot.getValue());
-            } else {
-              recyclerView.setVisibility(View.GONE);
-              progressBar.setVisibility(View.GONE);
-              markAsReadBtn.setVisibility(View.GONE);
-              noNotificationMessage.setVisibility(View.VISIBLE);
+    try {
+      FirebaseNotificationStore.getNotificationsListNode().addValueEventListener(new ValueEventListener() {
+        @Override
+        public void onDataChange(final @NonNull DataSnapshot dataSnapshot) {
+          mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+              if (dataSnapshot.exists()) {
+                retrieveNotifications((Map<String, Object>) dataSnapshot.getValue());
+              } else {
+                recyclerView.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
+                markAsReadBtn.setVisibility(View.GONE);
+                noNotificationMessage.setVisibility(View.VISIBLE);
+              }
             }
           });
         }
