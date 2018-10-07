@@ -85,6 +85,7 @@ public class NotificationActivity extends AppCompatActivity {
             } else {
               recyclerView.setVisibility(View.GONE);
               progressBar.setVisibility(View.GONE);
+              markAsReadBtn.setVisibility(View.GONE);
               noNotificationMessage.setVisibility(View.VISIBLE);
             }
           }
@@ -120,6 +121,7 @@ public class NotificationActivity extends AppCompatActivity {
         NotificationSortUtils.sortNotification(notifications);
         Collections.reverse(notifications);
         mNotifications = notifications;
+        noNotificationMessage.setVisibility(View.GONE);
         notificationAdapter.setNotificationModels(notifications);
       } else {
         recyclerView.setVisibility(View.GONE);

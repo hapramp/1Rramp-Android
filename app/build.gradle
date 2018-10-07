@@ -37,7 +37,7 @@ android {
         applicationId "com.hapramp"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 55
+        versionCode 56
         versionName "0.0.16"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
