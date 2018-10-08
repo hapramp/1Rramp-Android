@@ -451,9 +451,11 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
             @Override
             public void run() {
               if (dataSnapshot.exists()) {
-                retrieveNotifications((Map<String, Object>) dataSnapshot.getValue());
+                readNotificationMap((Map<String, Object>) dataSnapshot.getValue());
               } else {
-                notificationCount.setVisibility(View.GONE);
+                if (notificationCount != null) {
+                  notificationCount.setVisibility(View.GONE);
+                }
               }
             }
           });
@@ -465,16 +467,22 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
       });
     }
     catch (Exception e) {
-      notificationCount.setVisibility(View.GONE);
+      if (notificationCount != null) {
+        notificationCount.setVisibility(View.GONE);
+      }
     }
   }
 
-  private void retrieveNotifications(Map<String, Object> notifs) {
+  private void readNotificationMap(Map<String, Object> notifs) {
     int unread = 0;
     for (Map.Entry<String, Object> entry : notifs.entrySet()) {
       Map map = (Map) entry.getValue();
-      if (!(Boolean) map.get("read")) {
-        unread++;
+      if (map.containsKey("read")) {
+        if (map.get("read") instanceof Boolean) {
+          if (!(Boolean) map.get("read")) {
+            unread++;
+          }
+        }
       }
     }
     if (notificationCount != null) {

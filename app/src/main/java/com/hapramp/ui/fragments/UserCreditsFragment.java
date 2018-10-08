@@ -3,12 +3,12 @@ package com.hapramp.ui.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hapramp.R;
 import com.hapramp.datastore.WebScrapper;
@@ -42,6 +42,7 @@ public class UserCreditsFragment extends Fragment implements ResourceCreditCallb
   private String username;
   private Unbinder unbinder;
   private WebScrapper webScrapper;
+  private Context mContext;
 
   public UserCreditsFragment() {
     webScrapper = new WebScrapper();
@@ -53,6 +54,7 @@ public class UserCreditsFragment extends Fragment implements ResourceCreditCallb
 
   @Override
   public void onAttach(Context context) {
+    this.mContext = context;
     super.onAttach(context);
   }
 
@@ -113,16 +115,16 @@ public class UserCreditsFragment extends Fragment implements ResourceCreditCallb
       commentsAllowed.setText(resourceCreditModel.getCommentsAllowed());
       votesAllowed.setText(resourceCreditModel.getVotesAllowed());
       transfersAllowed.setText(resourceCreditModel.getTransfersAllowed());
+      hideProgress();
     }
     catch (Exception e) {
-      Log.d("UserCredit",e.toString());
+      e.printStackTrace();
     }
-    hideProgress();
   }
 
   @Override
   public void onResourceCreditError(String msg) {
-    Log.d("UserCredit",msg);
+    Toast.makeText(mContext, "Something went wrong!", Toast.LENGTH_LONG).show();
     hideProgress();
   }
 }

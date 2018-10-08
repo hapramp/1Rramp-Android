@@ -113,11 +113,15 @@ public class NotificationActivity extends AppCompatActivity {
       BaseNotificationModel baseNotificationModel = NotificationParser.parseNotification(map);
       if (baseNotificationModel != null) {
         baseNotificationModel.setNotificationId(entry.getKey());
-        boolean isRead = (Boolean) map.get(NODE_IS_READ);
-        if (!isRead) {
-          enableReadMarkButton();
+        if (map.containsKey(NODE_IS_READ)) {
+          if (map.get(NODE_IS_READ) instanceof Boolean) {
+            boolean isRead = (Boolean) map.get(NODE_IS_READ);
+            if (!isRead) {
+              enableReadMarkButton();
+            }
+            baseNotificationModel.setRead(isRead);
+          }
         }
-        baseNotificationModel.setRead(isRead);
         notifications.add(0, baseNotificationModel);
       }
     }

@@ -1,7 +1,6 @@
 package com.hapramp.datastore;
 
 import android.os.Handler;
-import android.util.Log;
 
 import com.hapramp.datastore.callbacks.ResourceCreditCallback;
 import com.hapramp.models.ResourceCreditModel;
@@ -44,13 +43,18 @@ public class WebScrapper {
               }
             }
           }
-          Log.d("UserCredit","done parsing ");
         }
-        catch (Exception e) {
-          Log.d("UserCredit",e.toString());
-          if (resourceCreditCallback != null) {
-            resourceCreditCallback.onResourceCreditError(e.toString());
-          }
+        catch (final Exception e) {
+          handler.post(
+            new Runnable() {
+              @Override
+              public void run() {
+                if (resourceCreditCallback != null) {
+                  resourceCreditCallback.onResourceCreditError(e.toString());
+                }
+              }
+            }
+          );
         }
         handler.post(new Runnable() {
           @Override
