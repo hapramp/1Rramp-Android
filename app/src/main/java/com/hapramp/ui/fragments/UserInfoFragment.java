@@ -293,12 +293,17 @@ public class UserInfoFragment extends Fragment implements FollowInfoCallback, Us
   }
 
   private void showFollowProgress(boolean show) {
-    if (show) {
-      followBtn.setVisibility(GONE);
-      followUnfollowProgress.setVisibility(VISIBLE);
-    } else {
-      followBtn.setVisibility(VISIBLE);
-      followUnfollowProgress.setVisibility(GONE);
+    try { // to avoid dead view access
+      if (show) {
+        followBtn.setVisibility(GONE);
+        followUnfollowProgress.setVisibility(VISIBLE);
+      } else {
+        followBtn.setVisibility(VISIBLE);
+        followUnfollowProgress.setVisibility(GONE);
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
     }
   }
 
@@ -341,12 +346,17 @@ public class UserInfoFragment extends Fragment implements FollowInfoCallback, Us
   }
 
   private void setFollowState(boolean state) {
-    if (state) {
-      followBtn.setText(TICK_TEXT + " Following");
-      isFollowed = true;
-    } else {
-      followBtn.setText("Follow");
-      isFollowed = false;
+    try { // to avoid dead view access
+      if (state) {
+        followBtn.setText(TICK_TEXT + " Following");
+        isFollowed = true;
+      } else {
+        followBtn.setText("Follow");
+        isFollowed = false;
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
     }
   }
 
@@ -422,7 +432,7 @@ public class UserInfoFragment extends Fragment implements FollowInfoCallback, Us
       }
     }
     catch (Exception e) {
-
+      e.printStackTrace();
     }
   }
 
@@ -447,16 +457,21 @@ public class UserInfoFragment extends Fragment implements FollowInfoCallback, Us
   }
 
   private void invalidateFollowButton() {
-    Set<String> followings = HaprampPreferenceManager.getInstance().getFollowingsSet();
-    if (followings != null) {
-      if (followBtn != null) {
-        followBtn.setVisibility(VISIBLE);
+    try {
+      Set<String> followings = HaprampPreferenceManager.getInstance().getFollowingsSet();
+      if (followings != null) {
+        if (followBtn != null) {
+          followBtn.setVisibility(VISIBLE);
+        }
+        setFollowState(followings.contains(mUsername));
+      } else {
+        if (followBtn != null) {
+          followBtn.setVisibility(GONE);
+        }
       }
-      setFollowState(followings.contains(mUsername));
-    } else {
-      if (followBtn != null) {
-        followBtn.setVisibility(GONE);
-      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
     }
   }
 
