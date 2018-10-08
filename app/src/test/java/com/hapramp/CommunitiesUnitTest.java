@@ -89,5 +89,4 @@ public class CommunitiesUnitTest {
     System.out.println(HashTagUtils.reformatHashTag(tag4));
     assertEquals("cruelday", HashTagUtils.reformatHashTag(tag4));
   }
-
 }

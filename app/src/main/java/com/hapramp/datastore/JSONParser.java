@@ -4,14 +4,12 @@ import android.util.Log;
 
 import com.hapramp.models.CommentModel;
 import com.hapramp.models.CommunityModel;
-import com.hapramp.models.ResourceCreditModel;
 import com.hapramp.models.VestedShareModel;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.User;
 import com.hapramp.steem.models.Voter;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.MarkdownPreProcessor;
-import com.hapramp.utils.MomentsUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -105,7 +103,7 @@ public class JSONParser {
       String title = rootObject.getString("title");
       //body
       String body = rootObject.getString("body");
-      body = body.replace(Constants.FOOTER_TEXT, "");
+      body = body.split(Constants.FOOTER_START_MARK)[0];
       //featured image
       String featureImageUrl = extractFeatureImageUrl(jsonMetaDataObj, body);
       //format
