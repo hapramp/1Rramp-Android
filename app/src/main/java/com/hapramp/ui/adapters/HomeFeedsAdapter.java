@@ -113,13 +113,13 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     return feedsCount > 0 ? feedsCount + 1 : 0;
   }
 
+  public int getFeedsCount() {
+    return feeds.size();
+  }
+
   private void removeItemAt(int position) {
     feeds.remove(position);
     notifyItemRemoved(position);
-  }
-
-  public int getFeedsCount() {
-    return feeds.size();
   }
 
   public void resetList() {
@@ -147,6 +147,7 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
   class LoadMoreViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.load_more_progress_view)
     ProgressBar loadingViewProgressBar;
+
     public LoadMoreViewHolder(View itemView) {
       super(itemView);
       ButterKnife.bind(this, itemView);
