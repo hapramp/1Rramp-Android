@@ -34,11 +34,10 @@ public class NotificationParser {
               String.valueOf(map.get(NotificationKey.KEY_PERMLINK)),
               String.valueOf(map.get(NotificationKey.KEY_WEIGHT)),
               String.valueOf(map.get(NotificationKey.KEY_TIMESTAMP)),
-              String.valueOf(map.get(NotificationKey.KEY_PARENT_PERMLINK))
+              String.valueOf(map.get(NotificationKey.KEY_PARENT_PERMLINK) != null ? map.get(NotificationKey.KEY_PARENT_PERMLINK) : "")
             );
 
           } else if (type.equals(NotificationKey.NOTIFICATION_TYPE_MENTION)) {
-
             baseNotificationType = new MentionNotificationModel(
               String.valueOf(map.get(NotificationKey.KEY_TYPE)),
               Boolean.valueOf(map.get(NotificationKey.KEY_IS_ROOT_POST)),
@@ -46,7 +45,6 @@ public class NotificationParser {
               String.valueOf(map.get(NotificationKey.KEY_PARENT_PERMLINK)),
               String.valueOf(map.get(NotificationKey.KEY_PERMLINK)),
               String.valueOf(map.get(NotificationKey.KEY_TIMESTAMP)));
-
           } else if (type.equals(NotificationKey.NOTIFICATION_TYPE_REBLOG)) {
 
             baseNotificationType = new ReblogNotificationModel(
@@ -54,13 +52,13 @@ public class NotificationParser {
               String.valueOf(map.get(NotificationKey.KEY_ACCOUNT)),
               String.valueOf(map.get(NotificationKey.KEY_PERMLINK)),
               String.valueOf(map.get(NotificationKey.KEY_TIMESTAMP)),
-              String.valueOf(map.get(NotificationKey.KEY_PARENT_PERMLINK)));
+              String.valueOf(map.get(NotificationKey.KEY_PARENT_PERMLINK) != null ? map.get(NotificationKey.KEY_PARENT_PERMLINK) : ""));
 
           } else if (type.equals(NotificationKey.NOTIFICATION_TYPE_REPLY)) {
 
             baseNotificationType = new ReplyNotificationModel(
               String.valueOf(map.get(NotificationKey.KEY_TYPE)),
-              String.valueOf(map.get(NotificationKey.KEY_PARENT_PERMLINK)),
+              String.valueOf(map.get(NotificationKey.KEY_PARENT_PERMLINK) != null ? map.get(NotificationKey.KEY_PARENT_PERMLINK) : ""),
               String.valueOf(map.get(NotificationKey.KEY_AUTHOR)),
               String.valueOf(map.get(NotificationKey.KEY_PERMLINK)),
               String.valueOf(map.get(NotificationKey.KEY_TIMESTAMP)));
@@ -72,13 +70,12 @@ public class NotificationParser {
               String.valueOf(map.get(NotificationKey.KEY_AMOUNT)),
               String.valueOf(map.get(NotificationKey.KEY_MEMO)),
               String.valueOf(map.get(NotificationKey.KEY_TIMESTAMP)));
-
           }
         }
       }
     }
     catch (Exception e) {
-
+      e.printStackTrace();
     }
     return baseNotificationType;
   }

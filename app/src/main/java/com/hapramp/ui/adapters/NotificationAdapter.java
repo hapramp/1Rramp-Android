@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -138,11 +137,13 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
   private void navigateToDetailsPage(Context context,
                                      String notificationId,
                                      String author,
+                                     String parentPermlink,
                                      String permlink) {
     Intent intent = new Intent(context, DetailedActivity.class);
     Bundle bundle = new Bundle();
     bundle.putString(Constants.EXTRAA_KEY_NOTIFICATION_ID, notificationId);
     bundle.putString(Constants.EXTRAA_KEY_POST_AUTHOR, author);
+    bundle.putString(Constants.EXTRAA_KEY_PARENT_PERMLINK, parentPermlink);
     bundle.putString(Constants.EXTRAA_KEY_POST_PERMLINK, permlink);
     intent.putExtras(bundle);
     context.startActivity(intent);
@@ -208,11 +209,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
       itemView.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-          //you are the author of the post
-          final String author = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
           navigateToDetailsPage(itemView.getContext(),
             mentionNotificationModel.getNotificationId(),
-            author,
+            mentionNotificationModel.getAuthor(),
+            mentionNotificationModel.getParent_permlink(),
             mentionNotificationModel.getPermlink());
         }
       });
@@ -246,6 +246,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
           navigateToDetailsPage(itemView.getContext(),
             reblogNotificationModel.getNotificationId(),
             author,
+            reblogNotificationModel.getParentPermlink(),
             reblogNotificationModel.getPermlink());
         }
       });
@@ -274,11 +275,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
       itemView.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-          //you are the author of the post
-          final String author = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
           navigateToDetailsPage(itemView.getContext(),
             replyNotificationModel.getNotificationId(),
-            author,
+            replyNotificationModel.getAuthor(),
+            replyNotificationModel.getParent_permlink(),
             replyNotificationModel.getPermlink());
         }
       });
@@ -342,6 +342,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
           navigateToDetailsPage(itemView.getContext(),
             voteNotificationModel.getNotificationId(),
             author,
+            voteNotificationModel.getParent_permlink(),
             voteNotificationModel.getPermlink());
         }
       });

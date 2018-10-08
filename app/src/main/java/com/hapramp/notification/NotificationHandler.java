@@ -73,6 +73,7 @@ public class NotificationHandler {
                 showCommentDirectedNotification(
                   baseNotificationModel.getNotificationId(),
                   ((ReplyNotificationModel) baseNotificationModel).author,
+                  ((ReplyNotificationModel) baseNotificationModel).parent_permlink,
                   ((ReplyNotificationModel) baseNotificationModel).permlink);
 
                 break;
@@ -98,6 +99,7 @@ public class NotificationHandler {
                 showMentionDirectedNotification(
                   baseNotificationModel.getNotificationId(),
                   ((MentionNotificationModel) baseNotificationModel).author,
+                  ((MentionNotificationModel) baseNotificationModel).parent_permlink,
                   ((MentionNotificationModel) baseNotificationModel).permlink
                 );
                 break;
@@ -142,7 +144,7 @@ public class NotificationHandler {
     String author = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
     String title = "Reblog";
     String content = reblogger + " shared your post";
-    PendingIntent pendingIntent = getPostNotificationPendingIntent(context, notificationId, author, permlink);
+    PendingIntent pendingIntent = getPostNotificationPendingIntent(context, notificationId, author,"", permlink);
     addNotificationToTray(HapRampMain.getContext(), pendingIntent, title, content);
   }
 
@@ -151,13 +153,13 @@ public class NotificationHandler {
    * @param commentor      user who created comment
    * @param permlink       permlink of new comment/reply.
    */
-  private static void showCommentDirectedNotification(String notificationId, String commentor, String permlink) {
+  private static void showCommentDirectedNotification(String notificationId, String commentor, String parentPermlink, String permlink) {
     Context context = HapRampMain.getContext();
     //you are the author of the post
     String author = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
     String title = "Comment";
     String content = commentor + " commented on your post";
-    PendingIntent pendingIntent = getPostNotificationPendingIntent(context, notificationId, author, permlink);
+    PendingIntent pendingIntent = getPostNotificationPendingIntent(context, notificationId, author, parentPermlink, permlink);
     addNotificationToTray(HapRampMain.getContext(), pendingIntent, title, content);
   }
 
@@ -172,7 +174,7 @@ public class NotificationHandler {
     String author = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
     String title = "Vote";
     String content = voter + " voted your post";
-    PendingIntent pendingIntent = getPostNotificationPendingIntent(context, notificationId, author, permlink);
+    PendingIntent pendingIntent = getPostNotificationPendingIntent(context, notificationId, author, "", permlink);
     addNotificationToTray(HapRampMain.getContext(), pendingIntent, title, content);
   }
 
@@ -195,13 +197,13 @@ public class NotificationHandler {
    * @param mentioner      user who mentioned you in his/her post.
    * @param permlink       permlink of post in which you were mentioned.
    */
-  private static void showMentionDirectedNotification(String notificationId, String mentioner, String permlink) {
+  private static void showMentionDirectedNotification(String notificationId, String mentioner, String parentPermlink, String permlink) {
     Context context = HapRampMain.getContext();
     //you are the author of the post
     String author = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
     String title = "Mention";
     String content = mentioner + " mentioned you in a post";
-    PendingIntent pendingIntent = getPostNotificationPendingIntent(context, notificationId, author, permlink);
+    PendingIntent pendingIntent = getPostNotificationPendingIntent(context, notificationId, author, parentPermlink, permlink);
     addNotificationToTray(HapRampMain.getContext(), pendingIntent, title, content);
   }
 
@@ -235,11 +237,13 @@ public class NotificationHandler {
   private static PendingIntent getPostNotificationPendingIntent(Context context,
                                                                 String notificationId,
                                                                 String author,
+                                                                String parentPermlink,
                                                                 String permlink) {
     Intent intent = new Intent(context, DetailedActivity.class);
     Bundle bundle = new Bundle();
     bundle.putString(Constants.EXTRAA_KEY_NOTIFICATION_ID, notificationId);
     bundle.putString(Constants.EXTRAA_KEY_POST_AUTHOR, author);
+    bundle.putString(Constants.EXTRAA_KEY_PARENT_PERMLINK, parentPermlink);
     bundle.putString(Constants.EXTRAA_KEY_POST_PERMLINK, permlink);
     intent.putExtras(bundle);
     TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
