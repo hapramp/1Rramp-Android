@@ -46,14 +46,6 @@ public class WebloginActivity extends AppCompatActivity {
     progressDialog.show();
   }
 
-  @Override
-  protected void onPause() {
-    super.onPause();
-    if (progressDialog != null) {
-      progressDialog.dismiss();
-    }
-  }
-
   private void initWebView(final String loginUrl) {
     webView.getSettings().setJavaScriptEnabled(true);
     webView.getSettings().setDomStorageEnabled(true);
@@ -95,16 +87,21 @@ public class WebloginActivity extends AppCompatActivity {
 
   public static Map<String, String> splitQuery(URL url) throws UnsupportedEncodingException {
     Map<String, String> query_pairs = new LinkedHashMap<String, String>();
-    if (url != null) {
-      String query = url.getQuery();
-      if (query != null) {
-        String[] pairs = query.split("&");
-        for (String pair : pairs) {
-          int idx = pair.indexOf("=");
-          query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"),
-            URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+    try {
+      if (url != null) {
+        String query = url.getQuery();
+        if (query != null) {
+          String[] pairs = query.split("&");
+          for (String pair : pairs) {
+            int idx = pair.indexOf("=");
+            query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"),
+              URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+          }
         }
       }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
     }
     return query_pairs;
   }
@@ -121,5 +118,13 @@ public class WebloginActivity extends AppCompatActivity {
     Intent intent = new Intent();
     setResult(RESULT_CANCELED, intent);
     finish();
+  }
+
+  @Override
+  protected void onPause() {
+    super.onPause();
+    if (progressDialog != null) {
+      progressDialog.dismiss();
+    }
   }
 }
