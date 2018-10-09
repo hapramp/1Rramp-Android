@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.Log;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.hapramp.R;
@@ -144,7 +145,7 @@ public class NotificationHandler {
     String author = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
     String title = "Reblog";
     String content = reblogger + " shared your post";
-    PendingIntent pendingIntent = getPostNotificationPendingIntent(context, notificationId, author,"", permlink);
+    PendingIntent pendingIntent = getPostNotificationPendingIntent(context, notificationId, author, "", permlink);
     addNotificationToTray(HapRampMain.getContext(), pendingIntent, title, content);
   }
 
@@ -152,14 +153,13 @@ public class NotificationHandler {
    * @param notificationId
    * @param commentor      user who created comment
    * @param permlink       permlink of new comment/reply.
+   * Clicking on notification, opens the comment/reply created by commentor.
    */
   private static void showCommentDirectedNotification(String notificationId, String commentor, String parentPermlink, String permlink) {
     Context context = HapRampMain.getContext();
-    //you are the author of the post
-    String author = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
     String title = "Comment";
     String content = commentor + " commented on your post";
-    PendingIntent pendingIntent = getPostNotificationPendingIntent(context, notificationId, author, parentPermlink, permlink);
+    PendingIntent pendingIntent = getPostNotificationPendingIntent(context, notificationId, commentor, parentPermlink, permlink);
     addNotificationToTray(HapRampMain.getContext(), pendingIntent, title, content);
   }
 
@@ -196,14 +196,13 @@ public class NotificationHandler {
    * @param notificationId
    * @param mentioner      user who mentioned you in his/her post.
    * @param permlink       permlink of post in which you were mentioned.
+   * Clicking on notification, opens post in which user is mentioned
    */
   private static void showMentionDirectedNotification(String notificationId, String mentioner, String parentPermlink, String permlink) {
     Context context = HapRampMain.getContext();
-    //you are the author of the post
-    String author = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
     String title = "Mention";
     String content = mentioner + " mentioned you in a post";
-    PendingIntent pendingIntent = getPostNotificationPendingIntent(context, notificationId, author, parentPermlink, permlink);
+    PendingIntent pendingIntent = getPostNotificationPendingIntent(context, notificationId, mentioner, parentPermlink, permlink);
     addNotificationToTray(HapRampMain.getContext(), pendingIntent, title, content);
   }
 

@@ -175,7 +175,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
       String userImageUrl = String.format(itemView.getContext()
         .getString(R.string.steem_user_profile_pic_format_large), followNotificationModel.getFollower());
       ImageHandler.loadCircularImage(itemView.getContext(), userImage, userImageUrl);
-      text.setText(String.format("%s Started following you.", followNotificationModel.getFollower()));
+      text.setText(String.format("%s started following you.", followNotificationModel.getFollower()));
       itemView.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -204,7 +204,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
       String userImageUrl = String.format(itemView.getContext()
         .getString(R.string.steem_user_profile_pic_format_large), mentionNotificationModel.getAuthor());
       ImageHandler.loadCircularImage(itemView.getContext(), userImage, userImageUrl);
-      text.setText(String.format("%s Mentioned you in a post", mentionNotificationModel.getAuthor()));
+      text.setText(String.format("%s mentioned you in a post", mentionNotificationModel.getAuthor()));
       timestamp.setText(MomentsUtils.getFormattedTime(mentionNotificationModel.getTimestamp()));
       itemView.setOnClickListener(new View.OnClickListener() {
         @Override
@@ -236,7 +236,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
       String userImageUrl = String.format(itemView.getContext()
         .getString(R.string.steem_user_profile_pic_format_large), reblogNotificationModel.getAccount());
       ImageHandler.loadCircularImage(itemView.getContext(), userImage, userImageUrl);
-      text.setText(String.format("%s Reblogged your post", reblogNotificationModel.getAccount()));
+      text.setText(String.format("%s reblogged your post", reblogNotificationModel.getAccount()));
       timestamp.setText(MomentsUtils.getFormattedTime(reblogNotificationModel.getTimestamp()));
       itemView.setOnClickListener(new View.OnClickListener() {
         @Override
@@ -270,7 +270,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
       String userImageUrl = String.format(itemView.getContext()
         .getString(R.string.steem_user_profile_pic_format_large), replyNotificationModel.getAuthor());
       ImageHandler.loadCircularImage(itemView.getContext(), userImage, userImageUrl);
-      text.setText(String.format("%s Replied on your post.", replyNotificationModel.getAuthor()));
+      text.setText(String.format("%s replied on your post.", replyNotificationModel.getAuthor()));
       timestamp.setText(MomentsUtils.getFormattedTime(replyNotificationModel.getTimestamp()));
       itemView.setOnClickListener(new View.OnClickListener() {
         @Override
@@ -303,7 +303,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         .getString(R.string.steem_user_profile_pic_format_large), transferNotificationModel.getFrom());
       ImageHandler.loadCircularImage(itemView.getContext(), userImage, userImageUrl);
       timestamp.setText(MomentsUtils.getFormattedTime(transferNotificationModel.getTimestamp()));
-      text.setText(String.format("%s Sent %s to you.", transferNotificationModel.getFrom(),
+      text.setText(String.format("%s sent %s to you.", transferNotificationModel.getFrom(),
         transferNotificationModel.getAmount()));
       itemView.setOnClickListener(new View.OnClickListener() {
         @Override
@@ -333,7 +333,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         .getString(R.string.steem_user_profile_pic_format_large), voteNotificationModel.getVoter());
       ImageHandler.loadCircularImage(itemView.getContext(), userImage, userImageUrl);
       timestamp.setText(MomentsUtils.getFormattedTime(voteNotificationModel.getTimestamp()));
-      text.setText(String.format("%s Voted your post", voteNotificationModel.getVoter()));
+      text.setText(String.format("%s voted your post", voteNotificationModel.getVoter()));
       itemView.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
