@@ -528,11 +528,16 @@ public class UserInfoFragment extends Fragment implements FollowInfoCallback, Us
   }
 
   private void setFollowerCount(int count) {
-    String followerText = count > 1 ?
-      String.format(getContext().getString(R.string.profile_follower_count_text), count) :
-      String.format(getContext().getString(R.string.profile_follower_count_text_singular), count);
-    if (followersCountTv != null) {
-      followersCountTv.setText(followerText);
+    try {
+      String followerText = count > 1 ?
+        String.format(getContext().getString(R.string.profile_follower_count_text), count) :
+        String.format(getContext().getString(R.string.profile_follower_count_text_singular), count);
+      if (followersCountTv != null) {
+        followersCountTv.setText(followerText);
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
     }
   }
 

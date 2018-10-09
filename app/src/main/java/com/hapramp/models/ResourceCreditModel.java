@@ -1,13 +1,13 @@
 package com.hapramp.models;
 
 public class ResourceCreditModel {
-  private String maxMana;
-  private String currentMana;
-  private String commentPrice;
-  private String votesPrice;
-  private String transferPrice;
-  private String resourceCreditPercentage;
-  private String votingPowerPercentage;
+  public String maxMana = "";
+  public String currentMana = "";
+  public String commentPrice = "";
+  public String votesPrice = "";
+  public String transferPrice = "";
+  public String resourceCreditPercentage = "";
+  public String votingPowerPercentage = "";
 
   public ResourceCreditModel() {
   }
@@ -84,5 +84,18 @@ public class ResourceCreditModel {
 
   public void setTransferPrice(String transferPrice) {
     this.transferPrice = transferPrice;
+  }
+
+  @Override
+  public String toString() {
+    return "ResourceCreditModel{" +
+      "maxMana='" + maxMana + '\'' +
+      ", currentMana='" + currentMana + '\'' +
+      ", commentPrice='" + commentPrice + '\'' +
+      ", votesPrice='" + votesPrice + '\'' +
+      ", transferPrice='" + transferPrice + '\'' +
+      ", resourceCreditPercentage='" + resourceCreditPercentage + '\'' +
+      ", votingPowerPercentage='" + votingPowerPercentage + '\'' +
+      '}';
   }
 }
