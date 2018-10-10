@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.activity.CompetitionDetailsActivity">
+
+    <RelativeLayout
+        android:id="@+id/toolbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="#ffffff">
+
+        <ImageView
+            android:id="@+id/backBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:layout_centerVertical="true"
+            android:padding="14dp"
+            android:src="@drawable/back" />
+
+        <ImageView
+            android:id="@+id/overflowBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentRight="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:layout_centerVertical="true"
+            android:padding="14dp"
+            android:src="@drawable/more" />
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_below="@+id/toolbar_container"
+        android:id="@+id/competition_details_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/toolbar_container"
+        android:background="@drawable/toolbar_shadow" />
+
+</RelativeLayout>

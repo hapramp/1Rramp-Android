@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:paddingBottom="16dp">
+
+    <ImageView
+        android:id="@+id/feed_owner_pic"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:padding="12dp"
+        android:src="@drawable/circular_image_placeholder" />
+
+    <TextView
+        android:id="@+id/feed_owner_title"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_toRightOf="@+id/feed_owner_pic"
+        android:gravity="bottom"
+        android:text="Ankit Kumar"
+        android:textColor="@color/Black87"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/feed_owner_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_toRightOf="@+id/feed_owner_title"
+        android:gravity="bottom"
+        android:paddingLeft="4sp"
+        android:text="| 2 days ago"
+        android:textColor="@color/Black54" />
+
+    <include
+        layout="@layout/club_tag_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/feed_owner_title"
+        android:layout_toRightOf="@+id/feed_owner_pic" />
+
+    <ImageView
+        android:id="@+id/popupMenuDots"
+        android:layout_width="48dp"
+        android:layout_height="64dp"
+        android:layout_alignParentRight="true"
+        android:alpha="0.6"
+        android:background="?selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="16dp"
+        android:src="@drawable/more" />
+
+    <ImageView
+        android:id="@+id/featured_image_post"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/feed_owner_pic"
+        android:layout_marginBottom="16dp"
+        android:background="#20919191"
+        android:clickable="true"
+        android:minHeight="256dp"
+        android:scaleType="fitCenter"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/competition_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/featured_image_post"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:text="Hello Ankit"
+        android:textColor="@color/colorPrimary"
+        android:textSize="18sp"
+        android:visibility="visible" />
+
+    <RelativeLayout
+        android:id="@+id/competition_meta_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/competition_title"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/prize_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/clock" />
+
+        <LinearLayout
+            android:id="@+id/prize_description_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@+id/prize_icon"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total"
+                    android:textColor="@color/Black87"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:text="50 SBD"
+                    android:textColor="@color/Black54"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1st Prize"
+                    android:textColor="@color/Black87"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:text="30 SBD"
+                    android:textColor="@color/Black54"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2nd Prize "
+                    android:textColor="@color/Black87"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:text="20 SBD"
+                    android:textColor="@color/Black54"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/time_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_below="@+id/prize_description_container"
+            android:layout_marginTop="24dp"
+            android:src="@drawable/clock" />
+
+        <LinearLayout
+            android:id="@+id/time_description_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/prize_description_container"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="24dp"
+            android:layout_toRightOf="@+id/prize_icon"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Start"
+                    android:textColor="@color/Black87"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:text="In 5 Hrs."
+                    android:textColor="@color/Black54"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ends"
+                    android:textColor="@color/Black87"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:text="24 Sept 2018"
+                    android:textColor="@color/Black54"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/description_caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/competition_meta_container"
+        android:layout_marginLeft="16dp"
+        android:text="Description"
+        android:textColor="@color/Black87"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/post_snippet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/description_caption"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="4dp"
+        android:clickable="true"
+        android:ellipsize="end"
+        android:lineSpacingExtra="2dp"
+        android:maxHeight="36dp"
+        android:maxLines="4"
+        android:text="As of 2017, text messages are used by youth and adults for personal, family, business and social purposes. Governmental and non-governmental organizations use text messaging for communication between colleagues. In the 2010s, the sending of short informal messages has become an accepted part of many cultures, as happened earlier with emailing.["
+        android:textColor="@color/Black54"
+        android:textSize="14sp"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/rules_caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/post_snippet"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Rules:"
+        android:textColor="@color/Black87"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/competition_rules"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rules_caption"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="4dp"
+        android:clickable="true"
+        android:ellipsize="end"
+        android:lineSpacingExtra="2dp"
+        android:maxHeight="36dp"
+        android:maxLines="4"
+        android:text="As of 2017, text messages are used by youth and adults for personal, family, business and social purposes. Governmental and non-governmental organizations use text messaging for communication between colleagues. In the 2010s, the sending of short informal messages has become an accepted part of many cultures, as happened earlier with emailing.["
+        android:textColor="@color/Black54"
+        android:textSize="14sp"
+        android:visibility="visible" />
+
+</RelativeLayout>
