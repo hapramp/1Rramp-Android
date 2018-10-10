@@ -1,6 +1,7 @@
 package com.hapramp.datastore;
 
 import android.os.Handler;
+import android.util.Log;
 
 import com.hapramp.datastore.callbacks.ResourceCreditCallback;
 import com.hapramp.models.ResourceCreditModel;
@@ -27,19 +28,33 @@ public class WebScrapper {
             Elements tds = e.getElementsByTag("td");
             if (ths.size() > 0 && tds.size() > 0) {
               if (ths.text().equals("max_mana")) {
-                resourceCreditModel.setMaxMana(tds.text());
+                if (resourceCreditModel.maxMana.length() == 0) {
+                  resourceCreditModel.setMaxMana(tds.text());
+                }
               } else if (ths.text().equals("current_mana")) {
-                resourceCreditModel.setCurrentMana(tds.text());
+                if (resourceCreditModel.currentMana.length() == 0) {
+                  resourceCreditModel.setCurrentMana(tds.text());
+                }
               } else if (ths.text().equals("current_pct")) {
-                resourceCreditModel.setResourceCreditPercentage(tds.text());
+                if (resourceCreditModel.resourceCreditPercentage.length() == 0) {
+                  resourceCreditModel.setResourceCreditPercentage(tds.text());
+                }
               } else if (ths.text().equals("comments")) {
-                resourceCreditModel.setCommentPrice(tds.text());
+                if (resourceCreditModel.commentPrice.length() == 0) {
+                  resourceCreditModel.setCommentPrice(tds.text());
+                }
               } else if (ths.text().equals("votes")) {
-                resourceCreditModel.setVotesPrice(tds.text());
-              } else if (ths.text().equals("transfers/powerups")) {
-                resourceCreditModel.setTransferPrice(tds.text());
+                if (resourceCreditModel.votesPrice.length() == 0) {
+                  resourceCreditModel.setVotesPrice(tds.text());
+                }
+              } else if (ths.text().equals("transfers")) {
+                if (resourceCreditModel.transferPrice.length() == 0) {
+                  resourceCreditModel.setTransferPrice(tds.text());
+                }
               } else if (ths.text().equals("current_mana_pct")) {
-                resourceCreditModel.setVotingPowerPercentage(tds.text());
+                if (resourceCreditModel.votingPowerPercentage.length() == 0) {
+                  resourceCreditModel.setVotingPowerPercentage(tds.text());
+                }
               }
             }
           }
