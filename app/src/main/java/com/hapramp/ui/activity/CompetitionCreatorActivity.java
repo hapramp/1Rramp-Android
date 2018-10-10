@@ -141,6 +141,14 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
         showMetaView(false);
       }
     });
+
+    backBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        close();
+      }
+    });
+
     publishButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -148,6 +156,12 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
       }
     });
 
+    startTimeInput.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        showTimePicker("Select competition start time", startTimeInput);
+      }
+    });
     startClockIcon.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -155,6 +169,12 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
       }
     });
 
+    startDateInput.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        showDatePicker("Select competition start date", startDateInput);
+      }
+    });
     startDateIcon.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -162,6 +182,12 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
       }
     });
 
+    endTimeInput.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        showTimePicker("Select competition end time", endTimeInput);
+      }
+    });
     endClockIcon.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -169,6 +195,12 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
       }
     });
 
+    endDateInput.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        showDatePicker("Select competition end date", endDateInput);
+      }
+    });
     endDateIcon.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -182,6 +214,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
         openGallery();
       }
     });
+
   }
 
   private void showMetaView(boolean show) {
@@ -203,7 +236,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
       @Override
       public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
         if (targetInput != null) {
-          targetInput.setText(String.format(Locale.US, "%d:%d:00", selectedHour, selectedMinute));
+          targetInput.setText(String.format(Locale.US, "%02d:%02d:00", selectedHour, selectedMinute));
         }
       }
     }, hour, minute, true);//Yes 24 hour time
@@ -223,14 +256,13 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
         public void onDateSet(DatePicker view, int year,
                               int monthOfYear, int dayOfMonth) {
           if (targetInput != null) {
-            targetInput.setText(String.format(Locale.US, "%d:%d:%d", year, monthOfYear, dayOfMonth));
+            targetInput.setText(String.format(Locale.US, "%02d:%02d:%02d", year, 1 + monthOfYear, dayOfMonth));
           }
         }
       }, mYear, mMonth, mDay);
     datePickerDialog.setMessage(msg);
     datePickerDialog.show();
   }
-
 
   private void openGallery() {
     try {
@@ -247,6 +279,11 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
     catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  private void close() {
+    finish();
+    overridePendingTransition(R.anim.slide_down_enter, R.anim.slide_down_exit);
   }
 
   @Override
@@ -273,7 +310,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
   }
 
   private void selectImage(String filePath) {
-    ImageHandler.loadFilePath(this,competitionBanner,filePath);
+    ImageHandler.loadFilePath(this, competitionBanner, filePath);
   }
 }
 
