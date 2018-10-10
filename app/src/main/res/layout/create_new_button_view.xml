@@ -47,7 +47,7 @@
         android:id="@+id/photo_btn"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_above="@+id/plusBtn"
+        android:layout_above="@+id/competition_btn"
         android:alpha="0"
         android:background="@drawable/empty_btn_bg"
         android:layout_centerHorizontal="true"
@@ -70,6 +70,38 @@
             android:layout_marginRight="16dp"
             android:layout_toRightOf="@+id/photo_icon"
             android:text="Short Post"
+            android:textColor="@color/Black54"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/competition_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_above="@+id/plusBtn"
+        android:alpha="0"
+        android:background="@drawable/empty_btn_bg"
+        android:layout_centerHorizontal="true"
+        android:clickable="false"
+        android:elevation="2dp">
+
+        <ImageView
+            android:id="@+id/competition_icon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/filled_btn_bg"
+            android:padding="12dp"
+            android:src="@drawable/competition_white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_toRightOf="@+id/competition_icon"
+            android:text="Competition"
             android:textColor="@color/Black54"
             android:textSize="14sp" />
 

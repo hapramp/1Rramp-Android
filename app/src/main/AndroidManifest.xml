@@ -3,6 +3,7 @@
     package="com.hapramp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
@@ -22,7 +23,6 @@
         android:roundIcon="@mipmap/hapramp_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.hapramp.provider"
@@ -30,8 +30,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths">
-            </meta-data>
+                android:resource="@xml/file_paths"></meta-data>
         </provider>
 
         <service android:name=".analytics.HaprampInstanceIdService">
@@ -148,6 +147,9 @@
             android:name=".ui.activity.DelegateActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".ui.activity.NotificationActivity" />
+        <activity
+            android:name=".ui.activity.CompetitionCreatorActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

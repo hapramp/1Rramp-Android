@@ -385,6 +385,13 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
     overridePendingTransition(R.anim.slide_up_enter, R.anim.slide_up_exit);
   }
 
+  @Override
+  public void onCompetitionButtonClicked() {
+    Intent intent = new Intent(this, CompetitionCreatorActivity.class);
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_up_enter, R.anim.slide_up_exit);
+  }
+
   private void hideInterruptedProgressBar() {
     if (progressDialog != null) {
       progressDialog.dismiss();
