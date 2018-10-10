@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -21,9 +22,9 @@ import android.widget.Toast;
 
 import com.hapramp.R;
 import com.hapramp.utils.GoogleImageFilePathReader;
-import com.hapramp.utils.ImageHandler;
 import com.hapramp.views.hashtag.CustomHashTagInput;
 import com.hapramp.views.post.PostCommunityView;
+import com.hapramp.views.post.PostImageView;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -109,11 +110,13 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
   @BindView(R.id.choose_banner_image_btn)
   TextView chooseBannerImageButton;
   @BindView(R.id.competition_banner)
-  ImageView competitionBanner;
+  PostImageView competitionBanner;
   @BindView(R.id.skills_wrapper)
   RelativeLayout skillsWrapper;
   @BindView(R.id.metaView)
   RelativeLayout metaView;
+  private boolean isBannerSelected;
+  private String bannerImageDownloadUrl = "";
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +129,18 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
 
   private void initializeCommunity() {
     competitionCommunityView.initCategory();
+    competitionBanner.setImageActionListener(new PostImageView.ImageActionListener() {
+      @Override
+      public void onImageRemoved() {
+        isBannerSelected = false;
+        bannerImageDownloadUrl = "";
+      }
+
+      @Override
+      public void onImageUploaded(String downloadUrl) {
+        bannerImageDownloadUrl = downloadUrl;
+      }
+    });
   }
 
   private void attachListeners() {
@@ -152,6 +167,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
     publishButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
+        validateFields();
         Toast.makeText(CompetitionCreatorActivity.this, "Competition create!", Toast.LENGTH_LONG).show();
       }
     });
@@ -227,6 +243,63 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
     }
   }
 
+  private void close() {
+    finish();
+    overridePendingTransition(R.anim.slide_down_enter, R.anim.slide_down_exit);
+  }
+
+  private boolean validateFields() {
+    if (competitionTitle.getText().toString().trim().length() == 0) {
+      toast("Title required!");
+      return false;
+    }
+    if (competitionDescription.getText().toString().trim().length() == 0) {
+      toast("Competition description required!");
+      return false;
+    }
+    if (competitionCommunityView.getSelectedTags().size() <= 1) {
+      toast("Atleast 1 community required!");
+      return false;
+    }
+
+    if (startTimeInput.getText().length() == 0) {
+      toast("Select competition start time!");
+      return false;
+    }
+
+    if (startDateInput.getText().length() == 0) {
+      toast("Select competition start date!");
+      return false;
+    }
+
+    if (endTimeInput.getText().length() == 0) {
+      toast("Select competition end time!");
+      return false;
+    }
+
+    if (endDateInput.getText().length() == 0) {
+      toast("Select competition end date!");
+      return false;
+    }
+
+    if (firstPrizeInput.getText().toString().trim().length() == 0) {
+      toast("First prize is required!");
+      return false;
+    }
+
+    if (isBannerSelected) {
+      if (bannerImageDownloadUrl.length() == 0) {
+        toast("Still uploading banner image. Please wait...");
+        return false;
+      }
+    } else {
+      toast("Select competition banner image.");
+      return false;
+    }
+
+    return true;
+  }
+
   private void showTimePicker(String msg, final EditText targetInput) {
     Calendar mcurrentTime = Calendar.getInstance();
     int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
@@ -261,6 +334,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
         }
       }, mYear, mMonth, mDay);
     datePickerDialog.setMessage(msg);
+    datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
     datePickerDialog.show();
   }
 
@@ -281,9 +355,8 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
     }
   }
 
-  private void close() {
-    finish();
-    overridePendingTransition(R.anim.slide_down_enter, R.anim.slide_down_exit);
+  private void toast(String msg) {
+    Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
   }
 
   @Override
@@ -310,7 +383,9 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
   }
 
   private void selectImage(String filePath) {
-    ImageHandler.loadFilePath(this, competitionBanner, filePath);
+    isBannerSelected = true;
+    competitionBanner.setImageSource(filePath);
   }
+
 }
 

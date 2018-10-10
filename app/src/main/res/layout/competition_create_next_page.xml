@@ -358,12 +358,13 @@
                 android:clickable="true"
                 android:text="Select Image"
                 android:textColor="@color/Black54" />
-            
-            <ImageView
+
+            <com.hapramp.views.post.PostImageView
                 android:id="@+id/competition_banner"
-                android:layout_below="@+id/choose_banner_image_btn"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/choose_banner_image_btn"
+                android:visibility="gone" />
 
         </RelativeLayout>
 
