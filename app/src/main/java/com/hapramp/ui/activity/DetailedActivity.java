@@ -205,7 +205,6 @@ public class DetailedActivity extends AppCompatActivity implements
       String permlink = bundle.getString(Constants.EXTRAA_KEY_POST_PERMLINK);
       final String parentPermlink = bundle.getString(Constants.EXTRAA_KEY_PARENT_PERMLINK, "");
       String notifId = getIntent().getExtras().getString(Constants.EXTRAA_KEY_NOTIFICATION_ID, null);
-      Log.d("DetailedPost",parentPermlink+" ---");
       if (parentPermlink.length() > 0) {
         //show goto parent button
         if (gotoParentBtn != null) {
@@ -215,7 +214,7 @@ public class DetailedActivity extends AppCompatActivity implements
             public void onClick(View view) {
               String me = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
               if (me.length() > 0) {
-                openDetailsPage(me,parentPermlink);
+                openDetailsPage(me, parentPermlink);
               }
             }
           });
