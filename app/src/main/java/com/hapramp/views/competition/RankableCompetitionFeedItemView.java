@@ -73,6 +73,8 @@ public class RankableCompetitionFeedItemView extends FrameLayout {
   TextView itemRank;
   @BindView(R.id.assignRankBtn)
   LinearLayout assignRankBtn;
+  @BindView(R.id.ranking_image)
+  ImageView rankingImage;
   private Context mContext;
   private RankableCompetitionItemListener rankableCompetitionItemListener;
   private RankableCompetitionFeedItem mData;
@@ -139,9 +141,13 @@ public class RankableCompetitionFeedItemView extends FrameLayout {
     postTitle.setText(data.getTitle());
     commentCount.setText(data.getChildrens() + "");
     if (data.getRank() == 0) {
+      rankingImage.setImageResource(R.drawable.ranking);
       itemRank.setText("Assign Rank");
+      itemRank.setTextColor(Color.parseColor("#8a000000"));
     } else {
-      itemRank.setText("Rank: " + data.getRank());
+      rankingImage.setImageResource(R.drawable.ranking_filled);
+      itemRank.setText("Ranked: " + data.getRank());
+      itemRank.setTextColor(Color.parseColor("#3F72AF"));
     }
     updateVotersPeekView(data.getVoters());
   }

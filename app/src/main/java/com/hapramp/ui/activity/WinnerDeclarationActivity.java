@@ -179,10 +179,12 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
         addPlaceHolderView(rank);
       }
     }
-    declaredWinners.setText(count + " Shortlisted");
+    declaredWinners.setText(String.valueOf(count));
     if (count == 0) {
+      declaredWinnersIcon.setImageResource(R.drawable.ranking);
       publishCompetitionResultBtn.setEnabled(false);
     } else {
+      declaredWinnersIcon.setImageResource(R.drawable.ranking_filled);
       publishCompetitionResultBtn.setEnabled(true);
     }
   }

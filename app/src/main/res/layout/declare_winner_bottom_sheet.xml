@@ -35,17 +35,28 @@
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:layout_centerVertical="true"
-                android:src="@drawable/clock" />
+                android:src="@drawable/ranking" />
 
             <TextView
                 android:id="@+id/declared_winners"
+                android:layout_marginLeft="8dp"
+                android:text="0"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimary"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/declared_winners_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/declared_winners_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="8dp"
-                android:layout_toRightOf="@+id/declared_winners_icon"
-                android:text="2 Winners selected"
-                android:textColor="@color/Black87" />
+                android:layout_toRightOf="@+id/declared_winners"
+                android:text="Shortlisted"
+                android:textColor="@color/Black54" />
 
             <TextView
                 android:id="@+id/publish_competition_result_btn"
@@ -74,8 +85,8 @@
             android:clickable="true"
             android:orientation="vertical"
             android:paddingBottom="16dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
             android:paddingTop="8dp">
 
         </LinearLayout>

@@ -163,7 +163,7 @@
 
                 <ImageView
                     android:id="@+id/start_date_icon"
-                    android:src="@drawable/calendar"
+                    android:src="@drawable/calender"
                     android:padding="8dp"
                     android:background="?actionBarItemBackground"
                     android:clickable="true"
@@ -231,7 +231,7 @@
 
                 <ImageView
                     android:id="@+id/end_date_icon"
-                    android:src="@drawable/calendar"
+                    android:src="@drawable/calender"
                     android:padding="8dp"
                     android:background="?actionBarItemBackground"
                     android:clickable="true"
