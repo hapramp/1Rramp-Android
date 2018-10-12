@@ -12,7 +12,6 @@ import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.text.Layout;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -214,7 +213,13 @@ public class PostItemView extends FrameLayout {
     feedOwnerSubtitle.setText(String.format(mContext.getResources().getString(R.string.post_subtitle_format), MomentsUtils.getFormattedTime(feed.getCreatedAt())));
     setSteemEarnings(feed);
     setCommunities(feed.getTags());
-    postSnippet.setText(feed.getCleanedBody());
+    String bdy = feed.getCleanedBody();
+    if (bdy.length() > 0) {
+      postSnippet.setVisibility(VISIBLE);
+      postSnippet.setText(bdy);
+    } else {
+      postSnippet.setVisibility(GONE);
+    }
     if (feed.getTitle().length() > 0) {
       postTitle.setVisibility(VISIBLE);
       postTitle.setText(feed.getTitle());

@@ -150,7 +150,15 @@
         <activity
             android:name=".ui.activity.CompetitionCreatorActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.activity.CompetitionDetailsActivity"></activity>
+        <activity
+            android:name=".ui.activity.CompetitionDetailsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.ParticipateEditorActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.WinnerDeclarationActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

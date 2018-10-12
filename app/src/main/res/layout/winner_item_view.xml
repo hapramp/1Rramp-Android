@@ -1,5 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="12dp"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:layout_marginTop="12dp"
+    card_view:cardBackgroundColor="@color/white"
+    card_view:cardCornerRadius="4dp"
+    card_view:cardElevation="1dp">
 
-</RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="88dp"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp">
+
+        <TextView
+            android:id="@+id/competition_rank_text"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="4dp"
+            android:background="@drawable/competition_rank_text_bg"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/competition_image"
+            android:layout_width="108dp"
+            android:layout_height="81dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="8dp"
+            android:layout_toRightOf="@+id/competition_rank_text"
+            android:background="@color/Black12" />
+
+        <TextView
+            android:id="@+id/competition_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/competition_winner_remove"
+            android:layout_toRightOf="@+id/competition_image"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="Nature Photography Wall Painting For Nature Is nice. This is good"
+            android:textColor="@color/Black87"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/byLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/competition_title"
+            android:layout_marginRight="4dp"
+            android:layout_toRightOf="@+id/competition_image"
+            android:text="by" />
+
+        <TextView
+            android:id="@+id/winner_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/competition_title"
+            android:layout_toRightOf="@+id/byLabel"
+            android:text="bxute"
+            android:textColor="@color/colorPrimary"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/competition_winner_remove"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_alignParentRight="true"
+            android:background="?selectableItemBackground"
+            android:clickable="true"
+            android:padding="8dp"
+            android:src="@drawable/close_icon" />
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

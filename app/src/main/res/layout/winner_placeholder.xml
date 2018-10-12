@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:layout_marginTop="12dp"
+    android:background="@drawable/make_winner_text_bg">
+
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/winner_list_container"
+        android:layout_gravity="center_horizontal"
+        android:background="?selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:gravity="center"
+        android:paddingBottom="36dp"
+        android:paddingTop="36dp"
+        android:text="Select Winners"
+        android:textColor="@color/Black54" />
+
+</RelativeLayout>
