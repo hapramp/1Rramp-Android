@@ -6,9 +6,9 @@ public class URLS {
   private static final String STEEMIT_API_URL = "https://api.steemit.com";
   private static final String STEEMIT_URL = "https://steemit.com/";
 
-  public static String singlePostFetchUrl(String category, String author, String permlink) {
-    String _category = category.length() > 0 ? category + "/" : "";
-    return String.format("%s%s@%s/%s.json", STEEMIT_URL, _category, author, permlink);
+  public static String explorePostsUrl() {
+    return BASE_URL +
+      "feeds/all";
   }
 
   public static String steemUrl() {

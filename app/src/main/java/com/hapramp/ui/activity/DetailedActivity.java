@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,6 +50,7 @@ import com.hapramp.steem.models.Voter;
 import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;
 import com.hapramp.steemconnect4j.SteemConnectException;
+import com.hapramp.utils.CommunityUtils;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.ImageHandler;
@@ -647,19 +647,21 @@ public class DetailedActivity extends AppCompatActivity implements
     if (communities == null)
       return;
     List<CommunityModel> cm = new ArrayList<>();
+    ArrayList<String> addedCommunity = new ArrayList<>();
     StringBuilder hashtags = new StringBuilder();
     for (int i = 0; i < communities.size(); i++) {
+      String title = CommunityUtils.getCommunityTitleFromName(communities.get(i));
       String tag = communities.get(i);
-      if (Communities.doesCommunityExists(tag)) {
-        cm.add(new CommunityModel("", "", communities.get(i),
-          HaprampPreferenceManager.getInstance().getCommunityColorFromTag(communities.get(i)),
-          HaprampPreferenceManager.getInstance().getCommunityNameFromTag(communities.get(i)),
-          0
+      if (Communities.doesCommunityExists(title) && !addedCommunity.contains(title)) {
+        cm.add(new CommunityModel(
+          CommunityUtils.getCommunityColorFromTitle(title), //color
+          title //title ex. art
         ));
+        addedCommunity.add(title);
       } else {
         if (!tag.equals("hapramp")) {
           hashtags.append("<b>  #</b>")
-            .append(tag)
+            .append(CommunityUtils.getCommunityTitleFromName(tag))
             .append("  ");
         }
       }
@@ -672,19 +674,19 @@ public class DetailedActivity extends AppCompatActivity implements
     int size = cms.size();
     if (size > 0) {
       club1.setVisibility(VISIBLE);
-      club1.setText(cms.get(0).getmName());
+      club1.setText(cms.get(0).getmName().toUpperCase());
       club1.getBackground().setColorFilter(
         Color.parseColor(cms.get(0).getmColor()),
         PorterDuff.Mode.SRC_ATOP);
       if (size > 1) {
         club2.setVisibility(VISIBLE);
-        club2.setText(cms.get(1).getmName());
+        club2.setText(cms.get(1).getmName().toUpperCase());
         club2.getBackground().setColorFilter(
           Color.parseColor(cms.get(1).getmColor()),
           PorterDuff.Mode.SRC_ATOP);
         if (size > 2) {
           club3.setVisibility(VISIBLE);
-          club3.setText(cms.get(2).getmName());
+          club3.setText(cms.get(2).getmName().toUpperCase());
           club3.getBackground().setColorFilter(
             Color.parseColor(cms.get(2).getmColor()),
             PorterDuff.Mode.SRC_ATOP);

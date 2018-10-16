@@ -42,6 +42,7 @@ import com.hapramp.ui.activity.CommentsActivity;
 import com.hapramp.ui.activity.DetailedActivity;
 import com.hapramp.ui.activity.ProfileActivity;
 import com.hapramp.ui.activity.VotersListActivity;
+import com.hapramp.utils.CommunityUtils;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
@@ -454,13 +455,15 @@ public class PostItemView extends FrameLayout {
 
   private void setCommunities(List<String> communities) {
     List<CommunityModel> cm = new ArrayList<>();
+    ArrayList<String> addedCommunity = new ArrayList<>();
     for (int i = 0; i < communities.size(); i++) {
-      if (Communities.doesCommunityExists(communities.get(i))) {
-        cm.add(new CommunityModel("", "", communities.get(i),
-          HaprampPreferenceManager.getInstance().getCommunityColorFromTag(communities.get(i)),
-          HaprampPreferenceManager.getInstance().getCommunityNameFromTag(communities.get(i)),
-          0
+      String title = CommunityUtils.getCommunityTitleFromName(communities.get(i));
+      if (Communities.doesCommunityExists(title) && !addedCommunity.contains(title)) {
+        cm.add(new CommunityModel(
+          CommunityUtils.getCommunityColorFromTitle(title), //color
+          title //title ex. art
         ));
+        addedCommunity.add(title);
       }
     }
     addCommunitiesToLayout(cm);

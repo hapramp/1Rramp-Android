@@ -85,6 +85,21 @@ public class JSONParser {
     return feeds;
   }
 
+  public ArrayList<Feed> parseExplorePosts(String response) {
+    ArrayList<Feed> feeds = new ArrayList<>();
+    try {
+      JSONArray jsonArray = new JSONArray(response);
+      for (int i = 0; i < jsonArray.length(); i++) {
+        JSONObject co = jsonArray.getJSONObject(i);
+        feeds.add(parseCoreFeedData(co));
+      }
+    }
+    catch (JSONException e) {
+
+    }
+    return feeds;
+  }
+
   private Feed parseCoreFeedData(JSONObject rootObject) {
     Feed feed = new Feed();
     try {

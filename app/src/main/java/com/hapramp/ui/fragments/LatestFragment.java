@@ -79,11 +79,6 @@ public class LatestFragment extends Fragment implements FeedListView.FeedListVie
     dataStore.requestPostsNewOn1Ramp(TAG, false, this);
   }
 
-  @Override
-  public void onLoadMoreFeeds() {
-    fetchMorePosts();
-  }
-
   //FEEDLIST CALLBACKS
   @Override
   public void onRetryFeedLoading() {
@@ -95,8 +90,9 @@ public class LatestFragment extends Fragment implements FeedListView.FeedListVie
     refreshPosts();
   }
 
-  private void refreshPosts() {
-    dataStore.requestPostsNewOn1Ramp(TAG, true, this);
+  @Override
+  public void onLoadMoreFeeds() {
+    fetchMorePosts();
   }
 
   private void fetchMorePosts() {
@@ -113,6 +109,10 @@ public class LatestFragment extends Fragment implements FeedListView.FeedListVie
     //NA
   }
 
+  private void refreshPosts() {
+    dataStore.requestPostsNewOn1Ramp(TAG, true, this);
+  }
+
   @Override
   public void onFeedsFetching() {
 
@@ -122,7 +122,9 @@ public class LatestFragment extends Fragment implements FeedListView.FeedListVie
   public void onUserFeedsAvailable(List<Feed> feeds, boolean isFreshData, boolean isAppendable) {
     if (feedListView != null) {
       if (isAppendable) {
-        feeds.remove(0);
+        if (feeds.size() > 0) {
+          feeds.remove(0);
+        }
         feedListView.loadedMoreFeeds(feeds);
       } else {
         feedListView.feedsRefreshed(feeds);

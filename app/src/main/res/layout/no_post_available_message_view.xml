@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/noPostLoadedViewContainer"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
     android:padding="8dp">
 
 
@@ -15,10 +16,12 @@
         android:padding="16dp">
 
 
-        <TextView
+        <ImageView
+            android:src="@drawable/alien"
             android:id="@+id/no_post_sad_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="36dp"
+            android:layout_height="48dp"
+            android:alpha="0.8"
             android:layout_centerHorizontal="true"
             android:text=""
             android:textSize="48sp" />
@@ -27,6 +30,7 @@
             android:id="@+id/nopost_message_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:layout_below="@+id/no_post_sad_icon"
             android:layout_centerHorizontal="true"
             android:text="0 Post Available"
@@ -45,11 +49,8 @@
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
             android:paddingTop="8dp"
-            android:text="Nothing has been posted yet in this section :)"
             android:textColor="@color/Black38"
             android:textSize="12sp" />
-
     </RelativeLayout>
-
 
 </RelativeLayout>

@@ -25,6 +25,11 @@ public class CommunityModel {
     this.mId = mId;
   }
 
+  public CommunityModel( String mColor, String mName) {
+    this.mColor = mColor;
+    this.mName = mName;
+  }
+
   public String getmDescription() {
     return mDescription;
   }
