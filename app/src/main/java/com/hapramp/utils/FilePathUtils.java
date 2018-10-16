@@ -36,10 +36,7 @@ public class FilePathUtils {
     final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     // DocumentProvider
     if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
-
-      // ExternalStorageProvider
       if (isExternalStorageDocument(uri)) {
-        Log.d("FileUtils","isExternalStorageDocument");
         final String docId = DocumentsContract.getDocumentId(uri);
         final String[] split = docId.split(":");
         final String type = split[0];
@@ -50,7 +47,6 @@ public class FilePathUtils {
       }
       // DownloadsProvider
       else if (isDownloadsDocument(uri)) {
-        Log.d("FileUtils","isDownloadsDocument");
         final String id = DocumentsContract.getDocumentId(uri);
         final Uri contentUri = ContentUris.withAppendedId(
           Uri.parse("content://downloads/public_downloads"),
@@ -59,7 +55,6 @@ public class FilePathUtils {
       }
       // MediaProvider
       else if (isMediaDocument(uri)) {
-        Log.d("FileUtils","isMediaDocument(uri)");
         final String docId = DocumentsContract.getDocumentId(uri);
         final String[] split = docId.split(":");
         final String type = split[0];
@@ -82,7 +77,6 @@ public class FilePathUtils {
     }
     // MediaStore (and general)
     else if ("content".equalsIgnoreCase(uri.getScheme())) {
-      Log.d("FileUtils","\"content\".equalsIgnoreCas");
       // Return the remote address
       if (isGooglePhotosUri(uri))
         return uri.getLastPathSegment();
@@ -128,7 +122,6 @@ public class FilePathUtils {
    */
   public static String getDataColumn(Context context, Uri uri,
                                      String selection, String[] selectionArgs) {
-
     Cursor cursor = null;
     final String column = "_data";
     final String[] projection = {column};

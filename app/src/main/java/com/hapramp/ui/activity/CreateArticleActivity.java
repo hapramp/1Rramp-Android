@@ -151,8 +151,8 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     title = articleTitleEt.getText().toString().trim();
     generated_permalink = PermlinkGenerator.getPermlink(title);
     tags = (ArrayList<String>) articleCategoryView.getSelectedTags();
-    tags = PostHashTagPreprocessor.processHashtags(tags);
     includeCustomTags(tags);
+    tags = PostHashTagPreprocessor.processHashtags(tags);
     body = markDEditor.getMarkdownContent();
     images = getImageLinks();
     if (validArticle()) {

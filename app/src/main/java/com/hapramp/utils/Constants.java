@@ -15,7 +15,7 @@ public class Constants {
   public static final String EXTRAA_KEY_POST_PERMLINK = "post_permlink";
   public static final String URL_REGEX = "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$";
   public static final String FOOTER_TEXT = "\n<div id=\"1ramp-footer\" />\n<hr><center><h4>\n" +
-    "<a href=\"https://1ramp.io\"><img src=\"https://ipfs.busy.org/ipfs/QmTFN4mf55SRZkP8Ug7jXVP3sXAmH7sd35zMNwLFpgGqNU\"/></a><br><a href=\"https://play.google.com/store/apps/details?id=com.hapramp\">Try 1Ramp Android Now!</a>\n" +
+    "<a href=\"https://1ramp.io\"><img src=\"https://ipfs.busy.org/ipfs/QmTFN4mf55SRZkP8Ug7jXVP3sXAmH7sd35zMNwLFpgGqNU\"/></a><br><a href=\"https://goo.gl/rLtT82\">Try 1Ramp Android Now!</a>\n" +
     "</h4></center>";
   public static final String FOOTER_START_MARK = "<div id=\"1ramp-footer";
   public static final String EXTRAA_KEY_PARENT_PERMLINK = "parentPermlink";

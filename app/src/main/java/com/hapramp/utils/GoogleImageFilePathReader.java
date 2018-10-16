@@ -45,9 +45,11 @@ public class GoogleImageFilePathReader {
         }
       }
       catch (FileNotFoundException e) {
+        e.printStackTrace();
         Log.e("GooglePhotosError", "FileNotFoundException - Error while reading selected image");
       }
       catch (IOException e) {
+        e.printStackTrace();
         Log.e("GooglePhotosError", "IOException - Error while reading selected image");
       }
     }

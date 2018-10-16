@@ -15,9 +15,9 @@ public class Splash extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    performTasksDelayed();
     DataStoreCachePreference.getInstance();
     NotificationHandler.createNotificationChannel(this);
-    performTasksDelayed();
     if (HaprampPreferenceManager.getInstance().isLoggedIn()) {
       navigateToHomePage();
       return;
@@ -33,12 +33,10 @@ public class Splash extends AppCompatActivity {
     new Handler().postDelayed(new Runnable() {
       @Override
       public void run() {
-        EventReporter.setOpenTime();
-        EventReporter.addEvent("splash");
         EventReporter.reportDeviceId();
         EventReporter.reportOpenEvent();
       }
-    },4000);
+    }, 4000);
   }
 
   private void navigateToHomePage() {

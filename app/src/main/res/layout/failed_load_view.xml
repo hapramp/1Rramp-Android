@@ -14,29 +14,21 @@
         android:background="@drawable/feed_list_view_asset_card_bg"
         android:padding="16dp">
 
-        <TextView
+        <ImageView
+            android:src="@drawable/alien"
             android:id="@+id/sad_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="36dp"
+            android:layout_height="48dp"
+            android:alpha="0.8"
             android:layout_centerHorizontal="true"
             android:text=""
             android:textSize="48sp" />
 
         <TextView
-            android:id="@+id/failed_message_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/sad_icon"
-            android:layout_centerHorizontal="true"
-            android:text="Failed To Load"
-            android:textColor="@color/Black54"
-            android:textStyle="bold" />
-
-        <TextView
             android:id="@+id/failed_message_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/failed_message_title"
+            android:layout_below="@+id/sad_icon"
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:paddingBottom="16dp"
