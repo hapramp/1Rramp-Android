@@ -7,7 +7,6 @@ import com.hapramp.datastore.callbacks.CommunitiesCallback;
 import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.datastore.callbacks.FollowersCallback;
 import com.hapramp.datastore.callbacks.FollowingsCallback;
-import com.hapramp.datastore.callbacks.ResourceCreditCallback;
 import com.hapramp.datastore.callbacks.RewardFundMedianPriceCallback;
 import com.hapramp.datastore.callbacks.SinglePostCallback;
 import com.hapramp.datastore.callbacks.TransferHistoryCallback;
@@ -749,6 +748,13 @@ public class DataStore extends DataDispatcher {
     }.start();
   }
 
+  /**
+   * Fetches single post from steemit api.
+   *
+   * @param author             author of post/feed
+   * @param permlink           permlink of post/feed
+   * @param singlePostCallback callback for returning response
+   */
   public void requestSingleFeed(final String author, final String permlink, final SinglePostCallback singlePostCallback) {
     new Thread() {
       @Override
@@ -766,6 +772,39 @@ public class DataStore extends DataDispatcher {
         }
         catch (Exception e) {
           dispatchSinglePostError("Error:" + e.toString(), singlePostCallback);
+        }
+      }
+    }.start();
+  }
+
+  public void requestExploreFeeds(final UserFeedCallback userFeedCallback) {
+    if (userFeedCallback != null) {
+      userFeedCallback.onFeedsFetching();
+    }
+    final String rtag = "user_explore_feeds_initial";
+    this.currentFeedRequestTag = rtag;
+    new Thread() {
+      @Override
+      public void run() {
+        String url = URLS.explorePostsUrl();
+        String cachedResponse = DataCache.get(url);
+        if (cachedResponse != null) {
+          dispatchExplorePosts(cachedResponse, false, false, userFeedCallback);
+        }
+        try {
+          Response response = NetworkApi.getNetworkApiInstance().fetch(url);
+          if (response.isSuccessful()) {
+            String res = response.body().string();
+            DataCache.cache(url, res);
+            if (isFeedRequestLive(rtag)) {
+              dispatchExplorePosts(res, true, false, userFeedCallback);
+            }
+          } else {
+            dispatchUserFeedsError("Error Code:" + response.code(), userFeedCallback);
+          }
+        }
+        catch (IOException e) {
+          dispatchUserFeedsError("IOException " + e.toString(), userFeedCallback);
         }
       }
     }.start();

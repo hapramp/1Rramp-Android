@@ -1,6 +1,7 @@
 package com.hapramp;
 
 import com.hapramp.utils.HashTagUtils;
+import com.hapramp.utils.PostHashTagPreprocessor;
 import com.hapramp.utils.RegexUtils;
 
 import org.junit.Test;
@@ -88,5 +89,24 @@ public class CommunitiesUnitTest {
 
     System.out.println(HashTagUtils.reformatHashTag(tag4));
     assertEquals("cruelday", HashTagUtils.reformatHashTag(tag4));
+  }
+
+  @Test
+  public void testHashTagProcessing() {
+    ArrayList<String> tags = new ArrayList<>();
+    tags.add("hapramp-art");
+    tags.add("art");
+    tags.add("art");
+    tags.add("art");
+    tags.add("dance");
+    tags.add("dance");
+    tags.add("hapramp");
+
+    ArrayList<String> expectedList = new ArrayList<>();
+    expectedList.add("hapramp");
+    expectedList.add("art");
+    expectedList.add("hapramp-art");
+    expectedList.add("dance");
+    assertEquals(expectedList,PostHashTagPreprocessor.processHashtags(tags));
   }
 }

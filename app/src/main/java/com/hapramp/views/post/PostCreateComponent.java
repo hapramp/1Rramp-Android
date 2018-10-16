@@ -22,6 +22,7 @@ import com.hapramp.R;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
+import com.hapramp.utils.CommunityUtils;
 import com.hapramp.utils.HashTagUtils;
 import com.hapramp.utils.ImageHandler;
 
@@ -166,9 +167,13 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
 
   private void extractHashTagsAndDisplay(String body) {
     ArrayList<String> tags = HashTagUtils.getHashTags(body);
+    ArrayList<String> added = new ArrayList<>();
     StringBuilder stringBuilder = new StringBuilder();
     for (int i = 0; i < tags.size(); i++) {
-      stringBuilder.append(" #").append(tags.get(i));
+      if (!added.contains(tags.get(i))) {
+        stringBuilder.append(" #").append(tags.get(i));
+        added.add(tags.get(i));
+      }
     }
     inlineHashtags.setText(stringBuilder.toString());
   }
@@ -246,13 +251,15 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
 
   public void setCommunities(List<String> communities) {
     List<CommunityModel> cm = new ArrayList<>();
+    ArrayList<String> addedCommunity = new ArrayList<>();
     for (int i = 0; i < communities.size(); i++) {
-      if (Communities.doesCommunityExists(communities.get(i))) {
-        cm.add(new CommunityModel("", "", communities.get(i),
-          HaprampPreferenceManager.getInstance().getCommunityColorFromTag(communities.get(i)),
-          HaprampPreferenceManager.getInstance().getCommunityNameFromTag(communities.get(i)),
-          0
+      String title = CommunityUtils.getCommunityTitleFromName(communities.get(i));
+      if (Communities.doesCommunityExists(title) && !addedCommunity.contains(title)) {
+        cm.add(new CommunityModel(
+          CommunityUtils.getCommunityColorFromTitle(title), //color
+          title //title ex. art
         ));
+        addedCommunity.add(title);
       }
     }
     addCommunitiesToLayout(cm);
@@ -263,19 +270,19 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
     resetVisibility();
     if (size > 0) {
       club1.setVisibility(VISIBLE);
-      club1.setText(cms.get(0).getmName());
+      club1.setText(cms.get(0).getmName().toUpperCase());
       club1.getBackground().setColorFilter(
         Color.parseColor(cms.get(0).getmColor()),
         PorterDuff.Mode.SRC_ATOP);
       if (size > 1) {
         club2.setVisibility(VISIBLE);
-        club2.setText(cms.get(1).getmName());
+        club2.setText(cms.get(1).getmName().toUpperCase());
         club2.getBackground().setColorFilter(
           Color.parseColor(cms.get(1).getmColor()),
           PorterDuff.Mode.SRC_ATOP);
         if (size > 2) {
           club3.setVisibility(VISIBLE);
-          club3.setText(cms.get(2).getmName());
+          club3.setText(cms.get(2).getmName().toUpperCase());
           club3.getBackground().setColorFilter(
             Color.parseColor(cms.get(2).getmColor()),
             PorterDuff.Mode.SRC_ATOP);

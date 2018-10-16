@@ -88,10 +88,6 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
   FrameLayout mock1;
   @BindView(R.id.mockContainer)
   RelativeLayout mockContainer;
-  @BindView(R.id.sad_icon)
-  TextView sadIcon;
-  @BindView(R.id.failed_message_title)
-  TextView failedMessageTitle;
   @BindView(R.id.failed_message_details)
   TextView failedMessageDetails;
   @BindView(R.id.failed_message_card_container)
@@ -100,8 +96,6 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
   TextView retryFeedLoadingBtn;
   @BindView(R.id.failedToLoadViewContainer)
   RelativeLayout failedToLoadViewContainer;
-  @BindView(R.id.no_post_sad_icon)
-  TextView noPostSadIcon;
   @BindView(R.id.nopost_message_title)
   TextView nopostMessageTitle;
   @BindView(R.id.nopost_message_details)
@@ -128,6 +122,8 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
   private SpaceDecorator spaceDecorator;
   private int y;
   private FeedListViewListener feedListViewListener;
+  private String noDataMessage = "No Feed Available in This Section";
+  private String noDataTitle;
 
   public FeedListView(@NonNull Context context) {
     super(context);
@@ -153,8 +149,6 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
     feedRecyclerView.setNestedScrollingEnabled(false);
     feedRefreshLayout.setProgressViewOffset(false, PixelUtils.dpToPx(72), PixelUtils.dpToPx(120));
     feedRefreshLayout.setColorSchemeColors(mContext.getResources().getColor(R.color.colorPrimary));
-    sadIcon.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
-    noPostSadIcon.setTypeface(FontManager.getInstance().getTypeFace(FontManager.FONT_MATERIAL));
   }
 
   private void attachListeners() {
@@ -212,33 +206,21 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
     setNoFeedLoadedViewVisibility(false);
     // show shimmer
     setLoadingShimmerVisibility(true);
-
     //reset list items
     homeFeedsAdapter.resetList();
-
-  }
-
-  private void l(String msg) {
-    //Log.i("HomeFeedTest", " > [" + TAG + "]  " + msg);
   }
 
   // view controllers
   private void setFeedRecyclerViewVisibility(boolean show) {
-
     setViewVisibility(show, feedRecyclerView);
-
   }
 
   private void setFailedToLoadViewVisibility(boolean show) {
-
     setViewVisibility(show, failedToLoadViewContainer);
-
   }
 
   private void setNoFeedLoadedViewVisibility(boolean show) {
-
     setViewVisibility(show, noPostLoadedViewContainer);
-
   }
 
   private void setLoadingShimmerVisibility(boolean show) {
@@ -272,12 +254,10 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
     super(context, attrs, defStyleAttr);
     TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.FeedListView, 0, 0);
     try {
-
       wantTopSpace = typedArray.getBoolean(R.styleable.FeedListView_wantTopSpaceOffset, false);
       wantBottomSpace = typedArray.getBoolean(R.styleable.FeedListView_wantBottomSpaceOffset, false);
       topOffset = typedArray.getInt(R.styleable.FeedListView_topOffset, 108);
       bottomOffset = typedArray.getInt(R.styleable.FeedListView_bottomOffset, 0);
-
     }
     finally {
       typedArray.recycle();
@@ -285,102 +265,18 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
     init(context);
   }
 
+  public void setMessageWhenNoData(String title, String msg) {
+    this.noDataTitle = title;
+    this.noDataMessage = msg;
+  }
+
   //for setting shimmer offset
   public void setTopMarginForShimmer(int dp) {
-
     mockContainer.setPadding(0, PixelUtils.dpToPx(dp), 0, 0);
-
   }
 
   public void setTopMarginForRecyclerView(int dp) {
     feedRecyclerView.setPadding(0, PixelUtils.dpToPx(dp), 0, 0);
-  }
-
-  public void cachedFeedFetched(List<Feed> cachedFeeds) {
-    l("CachedFeedFetched");
-    // TODO: 2/12/2018 set list items to adapter | show recyclerView  | hide other views
-    //show recycler view
-    setFeedRecyclerViewVisibility(true);
-    //hide failed view
-    setFailedToLoadViewVisibility(false);
-    //hide no feed loaded
-    setNoFeedLoadedViewVisibility(false);
-    // hide shimmer
-    setLoadingShimmerVisibility(false);
-
-    homeFeedsAdapter.setFeeds(cachedFeeds);
-
-  }
-
-  public void noCachedFeeds() {
-    l("NoCachedFeeds");
-    // TODO: 2/12/2018 show no posts view  | hide other views
-    //hide recycler view
-    setFeedRecyclerViewVisibility(false);
-    //hide failed view
-    setFailedToLoadViewVisibility(false);
-    //show no feed loaded
-    setNoFeedLoadedViewVisibility(true);
-    //hide shimmer
-    setLoadingShimmerVisibility(false);
-
-    nopostMessageTitle.setText("No Cache");
-    nopostMessageDetails.setText("No Previous Cached Feeds, Fetching From Server");
-    // show refreshing
-    showRefreshingLayout(true);
-
-  }
-
-  private void showRefreshingLayout(boolean show) {
-
-    l("showRefreshingLayout " + show);
-
-    if (show) {
-
-      if (!feedRefreshLayout.isRefreshing()) {
-
-        feedRefreshLayout.post(new Runnable() {
-          @Override
-          public void run() {
-            feedRefreshLayout.setEnabled(false);
-            feedRefreshLayout.setRefreshing(true);
-          }
-        });
-
-      }
-
-
-    } else {
-
-      feedRefreshLayout.setRefreshing(false);
-      feedRefreshLayout.setEnabled(true);
-
-    }
-  }
-
-  public void onNoDataAvailable() {
-
-    //hide recycler view
-    setFeedRecyclerViewVisibility(false);
-    //hide failed view
-    setFailedToLoadViewVisibility(false);
-    //show no feed loaded
-    setNoFeedLoadedViewVisibility(true);
-    //hide shimmer
-    setLoadingShimmerVisibility(false);
-    // show refreshing
-    showRefreshingLayout(false);
-
-  }
-
-  public void feedRefreshing(boolean isManualRefresh) {
-    l("feedRefreshing");
-    if (isManualRefresh) {
-      showRefreshingLayout(true);
-    } else {
-
-    }
-
   }
 
   public void feedsRefreshed(List<Feed> refreshedFeeds) {
@@ -397,8 +293,33 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
       setNoFeedLoadedViewVisibility(true);
       setLoadingShimmerVisibility(false);
       showRefreshingLayout(false);
-      nopostMessageTitle.setText("No Feeds");
-      nopostMessageDetails.setText("No Feed Available in This Section");
+      failedToLoadViewContainer.setClickable(false);
+      noPostLoadedViewContainer.setClickable(true);
+      nopostMessageTitle.setText(noDataTitle);
+      nopostMessageDetails.setText(noDataMessage);
+    }
+  }
+
+  private void showRefreshingLayout(boolean show) {
+    if (show) {
+      if (!feedRefreshLayout.isRefreshing()) {
+        feedRefreshLayout.post(new Runnable() {
+          @Override
+          public void run() {
+            feedRefreshLayout.setEnabled(false);
+            feedRefreshLayout.setRefreshing(true);
+          }
+        });
+      }
+    } else {
+      feedRefreshLayout.setRefreshing(false);
+      feedRefreshLayout.setEnabled(true);
+    }
+  }
+
+  public void setClickListenerOnErrorPanelMessage(OnClickListener clickListener) {
+    if (noPostLoadedViewContainer != null) {
+      noPostLoadedViewContainer.setOnClickListener(clickListener);
     }
   }
 
@@ -409,8 +330,9 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
       setNoFeedLoadedViewVisibility(false);
       setLoadingShimmerVisibility(false);
       showRefreshingLayout(false);
-      failedMessageTitle.setText("Failed To Load Feeds");
-      failedMessageDetails.setText("We are having issue loading feeds");
+      failedToLoadViewContainer.setClickable(true);
+      noPostLoadedViewContainer.setClickable(false);
+      failedMessageDetails.setText("Please check your Internet connection.");
     } else {
       showRefreshingLayout(false);
     }

@@ -109,6 +109,19 @@ public class DataDispatcher {
     }
   }
 
+  void dispatchExplorePosts(String response, final boolean isFreshData, final boolean isAppendable,
+                            final UserFeedCallback userFeedCallback){
+    final List<Feed> feeds = jsonParser.parseExplorePosts(response);
+    if (userFeedCallback != null) {
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          userFeedCallback.onUserFeedsAvailable(feeds, isFreshData, isAppendable);
+        }
+      });
+    }
+  }
+
   void dispatchCommunityFeed(String response, final boolean isFreshData, final boolean isAppendable,
                              final UserFeedCallback userFeedCallback) {
     final List<Feed> feeds = jsonParser.parseCuratedFeed(response);
@@ -474,4 +487,5 @@ public class DataDispatcher {
       });
     }
   }
+
 }

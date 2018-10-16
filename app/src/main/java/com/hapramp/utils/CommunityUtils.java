@@ -4,6 +4,7 @@ import com.hapramp.R;
 
 public class CommunityUtils {
   //images
+  public static final int EXPLORE_ICON = R.drawable.explore_large_white;
   public static final int FEED_ICON = R.drawable.feed_filled;
   public static final int ART_ICON = R.drawable.art_filled;
   public static final int DANCE_ICON = R.drawable.dance_filled;
@@ -16,6 +17,7 @@ public class CommunityUtils {
   public static final int DESIGN_ICON = R.drawable.design_filled;
   public static final int EDIT_COMMUNITY_ICON = R.drawable.plus;
   //backgrounds
+  public static final int EXPLORE_FILLED_BG = R.drawable.feed_filled_bg;
   public static final int FEED_FILLED_BG = R.drawable.feed_filled_bg;
   public static final int ART_FILLED_BG = R.drawable.art_filled_bg;
   public static final int DANCE_FILLED_BG = R.drawable.dance_filled_bg;
@@ -39,32 +41,54 @@ public class CommunityUtils {
   public static final int FASHION_BORDER = R.drawable.fashion_border;
   public static final int DESIGN_BORDER = R.drawable.design_border;
   public static final int EDIT_BORDER = R.drawable.edit_community_border;
+  //colors
+  public static final String ART_COLOR = "#ffeb3b";
+  public static final String DANCE_COLOR = "#9c27b0";
+  public static final String TRAVEL_COLOR = "#8bc34a";
+  public static final String LITERATURE_COLOR = "#607d8b";
+  public static final String FILM_COLOR = "#795548";
+  public static final String PHOTOGRAPHY_COLOR = "#2196f3";
+  public static final String FASHION_COLOR = "#283593";
+  public static final String DESIGN_COLOR = "#0097a7";
 
   public static int getBorder(int com_id) {
+    //ignore community id for now.
     return BLACK_BORDER;
   }
 
   public static int getFilledBackground(int com_id) {
     switch (com_id) {
-      case 0:
+      case CommunityIds.EXPLORE:
+        return EXPLORE_FILLED_BG;
+
+      case CommunityIds.FEED:
         return FEED_FILLED_BG;
-      case 1:
+
+      case CommunityIds.ART:
         return ART_FILLED_BG;
-      case 2:
+
+      case CommunityIds.DANCE:
         return DANCE_FILLED_BG;
-      case 3:
+
+      case CommunityIds.TRAVEL:
         return TRAVEL_FILLED_BG;
-      case 4:
+
+      case CommunityIds.LITERATURE:
         return LITERATURE_FILLED_BG;
-      case 5:
+
+      case CommunityIds.FILM:
         return FILM_FILLED_BG;
-      case 6:
+
+      case CommunityIds.PHOTOGRAPHY:
         return PHOTOGRAPHY_FILLED_BG;
-      case 7:
+
+      case CommunityIds.FASHION:
         return FASHION_FILLED_BG;
-      case 8:
+
+      case CommunityIds.DESIGN:
         return DESIGN_FILLED_BG;
-      case 404:
+
+      case CommunityIds.EDIT_BORDER:
         return EDIT_BORDER;
     }
     return -1;
@@ -72,28 +96,74 @@ public class CommunityUtils {
 
   public static int getCommunityIcon(int com_id) {
     switch (com_id) {
-      case 0:
+      case CommunityIds.EXPLORE:
+        return EXPLORE_ICON;
+
+      case CommunityIds.FEED:
         return FEED_ICON;
-      case 1:
+
+      case CommunityIds.ART:
         return ART_ICON;
-      case 2:
+
+      case CommunityIds.DANCE:
         return DANCE_ICON;
-      case 3:
+
+      case CommunityIds.TRAVEL:
         return TRAVEL_ICON;
-      case 4:
+
+      case CommunityIds.LITERATURE:
         return LITERATURE_ICON;
-      case 5:
+
+      case CommunityIds.FILM:
         return FILM_ICON;
-      case 6:
+
+      case CommunityIds.PHOTOGRAPHY:
         return PHOTOGRAPHY_ICON;
-      case 7:
+
+      case CommunityIds.FASHION:
         return FASHION_ICON;
-      case 8:
+
+      case CommunityIds.DESIGN:
         return DESIGN_ICON;
-      case 404:
+
+      case CommunityIds.EDIT_BORDER:
         return EDIT_COMMUNITY_ICON;
     }
     return -1;
   }
 
+  public static String getCommunityColorFromTitle(String title) {
+    title = title.toLowerCase();
+    switch (title) {
+
+      case "art":
+        return ART_COLOR;
+
+      case "dance":
+        return DANCE_COLOR;
+
+      case "travel":
+        return TRAVEL_COLOR;
+
+      case "literature":
+        return LITERATURE_COLOR;
+
+      case "film":
+        return FILM_COLOR;
+
+      case "photography":
+        return PHOTOGRAPHY_COLOR;
+
+      case "fashion":
+        return FASHION_COLOR;
+
+      case "design":
+        return DESIGN_COLOR;
+    }
+    return "#009988";
+  }
+
+  public static String getCommunityTitleFromName(String name) {
+    return name.replace("hapramp-", "");
+  }
 }

@@ -27,10 +27,12 @@ import com.hapramp.datastore.callbacks.UserFeedCallback;
 import com.hapramp.interfaces.LikePostCallback;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.Communities;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.ui.activity.CommunitySelectionActivity;
+import com.hapramp.ui.activity.HomeActivity;
+import com.hapramp.ui.activity.UserSearchActivity;
+import com.hapramp.utils.CommunityIds;
 import com.hapramp.utils.CommunitySortUtils;
 import com.hapramp.utils.ShadowUtils;
 import com.hapramp.views.CommunityFilterView;
@@ -43,8 +45,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static com.hapramp.steem.Communities.ALL;
+import static com.hapramp.steem.Communities.EXPLORE;
+
 public class HomeFragment extends Fragment implements LikePostCallback, FeedListView.FeedListViewListener, CommunityFilterView.CommunityFilterCallback, UserFeedCallback {
-  public static final String ALL = "all";
   public static final String TAG = HomeFragment.class.getSimpleName();
   @BindView(R.id.feedListView)
   FeedListView feedListView;
@@ -53,7 +57,7 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
   @BindView(R.id.communityFilterView)
   CommunityFilterView communityFilterView;
   private Context mContext;
-  private String currentSelectedTag = ALL;
+  private String currentSelectedTag = EXPLORE;
   private Unbinder unbinder;
   private String mCurrentUser;
   private ProgressDialog progressDialog;
@@ -68,17 +72,65 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
   }
 
   @Override
+  public void onAttach(Context context) {
+    super.onAttach(context);
+    this.mContext = context;
+  }
+
+  @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    mCurrentUser = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+  }
+
+  @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
                            Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_home, container, false);
     unbinder = ButterKnife.bind(this, view);
-    fetchAllPosts();
+    fetchExplorePosts();
     if (HaprampPreferenceManager.getInstance().getUserSelectedCommunityAsJson().length() > 0) {
       initCategoryView();
     } else {
       navigateToCommunitySelectionPage();
     }
     return view;
+  }
+
+  @Override
+  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    feedListView.setFeedListViewListener(this);
+    feedListView.initialLoading();
+    feedListView.setMessageWhenNoData("We don't want you to feel lonely",
+      "Find what's new on 1Ramp on the search page");
+    feedListView.setClickListenerOnErrorPanelMessage(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        Intent i = new Intent(mContext, UserSearchActivity.class);
+        mContext.startActivity(i);
+        ((HomeActivity) mContext).overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit);
+      }
+    });
+    feedListView.setTopMarginForShimmer(104);
+  }
+
+  @Override
+  public void onStart() {
+    super.onStart();
+    AnalyticsUtil.getInstance(mContext).setCurrentScreen((Activity) mContext,
+      AnalyticsParams.SCREEN_HOME, null);
+  }
+
+  @Override
+  public void onDestroyView() {
+    super.onDestroyView();
+    unbinder.unbind();
+  }
+
+  private void fetchExplorePosts() {
+    Log.d("HomeFragment", "fetching explore first time");
+    dataStore.requestExploreFeeds(this);
   }
 
   private void initCategoryView() {
@@ -93,8 +145,14 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
         return;
       }
       ArrayList<CommunityModel> communityModels = new ArrayList<>();
-      communityModels.add(0, new CommunityModel("", Communities.IMAGE_URI_ALL,
-        Communities.ALL, "", "Feed", 0));
+
+      //add explore tab
+      communityModels.add(0, new CommunityModel("", "",
+        EXPLORE, "", "Explore", CommunityIds.EXPLORE));
+      //add feed tab
+      communityModels.add(1, new CommunityModel("", "",
+        ALL, "", "Feed", CommunityIds.FEED));
+
       CommunitySortUtils.sortCommunity(cwr.getCommunityModels());
       communityModels.addAll(cwr.getCommunityModels());
       communityFilterView.setCommunityFilterCallback(this);
@@ -105,52 +163,10 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
     }
   }
 
-  @Override
-  public void onStart() {
-    super.onStart();
-    AnalyticsUtil.getInstance(mContext).setCurrentScreen((Activity) mContext,
-      AnalyticsParams.SCREEN_HOME, null);
-  }
-
-  @Override
-  public void onAttach(Context context) {
-    super.onAttach(context);
-    this.mContext = context;
-  }
-
-  @Override
-  public void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    mCurrentUser = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-  }
-
   private void navigateToCommunitySelectionPage() {
     Intent intent = new Intent(mContext, CommunitySelectionActivity.class);
     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
     mContext.startActivity(intent);
-  }
-
-  @Override
-  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-    super.onViewCreated(view, savedInstanceState);
-    feedListView.setFeedListViewListener(this);
-    feedListView.initialLoading();
-    feedListView.setTopMarginForShimmer(104);
-  }
-
-  @Override
-  public void onRefreshFeeds() {
-    if (currentSelectedTag.equals(Communities.ALL)) {
-      refreshAllPosts();
-    } else {
-      refreshCommunityPosts(currentSelectedTag);
-    }
-  }
-
-  @Override
-  public void onDestroyView() {
-    super.onDestroyView();
-    unbinder.unbind();
   }
 
   @Override
@@ -168,47 +184,30 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
   }
 
   @Override
+  public void onRefreshFeeds() {
+    if (currentSelectedTag.equals(ALL)) {
+      refreshAllPosts();
+    } else if (currentSelectedTag.equals(EXPLORE)) {
+      refreshExplorePosts();
+    } else {
+      refreshCommunityPosts(currentSelectedTag);
+    }
+  }
+
+  @Override
   public void onLoadMoreFeeds() {
     if (currentSelectedTag.equals(ALL)) {
       if (last_author.length() > 0) {
         dataStore.requestUserFeed(HaprampPreferenceManager.getInstance()
           .getCurrentSteemUsername(), last_author, last_permlink, this);
       }
-    }
-  }
-
-  private void refreshAllPosts() {
-    dataStore.requestUserFeed(HaprampPreferenceManager.getInstance()
-      .getCurrentSteemUsername(), true, this);
-  }
-
-  private void refreshCommunityPosts(String tag) {
-    tag = tag.replace("hapramp-", "");
-    dataStore.requestCommunityFeed(tag, true, this);
-  }
-
-  @Override
-  public void onCommunitySelected(String tag) {
-    feedListView.initialLoading();
-    currentSelectedTag = tag;
-    last_permlink = "";
-    last_author = "";
-    if (tag.equals(Communities.ALL)) {
-      fetchAllPosts();
+    } else if (currentSelectedTag.equals(EXPLORE)) {
+      // TODO: 16/10/18 no pagination available for now.
+      //force call to callback method
+      onUserFeedsAvailable(new ArrayList<Feed>(), true, true);
     } else {
-      fetchCommunityPosts(tag);
+
     }
-    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_BROWSE_HOME);
-  }
-
-  private void fetchAllPosts() {
-    dataStore.requestUserFeed(HaprampPreferenceManager.getInstance()
-      .getCurrentSteemUsername(), false, this);
-  }
-
-  private void fetchCommunityPosts(String tag) {
-    tag = tag.replace("hapramp-", "");
-    dataStore.requestCommunityFeed(tag, false, this);
   }
 
   @Override
@@ -231,6 +230,47 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
     progressBarLoadingRecite.animate().translationY(0);
   }
 
+  private void refreshAllPosts() {
+    dataStore.requestUserFeed(HaprampPreferenceManager.getInstance()
+      .getCurrentSteemUsername(), true, this);
+  }
+
+  private void refreshExplorePosts() {
+    Log.d("HomeFragment", "fetching explore for refresh");
+    dataStore.requestExploreFeeds(this);
+  }
+
+  private void refreshCommunityPosts(String tag) {
+    tag = tag.replace("hapramp-", "");
+    dataStore.requestCommunityFeed(tag, true, this);
+  }
+
+  private void fetchCommunityPosts(String tag) {
+    tag = tag.replace("hapramp-", "");
+    dataStore.requestCommunityFeed(tag, false, this);
+  }
+
+  @Override
+  public void onCommunitySelected(String tag) {
+    feedListView.initialLoading();
+    currentSelectedTag = tag;
+    last_permlink = "";
+    last_author = "";
+    if (tag.equals(ALL)) {
+      fetchAllPosts();
+    } else if (tag.equals(EXPLORE)) {
+      fetchExplorePosts();
+    } else {
+      fetchCommunityPosts(tag);
+    }
+    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_BROWSE_HOME);
+  }
+
+  private void fetchAllPosts() {
+    dataStore.requestUserFeed(HaprampPreferenceManager.getInstance()
+      .getCurrentSteemUsername(), false, this);
+  }
+
   @Override
   public void onFeedsFetching() {
   }
@@ -239,7 +279,9 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
   public void onUserFeedsAvailable(List<Feed> feeds, boolean isFreshData, boolean isAppendable) {
     if (feedListView != null) {
       if (isAppendable) {
-        feeds.remove(0);
+        if (feeds.size() > 0) {
+          feeds.remove(0);
+        }
         feedListView.loadedMoreFeeds(feeds);
       } else {
         feedListView.feedsRefreshed(feeds);

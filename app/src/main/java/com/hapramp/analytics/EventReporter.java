@@ -13,10 +13,6 @@ import com.hapramp.utils.MomentsUtils;
 import java.util.ArrayList;
 
 public class EventReporter {
-  static ArrayList<String> events = new ArrayList<>();
-  static String open_time;
-  static String close_time;
-
   public static void reportOpenEvent() {
     String date = MomentsUtils.getDate();
     String time = MomentsUtils.getCurrentTime();
@@ -42,37 +38,12 @@ public class EventReporter {
   }
 
   public static void reportEventSession(Context context) {
-    StringBuilder stringBuilder = new StringBuilder();
-    for (int i = 0; i < events.size(); i++) {
-      stringBuilder.append(events.get(i))
-        .append(" > ");
-    }
-    close_time = MomentsUtils.getCurrentTime();
-    EventReportModel eventReportModel = new EventReportModel(open_time,
-      close_time,
-      stringBuilder.toString());
-    String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-    if (username.length() > 0) {
-      EventReportUtils.getEventReportNodeRef(
-        getAppVersion(context),
-        MomentsUtils.getDate(),
-        username,
-        close_time
-      ).setValue(eventReportModel).addOnSuccessListener(new OnSuccessListener<Void>() {
-        @Override
-        public void onSuccess(Void aVoid) {
-          events.clear();
-        }
-      });
-    }
   }
 
   public static void setOpenTime() {
-    open_time = MomentsUtils.getCurrentTime();
   }
 
   public static void addEvent(String event) {
-    events.add(event);
   }
 
   public static void reportDeviceId() {

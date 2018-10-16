@@ -142,9 +142,15 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
   }
 
   private void handleSendImage(Intent intent) {
-    Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-    intent.setData(imageUri);
-    handleImageResult(intent);
+    try {
+      Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+      intent.setData(imageUri);
+      handleImageResult(intent);
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+      Toast.makeText(this, "Something went wrong!", Toast.LENGTH_LONG).show();
+    }
   }
 
   private void close() {
@@ -196,7 +202,7 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
       catch (Exception e) {
         e.printStackTrace();
       }
-    }else{
+    } else {
       openCameraIntent();
     }
   }
@@ -266,9 +272,8 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
     body = postCreateComponent.getBody();
     body = body + Constants.FOOTER_TEXT;
     tags = postCreateComponent.getSelectedCommunityTags();
-    tags = PostHashTagPreprocessor.processHashtags(tags);
-    //add custom in-line hashtags entered in body.
     tags.addAll(getHashTagsFromBody(body));
+    tags = PostHashTagPreprocessor.processHashtags(tags);
     body = HashTagUtils.cleanHashTagsFromBody(body);
     images = postCreateComponent.getImageList();
   }

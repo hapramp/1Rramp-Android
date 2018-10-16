@@ -3,6 +3,7 @@ package com.hapramp.ui.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,6 @@ import android.view.ViewGroup;
 import com.hapramp.R;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.UserFeedCallback;
-import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.views.feedlist.FeedListView;
 
@@ -25,7 +25,7 @@ public class UserBlogFragment extends Fragment implements UserFeedCallback, Feed
   FeedListView feedListView;
   Unbinder unbinder;
   private DataStore dataStore;
-  private String username;
+  private String mUsername;
   private String last_author;
   private String last_permlink;
 
@@ -67,12 +67,12 @@ public class UserBlogFragment extends Fragment implements UserFeedCallback, Feed
     super.onDetach();
   }
 
-  public void setUsername(String username) {
-    this.username = username;
+  private void fetchAllPosts() {
+    dataStore.requestUserBlog(mUsername, false, this);
   }
 
-  private void fetchAllPosts() {
-    dataStore.requestUserBlog(username, false, this);
+  public void setUsername(String username) {
+    this.mUsername = username;
   }
 
   @Override
@@ -84,7 +84,9 @@ public class UserBlogFragment extends Fragment implements UserFeedCallback, Feed
   public void onUserFeedsAvailable(List<Feed> feeds, boolean isFreshData, boolean isAppendable) {
     if (feedListView != null) {
       if (isAppendable) {
-        feeds.remove(0);
+        if (feeds.size() > 0) {
+          feeds.remove(0);
+        }
         feedListView.loadedMoreFeeds(feeds);
       } else {
         feedListView.feedsRefreshed(feeds);
@@ -117,8 +119,7 @@ public class UserBlogFragment extends Fragment implements UserFeedCallback, Feed
   @Override
   public void onLoadMoreFeeds() {
     if (last_author.length() > 0) {
-      dataStore.requestUserBlog(HaprampPreferenceManager.getInstance()
-        .getCurrentSteemUsername(), last_author, last_permlink, this);
+      dataStore.requestUserBlog(mUsername, last_author, last_permlink, this);
     }
   }
 
@@ -133,6 +134,6 @@ public class UserBlogFragment extends Fragment implements UserFeedCallback, Feed
   }
 
   private void refreshAllPosts() {
-    dataStore.requestUserBlog(username, true, this);
+    dataStore.requestUserBlog(mUsername, true, this);
   }
 }
