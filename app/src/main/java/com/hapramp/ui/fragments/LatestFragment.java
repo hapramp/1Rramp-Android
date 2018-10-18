@@ -66,6 +66,9 @@ public class LatestFragment extends Fragment implements FeedListView.FeedListVie
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     feedListView.setFeedListViewListener(this);
+    feedListView.initialLoading();
+    feedListView.setMessageWhenNoData("Error",
+      "Something went wrong!");
     fetchPosts();
   }
 

@@ -22,7 +22,10 @@ public class VoteUtils {
     long sum = 0;
     if (activeVotes != null)
       for (int i = 0; i < activeVotes.size(); i++) {
-        sum += activeVotes.get(i).getPercent();
+        int vp = activeVotes.get(i).getPercent();
+        if (vp > 0) {
+          sum += activeVotes.get(i).getPercent();
+        }
       }
 
     return sum;
