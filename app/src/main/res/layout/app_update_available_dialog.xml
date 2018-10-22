@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="24dp">
+
+    <ImageView
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentRight="true"
+        android:alpha="0.7"
+        android:src="@drawable/new_app_update" />
+
+    <TextView
+        android:id="@+id/update_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="16dp"
+        android:text="New Update Available!"
+        android:textColor="@color/Black87"
+        android:textSize="18sp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/update_title"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:id="@+id/not_now_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginRight="8dp"
+            android:gravity="center"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="Skip Now"
+            android:textColor="@color/Black54"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/update_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/filled_btn_bg"
+            android:gravity="center"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="Install Update"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+</RelativeLayout>
