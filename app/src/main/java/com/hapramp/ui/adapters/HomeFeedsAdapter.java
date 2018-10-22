@@ -28,12 +28,17 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
   private List<Feed> feeds;
   private boolean isLoading;
   private boolean hasChanceOfMoreFeeds;
+  private boolean shouldCheckResteemedPost;
   private OnLoadMoreListener mOnLoadMoreListener;
 
   public HomeFeedsAdapter(Context mContext) {
     this.mContext = mContext;
     feeds = new ArrayList<>();
     isLoading = true;
+  }
+
+  public void setShouldCheckResteemedPost(boolean shouldCheckResteemedPost) {
+    this.shouldCheckResteemedPost = shouldCheckResteemedPost;
   }
 
   public void setOnLoadMoreListener(OnLoadMoreListener mOnLoadMoreListener) {

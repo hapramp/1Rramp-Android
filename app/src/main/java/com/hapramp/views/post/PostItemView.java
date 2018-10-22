@@ -108,6 +108,10 @@ public class PostItemView extends FrameLayout {
   TextView ratingDesc;
   @BindView(R.id.voters_peek_view)
   VoterPeekView votersPeekView;
+  @BindView(R.id.resteemed_icon)
+  ImageView resteemedIcon;
+  @BindView(R.id.resteemed_label)
+  TextView resteemedLabel;
   private Context mContext;
   private Feed mFeed;
   private Handler mHandler;
@@ -235,6 +239,7 @@ public class PostItemView extends FrameLayout {
     setCommentCount(feed.getChildren());
     attachListerOnAuthorHeader();
     attachListenerForOverlowIcon();
+    showResteem(feed.isResteemed());
   }
 
   private void attachListenerForOverlowIcon() {
@@ -606,6 +611,16 @@ public class PostItemView extends FrameLayout {
 
   public void setPostActionListener(PostActionListener postActionListener) {
     this.postActionListener = postActionListener;
+  }
+
+  private void showResteem(boolean show) {
+    if (show) {
+      resteemedIcon.setVisibility(VISIBLE);
+      resteemedLabel.setVisibility(VISIBLE);
+    } else {
+      resteemedIcon.setVisibility(GONE);
+      resteemedLabel.setVisibility(GONE);
+    }
   }
 
   public interface PostActionListener {

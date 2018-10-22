@@ -40,13 +40,14 @@ import com.hapramp.views.feedlist.FeedListView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-import static com.hapramp.steem.Communities.ALL;
 import static com.hapramp.steem.Communities.EXPLORE;
+import static com.hapramp.steem.Communities.FEEDS;
 
 public class HomeFragment extends Fragment implements LikePostCallback, FeedListView.FeedListViewListener, CommunityFilterView.CommunityFilterCallback, UserFeedCallback {
   public static final String TAG = HomeFragment.class.getSimpleName();
@@ -59,7 +60,7 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
   private Context mContext;
   private String currentSelectedTag = EXPLORE;
   private Unbinder unbinder;
-  private String mCurrentUser;
+  private String mUsername;
   private ProgressDialog progressDialog;
   private AlertDialog alertDialog;
   private DataStore dataStore;
@@ -80,7 +81,7 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    mCurrentUser = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+    mUsername = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
   }
 
   @Override
@@ -129,7 +130,6 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
   }
 
   private void fetchExplorePosts() {
-    Log.d("HomeFragment", "fetching explore first time");
     dataStore.requestExploreFeeds(this);
   }
 
@@ -151,7 +151,7 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
         EXPLORE, "", "Explore", CommunityIds.EXPLORE));
       //add feed tab
       communityModels.add(1, new CommunityModel("", "",
-        ALL, "", "Feed", CommunityIds.FEED));
+        FEEDS, "", "Feed", CommunityIds.FEED));
 
       CommunitySortUtils.sortCommunity(cwr.getCommunityModels());
       communityModels.addAll(cwr.getCommunityModels());
@@ -185,7 +185,7 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
 
   @Override
   public void onRefreshFeeds() {
-    if (currentSelectedTag.equals(ALL)) {
+    if (currentSelectedTag.equals(FEEDS)) {
       refreshAllPosts();
     } else if (currentSelectedTag.equals(EXPLORE)) {
       refreshExplorePosts();
@@ -196,7 +196,7 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
 
   @Override
   public void onLoadMoreFeeds() {
-    if (currentSelectedTag.equals(ALL)) {
+    if (currentSelectedTag.equals(FEEDS)) {
       if (last_author.length() > 0) {
         dataStore.requestUserFeed(HaprampPreferenceManager.getInstance()
           .getCurrentSteemUsername(), last_author, last_permlink, this);
@@ -207,6 +207,17 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
       onUserFeedsAvailable(new ArrayList<Feed>(), true, true);
     } else {
 
+    }
+  }
+
+  private void injectResteemData(List<Feed> feeds) {
+    Set<String> followings = HaprampPreferenceManager.getInstance().getFollowingsSet();
+    if (followings != null) {
+      for (int i = 0; i < feeds.size(); i++) {
+        if (!followings.contains(feeds.get(i).getAuthor())) {
+          feeds.get(i).setResteemed(true);
+        }
+      }
     }
   }
 
@@ -236,7 +247,6 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
   }
 
   private void refreshExplorePosts() {
-    Log.d("HomeFragment", "fetching explore for refresh");
     dataStore.requestExploreFeeds(this);
   }
 
@@ -256,7 +266,7 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
     currentSelectedTag = tag;
     last_permlink = "";
     last_author = "";
-    if (tag.equals(ALL)) {
+    if (tag.equals(FEEDS)) {
       fetchAllPosts();
     } else if (tag.equals(EXPLORE)) {
       fetchExplorePosts();
@@ -277,6 +287,9 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
 
   @Override
   public void onUserFeedsAvailable(List<Feed> feeds, boolean isFreshData, boolean isAppendable) {
+    if (currentSelectedTag.equals(FEEDS)) {
+      injectResteemData(feeds);
+    }
     if (feedListView != null) {
       if (isAppendable) {
         if (feeds.size() > 0) {
