@@ -41,10 +41,12 @@ import com.hapramp.ui.fragments.CompetitionFragment;
 import com.hapramp.ui.fragments.HomeFragment;
 import com.hapramp.ui.fragments.ProfileFragment;
 import com.hapramp.ui.fragments.SettingsFragment;
+import com.hapramp.utils.AppUpdateChecker;
 import com.hapramp.utils.BackstackManager;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FollowingsSyncUtils;
 import com.hapramp.viewmodel.common.ConnectivityViewModel;
+import com.hapramp.views.AppUpdateAvailableDialog;
 import com.hapramp.views.extraa.CreateNewButtonView;
 
 import java.util.Locale;
@@ -53,7 +55,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeActivity extends AppCompatActivity implements CreateNewButtonView.ItemClickListener {
+public class HomeActivity extends AppCompatActivity implements CreateNewButtonView.ItemClickListener{
   private final int BOTTOM_MENU_HOME = 7;
   private final int BOTTOM_MENU_COMP = 8;
   private final int BOTTOM_MENU_PROFILE = 9;
@@ -129,6 +131,18 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
         EventReporter.reportDeviceId();
         EventReporter.reportOpenEvent();
         NotificationSubscriber.subscribeForUserTopic();
+        AppUpdateChecker.checkAppUpdatesNode(HomeActivity.this, new AppUpdateChecker.AppUpdateAvailableListener() {
+          @Override
+          public void onAppUpdateAvailable() {
+            mHandler.post(new Runnable() {
+              @Override
+              public void run() {
+                AppUpdateAvailableDialog appUpdateAvailableDialog = new AppUpdateAvailableDialog(HomeActivity.this);
+                appUpdateAvailableDialog.show();
+              }
+            });
+          }
+        });
       }
     }.start();
   }
