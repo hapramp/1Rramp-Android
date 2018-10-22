@@ -22,6 +22,7 @@ public class Feed implements Parcelable {
       return new Feed[size];
     }
   };
+  private boolean isResteemed;
   private String author;
   private String permlink;
   private String category;
@@ -54,6 +55,7 @@ public class Feed implements Parcelable {
   }
 
   protected Feed(Parcel in) {
+    isResteemed = in.readByte() != 0x00;
     author = in.readString();
     permlink = in.readString();
     category = in.readString();
@@ -101,6 +103,7 @@ public class Feed implements Parcelable {
 
   @Override
   public void writeToParcel(Parcel dest, int flags) {
+    dest.writeByte((byte) (isResteemed ? 0x01 : 0x00));
     dest.writeString(author);
     dest.writeString(permlink);
     dest.writeString(category);
@@ -157,6 +160,14 @@ public class Feed implements Parcelable {
 
   public void setCashOutTime(String cashOutTime) {
     this.cashOutTime = cashOutTime;
+  }
+
+  public boolean isResteemed() {
+    return isResteemed;
+  }
+
+  public void setResteemed(boolean resteemed) {
+    isResteemed = resteemed;
   }
 
   public String getAuthor() {
