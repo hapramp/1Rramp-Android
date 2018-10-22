@@ -15,7 +15,6 @@ public class Splash extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    performTasksDelayed();
     DataStoreCachePreference.getInstance();
     NotificationHandler.createNotificationChannel(this);
     if (HaprampPreferenceManager.getInstance().isLoggedIn()) {
@@ -27,16 +26,6 @@ public class Splash extends AppCompatActivity {
     } else {
       navigateToOnBoarding();
     }
-  }
-
-  private void performTasksDelayed() {
-    new Handler().postDelayed(new Runnable() {
-      @Override
-      public void run() {
-        EventReporter.reportDeviceId();
-        EventReporter.reportOpenEvent();
-      }
-    }, 4000);
   }
 
   private void navigateToHomePage() {

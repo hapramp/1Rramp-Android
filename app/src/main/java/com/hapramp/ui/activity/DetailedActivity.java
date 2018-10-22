@@ -69,6 +69,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 public class DetailedActivity extends AppCompatActivity implements
@@ -131,7 +132,7 @@ public class DetailedActivity extends AppCompatActivity implements
   @BindView(R.id.comment_btn_container)
   LinearLayout commentBtnContainer;
   @BindView(R.id.payoutBtn)
-  ImageView payoutBtn;
+  ImageView dollarIcon;
   @BindView(R.id.payoutValue)
   TextView payoutValue;
   @BindView(R.id.starView)
@@ -269,8 +270,8 @@ public class DetailedActivity extends AppCompatActivity implements
       detailsActivityCover.setVisibility(VISIBLE);
       feedLoadingProgressBar.setVisibility(VISIBLE);
     } else {
-      detailsActivityCover.setVisibility(View.GONE);
-      feedLoadingProgressBar.setVisibility(View.GONE);
+      detailsActivityCover.setVisibility(GONE);
+      feedLoadingProgressBar.setVisibility(GONE);
     }
   }
 
@@ -701,13 +702,22 @@ public class DetailedActivity extends AppCompatActivity implements
       double pendingPayoutValue = Double.parseDouble(feed.getPendingPayoutValue().split(" ")[0]);
       double totalPayoutValue = Double.parseDouble(feed.getTotalPayoutValue().split(" ")[0]);
       double curatorPayoutValue = Double.parseDouble(feed.getCuratorPayoutValue().split(" ")[0]);
+
       if (pendingPayoutValue > 0) {
+        payoutValue.setVisibility(VISIBLE);
+        dollarIcon.setVisibility(VISIBLE);
         briefPayoutValueString = String.format(Locale.US, "%1$.3f", pendingPayoutValue);
-      } else {
+        payoutValue.setText(briefPayoutValueString);
+      } else if ((totalPayoutValue + curatorPayoutValue) > 0) {
         //cashed out
-        briefPayoutValueString = String.format(Locale.US, "%1$.3f", totalPayoutValue + curatorPayoutValue);
+        payoutValue.setVisibility(VISIBLE);
+        dollarIcon.setVisibility(VISIBLE);
+        briefPayoutValueString = String.format(Locale.US, "%1$.3f", (totalPayoutValue + curatorPayoutValue));
+        payoutValue.setText(briefPayoutValueString);
+      } else {
+        payoutValue.setVisibility(GONE);
+        dollarIcon.setVisibility(GONE);
       }
-      payoutValue.setText(briefPayoutValueString);
     }
     catch (Exception e) {
       Crashlytics.log(e.toString());
@@ -750,7 +760,7 @@ public class DetailedActivity extends AppCompatActivity implements
   public void onCommentsAvailable(ArrayList<CommentModel> comments) {
     this.comments = comments;
     if (commentLoadingProgressBar != null) {
-      commentLoadingProgressBar.setVisibility(View.GONE);
+      commentLoadingProgressBar.setVisibility(GONE);
     }
     addAllCommentsToView(comments);
   }
@@ -762,7 +772,7 @@ public class DetailedActivity extends AppCompatActivity implements
       emptyCommentsCaption.setText("No Comments");
       emptyCommentsCaption.setVisibility(VISIBLE);
     } else {
-      emptyCommentsCaption.setVisibility(View.GONE);
+      emptyCommentsCaption.setVisibility(GONE);
     }
     int range = commentCount > 3 ? 3 : discussions.size();
     for (int i = 0; i < range; i++) {
@@ -801,7 +811,7 @@ public class DetailedActivity extends AppCompatActivity implements
   @Override
   public void onCommentsFetchError(String error) {
     if (commentLoadingProgressBar != null) {
-      commentLoadingProgressBar.setVisibility(View.GONE);
+      commentLoadingProgressBar.setVisibility(GONE);
     }
     if (emptyCommentsCaption != null) {
       emptyCommentsCaption.setText(R.string.comment_fetch_error_text);

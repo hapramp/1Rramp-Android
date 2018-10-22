@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.hapramp.R;
@@ -49,7 +48,7 @@ public class NotificationHandler {
       if (baseNotificationModel != null) {
         if (baseNotificationModel.getType() != null) {
           baseNotificationModel.setNotificationId(String.valueOf(System.currentTimeMillis()));
-          FirebaseNotificationStore.saveNotification(baseNotificationModel);
+          _saveNotification(baseNotificationModel);
           boolean isForeground = new ForegroundCheckTask().execute(HapRampMain.getContext()).get(2, TimeUnit.SECONDS);
           if (!isForeground && HaprampPreferenceManager.getInstance().shouldShowPushNotifications()) {
             switch (baseNotificationModel.getType()) {
@@ -121,6 +120,26 @@ public class NotificationHandler {
   }
 
   /**
+   * saves notifications which are valid/supported.
+   * @param baseNotificationModel notification object.
+   */
+  private static void _saveNotification(BaseNotificationModel baseNotificationModel) {
+    if (baseNotificationModel.getType() != null) {
+      switch (baseNotificationModel.getType()) {
+        case NotificationKey.NOTIFICATION_TYPE_FOLLOW:
+        case NotificationKey.NOTIFICATION_TYPE_REBLOG:
+        case NotificationKey.NOTIFICATION_TYPE_REPLY:
+        case NotificationKey.NOTIFICATION_TYPE_VOTE:
+        case NotificationKey.NOTIFICATION_TYPE_TRANSFER:
+        case NotificationKey.NOTIFICATION_TYPE_MENTION:
+          FirebaseNotificationStore.saveNotification(baseNotificationModel);
+        default:
+          break;
+      }
+    }
+  }
+
+  /**
    * Shows notification for following, on-click: Profile of follower opens up.
    *
    * @param notifId  notification Id of Notification
@@ -153,7 +172,7 @@ public class NotificationHandler {
    * @param notificationId
    * @param commentor      user who created comment
    * @param permlink       permlink of new comment/reply.
-   * Clicking on notification, opens the comment/reply created by commentor.
+   *                       Clicking on notification, opens the comment/reply created by commentor.
    */
   private static void showCommentDirectedNotification(String notificationId, String commentor, String parentPermlink, String permlink) {
     Context context = HapRampMain.getContext();
@@ -196,7 +215,7 @@ public class NotificationHandler {
    * @param notificationId
    * @param mentioner      user who mentioned you in his/her post.
    * @param permlink       permlink of post in which you were mentioned.
-   * Clicking on notification, opens post in which user is mentioned
+   *                       Clicking on notification, opens post in which user is mentioned
    */
   private static void showMentionDirectedNotification(String notificationId, String mentioner, String parentPermlink, String permlink) {
     Context context = HapRampMain.getContext();

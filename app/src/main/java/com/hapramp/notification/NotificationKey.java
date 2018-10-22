@@ -14,12 +14,11 @@ public class NotificationKey {
   public static final String KEY_SENDER = "sender";
   public static final String KEY_MEMO = "memo";
   public static final String KEY_AMOUNT = "amount";
-
   public static final String NOTIFICATION_TYPE_VOTE = "vote";
   public static final String NOTIFICATION_TYPE_REPLY = "reply";
   public static final String NOTIFICATION_TYPE_MENTION = "mention";
   public static final String NOTIFICATION_TYPE_FOLLOW = "follow";
   public static final String NOTIFICATION_TYPE_REBLOG = "reblog";
   public static final String NOTIFICATION_TYPE_TRANSFER = "transfer";
-  public static final String NOTIFICATION_TYPE_APP_UPDATE = "app_update_notif";
+  public static final String NOTIFICATION_TYPE_APP_UPDATE = "app_update";
 }

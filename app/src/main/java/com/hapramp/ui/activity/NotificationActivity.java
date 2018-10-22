@@ -171,6 +171,11 @@ public class NotificationActivity extends AppCompatActivity {
     for (int i = 0; i < mNotifications.size(); i++) {
       FirebaseNotificationStore.markAsRead(mNotifications.get(i).getNotificationId());
     }
-    disableReadMarkButton();
+    new Handler().postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        disableReadMarkButton();
+      }
+    }, 200);
   }
 }
