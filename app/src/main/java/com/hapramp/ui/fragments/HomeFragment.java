@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -203,10 +204,12 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
       }
     } else if (currentSelectedTag.equals(EXPLORE)) {
       // TODO: 16/10/18 no pagination available for now.
-      //force call to callback method
-      onUserFeedsAvailable(new ArrayList<Feed>(), true, true);
-    } else {
-
+      new Handler().postDelayed(new Runnable() {
+        @Override
+        public void run() {
+          onUserFeedsAvailable(new ArrayList<Feed>(), false, true);
+        }
+      }, 2000);
     }
   }
 
