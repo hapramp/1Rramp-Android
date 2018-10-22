@@ -84,17 +84,29 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
   @Override
   public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
     if (holder instanceof VoteItemViewHolder) {
-      ((VoteItemViewHolder) holder).bind((VoteNotificationModel) notificationModels.get(position));
+      if (notificationModels.get(position) instanceof VoteNotificationModel) {
+        ((VoteItemViewHolder) holder).bind((VoteNotificationModel) notificationModels.get(position));
+      }
     } else if (holder instanceof FollowItemViewHolder) {
-      ((FollowItemViewHolder) holder).bind((FollowNotificationModel) notificationModels.get(position));
+      if (notificationModels.get(position) instanceof FollowNotificationModel) {
+        ((FollowItemViewHolder) holder).bind((FollowNotificationModel) notificationModels.get(position));
+      }
     } else if (holder instanceof MentionItemViewHolder) {
-      ((MentionItemViewHolder) holder).bind((MentionNotificationModel) notificationModels.get(position));
+      if (notificationModels.get(position) instanceof MentionNotificationModel) {
+        ((MentionItemViewHolder) holder).bind((MentionNotificationModel) notificationModels.get(position));
+      }
     } else if (holder instanceof ReblogItemViewHolder) {
-      ((ReblogItemViewHolder) holder).bind((ReblogNotificationModel) notificationModels.get(position));
+      if (notificationModels.get(position) instanceof ReblogNotificationModel) {
+        ((ReblogItemViewHolder) holder).bind((ReblogNotificationModel) notificationModels.get(position));
+      }
     } else if (holder instanceof ReplyItemViewHolder) {
-      ((ReplyItemViewHolder) holder).bind((ReplyNotificationModel) notificationModels.get(position));
+      if (notificationModels.get(position) instanceof ReplyNotificationModel) {
+        ((ReplyItemViewHolder) holder).bind((ReplyNotificationModel) notificationModels.get(position));
+      }
     } else if (holder instanceof TransferItemViewHolder) {
-      ((TransferItemViewHolder) holder).bind((TransferNotificationModel) notificationModels.get(position));
+      if (notificationModels.get(position) instanceof TransferNotificationModel) {
+        ((TransferItemViewHolder) holder).bind((TransferNotificationModel) notificationModels.get(position));
+      }
     }
   }
 

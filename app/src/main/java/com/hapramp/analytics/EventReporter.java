@@ -4,13 +4,10 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.hapramp.main.HapRampMain;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.MomentsUtils;
-
-import java.util.ArrayList;
 
 public class EventReporter {
   public static void reportOpenEvent() {
@@ -40,9 +37,6 @@ public class EventReporter {
   public static void reportEventSession(Context context) {
   }
 
-  public static void setOpenTime() {
-  }
-
   public static void addEvent(String event) {
   }
 
@@ -52,6 +46,13 @@ public class EventReporter {
     if (username.length() > 0) {
       EventReportUtils
         .getDeviceIdNode(username).setValue(token);
+    } else {
+      new android.os.Handler().postDelayed(new Runnable() {
+        @Override
+        public void run() {
+          reportDeviceId();
+        }
+      }, 4000);
     }
   }
 }

@@ -30,6 +30,7 @@ import com.hapramp.analytics.EventReporter;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.JSONParser;
 import com.hapramp.notification.FirebaseNotificationStore;
+import com.hapramp.notification.NotificationSubscriber;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.User;
 import com.hapramp.steemconnect.SteemConnectUtils;
@@ -118,6 +119,18 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
     attachListeners();
     observeConnection();
     listenToNotifications();
+    updateFirebase();
+  }
+
+  private void updateFirebase() {
+    new Thread() {
+      @Override
+      public void run() {
+        EventReporter.reportDeviceId();
+        EventReporter.reportOpenEvent();
+        NotificationSubscriber.subscribeForUserTopic();
+      }
+    }.start();
   }
 
   private void initObjects() {

@@ -51,7 +51,7 @@ public class WebScrapper {
                 if (resourceCreditModel.transferPrice.length() == 0) {
                   resourceCreditModel.setTransferPrice(tds.text());
                 }
-              } else if (ths.text().equals("current_mana_pct")) {
+              } else if (ths.text().equals("Voting power")) {
                 if (resourceCreditModel.votingPowerPercentage.length() == 0) {
                   resourceCreditModel.setVotingPowerPercentage(tds.text());
                 }

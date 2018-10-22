@@ -45,6 +45,7 @@ import xute.cryptocoinview.Coins;
 public class EarningFragment extends Fragment implements
   UserWalletCallback {
   public static final String ARG_USERNAME = "username";
+  public static final int VALUES_REQUIRED_BEFORE_CALC = 5;
   @BindView(R.id.steem_icon)
   ImageView steemIcon;
   @BindView(R.id.divider1)
@@ -108,7 +109,6 @@ public class EarningFragment extends Fragment implements
   @BindView(R.id.steem_rate)
   CoinView steemRate;
   private Handler mHandler;
-  public static final int VALUES_REQUIRED_BEFORE_CALC = 5;
   private Unbinder unbinder;
   private String mUsername;
   private Context mContext;
@@ -133,16 +133,16 @@ public class EarningFragment extends Fragment implements
   }
 
   @Override
+  public void onAttach(Context context) {
+    this.mContext = context;
+    super.onAttach(context);
+  }
+
+  @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setRetainInstance(true);
     EventReporter.addEvent(AnalyticsParams.EVENT_BROWSE_EARNINGS);
-  }
-
-  @Override
-  public void onAttach(Context context) {
-    this.mContext = context;
-    super.onAttach(context);
   }
 
   @Override
@@ -198,38 +198,6 @@ public class EarningFragment extends Fragment implements
     progressDialog.setCancelable(false);
   }
 
-  @Override
-  public void onDestroyView() {
-    super.onDestroyView();
-    unbinder.unbind();
-  }
-
-  @Override
-  public void onUserSteemPower(final String steemPowerOwned,
-                               final String steemPowerDelegated,
-                               final String steemPowerReceived) {
-    this.sp_owned = Double.parseDouble(steemPowerOwned.split(" ")[0]);
-    this.sp_delegated = Double.parseDouble(steemPowerDelegated.split(" ")[0]);
-    this.sp_received = Double.parseDouble(steemPowerReceived.split(" ")[0]);
-
-    valuesAvailable++;
-    try {
-      steemPowerProgress.setVisibility(View.GONE);
-      walletSteemPowerTv.setText(String.format(Locale.US, "%.3f (+%s)",
-        (sp_owned + sp_received - sp_delegated),
-        sp_received));
-      showEstimatedEarnings();
-    }
-    catch (Exception e) {
-    }
-  }
-
-  private void fetchWalletInfo() {
-    disableWalletActions();
-    walletSavingTv.setText("");
-    dataStore.requestWalletInfo(mUsername, this);
-  }
-
   private void showEstimatedEarnings() {
     try {
       estimatedValueProgress.setVisibility(View.GONE);
@@ -242,93 +210,10 @@ public class EarningFragment extends Fragment implements
     }
   }
 
-  private void disableWalletActions() {
-    try {
-      transferBtn.setEnabled(false);
-      powerDownBtn.setEnabled(false);
-      powerUpBtn.setEnabled(false);
-      delegateBtn.setEnabled(false);
-      claimRewardBtn.setEnabled(false);
-    }
-    catch (Exception e) {
-
-    }
-  }
-
-  private void requestClaimReward() {
-    if (progressDialog != null) {
-      progressDialog.setMessage("Claiming Reward...");
-      progressDialog.show();
-    }
-    final SteemConnect steemConnect = SteemConnectUtils
-      .getSteemConnectInstance(HaprampPreferenceManager.getInstance().getSC2AccessToken());
-    new Thread() {
-      @Override
-      public void run() {
-        steemConnect.claimRewardBalance(
-          HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
-          finalSteemReward,
-          finalSBDReward,
-          finalVestsReward,
-          new SteemConnectCallback() {
-            @Override
-            public void onResponse(String s) {
-              mHandler.post(
-                new Runnable() {
-                  @Override
-                  public void run() {
-                    rewardClaimed();
-                  }
-                }
-              );
-            }
-
-            @Override
-            public void onError(SteemConnectException e) {
-              mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                  rewardClaimedFailed();
-                }
-              });
-            }
-          }
-        );
-      }
-    }.start();
-  }
-
-  @Override
-  public void onFetchingWalletInfo() {
-  }
-
-  @Override
-  public void onUser(User user) {
-    try {
-      bindData(user);
-    }
-    catch (Exception e) {
-    }
-  }
-
-  @Override
-  public void onUserSteem(final String steem) {
-    this.steem = Double.parseDouble(steem.split(" ")[0]);
-    valuesAvailable++;
-    try {
-      steemProgress.setVisibility(View.GONE);
-      walletSteemTv.setText(steem);
-    }
-    catch (Exception e) {
-    }
-  }
-
-  private void rewardClaimed() {
-    if (progressDialog != null) {
-      progressDialog.dismiss();
-    }
-    Toast.makeText(mContext, "Successfully claimed reward!", Toast.LENGTH_LONG).show();
-    fetchWalletInfo();
+  private void fetchWalletInfo() {
+    disableWalletActions();
+    walletSavingTv.setText("");
+    dataStore.requestWalletInfo(mUsername, this);
   }
 
   private void attachListener() {
@@ -393,14 +278,68 @@ public class EarningFragment extends Fragment implements
     });
   }
 
-  @Override
-  public void onUserSavingSteem(final String savingSteem) {
+  private void disableWalletActions() {
     try {
-      savingProgress.setVisibility(View.GONE);
-      walletSavingTv.append(savingSteem + ", ");
+      transferBtn.setEnabled(false);
+      powerDownBtn.setEnabled(false);
+      powerUpBtn.setEnabled(false);
+      delegateBtn.setEnabled(false);
+      claimRewardBtn.setEnabled(false);
     }
     catch (Exception e) {
+
     }
+  }
+
+  private void requestClaimReward() {
+    if (progressDialog != null) {
+      progressDialog.setMessage("Claiming Reward...");
+      progressDialog.show();
+    }
+    final SteemConnect steemConnect = SteemConnectUtils
+      .getSteemConnectInstance(HaprampPreferenceManager.getInstance().getSC2AccessToken());
+    new Thread() {
+      @Override
+      public void run() {
+        steemConnect.claimRewardBalance(
+          HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
+          finalSteemReward,
+          finalSBDReward,
+          finalVestsReward,
+          new SteemConnectCallback() {
+            @Override
+            public void onResponse(String s) {
+              mHandler.post(
+                new Runnable() {
+                  @Override
+                  public void run() {
+                    rewardClaimed();
+                  }
+                }
+              );
+            }
+
+            @Override
+            public void onError(SteemConnectException e) {
+              mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                  rewardClaimedFailed();
+                }
+              });
+            }
+          }
+        );
+      }
+    }.start();
+  }
+
+  private void rewardClaimed() {
+    if (progressDialog != null) {
+      progressDialog.dismiss();
+    }
+    Toast.makeText(mContext, "Successfully claimed reward!", Toast.LENGTH_LONG).show();
+    fetchWalletInfo();
   }
 
   private void rewardClaimedFailed() {
@@ -411,6 +350,37 @@ public class EarningFragment extends Fragment implements
   }
 
   @Override
+  public void onDestroyView() {
+    super.onDestroyView();
+    unbinder.unbind();
+  }
+
+  @Override
+  public void onFetchingWalletInfo() {
+  }
+
+  @Override
+  public void onUser(User user) {
+    try {
+      bindData(user);
+    }
+    catch (Exception e) {
+    }
+  }
+
+  @Override
+  public void onUserSteem(final String steem) {
+    this.steem = Double.parseDouble(steem.split(" ")[0]);
+    valuesAvailable++;
+    try {
+      steemProgress.setVisibility(View.GONE);
+      walletSteemTv.setText(steem);
+    }
+    catch (Exception e) {
+    }
+  }
+
+  @Override
   public void onUserSteemDollar(final String dollar) {
     this.sbd = Double.parseDouble(dollar.split(" ")[0]);
     valuesAvailable++;
@@ -418,6 +388,41 @@ public class EarningFragment extends Fragment implements
       steemDollarProgress.setVisibility(View.GONE);
       walletSteemDollarTv.setText(dollar);
       enableWalletActions();
+    }
+    catch (Exception e) {
+    }
+  }
+
+  @Override
+  public void onUserSteemPower(final String steemPowerOwned,
+                               final String steemPowerDelegated,
+                               final String steemPowerReceived) {
+    this.sp_owned = Double.parseDouble(steemPowerOwned.split(" ")[0]);
+    this.sp_delegated = Double.parseDouble(steemPowerDelegated.split(" ")[0]);
+    this.sp_received = Double.parseDouble(steemPowerReceived.split(" ")[0]);
+
+    valuesAvailable++;
+    try {
+      steemPowerProgress.setVisibility(View.GONE);
+      String sp = String.format(Locale.US, "%.3f", (sp_owned));
+      if (sp_received > 0) {
+        sp += String.format(Locale.US, " (+%.3f)", sp_received);
+      }
+      if (sp_delegated > 0) {
+        sp += String.format(Locale.US, " (-%.3f)", sp_delegated);
+      }
+      walletSteemPowerTv.setText(sp);
+      showEstimatedEarnings();
+    }
+    catch (Exception e) {
+    }
+  }
+
+  @Override
+  public void onUserSavingSteem(final String savingSteem) {
+    try {
+      savingProgress.setVisibility(View.GONE);
+      walletSavingTv.append(savingSteem + ", ");
     }
     catch (Exception e) {
     }
@@ -487,6 +492,10 @@ public class EarningFragment extends Fragment implements
     }
   }
 
+  @Override
+  public void onUserWalletDataError(String error) {
+  }
+
   private void enableWalletActions() {
     try {
       transferBtn.setEnabled(true);
@@ -498,10 +507,6 @@ public class EarningFragment extends Fragment implements
     catch (Exception e) {
 
     }
-  }
-
-  @Override
-  public void onUserWalletDataError(String error) {
   }
 
   private void bindData(User data) {

@@ -266,13 +266,22 @@ public class PostItemView extends FrameLayout {
       double pendingPayoutValue = Double.parseDouble(feed.getPendingPayoutValue().split(" ")[0]);
       double totalPayoutValue = Double.parseDouble(feed.getTotalPayoutValue().split(" ")[0]);
       double curatorPayoutValue = Double.parseDouble(feed.getCuratorPayoutValue().split(" ")[0]);
+
       if (pendingPayoutValue > 0) {
+        payoutValue.setVisibility(VISIBLE);
+        dollarIcon.setVisibility(VISIBLE);
         briefPayoutValueString = String.format(Locale.US, "%1$.3f", pendingPayoutValue);
-      } else {
+        payoutValue.setText(briefPayoutValueString);
+      } else if ((totalPayoutValue + curatorPayoutValue) > 0) {
         //cashed out
-        briefPayoutValueString = String.format(Locale.US, "%1$.3f", totalPayoutValue + curatorPayoutValue);
+        payoutValue.setVisibility(VISIBLE);
+        dollarIcon.setVisibility(VISIBLE);
+        briefPayoutValueString = String.format(Locale.US, "%1$.3f", (totalPayoutValue + curatorPayoutValue));
+        payoutValue.setText(briefPayoutValueString);
+      } else {
+        payoutValue.setVisibility(GONE);
+        dollarIcon.setVisibility(GONE);
       }
-      payoutValue.setText(briefPayoutValueString);
     }
     catch (Exception e) {
       Crashlytics.log(e.toString());

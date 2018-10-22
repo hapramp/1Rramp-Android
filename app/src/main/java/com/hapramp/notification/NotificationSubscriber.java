@@ -12,7 +12,6 @@ public class NotificationSubscriber {
     FirebaseMessaging.getInstance().subscribeToTopic(username).addOnSuccessListener(new OnSuccessListener<Void>() {
       @Override
       public void onSuccess(Void aVoid) {
-        Log.d("NotificationSubs","done");
         HaprampPreferenceManager.getInstance().setUserTopicSubscribed(true);
       }
     });
@@ -23,7 +22,6 @@ public class NotificationSubscriber {
     FirebaseMessaging.getInstance().unsubscribeFromTopic(username).addOnSuccessListener(new OnSuccessListener<Void>() {
       @Override
       public void onSuccess(Void aVoid) {
-        Log.d("NotificationSubs","un done");
         HaprampPreferenceManager.getInstance().setUserTopicSubscribed(false);
       }
     });
