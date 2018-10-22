@@ -340,7 +340,11 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
     if (feedRecyclerView.getVisibility() != VISIBLE) {
       setFeedRecyclerViewVisibility(true);
     }
-    homeFeedsAdapter.appendFeeds(moreFeeds);
+    if (moreFeeds.size() > 0) {
+      homeFeedsAdapter.appendFeeds(moreFeeds);
+    } else {
+      homeFeedsAdapter.doneLoading();
+    }
   }
 
   public void setFeedListViewListener(FeedListViewListener feedListViewListener) {

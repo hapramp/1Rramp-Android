@@ -6,5 +6,5 @@ package com.hapramp.steem;
 
 public class LocalConfig {
   public static final String PARENT_PERMALINK = "hapramp";
-  public static final String APP_TAG = "1ramp/0.0.18";
+  public static final String APP_TAG = "1ramp/0.0.19";
 }

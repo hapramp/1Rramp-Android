@@ -46,6 +46,7 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
   }
 
   public void setFeeds(List<Feed> feeds) {
+    filterFeeds(feeds);
     isLoading = false;
     if (feeds.size() == 0) {
       hasChanceOfMoreFeeds = false;
@@ -56,7 +57,16 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
   }
 
+  public void doneLoading() {
+    if (feeds.size() > 0) {
+      isLoading = false;
+      hasChanceOfMoreFeeds = false;
+      notifyItemChanged(feeds.size());
+    }
+  }
+
   public void appendFeeds(List<Feed> additionalFeeds) {
+    filterFeeds(additionalFeeds);
     isLoading = false;
     int oldSize = feeds.size();
     if (additionalFeeds.size() == 0) {
@@ -129,6 +139,14 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
   public void resetList() {
     feeds.clear();
+  }
+
+  private void filterFeeds(List<Feed> feeds) {
+    for (int i = 0; i < feeds.size(); i++) {
+      if (feeds.get(i).getAuthor().length() == 0) {
+        feeds.remove(i);
+      }
+    }
   }
 
   public interface OnLoadMoreListener {
