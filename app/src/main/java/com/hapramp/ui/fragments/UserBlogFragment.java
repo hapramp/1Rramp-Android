@@ -3,7 +3,6 @@ package com.hapramp.ui.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,6 +81,7 @@ public class UserBlogFragment extends Fragment implements UserFeedCallback, Feed
 
   @Override
   public void onUserFeedsAvailable(List<Feed> feeds, boolean isFreshData, boolean isAppendable) {
+    injectResteemData(feeds);
     if (feedListView != null) {
       if (isAppendable) {
         if (feeds.size() > 0) {
@@ -103,6 +103,14 @@ public class UserBlogFragment extends Fragment implements UserFeedCallback, Feed
   public void onUserFeedFetchError(String err) {
     if (feedListView != null) {
       feedListView.failedToRefresh("");
+    }
+  }
+
+  private void injectResteemData(List<Feed> feeds) {
+    for (int i = 0; i < feeds.size(); i++) {
+      if (!feeds.get(i).getAuthor().equals(mUsername)) {
+        feeds.get(i).setResteemed(true);
+      }
     }
   }
 
@@ -136,4 +144,5 @@ public class UserBlogFragment extends Fragment implements UserFeedCallback, Feed
   private void refreshAllPosts() {
     dataStore.requestUserBlog(mUsername, true, this);
   }
+
 }

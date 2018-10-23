@@ -21,7 +21,12 @@ public class ResourceCreditModel {
   }
 
   public int getResourceCreditPercentage() {
-    return Math.round(Float.valueOf(resourceCreditPercentage.replace("%","")));
+    try {
+      return Math.round(Float.valueOf(resourceCreditPercentage.replace("%", "")));
+    }
+    catch (Exception e) {
+    }
+    return 0;
   }
 
   public void setResourceCreditPercentage(String resourceCreditPercentage) {
@@ -29,7 +34,12 @@ public class ResourceCreditModel {
   }
 
   public int getVotingPowerPercentage() {
-    return Math.round(Float.valueOf(votingPowerPercentage.replace("%","")));
+    try {
+      return Math.round(Float.valueOf(votingPowerPercentage.replace("%", "")));
+    }
+    catch (Exception e) {
+    }
+    return 0;
   }
 
   public void setVotingPowerPercentage(String votingPowerPercentage) {

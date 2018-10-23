@@ -1,7 +1,7 @@
 package com.hapramp.steem;
 
 public class Communities {
-  public static final String ALL = "all";
+  public static final String FEEDS = "feeds";
   public static final String EXPLORE = "explore";
   public static final String TAG_HAPRAMP = "hapramp";
   public static final String[] supportedCommunities = {

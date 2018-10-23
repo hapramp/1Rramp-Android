@@ -79,15 +79,14 @@ public class CommentsItemView extends FrameLayout implements
   ImageView replyBtn;
   @BindView(R.id.popupMenuDots)
   ImageView popUpMenuDots;
-
+  boolean amIVoted = false;
+  int oldVote = 0;
   private Context mContext;
   private Handler mHandler;
   private SteemVoterFetcher steemVoterFetcher;
   private String author;
   private String permlink;
   private SteemConnect steemConnect;
-  boolean amIVoted = false;
-  int oldVote = 0;
   private Runnable steemCastingVoteExceptionRunnable = new Runnable() {
     @Override
     public void run() {
@@ -102,6 +101,7 @@ public class CommentsItemView extends FrameLayout implements
   };
   private String timestamp;
   private String content;
+  private CommentActionListener commentActionListener;
 
   public CommentsItemView(@NonNull Context context) {
     super(context);
@@ -128,6 +128,7 @@ public class CommentsItemView extends FrameLayout implements
     this.permlink = comment.getPermlink();
     this.timestamp = comment.getCreatedAt();
     this.content = comment.getBody();
+    commentContent.setTextIsSelectable(true);
     ImageHandler.loadCircularImage(mContext
       , commentOwnerPic,
       String.format(getResources().getString(R.string.steem_user_profile_pic_format),
@@ -146,8 +147,6 @@ public class CommentsItemView extends FrameLayout implements
     setSteemEarnings(comment);
     attachListeners();
   }
-
-  private CommentActionListener commentActionListener;
 
   private void setSteemEarnings(CommentModel commentModel) {
     try {
@@ -199,7 +198,6 @@ public class CommentsItemView extends FrameLayout implements
         navigateToUserProfile(author);
       }
     });
-
   }
 
   private void navigateToUserProfile(String username) {
@@ -297,23 +295,6 @@ public class CommentsItemView extends FrameLayout implements
     }
   }
 
-  private void setVoteCount(int count) {
-    upvoteCount.setText(String.valueOf(count));
-    if (count == 0 && author.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
-      showOptionMenuEnabled(true);
-    } else {
-      showOptionMenuEnabled(false);
-    }
-  }
-
-  private void setVoteState(boolean voted) {
-    if (voted) {
-      upvoteBtn.setImageResource(R.drawable.like_filled);
-    } else {
-      upvoteBtn.setImageResource(R.drawable.like);
-    }
-  }
-
   private void voteDeleteSuccess() {
     amIVoted = false;
     oldVote = oldVote - 1;
@@ -339,16 +320,21 @@ public class CommentsItemView extends FrameLayout implements
     setVoteState(amIVoted);
   }
 
-  private void castingVoteFailed() {
-    amIVoted = false;
-    setVoteCount(oldVote);
-    setVoteState(false);
+  private void setVoteCount(int count) {
+    upvoteCount.setText(String.valueOf(count));
+    if (count == 0 && author.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
+      showOptionMenuEnabled(true);
+    } else {
+      showOptionMenuEnabled(false);
+    }
   }
 
-  private void voteDeleteFailed() {
-    amIVoted = true;
-    setVoteCount(oldVote);
-    setVoteState(true);
+  private void setVoteState(boolean voted) {
+    if (voted) {
+      upvoteBtn.setImageResource(R.drawable.like_filled);
+    } else {
+      upvoteBtn.setImageResource(R.drawable.like);
+    }
   }
 
   private void showOptionMenuEnabled(boolean show) {
@@ -433,6 +419,18 @@ public class CommentsItemView extends FrameLayout implements
   @Override
   public void onVotersFetchError() {
 
+  }
+
+  private void castingVoteFailed() {
+    amIVoted = false;
+    setVoteCount(oldVote);
+    setVoteState(false);
+  }
+
+  private void voteDeleteFailed() {
+    amIVoted = true;
+    setVoteCount(oldVote);
+    setVoteState(true);
   }
 
   public void setCommenttActionListener(CommentActionListener commenttActionListener) {

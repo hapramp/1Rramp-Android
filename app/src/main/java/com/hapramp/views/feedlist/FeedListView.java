@@ -11,7 +11,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
@@ -24,7 +23,6 @@ import android.widget.TextView;
 import com.hapramp.R;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.ui.adapters.HomeFeedsAdapter;
-import com.hapramp.utils.FontManager;
 import com.hapramp.utils.PixelUtils;
 import com.hapramp.utils.SpaceDecorator;
 import com.hapramp.utils.ViewItemDecoration;
@@ -342,7 +340,11 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
     if (feedRecyclerView.getVisibility() != VISIBLE) {
       setFeedRecyclerViewVisibility(true);
     }
-    homeFeedsAdapter.appendFeeds(moreFeeds);
+    if (moreFeeds.size() > 0) {
+      homeFeedsAdapter.appendFeeds(moreFeeds);
+    } else {
+      homeFeedsAdapter.doneLoading();
+    }
   }
 
   public void setFeedListViewListener(FeedListViewListener feedListViewListener) {
@@ -368,4 +370,5 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
 
     void onShowCommunityList();
   }
+
 }
