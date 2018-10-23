@@ -110,7 +110,7 @@ public class DataDispatcher {
   }
 
   void dispatchExplorePosts(String response, final boolean isFreshData, final boolean isAppendable,
-                            final UserFeedCallback userFeedCallback){
+                            final UserFeedCallback userFeedCallback) {
     final List<Feed> feeds = jsonParser.parseExplorePosts(response);
     if (userFeedCallback != null) {
       handler.post(new Runnable() {
@@ -154,6 +154,12 @@ public class DataDispatcher {
           userFeedCallback.onUserFeedFetchError(message);
         }
       });
+    }
+  }
+
+  void dispatchCompetitionEligibility(String response) {
+    if (response != null) {
+      jsonParser.parseCompetitionEligibilityResponse(response);
     }
   }
 

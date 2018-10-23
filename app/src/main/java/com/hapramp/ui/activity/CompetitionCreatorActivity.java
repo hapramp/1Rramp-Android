@@ -20,6 +20,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.hapramp.R;
+import com.hapramp.models.requests.CompetitionCreateBody;
 import com.hapramp.utils.GoogleImageFilePathReader;
 import com.hapramp.views.hashtag.CustomHashTagInput;
 import com.hapramp.views.post.PostCommunityView;
@@ -166,10 +167,10 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
     publishButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        //validateFields();
-        Intent i = new Intent(CompetitionCreatorActivity.this, WinnerDeclarationActivity.class);
-        startActivity(i);
-        //Toast.makeText(CompetitionCreatorActivity.this, "Competition create!", Toast.LENGTH_LONG).show();
+        if (validateFields()) {
+          // TODO: 23/10/18 competition Create
+          requestCompetitionCreate();
+        }
       }
     });
 
@@ -249,61 +250,6 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
     overridePendingTransition(R.anim.slide_down_enter, R.anim.slide_down_exit);
   }
 
-  private void showTimePicker(String msg, final EditText targetInput) {
-    Calendar mcurrentTime = Calendar.getInstance();
-    int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-    int minute = mcurrentTime.get(Calendar.MINUTE);
-    TimePickerDialog mTimePicker;
-    mTimePicker = new TimePickerDialog(CompetitionCreatorActivity.this, new TimePickerDialog.OnTimeSetListener() {
-      @Override
-      public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-        if (targetInput != null) {
-          targetInput.setText(String.format(Locale.US, "%02d:%02d:00", selectedHour, selectedMinute));
-        }
-      }
-    }, hour, minute, true);//Yes 24 hour time
-    mTimePicker.setTitle(msg);
-    mTimePicker.show();
-  }
-
-  private void showDatePicker(String msg, final EditText targetInput) {
-    final Calendar c = Calendar.getInstance();
-    int mYear = c.get(Calendar.YEAR);
-    int mMonth = c.get(Calendar.MONTH);
-    int mDay = c.get(Calendar.DAY_OF_MONTH);
-    DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-      new DatePickerDialog.OnDateSetListener() {
-
-        @Override
-        public void onDateSet(DatePicker view, int year,
-                              int monthOfYear, int dayOfMonth) {
-          if (targetInput != null) {
-            targetInput.setText(String.format(Locale.US, "%02d-%02d-%02d", year, 1 + monthOfYear, dayOfMonth));
-          }
-        }
-      }, mYear, mMonth, mDay);
-    datePickerDialog.setMessage(msg);
-    datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
-    datePickerDialog.show();
-  }
-
-  private void openGallery() {
-    try {
-      if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-        ||
-        ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_SELECTOR);
-      } else {
-        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        intent.setType("image/*");
-        startActivityForResult(intent, REQUEST_IMAGE_SELECTOR);
-      }
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
   private boolean validateFields() {
     if (competitionTitle.getText().toString().trim().length() == 0) {
       toast("Title required!");
@@ -356,8 +302,82 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
     return true;
   }
 
+  private void requestCompetitionCreate() {
+    CompetitionCreateBody competitionCreateBody = new CompetitionCreateBody();
+    competitionCreateBody.setmImage(bannerImageDownloadUrl);
+    competitionCreateBody.setmTitle(competitionTitle.getText().toString().trim());
+    competitionCreateBody.setmDescription(competitionDescription.getText().toString().trim());
+    competitionCreateBody.setmStartsAt(getStartTime());
+    competitionCreateBody.setmEndsAt(getEndTime());
+    competitionCreateBody.setmRules(competitionRules.getText().toString());
+
+  }
+
+  private void showTimePicker(String msg, final EditText targetInput) {
+    Calendar mcurrentTime = Calendar.getInstance();
+    int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+    int minute = mcurrentTime.get(Calendar.MINUTE);
+    TimePickerDialog mTimePicker;
+    mTimePicker = new TimePickerDialog(CompetitionCreatorActivity.this, new TimePickerDialog.OnTimeSetListener() {
+      @Override
+      public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+        if (targetInput != null) {
+          targetInput.setText(String.format(Locale.US, "%02d:%02d:00.000Z", selectedHour, selectedMinute));
+        }
+      }
+    }, hour, minute, true);//Yes 24 hour time
+    mTimePicker.setTitle(msg);
+    mTimePicker.show();
+  }
+
+  private void showDatePicker(String msg, final EditText targetInput) {
+    final Calendar c = Calendar.getInstance();
+    int mYear = c.get(Calendar.YEAR);
+    int mMonth = c.get(Calendar.MONTH);
+    int mDay = c.get(Calendar.DAY_OF_MONTH);
+    DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+      new DatePickerDialog.OnDateSetListener() {
+
+        @Override
+        public void onDateSet(DatePicker view, int year,
+                              int monthOfYear, int dayOfMonth) {
+          if (targetInput != null) {
+            targetInput.setText(String.format(Locale.US, "%02d-%02d-%02d", year, 1 + monthOfYear, dayOfMonth));
+          }
+        }
+      }, mYear, mMonth, mDay);
+    datePickerDialog.setMessage(msg);
+    datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+    datePickerDialog.show();
+  }
+
+  private void openGallery() {
+    try {
+      if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+        ||
+        ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_SELECTOR);
+      } else {
+        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        startActivityForResult(intent, REQUEST_IMAGE_SELECTOR);
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
   private void toast(String msg) {
     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+  }
+
+  private String getStartTime() {
+    return String.format("%sT%s", startDateInput.getText().toString(), startTimeInput.getText().toString());
+  }
+
+  private String getEndTime() {
+    return String.format("%sT%s", endDateInput.getText().toString(), endTimeInput.getText().toString());
   }
 
   @Override

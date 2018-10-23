@@ -3,6 +3,7 @@ package com.hapramp.datastore;
 public class URLS {
   private static final int FEED_LOADING_LIMIT = 50;
   private static final String BASE_URL = "https://api.hapramp.com/api/v2/";
+  private static final String TEST_BASE_URL = "https://testapi.hapramp.com/api/v2/";
   private static final String STEEMIT_API_URL = "https://api.steemit.com";
   private static final String STEEMIT_URL = "https://steemit.com/";
 
@@ -17,6 +18,13 @@ public class URLS {
 
   public static String userCommunityUrl(String username) {
     return BASE_URL +
+      "users/usernames/" +
+      username;
+  }
+
+  // TODO: 23/10/18 remove test api
+  public static String competitionEligibilityCheckUrl(String username) {
+    return TEST_BASE_URL +
       "users/usernames/" +
       username;
   }

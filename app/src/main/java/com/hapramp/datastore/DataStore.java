@@ -113,6 +113,27 @@ public class DataStore extends DataDispatcher {
     }.start();
   }
 
+  public void performCompetitionEligibilitySync() {
+    new Thread() {
+      @Override
+      public void run() {
+        String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+        if (username.length() > 0) {
+          try {
+            String url = URLS.competitionEligibilityCheckUrl(username);
+            Response response = NetworkApi.getNetworkApiInstance().fetch(url);
+            String responseString = null;
+            responseString = response.body().string();
+            dispatchCompetitionEligibility(responseString);
+          }
+          catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
+      }
+    }.start();
+  }
+
   /**
    * @param username            communities for username
    * @param communitiesCallback callback

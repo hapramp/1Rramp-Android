@@ -5,6 +5,7 @@ import android.util.Log;
 import com.hapramp.models.CommentModel;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.models.VestedShareModel;
+import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.User;
 import com.hapramp.steem.models.Voter;
@@ -47,10 +48,30 @@ public class JSONParser {
     return communityModels;
   }
 
+  public void parseCompetitionEligibilityResponse(String response) {
+    try {
+      JSONObject ro = new JSONObject(response);
+      parseAndStoreEligibility(ro);
+    }
+    catch (JSONException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void parseAndStoreEligibility(JSONObject jsonObject) throws JSONException {
+    if (jsonObject.has("is_competition_user")) {
+      boolean eligible = jsonObject.getBoolean("is_competition_user");
+      Log.d("ParsingCompetition","eligible "+eligible);
+      HaprampPreferenceManager.getInstance().setCompetitionCreateEligibility(eligible);
+    }
+  }
+
   public List<CommunityModel> parseUserCommunity(String response) {
     List<CommunityModel> communityModels = new ArrayList<>();
     try {
       JSONObject ro = new JSONObject(response);
+      // TODO: 23/10/18 remove comment when migrating to production api
+      //parseAndStoreEligibility(ro);
       JSONArray jsonArray = ro.getJSONArray("communities");
       for (int i = 0; i < jsonArray.length(); i++) {
         JSONObject jsonObject = jsonArray.getJSONObject(i);
