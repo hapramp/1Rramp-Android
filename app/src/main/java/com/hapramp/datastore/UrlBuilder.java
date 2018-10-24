@@ -1,15 +1,19 @@
 package com.hapramp.datastore;
 
-public class URLS {
+import static com.hapramp.api.URLS.BASE_URL;
+import static com.hapramp.api.URLS.STEEMIT_API_URL;
+
+public class UrlBuilder {
   private static final int FEED_LOADING_LIMIT = 50;
-  private static final String BASE_URL = "https://api.hapramp.com/api/v2/";
-  private static final String TEST_BASE_URL = "https://testapi.hapramp.com/api/v2/";
-  private static final String STEEMIT_API_URL = "https://api.steemit.com";
-  private static final String STEEMIT_URL = "https://steemit.com/";
 
   public static String explorePostsUrl() {
     return BASE_URL +
       "feeds/all";
+  }
+
+  public static String competitionsListUrl() {
+    return BASE_URL +
+      "competitions";
   }
 
   public static String steemUrl() {
@@ -23,8 +27,20 @@ public class URLS {
   }
 
   // TODO: 23/10/18 remove test api
+  public static String judgesListUrl() {
+    return BASE_URL +
+      "judges";
+  }
+
+  // TODO: 23/10/18 remove test api
+  public static String createCompetitionUrl() {
+    return BASE_URL +
+      "competitions";
+  }
+
+  // TODO: 23/10/18 remove test api
   public static String competitionEligibilityCheckUrl(String username) {
-    return TEST_BASE_URL +
+    return BASE_URL +
       "users/usernames/" +
       username;
   }
@@ -67,7 +83,7 @@ public class URLS {
       "&start_permlink=" + start_permlink;
   }
 
-  public static String userProfileUrl(String username){
+  public static String userProfileUrl(String username) {
     return String.format("https://steemit.com/@%s.json", username);
   }
 }

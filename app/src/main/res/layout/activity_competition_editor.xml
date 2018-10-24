@@ -74,8 +74,8 @@
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:paddingTop="4dp"
-                android:textStyle="bold"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/competition_description"
@@ -84,11 +84,10 @@
                 android:layout_below="@+id/competition_title"
                 android:layout_marginTop="16sp"
                 android:background="@drawable/add_tag_editor_bg"
+                android:gravity="start"
                 android:hint="Description"
-                android:minHeight="72dp"
                 android:paddingBottom="4dp"
                 android:paddingLeft="8dp"
-                android:gravity="start"
                 android:paddingRight="8dp"
                 android:paddingTop="4dp"
                 android:textSize="16sp" />
@@ -100,9 +99,8 @@
                 android:layout_below="@+id/competition_description"
                 android:layout_marginTop="16sp"
                 android:background="@drawable/add_tag_editor_bg"
-                android:hint="Rules"
-                android:minHeight="72dp"
                 android:gravity="start"
+                android:hint="Rules"
                 android:paddingBottom="4dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"

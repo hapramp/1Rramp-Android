@@ -4,9 +4,11 @@ package com.hapramp.datastore;
 import com.google.gson.Gson;
 import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
+import com.hapramp.datastore.callbacks.CompetitionsListCallback;
 import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.datastore.callbacks.FollowersCallback;
 import com.hapramp.datastore.callbacks.FollowingsCallback;
+import com.hapramp.datastore.callbacks.JudgesListFetchFromServerCallback;
 import com.hapramp.datastore.callbacks.RewardFundMedianPriceCallback;
 import com.hapramp.datastore.callbacks.SinglePostCallback;
 import com.hapramp.datastore.callbacks.TransferHistoryCallback;
@@ -30,6 +32,9 @@ public class DataStore extends DataDispatcher {
 
   private String currentFeedRequestTag;
 
+  /**
+   * Fetches all communities
+   */
   public static void performAllCommunitySync() {
     new DataStore().requestAllCommunities(new CommunitiesCallback() {
       @Override
@@ -65,7 +70,7 @@ public class DataStore extends DataDispatcher {
     new Thread() {
       @Override
       public void run() {
-        String url = URLS.allCommunityUrl();
+        String url = UrlBuilder.allCommunityUrl();
         String cachedResponse = DataCache.get(url);
         boolean cachedDataReturned = false;
         if (cachedResponse != null) {
@@ -91,12 +96,15 @@ public class DataStore extends DataDispatcher {
     }.start();
   }
 
+  /**
+   * Fetches last post creation time from Steem Blockchain.
+   */
   public static void requestSyncLastPostCreationTime() {
     new Thread() {
       @Override
       public void run() {
         try {
-          String url = URLS.userProfileUrl(
+          String url = UrlBuilder.userProfileUrl(
             HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
           Response globalPropsResponse = NetworkApi.getNetworkApiInstance().fetch(url);
           String responseString = globalPropsResponse.body().string();
@@ -113,6 +121,32 @@ public class DataStore extends DataDispatcher {
     }.start();
   }
 
+  /**
+   * fetches competitions list.
+   * @param competitionsListCallback callback to return results.
+   */
+  public void requestCompetitionLists(final CompetitionsListCallback competitionsListCallback) {
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          String url = UrlBuilder.competitionsListUrl();
+          Response response = NetworkApi.getNetworkApiInstance().fetch(url);
+          String responseString = null;
+          responseString = response.body().string();
+          dispatchCompetitionsList(responseString, competitionsListCallback);
+        }
+        catch (IOException e) {
+          e.printStackTrace();
+          dispatchCompetitionListFetchError(competitionsListCallback);
+        }
+      }
+    }.start();
+  }
+
+  /**
+   * Fetches user information and update eligibility of competition creation.
+   */
   public void performCompetitionEligibilitySync() {
     new Thread() {
       @Override
@@ -120,7 +154,7 @@ public class DataStore extends DataDispatcher {
         String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
         if (username.length() > 0) {
           try {
-            String url = URLS.competitionEligibilityCheckUrl(username);
+            String url = UrlBuilder.competitionEligibilityCheckUrl(username);
             Response response = NetworkApi.getNetworkApiInstance().fetch(url);
             String responseString = null;
             responseString = response.body().string();
@@ -129,6 +163,29 @@ public class DataStore extends DataDispatcher {
           catch (IOException e) {
             e.printStackTrace();
           }
+        }
+      }
+    }.start();
+  }
+
+  /**
+   * fetches judges list.
+   *
+   * @param listFetchFromServerCallback callback to return results
+   */
+  public void requestsJudges(final JudgesListFetchFromServerCallback listFetchFromServerCallback) {
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          String url = UrlBuilder.judgesListUrl();
+          Response response = NetworkApi.getNetworkApiInstance().fetch(url);
+          String responseString = null;
+          responseString = response.body().string();
+          dispatchJudgesList(responseString, listFetchFromServerCallback);
+        }
+        catch (IOException e) {
+          e.printStackTrace();
         }
       }
     }.start();
@@ -146,7 +203,7 @@ public class DataStore extends DataDispatcher {
     new Thread() {
       @Override
       public void run() {
-        String url = URLS.userCommunityUrl(username);
+        String url = UrlBuilder.userCommunityUrl(username);
         String cachedResponse = DataCache.get(url);
         boolean cachedDataReturned = false;
         if (cachedResponse != null) {
@@ -190,7 +247,7 @@ public class DataStore extends DataDispatcher {
     new Thread() {
       @Override
       public void run() {
-        String url = URLS.userFeedUrl(username);
+        String url = UrlBuilder.userFeedUrl(username);
         String cachedResponse = DataCache.get(url);
         if (cachedResponse != null && isFeedRequestLive(rtag) && !refresh) {
           dispatchUserFeeds(cachedResponse, false, false, userFeedCallback);
@@ -236,7 +293,7 @@ public class DataStore extends DataDispatcher {
     new Thread() {
       @Override
       public void run() {
-        String url = URLS.userBlogUrl(username);
+        String url = UrlBuilder.userBlogUrl(username);
         String cachedResponse = DataCache.get(url);
         if (cachedResponse != null && !refresh) {
           dispatchUserFeeds(cachedResponse, false, false, userFeedCallback);
@@ -274,7 +331,7 @@ public class DataStore extends DataDispatcher {
     new Thread() {
       @Override
       public void run() {
-        String url = URLS.userBlogUrl(username, start_author, start_permlink);
+        String url = UrlBuilder.userBlogUrl(username, start_author, start_permlink);
         String cachedResponse = DataCache.get(url);
         boolean cachedDataReturned = false;
         if (cachedResponse != null) {
@@ -312,7 +369,7 @@ public class DataStore extends DataDispatcher {
     new Thread() {
       @Override
       public void run() {
-        String url = URLS.userProfileUrl(username);
+        String url = UrlBuilder.userProfileUrl(username);
         String cachedResponse = DataCache.get(url);
         if (cachedResponse != null) {
           dispatchUserProfile(cachedResponse, false, userProfileCallback);
@@ -348,7 +405,7 @@ public class DataStore extends DataDispatcher {
     new Thread() {
       @Override
       public void run() {
-        String url = URLS.userFeedUrl(username, start_author, start_permlink);
+        String url = UrlBuilder.userFeedUrl(username, start_author, start_permlink);
         String cachedResponse = DataCache.get(url);
         boolean cachedDataReturned = false;
         if (cachedResponse != null && isFeedRequestLive(rtag)) {
@@ -385,7 +442,7 @@ public class DataStore extends DataDispatcher {
     new Thread() {
       @Override
       public void run() {
-        String url = URLS.curationUrl(tag);
+        String url = UrlBuilder.curationUrl(tag);
         String cachedResponse = DataCache.get(url);
         if (cachedResponse != null && isFeedRequestLive(rtag) && !refresh) {
           dispatchCommunityFeed(cachedResponse, false, false, userFeedCallback);
@@ -425,7 +482,7 @@ public class DataStore extends DataDispatcher {
     new Thread() {
       @Override
       public void run() {
-        String url = URLS.steemUrl();
+        String url = UrlBuilder.steemUrl();
         String cacheKey = "steemit_response_tag";
         String cachedResponse = DataCache.get(cacheKey);
         boolean cachedDataReturned = false;
@@ -471,7 +528,7 @@ public class DataStore extends DataDispatcher {
     new Thread() {
       @Override
       public void run() {
-        String url = URLS.steemUrl();
+        String url = UrlBuilder.steemUrl();
         String cacheKey = "steemit_user_follow_info_" + username;
         String cachedResponse = DataCache.get(cacheKey);
         if (cachedResponse != null) {
@@ -508,7 +565,7 @@ public class DataStore extends DataDispatcher {
       @Override
       public void run() {
         try {
-          String url = URLS.steemUrl();
+          String url = UrlBuilder.steemUrl();
           String requestBody = SteemRequestBody.lookupAccounts(searchTerm);
           Response response = NetworkApi.getNetworkApiInstance().postAndFetch(url, requestBody);
           if (response.isSuccessful()) {
@@ -536,7 +593,7 @@ public class DataStore extends DataDispatcher {
       @Override
       public void run() {
         try {
-          String url = URLS.steemUrl();
+          String url = UrlBuilder.steemUrl();
           String requestBody = SteemRequestBody.transactionState(username);
           Response response = NetworkApi.getNetworkApiInstance().postAndFetch(url, requestBody);
           if (response.isSuccessful()) {
@@ -572,7 +629,7 @@ public class DataStore extends DataDispatcher {
     new Thread() {
       @Override
       public void run() {
-        String url = URLS.steemUrl();
+        String url = UrlBuilder.steemUrl();
         String cacheKey = "steemit_response_more_" + start_author + "_" + start_permlink;
         String cachedResponse = DataCache.get(cacheKey);
         boolean cachedDataReturned = false;
@@ -610,7 +667,7 @@ public class DataStore extends DataDispatcher {
       @Override
       public void run() {
         try {
-          String url = URLS.steemUrl();
+          String url = UrlBuilder.steemUrl();
           String requestBody = SteemRequestBody.contentReplies(author, permlink);
           Response response = NetworkApi.getNetworkApiInstance().postAndFetch(url, requestBody);
           if (response.isSuccessful()) {
@@ -640,7 +697,7 @@ public class DataStore extends DataDispatcher {
       @Override
       public void run() {
         try {
-          String steemUrl = URLS.steemUrl();
+          String steemUrl = UrlBuilder.steemUrl();
           String followersReqBody = SteemRequestBody.followersListBody(username, startFromUser);
           Response followersResponse = NetworkApi.getNetworkApiInstance().postAndFetch(steemUrl,
             followersReqBody);
@@ -670,7 +727,7 @@ public class DataStore extends DataDispatcher {
       @Override
       public void run() {
         try {
-          String steemUrl = URLS.steemUrl();
+          String steemUrl = UrlBuilder.steemUrl();
           String followingsReqBody = SteemRequestBody.followingsListBody(username, startFromUser);
           Response followingsResponse = NetworkApi.getNetworkApiInstance().postAndFetch(steemUrl,
             followingsReqBody);
@@ -697,11 +754,11 @@ public class DataStore extends DataDispatcher {
       @Override
       public void run() {
         try {
-          String steemUrl = URLS.steemUrl();
+          String steemUrl = UrlBuilder.steemUrl();
           String globalProps = SteemRequestBody.globalProperties();
           Response globalPropsResponse = NetworkApi.getNetworkApiInstance().postAndFetch(steemUrl,
             globalProps);
-          String profileUrl = URLS.userProfileUrl(username);
+          String profileUrl = UrlBuilder.userProfileUrl(username);
           Response userReponse = NetworkApi.getNetworkApiInstance().fetch(profileUrl);
           if (globalPropsResponse.isSuccessful() && userReponse.isSuccessful()) {
             String globalePropsResponseJson = globalPropsResponse.body().string();
@@ -726,7 +783,7 @@ public class DataStore extends DataDispatcher {
       @Override
       public void run() {
         try {
-          String steemUrl = URLS.steemUrl();
+          String steemUrl = UrlBuilder.steemUrl();
           String globalProps = SteemRequestBody.rewardFund();
           String medianPriceHistory = SteemRequestBody.medianPriceHistory();
           Response rewardFundResponse = NetworkApi.getNetworkApiInstance().postAndFetch(steemUrl,
@@ -753,7 +810,7 @@ public class DataStore extends DataDispatcher {
       @Override
       public void run() {
         try {
-          String steemUrl = URLS.steemUrl();
+          String steemUrl = UrlBuilder.steemUrl();
           String globalProps = SteemRequestBody.userAccounts(users);
           Response vestedShareResponse = NetworkApi.getNetworkApiInstance().postAndFetch(steemUrl,
             globalProps);
@@ -781,7 +838,7 @@ public class DataStore extends DataDispatcher {
       @Override
       public void run() {
         try {
-          String steemUrl = URLS.steemUrl();
+          String steemUrl = UrlBuilder.steemUrl();
           String requestBody = SteemRequestBody.getSinglePostBody(author, permlink);
           Response singlePostResponse = NetworkApi.getNetworkApiInstance().postAndFetch(steemUrl, requestBody);
           if (singlePostResponse.isSuccessful()) {
@@ -807,7 +864,7 @@ public class DataStore extends DataDispatcher {
     new Thread() {
       @Override
       public void run() {
-        String url = URLS.explorePostsUrl();
+        String url = UrlBuilder.explorePostsUrl();
         String cachedResponse = DataCache.get(url);
         if (cachedResponse != null) {
           dispatchExplorePosts(cachedResponse, false, false, userFeedCallback);

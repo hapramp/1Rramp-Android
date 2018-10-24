@@ -91,6 +91,7 @@
             android:layout_height="24dp" />
 
         <TextView
+            android:id="@+id/totalPrize"
             android:textSize="12sp"
             android:layout_marginLeft="8dp"
             android:textColor="@color/Black54"
@@ -105,6 +106,7 @@
             android:layout_height="24dp" />
 
         <TextView
+            android:id="@+id/startsIn"
             android:textSize="12sp"
             android:layout_marginLeft="8dp"
             android:textColor="@color/Black54"
@@ -119,6 +121,7 @@
             android:layout_height="24dp" />
 
         <TextView
+            android:id="@+id/participantsCount"
             android:textSize="12sp"
             android:layout_marginLeft="8dp"
             android:textColor="@color/Black54"
@@ -146,6 +149,7 @@
         android:visibility="visible" />
 
     <TextView
+        android:clickable="true"
         android:layout_alignParentRight="true"
         android:id="@+id/participateBtn"
         android:layout_below="@+id/post_snippet"

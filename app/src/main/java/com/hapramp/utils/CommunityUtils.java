@@ -163,6 +163,37 @@ public class CommunityUtils {
     return "#009988";
   }
 
+  public static int getCommunityIdFromTitle(String tag) {
+    tag = tag.toLowerCase().replace("hapramp-", "");
+    switch (tag) {
+
+      case "art":
+        return CommunityIds.ART;
+
+      case "dance":
+        return CommunityIds.DANCE;
+
+      case "travel":
+        return CommunityIds.TRAVEL;
+
+      case "literature":
+        return CommunityIds.LITERATURE;
+
+      case "film":
+        return CommunityIds.FILM;
+
+      case "photography":
+        return CommunityIds.PHOTOGRAPHY;
+
+      case "fashion":
+        return CommunityIds.FASHION;
+
+      case "design":
+        return CommunityIds.DESIGN;
+    }
+    return -1;
+  }
+
   public static String getCommunityTitleFromName(String name) {
     return name.replace("hapramp-", "");
   }

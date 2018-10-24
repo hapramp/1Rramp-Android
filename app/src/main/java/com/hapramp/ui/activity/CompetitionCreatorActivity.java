@@ -3,13 +3,16 @@ package com.hapramp.ui.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -19,22 +22,40 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.hapramp.R;
+import com.hapramp.api.RetrofitServiceGenerator;
+import com.hapramp.datastore.UrlBuilder;
+import com.hapramp.models.CompetitionCreateResponse;
+import com.hapramp.models.JudgeModel;
+import com.hapramp.models.error.ErrorResponse;
 import com.hapramp.models.requests.CompetitionCreateBody;
+import com.hapramp.utils.CommunityUtils;
+import com.hapramp.utils.ErrorUtils;
 import com.hapramp.utils.GoogleImageFilePathReader;
+import com.hapramp.views.JudgeSelectionView;
 import com.hapramp.views.hashtag.CustomHashTagInput;
 import com.hapramp.views.post.PostCommunityView;
 import com.hapramp.views.post.PostImageView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class CompetitionCreatorActivity extends AppCompatActivity {
+import static com.hapramp.ui.activity.JudgeSelectionActivity.EXTRA_SELECTED_JUDGES;
+
+public class CompetitionCreatorActivity extends AppCompatActivity implements JudgeSelectionView.JudgeSelectionCallback {
 
   private static final int REQUEST_IMAGE_SELECTOR = 1039;
+  private static final int REQUEST_JUDGE_SELECTOR = 1037;
+
   @BindView(R.id.backBtn)
   ImageView backBtn;
   @BindView(R.id.toolbar_title)
@@ -115,19 +136,25 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
   RelativeLayout skillsWrapper;
   @BindView(R.id.metaView)
   RelativeLayout metaView;
+  @BindView(R.id.judge_selector)
+  JudgeSelectionView judgeSelector;
   private boolean isBannerSelected;
   private String bannerImageDownloadUrl = "";
+  private ArrayList<JudgeModel> selectedJudges;
+  private ProgressDialog progressDialog;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_competition_editor);
     ButterKnife.bind(this);
-    initializeCommunity();
+    initialize();
     attachListeners();
   }
 
-  private void initializeCommunity() {
+  private void initialize() {
+    progressDialog = new ProgressDialog(this);
+    selectedJudges = new ArrayList<>();
     competitionCommunityView.initCategory();
     competitionBanner.setImageActionListener(new PostImageView.ImageActionListener() {
       @Override
@@ -168,8 +195,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
       @Override
       public void onClick(View view) {
         if (validateFields()) {
-          // TODO: 23/10/18 competition Create
-          requestCompetitionCreate();
+          prepareCompetition();
         }
       }
     });
@@ -232,6 +258,8 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
         openGallery();
       }
     });
+
+    judgeSelector.setJudgeSelectionCallback(this);
 
   }
 
@@ -299,10 +327,16 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
       return false;
     }
 
+    if (selectedJudges.size() == 0) {
+      toast("Select Atleast 1 Judge.");
+      return false;
+    }
+
     return true;
   }
 
-  private void requestCompetitionCreate() {
+  private void prepareCompetition() {
+    showPublishingProgressDialog(true, "Creating Competition...");
     CompetitionCreateBody competitionCreateBody = new CompetitionCreateBody();
     competitionCreateBody.setmImage(bannerImageDownloadUrl);
     competitionCreateBody.setmTitle(competitionTitle.getText().toString().trim());
@@ -310,7 +344,11 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
     competitionCreateBody.setmStartsAt(getStartTime());
     competitionCreateBody.setmEndsAt(getEndTime());
     competitionCreateBody.setmRules(competitionRules.getText().toString());
-
+    competitionCreateBody.setmJudges(getSelectedJudgesIds());
+    competitionCreateBody.setmCommunities(getSelectedCommunityIds());
+    competitionCreateBody.setmPrizes(getPrizes());
+    Log.d("CompetitionCreate", new Gson().toJson(competitionCreateBody));
+    createCompetition(competitionCreateBody);
   }
 
   private void showTimePicker(String msg, final EditText targetInput) {
@@ -358,7 +396,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
         ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_SELECTOR);
       } else {
-        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setType("image/*");
         startActivityForResult(intent, REQUEST_IMAGE_SELECTOR);
       }
@@ -372,6 +410,19 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
   }
 
+  private void showPublishingProgressDialog(boolean show, String msg) {
+    if (progressDialog != null) {
+      if (show) {
+        progressDialog.setMessage(msg);
+        progressDialog.setCancelable(false);
+        progressDialog.setIndeterminate(true);
+        progressDialog.show();
+      } else {
+        progressDialog.hide();
+      }
+    }
+  }
+
   private String getStartTime() {
     return String.format("%sT%s", startDateInput.getText().toString(), startTimeInput.getText().toString());
   }
@@ -380,10 +431,77 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
     return String.format("%sT%s", endDateInput.getText().toString(), endTimeInput.getText().toString());
   }
 
+  private List<Integer> getSelectedJudgesIds() {
+    List<Integer> sjs = new ArrayList<>();
+    for (int i = 0; i < selectedJudges.size(); i++) {
+      sjs.add(selectedJudges.get(i).getmId());
+    }
+    return sjs;
+  }
+
+  private List<Integer> getSelectedCommunityIds() {
+    List<String> communities = competitionCommunityView.getSelectedTags();
+    List<Integer> ids = new ArrayList<>();
+    for (int i = 0; i < communities.size(); i++) {
+      int _id = CommunityUtils.getCommunityIdFromTitle(communities.get(i));
+      if (_id >= 0) {
+        ids.add(CommunityUtils.getCommunityIdFromTitle(communities.get(i)));
+      }
+    }
+    return ids;
+  }
+
+  private List<String> getPrizes() {
+    List<String> prizes = new ArrayList<>();
+    prizes.add(firstPrizeInput.getText().toString());
+    if (secondPrizeInput.getText().length() > 0) {
+      prizes.add(secondPrizeInput.getText().toString());
+    }
+    if (thirdPrizeInput.getText().length() > 0) {
+      prizes.add(thirdPrizeInput.getText().toString());
+    }
+    return prizes;
+  }
+
+  public void createCompetition(CompetitionCreateBody body) {
+    String url = UrlBuilder.createCompetitionUrl();
+    try {
+      RetrofitServiceGenerator.getService().createCompetition(url, body).enqueue(new Callback<CompetitionCreateResponse>() {
+        @Override
+        public void onResponse(Call<CompetitionCreateResponse> call, Response<CompetitionCreateResponse> response) {
+          showPublishingProgressDialog(false, "");
+          if (response.isSuccessful()) {
+            toast("Competition Created Successfully!");
+          } else {
+            ErrorResponse er = ErrorUtils.parseError(response);
+            toast(er.getmMessage());
+          }
+        }
+
+        @Override
+        public void onFailure(Call<CompetitionCreateResponse> call, Throwable t) {
+          showPublishingProgressDialog(false, "");
+          toast("Failed to create competition");
+        }
+      });
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+      showPublishingProgressDialog(false, "");
+      toast("Failed to create competition");
+    }
+  }
+
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (requestCode == REQUEST_IMAGE_SELECTOR && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
       handleImageResult(data);
+    }
+    if (requestCode == REQUEST_JUDGE_SELECTOR && resultCode == Activity.RESULT_OK) {
+      if (data != null) {
+        selectedJudges = data.getParcelableArrayListExtra(EXTRA_SELECTED_JUDGES);
+        updateJudgesView();
+      }
     }
   }
 
@@ -403,10 +521,21 @@ public class CompetitionCreatorActivity extends AppCompatActivity {
     }.start();
   }
 
+  private void updateJudgesView() {
+    judgeSelector.setJudgesList(selectedJudges);
+  }
+
   private void selectImage(String filePath) {
     isBannerSelected = true;
     competitionBanner.setImageSource(filePath);
   }
 
+  @Override
+  public void onSelectJudge() {
+    Intent i = new Intent(this, JudgeSelectionActivity.class);
+    i.putParcelableArrayListExtra(EXTRA_SELECTED_JUDGES, selectedJudges);
+    startActivityForResult(i, REQUEST_JUDGE_SELECTOR);
+    overridePendingTransition(R.anim.slide_up_enter, R.anim.slide_up_exit);
+  }
 }
 

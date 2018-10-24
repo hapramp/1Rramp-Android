@@ -50,8 +50,8 @@
             android:id="@+id/skills_wrapper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="36dp"
-            android:background="#ffffff">
+            android:background="#ffffff"
+            android:paddingBottom="36dp">
 
             <TextView
                 android:id="@+id/community_caption"
@@ -95,13 +95,40 @@
                 android:layout_marginTop="8dp"
                 android:animateLayoutChanges="true" />
 
+            <LinearLayout
+                android:id="@+id/judge_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tagsInputBox"
+                android:layout_marginBottom="28dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="28dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Judges (Max 2)"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <com.hapramp.views.JudgeSelectionView
+                    android:id="@+id/judge_selector"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp" />
+
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/timingCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tagsInputBox"
+                android:layout_below="@+id/judge_container"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="28dp"
+                android:layout_marginRight="16dp"
                 android:text="Timings (in GMT+0)"
                 android:textColor="@color/colorAccent"
                 android:textSize="14sp"
@@ -112,20 +139,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/timingCaption"
+                android:layout_marginTop="8dp"
                 android:background="#4de1e1e1"
-                android:paddingTop="8dp"
                 android:paddingBottom="8dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:layout_marginTop="8dp">
+                android:paddingTop="8dp">
 
                 <TextView
                     android:id="@+id/starts_on_caption"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
-                    android:textColor="@color/colorAccent"
                     android:gravity="center_vertical"
-                    android:text="Starts on:" />
+                    android:text="Starts on:"
+                    android:textColor="@color/colorAccent" />
 
                 <EditText
                     android:id="@+id/start_time_input"
@@ -133,67 +160,67 @@
                     android:layout_height="36dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
-                    android:focusable="false"
                     android:layout_toRightOf="@+id/starts_on_caption"
+                    android:focusable="false"
                     android:hint="HH:MM:SS"
                     android:textSize="14sp" />
 
                 <ImageView
                     android:id="@+id/start_clock_icon"
-                    android:src="@drawable/clock"
-                    android:padding="8dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_toRightOf="@+id/start_time_input"
                     android:background="?actionBarItemBackground"
                     android:clickable="true"
-                    android:layout_toRightOf="@+id/start_time_input"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp" />
+                    android:padding="8dp"
+                    android:src="@drawable/clock" />
 
                 <EditText
                     android:id="@+id/start_date_input"
                     android:layout_width="120dp"
                     android:layout_height="36dp"
+                    android:layout_below="@+id/start_time_input"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
                     android:layout_marginTop="8dp"
-                    android:focusable="false"
-                    android:layout_below="@+id/start_time_input"
                     android:layout_toRightOf="@+id/starts_on_caption"
+                    android:focusable="false"
                     android:hint="YYYY:MM:DD"
                     android:textSize="14sp" />
 
                 <ImageView
                     android:id="@+id/start_date_icon"
-                    android:src="@drawable/calender"
-                    android:padding="8dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_below="@+id/start_time_input"
+                    android:layout_marginTop="8dp"
+                    android:layout_toRightOf="@+id/start_time_input"
                     android:background="?actionBarItemBackground"
                     android:clickable="true"
-                    android:layout_marginTop="8dp"
-                    android:layout_below="@+id/start_time_input"
-                    android:layout_toRightOf="@+id/start_time_input"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp" />
+                    android:padding="8dp"
+                    android:src="@drawable/calender" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/end_timing_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/start_timing_container"
                 android:layout_marginTop="8dp"
                 android:background="#4de1e1e1"
-                android:layout_below="@+id/start_timing_container"
-                android:paddingTop="8dp"
                 android:paddingBottom="8dp"
                 android:paddingLeft="16dp"
-                android:paddingRight="16dp">
+                android:paddingRight="16dp"
+                android:paddingTop="8dp">
 
                 <TextView
                     android:id="@+id/ends_on_caption"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
                     android:layout_marginRight="6dp"
-                    android:textColor="@color/colorAccent"
                     android:gravity="center_vertical"
-                    android:text="Ends on:" />
+                    android:text="Ends on:"
+                    android:textColor="@color/colorAccent" />
 
                 <EditText
                     android:id="@+id/end_time_input"
@@ -201,45 +228,45 @@
                     android:layout_height="36dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
-                    android:focusable="false"
                     android:layout_toRightOf="@+id/ends_on_caption"
+                    android:focusable="false"
                     android:hint="HH:MM:SS"
                     android:textSize="14sp" />
 
                 <ImageView
                     android:id="@+id/end_clock_icon"
-                    android:src="@drawable/clock"
-                    android:padding="8dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_toRightOf="@+id/end_time_input"
                     android:background="?actionBarItemBackground"
                     android:clickable="true"
-                    android:layout_toRightOf="@+id/end_time_input"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp" />
+                    android:padding="8dp"
+                    android:src="@drawable/clock" />
 
                 <EditText
                     android:id="@+id/end_date_input"
                     android:layout_width="120dp"
                     android:layout_height="36dp"
+                    android:layout_below="@+id/end_time_input"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
                     android:layout_marginTop="8dp"
-                    android:focusable="false"
-                    android:layout_below="@+id/end_time_input"
                     android:layout_toRightOf="@+id/ends_on_caption"
+                    android:focusable="false"
                     android:hint="YYYY:MM:DD"
                     android:textSize="14sp" />
 
                 <ImageView
                     android:id="@+id/end_date_icon"
-                    android:src="@drawable/calender"
-                    android:padding="8dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_below="@+id/end_time_input"
+                    android:layout_marginTop="8dp"
+                    android:layout_toRightOf="@+id/end_time_input"
                     android:background="?actionBarItemBackground"
                     android:clickable="true"
-                    android:layout_marginTop="8dp"
-                    android:layout_below="@+id/end_time_input"
-                    android:layout_toRightOf="@+id/end_time_input"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp" />
+                    android:padding="8dp"
+                    android:src="@drawable/calender" />
             </RelativeLayout>
 
             <TextView
@@ -256,12 +283,12 @@
 
             <RelativeLayout
                 android:id="@+id/prizes_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/prizeCaption"
-                android:layout_marginTop="8dp"
                 android:layout_marginLeft="16sp"
                 android:layout_marginRight="16dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_marginTop="8dp">
 
                 <TextView
                     android:id="@+id/first_prize_caption"
@@ -272,12 +299,12 @@
                     android:text="1st Prize:" />
 
                 <TextView
-                    android:layout_toRightOf="@+id/first_prize_caption"
-                    android:text="*"
-                    android:paddingTop="4dp"
-                    android:textColor="@color/ConnectivityRed"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/first_prize_caption"
+                    android:paddingTop="4dp"
+                    android:text="*"
+                    android:textColor="@color/ConnectivityRed" />
 
                 <EditText
                     android:id="@+id/first_prize_input"
@@ -290,18 +317,18 @@
                     android:textSize="14sp" />
 
                 <TextView
-                    android:layout_below="@+id/first_prize_caption"
                     android:id="@+id/second_prize_caption"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
+                    android:layout_below="@+id/first_prize_caption"
                     android:gravity="center_vertical"
                     android:text="2nd Prize:" />
 
                 <EditText
-                    android:layout_below="@+id/first_prize_caption"
                     android:id="@+id/second_prize_input"
                     android:layout_width="120dp"
                     android:layout_height="36dp"
+                    android:layout_below="@+id/first_prize_caption"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
                     android:layout_toRightOf="@+id/second_prize_caption"
@@ -309,18 +336,18 @@
                     android:textSize="14sp" />
 
                 <TextView
-                    android:layout_below="@+id/second_prize_caption"
                     android:id="@+id/third_prize_caption"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
+                    android:layout_below="@+id/second_prize_caption"
                     android:gravity="center_vertical"
                     android:text="3rd Prize:" />
 
                 <EditText
-                    android:layout_below="@+id/second_prize_caption"
                     android:id="@+id/third_prize_input"
                     android:layout_width="120dp"
                     android:layout_height="36dp"
+                    android:layout_below="@+id/second_prize_caption"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
                     android:layout_toRightOf="@+id/second_prize_caption"
@@ -342,20 +369,20 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_below="@+id/bannerCaption"
                 android:id="@+id/choose_banner_image_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/bannerCaption"
+                android:layout_marginBottom="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:background="@drawable/post_category_item_view_bg"
+                android:clickable="true"
                 android:paddingBottom="8dp"
                 android:paddingEnd="16dp"
                 android:paddingStart="16dp"
                 android:paddingTop="8dp"
-                android:clickable="true"
                 android:text="Select Image"
                 android:textColor="@color/Black54" />
 

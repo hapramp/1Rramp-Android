@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activity.CompetitionDetailsActivity">
+    tools:context=".ui.activity.JudgeSelectionActivity">
 
     <RelativeLayout
         android:id="@+id/toolbar_container"
@@ -12,43 +12,39 @@
         android:background="#ffffff">
 
         <ImageView
-            android:clickable="true"
             android:id="@+id/backBtn"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="?selectableItemBackgroundBorderless"
             android:layout_centerVertical="true"
-            android:padding="14dp"
-            android:src="@drawable/back" />
-
-        <ImageView
-            android:id="@+id/overflowBtn"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentRight="true"
             android:background="?selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:layout_centerVertical="true"
             android:padding="14dp"
-            android:src="@drawable/more" />
+            android:src="@drawable/close_icon" />
 
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@+id/backBtn"
+            android:text="Select Judge"
+            android:textColor="@color/Black87"
+            android:textSize="16sp" />
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:layout_below="@+id/toolbar_container"
-        android:id="@+id/competition_details_list"
+        android:id="@+id/judges_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar_container" />
 
-    <TextView
-        android:id="@+id/messagePanel"
+    <ProgressBar
+        android:id="@+id/progress_bar"
         android:layout_centerInParent="true"
-        android:textColor="@color/Black87"
-        android:textSize="14sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <FrameLayout
+    <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/toolbar_container"

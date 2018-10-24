@@ -207,25 +207,34 @@ public class DetailedActivity extends AppCompatActivity implements
       final String parentPermlink = bundle.getString(Constants.EXTRAA_KEY_PARENT_PERMLINK, "");
       String notifId = getIntent().getExtras().getString(Constants.EXTRAA_KEY_NOTIFICATION_ID, null);
       if (parentPermlink.length() > 0) {
-        //show goto parent button
-        if (gotoParentBtn != null) {
-          gotoParentBtn.setVisibility(View.VISIBLE);
-          gotoParentBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-              String me = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-              if (me.length() > 0) {
-                openDetailsPage(me, parentPermlink);
-              }
-            }
-          });
-        }
+        enableParentPostButton(parentPermlink);
       }
       if (notifId != null) {
         FirebaseNotificationStore.markAsRead(notifId);
       }
       showFeedLoading(true);
       requestSingleFeed(author, permlink);
+    }
+  }
+
+  private void enableParentPostButton(final String parentPermlink) {
+    if (gotoParentBtn != null) {
+      gotoParentBtn.setVisibility(View.VISIBLE);
+      gotoParentBtn.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          String me = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+          if (me.length() > 0) {
+            openDetailsPage(me, parentPermlink);
+          }
+        }
+      });
+    }
+  }
+
+  private void disableParentPostButton() {
+    if (gotoParentBtn != null) {
+      gotoParentBtn.setVisibility(GONE);
     }
   }
 
@@ -241,6 +250,9 @@ public class DetailedActivity extends AppCompatActivity implements
   private void bindPostValues(Feed feed) {
     this.post = feed;
     showFeedLoading(false);
+    if (post.getDepth() == 0) {
+      disableParentPostButton();
+    }
     requestReplies();
     ImageHandler.loadCircularImage(this, feedOwnerPic,
       String.format(getResources().getString(R.string.steem_user_profile_pic_format), post.getAuthor()));
