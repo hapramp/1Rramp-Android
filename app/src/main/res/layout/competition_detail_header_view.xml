@@ -59,7 +59,6 @@
         android:layout_marginBottom="16dp"
         android:background="#20919191"
         android:clickable="true"
-        android:minHeight="256dp"
         android:scaleType="fitCenter"
         android:visibility="visible" />
 
@@ -307,4 +306,118 @@
         android:textSize="14sp"
         android:visibility="visible" />
 
+    <TextView
+        android:id="@+id/participation_hashtag_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/competition_rules"
+        android:layout_marginBottom="36dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="36dp"
+        android:text="Participate using nice tag from any other steem platform."
+        android:textColor="@color/Black87"
+        android:textSize="18sp" />
+
+    <RelativeLayout
+        android:id="@+id/judge_section"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/participation_hashtag_text"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/judge_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#c0eeeeee"
+            android:paddingBottom="16dp"
+            android:paddingLeft="16dp"
+            android:paddingTop="36dp"
+            android:text="JUDGES"
+            android:textColor="@color/Black54"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/judge_container"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_below="@+id/judge_label"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <RelativeLayout
+                android:id="@+id/judge1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="?android:selectableItemBackground"
+                android:padding="4dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/judge1_image"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/circular_image_placeholder" />
+
+                <TextView
+                    android:id="@+id/judge1_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:lines="1"
+                    android:text="Judge 1"
+                    android:textColor="@color/Black87"
+                    android:textSize="12sp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/judge2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:background="?android:selectableItemBackground"
+                android:padding="4dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/judge2_image"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/circular_image_placeholder" />
+
+                <TextView
+                    android:id="@+id/judge2_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:lines="1"
+                    android:text="Judge 2"
+                    android:textColor="@color/Black87"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/entries_info_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/judge_section"
+        android:background="#c0eeeeee"
+        android:paddingBottom="16dp"
+        android:paddingLeft="16dp"
+        android:paddingTop="36dp"
+        android:text="0 ENTRIES"
+        android:textColor="@color/Black54"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 </RelativeLayout>

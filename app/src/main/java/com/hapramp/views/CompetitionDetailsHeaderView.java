@@ -5,6 +5,10 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +21,7 @@ import android.widget.TextView;
 import com.hapramp.R;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.models.CompetitionModel;
+import com.hapramp.models.JudgeModel;
 import com.hapramp.steem.Communities;
 import com.hapramp.utils.CommunityUtils;
 import com.hapramp.utils.ImageHandler;
@@ -69,6 +74,28 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
   TextView startsTime;
   @BindView(R.id.endTime)
   TextView endTime;
+  @BindView(R.id.participation_hashtag_text)
+  TextView participationHashtagText;
+  @BindView(R.id.judge_label)
+  TextView judgeLabel;
+  @BindView(R.id.judge1_image)
+  ImageView judge1Image;
+  @BindView(R.id.judge1_name)
+  TextView judge1Name;
+  @BindView(R.id.judge1)
+  RelativeLayout judge1;
+  @BindView(R.id.judge2_image)
+  ImageView judge2Image;
+  @BindView(R.id.judge2_name)
+  TextView judge2Name;
+  @BindView(R.id.judge2)
+  RelativeLayout judge2;
+  @BindView(R.id.judge_container)
+  LinearLayout judgeContainer;
+  @BindView(R.id.judge_section)
+  RelativeLayout judgeSection;
+  @BindView(R.id.entries_info_section)
+  TextView entriesInfoSection;
   private Context mContext;
   private CompetitionModel mCompetition;
 
@@ -112,6 +139,8 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
     endTime.setText(getEndTime());
     postSnippet.setText(competition.getmDescription());
     competitionRules.setText(competition.getmRules());
+    setJudges(competition.getmJudges());
+    setParticipationHashtagInfo("#oneramp-2343");
   }
 
   private void setCommunities(List<CommunityModel> communities) {
@@ -135,9 +164,9 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
     long startsAt = MomentsUtils.getMillisFromTime(mCompetition.getmStartsAt());
     StringBuilder st = new StringBuilder();
     if (startsAt > now) {
-      st.append("Starts ").append(MomentsUtils.getFormattedTime(mCompetition.getmStartsAt()));
+      st.append(MomentsUtils.getFormattedTime(mCompetition.getmStartsAt()));
     } else {
-      st.append("Started ").append(MomentsUtils.getFormattedTime(mCompetition.getmStartsAt()));
+      st.append(MomentsUtils.getFormattedTime(mCompetition.getmStartsAt()));
     }
     return st.toString();
   }
@@ -147,11 +176,57 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
     long ends = MomentsUtils.getMillisFromTime(mCompetition.getmEndsAt());
     StringBuilder st = new StringBuilder();
     if (ends > now) {
-      st.append("Ends ").append(MomentsUtils.getFormattedTime(mCompetition.getmEndsAt()));
+      st.append(MomentsUtils.getFormattedTime(mCompetition.getmEndsAt()));
     } else {
-      st.append("Ended ").append(MomentsUtils.getFormattedTime(mCompetition.getmEndsAt()));
+      st.append(MomentsUtils.getFormattedTime(mCompetition.getmEndsAt()));
     }
     return st.toString();
+  }
+
+  private void setJudges(List<JudgeModel> judges) {
+    if (judges.size() == 0) {
+      judgeSection.setVisibility(GONE);
+    } else {
+      judgeSection.setVisibility(VISIBLE);
+      int len = judges.size() > 2 ? 2 : judges.size();
+      judge1.setVisibility(GONE);
+      judge2.setVisibility(GONE);
+      for (int i = 0; i < len; i++) {
+        if (i == 0) {
+          judge1.setVisibility(VISIBLE);
+          ImageHandler.loadCircularImage(mContext, judge1Image,
+            String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format),
+              judges.get(i).getmUsername()));
+          judge1Name.setText(judges.get(i).getmUsername());
+        } else if (i == 1) {
+          judge2.setVisibility(VISIBLE);
+          ImageHandler.loadCircularImage(mContext, judge2Image,
+            String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format),
+              judges.get(i).getmUsername()));
+          judge2Name.setText(judges.get(i).getmUsername());
+        }
+      }
+    }
+  }
+
+  private void setParticipationHashtagInfo(String hashtag) {
+    String part1 = "Participate using ";
+    String part3 = " from any other platform.";
+    int hashtagLen = hashtag.length();
+    int part1Len = part1.length();
+
+    int spanStart = part1Len;
+    int spanEnd = part1Len + hashtagLen;
+    Spannable wordtoSpan = new SpannableString(part1 + hashtag + part3);
+    wordtoSpan.setSpan(new ForegroundColorSpan(Color.parseColor("#3F72AF")),
+      spanStart,
+      spanEnd,
+      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    StyleSpan bss = new StyleSpan(android.graphics.Typeface.BOLD);
+    wordtoSpan.setSpan(bss,
+      spanStart,
+      spanEnd, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+    participationHashtagText.setText(wordtoSpan);
   }
 
   private void addCommunitiesToLayout(List<CommunityModel> cms) {
