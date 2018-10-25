@@ -159,7 +159,7 @@
         <activity
             android:name=".ui.activity.WinnerDeclarationActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.activity.JudgeSelectionActivity"></activity>
+        <activity android:name=".ui.activity.JudgeSelectionActivity" />
     </application>
 
 </manifest>

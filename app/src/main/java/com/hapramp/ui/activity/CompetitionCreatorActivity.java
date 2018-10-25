@@ -347,7 +347,6 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
     competitionCreateBody.setmJudges(getSelectedJudgesIds());
     competitionCreateBody.setmCommunities(getSelectedCommunityIds());
     competitionCreateBody.setmPrizes(getPrizes());
-    Log.d("CompetitionCreate", new Gson().toJson(competitionCreateBody));
     createCompetition(competitionCreateBody);
   }
 
@@ -472,6 +471,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
           showPublishingProgressDialog(false, "");
           if (response.isSuccessful()) {
             toast("Competition Created Successfully!");
+            close();
           } else {
             ErrorResponse er = ErrorUtils.parseError(response);
             toast(er.getmMessage());

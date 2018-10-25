@@ -2,6 +2,8 @@ package com.hapramp.api;
 
 import com.hapramp.models.CommunitySelectionServerUpdateBody;
 import com.hapramp.models.CompetitionCreateResponse;
+import com.hapramp.models.CompetitionEntryConfirmationBody;
+import com.hapramp.models.CompetitionEntryResponse;
 import com.hapramp.models.VerificationDataBody;
 import com.hapramp.models.VerifiedToken;
 import com.hapramp.models.requests.CompetitionCreateBody;
@@ -10,12 +12,12 @@ import com.hapramp.steem.CommunitySelectionResponse;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.http.Body;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 import retrofit2.http.Url;
 
 /**
@@ -31,6 +33,10 @@ public interface HaprampAPI {
 
   @POST
   Call<CompetitionCreateResponse> createCompetition(@Url String url, @Body CompetitionCreateBody body);
+
+  @POST("competitions/{competition_id}/posts")
+  Call<CompetitionEntryResponse> updateServerAboutEntry(@Path("competition_id") String comp_id,
+                                                        @Body CompetitionEntryConfirmationBody competitionEntryConfirmationBody);
 
   @Multipart
   @POST("upload")

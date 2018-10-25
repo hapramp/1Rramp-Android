@@ -7,7 +7,6 @@ import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -20,6 +19,7 @@ import com.hapramp.models.CommunityModel;
 import com.hapramp.models.CompetitionModel;
 import com.hapramp.steem.Communities;
 import com.hapramp.ui.activity.CompetitionDetailsActivity;
+import com.hapramp.ui.activity.ParticipateEditorActivity;
 import com.hapramp.utils.CommunityUtils;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
@@ -31,6 +31,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.hapramp.ui.activity.CompetitionDetailsActivity.EXTRA_HEADER_PARCEL;
+import static com.hapramp.ui.activity.ParticipateEditorActivity.EXTRA_COMPETITION_HASHTAG;
+import static com.hapramp.ui.activity.ParticipateEditorActivity.EXTRA_COMPETITION_ID;
+import static com.hapramp.ui.activity.ParticipateEditorActivity.EXTRA_COMPETITION_TITLE;
 
 public class CompetitionFeedItemView extends FrameLayout {
   @BindView(R.id.feed_owner_pic)
@@ -91,13 +94,27 @@ public class CompetitionFeedItemView extends FrameLayout {
         navigateToCompetitionDetailsPage();
       }
     });
+
+    participateBtn.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        openSubmissionPage();
+      }
+    });
   }
 
   private void navigateToCompetitionDetailsPage() {
     Intent i = new Intent(mContext, CompetitionDetailsActivity.class);
     i.putExtra(EXTRA_HEADER_PARCEL, mCompetition);
-    //Log.d("CompetitionFeedData",mCompetition.toString());
-     mContext.startActivity(i);
+    mContext.startActivity(i);
+  }
+
+  private void openSubmissionPage() {
+    Intent intent = new Intent(mContext, ParticipateEditorActivity.class);
+    intent.putExtra(EXTRA_COMPETITION_ID, mCompetition.getmId());
+    intent.putExtra(EXTRA_COMPETITION_TITLE, mCompetition.getmTitle());
+    intent.putExtra(EXTRA_COMPETITION_HASHTAG, "oneramp-2434");
+    mContext.startActivity(intent);
   }
 
   public CompetitionFeedItemView(@NonNull Context context, @Nullable AttributeSet attrs) {

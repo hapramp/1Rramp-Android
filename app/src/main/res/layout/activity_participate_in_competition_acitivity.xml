@@ -16,10 +16,10 @@
             android:id="@+id/backBtn"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="?selectableItemBackgroundBorderless"
             android:layout_centerVertical="true"
-            android:src="@drawable/back"
-            android:padding="14dp"/>
+            android:background="?selectableItemBackgroundBorderless"
+            android:padding="14dp"
+            android:src="@drawable/back" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -27,12 +27,11 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="16dp"
             android:layout_toRightOf="@+id/backBtn"
-            android:text="Participate"
+            android:text="Competition Entry Blog"
             android:textColor="@color/Black87"
             android:textSize="16sp" />
 
         <TextView
-            android:visibility="gone"
             android:id="@+id/previewButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -47,7 +46,8 @@
             android:paddingTop="6dp"
             android:text="Preview"
             android:textColor="@color/colorPrimary"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/nextButton"
@@ -80,20 +80,50 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:background="#a9eeeeee"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/submission_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp"
+                    android:text="Your submission for: Photo Contest"
+                    android:textColor="@color/Black54"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/auto_hashtags_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp"
+                    android:text="#oneramp-2434 is auto embeded(No need to write it again)."
+                    android:textColor="@color/Black54"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
             <EditText
                 android:id="@+id/article_title"
-                android:hint="Title"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:textColorHint="#c9c8c8"
-                android:background="@drawable/post_editor_bg"
-                android:minHeight="48dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:background="@drawable/post_editor_bg"
+                android:hint="Title"
+                android:minHeight="48dp"
+                android:paddingBottom="4dp"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp"
+                android:paddingTop="4dp"
+                android:textColorHint="#c9c8c8"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
             <xute.markdeditor.MarkDEditor
                 android:id="@+id/mdEditor"

@@ -141,6 +141,7 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
     competitionRules.setText(competition.getmRules());
     setJudges(competition.getmJudges());
     setParticipationHashtagInfo("#oneramp-2343");
+    setEntries(0);
   }
 
   private void setCommunities(List<CommunityModel> communities) {
@@ -227,6 +228,18 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
       spanStart,
       spanEnd, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
     participationHashtagText.setText(wordtoSpan);
+  }
+
+  private void setEntries(int entries) {
+    String en = String.valueOf(entries);
+    int spanStart = 0;
+    int spanEnd = en.length();
+    Spannable wordtoSpan = new SpannableString(en + " ENTRIES");
+    wordtoSpan.setSpan(new ForegroundColorSpan(Color.parseColor("#3F72AF")),
+      spanStart,
+      spanEnd,
+      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    entriesInfoSection.setText(wordtoSpan);
   }
 
   private void addCommunitiesToLayout(List<CommunityModel> cms) {
