@@ -1,5 +1,6 @@
 package com.hapramp.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -15,8 +16,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
+import com.hapramp.datastore.DataStore;
+import com.hapramp.datastore.callbacks.CompetitionEntriesFetchCallback;
 import com.hapramp.models.CompetitionWinnerModel;
 import com.hapramp.models.RankableCompetitionFeedItem;
+import com.hapramp.steem.models.Feed;
 import com.hapramp.ui.adapters.RankableCompetitionItemRecyclerAdapter;
 import com.hapramp.views.competition.RankableCompetitionFeedItemView;
 import com.hapramp.views.competition.WinnerItemView;
@@ -24,13 +28,15 @@ import com.hapramp.views.competition.WinnerPlaceholderView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class WinnerDeclarationActivity extends AppCompatActivity implements RankableCompetitionFeedItemView.RankableCompetitionItemListener {
-
+public class WinnerDeclarationActivity extends AppCompatActivity implements RankableCompetitionFeedItemView.RankableCompetitionItemListener, CompetitionEntriesFetchCallback {
+  public static final String EXTRA_COMPETITION_ID = "competition_id";
+  public static final String EXTRA_COMPETITION_TITLE = "competition_title";
   private final int MAX_WINNERS_ALLOWED = 3;
   @BindView(R.id.backBtn)
   ImageView backBtn;
@@ -61,7 +67,9 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
   //rank->Winner
   private Map<Integer, CompetitionWinnerModel> shortlistedWinnersMap;
   private RankableCompetitionFeedItem rankAssigneeContext;
-
+  private DataStore dataStore;
+  private String mCompetitionId;
+  private String mCompetitionTitle;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +77,14 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
     setContentView(R.layout.activity_winner_declaration);
     ButterKnife.bind(this);
     initializeObjects();
+    collectExtras();
     attachListeners();
-    bindSampleData();
+    fetchEntries();
+    //bindSampleData();
   }
 
   private void initializeObjects() {
+    dataStore = new DataStore();
     rankableCompetitionItemRecyclerAdapter = new RankableCompetitionItemRecyclerAdapter(this);
     competitionWinnerSelectionList.setLayoutManager(new LinearLayoutManager(this));
     rankableCompetitionItemRecyclerAdapter.setRankableCompetitionItemListener(this);
@@ -136,6 +147,26 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
 
       }
     });
+  }
+
+  private void fetchEntries() {
+    if (mCompetitionId != null) {
+      dataStore.requestCompetitionEntries(mCompetitionId, this);
+    } else {
+      showErrorMessage();
+    }
+  }
+
+  private void showErrorMessage() {
+
+  }
+
+  private void collectExtras() {
+    Intent intent = getIntent();
+    if (intent != null) {
+      mCompetitionId = intent.getStringExtra(EXTRA_COMPETITION_ID);
+      mCompetitionTitle = intent.getStringExtra(EXTRA_COMPETITION_TITLE);
+    }
   }
 
   private void bindSampleData() {
@@ -272,5 +303,23 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
     if (sheetBehavior != null) {
       sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
+  }
+
+  @Override
+  public void onCompetitionsEntriesAvailable(List<Feed> entries) {
+    marshellAndSetEntriesToList(entries);
+  }
+
+  private void marshellAndSetEntriesToList(List<Feed> entries) {
+    ArrayList<RankableCompetitionFeedItem> rankableItems = new ArrayList<>();
+    for (int i = 0; i < entries.size(); i++) {
+      rankableItems.add(new RankableCompetitionFeedItem(entries.get(i)));
+    }
+    rankableCompetitionItemRecyclerAdapter.setRankableCompetitionFeedItems(rankableItems);
+  }
+
+  @Override
+  public void onCompetitionsEntriesFetchError() {
+
   }
 }

@@ -21,6 +21,7 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
 import com.hapramp.ui.activity.CompetitionDetailsActivity;
 import com.hapramp.ui.activity.ParticipateEditorActivity;
+import com.hapramp.ui.activity.WinnerDeclarationActivity;
 import com.hapramp.utils.CommunityUtils;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
@@ -300,7 +301,7 @@ public class CompetitionFeedItemView extends FrameLayout {
     Intent intent = new Intent(mContext, ParticipateEditorActivity.class);
     intent.putExtra(EXTRA_COMPETITION_ID, mCompetition.getmId());
     intent.putExtra(EXTRA_COMPETITION_TITLE, mCompetition.getmTitle());
-    intent.putExtra(EXTRA_COMPETITION_HASHTAG, "oneramp-2434");
+    intent.putExtra(EXTRA_COMPETITION_HASHTAG, mCompetition.getmParticipationHashtag());
     mContext.startActivity(intent);
   }
 
@@ -309,8 +310,11 @@ public class CompetitionFeedItemView extends FrameLayout {
 
   }
 
-  //todo: add implementation
+  //todo: add implementation for winners list
   private void openWinnersList() {
-
+    Intent intent = new Intent(mContext, WinnerDeclarationActivity.class);
+    intent.putExtra(EXTRA_COMPETITION_ID, mCompetition.getmId());
+    intent.putExtra(EXTRA_COMPETITION_TITLE, mCompetition.getmTitle());
+    mContext.startActivity(intent);
   }
 }

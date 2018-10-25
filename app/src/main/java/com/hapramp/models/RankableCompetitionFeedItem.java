@@ -1,5 +1,6 @@
 package com.hapramp.models;
 
+import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.Voter;
 
 import java.util.ArrayList;
@@ -16,6 +17,19 @@ public class RankableCompetitionFeedItem {
   private ArrayList<Voter> voters;
   private int childrens;
   private String payout;
+
+  public RankableCompetitionFeedItem(Feed feed) {
+    this.itemId = feed.getPermlink();
+    this.username = feed.getAuthor();
+    this.createdAt = feed.getCreatedAt();
+    this.tags = feed.getTags();
+    this.featuredImageLink = feed.getFeaturedImageUrl();
+    this.title = feed.getTitle();
+    this.description = feed.getCleanedBody();
+    this.voters = feed.getVoters();
+    this.childrens = feed.getChildren();
+    this.payout = feed.getPendingPayoutValue();
+  }
 
   public RankableCompetitionFeedItem() {
   }
