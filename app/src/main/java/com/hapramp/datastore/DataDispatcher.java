@@ -5,6 +5,7 @@ import android.os.Handler;
 import com.google.gson.Gson;
 import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
+import com.hapramp.datastore.callbacks.CompetitionEntriesFetchCallback;
 import com.hapramp.datastore.callbacks.CompetitionsListCallback;
 import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.datastore.callbacks.FollowersCallback;
@@ -174,6 +175,29 @@ public class DataDispatcher {
         @Override
         public void run() {
           judgesListCallback.onJudgesListAvailable(judges);
+        }
+      });
+    }
+  }
+
+  void dispatchCompetitionEntries(String response, final CompetitionEntriesFetchCallback entriesFetchCallback) {
+    if (entriesFetchCallback != null) {
+      final List<Feed> entries = jsonParser.parseCompetitionEntries(response);
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          entriesFetchCallback.onCompetitionsEntriesAvailable(entries);
+        }
+      });
+    }
+  }
+
+  void dispatchCompetitionEntriesError(final CompetitionEntriesFetchCallback entriesFetchCallback) {
+    if (entriesFetchCallback != null) {
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          entriesFetchCallback.onCompetitionsEntriesFetchError();
         }
       });
     }

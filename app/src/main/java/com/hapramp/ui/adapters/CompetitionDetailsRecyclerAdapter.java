@@ -36,6 +36,7 @@ public class CompetitionDetailsRecyclerAdapter extends RecyclerView.Adapter<Recy
     this.submissions = submissions;
     if (submissions.size() > 0) {
       notifyItemRangeChanged(1, submissions.size());
+      notifyItemChanged(0);
     }
   }
 
@@ -96,6 +97,7 @@ public class CompetitionDetailsRecyclerAdapter extends RecyclerView.Adapter<Recy
 
     public void bind(CompetitionModel competition) {
       competitionDetailsHeaderView.bindCompetitionHeaderData(competition);
+      competitionDetailsHeaderView.setEntriesLoaded(submissions.size() > 0);
     }
   }
 }

@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.hapramp.R;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.models.CompetitionModel;
+import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
 import com.hapramp.ui.activity.CompetitionDetailsActivity;
 import com.hapramp.ui.activity.ParticipateEditorActivity;
@@ -26,6 +27,7 @@ import com.hapramp.utils.MomentsUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,8 +60,8 @@ public class CompetitionFeedItemView extends FrameLayout {
   LinearLayout competitionMetaContainer;
   @BindView(R.id.post_snippet)
   TextView postSnippet;
-  @BindView(R.id.participateBtn)
-  TextView participateBtn;
+  @BindView(R.id.actionButton)
+  TextView actionButton;
   @BindView(R.id.totalPrize)
   TextView totalPrize;
   @BindView(R.id.startsIn)
@@ -68,6 +70,7 @@ public class CompetitionFeedItemView extends FrameLayout {
   TextView participantsCount;
   private Context mContext;
   private CompetitionModel mCompetition;
+  private boolean mShowDeclareResultButton;
 
   public CompetitionFeedItemView(@NonNull Context context) {
     super(context);
@@ -94,27 +97,12 @@ public class CompetitionFeedItemView extends FrameLayout {
         navigateToCompetitionDetailsPage();
       }
     });
-
-    participateBtn.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        openSubmissionPage();
-      }
-    });
   }
 
   private void navigateToCompetitionDetailsPage() {
     Intent i = new Intent(mContext, CompetitionDetailsActivity.class);
     i.putExtra(EXTRA_HEADER_PARCEL, mCompetition);
     mContext.startActivity(i);
-  }
-
-  private void openSubmissionPage() {
-    Intent intent = new Intent(mContext, ParticipateEditorActivity.class);
-    intent.putExtra(EXTRA_COMPETITION_ID, mCompetition.getmId());
-    intent.putExtra(EXTRA_COMPETITION_TITLE, mCompetition.getmTitle());
-    intent.putExtra(EXTRA_COMPETITION_HASHTAG, "oneramp-2434");
-    mContext.startActivity(intent);
   }
 
   public CompetitionFeedItemView(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -138,8 +126,9 @@ public class CompetitionFeedItemView extends FrameLayout {
     ImageHandler.load(mContext, featuredImagePost, competition.getmImage());
     competitionTitle.setText(competition.getmTitle());
     startsIn.setText(String.format(getStartedTime()));
+    participantsCount.setText(String.format(Locale.US, "%d Participants", mCompetition.getmParticipantCount()));
     postSnippet.setText(competition.getmDescription());
-    invalidateParticipateButton();
+    invalidateActionButton();
   }
 
   private void setCommunities(List<CommunityModel> communities) {
@@ -170,17 +159,26 @@ public class CompetitionFeedItemView extends FrameLayout {
     return st.toString();
   }
 
-  private void invalidateParticipateButton() {
+  private void invalidateActionButton() {
+    String start_time = mCompetition.getmStartsAt();
+    String end_time = mCompetition.getmEndsAt();
     long now = System.currentTimeMillis();
-    long endsAt = MomentsUtils.getMillisFromTime(mCompetition.getmEndsAt());
-    if (endsAt < now) {
-      participateBtn.setText("Closed " + MomentsUtils.getFormattedTime(mCompetition.getmEndsAt()));
-      participateBtn.setEnabled(false);
-      participateBtn.setClickable(false);
+    long endsAt = MomentsUtils.getMillisFromTime(end_time);
+    long startsAt = MomentsUtils.getMillisFromTime(start_time);
+    if (!mCompetition.isWinners_announced()) {
+      //not started
+      if (now < startsAt) {
+        setWhenNotStarted(start_time);
+      }//running/live
+      else if (now > startsAt && now < endsAt) {
+        setWhenRunning(isAdminOfThisCompetition(), end_time);
+      }
+      //ended
+      else if (now > endsAt) {
+        setWhenEnded(isAdminOfThisCompetition(), end_time);
+      }
     } else {
-      participateBtn.setText("PARTICIPATE");
-      participateBtn.setEnabled(true);
-      participateBtn.setClickable(true);
+      setWhenWinnerAnnounced();
     }
   }
 
@@ -210,10 +208,109 @@ public class CompetitionFeedItemView extends FrameLayout {
     }
   }
 
+  /**
+   * sets action button when competition is not started.
+   */
+  private void setWhenNotStarted(String startsIn) {
+    startsIn = MomentsUtils.getFormattedTime(startsIn);
+    if (actionButton != null) {
+      actionButton.setEnabled(false);
+      actionButton.setClickable(false);
+      actionButton.setText("Starts " + startsIn);
+    }
+  }
+
+  /**
+   * @param isAdmin flag for admin.
+   * @param endsAt  time when competition ends
+   */
+  private void setWhenRunning(boolean isAdmin, String endsAt) {
+    endsAt = MomentsUtils.getFormattedTime(endsAt);
+    if (isAdmin) {
+      actionButton.setEnabled(false);
+      actionButton.setClickable(false);
+      actionButton.setText("Ends " + endsAt);
+    } else {
+      actionButton.setEnabled(true);
+      actionButton.setClickable(true);
+      actionButton.setText("Participate");
+      actionButton.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          openSubmissionPage();
+        }
+      });
+    }
+  }
+
+  private boolean isAdminOfThisCompetition() {
+    return mCompetition
+      .getmAdmin()
+      .getmUsername()
+      .equals(HaprampPreferenceManager
+        .getInstance()
+        .getCurrentSteemUsername());
+  }
+
+  /**
+   * @param isAdmin flag for admin
+   * @param endedAt time when competition ended
+   */
+  private void setWhenEnded(boolean isAdmin, String endedAt) {
+    if (isAdmin) {
+      actionButton.setEnabled(true);
+      actionButton.setClickable(true);
+      actionButton.setText("Declare Results");
+      actionButton.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          openResultDeclarationPage();
+        }
+      });
+    } else {
+      endedAt = MomentsUtils.getFormattedTime(endedAt);
+      actionButton.setEnabled(false);
+      actionButton.setClickable(false);
+      actionButton.setText("Closed " + endedAt);
+    }
+  }
+
+  /**
+   * set state when winners are decided
+   */
+  private void setWhenWinnerAnnounced() {
+    actionButton.setEnabled(true);
+    actionButton.setClickable(true);
+    actionButton.setText("View Winners");
+    actionButton.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        openWinnersList();
+      }
+    });
+  }
+
   private void resetVisibility() {
     club1.setVisibility(GONE);
     club2.setVisibility(GONE);
     club3.setVisibility(GONE);
   }
 
+  private void openSubmissionPage() {
+    Intent intent = new Intent(mContext, ParticipateEditorActivity.class);
+    intent.putExtra(EXTRA_COMPETITION_ID, mCompetition.getmId());
+    intent.putExtra(EXTRA_COMPETITION_TITLE, mCompetition.getmTitle());
+    intent.putExtra(EXTRA_COMPETITION_HASHTAG, "oneramp-2434");
+    mContext.startActivity(intent);
+  }
+
+  // TODO: 25/10/18 add implementation
+  private void openResultDeclarationPage() {
+
+  }
+
+  //todo: add implementation
+  private void openWinnersList() {
+
+  }
 }

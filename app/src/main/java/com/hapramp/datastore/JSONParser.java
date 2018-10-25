@@ -43,6 +43,10 @@ public class JSONParser {
         competitionAdmin.setmUsername(comp_item.getJSONObject("user").optString("username"));
         //parse other info
         competitionModel.setmId(comp_item.optString("id"));
+        //participating_tag
+        competitionModel.setmParticipationHashtag(comp_item.optString("participating_tag"));
+        competitionModel.setmParticipantCount(comp_item.optInt("participant_count"));
+        competitionModel.setmPostCount(comp_item.optInt("post_count"));
         competitionModel.setmAdmin(competitionAdmin);
         competitionModel.setmCreatedAt(comp_item.optString("created_at"));
         competitionModel.setmImage(comp_item.optString("image"));
@@ -574,4 +578,17 @@ public class JSONParser {
     return feed;
   }
 
+  public List<Feed> parseCompetitionEntries(String response) {
+    List<Feed> entries = new ArrayList<>();
+    try {
+      JSONArray jsonArray = new JSONArray(response);
+      for (int i = 0; i < jsonArray.length(); i++) {
+        entries.add(parseCoreFeedData(jsonArray.getJSONObject(i)));
+      }
+    }
+    catch (JSONException e) {
+      e.printStackTrace();
+    }
+    return entries;
+  }
 }

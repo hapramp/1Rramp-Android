@@ -6,6 +6,9 @@ import android.os.Parcelable;
 import java.util.List;
 
 public class CompetitionModel implements Parcelable {
+  private String mParticipationHashtag;
+  private int mPostCount;
+  private int mParticipantCount;
   private List<JudgeModel> mJudges;
   private String mRules;
   private String mEndsAt;
@@ -27,6 +30,9 @@ public class CompetitionModel implements Parcelable {
 
   @Override
   public void writeToParcel(Parcel dest, int flags) {
+    dest.writeString(this.mParticipationHashtag);
+    dest.writeInt(this.mPostCount);
+    dest.writeInt(this.mParticipantCount);
     dest.writeTypedList(this.mJudges);
     dest.writeString(this.mRules);
     dest.writeString(this.mEndsAt);
@@ -46,6 +52,9 @@ public class CompetitionModel implements Parcelable {
   }
 
   protected CompetitionModel(Parcel in) {
+    this.mParticipationHashtag = in.readString();
+    this.mPostCount = in.readInt();
+    this.mParticipantCount = in.readInt();
     this.mJudges = in.createTypedArrayList(JudgeModel.CREATOR);
     this.mRules = in.readString();
     this.mEndsAt = in.readString();
@@ -75,6 +84,22 @@ public class CompetitionModel implements Parcelable {
 
   public List<JudgeModel> getmJudges() {
     return mJudges;
+  }
+
+  public int getmPostCount() {
+    return mPostCount;
+  }
+
+  public void setmPostCount(int mPostCount) {
+    this.mPostCount = mPostCount;
+  }
+
+  public int getmParticipantCount() {
+    return mParticipantCount;
+  }
+
+  public void setmParticipantCount(int mParticipantCount) {
+    this.mParticipantCount = mParticipantCount;
   }
 
   public void setmJudges(List<JudgeModel> mJudges) {
@@ -127,6 +152,14 @@ public class CompetitionModel implements Parcelable {
 
   public void setmImage(String mImage) {
     this.mImage = mImage;
+  }
+
+  public String getmParticipationHashtag() {
+    return mParticipationHashtag;
+  }
+
+  public void setmParticipationHashtag(String mParticipationHashtag) {
+    this.mParticipationHashtag = mParticipationHashtag;
   }
 
   public String getmCreatedAt() {

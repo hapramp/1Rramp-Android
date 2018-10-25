@@ -1,8 +1,11 @@
 package com.hapramp.views;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Spannable;
@@ -17,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hapramp.R;
 import com.hapramp.models.CommunityModel;
@@ -32,6 +36,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static android.content.Context.CLIPBOARD_SERVICE;
 
 public class CompetitionDetailsHeaderView extends FrameLayout {
   @BindView(R.id.feed_owner_pic)
@@ -96,8 +102,13 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
   RelativeLayout judgeSection;
   @BindView(R.id.entries_info_section)
   TextView entriesInfoSection;
+  @BindView(R.id.entries_loading_container)
+  RelativeLayout entriesLoadingContainer;
+  @BindView(R.id.copy_hashtag_button)
+  ImageView copyHashtagButton;
   private Context mContext;
   private CompetitionModel mCompetition;
+  private boolean mEntriesLoaded;
 
   public CompetitionDetailsHeaderView(@NonNull Context context) {
     super(context);
@@ -112,7 +123,15 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
   }
 
   private void attachListeners() {
-
+    copyHashtagButton.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("hashtag", mCompetition.getmParticipationHashtag());
+        clipboard.setPrimaryClip(clip);
+        Toast.makeText(mContext, "Competition hashtag copied", Toast.LENGTH_LONG).show();
+      }
+    });
   }
 
   public CompetitionDetailsHeaderView(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -140,8 +159,9 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
     postSnippet.setText(competition.getmDescription());
     competitionRules.setText(competition.getmRules());
     setJudges(competition.getmJudges());
-    setParticipationHashtagInfo("#oneramp-2343");
-    setEntries(0);
+    setParticipationHashtagInfo(mCompetition.getmParticipationHashtag());
+    setEntries(mCompetition.getmPostCount());
+    invalidateEntriesLoadingIndicator();
   }
 
   private void setCommunities(List<CommunityModel> communities) {
@@ -211,8 +231,9 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
   }
 
   private void setParticipationHashtagInfo(String hashtag) {
+    hashtag = "#" + hashtag;
     String part1 = "Participate using ";
-    String part3 = " from any other platform.";
+    String part3 = " from any other steem platform.";
     int hashtagLen = hashtag.length();
     int part1Len = part1.length();
 
@@ -223,7 +244,7 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
       spanStart,
       spanEnd,
       Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-    StyleSpan bss = new StyleSpan(android.graphics.Typeface.BOLD);
+    StyleSpan bss = new StyleSpan(Typeface.BOLD);
     wordtoSpan.setSpan(bss,
       spanStart,
       spanEnd, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
@@ -234,12 +255,24 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
     String en = String.valueOf(entries);
     int spanStart = 0;
     int spanEnd = en.length();
-    Spannable wordtoSpan = new SpannableString(en + " ENTRIES");
+    Spannable wordtoSpan = new SpannableString(en + ((entries > 1) ? " ENTRIES" : " ENTRY"));
     wordtoSpan.setSpan(new ForegroundColorSpan(Color.parseColor("#3F72AF")),
       spanStart,
       spanEnd,
       Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     entriesInfoSection.setText(wordtoSpan);
+  }
+
+  private void invalidateEntriesLoadingIndicator() {
+    if (mCompetition.getmPostCount() > 0) {
+      if (mEntriesLoaded) {
+        entriesLoadingContainer.setVisibility(GONE);
+      } else {
+        entriesLoadingContainer.setVisibility(VISIBLE);
+      }
+    } else {
+      entriesLoadingContainer.setVisibility(GONE);
+    }
   }
 
   private void addCommunitiesToLayout(List<CommunityModel> cms) {
@@ -272,5 +305,10 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
     club1.setVisibility(GONE);
     club2.setVisibility(GONE);
     club3.setVisibility(GONE);
+  }
+
+  public void setEntriesLoaded(boolean loaded) {
+    this.mEntriesLoaded = loaded;
+    invalidateEntriesLoadingIndicator();
   }
 }

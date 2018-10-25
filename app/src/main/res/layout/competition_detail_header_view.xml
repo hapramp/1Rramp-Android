@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:paddingBottom="16dp">
+    android:background="@color/white">
 
     <ImageView
         android:id="@+id/feed_owner_pic"
@@ -268,7 +267,6 @@
         android:layout_marginTop="4dp"
         android:clickable="true"
         android:lineSpacingExtra="2dp"
-        android:text="As of 2017, text messages are used by youth and adults for personal, family, business and social purposes. Governmental and non-governmental organizations use text messaging for communication between colleagues. In the 2010s, the sending of short informal messages has become an accepted part of many cultures, as happened earlier with emailing.["
         android:textColor="@color/Black54"
         android:textSize="14sp"
         android:visibility="visible" />
@@ -295,7 +293,6 @@
         android:layout_marginTop="4dp"
         android:clickable="true"
         android:lineSpacingExtra="2dp"
-        android:text="As of 2017, text messages are used by youth and adults for personal, family, business and social purposes. Governmental and non-governmental organizations use text messaging for communication between colleagues. In the 2010s, the sending of short informal messages has become an accepted part of many cultures, as happened earlier with emailing.["
         android:textColor="@color/Black54"
         android:textSize="14sp"
         android:visibility="visible" />
@@ -305,6 +302,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/competition_rules"
+        android:layout_toLeftOf="@+id/copy_hashtag_button"
         android:layout_marginBottom="36dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
@@ -312,6 +310,19 @@
         android:text="Participate using nice tag from any other steem platform."
         android:textColor="@color/Black87"
         android:textSize="18sp" />
+
+    <ImageView
+        android:layout_marginTop="36dp"
+        android:padding="8dp"
+        android:layout_marginRight="8dp"
+        android:background="?selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:id="@+id/copy_hashtag_button"
+        android:layout_below="@+id/competition_rules"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/copy_text_icon"
+        android:layout_width="36dp"
+        android:layout_height="36dp" />
 
     <RelativeLayout
         android:id="@+id/judge_section"
@@ -414,4 +425,29 @@
         android:textColor="@color/Black54"
         android:textSize="16sp"
         android:textStyle="bold" />
+
+
+    <RelativeLayout
+        android:id="@+id/entries_loading_container"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:layout_below="@+id/entries_info_section">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <TextView
+            android:layout_marginTop="4dp"
+            android:textColor="@color/Black54"
+            android:layout_below="@+id/progress_bar"
+            android:layout_centerHorizontal="true"
+            android:text="Loading entries..."
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
 </RelativeLayout>

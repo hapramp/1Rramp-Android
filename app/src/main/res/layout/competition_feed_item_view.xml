@@ -151,7 +151,7 @@
     <TextView
         android:clickable="true"
         android:layout_alignParentRight="true"
-        android:id="@+id/participateBtn"
+        android:id="@+id/actionButton"
         android:layout_below="@+id/post_snippet"
         android:text="PARTICIPATE"
         android:paddingTop="8dp"

@@ -314,33 +314,39 @@ public class ParticipateEditorActivity extends AppCompatActivity implements Edit
 
   @Override
   public void onPostCreatedOnSteem() {
-    toast("Submitted!");
     HaprampPreferenceManager.getInstance().setLastPostCreatedAt(MomentsUtils.getCurrentTime());
     updateServerWithSubmission();
   }
 
   private void updateServerWithSubmission() {
     showPublishingProgressDialog(true, "Confirming submission...");
-    CompetitionEntryConfirmationBody competitionEntryConfirmationBody = new CompetitionEntryConfirmationBody(generated_permalink);
-    RetrofitServiceGenerator.getService().updateServerAboutEntry(mCompetitionId, competitionEntryConfirmationBody).enqueue(new Callback<CompetitionEntryResponse>() {
-      @Override
-      public void onResponse(Call<CompetitionEntryResponse> call, Response<CompetitionEntryResponse> response) {
-        showPublishingProgressDialog(false, "");
-        if (response.isSuccessful()) {
-          toast("Confirmed your entry!");
-        } else {
-          toast("Failed to confirm your entry!");
+    String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+    if (username.length() > 0) {
+      String full_permlink = username + "/" + generated_permalink;
+      CompetitionEntryConfirmationBody competitionEntryConfirmationBody = new CompetitionEntryConfirmationBody(full_permlink);
+      RetrofitServiceGenerator.getService().updateServerAboutEntry(mCompetitionId, competitionEntryConfirmationBody).enqueue(new Callback<CompetitionEntryResponse>() {
+        @Override
+        public void onResponse(Call<CompetitionEntryResponse> call, Response<CompetitionEntryResponse> response) {
+          showPublishingProgressDialog(false, "");
+          if (response.isSuccessful()) {
+            toast("Confirmed your entry!");
+          } else {
+            toast("Failed to confirm your entry!");
+          }
+          closeEditor();
         }
-        closeEditor();
-      }
 
-      @Override
-      public void onFailure(Call<CompetitionEntryResponse> call, Throwable t) {
-        showPublishingProgressDialog(false, "");
-        toast("Failed to confirm your entry!");
-        closeEditor();
-      }
-    });
+        @Override
+        public void onFailure(Call<CompetitionEntryResponse> call, Throwable t) {
+          showPublishingProgressDialog(false, "");
+          toast("Failed to confirm your entry!");
+          closeEditor();
+        }
+      });
+    } else {
+      showPublishingProgressDialog(false, "");
+      toast("Failed to confirm your entry!");
+    }
   }
 
   private void closeEditor() {

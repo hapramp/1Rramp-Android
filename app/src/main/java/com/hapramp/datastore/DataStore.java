@@ -4,6 +4,7 @@ package com.hapramp.datastore;
 import com.google.gson.Gson;
 import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
+import com.hapramp.datastore.callbacks.CompetitionEntriesFetchCallback;
 import com.hapramp.datastore.callbacks.CompetitionsListCallback;
 import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.datastore.callbacks.FollowersCallback;
@@ -123,6 +124,7 @@ public class DataStore extends DataDispatcher {
 
   /**
    * fetches competitions list.
+   *
    * @param competitionsListCallback callback to return results.
    */
   public void requestCompetitionLists(final CompetitionsListCallback competitionsListCallback) {
@@ -139,6 +141,25 @@ public class DataStore extends DataDispatcher {
         catch (IOException e) {
           e.printStackTrace();
           dispatchCompetitionListFetchError(competitionsListCallback);
+        }
+      }
+    }.start();
+  }
+
+  public void requestCompetitionEntries(final String competitionId, final CompetitionEntriesFetchCallback competitionEntriesFetchCallback) {
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          String url = UrlBuilder.competitionEntryUrl(competitionId);
+          Response response = NetworkApi.getNetworkApiInstance().fetch(url);
+          String responseString = null;
+          responseString = response.body().string();
+          dispatchCompetitionEntries(responseString, competitionEntriesFetchCallback);
+        }
+        catch (IOException e) {
+          e.printStackTrace();
+          dispatchCompetitionEntriesError(competitionEntriesFetchCallback);
         }
       }
     }.start();

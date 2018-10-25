@@ -14,6 +14,7 @@ import java.util.List;
 
 public class CompetitionsListRecyclerAdapter extends RecyclerView.Adapter<CompetitionsListRecyclerAdapter.CompetitionItemViewHolder> {
 
+  private boolean showDeclarationButton;
   List<CompetitionModel> competitions;
   Context context;
 
@@ -25,6 +26,10 @@ public class CompetitionsListRecyclerAdapter extends RecyclerView.Adapter<Compet
   public void setCompetitions(List<CompetitionModel> competitions) {
     this.competitions = competitions;
     notifyDataSetChanged();
+  }
+
+  public void setShowDeclarationButton(boolean showDeclarationButton) {
+    this.showDeclarationButton = showDeclarationButton;
   }
 
   @NonNull

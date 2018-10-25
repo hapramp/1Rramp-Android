@@ -16,6 +16,10 @@ public class UrlBuilder {
       "competitions";
   }
 
+  public static String competitionEntryUrl(String comp_Id) {
+    return BASE_URL + "competitions/" + comp_Id + "/posts";
+  }
+
   public static String steemUrl() {
     return STEEMIT_API_URL;
   }

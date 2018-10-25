@@ -107,6 +107,6 @@ public class CommunitiesUnitTest {
     expectedList.add("art");
     expectedList.add("hapramp-art");
     expectedList.add("dance");
-    assertEquals(expectedList,PostHashTagPreprocessor.processHashtags(tags));
+    assertEquals(expectedList, PostHashTagPreprocessor.processHashtags(tags));
   }
 }
