@@ -468,19 +468,24 @@ public class PostItemView extends FrameLayout {
   }
 
   private void setCommunities(List<String> communities) {
-    List<CommunityModel> cm = new ArrayList<>();
-    ArrayList<String> addedCommunity = new ArrayList<>();
-    for (int i = 0; i < communities.size(); i++) {
-      String title = CommunityUtils.getCommunityTitleFromName(communities.get(i));
-      if (Communities.doesCommunityExists(title) && !addedCommunity.contains(title)) {
-        cm.add(new CommunityModel(
-          CommunityUtils.getCommunityColorFromTitle(title), //color
-          title //title ex. art
-        ));
-        addedCommunity.add(title);
+    try {
+      List<CommunityModel> cm = new ArrayList<>();
+      ArrayList<String> addedCommunity = new ArrayList<>();
+      for (int i = 0; i < communities.size(); i++) {
+        String title = CommunityUtils.getCommunityTitleFromName(communities.get(i));
+        if (Communities.doesCommunityExists(title) && !addedCommunity.contains(title)) {
+          cm.add(new CommunityModel(
+            CommunityUtils.getCommunityColorFromTitle(title), //color
+            title //title ex. art
+          ));
+          addedCommunity.add(title);
+        }
       }
+      addCommunitiesToLayout(cm);
     }
-    addCommunitiesToLayout(cm);
+    catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   private void addCommunitiesToLayout(List<CommunityModel> cms) {

@@ -13,7 +13,7 @@ import com.hapramp.utils.PixelUtils;
 public class CustomRatingBar extends android.support.v7.widget.AppCompatRatingBar {
   public static final int inActiveStar = R.drawable.star;
   public static final int activeStar = R.drawable.star_filled;
-  public static final int STAR_DIMENSION_IN_DP = 24;
+  public static final int STAR_DIMENSION_IN_DP = 28;
   private Paint mPaint;
   private Bitmap inActiveStarBitmap;
   private Bitmap activeStarBitamp;
@@ -27,8 +27,9 @@ public class CustomRatingBar extends android.support.v7.widget.AppCompatRatingBa
 
   private void init() {
     mPaint = new Paint();
+    setStepSize(1f);
     mStarDimensionInPx = PixelUtils.dpToPx(STAR_DIMENSION_IN_DP);
-    mSpaceBetweenStars = PixelUtils.dpToPx(6);
+    mSpaceBetweenStars = PixelUtils.dpToPx(14);
     inActiveStarBitmap = Bitmap.createScaledBitmap(getBitamp(inActiveStar),
       mStarDimensionInPx,
       mStarDimensionInPx,
