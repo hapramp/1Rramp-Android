@@ -43,25 +43,30 @@ public class EventReporter {
   }
 
   public static void reportDeviceId() {
-    new Thread() {
-      @Override
-      public void run() {
-        Looper.prepare();
-        String token = FirebaseInstanceId.getInstance().getToken();
-        String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-        if (username.length() > 0) {
-          EventReportUtils
-            .getDeviceIdNode(username).setValue(token);
-        } else {
-          new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-              reportDeviceId();
-            }
-          }, 4000);
+    try {
+      new Thread() {
+        @Override
+        public void run() {
+          Looper.prepare();
+          String token = FirebaseInstanceId.getInstance().getToken();
+          String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+          if (username.length() > 0) {
+            EventReportUtils
+              .getDeviceIdNode(username).setValue(token);
+          } else {
+            new Handler().postDelayed(new Runnable() {
+              @Override
+              public void run() {
+                reportDeviceId();
+              }
+            }, 4000);
+          }
+          Looper.loop();
         }
-        Looper.loop();
-      }
-    }.start();
+      }.start();
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }

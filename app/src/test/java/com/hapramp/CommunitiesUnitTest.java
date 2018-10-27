@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
+import static com.hapramp.analytics.EventReportUtils.getFormattedUserName;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;

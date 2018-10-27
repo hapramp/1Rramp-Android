@@ -8,13 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.utils.CommunityUtils;
-import com.hapramp.utils.PixelUtils;
 
 public class InterestItemView extends FrameLayout {
   ImageView interestIcon;
@@ -65,7 +63,12 @@ public class InterestItemView extends FrameLayout {
   }
 
   private void setCommunityImage(int resId) {
-    interestIcon.setImageResource(resId);
+    try {
+      interestIcon.setImageResource(resId);
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   private void setInterestTitle(String title) {
