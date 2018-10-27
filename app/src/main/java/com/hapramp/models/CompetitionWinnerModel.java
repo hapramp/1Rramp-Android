@@ -4,10 +4,19 @@ public class CompetitionWinnerModel {
   private int rank;
   private String id;
   private String imageUrl;
+  private String permlink;
   private String title;
   private String username;
 
   public CompetitionWinnerModel() {
+  }
+
+  public String getPermlink() {
+    return permlink;
+  }
+
+  public void setPermlink(String permlink) {
+    this.permlink = permlink;
   }
 
   public String getId() {

@@ -8,12 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.hapramp.R;
 import com.hapramp.models.JudgeModel;
-import com.hapramp.utils.ImageHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,23 +21,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class JudgeSelectionView extends FrameLayout {
-  @BindView(R.id.judge1_image)
-  ImageView judge1Image;
-  @BindView(R.id.judge1_name)
-  TextView judge1Name;
-  @BindView(R.id.judge1)
-  RelativeLayout judge1;
-  @BindView(R.id.judge2_image)
-  ImageView judge2Image;
-  @BindView(R.id.judge2_name)
-  TextView judge2Name;
-  @BindView(R.id.judge2)
-  RelativeLayout judge2;
-  ArrayList<Integer> judeges;
+  public static final int MAX_JUDGES_ALLOWED = 2;
+  @BindView(R.id.judge_container)
+  LinearLayout judgeContainer;
   @BindView(R.id.addBtn)
   ImageView addBtn;
   private Context mContext;
   private JudgeSelectionCallback judgeSelectionCallback;
+  private ArrayList<Object> judeges;
 
   public JudgeSelectionView(@NonNull Context context) {
     super(context);
@@ -54,22 +44,6 @@ public class JudgeSelectionView extends FrameLayout {
   }
 
   private void attachListener() {
-    judge1.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        if (judgeSelectionCallback != null) {
-          judgeSelectionCallback.onSelectJudge();
-        }
-      }
-    });
-    judge2.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        if (judgeSelectionCallback != null) {
-          judgeSelectionCallback.onSelectJudge();
-        }
-      }
-    });
     addBtn.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -86,26 +60,32 @@ public class JudgeSelectionView extends FrameLayout {
   }
 
   public void setJudgesList(List<JudgeModel> judges) {
-    int len = judges.size() > 2 ? 2 : judges.size();
-    judge1.setVisibility(GONE);
-    judge2.setVisibility(GONE);
-    for (int i = 0; i < len; i++) {
-      if (i == 0) {
-        judge1.setVisibility(VISIBLE);
-        ImageHandler.loadCircularImage(mContext, judge1Image,
-          String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format),
-            judges.get(i).getmUsername()));
-        judge1Name.setText(judges.get(i).getmUsername());
-        addBtn.setVisibility(VISIBLE);
-      } else if (i == 1) {
-        judge2.setVisibility(VISIBLE);
-        ImageHandler.loadCircularImage(mContext, judge2Image,
-          String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format),
-            judges.get(i).getmUsername()));
-        judge2Name.setText(judges.get(i).getmUsername());
-        //remove plus button
-        addBtn.setVisibility(GONE);
+    try {
+      int len = judges.size() > MAX_JUDGES_ALLOWED ? MAX_JUDGES_ALLOWED : judges.size();
+      //show add button
+      addBtn.setVisibility(VISIBLE);
+      //clear all views
+      judgeContainer.removeAllViews();
+      //add items
+      for (int i = 0; i < len; i++) {
+        JudgeItemView itemView = new JudgeItemView(mContext);
+        itemView.setJudgeInfo(judges.get(i));
+        itemView.setOnClickListener(new OnClickListener() {
+          @Override
+          public void onClick(View view) {
+            if (judgeSelectionCallback != null) {
+              judgeSelectionCallback.onSelectJudge();
+            }
+          }
+        });
+        //add to view
+        judgeContainer.addView(itemView, i);
+        if (i == (MAX_JUDGES_ALLOWED - 1)) {
+          addBtn.setVisibility(GONE);
+        }
       }
+    }catch (Exception e){
+      Toast.makeText(mContext,"Error while selecting judges!",Toast.LENGTH_LONG).show();
     }
   }
 

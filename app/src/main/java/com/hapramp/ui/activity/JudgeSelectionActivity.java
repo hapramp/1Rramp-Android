@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hapramp.R;
 import com.hapramp.datastore.DataStore;
@@ -22,6 +23,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.hapramp.views.JudgeSelectionView.MAX_JUDGES_ALLOWED;
 
 public class JudgeSelectionActivity extends AppCompatActivity implements JudgesListFetchFromServerCallback, JudgeListAdapter.JudgeListListener {
   public static final String EXTRA_SELECTED_JUDGES = "selected_judges";
@@ -115,7 +118,6 @@ public class JudgeSelectionActivity extends AppCompatActivity implements JudgesL
   @Override
   public void onAddJudge(JudgeModel judge) {
     addJudge(judge);
-    manipulateSelection(mAllJudges);
   }
 
   @Override
@@ -128,14 +130,18 @@ public class JudgeSelectionActivity extends AppCompatActivity implements JudgesL
     for (int i = 0; i < selectedJudges.size(); i++) {
       if (selectedJudges.get(i).getmId() == judgeModel.getmId()) {
         selectedJudges.remove(i);
+        judgeModel.setSelected(false);
       }
     }
   }
 
   private void addJudge(JudgeModel judge) {
-    selectedJudges.add(judge);
-    if (selectedJudges.size() > 1) {
-      returnResult();
+    if (selectedJudges.size() < MAX_JUDGES_ALLOWED) {
+      selectedJudges.add(judge);
+      judge.setSelected(true);
+      manipulateSelection(mAllJudges);
+    } else {
+      Toast.makeText(this, "Max " + MAX_JUDGES_ALLOWED + " judges allowed!", Toast.LENGTH_LONG).show();
     }
   }
 }

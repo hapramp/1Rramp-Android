@@ -10,6 +10,7 @@ public class RankableCompetitionFeedItem {
   private String itemId;
   private String username;
   private String createdAt;
+  private String permlink;
   private ArrayList<String> tags;
   private String featuredImageLink;
   private String title;
@@ -22,6 +23,7 @@ public class RankableCompetitionFeedItem {
     this.itemId = feed.getPermlink();
     this.username = feed.getAuthor();
     this.createdAt = feed.getCreatedAt();
+    this.permlink = feed.getPermlink();
     this.tags = feed.getTags();
     this.featuredImageLink = feed.getFeaturedImageUrl();
     this.title = feed.getTitle();
@@ -29,6 +31,7 @@ public class RankableCompetitionFeedItem {
     this.voters = feed.getVoters();
     this.childrens = feed.getChildren();
     this.payout = feed.getPendingPayoutValue();
+    this.rank = feed.getRank();
   }
 
   public RankableCompetitionFeedItem() {
@@ -40,6 +43,14 @@ public class RankableCompetitionFeedItem {
 
   public void setRank(int rank) {
     this.rank = rank;
+  }
+
+  public String getPermlink() {
+    return permlink;
+  }
+
+  public void setPermlink(String permlink) {
+    this.permlink = permlink;
   }
 
   public String getItemId() {
@@ -125,8 +136,11 @@ public class RankableCompetitionFeedItem {
   @Override
   public String toString() {
     return "RankableCompetitionFeedItem{" +
-      "username='" + username + '\'' +
+      "rank=" + rank +
+      ", itemId='" + itemId + '\'' +
+      ", username='" + username + '\'' +
       ", createdAt='" + createdAt + '\'' +
+      ", permlink='" + permlink + '\'' +
       ", tags=" + tags +
       ", featuredImageLink='" + featuredImageLink + '\'' +
       ", title='" + title + '\'' +

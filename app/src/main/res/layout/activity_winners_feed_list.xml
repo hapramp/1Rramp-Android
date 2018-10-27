@@ -3,10 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="64dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ui.activity.CompetitionDetailsActivity">
+    tools:context=".ui.activity.WinnersFeedListActivity">
 
     <RelativeLayout
         android:id="@+id/toolbar_container"
@@ -21,50 +18,39 @@
             android:layout_centerVertical="true"
             android:background="?selectableItemBackgroundBorderless"
             android:padding="14dp"
-            android:clickable="true"
             android:src="@drawable/back" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:id="@+id/title"
             android:layout_toRightOf="@+id/backBtn"
-            android:text="Shortlist winners"
+            android:layout_width="wrap_content"
             android:textColor="@color/Black87"
-            android:textSize="18sp" />
-
-        <ImageView
-            android:id="@+id/overflowBtn"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="?selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:padding="14dp"
-            android:src="@drawable/more" />
+            android:textSize="16sp"
+            android:ellipsize="marquee"
+            android:gravity="center"
+            android:layout_height="match_parent" />
 
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/competition_winner_selection_list"
+        android:layout_below="@+id/toolbar_container"
+        android:id="@+id/winners_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar_container" />
+        android:layout_height="match_parent" />
 
     <TextView
-        android:id="@+id/shortlist_winners_message_panel"
-        android:text=""
+        android:id="@+id/messagePanel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:textColor="@color/Black87"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:textSize="14sp" />
 
     <ProgressBar
         android:id="@+id/loading_progress_bar"
-        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
 
     <FrameLayout
         android:layout_width="match_parent"

@@ -97,79 +97,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_toRightOf="@+id/prize_icon"
+            android:minHeight="24dp"
             android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Total"
-                    android:textColor="@color/Black87"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:text="50 SBD"
-                    android:textColor="@color/Black54"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="1st Prize"
-                    android:textColor="@color/Black87"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:text="30 SBD"
-                    android:textColor="@color/Black54"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="2nd Prize "
-                    android:textColor="@color/Black87"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:text="20 SBD"
-                    android:textColor="@color/Black54"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
 
 
         </LinearLayout>
@@ -302,27 +231,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/competition_rules"
-        android:layout_toLeftOf="@+id/copy_hashtag_button"
         android:layout_marginBottom="36dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="36dp"
+        android:layout_toLeftOf="@+id/copy_hashtag_button"
         android:text="Participate using nice tag from any other steem platform."
         android:textColor="@color/Black87"
         android:textSize="18sp" />
 
     <ImageView
-        android:layout_marginTop="36dp"
-        android:padding="8dp"
+        android:id="@+id/copy_hashtag_button"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/competition_rules"
         android:layout_marginRight="8dp"
+        android:layout_marginTop="36dp"
         android:background="?selectableItemBackgroundBorderless"
         android:clickable="true"
-        android:id="@+id/copy_hashtag_button"
-        android:layout_below="@+id/competition_rules"
-        android:layout_alignParentRight="true"
-        android:src="@drawable/copy_text_icon"
-        android:layout_width="36dp"
-        android:layout_height="36dp" />
+        android:padding="8dp"
+        android:src="@drawable/copy_text_icon" />
 
     <RelativeLayout
         android:id="@+id/judge_section"
@@ -344,71 +273,20 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
-        <LinearLayout
-            android:id="@+id/judge_container"
+        <HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:layout_below="@+id/judge_label"
-            android:orientation="horizontal"
-            android:padding="16dp">
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/judge_label">
+            <LinearLayout
+                android:id="@+id/judge_container"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:orientation="horizontal"
+                android:padding="16dp">
 
-            <RelativeLayout
-                android:id="@+id/judge1"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="?android:selectableItemBackground"
-                android:padding="4dp"
-                android:visibility="gone">
+            </LinearLayout>
+        </HorizontalScrollView>
 
-                <ImageView
-                    android:id="@+id/judge1_image"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_centerHorizontal="true"
-                    android:src="@drawable/circular_image_placeholder" />
-
-                <TextView
-                    android:id="@+id/judge1_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:lines="1"
-                    android:text="Judge 1"
-                    android:textColor="@color/Black87"
-                    android:textSize="12sp" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/judge2"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="8dp"
-                android:background="?android:selectableItemBackground"
-                android:padding="4dp"
-                android:visibility="gone">
-
-                <ImageView
-                    android:id="@+id/judge2_image"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_centerHorizontal="true"
-                    android:src="@drawable/circular_image_placeholder" />
-
-                <TextView
-                    android:id="@+id/judge2_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:lines="1"
-                    android:text="Judge 2"
-                    android:textColor="@color/Black87"
-                    android:textSize="12sp" />
-            </RelativeLayout>
-
-        </LinearLayout>
     </RelativeLayout>
 
 
@@ -440,13 +318,13 @@
             android:layout_centerInParent="true" />
 
         <TextView
-            android:layout_marginTop="4dp"
-            android:textColor="@color/Black54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/progress_bar"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="4dp"
             android:text="Loading entries..."
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:textColor="@color/Black54" />
 
     </RelativeLayout>
 

@@ -3,13 +3,14 @@ package com.hapramp.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CompetitionModel implements Parcelable {
   private String mParticipationHashtag;
   private int mPostCount;
   private int mParticipantCount;
-  private List<JudgeModel> mJudges;
+  private ArrayList<JudgeModel> mJudges;
   private String mRules;
   private String mEndsAt;
   private String mStartsAt;
@@ -19,7 +20,7 @@ public class CompetitionModel implements Parcelable {
   private String mCreatedAt;
   private CompetitionAdmin mAdmin;
   private String mId;
-  private List<CommunityModel> communities;
+  private ArrayList<CommunityModel> communities;
   private List<String> prizes;
   private boolean winners_announced;
 
@@ -102,7 +103,7 @@ public class CompetitionModel implements Parcelable {
     this.mParticipantCount = mParticipantCount;
   }
 
-  public void setmJudges(List<JudgeModel> mJudges) {
+  public void setmJudges(ArrayList<JudgeModel> mJudges) {
     this.mJudges = mJudges;
   }
 
@@ -186,11 +187,11 @@ public class CompetitionModel implements Parcelable {
     this.mId = mId;
   }
 
-  public List<CommunityModel> getCommunities() {
+  public ArrayList<CommunityModel> getCommunities() {
     return communities;
   }
 
-  public void setCommunities(List<CommunityModel> communities) {
+  public void setCommunities(ArrayList<CommunityModel> communities) {
     this.communities = communities;
   }
 

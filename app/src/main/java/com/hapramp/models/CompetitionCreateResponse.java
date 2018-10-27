@@ -6,48 +6,21 @@ import com.google.gson.annotations.SerializedName;
 public class CompetitionCreateResponse {
 
   @Expose
-  @SerializedName("field")
-  private String mField = "";
-  @Expose
-  @SerializedName("status")
-  private String mStatus;
-  @Expose
-  @SerializedName("message")
-  private String mMessage = "";
-  @Expose
-  @SerializedName("code")
-  private int mCode;
+  @SerializedName("id")
+  private String mId;
 
-  public CompetitionCreateResponse(String mField, String mStatus, String mMessage, int mCode) {
-    this.mField = mField;
-    this.mStatus = mStatus;
-    this.mMessage = mMessage;
-    this.mCode = mCode;
+  public CompetitionCreateResponse() {
   }
 
-  public String getmField() {
-    return mField;
+  public CompetitionCreateResponse(String mId) {
+    this.mId = mId;
   }
 
-  public String getmStatus() {
-    return mStatus;
+  public String getCompetitionID() {
+    return mId;
   }
 
-  public String getmMessage() {
-    return mMessage;
-  }
-
-  public int getmCode() {
-    return mCode;
-  }
-
-  @Override
-  public String toString() {
-    return "CompetitionCreateResponse{" +
-      "mField='" + mField + '\'' +
-      ", mStatus='" + mStatus + '\'' +
-      ", mMessage='" + mMessage + '\'' +
-      ", mCode=" + mCode +
-      '}';
+  public void setmId(String mId) {
+    this.mId = mId;
   }
 }

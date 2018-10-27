@@ -71,7 +71,11 @@ public class CommunityItemView extends FrameLayout {
   }
 
   private void setCommunityImage(int resId) {
-    communityIcon.setImageResource(resId);
+    try {
+      communityIcon.setImageResource(resId);
+    }catch (Exception e){
+
+    }
   }
 
   private void setCommunityTitle(String title) {

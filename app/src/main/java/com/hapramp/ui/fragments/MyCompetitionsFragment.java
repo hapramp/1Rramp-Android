@@ -22,14 +22,16 @@ import com.hapramp.models.CompetitionModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.ui.adapters.CompetitionsListRecyclerAdapter;
 import com.hapramp.utils.ViewItemDecoration;
+import com.hapramp.views.competition.CompetitionFeedItemView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class MyCompetitionsFragment extends Fragment implements CompetitionsListCallback {
+public class MyCompetitionsFragment extends Fragment implements CompetitionsListCallback, CompetitionFeedItemView.CompetitionItemDeleteListener {
   Context mContext;
   Unbinder unbinder;
   @BindView(R.id.competition_list)
@@ -74,6 +76,7 @@ public class MyCompetitionsFragment extends Fragment implements CompetitionsList
     ViewItemDecoration viewItemDecoration = new ViewItemDecoration(drawable);
     viewItemDecoration.setWantTopOffset(false, 0);
     competitionsListRecyclerAdapter = new CompetitionsListRecyclerAdapter(mContext);
+    competitionsListRecyclerAdapter.setDeleteListener(this);
     competitionList.setLayoutManager(new LinearLayoutManager(mContext));
     competitionList.addItemDecoration(viewItemDecoration);
     competitionList.setAdapter(competitionsListRecyclerAdapter);
@@ -96,7 +99,7 @@ public class MyCompetitionsFragment extends Fragment implements CompetitionsList
 
   @Override
   public void onCompetitionsListAvailable(List<CompetitionModel> competitions) {
-    filterMyCompetitions(competitions);
+    competitions = filterMyCompetitions(competitions);
     setProgressVisibility(false);
     if (competitions != null) {
       if (competitions.size() == 0) {
@@ -110,13 +113,15 @@ public class MyCompetitionsFragment extends Fragment implements CompetitionsList
     }
   }
 
-  private void filterMyCompetitions(List<CompetitionModel> competitions) {
+  private List<CompetitionModel> filterMyCompetitions(List<CompetitionModel> competitions) {
     String myUsername = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+    List<CompetitionModel> myCompetitions = new ArrayList<>();
     for (int i = 0; i < competitions.size(); i++) {
-      if (!competitions.get(i).getmAdmin().getmUsername().equals(myUsername)) {
-        competitions.remove(i);
+      if (competitions.get(i).getmAdmin().getmUsername().equals(myUsername)) {
+        myCompetitions.add(competitions.get(i));
       }
     }
+    return myCompetitions;
   }
 
   private void setMessagePanel(boolean show, String msg) {
@@ -134,5 +139,10 @@ public class MyCompetitionsFragment extends Fragment implements CompetitionsList
   public void onCompetitionsFetchError() {
     setProgressVisibility(false);
     setMessagePanel(true, "Something went wrong!");
+  }
+
+  @Override
+  public void onCompetitionItemDeleted() {
+    fetchCompetitionsList();
   }
 }

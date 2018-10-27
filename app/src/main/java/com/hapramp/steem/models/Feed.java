@@ -48,6 +48,7 @@ public class Feed implements Parcelable {
   private ArrayList<Voter> voters;
   private ArrayList<Voter> activeVoters;
   private String authorReputation;
+  private int rank;
 
   @Override
   public int describeContents() {
@@ -96,6 +97,7 @@ public class Feed implements Parcelable {
       activeVoters = null;
     }
     authorReputation = in.readString();
+    rank = in.readInt();
   }
 
   public Feed() {
@@ -144,6 +146,7 @@ public class Feed implements Parcelable {
       dest.writeList(activeVoters);
     }
     dest.writeString(authorReputation);
+    dest.writeInt(rank);
   }
 
   public String getCleanedBody() {
@@ -352,6 +355,14 @@ public class Feed implements Parcelable {
 
   public void setAuthorReputation(String authorReputation) {
     this.authorReputation = authorReputation;
+  }
+
+  public int getRank() {
+    return rank;
+  }
+
+  public void setRank(int rank) {
+    this.rank = rank;
   }
 
   @Override

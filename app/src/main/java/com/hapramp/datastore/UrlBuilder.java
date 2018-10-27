@@ -20,6 +20,10 @@ public class UrlBuilder {
     return BASE_URL + "competitions/" + comp_Id + "/posts";
   }
 
+  public static String competitionWinnersUrl(String comp_Id) {
+    return BASE_URL + "competitions/" + comp_Id + "/winners";
+  }
+
   public static String steemUrl() {
     return STEEMIT_API_URL;
   }

@@ -1,9 +1,12 @@
 package com.hapramp.ui.activity;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,32 +14,49 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
+import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.CompetitionEntriesFetchCallback;
+import com.hapramp.models.CommunityModel;
+import com.hapramp.models.CompetitionEntryResponse;
 import com.hapramp.models.CompetitionWinnerModel;
+import com.hapramp.models.FormattedBodyResponse;
 import com.hapramp.models.RankableCompetitionFeedItem;
+import com.hapramp.models.WinnersRankBody;
+import com.hapramp.steem.PermlinkGenerator;
+import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.ui.adapters.RankableCompetitionItemRecyclerAdapter;
+import com.hapramp.utils.ErrorUtils;
+import com.hapramp.utils.PostHashTagPreprocessor;
 import com.hapramp.views.competition.RankableCompetitionFeedItemView;
 import com.hapramp.views.competition.WinnerItemView;
 import com.hapramp.views.competition.WinnerPlaceholderView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class WinnerDeclarationActivity extends AppCompatActivity implements RankableCompetitionFeedItemView.RankableCompetitionItemListener, CompetitionEntriesFetchCallback {
+public class WinnerDeclarationActivity extends AppCompatActivity implements RankableCompetitionFeedItemView.RankableCompetitionItemListener, CompetitionEntriesFetchCallback, SteemPostCreator.SteemPostCreatorCallback {
   public static final String EXTRA_COMPETITION_ID = "competition_id";
   public static final String EXTRA_COMPETITION_TITLE = "competition_title";
+  public static final String EXTRA_COMPETITION_TAGS = "competition_tags";
+  public static final String EXTRA_COMPETITION_IMAGE_URL = "competition_image_url";
+
   private final int MAX_WINNERS_ALLOWED = 3;
   @BindView(R.id.backBtn)
   ImageView backBtn;
@@ -62,6 +82,12 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
   LinearLayout winnerListContainer;
   @BindView(R.id.bottom_sheet_content)
   RelativeLayout bottomSheetContent;
+  @BindView(R.id.shortlist_winners_message_panel)
+  TextView shortlistWinnersMessagePanel;
+  @BindView(R.id.loading_progress_bar)
+  ProgressBar loadingProgressBar;
+  @BindView(R.id.declared_winners_label)
+  TextView declaredWinnersLabel;
   private RankableCompetitionItemRecyclerAdapter rankableCompetitionItemRecyclerAdapter;
   private BottomSheetBehavior<RelativeLayout> sheetBehavior;
   //rank->Winner
@@ -70,6 +96,10 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
   private DataStore dataStore;
   private String mCompetitionId;
   private String mCompetitionTitle;
+  private String mCompetitionImage;
+  private ProgressDialog progressDialog;
+  private ArrayList<CommunityModel> mCompetitionHashtags;
+  private SteemPostCreator steemPostCreator;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +114,10 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
   }
 
   private void initializeObjects() {
+    progressDialog = new ProgressDialog(this);
     dataStore = new DataStore();
+    steemPostCreator = new SteemPostCreator();
+    steemPostCreator.setSteemPostCreatorCallback(this);
     rankableCompetitionItemRecyclerAdapter = new RankableCompetitionItemRecyclerAdapter(this);
     competitionWinnerSelectionList.setLayoutManager(new LinearLayoutManager(this));
     rankableCompetitionItemRecyclerAdapter.setRankableCompetitionItemListener(this);
@@ -96,6 +129,12 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
   }
 
   private void attachListeners() {
+    publishCompetitionResultBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        showAlertDialogForResultPublish();
+      }
+    });
     backBtn.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -149,6 +188,135 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
     });
   }
 
+  private void updateServerWithRanks() {
+    showProgressDialog(true, "Updating ranks...");
+    RetrofitServiceGenerator.getService().updateServerWithRanks(mCompetitionId, getWinnerRankBody()).enqueue(new Callback<CompetitionEntryResponse>() {
+      @Override
+      public void onResponse(Call<CompetitionEntryResponse> call, Response<CompetitionEntryResponse> response) {
+        showProgressDialog(false, "");
+        if (response.isSuccessful()) {
+          onRankUpdatedToServer();
+        } else {
+          try {
+            onRankUpdateFailed(ErrorUtils.parseError(response).getmMessage());
+          }
+          catch (Exception e) {
+            onRankUpdateFailed("");
+          }
+        }
+      }
+
+      @Override
+      public void onFailure(Call<CompetitionEntryResponse> call, Throwable t) {
+        showProgressDialog(false, "");
+        onRankUpdateFailed(t.toString());
+      }
+    });
+  }
+
+  private void onRankUpdateFailed(String msg) {
+    Toast.makeText(this, "Failed to update ranks, Try again!: " + msg, Toast.LENGTH_LONG).show();
+  }
+
+  private void onResultAnnounceFailed(String msg) {
+    Toast.makeText(this, "Failed to announce result, Try again!: " + msg, Toast.LENGTH_LONG).show();
+  }
+
+  private WinnersRankBody getWinnerRankBody() {
+    Iterator<Map.Entry<Integer, CompetitionWinnerModel>> ranksMap = shortlistedWinnersMap.entrySet().iterator();
+    List<WinnersRankBody.Ranks> ranks = new ArrayList<>();
+    while (ranksMap.hasNext()) {
+      Map.Entry<Integer, CompetitionWinnerModel> entry = ranksMap.next();
+      ranks.add(new WinnersRankBody.Ranks(String.format("%s/%s", entry.getValue().getUsername(), entry.getValue().getPermlink()),
+        entry.getKey()));
+    }
+    WinnersRankBody winnersRankBody = new WinnersRankBody();
+    winnersRankBody.setmRanks(ranks);
+    return winnersRankBody;
+  }
+
+  private void announceResult() {
+    showProgressDialog(true, "Announcing results...");
+    RetrofitServiceGenerator.getService().announceResults(mCompetitionId).enqueue(new Callback<CompetitionEntryResponse>() {
+      @Override
+      public void onResponse(Call<CompetitionEntryResponse> call, Response<CompetitionEntryResponse> response) {
+        showProgressDialog(false, "");
+        if (response.isSuccessful()) {
+          onResultAnnouncedOnServer();
+        } else {
+          onResultAnnounceFailed("");
+        }
+      }
+
+      @Override
+      public void onFailure(Call<CompetitionEntryResponse> call, Throwable t) {
+        showProgressDialog(false, "");
+        onResultAnnounceFailed("");
+      }
+    });
+  }
+
+  private void onRankUpdatedToServer() {
+    announceResult();
+  }
+
+  private void onResultAnnouncedOnServer() {
+    showProgressDialog(true, "Preparing your blog...");
+    RetrofitServiceGenerator.getService().requestWinnersPostBody(mCompetitionId).enqueue(new Callback<FormattedBodyResponse>() {
+      @Override
+      public void onResponse(Call<FormattedBodyResponse> call, Response<FormattedBodyResponse> response) {
+        showProgressDialog(false, "");
+        if (response.isSuccessful()) {
+          postWinnersBlogOnSteem(response.body().getmBody());
+        } else {
+          onFailedToFetchBody();
+        }
+      }
+
+      @Override
+      public void onFailure(Call<FormattedBodyResponse> call, Throwable t) {
+        showProgressDialog(false, "");
+        onFailedToFetchBody();
+      }
+    });
+  }
+
+  private void onFailedToFetchBody() {
+    Toast.makeText(this, "Failed to prepare winners announcement blog", Toast.LENGTH_LONG).show();
+  }
+
+  private void postWinnersBlogOnSteem(String body) {
+    String postPermlink = PermlinkGenerator.getPermlink("winner-list-" + mCompetitionTitle + "-" + mCompetitionId);
+    ArrayList<String> tags = getHashTags();
+    List<String> images = new ArrayList<>();
+    images.add(mCompetitionImage);
+    tags = PostHashTagPreprocessor.processHashtags(tags);
+    showProgressDialog(true, "Publishing Winners blog...");
+    steemPostCreator.createPost(body, "", images, tags, postPermlink);
+  }
+
+  private ArrayList<String> getHashTags() {
+    ArrayList<String> tags = new ArrayList<>();
+    for (int i = 0; i < mCompetitionHashtags.size(); i++) {
+      tags.add(mCompetitionHashtags.get(i).getmTag());
+    }
+    return tags;
+  }
+
+  private void showAlertDialogForResultPublish() {
+    new AlertDialog.Builder(this)
+      .setTitle("Publish Results")
+      .setMessage("Are you sure ? ")
+      .setPositiveButton("Yes, Publish", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+          updateServerWithRanks();
+        }
+      })
+      .setNegativeButton("Cancel", null)
+      .show();
+  }
+
   private void fetchEntries() {
     if (mCompetitionId != null) {
       dataStore.requestCompetitionEntries(mCompetitionId, this);
@@ -164,39 +332,11 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
   private void collectExtras() {
     Intent intent = getIntent();
     if (intent != null) {
+      mCompetitionHashtags = intent.getParcelableArrayListExtra(EXTRA_COMPETITION_TAGS);
       mCompetitionId = intent.getStringExtra(EXTRA_COMPETITION_ID);
       mCompetitionTitle = intent.getStringExtra(EXTRA_COMPETITION_TITLE);
+      mCompetitionImage = intent.getStringExtra(EXTRA_COMPETITION_IMAGE_URL);
     }
-  }
-
-  private void bindSampleData() {
-    ArrayList<RankableCompetitionFeedItem> items = new ArrayList<>();
-    RankableCompetitionFeedItem si;
-    String[] imgs = {"https://www.india-forums.com/tellybuzz/images/uploads/F77_Drashti-Dhami-2.jpg",
-      "https://relendo-sharetribe-production.s3.amazonaws.com/images/listing_images/images/29818/big/phantom-4-pro.jpg",
-      "http://www.hotgossips.in/wp-content/uploads/kajal-agarwal.jpg",
-      "https://content2.jdmagicbox.com/events/A405481/A405481_list_20160525102916.jpg",
-      "https://d775ypbe1855i.cloudfront.net/large/70/100RedRosesinaVase.jpg"
-    };
-    String[] users = {"bxute", "bxute", "the-dragon", "ansarimofid", "rajatdangi"};
-    String[] titles = {"Dhrishti Dhami", "PHANTOM 4PRO VISIONARY INTELLIGENCE ELEVATED IMAGINATION", "Kajal agrawal", "Aditi Sharma", "Roses"};
-    for (int i = 0; i < imgs.length; i++) {
-      si = new RankableCompetitionFeedItem();
-      si.setItemId("ID" + i);
-      si.setUsername(users[i]);
-      si.setCreatedAt("2018-10-10T12:14:39");
-      ArrayList<String> tags = new ArrayList<>();
-      tags.add("hapramp-dance");
-      tags.add("hapramp-travel");
-      si.setTags(tags);
-      si.setFeaturedImageLink(imgs[i]);
-      si.setTitle(titles[i]);
-      si.setDescription("Kajal Aggarwal (born 19 June 1985) is an Indian film actress and model. She has established a career in the Telugu and Tamil film industries and has been nominated for four Filmfare Awards South.[4][5][6] In addition to acting, Kajal participates in stage shows and is a celebrity endorser for brands and products.");
-      si.setChildrens(8);
-      si.setPayout("100 SBD");
-      items.add(si);
-    }
-    rankableCompetitionItemRecyclerAdapter.setRankableCompetitionFeedItems(items);
   }
 
   private void invalidateWinnerList() {
@@ -280,6 +420,7 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
   private void assigneRank(int rank, RankableCompetitionFeedItem feedItem) {
     CompetitionWinnerModel competitionWinnerModel = new CompetitionWinnerModel();
     competitionWinnerModel.setRank(rank);
+    competitionWinnerModel.setPermlink(feedItem.getPermlink());
     competitionWinnerModel.setId(feedItem.getItemId());
     competitionWinnerModel.setImageUrl(feedItem.getFeaturedImageLink());
     competitionWinnerModel.setTitle(feedItem.getTitle());
@@ -311,15 +452,69 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
   }
 
   private void marshellAndSetEntriesToList(List<Feed> entries) {
-    ArrayList<RankableCompetitionFeedItem> rankableItems = new ArrayList<>();
-    for (int i = 0; i < entries.size(); i++) {
-      rankableItems.add(new RankableCompetitionFeedItem(entries.get(i)));
+    showProgressBar(false);
+    if (entries.size() > 0) {
+      ArrayList<RankableCompetitionFeedItem> rankableItems = new ArrayList<>();
+      for (int i = 0; i < entries.size(); i++) {
+        rankableItems.add(new RankableCompetitionFeedItem(entries.get(i)));
+      }
+      showMessagePanel(false, "");
+      rankableCompetitionItemRecyclerAdapter.setRankableCompetitionFeedItems(rankableItems);
+    } else {
+      showMessagePanel(true, "No entries available!");
     }
-    rankableCompetitionItemRecyclerAdapter.setRankableCompetitionFeedItems(rankableItems);
+  }
+
+  private void showProgressBar(boolean show) {
+    if (loadingProgressBar != null) {
+      if (show) {
+        loadingProgressBar.setVisibility(View.VISIBLE);
+      } else {
+        loadingProgressBar.setVisibility(View.GONE);
+      }
+    }
+  }
+
+  private void showMessagePanel(boolean show, String msg) {
+    if (shortlistWinnersMessagePanel != null) {
+      if (show) {
+        shortlistWinnersMessagePanel.setVisibility(View.VISIBLE);
+        shortlistWinnersMessagePanel.setText(msg);
+      } else {
+        shortlistWinnersMessagePanel.setVisibility(View.GONE);
+      }
+    }
   }
 
   @Override
   public void onCompetitionsEntriesFetchError() {
+    showProgressBar(false);
+    showMessagePanel(true, "Failed to fetch entries");
+  }
 
+  @Override
+  public void onPostCreatedOnSteem() {
+    showProgressDialog(false, "");
+    Toast.makeText(this, "Winners blog posted!", Toast.LENGTH_LONG).show();
+    finish();
+  }
+
+  private void showProgressDialog(boolean show, String msg) {
+    if (progressDialog != null) {
+      if (show) {
+        progressDialog.setMessage(msg);
+        progressDialog.setCancelable(false);
+        progressDialog.setIndeterminate(true);
+        progressDialog.show();
+      } else {
+        progressDialog.dismiss();
+      }
+    }
+  }
+
+  @Override
+  public void onPostCreationFailedOnSteem(String msg) {
+    showProgressDialog(false, "");
+    Toast.makeText(this, "Failed to post winners blog", Toast.LENGTH_LONG).show();
   }
 }

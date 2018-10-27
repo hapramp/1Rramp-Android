@@ -95,10 +95,8 @@ public class JudgeListAdapter extends RecyclerView.Adapter<JudgeListAdapter.Judg
         public void onClick(View view) {
           if (judgeListListener != null) {
             if (judge.isSelected()) {
-              judge.setSelected(false);
               judgeListListener.onRemoveJudge(judge);
             } else {
-              judge.setSelected(true);
               judgeListListener.onAddJudge(judge);
             }
           }

@@ -1,74 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="86dp"
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="96dp"
+    android:scrollbars="none"
     android:background="@color/white"
     android:orientation="horizontal">
 
-    <RelativeLayout
-        android:id="@+id/judge1"
+    <LinearLayout
+        android:layout_marginTop="8dp"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:background="?android:selectableItemBackground"
-        android:padding="4dp"
-        android:visibility="gone">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/judge1_image"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/circular_image_placeholder" />
-
-        <TextView
-            android:id="@+id/judge1_name"
+        <LinearLayout
+            android:id="@+id/judge_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:lines="1"
-            android:text="Select judge 1"
-            android:textColor="@color/Black87"
-            android:textSize="12sp" />
-    </RelativeLayout>
+            android:orientation="horizontal">
 
-    <RelativeLayout
-        android:id="@+id/judge2"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="8dp"
-        android:background="?android:selectableItemBackground"
-        android:padding="4dp"
-        android:visibility="gone">
+        </LinearLayout>
 
         <ImageView
-            android:id="@+id/judge2_image"
+            android:id="@+id/addBtn"
             android:layout_width="56dp"
             android:layout_height="56dp"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/circular_image_placeholder" />
-
-        <TextView
-            android:id="@+id/judge2_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:lines="1"
-            android:text="Select judge 2"
-            android:textColor="@color/Black87"
-            android:textSize="12sp" />
-    </RelativeLayout>
-
-    <ImageView
-        android:id="@+id/addBtn"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="4dp"
-        android:background="@drawable/black_border"
-        android:clickable="true"
-        android:padding="16dp"
-        android:src="@drawable/plus" />
-
-</LinearLayout>
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/black_border"
+            android:clickable="true"
+            android:padding="16dp"
+            android:src="@drawable/plus" />
+    </LinearLayout>
+</HorizontalScrollView>

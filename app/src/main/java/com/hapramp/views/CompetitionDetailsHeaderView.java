@@ -8,6 +8,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -38,6 +39,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.content.Context.CLIPBOARD_SERVICE;
+import static com.hapramp.views.JudgeSelectionView.MAX_JUDGES_ALLOWED;
 
 public class CompetitionDetailsHeaderView extends FrameLayout {
   @BindView(R.id.feed_owner_pic)
@@ -84,18 +86,6 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
   TextView participationHashtagText;
   @BindView(R.id.judge_label)
   TextView judgeLabel;
-  @BindView(R.id.judge1_image)
-  ImageView judge1Image;
-  @BindView(R.id.judge1_name)
-  TextView judge1Name;
-  @BindView(R.id.judge1)
-  RelativeLayout judge1;
-  @BindView(R.id.judge2_image)
-  ImageView judge2Image;
-  @BindView(R.id.judge2_name)
-  TextView judge2Name;
-  @BindView(R.id.judge2)
-  RelativeLayout judge2;
   @BindView(R.id.judge_container)
   LinearLayout judgeContainer;
   @BindView(R.id.judge_section)
@@ -162,6 +152,7 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
     setParticipationHashtagInfo(mCompetition.getmParticipationHashtag());
     setEntries(mCompetition.getmPostCount());
     invalidateEntriesLoadingIndicator();
+    addPrizes();
   }
 
   private void setCommunities(List<CommunityModel> communities) {
@@ -204,29 +195,27 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
     return st.toString();
   }
 
-  private void setJudges(List<JudgeModel> judges) {
-    if (judges.size() == 0) {
-      judgeSection.setVisibility(GONE);
-    } else {
-      judgeSection.setVisibility(VISIBLE);
-      int len = judges.size() > 2 ? 2 : judges.size();
-      judge1.setVisibility(GONE);
-      judge2.setVisibility(GONE);
+  public void setJudges(final List<JudgeModel> judges) {
+    try {
+      int len = judges.size() > MAX_JUDGES_ALLOWED ? MAX_JUDGES_ALLOWED : judges.size();
+      judgeContainer.removeAllViews();
+      //add items
       for (int i = 0; i < len; i++) {
-        if (i == 0) {
-          judge1.setVisibility(VISIBLE);
-          ImageHandler.loadCircularImage(mContext, judge1Image,
-            String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format),
-              judges.get(i).getmUsername()));
-          judge1Name.setText(judges.get(i).getmUsername());
-        } else if (i == 1) {
-          judge2.setVisibility(VISIBLE);
-          ImageHandler.loadCircularImage(mContext, judge2Image,
-            String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format),
-              judges.get(i).getmUsername()));
-          judge2Name.setText(judges.get(i).getmUsername());
-        }
+        final JudgeModel judgeModel = judges.get(i);
+        JudgeItemView itemView = new JudgeItemView(mContext);
+        itemView.setJudgeInfo(judgeModel);
+        itemView.setOnClickListener(new OnClickListener() {
+          @Override
+          public void onClick(View view) {
+            showJudgeDetails(judgeModel);
+          }
+        });
+        //add to view
+        judgeContainer.addView(itemView, i);
       }
+    }
+    catch (Exception e) {
+      Toast.makeText(mContext, "Error while selecting judges!", Toast.LENGTH_LONG).show();
     }
   }
 
@@ -275,6 +264,17 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
     }
   }
 
+  private void addPrizes() {
+    int len = mCompetition.getPrizes().size();
+    String header = "";
+    for (int i = 0; i < len; i++) {
+      PrizeRowItemView prizeRowItemView = new PrizeRowItemView(mContext);
+      header = getPrizeHeader(i);
+      prizeRowItemView.setPrizeData(header, mCompetition.getPrizes().get(i));
+      prizeDescriptionContainer.addView(prizeRowItemView, i);
+    }
+  }
+
   private void addCommunitiesToLayout(List<CommunityModel> cms) {
     int size = cms.size();
     resetVisibility();
@@ -298,6 +298,30 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
             PorterDuff.Mode.SRC_ATOP);
         }
       }
+    }
+  }
+
+  private void showJudgeDetails(JudgeModel judgeModel) {
+    try {
+      JudgeProfileDialog judgeProfileDialog = new JudgeProfileDialog((AppCompatActivity) mContext);
+      judgeProfileDialog.setJudgeInfo(judgeModel);
+      judgeProfileDialog.show();
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  private String getPrizeHeader(int position) {
+    switch (position) {
+      case 0:
+        return "1st Prize: ";
+      case 1:
+        return "2nd Prize: ";
+      case 2:
+        return "3rd Prize: ";
+      default:
+        return (position + 1) + "th Prize: ";
     }
   }
 

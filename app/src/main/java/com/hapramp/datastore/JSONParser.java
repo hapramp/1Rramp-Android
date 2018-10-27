@@ -68,7 +68,7 @@ public class JSONParser {
     return cps;
   }
 
-  private List<JudgeModel> parseJudgesJsonArray(JSONArray array) {
+  private ArrayList<JudgeModel> parseJudgesJsonArray(JSONArray array) {
     ArrayList<JudgeModel> judgeModels = new ArrayList<>();
     try {
       JudgeModel jm;
@@ -88,8 +88,8 @@ public class JSONParser {
     return judgeModels;
   }
 
-  public List<CommunityModel> parseAllCommunity(String response) {
-    List<CommunityModel> communityModels = new ArrayList<>();
+  public ArrayList<CommunityModel> parseAllCommunity(String response) {
+    ArrayList<CommunityModel> communityModels = new ArrayList<>();
     try {
       JSONObject jsonObject;
       JSONArray jsonArray = new JSONArray(response);
@@ -263,6 +263,8 @@ public class JSONParser {
       feed.setVoters(voters);
       feed.setActiveVoters(activeVoters);
       feed.setAuthorReputation(autorReputation);
+      //optional
+      feed.setRank(rootObject.optInt("rank",0));
     }
     catch (JSONException e) {
       Log.e("JsonParserException", e.toString());

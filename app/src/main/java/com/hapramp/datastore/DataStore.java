@@ -165,6 +165,25 @@ public class DataStore extends DataDispatcher {
     }.start();
   }
 
+  public void requestWinnersList(final String competitionId,final CompetitionEntriesFetchCallback competitionEntriesFetchCallback){
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          String url = UrlBuilder.competitionWinnersUrl(competitionId);
+          Response response = NetworkApi.getNetworkApiInstance().fetch(url);
+          String responseString = null;
+          responseString = response.body().string();
+          dispatchCompetitionEntries(responseString, competitionEntriesFetchCallback);
+        }
+        catch (IOException e) {
+          e.printStackTrace();
+          dispatchCompetitionEntriesError(competitionEntriesFetchCallback);
+        }
+      }
+    }.start();
+  }
+
   /**
    * Fetches user information and update eligibility of competition creation.
    */

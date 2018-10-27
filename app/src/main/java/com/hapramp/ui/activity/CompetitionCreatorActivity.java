@@ -12,8 +12,8 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,17 +22,20 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datastore.UrlBuilder;
 import com.hapramp.models.CompetitionCreateResponse;
+import com.hapramp.models.FormattedBodyResponse;
 import com.hapramp.models.JudgeModel;
 import com.hapramp.models.error.ErrorResponse;
 import com.hapramp.models.requests.CompetitionCreateBody;
+import com.hapramp.steem.PermlinkGenerator;
+import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.utils.CommunityUtils;
 import com.hapramp.utils.ErrorUtils;
 import com.hapramp.utils.GoogleImageFilePathReader;
+import com.hapramp.utils.PostHashTagPreprocessor;
 import com.hapramp.views.JudgeSelectionView;
 import com.hapramp.views.hashtag.CustomHashTagInput;
 import com.hapramp.views.post.PostCommunityView;
@@ -42,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,7 +55,7 @@ import retrofit2.Response;
 
 import static com.hapramp.ui.activity.JudgeSelectionActivity.EXTRA_SELECTED_JUDGES;
 
-public class CompetitionCreatorActivity extends AppCompatActivity implements JudgeSelectionView.JudgeSelectionCallback {
+public class CompetitionCreatorActivity extends AppCompatActivity implements JudgeSelectionView.JudgeSelectionCallback, SteemPostCreator.SteemPostCreatorCallback {
 
   private static final int REQUEST_IMAGE_SELECTOR = 1039;
   private static final int REQUEST_JUDGE_SELECTOR = 1037;
@@ -142,6 +146,8 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
   private String bannerImageDownloadUrl = "";
   private ArrayList<JudgeModel> selectedJudges;
   private ProgressDialog progressDialog;
+  private SteemPostCreator steemPostCreator;
+  private CompetitionCreateBody competitionCreateBody;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -153,6 +159,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
   }
 
   private void initialize() {
+    hideKeyboardByDefault();
     progressDialog = new ProgressDialog(this);
     selectedJudges = new ArrayList<>();
     competitionCommunityView.initCategory();
@@ -170,6 +177,9 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
     });
   }
 
+  private void hideKeyboardByDefault() {
+    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+  }
   private void attachListeners() {
     nextButton.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -337,7 +347,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
 
   private void prepareCompetition() {
     showPublishingProgressDialog(true, "Creating Competition...");
-    CompetitionCreateBody competitionCreateBody = new CompetitionCreateBody();
+    competitionCreateBody = new CompetitionCreateBody();
     competitionCreateBody.setmImage(bannerImageDownloadUrl);
     competitionCreateBody.setmTitle(competitionTitle.getText().toString().trim());
     competitionCreateBody.setmDescription(competitionDescription.getText().toString().trim());
@@ -351,7 +361,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
   }
 
   private void showTimePicker(String msg, final EditText targetInput) {
-    Calendar mcurrentTime = Calendar.getInstance();
+    Calendar mcurrentTime = Calendar.getInstance(TimeZone.getTimeZone("GMT+0"));
     int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
     int minute = mcurrentTime.get(Calendar.MINUTE);
     TimePickerDialog mTimePicker;
@@ -368,7 +378,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
   }
 
   private void showDatePicker(String msg, final EditText targetInput) {
-    final Calendar c = Calendar.getInstance();
+    final Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT+0"));
     int mYear = c.get(Calendar.YEAR);
     int mMonth = c.get(Calendar.MONTH);
     int mDay = c.get(Calendar.DAY_OF_MONTH);
@@ -417,7 +427,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
         progressDialog.setIndeterminate(true);
         progressDialog.show();
       } else {
-        progressDialog.hide();
+        progressDialog.dismiss();
       }
     }
   }
@@ -462,6 +472,11 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
     return prizes;
   }
 
+  /**
+   * Creates competition on app server.
+   *
+   * @param body body of competition.
+   */
   public void createCompetition(CompetitionCreateBody body) {
     String url = UrlBuilder.createCompetitionUrl();
     try {
@@ -470,8 +485,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
         public void onResponse(Call<CompetitionCreateResponse> call, Response<CompetitionCreateResponse> response) {
           showPublishingProgressDialog(false, "");
           if (response.isSuccessful()) {
-            toast("Competition Created Successfully!");
-            close();
+            fetchFormattedBody(response.body().getCompetitionID());
           } else {
             ErrorResponse er = ErrorUtils.parseError(response);
             toast(er.getmMessage());
@@ -490,6 +504,46 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
       showPublishingProgressDialog(false, "");
       toast("Failed to create competition");
     }
+  }
+
+  private void fetchFormattedBody(final String comp_id) {
+    showPublishingProgressDialog(true, "Preparing post...");
+    RetrofitServiceGenerator.getService().requestContestPostBody(comp_id).enqueue(new Callback<FormattedBodyResponse>() {
+      @Override
+      public void onResponse(Call<FormattedBodyResponse> call, Response<FormattedBodyResponse> response) {
+        showPublishingProgressDialog(false, "");
+        if (response.isSuccessful()) {
+          createPostOnSteem(response.body().getmBody(), comp_id);
+        } else {
+          onPostCreationFailedOnSteem("Failed to prepare body of post!");
+        }
+      }
+
+      @Override
+      public void onFailure(Call<FormattedBodyResponse> call, Throwable t) {
+        showPublishingProgressDialog(false, "");
+        onPostCreationFailedOnSteem("Failed to prepare body of post!");
+      }
+    });
+  }
+
+  private void createPostOnSteem(String body, String mCompetitionId) {
+    showPublishingProgressDialog(true, "Publishing post for contest...");
+    steemPostCreator = new SteemPostCreator();
+    steemPostCreator.setSteemPostCreatorCallback(this);
+    String postPermlink = PermlinkGenerator.getPermlink("Contest-" + competitionCreateBody.getmTitle() + "-" + mCompetitionId);
+    ArrayList<String> tags = (ArrayList<String>) competitionCommunityView.getSelectedTags();
+    List<String> images = new ArrayList<>();
+    //include extra hashtags
+    includeExtraTags(tags);
+    PostHashTagPreprocessor.processHashtags(tags);
+    images.add(competitionCreateBody.getmImage());
+    tags = PostHashTagPreprocessor.processHashtags(tags);
+    steemPostCreator.createPost(body, competitionCreateBody.getmTitle(), images, tags, postPermlink);
+  }
+
+  private void includeExtraTags(ArrayList<String> tags) {
+    tags.addAll(tagsInputBox.getHashTags());
   }
 
   @Override
@@ -536,6 +590,19 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
     i.putParcelableArrayListExtra(EXTRA_SELECTED_JUDGES, selectedJudges);
     startActivityForResult(i, REQUEST_JUDGE_SELECTOR);
     overridePendingTransition(R.anim.slide_up_enter, R.anim.slide_up_exit);
+  }
+
+  @Override
+  public void onPostCreatedOnSteem() {
+    showPublishingProgressDialog(false, "");
+    toast("Contest post created successfully!");
+    close();
+  }
+
+  @Override
+  public void onPostCreationFailedOnSteem(String msg) {
+    showPublishingProgressDialog(false, "");
+    toast("Contest post creation failed!");
   }
 }
 

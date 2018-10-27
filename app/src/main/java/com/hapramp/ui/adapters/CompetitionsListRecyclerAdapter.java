@@ -14,9 +14,10 @@ import java.util.List;
 
 public class CompetitionsListRecyclerAdapter extends RecyclerView.Adapter<CompetitionsListRecyclerAdapter.CompetitionItemViewHolder> {
 
-  private boolean showDeclarationButton;
   List<CompetitionModel> competitions;
   Context context;
+  private boolean showDeclarationButton;
+  private CompetitionFeedItemView.CompetitionItemDeleteListener mDeleteListener;
 
   public CompetitionsListRecyclerAdapter(Context context) {
     this.context = context;
@@ -26,6 +27,10 @@ public class CompetitionsListRecyclerAdapter extends RecyclerView.Adapter<Compet
   public void setCompetitions(List<CompetitionModel> competitions) {
     this.competitions = competitions;
     notifyDataSetChanged();
+  }
+
+  public void setDeleteListener(CompetitionFeedItemView.CompetitionItemDeleteListener deleteListener) {
+    this.mDeleteListener = deleteListener;
   }
 
   public void setShowDeclarationButton(boolean showDeclarationButton) {
@@ -40,7 +45,7 @@ public class CompetitionsListRecyclerAdapter extends RecyclerView.Adapter<Compet
 
   @Override
   public void onBindViewHolder(@NonNull CompetitionItemViewHolder holder, int position) {
-    holder.bind(competitions.get(position));
+    holder.bind(competitions.get(position), mDeleteListener);
   }
 
   @Override
@@ -56,8 +61,9 @@ public class CompetitionsListRecyclerAdapter extends RecyclerView.Adapter<Compet
       competitionFeedItemView = (CompetitionFeedItemView) itemView;
     }
 
-    public void bind(CompetitionModel competitionModel) {
+    public void bind(CompetitionModel competitionModel, CompetitionFeedItemView.CompetitionItemDeleteListener deleteListener) {
       competitionFeedItemView.bindCompetitionData(competitionModel);
+      competitionFeedItemView.setDeleteListener(deleteListener);
     }
   }
 }

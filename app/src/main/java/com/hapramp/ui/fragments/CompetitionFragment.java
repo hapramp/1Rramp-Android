@@ -18,8 +18,8 @@ import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.CompetitionsListCallback;
 import com.hapramp.models.CompetitionModel;
 import com.hapramp.ui.adapters.CompetitionsListRecyclerAdapter;
-import com.hapramp.utils.SpaceDecorator;
 import com.hapramp.utils.ViewItemDecoration;
+import com.hapramp.views.competition.CompetitionFeedItemView;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class CompetitionFragment extends Fragment implements CompetitionsListCallback {
+public class CompetitionFragment extends Fragment implements CompetitionsListCallback, CompetitionFeedItemView.CompetitionItemDeleteListener {
 
   @BindView(R.id.competition_list)
   RecyclerView competitionList;
@@ -67,23 +67,13 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
     return view;
   }
 
-  @Override
-  public void onDestroyView() {
-    super.onDestroyView();
-    unbinder.unbind();
-  }
-
-  @Override
-  public void onDetach() {
-    super.onDetach();
-  }
-
   private void initializeList() {
     dataStore = new DataStore();
     Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
     ViewItemDecoration viewItemDecoration = new ViewItemDecoration(drawable);
     viewItemDecoration.setWantTopOffset(false, 0);
     competitionsListRecyclerAdapter = new CompetitionsListRecyclerAdapter(mContext);
+    competitionsListRecyclerAdapter.setDeleteListener(this);
     competitionList.setLayoutManager(new LinearLayoutManager(mContext));
     competitionList.addItemDecoration(viewItemDecoration);
     competitionList.setAdapter(competitionsListRecyclerAdapter);
@@ -102,6 +92,23 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
         loadingProgressBar.setVisibility(View.GONE);
       }
     }
+  }
+
+  @Override
+  public void onResume() {
+    super.onResume();
+    fetchCompetitionsList();
+  }
+
+  @Override
+  public void onDestroyView() {
+    super.onDestroyView();
+    unbinder.unbind();
+  }
+
+  @Override
+  public void onDetach() {
+    super.onDetach();
   }
 
   @Override
@@ -134,5 +141,10 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
         messagePanel.setVisibility(View.GONE);
       }
     }
+  }
+
+  @Override
+  public void onCompetitionItemDeleted() {
+    fetchCompetitionsList();
   }
 }
