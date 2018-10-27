@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +30,7 @@ import com.hapramp.models.CompetitionModel;
 import com.hapramp.models.JudgeModel;
 import com.hapramp.steem.Communities;
 import com.hapramp.utils.CommunityUtils;
+import com.hapramp.utils.CountDownTimerUtils;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
 
@@ -96,9 +98,16 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
   RelativeLayout entriesLoadingContainer;
   @BindView(R.id.copy_hashtag_button)
   ImageView copyHashtagButton;
+  @BindView(R.id.competition_starts_label)
+  TextView competitionStartsLabel;
+  @BindView(R.id.competition_ends_label)
+  TextView competitionEndsLabel;
+  @BindView(R.id.progress_bar)
+  ProgressBar progressBar;
   private Context mContext;
   private CompetitionModel mCompetition;
   private boolean mEntriesLoaded;
+  private CountDownTimerUtils countDownTimerUtils;
 
   public CompetitionDetailsHeaderView(@NonNull Context context) {
     super(context);
@@ -107,6 +116,7 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
 
   private void init(Context context) {
     this.mContext = context;
+    countDownTimerUtils = new CountDownTimerUtils();
     View view = LayoutInflater.from(context).inflate(R.layout.competition_detail_header_view, this);
     ButterKnife.bind(this, view);
     attachListeners();
@@ -144,8 +154,8 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
     setCommunities(competition.getCommunities());
     ImageHandler.load(mContext, featuredImagePost, competition.getmImage());
     competitionTitle.setText(competition.getmTitle());
-    startsTime.setText(getStartTime());
-    endTime.setText(getEndTime());
+    setStartTime();
+    setEndTime();
     postSnippet.setText(competition.getmDescription());
     competitionRules.setText(competition.getmRules());
     setJudges(competition.getmJudges());
@@ -171,28 +181,30 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
     addCommunitiesToLayout(cm);
   }
 
-  private String getStartTime() {
+  private void setStartTime() {
     long now = System.currentTimeMillis();
     long startsAt = MomentsUtils.getMillisFromTime(mCompetition.getmStartsAt());
     StringBuilder st = new StringBuilder();
+    st.append(MomentsUtils.getFormattedTime(mCompetition.getmStartsAt()));
     if (startsAt > now) {
-      st.append(MomentsUtils.getFormattedTime(mCompetition.getmStartsAt()));
+      competitionStartsLabel.setText("Starts");
     } else {
-      st.append(MomentsUtils.getFormattedTime(mCompetition.getmStartsAt()));
+      competitionStartsLabel.setText("Started");
     }
-    return st.toString();
+    startsTime.setText(st.toString());
   }
 
-  private String getEndTime() {
+  private void setEndTime() {
     long now = System.currentTimeMillis();
     long ends = MomentsUtils.getMillisFromTime(mCompetition.getmEndsAt());
     StringBuilder st = new StringBuilder();
+    st.append(MomentsUtils.getFormattedTime(mCompetition.getmEndsAt()));
     if (ends > now) {
-      st.append(MomentsUtils.getFormattedTime(mCompetition.getmEndsAt()));
+      competitionEndsLabel.setText("Ends");
     } else {
-      st.append(MomentsUtils.getFormattedTime(mCompetition.getmEndsAt()));
+      competitionEndsLabel.setText("Ended");
     }
-    return st.toString();
+    endTime.setText(st.toString());
   }
 
   public void setJudges(final List<JudgeModel> judges) {
@@ -329,6 +341,75 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
     club1.setVisibility(GONE);
     club2.setVisibility(GONE);
     club3.setVisibility(GONE);
+  }
+
+  @Override
+  protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+    invalidateTimers();
+  }
+
+  private void invalidateTimers() {
+    String start_time = mCompetition.getmStartsAt();
+    String end_time = mCompetition.getmEndsAt();
+    long now = System.currentTimeMillis();
+    long endsAt = MomentsUtils.getMillisFromTime(end_time);
+    long startsAt = MomentsUtils.getMillisFromTime(start_time);
+    if (!mCompetition.isWinners_announced()) {
+      //not started
+      if (now < startsAt) {
+        setStartsInTimer();
+      }//running/live
+      else if (now > startsAt && now < endsAt) {
+        setEndsInTimer();
+      }
+    }
+  }
+
+  private void setStartsInTimer() {
+    long now = System.currentTimeMillis();
+    final long starts = MomentsUtils.getMillisFromTime(mCompetition.getmStartsAt());
+    long left = starts - now;
+    countDownTimerUtils.setTimerWith(left, 1000, new CountDownTimerUtils.TimerUpdateListener() {
+      @Override
+      public void onFinished() {
+
+      }
+
+      @Override
+      public void onRunningTimeUpdate(String updateTime) {
+        if (startsTime != null) {
+          startsTime.setText(updateTime);
+        }
+      }
+    });
+    countDownTimerUtils.start();
+  }
+
+  private void setEndsInTimer() {
+    long now = System.currentTimeMillis();
+    long ends = MomentsUtils.getMillisFromTime(mCompetition.getmEndsAt());
+    long left = ends - now;
+    countDownTimerUtils.setTimerWith(left, 1000, new CountDownTimerUtils.TimerUpdateListener() {
+      @Override
+      public void onFinished() {
+
+      }
+
+      @Override
+      public void onRunningTimeUpdate(String updateTime) {
+        if (endTime != null) {
+          endTime.setText(updateTime);
+        }
+      }
+    });
+    countDownTimerUtils.start();
+  }
+
+  @Override
+  protected void onDetachedFromWindow() {
+    super.onDetachedFromWindow();
+    invalidateTimers();
   }
 
   public void setEntriesLoaded(boolean loaded) {

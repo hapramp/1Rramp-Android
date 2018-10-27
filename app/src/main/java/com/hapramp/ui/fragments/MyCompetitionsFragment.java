@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -40,6 +41,8 @@ public class MyCompetitionsFragment extends Fragment implements CompetitionsList
   TextView messagePanel;
   @BindView(R.id.loading_progress_bar)
   ProgressBar loadingProgressBar;
+  @BindView(R.id.swipe_refresh)
+  SwipeRefreshLayout swipeRefresh;
   private DataStore dataStore;
   private CompetitionsListRecyclerAdapter competitionsListRecyclerAdapter;
 
@@ -80,36 +83,35 @@ public class MyCompetitionsFragment extends Fragment implements CompetitionsList
     competitionList.setLayoutManager(new LinearLayoutManager(mContext));
     competitionList.addItemDecoration(viewItemDecoration);
     competitionList.setAdapter(competitionsListRecyclerAdapter);
-  }
-
-  private void fetchCompetitionsList() {
-    setProgressVisibility(true);
-    dataStore.requestCompetitionLists(this);
-  }
-
-  private void setProgressVisibility(boolean show) {
-    if (loadingProgressBar != null) {
-      if (show) {
-        loadingProgressBar.setVisibility(View.VISIBLE);
-      } else {
-        loadingProgressBar.setVisibility(View.GONE);
+    swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+      @Override
+      public void onRefresh() {
+        fetchCompetitionsList();
       }
-    }
+    });
   }
 
   @Override
   public void onCompetitionsListAvailable(List<CompetitionModel> competitions) {
-    competitions = filterMyCompetitions(competitions);
-    setProgressVisibility(false);
-    if (competitions != null) {
-      if (competitions.size() == 0) {
-        setMessagePanel(true, "You have not created any competitions yet!");
-      } else {
-        setMessagePanel(false, "");
-        competitionsListRecyclerAdapter.setCompetitions(competitions);
+    try {
+      if (swipeRefresh.isRefreshing()) {
+        swipeRefresh.setRefreshing(false);
       }
-    } else {
-      setMessagePanel(true, "Something went wrong!");
+      competitions = filterMyCompetitions(competitions);
+      setProgressVisibility(false);
+      if (competitions != null) {
+        if (competitions.size() == 0) {
+          setMessagePanel(true, "You have not created any competitions yet!");
+        } else {
+          setMessagePanel(false, "");
+          competitionsListRecyclerAdapter.setCompetitions(competitions);
+        }
+      } else {
+        setMessagePanel(true, "Something went wrong!");
+      }
+    }
+    catch (Exception e) {
+
     }
   }
 
@@ -122,6 +124,16 @@ public class MyCompetitionsFragment extends Fragment implements CompetitionsList
       }
     }
     return myCompetitions;
+  }
+
+  private void setProgressVisibility(boolean show) {
+    if (loadingProgressBar != null) {
+      if (show) {
+        loadingProgressBar.setVisibility(View.VISIBLE);
+      } else {
+        loadingProgressBar.setVisibility(View.GONE);
+      }
+    }
   }
 
   private void setMessagePanel(boolean show, String msg) {
@@ -137,12 +149,25 @@ public class MyCompetitionsFragment extends Fragment implements CompetitionsList
 
   @Override
   public void onCompetitionsFetchError() {
-    setProgressVisibility(false);
-    setMessagePanel(true, "Something went wrong!");
+    try {
+      if (swipeRefresh.isRefreshing()) {
+        swipeRefresh.setRefreshing(false);
+      }
+      setProgressVisibility(false);
+      setMessagePanel(true, "Something went wrong!");
+    }
+    catch (Exception e) {
+
+    }
   }
 
   @Override
   public void onCompetitionItemDeleted() {
     fetchCompetitionsList();
+  }
+
+  private void fetchCompetitionsList() {
+    setProgressVisibility(true);
+    dataStore.requestCompetitionLists(this);
   }
 }

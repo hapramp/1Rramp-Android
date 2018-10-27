@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -38,6 +39,8 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
   CompetitionsListRecyclerAdapter competitionsListRecyclerAdapter;
   @BindView(R.id.messagePanel)
   TextView messagePanel;
+  @BindView(R.id.swipe_refresh)
+  SwipeRefreshLayout swipeRefresh;
   private Context mContext;
   private DataStore dataStore;
 
@@ -67,16 +70,10 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
     return view;
   }
 
-  private void initializeList() {
-    dataStore = new DataStore();
-    Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
-    ViewItemDecoration viewItemDecoration = new ViewItemDecoration(drawable);
-    viewItemDecoration.setWantTopOffset(false, 0);
-    competitionsListRecyclerAdapter = new CompetitionsListRecyclerAdapter(mContext);
-    competitionsListRecyclerAdapter.setDeleteListener(this);
-    competitionList.setLayoutManager(new LinearLayoutManager(mContext));
-    competitionList.addItemDecoration(viewItemDecoration);
-    competitionList.setAdapter(competitionsListRecyclerAdapter);
+  @Override
+  public void onResume() {
+    super.onResume();
+    fetchCompetitionsList();
   }
 
   private void fetchCompetitionsList() {
@@ -95,12 +92,6 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
   }
 
   @Override
-  public void onResume() {
-    super.onResume();
-    fetchCompetitionsList();
-  }
-
-  @Override
   public void onDestroyView() {
     super.onDestroyView();
     unbinder.unbind();
@@ -111,8 +102,34 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
     super.onDetach();
   }
 
+  private void initializeList() {
+    dataStore = new DataStore();
+    Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
+    ViewItemDecoration viewItemDecoration = new ViewItemDecoration(drawable);
+    viewItemDecoration.setWantTopOffset(false, 0);
+    competitionsListRecyclerAdapter = new CompetitionsListRecyclerAdapter(mContext);
+    competitionsListRecyclerAdapter.setDeleteListener(this);
+    competitionList.setLayoutManager(new LinearLayoutManager(mContext));
+    competitionList.addItemDecoration(viewItemDecoration);
+    competitionList.setAdapter(competitionsListRecyclerAdapter);
+    swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+      @Override
+      public void onRefresh() {
+        fetchCompetitionsList();
+      }
+    });
+  }
+
   @Override
   public void onCompetitionsListAvailable(List<CompetitionModel> competitions) {
+    try {
+      if (swipeRefresh.isRefreshing()) {
+        swipeRefresh.setRefreshing(false);
+      }
+    }
+    catch (Exception e) {
+
+    }
     setProgressVisibility(false);
     if (competitions != null) {
       if (competitions.size() == 0) {
@@ -128,8 +145,16 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
 
   @Override
   public void onCompetitionsFetchError() {
-    setProgressVisibility(false);
-    setMessagePanel(true, "Something went wrong!");
+    try {
+      if (swipeRefresh.isRefreshing()) {
+        swipeRefresh.setRefreshing(false);
+      }
+      setProgressVisibility(false);
+      setMessagePanel(true, "Something went wrong!");
+    }
+    catch (Exception e) {
+
+    }
   }
 
   private void setMessagePanel(boolean show, String msg) {

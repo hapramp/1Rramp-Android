@@ -32,6 +32,7 @@ import com.hapramp.ui.activity.ParticipateEditorActivity;
 import com.hapramp.ui.activity.WinnerDeclarationActivity;
 import com.hapramp.ui.activity.WinnersFeedListActivity;
 import com.hapramp.utils.CommunityUtils;
+import com.hapramp.utils.CountDownTimerUtils;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.PrizeMoneyFilter;
@@ -88,6 +89,7 @@ public class CompetitionFeedItemView extends FrameLayout {
   private CompetitionModel mCompetition;
   private boolean mShowDeclareResultButton;
   private CompetitionItemDeleteListener deleteListener;
+  private CountDownTimerUtils countDownTimerUtils;
 
   public CompetitionFeedItemView(@NonNull Context context) {
     super(context);
@@ -96,6 +98,7 @@ public class CompetitionFeedItemView extends FrameLayout {
 
   private void init(Context context) {
     this.mContext = context;
+    countDownTimerUtils = new CountDownTimerUtils();
     View view = LayoutInflater.from(context).inflate(R.layout.competition_feed_item_view, this);
     ButterKnife.bind(this, view);
     attachListeners();
@@ -306,6 +309,7 @@ public class CompetitionFeedItemView extends FrameLayout {
       actionButton.setEnabled(false);
       actionButton.setClickable(false);
       actionButton.setText("Starts " + startsIn);
+      setStartsInTimer();
     }
   }
 
@@ -385,6 +389,26 @@ public class CompetitionFeedItemView extends FrameLayout {
     club3.setVisibility(GONE);
   }
 
+  private void setStartsInTimer() {
+    long now = System.currentTimeMillis();
+    long starts = MomentsUtils.getMillisFromTime(mCompetition.getmStartsAt());
+    long left = starts - now;
+    countDownTimerUtils.setTimerWith(left, 1000, new CountDownTimerUtils.TimerUpdateListener() {
+      @Override
+      public void onFinished() {
+
+      }
+
+      @Override
+      public void onRunningTimeUpdate(String updateTime) {
+        if (actionButton != null) {
+          actionButton.setText("Starts In " + updateTime);
+        }
+      }
+    });
+    countDownTimerUtils.start();
+  }
+
   private void openSubmissionPage() {
     Intent intent = new Intent(mContext, ParticipateEditorActivity.class);
     intent.putExtra(EXTRA_COMPETITION_ID, mCompetition.getmId());
@@ -407,6 +431,18 @@ public class CompetitionFeedItemView extends FrameLayout {
     intent.putExtra(EXTRA_COMPETITION_ID, mCompetition.getmId());
     intent.putExtra(EXTRA_COMPETITION_TITLE, mCompetition.getmTitle());
     mContext.startActivity(intent);
+  }
+
+  @Override
+  protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+    invalidateActionButton();
+  }
+
+  @Override
+  protected void onDetachedFromWindow() {
+    super.onDetachedFromWindow();
+    countDownTimerUtils.cancel();
   }
 
   public void setDeleteListener(CompetitionItemDeleteListener deleteListener) {

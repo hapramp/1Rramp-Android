@@ -70,7 +70,7 @@
         android:layout_marginRight="16dp"
         android:text="Hello Ankit"
         android:textColor="@color/colorPrimary"
-        android:textSize="18sp"
+        android:textSize="20sp"
         android:visibility="visible" />
 
     <RelativeLayout
@@ -127,6 +127,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/competition_starts_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Start"
@@ -152,6 +153,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/competition_ends_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Ends"
