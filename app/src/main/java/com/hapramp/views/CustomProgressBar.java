@@ -1,6 +1,5 @@
 package com.hapramp.views;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -12,7 +11,6 @@ import android.graphics.Typeface;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 
 import com.hapramp.R;
 import com.hapramp.utils.PixelUtils;
