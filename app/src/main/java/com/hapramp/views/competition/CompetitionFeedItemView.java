@@ -396,7 +396,7 @@ public class CompetitionFeedItemView extends FrameLayout {
     countDownTimerUtils.setTimerWith(left, 1000, new CountDownTimerUtils.TimerUpdateListener() {
       @Override
       public void onFinished() {
-
+          invalidateActionButton();
       }
 
       @Override

@@ -154,11 +154,10 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
     setCommunities(competition.getCommunities());
     ImageHandler.load(mContext, featuredImagePost, competition.getmImage());
     competitionTitle.setText(competition.getmTitle());
-    setStartTime();
-    setEndTime();
     postSnippet.setText(competition.getmDescription());
     competitionRules.setText(competition.getmRules());
     setJudges(competition.getmJudges());
+    invalidateCompetitionTime();
     setParticipationHashtagInfo(mCompetition.getmParticipationHashtag());
     setEntries(mCompetition.getmPostCount());
     invalidateEntriesLoadingIndicator();
@@ -179,6 +178,11 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
       }
     }
     addCommunitiesToLayout(cm);
+  }
+
+  private void invalidateCompetitionTime(){
+    setStartTime();
+    setEndTime();
   }
 
   private void setStartTime() {

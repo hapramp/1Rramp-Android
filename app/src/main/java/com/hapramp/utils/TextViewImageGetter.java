@@ -50,7 +50,7 @@ public class TextViewImageGetter implements Html.ImageGetter {
         Bitmap bitmap = BitmapFactory.decodeStream(is);
         int height = bitmap.getHeight();
         int width = bitmap.getWidth();
-        Bitmap newBitmap = Bitmap.createScaledBitmap(bitmap, 540, (height * 1080) / (2*width), false);
+        Bitmap newBitmap = bitmap;//Bitmap.createScaledBitmap(bitmap, 540, (height * 1080) / (2*width), false);
         return newBitmap;
       }
       catch (FileNotFoundException e) {
