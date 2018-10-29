@@ -13,7 +13,11 @@ public class PrizeMoneyFilter {
         if (splitted.length > 1) {
           if (splitted[1].toLowerCase().equals("sbd")) {
             totalSBD += Integer.valueOf(splitted[0]);
+          } else {
+            return "Multiple prizes";
           }
+        } else {
+          return "Multiple prizes";
         }
       }
       if (totalSBD == 0) {

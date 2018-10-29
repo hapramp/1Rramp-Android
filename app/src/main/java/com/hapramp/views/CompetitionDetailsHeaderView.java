@@ -4,7 +4,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,8 +27,6 @@ import com.hapramp.R;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.models.CompetitionModel;
 import com.hapramp.models.JudgeModel;
-import com.hapramp.steem.Communities;
-import com.hapramp.utils.CommunityUtils;
 import com.hapramp.utils.CountDownTimerUtils;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
@@ -50,12 +47,6 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
   TextView feedOwnerTitle;
   @BindView(R.id.feed_owner_subtitle)
   TextView feedOwnerSubtitle;
-  @BindView(R.id.club3)
-  TextView club3;
-  @BindView(R.id.club2)
-  TextView club2;
-  @BindView(R.id.club1)
-  TextView club1;
   @BindView(R.id.popupMenuDots)
   ImageView popupMenuDots;
   @BindView(R.id.featured_image_post)
@@ -104,6 +95,8 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
   TextView competitionEndsLabel;
   @BindView(R.id.progress_bar)
   ProgressBar progressBar;
+  @BindView(R.id.community_stripe_view)
+  CommunityStripView communityStripeView;
   private Context mContext;
   private CompetitionModel mCompetition;
   private boolean mEntriesLoaded;
@@ -165,50 +158,16 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
   }
 
   private void setCommunities(List<CommunityModel> communities) {
-    List<CommunityModel> cm = new ArrayList<>();
-    ArrayList<String> addedCommunity = new ArrayList<>();
-    for (int i = 0; i < communities.size(); i++) {
-      String title = CommunityUtils.getCommunityTitleFromName(communities.get(i).getmName());
-      if (Communities.doesCommunityExists(title) && !addedCommunity.contains(title)) {
-        cm.add(new CommunityModel(
-          CommunityUtils.getCommunityColorFromTitle(title), //color
-          title //title ex. art
-        ));
-        addedCommunity.add(title);
+    ArrayList<String> cl = new ArrayList<>();
+    try {
+      for (int i = 0; i < communities.size(); i++) {
+        cl.add(communities.get(i).getmTag());
       }
     }
-    addCommunitiesToLayout(cm);
-  }
-
-  private void invalidateCompetitionTime(){
-    setStartTime();
-    setEndTime();
-  }
-
-  private void setStartTime() {
-    long now = System.currentTimeMillis();
-    long startsAt = MomentsUtils.getMillisFromTime(mCompetition.getmStartsAt());
-    StringBuilder st = new StringBuilder();
-    st.append(MomentsUtils.getFormattedTime(mCompetition.getmStartsAt()));
-    if (startsAt > now) {
-      competitionStartsLabel.setText("Starts");
-    } else {
-      competitionStartsLabel.setText("Started");
+    catch (Exception e) {
+      e.printStackTrace();
     }
-    startsTime.setText(st.toString());
-  }
-
-  private void setEndTime() {
-    long now = System.currentTimeMillis();
-    long ends = MomentsUtils.getMillisFromTime(mCompetition.getmEndsAt());
-    StringBuilder st = new StringBuilder();
-    st.append(MomentsUtils.getFormattedTime(mCompetition.getmEndsAt()));
-    if (ends > now) {
-      competitionEndsLabel.setText("Ends");
-    } else {
-      competitionEndsLabel.setText("Ended");
-    }
-    endTime.setText(st.toString());
+    communityStripeView.setCommunities(cl);
   }
 
   public void setJudges(final List<JudgeModel> judges) {
@@ -233,6 +192,11 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
     catch (Exception e) {
       Toast.makeText(mContext, "Error while selecting judges!", Toast.LENGTH_LONG).show();
     }
+  }
+
+  private void invalidateCompetitionTime() {
+    setStartTime();
+    setEndTime();
   }
 
   private void setParticipationHashtagInfo(String hashtag) {
@@ -291,32 +255,6 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
     }
   }
 
-  private void addCommunitiesToLayout(List<CommunityModel> cms) {
-    int size = cms.size();
-    resetVisibility();
-    if (size > 0) {
-      club1.setVisibility(VISIBLE);
-      club1.setText(cms.get(0).getmName().toUpperCase());
-      club1.getBackground().setColorFilter(
-        Color.parseColor(cms.get(0).getmColor()),
-        PorterDuff.Mode.SRC_ATOP);
-      if (size > 1) {
-        club2.setVisibility(VISIBLE);
-        club2.setText(cms.get(1).getmName().toUpperCase());
-        club2.getBackground().setColorFilter(
-          Color.parseColor(cms.get(1).getmColor()),
-          PorterDuff.Mode.SRC_ATOP);
-        if (size > 2) {
-          club3.setVisibility(VISIBLE);
-          club3.setText(cms.get(2).getmName().toUpperCase());
-          club3.getBackground().setColorFilter(
-            Color.parseColor(cms.get(2).getmColor()),
-            PorterDuff.Mode.SRC_ATOP);
-        }
-      }
-    }
-  }
-
   private void showJudgeDetails(JudgeModel judgeModel) {
     try {
       JudgeProfileDialog judgeProfileDialog = new JudgeProfileDialog((AppCompatActivity) mContext);
@@ -326,6 +264,32 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
     catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  private void setStartTime() {
+    long now = System.currentTimeMillis();
+    long startsAt = MomentsUtils.getMillisFromTime(mCompetition.getmStartsAt());
+    StringBuilder st = new StringBuilder();
+    st.append(MomentsUtils.getFormattedTime(mCompetition.getmStartsAt()));
+    if (startsAt > now) {
+      competitionStartsLabel.setText("Starts");
+    } else {
+      competitionStartsLabel.setText("Started");
+    }
+    startsTime.setText(st.toString());
+  }
+
+  private void setEndTime() {
+    long now = System.currentTimeMillis();
+    long ends = MomentsUtils.getMillisFromTime(mCompetition.getmEndsAt());
+    StringBuilder st = new StringBuilder();
+    st.append(MomentsUtils.getFormattedTime(mCompetition.getmEndsAt()));
+    if (ends > now) {
+      competitionEndsLabel.setText("Ends in");
+    } else {
+      competitionEndsLabel.setText("Ended");
+    }
+    endTime.setText(st.toString());
   }
 
   private String getPrizeHeader(int position) {
@@ -341,15 +305,15 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
     }
   }
 
-  private void resetVisibility() {
-    club1.setVisibility(GONE);
-    club2.setVisibility(GONE);
-    club3.setVisibility(GONE);
-  }
-
   @Override
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
+    invalidateTimers();
+  }
+
+  @Override
+  protected void onDetachedFromWindow() {
+    super.onDetachedFromWindow();
     invalidateTimers();
   }
 
@@ -377,7 +341,7 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
     countDownTimerUtils.setTimerWith(left, 1000, new CountDownTimerUtils.TimerUpdateListener() {
       @Override
       public void onFinished() {
-
+        invalidateCompetitionTime();
       }
 
       @Override
@@ -397,7 +361,7 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
     countDownTimerUtils.setTimerWith(left, 1000, new CountDownTimerUtils.TimerUpdateListener() {
       @Override
       public void onFinished() {
-
+        invalidateCompetitionTime();
       }
 
       @Override
@@ -408,12 +372,6 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
       }
     });
     countDownTimerUtils.start();
-  }
-
-  @Override
-  protected void onDetachedFromWindow() {
-    super.onDetachedFromWindow();
-    invalidateTimers();
   }
 
   public void setEntriesLoaded(boolean loaded) {

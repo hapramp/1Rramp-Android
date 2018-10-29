@@ -45,13 +45,13 @@ public class WinnerPlaceholderView extends FrameLayout {
     String msg = "";
     mRank = rank;
     if (rank == 1) {
-      msg = "Select 1st rank";
+      msg = "Assign 1st rank";
     } else if (rank == 2) {
-      msg = "Select 2nd rank";
+      msg = "Assign 2nd rank";
     } else if (rank == 3) {
-      msg = "Select 3rd rank";
+      msg = "Assign 3rd rank";
     } else {
-      msg = "Select " + rank + "th rank";
+      msg = "Assign " + rank + "th rank";
     }
     message.setText(msg);
     message.setOnClickListener(new OnClickListener() {

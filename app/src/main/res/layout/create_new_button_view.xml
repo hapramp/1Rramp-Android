@@ -101,7 +101,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_toRightOf="@+id/competition_icon"
-            android:text="Competition"
+            android:text="Create a contest"
             android:textColor="@color/Black54"
             android:textSize="14sp" />
 

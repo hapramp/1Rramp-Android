@@ -177,9 +177,6 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
     });
   }
 
-  private void hideKeyboardByDefault() {
-    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-  }
   private void attachListeners() {
     nextButton.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -273,6 +270,10 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
 
   }
 
+  private void hideKeyboardByDefault() {
+    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+  }
+
   private void showMetaView(boolean show) {
     if (metaView != null) {
       if (show) {
@@ -346,7 +347,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
   }
 
   private void prepareCompetition() {
-    showPublishingProgressDialog(true, "Creating Competition...");
+    showPublishingProgressDialog(true, "Publishing your cotnest...");
     competitionCreateBody = new CompetitionCreateBody();
     competitionCreateBody.setmImage(bannerImageDownloadUrl);
     competitionCreateBody.setmTitle(competitionTitle.getText().toString().trim());
@@ -483,10 +484,10 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
       RetrofitServiceGenerator.getService().createCompetition(url, body).enqueue(new Callback<CompetitionCreateResponse>() {
         @Override
         public void onResponse(Call<CompetitionCreateResponse> call, Response<CompetitionCreateResponse> response) {
-          showPublishingProgressDialog(false, "");
           if (response.isSuccessful()) {
             fetchFormattedBody(response.body().getCompetitionID());
           } else {
+            showPublishingProgressDialog(false, "");
             ErrorResponse er = ErrorUtils.parseError(response);
             toast(er.getmMessage());
           }
@@ -507,14 +508,13 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
   }
 
   private void fetchFormattedBody(final String comp_id) {
-    showPublishingProgressDialog(true, "Preparing post...");
     RetrofitServiceGenerator.getService().requestContestPostBody(comp_id).enqueue(new Callback<FormattedBodyResponse>() {
       @Override
       public void onResponse(Call<FormattedBodyResponse> call, Response<FormattedBodyResponse> response) {
-        showPublishingProgressDialog(false, "");
         if (response.isSuccessful()) {
           createPostOnSteem(response.body().getmBody(), comp_id);
         } else {
+          showPublishingProgressDialog(false, "");
           onPostCreationFailedOnSteem("Failed to prepare body of post!");
         }
       }
@@ -528,7 +528,6 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
   }
 
   private void createPostOnSteem(String body, String mCompetitionId) {
-    showPublishingProgressDialog(true, "Publishing post for contest...");
     steemPostCreator = new SteemPostCreator();
     steemPostCreator.setSteemPostCreatorCallback(this);
     String postPermlink = PermlinkGenerator.getPermlink("Contest-" + competitionCreateBody.getmTitle() + "-" + mCompetitionId);
@@ -595,7 +594,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
   @Override
   public void onPostCreatedOnSteem() {
     showPublishingProgressDialog(false, "");
-    toast("Contest post created successfully!");
+    toast("Contest created successfully!");
     close();
   }
 

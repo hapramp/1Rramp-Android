@@ -140,6 +140,13 @@ public class ParticipateEditorActivity extends AppCompatActivity implements Edit
   }
 
   private void attachListeners() {
+    submissionInfo.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        openCompetitionDetails();
+      }
+    });
+
     nextButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -171,6 +178,9 @@ public class ParticipateEditorActivity extends AppCompatActivity implements Edit
         showExistAlert();
       }
     });
+  }
+
+  private void openCompetitionDetails() {
 
   }
 
@@ -286,7 +296,7 @@ public class ParticipateEditorActivity extends AppCompatActivity implements Edit
     SteemPostCreator steemPostCreator = new SteemPostCreator();
     steemPostCreator.setSteemPostCreatorCallback(this);
     //add footer
-    body = body + Constants.FOOTER_TEXT;
+    body = body + Constants.COMPETITION_FOOTER;
     steemPostCreator.createPost(body, title, imageLinks, tags, generated_permalink);
   }
 

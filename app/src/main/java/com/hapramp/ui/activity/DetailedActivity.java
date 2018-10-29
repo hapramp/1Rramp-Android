@@ -3,7 +3,6 @@ package com.hapramp.ui.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,7 +39,6 @@ import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.datastore.callbacks.SinglePostCallback;
 import com.hapramp.models.CommentModel;
-import com.hapramp.models.CommunityModel;
 import com.hapramp.notification.FirebaseNotificationStore;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
@@ -58,6 +56,7 @@ import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.RegexUtils;
 import com.hapramp.utils.ShareUtils;
 import com.hapramp.utils.VoteUtils;
+import com.hapramp.views.CommunityStripView;
 import com.hapramp.views.VoterPeekView;
 import com.hapramp.views.comments.CommentsItemView;
 import com.hapramp.views.extraa.StarView;
@@ -89,12 +88,6 @@ public class DetailedActivity extends AppCompatActivity implements
   TextView feedOwnerTitle;
   @BindView(R.id.feed_owner_subtitle)
   TextView feedOwnerSubtitle;
-  @BindView(R.id.club3)
-  TextView club3;
-  @BindView(R.id.club2)
-  TextView club2;
-  @BindView(R.id.club1)
-  TextView club1;
   @BindView(R.id.post_header_container)
   RelativeLayout postHeaderContainer;
   @BindView(R.id.post_title)
@@ -149,6 +142,8 @@ public class DetailedActivity extends AppCompatActivity implements
   VoterPeekView votersPeekView;
   @BindView(R.id.gotoParentBtn)
   TextView gotoParentBtn;
+  @BindView(R.id.community_stripe_view)
+  CommunityStripView communityStripeView;
   private Handler mHandler;
   private Feed post;
   private ProgressDialog progressDialog;
@@ -659,53 +654,23 @@ public class DetailedActivity extends AppCompatActivity implements
   private void setCommunities(List<String> communities) {
     if (communities == null)
       return;
-    List<CommunityModel> cm = new ArrayList<>();
     ArrayList<String> addedCommunity = new ArrayList<>();
     StringBuilder hashtags = new StringBuilder();
     for (int i = 0; i < communities.size(); i++) {
-      String title = CommunityUtils.getCommunityTitleFromName(communities.get(i));
+      String title = CommunityUtils.getCommunityTitleFromTag(communities.get(i));
       String tag = communities.get(i);
       if (Communities.doesCommunityExists(title) && !addedCommunity.contains(title)) {
-        cm.add(new CommunityModel(
-          CommunityUtils.getCommunityColorFromTitle(title), //color
-          title //title ex. art
-        ));
         addedCommunity.add(title);
       } else {
         if (!tag.equals("hapramp")) {
           hashtags.append("<b>  #</b>")
-            .append(CommunityUtils.getCommunityTitleFromName(tag))
+            .append(CommunityUtils.getCommunityTitleFromTag(tag))
             .append("  ");
         }
       }
     }
-    addCommunitiesToLayout(cm);
+    communityStripeView.setCommunities(communities);
     hashtagsView.setText(Html.fromHtml(hashtags.toString()));
-  }
-
-  private void addCommunitiesToLayout(List<CommunityModel> cms) {
-    int size = cms.size();
-    if (size > 0) {
-      club1.setVisibility(VISIBLE);
-      club1.setText(cms.get(0).getmName().toUpperCase());
-      club1.getBackground().setColorFilter(
-        Color.parseColor(cms.get(0).getmColor()),
-        PorterDuff.Mode.SRC_ATOP);
-      if (size > 1) {
-        club2.setVisibility(VISIBLE);
-        club2.setText(cms.get(1).getmName().toUpperCase());
-        club2.getBackground().setColorFilter(
-          Color.parseColor(cms.get(1).getmColor()),
-          PorterDuff.Mode.SRC_ATOP);
-        if (size > 2) {
-          club3.setVisibility(VISIBLE);
-          club3.setText(cms.get(2).getmName().toUpperCase());
-          club3.getBackground().setColorFilter(
-            Color.parseColor(cms.get(2).getmColor()),
-            PorterDuff.Mode.SRC_ATOP);
-        }
-      }
-    }
   }
 
   private void setSteemEarnings(Feed feed) {

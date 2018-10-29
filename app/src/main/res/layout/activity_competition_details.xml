@@ -35,16 +35,15 @@
     </RelativeLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:layout_below="@+id/toolbar_container"
         android:id="@+id/swipe_refresh"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar_container">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/competition_details_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
+            android:layout_height="match_parent" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
@@ -55,6 +54,58 @@
         android:layout_centerInParent="true"
         android:textColor="@color/Black87"
         android:textSize="14sp" />
+
+    <View
+        android:id="@+id/shadow"
+        android:layout_above="@+id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@drawable/bottom_bar_shadow" />
+
+    <RelativeLayout
+        android:id="@+id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/money_bag"
+            android:layout_centerVertical="true"
+            android:src="@drawable/money_bag"
+            android:layout_width="20dp"
+            android:layout_height="20dp" />
+
+        <TextView
+            android:id="@+id/prize_amount"
+            android:text="10 SBD"
+            android:textSize="14sp"
+            android:textColor="@color/Black54"
+            android:layout_toRightOf="@+id/money_bag"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/actionButton"
+            android:clickable="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/filled_btn_bg"
+            android:textColor="@color/white"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:paddingTop="8dp"
+            android:textSize="14sp"
+            android:paddingBottom="8dp"
+            android:layout_alignParentRight="true"
+            android:text="DECLARE WINNER"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
 
     <FrameLayout
         android:layout_width="match_parent"

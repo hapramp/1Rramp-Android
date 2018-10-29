@@ -2,7 +2,6 @@ package com.hapramp.views.competition;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -16,16 +15,13 @@ import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
-import com.hapramp.models.CommunityModel;
 import com.hapramp.models.RankableCompetitionFeedItem;
-import com.hapramp.steem.Communities;
 import com.hapramp.steem.models.Voter;
-import com.hapramp.utils.CommunityUtils;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
+import com.hapramp.views.CommunityStripView;
 import com.hapramp.views.VoterPeekView;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -39,12 +35,6 @@ public class RankableCompetitionFeedItemView extends FrameLayout {
   TextView feedOwnerTitle;
   @BindView(R.id.feed_owner_subtitle)
   TextView feedOwnerSubtitle;
-  @BindView(R.id.club3)
-  TextView club3;
-  @BindView(R.id.club2)
-  TextView club2;
-  @BindView(R.id.club1)
-  TextView club1;
   @BindView(R.id.popupMenuDots)
   ImageView popupMenuDots;
   @BindView(R.id.featured_image_post)
@@ -75,6 +65,8 @@ public class RankableCompetitionFeedItemView extends FrameLayout {
   LinearLayout assignRankBtn;
   @BindView(R.id.ranking_image)
   ImageView rankingImage;
+  @BindView(R.id.community_stripe_view)
+  CommunityStripView communityStripeView;
   private Context mContext;
   private RankableCompetitionItemListener rankableCompetitionItemListener;
   private RankableCompetitionFeedItem mData;
@@ -169,62 +161,13 @@ public class RankableCompetitionFeedItemView extends FrameLayout {
   }
 
   private void setCommunities(List<String> communities) {
-    try {
-      List<CommunityModel> cm = new ArrayList<>();
-      ArrayList<String> addedCommunity = new ArrayList<>();
-      for (int i = 0; i < communities.size(); i++) {
-        String title = CommunityUtils.getCommunityTitleFromName(communities.get(i));
-        if (Communities.doesCommunityExists(title) && !addedCommunity.contains(title)) {
-          cm.add(new CommunityModel(
-            CommunityUtils.getCommunityColorFromTitle(title), //color
-            title //title ex. art
-          ));
-          addedCommunity.add(title);
-        }
-      }
-      addCommunitiesToLayout(cm);
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
+    communityStripeView.setCommunities(communities);
   }
 
   private void updateVotersPeekView(List<Voter> voters) {
     if (votersPeekView != null) {
       votersPeekView.setVoters(voters);
     }
-  }
-
-  private void addCommunitiesToLayout(List<CommunityModel> cms) {
-    int size = cms.size();
-    resetVisibility();
-    if (size > 0) {
-      club1.setVisibility(VISIBLE);
-      club1.setText(cms.get(0).getmName().toUpperCase());
-      club1.getBackground().setColorFilter(
-        Color.parseColor(cms.get(0).getmColor()),
-        PorterDuff.Mode.SRC_ATOP);
-      if (size > 1) {
-        club2.setVisibility(VISIBLE);
-        club2.setText(cms.get(1).getmName().toUpperCase());
-        club2.getBackground().setColorFilter(
-          Color.parseColor(cms.get(1).getmColor()),
-          PorterDuff.Mode.SRC_ATOP);
-        if (size > 2) {
-          club3.setVisibility(VISIBLE);
-          club3.setText(cms.get(2).getmName().toUpperCase());
-          club3.getBackground().setColorFilter(
-            Color.parseColor(cms.get(2).getmColor()),
-            PorterDuff.Mode.SRC_ATOP);
-        }
-      }
-    }
-  }
-
-  private void resetVisibility() {
-    club1.setVisibility(GONE);
-    club2.setVisibility(GONE);
-    club3.setVisibility(GONE);
   }
 
   public void setRankableCompetitionItemListener(RankableCompetitionItemListener rankableCompetitionItemListener) {

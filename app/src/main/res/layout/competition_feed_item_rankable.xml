@@ -30,8 +30,8 @@
         android:text="| 2 days ago"
         android:textColor="@color/Black54" />
 
-    <include
-        layout="@layout/club_tag_view"
+    <com.hapramp.views.CommunityStripView
+        android:id="@+id/community_stripe_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/feed_owner_title"

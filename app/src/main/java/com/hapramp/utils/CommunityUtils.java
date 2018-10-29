@@ -195,7 +195,7 @@ public class CommunityUtils {
     return -1;
   }
 
-  public static String getCommunityTitleFromName(String name) {
+  public static String getCommunityTitleFromTag(String name) {
     return name.replace("hapramp-", "");
   }
 }

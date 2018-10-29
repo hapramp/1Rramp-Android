@@ -88,6 +88,8 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
   ProgressBar loadingProgressBar;
   @BindView(R.id.declared_winners_label)
   TextView declaredWinnersLabel;
+  @BindView(R.id.title)
+  TextView title;
   private RankableCompetitionItemRecyclerAdapter rankableCompetitionItemRecyclerAdapter;
   private BottomSheetBehavior<RelativeLayout> sheetBehavior;
   //rank->Winner
@@ -106,11 +108,10 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_winner_declaration);
     ButterKnife.bind(this);
-    initializeObjects();
     collectExtras();
+    initializeObjects();
     attachListeners();
     fetchEntries();
-    //bindSampleData();
   }
 
   private void initializeObjects() {
@@ -125,6 +126,7 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
     sheetBehavior = BottomSheetBehavior.from(bottomSheet);
     sheetBehavior.setHideable(false);
     shortlistedWinnersMap = new HashMap<>();
+    title.setText(String.format("Winners of: %s", mCompetitionTitle));
     invalidateWinnerList();
   }
 
@@ -189,14 +191,14 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
   }
 
   private void updateServerWithRanks() {
-    showProgressDialog(true, "Updating ranks...");
+    showProgressDialog(true, "Publishing contest winners...");
     RetrofitServiceGenerator.getService().updateServerWithRanks(mCompetitionId, getWinnerRankBody()).enqueue(new Callback<CompetitionEntryResponse>() {
       @Override
       public void onResponse(Call<CompetitionEntryResponse> call, Response<CompetitionEntryResponse> response) {
-        showProgressDialog(false, "");
         if (response.isSuccessful()) {
           onRankUpdatedToServer();
         } else {
+          showProgressDialog(false, "");
           try {
             onRankUpdateFailed(ErrorUtils.parseError(response).getmMessage());
           }
@@ -236,14 +238,13 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
   }
 
   private void announceResult() {
-    showProgressDialog(true, "Announcing results...");
     RetrofitServiceGenerator.getService().announceResults(mCompetitionId).enqueue(new Callback<CompetitionEntryResponse>() {
       @Override
       public void onResponse(Call<CompetitionEntryResponse> call, Response<CompetitionEntryResponse> response) {
-        showProgressDialog(false, "");
         if (response.isSuccessful()) {
           onResultAnnouncedOnServer();
         } else {
+          showProgressDialog(false, "");
           onResultAnnounceFailed("");
         }
       }
@@ -261,14 +262,13 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
   }
 
   private void onResultAnnouncedOnServer() {
-    showProgressDialog(true, "Preparing your blog...");
     RetrofitServiceGenerator.getService().requestWinnersPostBody(mCompetitionId).enqueue(new Callback<FormattedBodyResponse>() {
       @Override
       public void onResponse(Call<FormattedBodyResponse> call, Response<FormattedBodyResponse> response) {
-        showProgressDialog(false, "");
         if (response.isSuccessful()) {
           postWinnersBlogOnSteem(response.body().getmBody());
         } else {
+          showProgressDialog(false, "");
           onFailedToFetchBody();
         }
       }
@@ -291,7 +291,6 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
     List<String> images = new ArrayList<>();
     images.add(mCompetitionImage);
     tags = PostHashTagPreprocessor.processHashtags(tags);
-    showProgressDialog(true, "Publishing Winners blog...");
     steemPostCreator.createPost(body, "", images, tags, postPermlink);
   }
 
@@ -306,8 +305,8 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
   private void showAlertDialogForResultPublish() {
     new AlertDialog.Builder(this)
       .setTitle("Publish Results")
-      .setMessage("Are you sure ? ")
-      .setPositiveButton("Yes, Publish", new DialogInterface.OnClickListener() {
+      .setMessage("This will create a results announcement blog from your account.")
+      .setPositiveButton("Publish", new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
           updateServerWithRanks();

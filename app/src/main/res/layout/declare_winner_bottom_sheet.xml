@@ -71,7 +71,7 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:paddingTop="8dp"
-                android:text="PREPARE RESULT"
+                android:text="PUBLISH RESULT"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
 

@@ -36,8 +36,8 @@
             android:text="| 2 days ago"
             android:textColor="@color/Black54" />
 
-        <include
-            layout="@layout/club_tag_view"
+        <com.hapramp.views.CommunityStripView
+            android:id="@+id/community_stripe_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/feed_owner_title"
@@ -115,14 +115,13 @@
                     android:id="@+id/ranking_image"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
-                    android:src="@drawable/ranking" />
+                    android:src="@drawable/money_bag" />
 
                 <TextView
-                    android:id="@+id/item_rank"
+                    android:id="@+id/prize_won"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="6dp"
-                    android:text="Assign Rank"
                     android:textColor="@color/Black54"
                     android:textSize="14sp"
                     android:textStyle="bold" />

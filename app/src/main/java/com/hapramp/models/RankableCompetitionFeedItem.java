@@ -14,6 +14,7 @@ public class RankableCompetitionFeedItem {
   private ArrayList<String> tags;
   private String featuredImageLink;
   private String title;
+  private String prize;
   private String description;
   private ArrayList<Voter> voters;
   private int childrens;

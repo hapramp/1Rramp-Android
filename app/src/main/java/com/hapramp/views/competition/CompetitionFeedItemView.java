@@ -3,11 +3,10 @@ package com.hapramp.views.competition;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -26,16 +25,15 @@ import com.hapramp.models.CommunityModel;
 import com.hapramp.models.CompetitionModel;
 import com.hapramp.models.DeleteCompetitionResponse;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.Communities;
 import com.hapramp.ui.activity.CompetitionDetailsActivity;
 import com.hapramp.ui.activity.ParticipateEditorActivity;
 import com.hapramp.ui.activity.WinnerDeclarationActivity;
 import com.hapramp.ui.activity.WinnersFeedListActivity;
-import com.hapramp.utils.CommunityUtils;
 import com.hapramp.utils.CountDownTimerUtils;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.PrizeMoneyFilter;
+import com.hapramp.views.CommunityStripView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,12 +59,6 @@ public class CompetitionFeedItemView extends FrameLayout {
   TextView feedOwnerTitle;
   @BindView(R.id.feed_owner_subtitle)
   TextView feedOwnerSubtitle;
-  @BindView(R.id.club3)
-  TextView club3;
-  @BindView(R.id.club2)
-  TextView club2;
-  @BindView(R.id.club1)
-  TextView club1;
   @BindView(R.id.popupMenuDots)
   ImageView popupMenuDots;
   @BindView(R.id.featured_image_post)
@@ -85,6 +77,8 @@ public class CompetitionFeedItemView extends FrameLayout {
   TextView startsIn;
   @BindView(R.id.participantsCount)
   TextView participantsCount;
+  @BindView(R.id.community_stripe_view)
+  CommunityStripView communityStripeView;
   private Context mContext;
   private CompetitionModel mCompetition;
   private boolean mShowDeclareResultButton;
@@ -118,6 +112,12 @@ public class CompetitionFeedItemView extends FrameLayout {
       }
     });
 
+    competitionTitle.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        navigateToCompetitionDetailsPage();
+      }
+    });
     popupMenuDots.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -224,20 +224,18 @@ public class CompetitionFeedItemView extends FrameLayout {
   }
 
   private void setCommunities(List<CommunityModel> communities) {
-    List<CommunityModel> cm = new ArrayList<>();
-    ArrayList<String> addedCommunity = new ArrayList<>();
-    for (int i = 0; i < communities.size(); i++) {
-      String title = CommunityUtils.getCommunityTitleFromName(communities.get(i).getmName());
-      if (Communities.doesCommunityExists(title) && !addedCommunity.contains(title)) {
-        cm.add(new CommunityModel(
-          CommunityUtils.getCommunityColorFromTitle(title), //color
-          title //title ex. art
-        ));
-        addedCommunity.add(title);
+    try {
+      List<String> cm = new ArrayList<>();
+      for (int i = 0; i < communities.size(); i++) {
+        cm.add(communities.get(i).getmTag());
       }
+      communityStripeView.setCommunities(cm);
     }
-    addCommunitiesToLayout(cm);
+    catch (Exception e) {
+      e.printStackTrace();
+    }
   }
+
 
   private String getStartedTime() {
     long now = System.currentTimeMillis();
@@ -274,32 +272,6 @@ public class CompetitionFeedItemView extends FrameLayout {
     }
   }
 
-  private void addCommunitiesToLayout(List<CommunityModel> cms) {
-    int size = cms.size();
-    resetVisibility();
-    if (size > 0) {
-      club1.setVisibility(VISIBLE);
-      club1.setText(cms.get(0).getmName().toUpperCase());
-      club1.getBackground().setColorFilter(
-        Color.parseColor(cms.get(0).getmColor()),
-        PorterDuff.Mode.SRC_ATOP);
-      if (size > 1) {
-        club2.setVisibility(VISIBLE);
-        club2.setText(cms.get(1).getmName().toUpperCase());
-        club2.getBackground().setColorFilter(
-          Color.parseColor(cms.get(1).getmColor()),
-          PorterDuff.Mode.SRC_ATOP);
-        if (size > 2) {
-          club3.setVisibility(VISIBLE);
-          club3.setText(cms.get(2).getmName().toUpperCase());
-          club3.getBackground().setColorFilter(
-            Color.parseColor(cms.get(2).getmColor()),
-            PorterDuff.Mode.SRC_ATOP);
-        }
-      }
-    }
-  }
-
   /**
    * sets action button when competition is not started.
    */
@@ -308,7 +280,7 @@ public class CompetitionFeedItemView extends FrameLayout {
     if (actionButton != null) {
       actionButton.setEnabled(false);
       actionButton.setClickable(false);
-      actionButton.setText("Starts " + startsIn);
+      actionButton.setText("STARTS " + startsIn);
       setStartsInTimer();
     }
   }
@@ -322,11 +294,11 @@ public class CompetitionFeedItemView extends FrameLayout {
     if (isAdmin) {
       actionButton.setEnabled(false);
       actionButton.setClickable(false);
-      actionButton.setText("Ends " + endsAt);
+      actionButton.setText("ENDS " + endsAt);
     } else {
       actionButton.setEnabled(true);
       actionButton.setClickable(true);
-      actionButton.setText("Participate");
+      actionButton.setText("SUBMIT ENTRY");
       actionButton.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -353,7 +325,7 @@ public class CompetitionFeedItemView extends FrameLayout {
     if (isAdmin) {
       actionButton.setEnabled(true);
       actionButton.setClickable(true);
-      actionButton.setText("Declare Results");
+      actionButton.setText("DECLARE WINNER");
       actionButton.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -364,7 +336,7 @@ public class CompetitionFeedItemView extends FrameLayout {
       endedAt = MomentsUtils.getFormattedTime(endedAt);
       actionButton.setEnabled(false);
       actionButton.setClickable(false);
-      actionButton.setText("Closed " + endedAt);
+      actionButton.setText("ENDED " + endedAt);
     }
   }
 
@@ -374,19 +346,13 @@ public class CompetitionFeedItemView extends FrameLayout {
   private void setWhenWinnerAnnounced() {
     actionButton.setEnabled(true);
     actionButton.setClickable(true);
-    actionButton.setText("View Winners");
+    actionButton.setText("VIEW WINNER");
     actionButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View view) {
         openWinnersList();
       }
     });
-  }
-
-  private void resetVisibility() {
-    club1.setVisibility(GONE);
-    club2.setVisibility(GONE);
-    club3.setVisibility(GONE);
   }
 
   private void setStartsInTimer() {
@@ -396,13 +362,13 @@ public class CompetitionFeedItemView extends FrameLayout {
     countDownTimerUtils.setTimerWith(left, 1000, new CountDownTimerUtils.TimerUpdateListener() {
       @Override
       public void onFinished() {
-          invalidateActionButton();
+        invalidateActionButton();
       }
 
       @Override
       public void onRunningTimeUpdate(String updateTime) {
         if (actionButton != null) {
-          actionButton.setText("Starts In " + updateTime);
+          actionButton.setText("STARTS IN " + updateTime);
         }
       }
     });
@@ -415,6 +381,7 @@ public class CompetitionFeedItemView extends FrameLayout {
     intent.putExtra(EXTRA_COMPETITION_TITLE, mCompetition.getmTitle());
     intent.putExtra(EXTRA_COMPETITION_HASHTAG, mCompetition.getmParticipationHashtag());
     mContext.startActivity(intent);
+    ((AppCompatActivity) mContext).overridePendingTransition(R.anim.slide_up_enter, R.anim.slide_up_exit);
   }
 
   private void openResultDeclarationPage() {
