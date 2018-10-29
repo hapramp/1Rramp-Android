@@ -264,7 +264,9 @@ public class JSONParser {
       feed.setActiveVoters(activeVoters);
       feed.setAuthorReputation(autorReputation);
       //optional
-      feed.setRank(rootObject.optInt("rank",0));
+      feed.setRank(rootObject.optInt("rank", 0));
+      //optional
+      feed.setPrize(rootObject.optString("prize", "Prize"));
     }
     catch (JSONException e) {
       Log.e("JsonParserException", e.toString());

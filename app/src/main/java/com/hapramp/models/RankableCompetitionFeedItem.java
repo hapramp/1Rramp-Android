@@ -28,6 +28,7 @@ public class RankableCompetitionFeedItem {
     this.tags = feed.getTags();
     this.featuredImageLink = feed.getFeaturedImageUrl();
     this.title = feed.getTitle();
+    this.prize = feed.getPrize();
     this.description = feed.getCleanedBody();
     this.voters = feed.getVoters();
     this.childrens = feed.getChildren();
@@ -52,6 +53,14 @@ public class RankableCompetitionFeedItem {
 
   public void setPermlink(String permlink) {
     this.permlink = permlink;
+  }
+
+  public String getPrize() {
+    return prize;
+  }
+
+  public void setPrize(String prize) {
+    this.prize = prize;
   }
 
   public String getItemId() {

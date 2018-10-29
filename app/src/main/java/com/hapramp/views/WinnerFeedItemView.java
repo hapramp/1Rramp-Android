@@ -2,7 +2,6 @@ package com.hapramp.views;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -139,6 +138,7 @@ public class WinnerFeedItemView extends FrameLayout {
     }
     postTitle.setText(data.getTitle());
     commentCount.setText(data.getChildrens() + "");
+    prizeWon.setText(data.getPrize());
   }
 
   private void setSteemEarnings(RankableCompetitionFeedItem feed) {
