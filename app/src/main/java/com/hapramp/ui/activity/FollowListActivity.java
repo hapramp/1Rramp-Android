@@ -11,12 +11,12 @@ import android.widget.RelativeLayout;
 import com.hapramp.R;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.ui.adapters.FollowListPagerAdapter;
-import com.hapramp.utils.FontManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FollowListActivity extends AppCompatActivity {
+  public static final String EXTRA_KEY_TAB_INDEX = "tab.index";
   public static final String EXTRA_KEY_USERNAME = "username";
   public static final String EXTRA_KEY_FOLLOWING = "followin";
   public static final String EXTRA_KEY_FOLLOWERS = "followers";
@@ -32,6 +32,7 @@ public class FollowListActivity extends AppCompatActivity {
   private String username;
   private int followers;
   private int following;
+  private int tabIndex;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,7 @@ public class FollowListActivity extends AppCompatActivity {
     if (getIntent() != null) {
       username = getIntent().getExtras().getString(EXTRA_KEY_USERNAME,
         HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
+      tabIndex = getIntent().getExtras().getInt(EXTRA_KEY_TAB_INDEX, 0);
       followers = getIntent().getExtras().getInt(EXTRA_KEY_FOLLOWERS, 0);
       following = getIntent().getExtras().getInt(EXTRA_KEY_FOLLOWING, 0);
     }
@@ -50,6 +52,7 @@ public class FollowListActivity extends AppCompatActivity {
   private void initView() {
     setupViewPager(viewpager);
     tabs.setupWithViewPager(viewpager);
+    viewpager.setCurrentItem(tabIndex);
     tabs.setSelectedTabIndicatorHeight((int) (2 * getResources().getDisplayMetrics().density));
     backBtn.setOnClickListener(new View.OnClickListener() {
       @Override

@@ -55,6 +55,7 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.hapramp.ui.activity.FollowListActivity.EXTRA_KEY_FOLLOWERS;
 import static com.hapramp.ui.activity.FollowListActivity.EXTRA_KEY_FOLLOWING;
+import static com.hapramp.ui.activity.FollowListActivity.EXTRA_KEY_TAB_INDEX;
 import static com.hapramp.ui.activity.FollowListActivity.EXTRA_KEY_USERNAME;
 
 public class UserInfoFragment extends Fragment implements FollowInfoCallback, UserProfileCallback, CompleteFollowingHelper.FollowingsSyncCompleteListener {
@@ -175,14 +176,14 @@ public class UserInfoFragment extends Fragment implements FollowInfoCallback, Us
     followersCountTv.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        navigateToFollowListPage();
+        navigateToFollowersListPage();
       }
     });
 
     followingsCountTv.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        navigateToFollowListPage();
+        navigateToFollowingListPage();
       }
     });
   }
@@ -242,10 +243,22 @@ public class UserInfoFragment extends Fragment implements FollowInfoCallback, Us
     }.start();
   }
 
-  private void navigateToFollowListPage() {
+  private void navigateToFollowingListPage() {
     if (followInfoAvailable) {
       Intent intent = new Intent(mContext, FollowListActivity.class);
       intent.putExtra(EXTRA_KEY_USERNAME, mUsername);
+      intent.putExtra(EXTRA_KEY_TAB_INDEX, 1);
+      intent.putExtra(EXTRA_KEY_FOLLOWING, followingCount);
+      intent.putExtra(EXTRA_KEY_FOLLOWERS, followersCount);
+      mContext.startActivity(intent);
+    }
+  }
+
+  private void navigateToFollowersListPage() {
+    if (followInfoAvailable) {
+      Intent intent = new Intent(mContext, FollowListActivity.class);
+      intent.putExtra(EXTRA_KEY_USERNAME, mUsername);
+      intent.putExtra(EXTRA_KEY_TAB_INDEX, 0);
       intent.putExtra(EXTRA_KEY_FOLLOWING, followingCount);
       intent.putExtra(EXTRA_KEY_FOLLOWERS, followersCount);
       mContext.startActivity(intent);

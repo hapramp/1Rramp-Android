@@ -63,6 +63,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity implements CreateNewButtonView.ItemClickListener {
+  public static final String EXTRA_TAB_INDEX = "home.activity.tabindex";
   private final int BOTTOM_MENU_HOME = 7;
   private final int BOTTOM_MENU_COMP = 8;
   private final int BOTTOM_MENU_PROFILE = 9;
@@ -123,7 +124,7 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
     initObjects();
     syncBasicInfo();
     BackstackManager.pushItem(FRAGMENT_HOME);
-    transactFragment(FRAGMENT_HOME);
+    collectExtras();
     saveDeviceWidth();
     attachListeners();
     observeConnection();
@@ -221,6 +222,31 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
 
   private void syncUserFollowings() {
     FollowingsSyncUtils.syncFollowings(this);
+  }
+
+  private void collectExtras() {
+    Intent receiveIntent = getIntent();
+    if (receiveIntent != null) {
+      int tabNumber = receiveIntent.getIntExtra(EXTRA_TAB_INDEX, 0);
+      transactFragment(getFragmentAt(tabNumber));
+    } else {
+      transactFragment(getFragmentAt(0));
+    }
+  }
+
+  private int getFragmentAt(int tabNumber) {
+    switch (tabNumber) {
+      case 0:
+        return FRAGMENT_HOME;
+      case 1:
+        return FRAGMENT_COMPETITIONS;
+      case 2:
+        return FRAGMENT_PROFILE;
+      case 3:
+        return FRAGMENT_SETTINGS;
+      default:
+        return FRAGMENT_HOME;
+    }
   }
 
   private void logout() {
