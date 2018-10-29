@@ -27,11 +27,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.analytics.EventReporter;
+import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.JSONParser;
+import com.hapramp.models.AppServerUserModel;
 import com.hapramp.notification.FirebaseNotificationStore;
 import com.hapramp.notification.NotificationSubscriber;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.models.User;
 import com.hapramp.steemconnect.SteemConnectUtils;
 import com.hapramp.steemconnect4j.SteemConnect;
@@ -45,6 +48,7 @@ import com.hapramp.utils.AppUpdateChecker;
 import com.hapramp.utils.BackstackManager;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FollowingsSyncUtils;
+import com.hapramp.utils.ResponseCodes;
 import com.hapramp.viewmodel.common.ConnectivityViewModel;
 import com.hapramp.views.AppUpdateAvailableDialog;
 import com.hapramp.views.extraa.CreateNewButtonView;
@@ -54,8 +58,11 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class HomeActivity extends AppCompatActivity implements CreateNewButtonView.ItemClickListener{
+public class HomeActivity extends AppCompatActivity implements CreateNewButtonView.ItemClickListener {
   private final int BOTTOM_MENU_HOME = 7;
   private final int BOTTOM_MENU_COMP = 8;
   private final int BOTTOM_MENU_PROFILE = 9;
@@ -163,10 +170,33 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
     if (HaprampPreferenceManager.getInstance().getCurrentUserInfoAsJson().length() == 0) {
       showInterruptedProgressBar("Fetching profile info...");
     }
-    checkTokenValidity();
+    checkSteemconnectTokenValidity();
+    fetchAppUser();
     DataStore.performAllCommunitySync();
     DataStore.requestSyncLastPostCreationTime();
     syncUserFollowings();
+  }
+
+  private void fetchAppUser() {
+    RetrofitServiceGenerator.getService().fetchAppUser().enqueue(new Callback<AppServerUserModel>() {
+      @Override
+      public void onResponse(Call<AppServerUserModel> call, Response<AppServerUserModel> response) {
+        if (response.isSuccessful()) {
+          HaprampPreferenceManager.getInstance()
+            .saveUserSelectedCommunitiesAsJson(new Gson().toJson(new CommunityListWrapper(response.body().getCommunityList())));
+        } else if (response.code() == ResponseCodes.UNAUTHORIZED) {
+          Toast.makeText(HomeActivity.this, "Your token expired!", Toast.LENGTH_LONG).show();
+          logout();
+        } else if (response.code() == ResponseCodes.INTERNAL_SERVER_ERROR) {
+          Toast.makeText(HomeActivity.this, "Something went wrong at server!", Toast.LENGTH_LONG).show();
+        }
+      }
+
+      @Override
+      public void onFailure(Call<AppServerUserModel> call, Throwable t) {
+
+      }
+    });
   }
 
   private void observeConnection() {
@@ -443,7 +473,7 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
     }
   }
 
-  private void checkTokenValidity() {
+  private void checkSteemconnectTokenValidity() {
     final SteemConnect steemConnect = SteemConnectUtils
       .getSteemConnectInstance(HaprampPreferenceManager.getInstance().getSC2AccessToken());
     final Handler mHandler = new Handler();

@@ -46,7 +46,7 @@ public class InterestItemView extends FrameLayout {
 
   public void setSelection(boolean selected) {
     if (selected) {
-      interestBackground.setBackgroundResource(CommunityUtils.getFilledBackground(mCommunity.getCommunityId()));
+      interestBackground.setBackgroundResource(CommunityUtils.getFilledBackground(mCommunity.getmTag()));
     } else {
       interestBackground.setBackgroundResource(CommunityUtils.getBorder(mCommunity.getCommunityId()));
     }
@@ -58,7 +58,7 @@ public class InterestItemView extends FrameLayout {
 
   public void setInterestDetails(CommunityModel communityModel) {
     this.mCommunity = communityModel;
-    setCommunityImage(CommunityUtils.getCommunityIcon(communityModel.getCommunityId()));
+    setCommunityImage(CommunityUtils.getCommunityIcon(communityModel.getmTag()));
     setInterestTitle(mCommunity.getmName());
   }
 

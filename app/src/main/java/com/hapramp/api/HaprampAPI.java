@@ -1,5 +1,6 @@
 package com.hapramp.api;
 
+import com.hapramp.models.AppServerUserModel;
 import com.hapramp.models.CommunitySelectionServerUpdateBody;
 import com.hapramp.models.CompetitionCreateResponse;
 import com.hapramp.models.CompetitionEntryConfirmationBody;
@@ -57,6 +58,9 @@ public interface HaprampAPI {
 
   @DELETE("competitions/{competition_id}")
   Call<DeleteCompetitionResponse> deleteCompetition(@Path("competition_id") String comp_id);
+
+  @GET("users/user")
+  Call<AppServerUserModel> fetchAppUser();
 
   @Multipart
   @POST("upload")
