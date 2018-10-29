@@ -584,6 +584,12 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
   }
 
   @Override
+  public void onBackPressed() {
+    finish();
+    overridePendingTransition(R.anim.slide_down_enter, R.anim.slide_down_exit);
+  }
+
+  @Override
   public void onSelectJudge() {
     Intent i = new Intent(this, JudgeSelectionActivity.class);
     i.putParcelableArrayListExtra(EXTRA_SELECTED_JUDGES, selectedJudges);

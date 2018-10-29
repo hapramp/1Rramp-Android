@@ -185,7 +185,6 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
           HaprampPreferenceManager.getInstance()
             .saveUserSelectedCommunitiesAsJson(new Gson().toJson(new CommunityListWrapper(response.body().getCommunityList())));
         } else if (response.code() == ResponseCodes.UNAUTHORIZED) {
-          Toast.makeText(HomeActivity.this, "Your token expired!", Toast.LENGTH_LONG).show();
           logout();
         } else if (response.code() == ResponseCodes.INTERNAL_SERVER_ERROR) {
           Toast.makeText(HomeActivity.this, "Something went wrong at server!", Toast.LENGTH_LONG).show();
@@ -225,7 +224,6 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
   }
 
   private void logout() {
-    Toast.makeText(this, "Token Expired! Please login again.", Toast.LENGTH_LONG).show();
     HaprampPreferenceManager.getInstance().clearPreferences();
     Intent intent = new Intent(this, LoginActivity.class);
     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

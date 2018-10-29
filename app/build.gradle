@@ -37,7 +37,7 @@ android {
         applicationId "com.hapramp"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 70
+        versionCode 72
         versionName "0.0.25"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
@@ -82,7 +82,7 @@ dependencies {
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
     implementation 'com.github.hapramp:steemconnect4j:v1.3.2'
     implementation 'com.github.bxute:CryptoCoinView:v0.6'
-    implementation 'com.github.bxute:MarkDEditor:v0.13'
+    implementation 'com.github.bxute:MarkDEditor:v0.14'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':lib')
 }
