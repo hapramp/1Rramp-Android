@@ -16,6 +16,7 @@ public class ViewItemDecoration extends RecyclerView.ItemDecoration {
   private Drawable mDivider;
   private boolean wantTopOffset = true;
   private int topOffset;
+  private int mSkipPositions = -1;
 
   public ViewItemDecoration(Drawable drawable) {
     this.mDivider = drawable;
@@ -28,57 +29,44 @@ public class ViewItemDecoration extends RecyclerView.ItemDecoration {
 
   @Override
   public void onDraw(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
-
     int dividerLeft = parent.getPaddingLeft();
     int dividerRight = parent.getWidth() - parent.getPaddingRight();
-
     int childCount = parent.getChildCount();
-
     for (int i = 0; i < childCount - 1; i++) {
-
       View child = parent.getChildAt(i);
-
       RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
-
       int dividerTop = child.getBottom() + params.bottomMargin;
       int dividerBottom = dividerTop + mDivider.getIntrinsicHeight();
-
       mDivider.setBounds(dividerLeft, dividerTop, dividerRight, dividerBottom);
       mDivider.draw(canvas);
-
     }
-
   }
 
   @Override
   public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-
-    if (parent.getChildAdapterPosition(view) == 0 && wantTopOffset) {
-
+    int viewPosition = parent.getChildAdapterPosition(view);
+    if (viewPosition == mSkipPositions && mSkipPositions != -1) {
+      return;
+    }
+    if (viewPosition == 0 && wantTopOffset) {
       outRect.top = PixelUtils.dpToPx(104);
       outRect.bottom = mDivider.getIntrinsicHeight();
-
     } else {
       outRect.bottom = mDivider.getIntrinsicHeight();
     }
-
-
     if (isLastChild(view, parent) && parent.getAdapter().getItemCount() > 1) {
       outRect.bottom = PixelUtils.dpToPx(56);
     }
-
-    // outRect.top = mDivider.getIntrinsicHeight();
-
   }
 
   private boolean isLastChild(View v, RecyclerView parent) {
-
-
     return (parent.getAdapter().getItemCount() - 1) == parent.getChildAdapterPosition(v);
-
   }
 
   public void setTopOffset(int topOffset) {
+  }
 
+  public void setSkipPostitions(int postition) {
+    this.mSkipPositions = postition;
   }
 }

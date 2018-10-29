@@ -153,6 +153,7 @@ public class CompetitionDetailsActivity extends AppCompatActivity implements Com
   private void setAdapter() {
     Drawable drawable = ContextCompat.getDrawable(this, R.drawable.post_item_divider_view);
     ViewItemDecoration viewItemDecoration = new ViewItemDecoration(drawable);
+    viewItemDecoration.setSkipPostitions(0);
     viewItemDecoration.setWantTopOffset(false, 0);
     competitionDetailsList.addItemDecoration(viewItemDecoration);
     competitionDetailsRecyclerAdapter = new CompetitionDetailsRecyclerAdapter(this, headerData);
@@ -245,6 +246,7 @@ public class CompetitionDetailsActivity extends AppCompatActivity implements Com
     intent.putExtra(EXTRA_COMPETITION_IMAGE_URL, headerData.getmImage());
     intent.putParcelableArrayListExtra(EXTRA_COMPETITION_TAGS, headerData.getCommunities());
     startActivity(intent);
+    finish();
   }
 
   private void openWinnersList() {
@@ -260,6 +262,7 @@ public class CompetitionDetailsActivity extends AppCompatActivity implements Com
       if (swipeRefresh.isRefreshing()) {
         swipeRefresh.setRefreshing(false);
       }
+      invalidateActionButton();
       competitionDetailsRecyclerAdapter.addSubmissions(entries);
     }
     catch (Exception e) {
@@ -309,6 +312,7 @@ public class CompetitionDetailsActivity extends AppCompatActivity implements Com
   protected void onResume() {
     super.onResume();
     invalidateTimers();
+    fetchEntries();
   }
 
   private void setStartsInTimer() {

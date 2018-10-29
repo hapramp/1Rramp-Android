@@ -139,6 +139,7 @@ public class WinnerFeedItemView extends FrameLayout {
     postTitle.setText(data.getTitle());
     commentCount.setText(data.getChildrens() + "");
     prizeWon.setText(data.getPrize());
+    rankTip.setText(String.valueOf(data.getRank()));
   }
 
   private void setSteemEarnings(RankableCompetitionFeedItem feed) {

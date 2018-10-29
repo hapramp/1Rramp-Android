@@ -298,11 +298,11 @@ public class CompetitionFeedItemView extends FrameLayout {
     } else {
       actionButton.setEnabled(true);
       actionButton.setClickable(true);
-      actionButton.setText("SUBMIT ENTRY");
+      actionButton.setText("PARTICIPATE");
       actionButton.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View view) {
-          openSubmissionPage();
+          navigateToCompetitionDetailsPage();
         }
       });
     }

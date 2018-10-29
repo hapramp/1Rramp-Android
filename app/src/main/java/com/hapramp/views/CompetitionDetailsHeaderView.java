@@ -246,6 +246,7 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
 
   private void addPrizes() {
     int len = mCompetition.getPrizes().size();
+    prizeDescriptionContainer.removeAllViews();
     String header = "";
     for (int i = 0; i < len; i++) {
       PrizeRowItemView prizeRowItemView = new PrizeRowItemView(mContext);
