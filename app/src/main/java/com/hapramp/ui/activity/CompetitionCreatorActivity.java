@@ -347,7 +347,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
   }
 
   private void prepareCompetition() {
-    showPublishingProgressDialog(true, "Publishing your cotnest...");
+    showPublishingProgressDialog(true, "Publishing your contest...");
     competitionCreateBody = new CompetitionCreateBody();
     competitionCreateBody.setmImage(bannerImageDownloadUrl);
     competitionCreateBody.setmTitle(competitionTitle.getText().toString().trim());

@@ -1,9 +1,13 @@
 package com.hapramp.ui.fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +51,7 @@ public class UserCreditsFragment extends Fragment implements ResourceCreditCallb
   @BindView(R.id.vote_value_label)
   TextView voteValueLabel;
   @BindView(R.id.vote_value)
-  TextView voteValue;
+  TextView voteValueTv;
   private String username;
   private Unbinder unbinder;
   private Context mContext;
@@ -142,11 +146,18 @@ public class UserCreditsFragment extends Fragment implements ResourceCreditCallb
         "99+" : resourceCreditModel.getTransferAllowed()));
       resourceCreditProgress.setProgressPercent(resourceCreditModel.getResourceCreditPercentage());
       votingPowerProgress.setProgressPercent(resourceCreditModel.getVotingPercentage());
-      voteValue.setText(String.format(Locale.US, "$ %.3f", resourceCreditModel.getVoteValue()));
+      formatAndSetVoteValue(resourceCreditModel.getVoteValue());
     }
     catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  private void formatAndSetVoteValue(double voteValue) {
+    SpannableString vv = new SpannableString(String.format(Locale.US, "$ %.3f", voteValue));
+    vv.setSpan(new RelativeSizeSpan(.5f), 0, 1, 0);
+    vv.setSpan(new ForegroundColorSpan(Color.parseColor("#61000000")), 0, 1, 0);// set color
+    voteValueTv.setText(vv);
   }
 
   @Override

@@ -70,7 +70,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/vote_value_label"
-                android:text="$ 0"
                 android:textColor="#B2000000"
                 android:textSize="36sp" />
 
@@ -79,7 +78,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/vote_value"
-                android:layout_marginTop="48dp"
+                android:layout_marginTop="24dp"
                 android:text="Enough Credits for"
                 android:textColor="@color/colorPrimary"
                 android:textSize="14sp"
@@ -89,7 +88,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
                 android:layout_below="@+id/credit_available_label"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:orientation="horizontal"
                 android:weightSum="3">
 
