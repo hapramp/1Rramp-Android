@@ -594,7 +594,6 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
     Intent i = new Intent(this, JudgeSelectionActivity.class);
     i.putParcelableArrayListExtra(EXTRA_SELECTED_JUDGES, selectedJudges);
     startActivityForResult(i, REQUEST_JUDGE_SELECTOR);
-    overridePendingTransition(R.anim.slide_up_enter, R.anim.slide_up_exit);
   }
 
   @Override

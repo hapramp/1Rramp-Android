@@ -151,7 +151,6 @@
 
     <TextView
         android:clickable="true"
-        android:layout_alignParentRight="true"
         android:id="@+id/actionButton"
         android:layout_below="@+id/post_snippet"
         android:text="PARTICIPATE"

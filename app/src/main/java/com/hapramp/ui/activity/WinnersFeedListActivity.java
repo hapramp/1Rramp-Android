@@ -1,14 +1,13 @@
 package com.hapramp.ui.activity;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -19,8 +18,6 @@ import com.hapramp.datastore.callbacks.CompetitionEntriesFetchCallback;
 import com.hapramp.models.RankableCompetitionFeedItem;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.ui.adapters.WinnersFeedListAdapter;
-import com.hapramp.utils.Constants;
-import com.hapramp.utils.ViewItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +38,10 @@ public class WinnersFeedListActivity extends AppCompatActivity implements Compet
   TextView messagePanel;
   @BindView(R.id.loading_progress_bar)
   ProgressBar loadingProgressBar;
-  @BindView(R.id.title)
-  TextView title;
+  @BindView(R.id.competition_title)
+  TextView competitionTitle;
+  @BindView(R.id.competition_title_container)
+  LinearLayout competitionTitleContainer;
   private WinnersFeedListAdapter winnersFeedListAdapter;
   private DataStore dataStore;
   private String mCompetitionId;
@@ -74,12 +73,8 @@ public class WinnersFeedListActivity extends AppCompatActivity implements Compet
     dataStore = new DataStore();
     winnersFeedListAdapter = new WinnersFeedListAdapter(this);
     winnersList.setLayoutManager(new LinearLayoutManager(this));
-    Drawable drawable = ContextCompat.getDrawable(this, R.drawable.post_item_divider_view);
-    ViewItemDecoration viewItemDecoration = new ViewItemDecoration(drawable);
-    viewItemDecoration.setWantTopOffset(false, 0);
-    winnersList.addItemDecoration(viewItemDecoration);
     winnersList.setAdapter(winnersFeedListAdapter);
-    title.setText("Winners List For : " + mCompetitionTitle);
+    competitionTitle.setText("Winners List For : " + mCompetitionTitle);
   }
 
   private void attachListeners() {

@@ -216,8 +216,10 @@ public class CompetitionFeedItemView extends FrameLayout {
     setCommunities(competition.getCommunities());
     ImageHandler.load(mContext, featuredImagePost, competition.getmImage());
     competitionTitle.setText(competition.getmTitle());
-    startsIn.setText(String.format(getStartedTime()));
-    participantsCount.setText(String.format(Locale.US, "%d Participants", mCompetition.getmParticipantCount()));
+    setStartedTime();
+    participantsCount.setText(String.format(Locale.US, "%d%s",
+      mCompetition.getmParticipantCount(),
+      mCompetition.getmParticipantCount() > 1 ? " Entries" : " Entry"));
     postSnippet.setText(competition.getmDescription());
     totalPrize.setText(PrizeMoneyFilter.getTotalPrize(competition.getPrizes()));
     invalidateActionButton();
@@ -234,19 +236,6 @@ public class CompetitionFeedItemView extends FrameLayout {
     catch (Exception e) {
       e.printStackTrace();
     }
-  }
-
-
-  private String getStartedTime() {
-    long now = System.currentTimeMillis();
-    long startsAt = MomentsUtils.getMillisFromTime(mCompetition.getmStartsAt());
-    StringBuilder st = new StringBuilder();
-    if (startsAt > now) {
-      st.append("Starts ").append(MomentsUtils.getFormattedTime(mCompetition.getmStartsAt()));
-    } else {
-      st.append("Started ").append(MomentsUtils.getFormattedTime(mCompetition.getmStartsAt()));
-    }
-    return st.toString();
   }
 
   private void invalidateActionButton() {
@@ -280,7 +269,7 @@ public class CompetitionFeedItemView extends FrameLayout {
     if (actionButton != null) {
       actionButton.setEnabled(false);
       actionButton.setClickable(false);
-      actionButton.setText("STARTS " + startsIn);
+      actionButton.setText("Starts " + startsIn);
       setStartsInTimer();
     }
   }
@@ -294,11 +283,12 @@ public class CompetitionFeedItemView extends FrameLayout {
     if (isAdmin) {
       actionButton.setEnabled(false);
       actionButton.setClickable(false);
-      actionButton.setText("ENDS " + endsAt);
+      actionButton.setText("Ends " + endsAt);
+      setEndsInTimer();
     } else {
       actionButton.setEnabled(true);
       actionButton.setClickable(true);
-      actionButton.setText("PARTICIPATE");
+      actionButton.setText("Participate");
       actionButton.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -325,7 +315,7 @@ public class CompetitionFeedItemView extends FrameLayout {
     if (isAdmin) {
       actionButton.setEnabled(true);
       actionButton.setClickable(true);
-      actionButton.setText("DECLARE WINNER");
+      actionButton.setText("Declare Winners");
       actionButton.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -336,8 +326,9 @@ public class CompetitionFeedItemView extends FrameLayout {
       endedAt = MomentsUtils.getFormattedTime(endedAt);
       actionButton.setEnabled(false);
       actionButton.setClickable(false);
-      actionButton.setText("ENDED " + endedAt);
+      actionButton.setText("Ended " + endedAt);
     }
+    startsIn.setText("Ended");
   }
 
   /**
@@ -346,7 +337,8 @@ public class CompetitionFeedItemView extends FrameLayout {
   private void setWhenWinnerAnnounced() {
     actionButton.setEnabled(true);
     actionButton.setClickable(true);
-    actionButton.setText("VIEW WINNER");
+    actionButton.setText("See Winners");
+    startsIn.setText("Ended");
     actionButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -362,17 +354,53 @@ public class CompetitionFeedItemView extends FrameLayout {
     countDownTimerUtils.setTimerWith(left, 1000, new CountDownTimerUtils.TimerUpdateListener() {
       @Override
       public void onFinished() {
+        setStartedTime();
         invalidateActionButton();
       }
 
       @Override
       public void onRunningTimeUpdate(String updateTime) {
         if (actionButton != null) {
-          actionButton.setText("STARTS IN " + updateTime);
+          setStartedTime();
+          actionButton.setText("Starts In " + updateTime);
         }
       }
     });
     countDownTimerUtils.start();
+  }
+
+  private void setEndsInTimer() {
+    long now = System.currentTimeMillis();
+    long ends = MomentsUtils.getMillisFromTime(mCompetition.getmEndsAt());
+    long left = ends - now;
+    countDownTimerUtils.setTimerWith(left, 1000, new CountDownTimerUtils.TimerUpdateListener() {
+      @Override
+      public void onFinished() {
+        invalidateActionButton();
+      }
+
+      @Override
+      public void onRunningTimeUpdate(String updateTime) {
+        if (actionButton != null) {
+          if (isAdminOfThisCompetition()) {
+            actionButton.setText("Ends In: " + updateTime);
+          }
+        }
+      }
+    });
+    countDownTimerUtils.start();
+  }
+
+  private void setStartedTime() {
+    long now = System.currentTimeMillis();
+    long startsAt = MomentsUtils.getMillisFromTime(mCompetition.getmStartsAt());
+    StringBuilder st = new StringBuilder();
+    if (startsAt > now) {
+      st.append("Starts ").append(MomentsUtils.getFormattedTime(mCompetition.getmStartsAt()));
+    } else {
+      st.append("Started ").append(MomentsUtils.getFormattedTime(mCompetition.getmStartsAt()));
+    }
+    startsIn.setText(st.toString());
   }
 
   private void openSubmissionPage() {

@@ -291,7 +291,8 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
     List<String> images = new ArrayList<>();
     images.add(mCompetitionImage);
     tags = PostHashTagPreprocessor.processHashtags(tags);
-    steemPostCreator.createPost(body, "", images, tags, postPermlink);
+    String postTitle = "Winners announcement for \"" + mCompetitionTitle + "\"";
+    steemPostCreator.createPost(body, postTitle, images, tags, postPermlink);
   }
 
   private ArrayList<String> getHashTags() {

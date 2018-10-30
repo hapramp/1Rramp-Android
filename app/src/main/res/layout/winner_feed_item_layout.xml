@@ -1,13 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:paddingTop="16dp"
+    android:background="#bbeeeeee"
     android:layout_height="wrap_content">
 
+    <LinearLayout
+        android:id="@+id/result_container"
+        android:layout_width="match_parent"
+        android:paddingLeft="16dp"
+        android:gravity="bottom"
+        android:paddingBottom="8dp"
+        android:paddingRight="16dp"
+        android:layout_height="64dp">
+
+        <TextView
+            android:id="@+id/rankAssigned"
+            android:text="Ranked #1"
+            android:textColor="@color/Black87"
+            android:layout_centerVertical="true"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="|"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/prizeWon"
+            android:text="Prize 20 SBD"
+            android:textColor="@color/Black87"
+            android:layout_centerVertical="true"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
     <RelativeLayout
-        android:layout_margin="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/result_container"
         android:background="@drawable/winner_feed_bg">
 
         <ImageView
@@ -115,10 +151,10 @@
                     android:id="@+id/ranking_image"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
-                    android:src="@drawable/money_bag" />
+                    android:src="@drawable/ranking_filled" />
 
                 <TextView
-                    android:id="@+id/prize_won"
+                    android:text="Ranked"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="6dp"
@@ -189,17 +225,4 @@
         </RelativeLayout>
 
     </RelativeLayout>
-
-    <TextView
-        android:id="@+id/rank_tip"
-        android:text="1"
-        android:gravity="center"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/winner_item_rank"
-        android:layout_width="32dp"
-        android:layout_height="32dp" />
-
 </RelativeLayout>

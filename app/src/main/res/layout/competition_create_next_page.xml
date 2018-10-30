@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/competitionCommunityView"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="28dp"
                 android:text="Add tags(Space separated)"
                 android:textColor="@color/colorAccent"
                 android:textSize="14sp"
@@ -95,22 +95,14 @@
                 android:layout_marginTop="8dp"
                 android:animateLayoutChanges="true" />
 
-            <View
-                android:id="@+id/hashtags_judge_divder"
-                android:layout_marginTop="28dp"
-                android:layout_below="@+id/tagsInputBox"
-                android:background="@color/Black12"
-                android:layout_width="match_parent"
-                android:layout_height="8dp"/>
-
             <LinearLayout
                 android:id="@+id/judge_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/hashtags_judge_divder"
+                android:layout_below="@+id/tagsInputBox"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="28dp"
                 android:layout_marginBottom="16dp"
                 android:orientation="vertical">
 
@@ -130,19 +122,12 @@
 
             </LinearLayout>
 
-            <View
-                android:id="@+id/judge_timing_divder"
-                android:layout_below="@+id/judge_container"
-                android:background="@color/Black12"
-                android:layout_width="match_parent"
-                android:layout_height="8dp"/>
-
             <TextView
                 android:id="@+id/timingCaption"
                 android:layout_marginTop="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/judge_timing_divder"
+                android:layout_below="@+id/judge_container"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:text="Timings (in GMT+0)"

@@ -47,8 +47,6 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
   TextView feedOwnerTitle;
   @BindView(R.id.feed_owner_subtitle)
   TextView feedOwnerSubtitle;
-  @BindView(R.id.popupMenuDots)
-  ImageView popupMenuDots;
   @BindView(R.id.featured_image_post)
   ImageView featuredImagePost;
   @BindView(R.id.competition_title)

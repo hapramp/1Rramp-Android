@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:padding="16dp"
+    android:paddingTop="32dp"
+    android:paddingBottom="32dp"
+    android:paddingLeft="24dp"
+    android:paddingRight="24dp"
     android:layout_height="match_parent">
 
     <ImageView
         android:src="@drawable/circular_image_placeholder"
         android:id="@+id/judge_image"
         android:layout_centerHorizontal="true"
-        android:layout_width="56dp"
-        android:layout_height="56dp" />
+        android:layout_marginBottom="8dp"
+        android:layout_width="64dp"
+        android:layout_height="64dp" />
 
     <TextView
         android:id="@+id/judge_name"
@@ -17,21 +21,29 @@
         android:layout_below="@+id/judge_image"
         android:layout_marginTop="8dp"
         android:text="Ankit Kumar"
-        android:textSize="14sp"
+        android:textSize="18sp"
         android:textColor="@color/Black87"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <com.hapramp.views.CommunityStripView
+        android:layout_marginTop="8dp"
+        android:layout_below="@+id/judge_name"
+        android:id="@+id/community_stripe_view"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"/>
+
     <TextView
         android:id="@+id/bio"
-        android:layout_below="@+id/judge_name"
+        android:layout_below="@+id/community_stripe_view"
         android:layout_marginTop="8dp"
         android:padding="4dp"
-        android:textSize="12sp"
-        android:textStyle="italic"
+        android:textSize="16sp"
         android:textColor="@color/Black54"
+        android:lineSpacingExtra="2dp"
+        android:gravity="center_horizontal"
         android:text="Ankit is a great designer by heart. He expertizes in multiple forms of design concepts."
-        android:background="@drawable/light_text_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

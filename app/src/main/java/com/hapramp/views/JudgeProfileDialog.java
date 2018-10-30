@@ -12,11 +12,21 @@ import com.hapramp.R;
 import com.hapramp.models.JudgeModel;
 import com.hapramp.utils.ImageHandler;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+
 public class JudgeProfileDialog extends Dialog {
   private final AppCompatActivity mActivity;
-  private ImageView judgeImage;
-  private TextView judgeName;
-  private TextView bio;
+  @BindView(R.id.judge_image)
+  ImageView judgeImage;
+  @BindView(R.id.judge_name)
+  TextView judgeName;
+  @BindView(R.id.community_stripe_view)
+  CommunityStripView communityStripeView;
+  @BindView(R.id.bio)
+  TextView bio;
   private JudgeModel judge;
 
   public JudgeProfileDialog(@NonNull AppCompatActivity appCompatActivity) {
@@ -32,6 +42,7 @@ public class JudgeProfileDialog extends Dialog {
     judgeImage = findViewById(R.id.judge_image);
     judgeName = findViewById(R.id.judge_name);
     bio = findViewById(R.id.bio);
+    communityStripeView = findViewById(R.id.community_stripe_view);
     setCancelable(true);
     bindData();
   }
@@ -42,6 +53,11 @@ public class JudgeProfileDialog extends Dialog {
         judge.getmUsername()));
     judgeName.setText(judge.getmFullName());
     bio.setText(judge.getmBio());
+    List<String> stringList = new ArrayList<>();
+    stringList.add("art");
+    stringList.add("photography");
+    stringList.add("design");
+    communityStripeView.setCommunities(stringList);
   }
 
   public void setJudgeInfo(JudgeModel judgeInfo) {

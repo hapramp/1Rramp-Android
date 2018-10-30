@@ -2,8 +2,12 @@ package com.hapramp.views;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,12 +32,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class WinnerFeedItemView extends FrameLayout {
+  @BindView(R.id.rankAssigned)
+  TextView rankAssigned;
+  @BindView(R.id.prizeWon)
+  TextView prizeWon;
+  @BindView(R.id.result_container)
+  LinearLayout resultContainer;
   @BindView(R.id.feed_owner_pic)
   ImageView feedOwnerPic;
   @BindView(R.id.feed_owner_title)
   TextView feedOwnerTitle;
   @BindView(R.id.feed_owner_subtitle)
   TextView feedOwnerSubtitle;
+  @BindView(R.id.community_stripe_view)
+  CommunityStripView communityStripeView;
   @BindView(R.id.featured_image_post)
   ImageView featuredImagePost;
   @BindView(R.id.post_title)
@@ -58,12 +70,6 @@ public class WinnerFeedItemView extends FrameLayout {
   ImageView dollarIcon;
   @BindView(R.id.payoutValue)
   TextView payoutValue;
-  @BindView(R.id.rank_tip)
-  TextView rankTip;
-  @BindView(R.id.community_stripe_view)
-  CommunityStripView communityStripeView;
-  @BindView(R.id.prize_won)
-  TextView prizeWon;
   private Context mContext;
   private RankableCompetitionFeedItem mData;
   private String briefPayoutValueString;
@@ -139,7 +145,9 @@ public class WinnerFeedItemView extends FrameLayout {
     postTitle.setText(data.getTitle());
     commentCount.setText(data.getChildrens() + "");
     prizeWon.setText(data.getPrize());
-    rankTip.setText(String.valueOf(data.getRank()));
+    setPrize();
+    setRank();
+    //rankTip.setText(String.valueOf(data.getRank()));
   }
 
   private void setSteemEarnings(RankableCompetitionFeedItem feed) {
@@ -160,5 +168,31 @@ public class WinnerFeedItemView extends FrameLayout {
 
   private void setCommunities(List<String> communities) {
     communityStripeView.setCommunities(communities);
+  }
+
+  private void setPrize() {
+    String part1 = "Prize ";
+    String part2 = String.format(Locale.US, "%s", mData.getPrize());
+    int spanStart = part1.length();
+    int spanEnd = spanStart + part2.length();
+    Spannable wordtoSpan = new SpannableString(part1 + part2);
+    wordtoSpan.setSpan(new ForegroundColorSpan(Color.parseColor("#3F72AF")),
+      spanStart,
+      spanEnd,
+      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    prizeWon.setText(wordtoSpan);
+  }
+
+  private void setRank() {
+    String part1 = "Ranked ";
+    String part2 = String.format(Locale.US, "#%d", mData.getRank());
+    int spanStart = part1.length();
+    int spanEnd = spanStart + part2.length();
+    Spannable wordtoSpan = new SpannableString(part1 + part2);
+    wordtoSpan.setSpan(new ForegroundColorSpan(Color.parseColor("#3F72AF")),
+      spanStart,
+      spanEnd,
+      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    rankAssigned.setText(wordtoSpan);
   }
 }

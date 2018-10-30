@@ -42,8 +42,6 @@ public class CompetitionDetailsActivity extends AppCompatActivity implements Com
   public static final String EXTRA_HEADER_PARCEL = "header_parcel";
   @BindView(R.id.backBtn)
   ImageView backBtn;
-  @BindView(R.id.overflowBtn)
-  ImageView overflowBtn;
   @BindView(R.id.toolbar_container)
   RelativeLayout toolbarContainer;
   @BindView(R.id.competition_details_list)
@@ -178,7 +176,7 @@ public class CompetitionDetailsActivity extends AppCompatActivity implements Com
         actionButton.setVisibility(View.VISIBLE);
         actionButton.setEnabled(true);
         actionButton.setClickable(true);
-        actionButton.setText("SUBMIT ENTRY");
+        actionButton.setText("Submit Entry");
         actionButton.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View view) {
@@ -200,7 +198,7 @@ public class CompetitionDetailsActivity extends AppCompatActivity implements Com
         actionButton.setVisibility(View.VISIBLE);
         actionButton.setEnabled(true);
         actionButton.setClickable(true);
-        actionButton.setText("DECLARE WINNER");
+        actionButton.setText("Declare Winners");
         actionButton.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View view) {
@@ -220,7 +218,7 @@ public class CompetitionDetailsActivity extends AppCompatActivity implements Com
       actionButton.setVisibility(View.VISIBLE);
       actionButton.setEnabled(true);
       actionButton.setClickable(true);
-      actionButton.setText("VIEW WINNER");
+      actionButton.setText("See Winners");
       actionButton.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {

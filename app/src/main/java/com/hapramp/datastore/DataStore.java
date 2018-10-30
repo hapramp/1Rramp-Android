@@ -135,6 +135,7 @@ public class DataStore extends DataDispatcher {
           String url = UrlBuilder.competitionsListUrl();
           Response response = NetworkApi.getNetworkApiInstance().fetch(url);
           String responseString = null;
+          // TODO: 30/10/18  issues
           responseString = response.body().string();
           dispatchCompetitionsList(responseString, competitionsListCallback);
         }

@@ -6,19 +6,9 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class JudgeModel implements Parcelable {
-  @SuppressWarnings("unused")
-  public static final Parcelable.Creator<JudgeModel> CREATOR = new Parcelable.Creator<JudgeModel>() {
-    @Override
-    public JudgeModel createFromParcel(Parcel in) {
-      return new JudgeModel(in);
-    }
+import java.util.ArrayList;
 
-    @Override
-    public JudgeModel[] newArray(int size) {
-      return new JudgeModel[size];
-    }
-  };
+public class JudgeModel implements Parcelable {
   @Expose
   @SerializedName("bio")
   private String mBio;
@@ -31,32 +21,10 @@ public class JudgeModel implements Parcelable {
   @Expose
   @SerializedName("id")
   private int mId;
+
   private boolean isSelected;
 
-  protected JudgeModel(Parcel in) {
-    mBio = in.readString();
-    mUsername = in.readString();
-    mFullName = in.readString();
-    mId = in.readInt();
-    isSelected = in.readByte() != 0x00;
-  }
-
   public JudgeModel() {
-
-  }
-
-  @Override
-  public int describeContents() {
-    return 0;
-  }
-
-  @Override
-  public void writeToParcel(Parcel dest, int flags) {
-    dest.writeString(mBio);
-    dest.writeString(mUsername);
-    dest.writeString(mFullName);
-    dest.writeInt(mId);
-    dest.writeByte((byte) (isSelected ? 0x01 : 0x00));
   }
 
   public boolean isSelected() {
@@ -109,4 +77,38 @@ public class JudgeModel implements Parcelable {
       ", isSelected=" + isSelected +
       '}';
   }
+
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
+    dest.writeString(this.mBio);
+    dest.writeString(this.mUsername);
+    dest.writeString(this.mFullName);
+    dest.writeInt(this.mId);
+    dest.writeByte(this.isSelected ? (byte) 1 : (byte) 0);
+  }
+
+  protected JudgeModel(Parcel in) {
+    this.mBio = in.readString();
+    this.mUsername = in.readString();
+    this.mFullName = in.readString();
+    this.mId = in.readInt();
+    this.isSelected = in.readByte() != 0;
+  }
+
+  public static final Creator<JudgeModel> CREATOR = new Creator<JudgeModel>() {
+    @Override
+    public JudgeModel createFromParcel(Parcel source) {
+      return new JudgeModel(source);
+    }
+
+    @Override
+    public JudgeModel[] newArray(int size) {
+      return new JudgeModel[size];
+    }
+  };
 }

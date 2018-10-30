@@ -118,7 +118,7 @@ public class JSONParser {
     return prizes;
   }
 
-  public List<JudgeModel> parseJudges(String response) {
+  public ArrayList<JudgeModel> parseJudges(String response) {
     try {
       JSONArray jsonArray = new JSONArray(response);
       return parseJudgesJsonArray(jsonArray);

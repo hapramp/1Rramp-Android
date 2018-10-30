@@ -39,18 +39,6 @@
         android:layout_toRightOf="@+id/feed_owner_pic" />
 
     <ImageView
-        android:id="@+id/popupMenuDots"
-        android:layout_width="48dp"
-        android:layout_height="64dp"
-        android:layout_alignParentRight="true"
-        android:alpha="0.6"
-        android:background="?selectableItemBackgroundBorderless"
-        android:clickable="true"
-        android:focusable="true"
-        android:padding="16dp"
-        android:src="@drawable/more" />
-
-    <ImageView
         android:id="@+id/featured_image_post"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -170,7 +170,7 @@ public class DataDispatcher {
 
   void dispatchJudgesList(String response, final JudgesListFetchFromServerCallback judgesListCallback) {
     if (judgesListCallback != null) {
-      final List<JudgeModel> judges = jsonParser.parseJudges(response);
+      final ArrayList<JudgeModel> judges = jsonParser.parseJudges(response);
       handler.post(new Runnable() {
         @Override
         public void run() {

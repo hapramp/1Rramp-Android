@@ -9,6 +9,7 @@
         android:id="@+id/judge_image"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_centerVertical="true"
         android:src="@drawable/circular_image_placeholder" />
 
     <TextView
@@ -16,6 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
+        android:layout_above="@+id/reference_line"
         android:layout_toRightOf="@+id/judge_image"
         android:textColor="@color/Black87"
         android:textSize="14sp"
@@ -27,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_toRightOf="@+id/judge_image"
-        android:layout_below="@+id/judge_fullname"
+        android:layout_below="@+id/reference_line"
         android:textColor="@color/Black54"
         android:textSize="12sp"
         android:text="bxute" />
@@ -38,14 +40,22 @@
         android:text="Add"
         android:textSize="12sp"
         android:background="@drawable/filled_btn_bg"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
         android:textColor="@color/white"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <View
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp"
+        android:id="@+id/reference_line"
+        android:layout_centerVertical="true"
+        android:layout_width="1dp"
+        android:layout_height="1dp"/>
 
 </RelativeLayout>
