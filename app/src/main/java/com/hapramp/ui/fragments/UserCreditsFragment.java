@@ -3,6 +3,7 @@ package com.hapramp.ui.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +12,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
-import com.hapramp.datastore.WebScrapper;
+import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.ResourceCreditCallback;
 import com.hapramp.models.ResourceCreditModel;
 import com.hapramp.views.CustomProgressBar;
+
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,13 +42,20 @@ public class UserCreditsFragment extends Fragment implements ResourceCreditCallb
   TextView votesAllowed;
   @BindView(R.id.transfers_allowed)
   TextView transfersAllowed;
+  @BindView(R.id.swipe_refresh)
+  SwipeRefreshLayout swipeRefresh;
+  @BindView(R.id.vote_value_label)
+  TextView voteValueLabel;
+  @BindView(R.id.vote_value)
+  TextView voteValue;
   private String username;
   private Unbinder unbinder;
-  private WebScrapper webScrapper;
   private Context mContext;
 
+  private DataStore dataStore;
+
   public UserCreditsFragment() {
-    webScrapper = new WebScrapper();
+    dataStore = new DataStore();
   }
 
   public void setUsername(String username) {
@@ -69,6 +79,7 @@ public class UserCreditsFragment extends Fragment implements ResourceCreditCallb
                            Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_user_credits, container, false);
     unbinder = ButterKnife.bind(this, view);
+    attachListeners();
     fetchResourceCredit();
     return view;
   }
@@ -96,9 +107,18 @@ public class UserCreditsFragment extends Fragment implements ResourceCreditCallb
     }
   }
 
+  private void attachListeners() {
+    swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+      @Override
+      public void onRefresh() {
+        fetchResourceCredit();
+      }
+    });
+  }
+
   private void fetchResourceCredit() {
     showProgress();
-    webScrapper.scrapResourceCreditInfo(username, this);
+    dataStore.requestRc(username, this);
   }
 
   private void showProgress() {
@@ -109,13 +129,20 @@ public class UserCreditsFragment extends Fragment implements ResourceCreditCallb
 
   @Override
   public void onResourceCreditAvailable(ResourceCreditModel resourceCreditModel) {
+    hideProgress();
+    if (swipeRefresh.isRefreshing()) {
+      swipeRefresh.setRefreshing(false);
+    }
     try {
-      votingPowerProgress.setProgressPercent(resourceCreditModel.getVotingPowerPercentage());
+      commentsAllowed.setText(String.valueOf(resourceCreditModel.getCommentAllowed() > 99 ?
+        "99+" : resourceCreditModel.getCommentAllowed()));
+      votesAllowed.setText(String.valueOf(resourceCreditModel.getVoteALlowed() > 99 ?
+        "99+" : resourceCreditModel.getVoteALlowed()));
+      transfersAllowed.setText(String.valueOf(resourceCreditModel.getTransferAllowed() > 99 ?
+        "99+" : resourceCreditModel.getTransferAllowed()));
       resourceCreditProgress.setProgressPercent(resourceCreditModel.getResourceCreditPercentage());
-      commentsAllowed.setText(resourceCreditModel.getCommentsAllowed());
-      votesAllowed.setText(resourceCreditModel.getVotesAllowed());
-      transfersAllowed.setText(resourceCreditModel.getTransfersAllowed());
-      hideProgress();
+      votingPowerProgress.setProgressPercent(resourceCreditModel.getVotingPercentage());
+      voteValue.setText(String.format(Locale.US, "$ %.3f", resourceCreditModel.getVoteValue()));
     }
     catch (Exception e) {
       e.printStackTrace();

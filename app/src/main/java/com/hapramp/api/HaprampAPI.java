@@ -7,6 +7,7 @@ import com.hapramp.models.CompetitionEntryConfirmationBody;
 import com.hapramp.models.CompetitionEntryResponse;
 import com.hapramp.models.DeleteCompetitionResponse;
 import com.hapramp.models.FormattedBodyResponse;
+import com.hapramp.models.ResourceCreditModel;
 import com.hapramp.models.VerificationDataBody;
 import com.hapramp.models.VerifiedToken;
 import com.hapramp.models.WinnersRankBody;

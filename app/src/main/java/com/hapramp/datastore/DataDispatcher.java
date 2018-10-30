@@ -11,6 +11,7 @@ import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.datastore.callbacks.FollowersCallback;
 import com.hapramp.datastore.callbacks.FollowingsCallback;
 import com.hapramp.datastore.callbacks.JudgesListFetchFromServerCallback;
+import com.hapramp.datastore.callbacks.ResourceCreditCallback;
 import com.hapramp.datastore.callbacks.RewardFundMedianPriceCallback;
 import com.hapramp.datastore.callbacks.SinglePostCallback;
 import com.hapramp.datastore.callbacks.TransferHistoryCallback;
@@ -25,6 +26,7 @@ import com.hapramp.models.CompetitionModel;
 import com.hapramp.models.FollowCountInfo;
 import com.hapramp.models.GlobalProperties;
 import com.hapramp.models.JudgeModel;
+import com.hapramp.models.ResourceCreditModel;
 import com.hapramp.models.UserSearchResponse;
 import com.hapramp.models.VestedShareModel;
 import com.hapramp.steem.models.Feed;
@@ -177,6 +179,36 @@ public class DataDispatcher {
           judgesListCallback.onJudgesListAvailable(judges);
         }
       });
+    }
+  }
+
+  public void dispatchRc(String response, final ResourceCreditCallback resourceCreditCallback) {
+    if (resourceCreditCallback != null) {
+      if (response != null) {
+        final ResourceCreditModel resourceCreditModel = jsonParser.parseRc(response);
+        if (resourceCreditModel != null) {
+          handler.post(new Runnable() {
+            @Override
+            public void run() {
+              resourceCreditCallback.onResourceCreditAvailable(resourceCreditModel);
+            }
+          });
+        } else {
+          handler.post(new Runnable() {
+            @Override
+            public void run() {
+              resourceCreditCallback.onResourceCreditError("");
+            }
+          });
+        }
+      } else {
+        handler.post(new Runnable() {
+          @Override
+          public void run() {
+            resourceCreditCallback.onResourceCreditError("");
+          }
+        });
+      }
     }
   }
 

@@ -16,6 +16,11 @@ public class UrlBuilder {
       "competitions";
   }
 
+  public static String rcInfoUrl(String username) {
+    return BASE_URL +
+      "rc/" + username;
+  }
+
   public static String competitionEntryUrl(String comp_Id) {
     return BASE_URL + "competitions/" + comp_Id + "/posts";
   }

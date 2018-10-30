@@ -10,6 +10,7 @@ import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.datastore.callbacks.FollowersCallback;
 import com.hapramp.datastore.callbacks.FollowingsCallback;
 import com.hapramp.datastore.callbacks.JudgesListFetchFromServerCallback;
+import com.hapramp.datastore.callbacks.ResourceCreditCallback;
 import com.hapramp.datastore.callbacks.RewardFundMedianPriceCallback;
 import com.hapramp.datastore.callbacks.SinglePostCallback;
 import com.hapramp.datastore.callbacks.TransferHistoryCallback;
@@ -139,9 +140,27 @@ public class DataStore extends DataDispatcher {
           responseString = response.body().string();
           dispatchCompetitionsList(responseString, competitionsListCallback);
         }
-        catch (IOException e) {
+        catch (Exception e) {
           e.printStackTrace();
           dispatchCompetitionListFetchError(competitionsListCallback);
+        }
+      }
+    }.start();
+  }
+
+  public void requestRc(final String username, final ResourceCreditCallback resourceCreditCallback) {
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          String url = UrlBuilder.rcInfoUrl(username);
+          Response response = NetworkApi.getNetworkApiInstance().fetch(url);
+          String responseString = null;
+          responseString = response.body().string();
+          dispatchRc(responseString, resourceCreditCallback);
+        }
+        catch (Exception e) {
+          dispatchRc(null, resourceCreditCallback);
         }
       }
     }.start();
@@ -166,7 +185,7 @@ public class DataStore extends DataDispatcher {
     }.start();
   }
 
-  public void requestWinnersList(final String competitionId,final CompetitionEntriesFetchCallback competitionEntriesFetchCallback){
+  public void requestWinnersList(final String competitionId, final CompetitionEntriesFetchCallback competitionEntriesFetchCallback) {
     new Thread() {
       @Override
       public void run() {

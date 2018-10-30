@@ -7,6 +7,7 @@ import com.hapramp.models.CommunityModel;
 import com.hapramp.models.CompetitionAdmin;
 import com.hapramp.models.CompetitionModel;
 import com.hapramp.models.JudgeModel;
+import com.hapramp.models.ResourceCreditModel;
 import com.hapramp.models.VestedShareModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.Feed;
@@ -594,5 +595,23 @@ public class JSONParser {
       e.printStackTrace();
     }
     return entries;
+  }
+
+  public ResourceCreditModel parseRc(String response) {
+    ResourceCreditModel creditModel = null;
+    try {
+      JSONObject jsonObject = new JSONObject(response);
+      creditModel = new ResourceCreditModel();
+      creditModel.setCommentAllowed(jsonObject.getInt("comment_count"));
+      creditModel.setTransferAllowed(jsonObject.getInt("transfer_count"));
+      creditModel.setVoteALlowed(jsonObject.getInt("vote_count"));
+      creditModel.setVotingPercentage(jsonObject.getInt("voting_power_percentage"));
+      creditModel.setResourceCreditPercentage(jsonObject.getInt("rc_mana_percentage"));
+      creditModel.setVoteValue(jsonObject.getDouble("vote_value"));
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+    return creditModel;
   }
 }
