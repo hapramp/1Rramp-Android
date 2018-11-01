@@ -27,6 +27,7 @@
         android:id="@+id/swipe_refresh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingBottom="56dp"
         android:layout_below="@+id/toolbar_container">
 
         <android.support.v7.widget.RecyclerView

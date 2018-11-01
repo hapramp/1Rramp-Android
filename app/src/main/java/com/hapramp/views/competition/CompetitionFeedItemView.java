@@ -338,7 +338,7 @@ public class CompetitionFeedItemView extends FrameLayout {
     actionButton.setEnabled(true);
     actionButton.setClickable(true);
     actionButton.setText("See Winners");
-    startsIn.setText("Ended");
+    this.startsIn.setText("Ended");
     actionButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -400,7 +400,7 @@ public class CompetitionFeedItemView extends FrameLayout {
     } else {
       st.append("Started ").append(MomentsUtils.getFormattedTime(mCompetition.getmStartsAt()));
     }
-    startsIn.setText(st.toString());
+    this.startsIn.setText(st.toString());
   }
 
   private void openSubmissionPage() {

@@ -12,9 +12,6 @@ import com.hapramp.R;
 import com.hapramp.models.JudgeModel;
 import com.hapramp.utils.ImageHandler;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import butterknife.BindView;
 
 public class JudgeProfileDialog extends Dialog {

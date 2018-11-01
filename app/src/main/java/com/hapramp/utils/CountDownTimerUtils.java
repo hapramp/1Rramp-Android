@@ -34,11 +34,14 @@ public class CountDownTimerUtils {
     if (millisLeft >= MILLIS_IN_DAY) {
 
       day = millisLeft / MILLIS_IN_DAY;
-      consumed = day * MILLIS_IN_HOUR;
+      consumed = day * MILLIS_IN_DAY;
+
       hour = (millisLeft - consumed) / MILLIS_IN_HOUR;
       consumed += hour * MILLIS_IN_HOUR;
+
       min = (millisLeft - consumed) / MILLIS_IN_MIN;
       consumed += min * MILLIS_IN_MIN;
+
       sec = (millisLeft - consumed) / MILLIS_IN_SEC;
 
       builder
