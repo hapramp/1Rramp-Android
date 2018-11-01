@@ -20,4 +20,5 @@ public class Constants {
   public static final String FOOTER_START_MARK = "<div id=\"1ramp-footer";
   public static final String EXTRAA_KEY_PARENT_PERMLINK = "parentPermlink";
   public static final String EXTRAA_KEY_NOTIFICATION_ID = "notification_id";
+  public static final String COMPETITION_FOOTER = "";
 }

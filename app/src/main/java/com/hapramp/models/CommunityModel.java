@@ -1,8 +1,11 @@
 package com.hapramp.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
-public class CommunityModel {
+public class CommunityModel implements Parcelable {
   @SerializedName("description")
   private String mDescription;
   @SerializedName("image_uri")
@@ -15,6 +18,43 @@ public class CommunityModel {
   private String mName;
   @SerializedName("id")
   private int mId;
+
+  protected CommunityModel(Parcel in) {
+    mDescription = in.readString();
+    mImageUri = in.readString();
+    mTag = in.readString();
+    mColor = in.readString();
+    mName = in.readString();
+    mId = in.readInt();
+  }
+
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
+    dest.writeString(mDescription);
+    dest.writeString(mImageUri);
+    dest.writeString(mTag);
+    dest.writeString(mColor);
+    dest.writeString(mName);
+    dest.writeInt(mId);
+  }
+
+  @SuppressWarnings("unused")
+  public static final Parcelable.Creator<CommunityModel> CREATOR = new Parcelable.Creator<CommunityModel>() {
+    @Override
+    public CommunityModel createFromParcel(Parcel in) {
+      return new CommunityModel(in);
+    }
+
+    @Override
+    public CommunityModel[] newArray(int size) {
+      return new CommunityModel[size];
+    }
+  };
 
   public CommunityModel(String mDescription, String mImageUri, String mTag, String mColor, String mName, int mId) {
     this.mDescription = mDescription;

@@ -54,7 +54,7 @@ public class CommunityItemView extends FrameLayout {
 
   public void setSelection(boolean selected) {
     if (selected) {
-      communityBackground.setBackgroundResource(CommunityUtils.getFilledBackground(mCommunity.getCommunityId()));
+      communityBackground.setBackgroundResource(CommunityUtils.getFilledBackground(mCommunity.getmTag()));
     } else {
       communityBackground.setBackgroundResource(CommunityUtils.getBorder(mCommunity.getCommunityId()));
     }
@@ -66,12 +66,16 @@ public class CommunityItemView extends FrameLayout {
 
   public void setCommunityDetails(CommunityModel communityModel) {
     this.mCommunity = communityModel;
-    setCommunityImage(CommunityUtils.getCommunityIcon(communityModel.getCommunityId()));
+    setCommunityImage(CommunityUtils.getCommunityIcon(communityModel.getmTag()));
     setCommunityTitle(mCommunity.getmName());
   }
 
   private void setCommunityImage(int resId) {
-    communityIcon.setImageResource(resId);
+    try {
+      communityIcon.setImageResource(resId);
+    }catch (Exception e){
+
+    }
   }
 
   private void setCommunityTitle(String title) {

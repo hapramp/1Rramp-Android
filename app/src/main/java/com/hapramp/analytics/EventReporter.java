@@ -3,6 +3,8 @@ package com.hapramp.analytics;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.hapramp.main.HapRampMain;
@@ -41,18 +43,30 @@ public class EventReporter {
   }
 
   public static void reportDeviceId() {
-    String token = FirebaseInstanceId.getInstance().getToken();
-    String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-    if (username.length() > 0) {
-      EventReportUtils
-        .getDeviceIdNode(username).setValue(token);
-    } else {
-      new android.os.Handler().postDelayed(new Runnable() {
+    try {
+      new Thread() {
         @Override
         public void run() {
-          reportDeviceId();
+          Looper.prepare();
+          String token = FirebaseInstanceId.getInstance().getToken();
+          String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+          if (username.length() > 0) {
+            EventReportUtils
+              .getDeviceIdNode(username).setValue(token);
+          } else {
+            new Handler().postDelayed(new Runnable() {
+              @Override
+              public void run() {
+                reportDeviceId();
+              }
+            }, 4000);
+          }
+          Looper.loop();
         }
-      }, 4000);
+      }.start();
+    }
+    catch (Exception e) {
+      e.printStackTrace();
     }
   }
 }

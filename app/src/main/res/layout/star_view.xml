@@ -59,18 +59,15 @@
         android:clickable="true"
         android:visibility="gone">
 
-        <com.hapramp.views.CustomRatingBar
+        <com.hapramp.views.OneRampRatingBar
             android:id="@+id/ratingBar"
-            android:layout_width="144dp"
-            android:layout_height="32dp"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
             android:alpha="1"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:clickable="true"
             android:focusable="true"
-            android:isIndicator="false"
-            android:numStars="5"
-            android:stepSize="1"
             android:visibility="visible" />
 
         <TextView

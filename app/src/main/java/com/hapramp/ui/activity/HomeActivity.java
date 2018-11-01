@@ -27,11 +27,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.analytics.EventReporter;
+import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.JSONParser;
+import com.hapramp.models.AppServerUserModel;
 import com.hapramp.notification.FirebaseNotificationStore;
 import com.hapramp.notification.NotificationSubscriber;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.models.User;
 import com.hapramp.steemconnect.SteemConnectUtils;
 import com.hapramp.steemconnect4j.SteemConnect;
@@ -45,6 +48,7 @@ import com.hapramp.utils.AppUpdateChecker;
 import com.hapramp.utils.BackstackManager;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FollowingsSyncUtils;
+import com.hapramp.utils.ResponseCodes;
 import com.hapramp.viewmodel.common.ConnectivityViewModel;
 import com.hapramp.views.AppUpdateAvailableDialog;
 import com.hapramp.views.extraa.CreateNewButtonView;
@@ -54,8 +58,12 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class HomeActivity extends AppCompatActivity implements CreateNewButtonView.ItemClickListener{
+public class HomeActivity extends AppCompatActivity implements CreateNewButtonView.ItemClickListener {
+  public static final String EXTRA_TAB_INDEX = "home.activity.tabindex";
   private final int BOTTOM_MENU_HOME = 7;
   private final int BOTTOM_MENU_COMP = 8;
   private final int BOTTOM_MENU_PROFILE = 9;
@@ -116,7 +124,7 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
     initObjects();
     syncBasicInfo();
     BackstackManager.pushItem(FRAGMENT_HOME);
-    transactFragment(FRAGMENT_HOME);
+    collectExtras();
     saveDeviceWidth();
     attachListeners();
     observeConnection();
@@ -163,10 +171,32 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
     if (HaprampPreferenceManager.getInstance().getCurrentUserInfoAsJson().length() == 0) {
       showInterruptedProgressBar("Fetching profile info...");
     }
-    checkTokenValidity();
+    checkSteemconnectTokenValidity();
+    fetchAppUser();
     DataStore.performAllCommunitySync();
     DataStore.requestSyncLastPostCreationTime();
     syncUserFollowings();
+  }
+
+  private void fetchAppUser() {
+    RetrofitServiceGenerator.getService().fetchAppUser().enqueue(new Callback<AppServerUserModel>() {
+      @Override
+      public void onResponse(Call<AppServerUserModel> call, Response<AppServerUserModel> response) {
+        if (response.isSuccessful()) {
+          HaprampPreferenceManager.getInstance()
+            .saveUserSelectedCommunitiesAsJson(new Gson().toJson(new CommunityListWrapper(response.body().getCommunityList())));
+        } else if (response.code() == ResponseCodes.UNAUTHORIZED) {
+          logout();
+        } else if (response.code() == ResponseCodes.INTERNAL_SERVER_ERROR) {
+          Toast.makeText(HomeActivity.this, "Something went wrong at server!", Toast.LENGTH_LONG).show();
+        }
+      }
+
+      @Override
+      public void onFailure(Call<AppServerUserModel> call, Throwable t) {
+
+      }
+    });
   }
 
   private void observeConnection() {
@@ -194,8 +224,32 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
     FollowingsSyncUtils.syncFollowings(this);
   }
 
+  private void collectExtras() {
+    Intent receiveIntent = getIntent();
+    if (receiveIntent != null) {
+      int tabNumber = receiveIntent.getIntExtra(EXTRA_TAB_INDEX, 0);
+      transactFragment(getFragmentAt(tabNumber));
+    } else {
+      transactFragment(getFragmentAt(0));
+    }
+  }
+
+  private int getFragmentAt(int tabNumber) {
+    switch (tabNumber) {
+      case 0:
+        return FRAGMENT_HOME;
+      case 1:
+        return FRAGMENT_COMPETITIONS;
+      case 2:
+        return FRAGMENT_PROFILE;
+      case 3:
+        return FRAGMENT_SETTINGS;
+      default:
+        return FRAGMENT_HOME;
+    }
+  }
+
   private void logout() {
-    Toast.makeText(this, "Token Expired! Please login again.", Toast.LENGTH_LONG).show();
     HaprampPreferenceManager.getInstance().clearPreferences();
     Intent intent = new Intent(this, LoginActivity.class);
     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -412,6 +466,13 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
     overridePendingTransition(R.anim.slide_up_enter, R.anim.slide_up_exit);
   }
 
+  @Override
+  public void onCompetitionButtonClicked() {
+    Intent intent = new Intent(this, CompetitionCreatorActivity.class);
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_up_enter, R.anim.slide_up_exit);
+  }
+
   private void hideInterruptedProgressBar() {
     if (progressDialog != null) {
       progressDialog.dismiss();
@@ -436,7 +497,7 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
     }
   }
 
-  private void checkTokenValidity() {
+  private void checkSteemconnectTokenValidity() {
     final SteemConnect steemConnect = SteemConnectUtils
       .getSteemConnectInstance(HaprampPreferenceManager.getInstance().getSC2AccessToken());
     final Handler mHandler = new Handler();

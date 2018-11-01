@@ -4,7 +4,12 @@ import android.util.Log;
 
 import com.hapramp.models.CommentModel;
 import com.hapramp.models.CommunityModel;
+import com.hapramp.models.CompetitionAdmin;
+import com.hapramp.models.CompetitionModel;
+import com.hapramp.models.JudgeModel;
+import com.hapramp.models.ResourceCreditModel;
 import com.hapramp.models.VestedShareModel;
+import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.User;
 import com.hapramp.steem.models.Voter;
@@ -25,8 +30,67 @@ public class JSONParser {
     markdownPreProcessor = new MarkdownPreProcessor();
   }
 
-  public List<CommunityModel> parseAllCommunity(String response) {
-    List<CommunityModel> communityModels = new ArrayList<>();
+  public List<CompetitionModel> parseCompetitionList(String response) {
+    List<CompetitionModel> cps = new ArrayList<>();
+    CompetitionModel competitionModel = null;
+    try {
+      JSONArray carray = new JSONArray(response);
+      for (int i = 0; i < carray.length(); i++) {
+        competitionModel = new CompetitionModel();
+        JSONObject comp_item = carray.getJSONObject(i);
+        CompetitionAdmin competitionAdmin = new CompetitionAdmin();
+        //parse creater
+        competitionAdmin.setmId(comp_item.getJSONObject("user").optInt("id"));
+        competitionAdmin.setmUsername(comp_item.getJSONObject("user").optString("username"));
+        //parse other info
+        competitionModel.setmId(comp_item.optString("id"));
+        //participating_tag
+        competitionModel.setmParticipationHashtag(comp_item.optString("participating_tag"));
+        competitionModel.setmParticipantCount(comp_item.optInt("participant_count"));
+        competitionModel.setmPostCount(comp_item.optInt("post_count"));
+        competitionModel.setmAdmin(competitionAdmin);
+        competitionModel.setmCreatedAt(comp_item.optString("created_at"));
+        competitionModel.setmImage(comp_item.optString("image"));
+        competitionModel.setmTitle(comp_item.optString("title"));
+        competitionModel.setmDescription(comp_item.optString("description"));
+        competitionModel.setmStartsAt(comp_item.optString("starts_at"));
+        competitionModel.setmEndsAt(comp_item.optString("ends_at"));
+        competitionModel.setmRules(comp_item.optString("rules"));
+        competitionModel.setmJudges(parseJudgesJsonArray(comp_item.getJSONArray("judges")));
+        competitionModel.setCommunities(parseAllCommunity(comp_item.getJSONArray("communities").toString()));
+        competitionModel.setPrizes(parsePrizes(comp_item.getJSONArray("prizes")));
+        competitionModel.setWinners_announced(comp_item.getBoolean("winners_announced"));
+        cps.add(competitionModel);
+      }
+    }
+    catch (JSONException e) {
+      e.printStackTrace();
+    }
+    return cps;
+  }
+
+  private ArrayList<JudgeModel> parseJudgesJsonArray(JSONArray array) {
+    ArrayList<JudgeModel> judgeModels = new ArrayList<>();
+    try {
+      JudgeModel jm;
+      for (int i = 0; i < array.length(); i++) {
+        JSONObject j = array.getJSONObject(i);
+        jm = new JudgeModel();
+        jm.setmBio(j.optString("bio"));
+        jm.setmFullName(j.optString("full_name"));
+        jm.setmId(j.optInt("id"));
+        jm.setmUsername(j.optString("username"));
+        judgeModels.add(jm);
+      }
+    }
+    catch (JSONException e) {
+      Log.d("JSONException", e.toString());
+    }
+    return judgeModels;
+  }
+
+  public ArrayList<CommunityModel> parseAllCommunity(String response) {
+    ArrayList<CommunityModel> communityModels = new ArrayList<>();
     try {
       JSONObject jsonObject;
       JSONArray jsonArray = new JSONArray(response);
@@ -47,10 +111,49 @@ public class JSONParser {
     return communityModels;
   }
 
+  private List<String> parsePrizes(JSONArray prizesJsonArray) throws JSONException {
+    List<String> prizes = new ArrayList<>();
+    for (int i = 0; i < prizesJsonArray.length(); i++) {
+      prizes.add(prizesJsonArray.getString(i));
+    }
+    return prizes;
+  }
+
+  public ArrayList<JudgeModel> parseJudges(String response) {
+    try {
+      JSONArray jsonArray = new JSONArray(response);
+      return parseJudgesJsonArray(jsonArray);
+    }
+    catch (JSONException e) {
+      e.printStackTrace();
+    }
+    return new ArrayList<>();
+  }
+
+  public void parseCompetitionEligibilityResponse(String response) {
+    try {
+      JSONObject ro = new JSONObject(response);
+      parseAndStoreEligibility(ro);
+    }
+    catch (JSONException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void parseAndStoreEligibility(JSONObject jsonObject) throws JSONException {
+    if (jsonObject.has("is_competition_user")) {
+      boolean eligible = jsonObject.getBoolean("is_competition_user");
+      Log.d("ParsingCompetition", "eligible " + eligible);
+      HaprampPreferenceManager.getInstance().setCompetitionCreateEligibility(eligible);
+    }
+  }
+
   public List<CommunityModel> parseUserCommunity(String response) {
     List<CommunityModel> communityModels = new ArrayList<>();
     try {
       JSONObject ro = new JSONObject(response);
+      // TODO: 23/10/18 remove comment when migrating to production api
+      //parseAndStoreEligibility(ro);
       JSONArray jsonArray = ro.getJSONArray("communities");
       for (int i = 0; i < jsonArray.length(); i++) {
         JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -161,6 +264,10 @@ public class JSONParser {
       feed.setVoters(voters);
       feed.setActiveVoters(activeVoters);
       feed.setAuthorReputation(autorReputation);
+      //optional
+      feed.setRank(rootObject.optInt("rank", 0));
+      //optional
+      feed.setPrize(rootObject.optString("prize", "Prize"));
     }
     catch (JSONException e) {
       Log.e("JsonParserException", e.toString());
@@ -474,5 +581,37 @@ public class JSONParser {
       Log.d("JSONException", e.toString());
     }
     return feed;
+  }
+
+  public List<Feed> parseCompetitionEntries(String response) {
+    List<Feed> entries = new ArrayList<>();
+    try {
+      JSONArray jsonArray = new JSONArray(response);
+      for (int i = 0; i < jsonArray.length(); i++) {
+        entries.add(parseCoreFeedData(jsonArray.getJSONObject(i)));
+      }
+    }
+    catch (JSONException e) {
+      e.printStackTrace();
+    }
+    return entries;
+  }
+
+  public ResourceCreditModel parseRc(String response) {
+    ResourceCreditModel creditModel = null;
+    try {
+      JSONObject jsonObject = new JSONObject(response);
+      creditModel = new ResourceCreditModel();
+      creditModel.setCommentAllowed(jsonObject.getInt("comment_count"));
+      creditModel.setTransferAllowed(jsonObject.getInt("transfer_count"));
+      creditModel.setVoteALlowed(jsonObject.getInt("vote_count"));
+      creditModel.setVotingPercentage(jsonObject.getInt("voting_power_percentage"));
+      creditModel.setResourceCreditPercentage(jsonObject.getInt("rc_mana_percentage"));
+      creditModel.setVoteValue(jsonObject.getDouble("vote_value"));
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+    return creditModel;
   }
 }

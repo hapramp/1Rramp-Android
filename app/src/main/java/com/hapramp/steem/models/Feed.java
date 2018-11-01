@@ -48,11 +48,8 @@ public class Feed implements Parcelable {
   private ArrayList<Voter> voters;
   private ArrayList<Voter> activeVoters;
   private String authorReputation;
-
-  @Override
-  public int describeContents() {
-    return 0;
-  }
+  private int rank;
+  private String prize;
 
   protected Feed(Parcel in) {
     isResteemed = in.readByte() != 0x00;
@@ -96,9 +93,16 @@ public class Feed implements Parcelable {
       activeVoters = null;
     }
     authorReputation = in.readString();
+    rank = in.readInt();
+    prize = in.readString();
   }
 
   public Feed() {
+  }
+
+  @Override
+  public int describeContents() {
+    return 0;
   }
 
   @Override
@@ -144,6 +148,8 @@ public class Feed implements Parcelable {
       dest.writeList(activeVoters);
     }
     dest.writeString(authorReputation);
+    dest.writeInt(rank);
+    dest.writeString(prize);
   }
 
   public String getCleanedBody() {
@@ -200,6 +206,14 @@ public class Feed implements Parcelable {
 
   public void setParentAuthor(String parentAuthor) {
     this.parentAuthor = parentAuthor;
+  }
+
+  public String getPrize() {
+    return prize;
+  }
+
+  public void setPrize(String prize) {
+    this.prize = prize;
   }
 
   public String getParentPermlink() {
@@ -352,6 +366,14 @@ public class Feed implements Parcelable {
 
   public void setAuthorReputation(String authorReputation) {
     this.authorReputation = authorReputation;
+  }
+
+  public int getRank() {
+    return rank;
+  }
+
+  public void setRank(int rank) {
+    this.rank = rank;
   }
 
   @Override

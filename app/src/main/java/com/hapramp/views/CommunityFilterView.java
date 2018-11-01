@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 
 import com.hapramp.R;
 import com.hapramp.models.CommunityModel;
-import com.hapramp.utils.CommunitySortUtils;
 import com.hapramp.views.skills.CommunityTabItemView;
 
 import java.util.ArrayList;
@@ -69,12 +68,16 @@ public class CommunityFilterView extends FrameLayout {
     for (int i = 0; i < childs; i++) {
       cv = ((CommunityTabItemView) container.getChildAt(i));
       if (i == index) {
-        cv.setSelected(true);
-        if (communityFilterCallback != null) {
-          communityFilterCallback.onCommunitySelected(cv.getCommunityTag());
+        if (cv != null) {
+          cv.setSelected(true);
+          if (communityFilterCallback != null) {
+            communityFilterCallback.onCommunitySelected(cv.getCommunityTag());
+          }
         }
       } else {
-        cv.setSelected(false);
+        if (cv != null) {
+          cv.setSelected(false);
+        }
       }
     }
   }

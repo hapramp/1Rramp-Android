@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +13,9 @@ import android.widget.TextView;
 
 import com.hapramp.R;
 import com.hapramp.models.CommunityModel;
-import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.steem.Communities;
 import com.hapramp.ui.activity.CommunitySelectionActivity;
-import com.hapramp.utils.PixelUtils;
+import com.hapramp.utils.CommunityIds;
 import com.hapramp.views.InterestGridViewGroup;
 import com.hapramp.views.InterestItemView;
 
@@ -93,7 +92,7 @@ public class InterestsView extends FrameLayout {
       final InterestItemView editCommunityItem = new InterestItemView(mContext);
       CommunityModel communityModel = new CommunityModel("Add/Remove Community",
         "",
-        "", "", "Edit", 404);
+        Communities.EDIT_BORDER, "", "Edit", CommunityIds.EDIT_BORDER);
       editCommunityItem.setInterestDetails(communityModel);
       editCommunityItem.setSelection(false);
       editCommunityItem.setOnClickListener(new OnClickListener() {

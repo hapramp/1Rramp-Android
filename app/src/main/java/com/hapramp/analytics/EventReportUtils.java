@@ -20,10 +20,20 @@ public class EventReportUtils {
         .child(AO)
         .child(app_version)
         .child(date)
-        .child(username)
+        .child(getFormattedUserName(username))
         .child(timestamp);
     }
     return null;
+  }
+
+  //Firebase Database paths must not contain '.', '#', '$', '[', or ']'
+  public static String getFormattedUserName(String username) {
+    return username
+      .replace(".", "_dot_")
+      .replace("#", "_hash_")
+      .replace("$", "_dollar_")
+      .replace("[", "_lb_")
+      .replace("]", "_rb_");
   }
 
   public static DatabaseReference getDeviceIdNode(String username) {
@@ -32,6 +42,6 @@ public class EventReportUtils {
     return firebaseDatabase.getReference()
       .child(rootNode)
       .child("devices")
-      .child(username);
+      .child(getFormattedUserName(username));
   }
 }

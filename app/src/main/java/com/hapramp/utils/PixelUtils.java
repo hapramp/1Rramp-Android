@@ -33,8 +33,12 @@ public class PixelUtils {
     return size.x / 2;
   }
 
-  public static DisplayMetrics getDimension(Context context) {
+  public static int getDeviceWidth(Context context){
+    DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+    return metrics.widthPixels;
+  }
 
+  public static DisplayMetrics getDimension(Context context) {
     DisplayMetrics metrics = context.getResources().getDisplayMetrics();
     return metrics;
   }

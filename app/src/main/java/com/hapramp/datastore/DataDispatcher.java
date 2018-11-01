@@ -5,9 +5,13 @@ import android.os.Handler;
 import com.google.gson.Gson;
 import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
+import com.hapramp.datastore.callbacks.CompetitionEntriesFetchCallback;
+import com.hapramp.datastore.callbacks.CompetitionsListCallback;
 import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.datastore.callbacks.FollowersCallback;
 import com.hapramp.datastore.callbacks.FollowingsCallback;
+import com.hapramp.datastore.callbacks.JudgesListFetchFromServerCallback;
+import com.hapramp.datastore.callbacks.ResourceCreditCallback;
 import com.hapramp.datastore.callbacks.RewardFundMedianPriceCallback;
 import com.hapramp.datastore.callbacks.SinglePostCallback;
 import com.hapramp.datastore.callbacks.TransferHistoryCallback;
@@ -18,8 +22,11 @@ import com.hapramp.datastore.callbacks.UserVestedShareCallback;
 import com.hapramp.datastore.callbacks.UserWalletCallback;
 import com.hapramp.models.CommentModel;
 import com.hapramp.models.CommunityModel;
+import com.hapramp.models.CompetitionModel;
 import com.hapramp.models.FollowCountInfo;
 import com.hapramp.models.GlobalProperties;
+import com.hapramp.models.JudgeModel;
+import com.hapramp.models.ResourceCreditModel;
 import com.hapramp.models.UserSearchResponse;
 import com.hapramp.models.VestedShareModel;
 import com.hapramp.steem.models.Feed;
@@ -110,7 +117,7 @@ public class DataDispatcher {
   }
 
   void dispatchExplorePosts(String response, final boolean isFreshData, final boolean isAppendable,
-                            final UserFeedCallback userFeedCallback){
+                            final UserFeedCallback userFeedCallback) {
     final List<Feed> feeds = jsonParser.parseExplorePosts(response);
     if (userFeedCallback != null) {
       handler.post(new Runnable() {
@@ -152,6 +159,104 @@ public class DataDispatcher {
         @Override
         public void run() {
           userFeedCallback.onUserFeedFetchError(message);
+        }
+      });
+    }
+  }
+
+  void dispatchCompetitionEligibility(String response) {
+    if (response != null) {
+      jsonParser.parseCompetitionEligibilityResponse(response);
+    }
+  }
+
+  void dispatchJudgesList(String response, final JudgesListFetchFromServerCallback judgesListCallback) {
+    if (judgesListCallback != null) {
+      final ArrayList<JudgeModel> judges = jsonParser.parseJudges(response);
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          judgesListCallback.onJudgesListAvailable(judges);
+        }
+      });
+    }
+  }
+
+  public void dispatchRc(String response, final ResourceCreditCallback resourceCreditCallback) {
+    if (resourceCreditCallback != null) {
+      if (response != null) {
+        final ResourceCreditModel resourceCreditModel = jsonParser.parseRc(response);
+        if (resourceCreditModel != null) {
+          handler.post(new Runnable() {
+            @Override
+            public void run() {
+              resourceCreditCallback.onResourceCreditAvailable(resourceCreditModel);
+            }
+          });
+        } else {
+          handler.post(new Runnable() {
+            @Override
+            public void run() {
+              resourceCreditCallback.onResourceCreditError("");
+            }
+          });
+        }
+      } else {
+        handler.post(new Runnable() {
+          @Override
+          public void run() {
+            resourceCreditCallback.onResourceCreditError("");
+          }
+        });
+      }
+    }
+  }
+
+  void dispatchCompetitionEntries(String response, final CompetitionEntriesFetchCallback entriesFetchCallback) {
+    if (entriesFetchCallback != null) {
+      final List<Feed> entries = jsonParser.parseCompetitionEntries(response);
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          entriesFetchCallback.onCompetitionsEntriesAvailable(entries);
+        }
+      });
+    }
+  }
+
+  void dispatchCompetitionEntriesError(final CompetitionEntriesFetchCallback entriesFetchCallback) {
+    if (entriesFetchCallback != null) {
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          entriesFetchCallback.onCompetitionsEntriesFetchError();
+        }
+      });
+    }
+  }
+
+  void dispatchCompetitionsList(String response, final CompetitionsListCallback competitionsListCallback) {
+    if (competitionsListCallback != null) {
+      final List<CompetitionModel> cps = jsonParser.parseCompetitionList(response);
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          if (cps == null) {
+            competitionsListCallback.onCompetitionsFetchError();
+          } else {
+            competitionsListCallback.onCompetitionsListAvailable(cps);
+          }
+        }
+      });
+    }
+  }
+
+  void dispatchCompetitionListFetchError(final CompetitionsListCallback competitionsListCallback) {
+    if (competitionsListCallback != null) {
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          competitionsListCallback.onCompetitionsFetchError();
         }
       });
     }

@@ -8,6 +8,9 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -37,6 +40,8 @@ import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
+import com.hapramp.utils.RegexUtils;
+import com.hapramp.utils.TextViewImageGetter;
 
 import java.util.List;
 import java.util.Locale;
@@ -136,7 +141,6 @@ public class CommentsItemView extends FrameLayout implements
     requestVoters(comment.getAuthor(), comment.getPermlink());
     commentOwnerUsername.setText(comment.getAuthor());
     timestampTv.setText(MomentsUtils.getFormattedTime(comment.getCreatedAt()));
-    commentContent.setText(comment.getBody());
     if (comment.getChildren() > 0) {
       moreReplies.setVisibility(VISIBLE);
       moreReplies.setText(String.format(Locale.US, "View %d %s", comment.getChildren(),
@@ -146,6 +150,17 @@ public class CommentsItemView extends FrameLayout implements
     }
     setSteemEarnings(comment);
     attachListeners();
+
+    Spannable html;
+    String htmlContent = RegexUtils.getHtmlContent(comment.getBody());
+    TextViewImageGetter imageGetter = new TextViewImageGetter(mContext, commentContent);
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+      html = (Spannable) Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_LEGACY, imageGetter, null);
+    } else {
+      html = (Spannable) Html.fromHtml(htmlContent, imageGetter, null);
+    }
+    commentContent.setText(html);
+    commentContent.setMovementMethod(LinkMovementMethod.getInstance());
   }
 
   private void setSteemEarnings(CommentModel commentModel) {

@@ -146,14 +146,12 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
         return;
       }
       ArrayList<CommunityModel> communityModels = new ArrayList<>();
-
       //add explore tab
       communityModels.add(0, new CommunityModel("", "",
         EXPLORE, "", "Explore", CommunityIds.EXPLORE));
       //add feed tab
       communityModels.add(1, new CommunityModel("", "",
         FEEDS, "", "Feed", CommunityIds.FEED));
-
       CommunitySortUtils.sortCommunity(cwr.getCommunityModels());
       communityModels.addAll(cwr.getCommunityModels());
       communityFilterView.setCommunityFilterCallback(this);
