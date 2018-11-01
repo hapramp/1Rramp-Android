@@ -133,7 +133,7 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
     setProgressVisibility(false);
     if (competitions != null) {
       if (competitions.size() == 0) {
-        setMessagePanel(true, "No competitions running!");
+        setMessagePanel(true, "No competitions!");
       } else {
         setMessagePanel(false, "");
         competitionsListRecyclerAdapter.setCompetitions(competitions);

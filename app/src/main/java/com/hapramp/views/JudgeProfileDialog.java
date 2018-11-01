@@ -53,11 +53,6 @@ public class JudgeProfileDialog extends Dialog {
         judge.getmUsername()));
     judgeName.setText(judge.getmFullName());
     bio.setText(judge.getmBio());
-    List<String> stringList = new ArrayList<>();
-    stringList.add("art");
-    stringList.add("photography");
-    stringList.add("design");
-    communityStripeView.setCommunities(stringList);
   }
 
   public void setJudgeInfo(JudgeModel judgeInfo) {

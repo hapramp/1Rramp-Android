@@ -134,10 +134,10 @@ public class UserCreditsFragment extends Fragment implements ResourceCreditCallb
   @Override
   public void onResourceCreditAvailable(ResourceCreditModel resourceCreditModel) {
     hideProgress();
-    if (swipeRefresh.isRefreshing()) {
-      swipeRefresh.setRefreshing(false);
-    }
     try {
+      if (swipeRefresh.isRefreshing()) {
+        swipeRefresh.setRefreshing(false);
+      }
       commentsAllowed.setText(String.valueOf(resourceCreditModel.getCommentAllowed() > 99 ?
         "99+" : resourceCreditModel.getCommentAllowed()));
       votesAllowed.setText(String.valueOf(resourceCreditModel.getVoteALlowed() > 99 ?

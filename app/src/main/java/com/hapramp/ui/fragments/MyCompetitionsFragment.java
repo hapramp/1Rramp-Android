@@ -101,7 +101,7 @@ public class MyCompetitionsFragment extends Fragment implements CompetitionsList
       setProgressVisibility(false);
       if (competitions != null) {
         if (competitions.size() == 0) {
-          setMessagePanel(true, "You have not created any competitions yet!");
+          setMessagePanel(true, "You have not created any competition yet!");
         } else {
           setMessagePanel(false, "");
           competitionsListRecyclerAdapter.setCompetitions(competitions);
