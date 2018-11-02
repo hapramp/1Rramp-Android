@@ -47,6 +47,7 @@ import com.hapramp.utils.Constants;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.ShareUtils;
+import com.hapramp.views.CommunityStripView;
 import com.hapramp.views.VoterPeekView;
 import com.hapramp.views.extraa.StarView;
 
@@ -74,12 +75,6 @@ public class PostItemView extends FrameLayout {
   TextView feedOwnerTitle;
   @BindView(R.id.feed_owner_subtitle)
   TextView feedOwnerSubtitle;
-  @BindView(R.id.club3)
-  TextView club3;
-  @BindView(R.id.club2)
-  TextView club2;
-  @BindView(R.id.club1)
-  TextView club1;
   @BindView(R.id.popupMenuDots)
   ImageView popupMenuDots;
   @BindView(R.id.featured_image_post)
@@ -112,6 +107,10 @@ public class PostItemView extends FrameLayout {
   ImageView resteemedIcon;
   @BindView(R.id.resteemed_label)
   TextView resteemedLabel;
+  @BindView(R.id.community_stripe_view)
+  CommunityStripView communityStripeView;
+  @BindView(R.id.rate_info_container)
+  RelativeLayout rateInfoContainer;
   private Context mContext;
   private Feed mFeed;
   private Handler mHandler;
@@ -218,7 +217,13 @@ public class PostItemView extends FrameLayout {
     feedOwnerSubtitle.setText(String.format(mContext.getResources().getString(R.string.post_subtitle_format), MomentsUtils.getFormattedTime(feed.getCreatedAt())));
     setSteemEarnings(feed);
     setCommunities(feed.getTags());
-    postSnippet.setText(feed.getCleanedBody());
+    String bdy = feed.getCleanedBody();
+    if (bdy.length() > 0) {
+      postSnippet.setVisibility(VISIBLE);
+      postSnippet.setText(bdy);
+    } else {
+      postSnippet.setVisibility(GONE);
+    }
     if (feed.getTitle().length() > 0) {
       postTitle.setVisibility(VISIBLE);
       postTitle.setText(feed.getTitle());
@@ -461,54 +466,6 @@ public class PostItemView extends FrameLayout {
     return false;
   }
 
-  private void setCommunities(List<String> communities) {
-    List<CommunityModel> cm = new ArrayList<>();
-    ArrayList<String> addedCommunity = new ArrayList<>();
-    for (int i = 0; i < communities.size(); i++) {
-      String title = CommunityUtils.getCommunityTitleFromName(communities.get(i));
-      if (Communities.doesCommunityExists(title) && !addedCommunity.contains(title)) {
-        cm.add(new CommunityModel(
-          CommunityUtils.getCommunityColorFromTitle(title), //color
-          title //title ex. art
-        ));
-        addedCommunity.add(title);
-      }
-    }
-    addCommunitiesToLayout(cm);
-  }
-
-  private void addCommunitiesToLayout(List<CommunityModel> cms) {
-    int size = cms.size();
-    resetVisibility();
-    if (size > 0) {
-      club1.setVisibility(VISIBLE);
-      club1.setText(cms.get(0).getmName().toUpperCase());
-      club1.getBackground().setColorFilter(
-        Color.parseColor(cms.get(0).getmColor()),
-        PorterDuff.Mode.SRC_ATOP);
-      if (size > 1) {
-        club2.setVisibility(VISIBLE);
-        club2.setText(cms.get(1).getmName().toUpperCase());
-        club2.getBackground().setColorFilter(
-          Color.parseColor(cms.get(1).getmColor()),
-          PorterDuff.Mode.SRC_ATOP);
-        if (size > 2) {
-          club3.setVisibility(VISIBLE);
-          club3.setText(cms.get(2).getmName().toUpperCase());
-          club3.getBackground().setColorFilter(
-            Color.parseColor(cms.get(2).getmColor()),
-            PorterDuff.Mode.SRC_ATOP);
-        }
-      }
-    }
-  }
-
-  private void resetVisibility() {
-    club1.setVisibility(GONE);
-    club2.setVisibility(GONE);
-    club3.setVisibility(GONE);
-  }
-
   private void navigateToCommentCreateActivity(int postId) {
     Intent intent = new Intent(mContext, CommentsActivity.class);
     intent.putExtra(Constants.EXTRAA_KEY_POST_ID, String.valueOf(postId));
@@ -621,6 +578,10 @@ public class PostItemView extends FrameLayout {
       resteemedIcon.setVisibility(GONE);
       resteemedLabel.setVisibility(GONE);
     }
+  }
+
+  public void setCommunities(ArrayList<String> communities) {
+    communityStripeView.setCommunities(communities);
   }
 
   public interface PostActionListener {

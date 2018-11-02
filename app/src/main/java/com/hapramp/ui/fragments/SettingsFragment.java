@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,6 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
@@ -139,15 +137,6 @@ public class SettingsFragment extends Fragment {
     });
   }
 
-  private void showPushNotifications(boolean subscribe) {
-    HaprampPreferenceManager.getInstance().setShowPushNotifications(subscribe);
-  }
-
-  private void openHelpPage() {
-    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.1ramp.io/faq.html"));
-    startActivity(browserIntent);
-  }
-
   private void inviteAFriend() {
     Intent intent = new Intent(Intent.ACTION_SEND);
     intent.putExtra(Intent.EXTRA_TEXT,
@@ -155,11 +144,6 @@ public class SettingsFragment extends Fragment {
         " Steem powered social media for creators. Try it now! at https://goo.gl/AADhaC");
     intent.setType("text/plain");
     startActivity(Intent.createChooser(intent, "Invite a friend"));
-  }
-
-  private void openTermsPage() {
-    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.1ramp.io/terms.html"));
-    startActivity(browserIntent);
   }
 
   private void showAlertDialogForLogout() {
@@ -176,6 +160,31 @@ public class SettingsFragment extends Fragment {
       .show();
   }
 
+  private void openHelpPage() {
+    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.1ramp.io/faq.html"));
+    startActivity(browserIntent);
+  }
+
+  private void shareFeedbackOrReportIssue() {
+    Intent intent = new Intent(Intent.ACTION_SEND);
+    String[] recipients = {"feedback@1ramp.io"};
+    intent.putExtra(Intent.EXTRA_EMAIL, recipients);
+    intent.putExtra(Intent.EXTRA_SUBJECT, "[Issue/Feedback] Regarding 1ramp Android App.");
+    intent.putExtra(Intent.EXTRA_TEXT, "");
+    intent.setType("text/html");
+    intent.setPackage("com.google.android.gm");
+    startActivity(Intent.createChooser(intent, "Send mail"));
+  }
+
+  private void openTermsPage() {
+    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.1ramp.io/terms.html"));
+    startActivity(browserIntent);
+  }
+
+  private void showPushNotifications(boolean subscribe) {
+    HaprampPreferenceManager.getInstance().setShowPushNotifications(subscribe);
+  }
+
   private void logout() {
     EventReporter.addEvent(AnalyticsParams.EVENT_LOGOUT);
     EventReporter.reportEventSession(mContext);
@@ -183,11 +192,6 @@ public class SettingsFragment extends Fragment {
   }
 
   private void revokeAccessToken() {
-    if (!ConnectionUtils.isConnected(mContext)) {
-      Toast.makeText(mContext, "Cannot revoke Token. Please connect to internet!",
-        Toast.LENGTH_LONG).show();
-      return;
-    }
     final Handler mHanlder = new Handler();
     showLogoutProgress();
     final SteemConnect steemConnect = SteemConnectUtils.getSteemConnectInstance(
@@ -195,6 +199,13 @@ public class SettingsFragment extends Fragment {
     );
     NotificationSubscriber.unsubscribeForUserTopic();
     HaprampPreferenceManager.getInstance().clearPreferences();
+
+    if (!ConnectionUtils.isConnected(mContext)) {
+      hideLogoutProgress();
+      navigateToLoginPage();
+      return;
+    }
+
     new Thread() {
       @Override
       public void run() {
@@ -214,11 +225,11 @@ public class SettingsFragment extends Fragment {
 
           @Override
           public void onError(final SteemConnectException e) {
-            Log.d("PostItemView", "Logout Error " + e.toString());
             mHanlder.post(new Runnable() {
               @Override
               public void run() {
                 hideLogoutProgress();
+                navigateToLoginPage();
               }
             });
           }
@@ -244,17 +255,6 @@ public class SettingsFragment extends Fragment {
     Intent intent = new Intent(mContext, LoginActivity.class);
     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
     startActivity(intent);
-  }
-
-  private void shareFeedbackOrReportIssue() {
-    Intent intent = new Intent(Intent.ACTION_SEND);
-    String[] recipients = {"feedback@1ramp.io"};
-    intent.putExtra(Intent.EXTRA_EMAIL, recipients);
-    intent.putExtra(Intent.EXTRA_SUBJECT, "[Issue/Feedback] Regarding 1ramp Android App.");
-    intent.putExtra(Intent.EXTRA_TEXT, "");
-    intent.setType("text/html");
-    intent.setPackage("com.google.android.gm");
-    startActivity(Intent.createChooser(intent, "Send mail"));
   }
 
   @Override

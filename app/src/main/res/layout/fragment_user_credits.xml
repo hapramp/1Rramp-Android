@@ -1,150 +1,180 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_refresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:padding="16dp"
-    tools:context=".ui.fragments.UserCreditsFragment">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/vp_label"
+    <ScrollView
+        android:fillViewport="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Voting Power"
-        android:textColor="@color/Black54"
-        android:textSize="14sp" />
+        android:layout_height="wrap_content">
 
-
-    <com.hapramp.views.CustomProgressBar
-        android:id="@+id/voting_power_progress"
-        android:layout_width="match_parent"
-        android:layout_height="16dp"
-        android:layout_below="@+id/vp_label"
-        android:layout_marginTop="8dp"
-        app:primaryColor="#D92196F3"
-        app:secondaryColor="#203EA3F3" />
-
-    <TextView
-        android:id="@+id/rc_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/voting_power_progress"
-        android:layout_marginTop="16dp"
-        android:text="Resource Credits"
-        android:textColor="@color/Black54"
-        android:textSize="14sp" />
-
-    <com.hapramp.views.CustomProgressBar
-        android:id="@+id/resource_credit_progress"
-        android:layout_width="match_parent"
-        android:layout_height="16dp"
-        android:layout_below="@+id/rc_label"
-        android:layout_marginTop="8dp"
-        app:primaryColor="#7ed321"
-        app:secondaryColor="#207ED321" />
-
-    <TextView
-        android:id="@+id/credit_available_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/resource_credit_progress"
-        android:layout_marginTop="48dp"
-        android:text="Enough Credits for"
-        android:textColor="@color/colorPrimary"
-        android:textSize="14sp"
-        android:textStyle="bold" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:layout_below="@+id/credit_available_label"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal"
-        android:weightSum="3">
-
-        <FrameLayout
-            android:layout_width="0dp"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:background="@color/white"
+            android:padding="16dp"
+            tools:context=".ui.fragments.UserCreditsFragment">
 
             <TextView
-                android:id="@+id/comments_allowed"
+                android:id="@+id/vp_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0"
-                android:layout_gravity="center_horizontal"
+                android:text="Voting Power"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="14sp" />
+
+
+            <com.hapramp.views.CustomProgressBar
+                android:id="@+id/voting_power_progress"
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                android:layout_below="@+id/vp_label"
+                android:layout_marginTop="8dp"
+                app:primaryColor="#D92196F3"
+                app:secondaryColor="#203EA3F3" />
+
+            <TextView
+                android:id="@+id/rc_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/voting_power_progress"
+                android:layout_marginTop="24dp"
+                android:text="Resource Credits"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="14sp" />
+
+            <com.hapramp.views.CustomProgressBar
+                android:id="@+id/resource_credit_progress"
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                android:layout_below="@+id/rc_label"
+                android:layout_marginTop="8dp"
+                app:primaryColor="#7ed321"
+                app:secondaryColor="#207ED321" />
+
+            <TextView
+                android:id="@+id/vote_value_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/resource_credit_progress"
+                android:layout_marginTop="24dp"
+                android:text="Vote Value"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/vote_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/vote_value_label"
                 android:textColor="#B2000000"
                 android:textSize="36sp" />
 
             <TextView
+                android:id="@+id/credit_available_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center_horizontal"
-                android:text="Comments"
-                android:textColor="@color/Black54"
-                android:textSize="14sp" />
-        </FrameLayout>
+                android:layout_below="@+id/vote_value"
+                android:layout_marginTop="24dp"
+                android:text="Enough Credits for"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_below="@+id/credit_available_label"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                android:weightSum="3">
 
-            <TextView
-                android:id="@+id/votes_allowed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="0"
-                android:textColor="#B2000000"
-                android:textSize="36sp" />
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center_horizontal"
-                android:text="Votes"
-                android:textColor="@color/Black54"
-                android:textSize="14sp" />
-        </FrameLayout>
+                    <TextView
+                        android:id="@+id/comments_allowed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="0"
+                        android:textColor="#B2000000"
+                        android:textSize="36sp" />
 
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|center_horizontal"
+                        android:text="Comments"
+                        android:textColor="@color/Black54"
+                        android:textSize="14sp" />
+                </FrameLayout>
 
-            <TextView
-                android:id="@+id/transfers_allowed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="0"
-                android:textColor="#B2000000"
-                android:textSize="36sp" />
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center_horizontal"
-                android:text="Transfers"
-                android:textColor="@color/Black54"
-                android:textSize="14sp" />
-        </FrameLayout>
+                    <TextView
+                        android:id="@+id/votes_allowed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="0"
+                        android:textColor="#B2000000"
+                        android:textSize="36sp" />
 
-    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|center_horizontal"
+                        android:text="Votes"
+                        android:textColor="@color/Black54"
+                        android:textSize="14sp" />
+                </FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/progress_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#98ffffff">
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
 
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-    </FrameLayout>
+                    <TextView
+                        android:id="@+id/transfers_allowed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="0"
+                        android:textColor="#B2000000"
+                        android:textSize="36sp" />
 
-</RelativeLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|center_horizontal"
+                        android:text="Transfers"
+                        android:textColor="@color/Black54"
+                        android:textSize="14sp" />
+                </FrameLayout>
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/progress_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#98ffffff">
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center" />
+            </FrameLayout>
+
+        </RelativeLayout>
+    </ScrollView>
+</android.support.v4.widget.SwipeRefreshLayout>

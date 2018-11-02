@@ -14,18 +14,19 @@ import android.widget.TextView;
 import com.hapramp.R;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 public class TextViewImageGetter implements Html.ImageGetter {
+  int deviceWidth;
   private Context context;
   private TextView textView;
 
   public TextViewImageGetter(Context context, TextView textView) {
     this.textView = textView;
     this.context = context;
+    deviceWidth = PixelUtils.getDeviceWidth(context);
   }
 
   @Override
@@ -38,6 +39,18 @@ public class TextViewImageGetter implements Html.ImageGetter {
     return d;
   }
 
+  private int getImageWidth(int width) {
+    if (width > deviceWidth) {
+      return deviceWidth;
+    } else {
+      return width;
+    }
+  }
+
+  private int getImageHeight(int oldHeight, int oldWidth, int decidedWidth) {
+    return (decidedWidth * oldHeight) / oldWidth;
+  }
+
   class LoadImage extends AsyncTask<Object, Void, Bitmap> {
     private LevelListDrawable mDrawable;
 
@@ -48,9 +61,11 @@ public class TextViewImageGetter implements Html.ImageGetter {
       try {
         InputStream is = new URL(source).openStream();
         Bitmap bitmap = BitmapFactory.decodeStream(is);
-        int height = bitmap.getHeight();
-        int width = bitmap.getWidth();
-        Bitmap newBitmap = Bitmap.createScaledBitmap(bitmap, 540, (height * 1080) / (2*width), false);
+        int oldHeight = bitmap.getHeight();
+        int oldWidth = bitmap.getWidth();
+        int decidedWidth = getImageWidth(oldWidth);
+        int height = getImageHeight(oldHeight, oldWidth, decidedWidth);
+        Bitmap newBitmap = Bitmap.createScaledBitmap(bitmap, decidedWidth, height, false);
         return newBitmap;
       }
       catch (FileNotFoundException e) {
@@ -59,7 +74,7 @@ public class TextViewImageGetter implements Html.ImageGetter {
       catch (MalformedURLException e) {
         e.printStackTrace();
       }
-      catch (IOException e) {
+      catch (Exception e) {
         e.printStackTrace();
       }
       return null;

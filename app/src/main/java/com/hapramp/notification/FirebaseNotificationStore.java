@@ -12,6 +12,8 @@ import com.hapramp.main.HapRampMain;
 import com.hapramp.notification.model.BaseNotificationModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 
+import static com.hapramp.analytics.EventReportUtils.getFormattedUserName;
+
 public class FirebaseNotificationStore {
   public static final String NODE_NOTIFICATIONS = "notifications";
   public static final String NODE_IS_READ = "read";
@@ -29,7 +31,7 @@ public class FirebaseNotificationStore {
             .getReference()
             .child(rootNode)
             .child(NODE_NOTIFICATIONS)
-            .child(username)
+            .child(getFormattedUserName(username))
             .child(baseNotificationModel.getNotificationId())
             .setValue(baseNotificationModel);
           Looper.loop();
@@ -47,7 +49,7 @@ public class FirebaseNotificationStore {
         .getReference()
         .child(rootNode)
         .child(NODE_NOTIFICATIONS)
-        .child(username);
+        .child(getFormattedUserName(username));
     }
     return null;
   }
@@ -61,7 +63,7 @@ public class FirebaseNotificationStore {
         .getReference()
         .child(rootNode)
         .child(NODE_NOTIFICATIONS)
-        .child(username)
+        .child(getFormattedUserName(username))
         .child(notifId);
 
       notificationRef.addListenerForSingleValueEvent(new ValueEventListener() {

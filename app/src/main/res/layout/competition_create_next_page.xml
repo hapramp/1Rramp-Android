@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/metaView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="gone">
+
+    <RelativeLayout
+        android:id="@+id/meta_toolbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="#ffffff">
+
+        <ImageView
+            android:id="@+id/backBtnFromCompetionMeta"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:padding="14dp"
+            android:src="@drawable/back" />
+
+        <TextView
+            android:id="@+id/publishButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/light_btn_bg"
+            android:gravity="center"
+            android:paddingBottom="6dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="6dp"
+            android:text="PUBLISH"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp" />
+
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/meta_toolbar_container"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:id="@+id/skills_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:paddingBottom="36dp">
+
+            <TextView
+                android:id="@+id/community_caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Select Community (Max 3)"
+                android:textColor="@color/colorAccent"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <com.hapramp.views.post.PostCommunityView
+                android:id="@+id/competitionCommunityView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/community_caption"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="4dp" />
+
+            <TextView
+                android:id="@+id/tagsCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/competitionCommunityView"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="28dp"
+                android:text="Add tags(Space separated)"
+                android:textColor="@color/colorAccent"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <com.hapramp.views.hashtag.CustomHashTagInput
+                android:id="@+id/tagsInputBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tagsCaption"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                android:animateLayoutChanges="true" />
+
+            <LinearLayout
+                android:id="@+id/judge_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tagsInputBox"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="28dp"
+                android:layout_marginBottom="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Judges (Max 2)"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <com.hapramp.views.JudgeSelectionView
+                    android:id="@+id/judge_selector"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/timingCaption"
+                android:layout_marginTop="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/judge_container"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:text="Timings (in GMT+0)"
+                android:textColor="@color/colorAccent"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:id="@+id/start_timing_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/timingCaption"
+                android:layout_marginTop="8dp"
+                android:background="#4de1e1e1"
+                android:paddingBottom="8dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="8dp">
+
+                <TextView
+                    android:id="@+id/starts_on_caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:gravity="center_vertical"
+                    android:text="Starts on:"
+                    android:textColor="@color/colorAccent" />
+
+                <EditText
+                    android:id="@+id/start_time_input"
+                    android:layout_width="120dp"
+                    android:layout_height="36dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_toRightOf="@+id/starts_on_caption"
+                    android:focusable="false"
+                    android:hint="HH:MM:SS"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/start_clock_icon"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_toRightOf="@+id/start_time_input"
+                    android:background="?actionBarItemBackground"
+                    android:clickable="true"
+                    android:padding="8dp"
+                    android:src="@drawable/clock" />
+
+                <EditText
+                    android:id="@+id/start_date_input"
+                    android:layout_width="120dp"
+                    android:layout_height="36dp"
+                    android:layout_below="@+id/start_time_input"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_toRightOf="@+id/starts_on_caption"
+                    android:focusable="false"
+                    android:hint="YYYY:MM:DD"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/start_date_icon"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_below="@+id/start_time_input"
+                    android:layout_marginTop="8dp"
+                    android:layout_toRightOf="@+id/start_time_input"
+                    android:background="?actionBarItemBackground"
+                    android:clickable="true"
+                    android:padding="8dp"
+                    android:src="@drawable/calender" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/end_timing_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/start_timing_container"
+                android:layout_marginTop="8dp"
+                android:background="#4de1e1e1"
+                android:paddingBottom="8dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="8dp">
+
+                <TextView
+                    android:id="@+id/ends_on_caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginRight="6dp"
+                    android:gravity="center_vertical"
+                    android:text="Ends on:"
+                    android:textColor="@color/colorAccent" />
+
+                <EditText
+                    android:id="@+id/end_time_input"
+                    android:layout_width="120dp"
+                    android:layout_height="36dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_toRightOf="@+id/ends_on_caption"
+                    android:focusable="false"
+                    android:hint="HH:MM:SS"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/end_clock_icon"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_toRightOf="@+id/end_time_input"
+                    android:background="?actionBarItemBackground"
+                    android:clickable="true"
+                    android:padding="8dp"
+                    android:src="@drawable/clock" />
+
+                <EditText
+                    android:id="@+id/end_date_input"
+                    android:layout_width="120dp"
+                    android:layout_height="36dp"
+                    android:layout_below="@+id/end_time_input"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_toRightOf="@+id/ends_on_caption"
+                    android:focusable="false"
+                    android:hint="YYYY:MM:DD"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/end_date_icon"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_below="@+id/end_time_input"
+                    android:layout_marginTop="8dp"
+                    android:layout_toRightOf="@+id/end_time_input"
+                    android:background="?actionBarItemBackground"
+                    android:clickable="true"
+                    android:padding="8dp"
+                    android:src="@drawable/calender" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/prizeCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/end_timing_container"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="24dp"
+                android:text="Prizes"
+                android:textColor="@color/colorAccent"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:id="@+id/prizes_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prizeCaption"
+                android:layout_marginLeft="16sp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:id="@+id/first_prize_caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginRight="3dp"
+                    android:gravity="center_vertical"
+                    android:text="1st Prize:" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/first_prize_caption"
+                    android:paddingTop="4dp"
+                    android:text="*"
+                    android:textColor="@color/ConnectivityRed" />
+
+                <EditText
+                    android:id="@+id/first_prize_input"
+                    android:layout_width="120dp"
+                    android:layout_height="36dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_toRightOf="@+id/first_prize_caption"
+                    android:hint="100 SBD"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/second_prize_caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_below="@+id/first_prize_caption"
+                    android:gravity="center_vertical"
+                    android:text="2nd Prize:" />
+
+                <EditText
+                    android:id="@+id/second_prize_input"
+                    android:layout_width="120dp"
+                    android:layout_height="36dp"
+                    android:layout_below="@+id/first_prize_caption"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_toRightOf="@+id/second_prize_caption"
+                    android:hint="60 SBD (optional)"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/third_prize_caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_below="@+id/second_prize_caption"
+                    android:gravity="center_vertical"
+                    android:text="3rd Prize:" />
+
+                <EditText
+                    android:id="@+id/third_prize_input"
+                    android:layout_width="120dp"
+                    android:layout_height="36dp"
+                    android:layout_below="@+id/second_prize_caption"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_toRightOf="@+id/second_prize_caption"
+                    android:hint="40 SBD (optional)"
+                    android:textSize="14sp" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/bannerCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prizes_container"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="24dp"
+                android:text="Competition Banner"
+                android:textColor="@color/colorAccent"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/choose_banner_image_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/bannerCaption"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/post_category_item_view_bg"
+                android:clickable="true"
+                android:paddingBottom="8dp"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp"
+                android:paddingTop="8dp"
+                android:text="Select Image"
+                android:textColor="@color/Black54" />
+
+            <com.hapramp.views.post.PostImageView
+                android:id="@+id/competition_banner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/choose_banner_image_btn"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/meta_toolbar_container"
+        android:background="@drawable/toolbar_shadow" />
+
+</RelativeLayout>

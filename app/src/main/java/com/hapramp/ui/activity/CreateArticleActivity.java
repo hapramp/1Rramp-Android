@@ -198,7 +198,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   }
 
   private void showConnectivityError() {
-    Snackbar.make(toolbarContainer, "No Internet!  Article Saved To Draft ", Snackbar.LENGTH_SHORT).show();
+    Snackbar.make(toolbarContainer, "No Internet!", Snackbar.LENGTH_SHORT).show();
   }
 
   private void showExistAlert() {

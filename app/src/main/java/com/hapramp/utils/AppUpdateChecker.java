@@ -26,7 +26,6 @@ public class AppUpdateChecker {
             String version = (String) dataSnapshot.getValue();
             try {
               int lv = Integer.valueOf(version);
-              Log.d("AppUpdater", lv + "");
               PackageInfo pInfo = context.getPackageManager().getPackageInfo("com.hapramp", 0);
               int myVersion = pInfo.versionCode;
               if (myVersion < lv) {

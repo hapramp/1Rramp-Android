@@ -19,6 +19,9 @@ import com.hapramp.R;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FontManager;
 import com.hapramp.views.CustomRatingBar;
+import com.hapramp.views.OneRampRatingBar;
+
+import java.util.Locale;
 
 /**
  * Created by Ankit on 12/14/2017.
@@ -30,10 +33,10 @@ public class StarView extends FrameLayout {
   private static final long HIDE_RATING_BAR_DELAY = 4000;
   ImageView starIndicator;
   TextView rateLabel;
-  CustomRatingBar ratingBar;
   RelativeLayout ratingBarContainer;
   TextView cancelRateBtn;
   TextView ratingError;
+  OneRampRatingBar ratingBar;
   ProgressBar ratingProgress;
   private Context mContext;
   private Handler mHandler;
@@ -132,15 +135,6 @@ public class StarView extends FrameLayout {
     return this;
   }
 
-  public void onStarIndicatorTapped() {
-    if (currentState.iHaveVoted) {
-      cancelMyRating();
-    } else {
-      setNewRating(5);
-      sendVoteToSteem();
-    }
-  }
-
   private void setCurrentState(Vote voteState) {
     this.currentState = voteState;
     setStarIndicatorState(currentState.iHaveVoted);
@@ -164,14 +158,14 @@ public class StarView extends FrameLayout {
     }
   }
 
-  private float getMappedRatingFromPercent(float myVotePercent) {
-    return myVotePercent / 2000;
+  private int getMappedRatingFromPercent(float myVotePercent) {
+    return (int) (myVotePercent / 2000);
   }
 
   private String getRatingDescriptionWithAverage() {
     float voteSum = getVoteSumFromVotePercentSum(currentState.getTotalVotePercentSum());
     int _totalUser = (int) currentState.getTotalVotedUsers();
-    return _totalUser > 0 ? String.format("<font color=\"black\">%1$.1f star </font>from %2$d",
+    return _totalUser > 0 ? String.format(Locale.US, "<font color=\"black\">%1$.1f star </font>from %2$d",
       ((voteSum) / _totalUser), _totalUser) : "";
   }
 
@@ -180,12 +174,17 @@ public class StarView extends FrameLayout {
     return totalVotePercentSum / 2000;
   }
 
-  public void setOnVoteUpdateCallback(StarView.onVoteUpdateCallback onVoteUpdateCallback) {
-    this.onVoteUpdateCallback = onVoteUpdateCallback;
+  public void onStarIndicatorTapped() {
+    if (currentState.iHaveVoted) {
+      cancelMyRating();
+    } else {
+      setNewRating(5);
+      sendVoteToSteem();
+    }
   }
 
-  private float getRating() {
-    return ratingBar.getRating();
+  public void setOnVoteUpdateCallback(StarView.onVoteUpdateCallback onVoteUpdateCallback) {
+    this.onVoteUpdateCallback = onVoteUpdateCallback;
   }
 
   public void onStarIndicatorLongPressed() {
@@ -247,17 +246,13 @@ public class StarView extends FrameLayout {
   }
 
   private void setRatingBarListener() {
-
-    ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+    ratingBar.setRatingChangeListener(new OneRampRatingBar.OnRatingChangeListener() {
       @Override
-      public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-        if (fromUser) {
-          setNewRating(rating);
-          sendVoteToSteem();
-        }
+      public void onRatingChanged(int rating) {
+        setNewRating(rating);
+        sendVoteToSteem();
       }
     });
-
   }
 
   private float getVotePercentFromRating(float rating) {

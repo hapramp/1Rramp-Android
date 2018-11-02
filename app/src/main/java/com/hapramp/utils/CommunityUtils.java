@@ -1,6 +1,7 @@
 package com.hapramp.utils;
 
 import com.hapramp.R;
+import com.hapramp.steem.Communities;
 
 public class CommunityUtils {
   //images
@@ -56,77 +57,77 @@ public class CommunityUtils {
     return BLACK_BORDER;
   }
 
-  public static int getFilledBackground(int com_id) {
-    switch (com_id) {
-      case CommunityIds.EXPLORE:
+  public static int getFilledBackground(String tag) {
+    switch (tag) {
+      case Communities.EXPLORE:
         return EXPLORE_FILLED_BG;
 
-      case CommunityIds.FEED:
+      case Communities.FEEDS:
         return FEED_FILLED_BG;
 
-      case CommunityIds.ART:
+      case Communities.ART:
         return ART_FILLED_BG;
 
-      case CommunityIds.DANCE:
+      case Communities.DANCE:
         return DANCE_FILLED_BG;
 
-      case CommunityIds.TRAVEL:
+      case Communities.TRAVEL:
         return TRAVEL_FILLED_BG;
 
-      case CommunityIds.LITERATURE:
+      case Communities.LITERATURE:
         return LITERATURE_FILLED_BG;
 
-      case CommunityIds.FILM:
+      case Communities.FILM:
         return FILM_FILLED_BG;
 
-      case CommunityIds.PHOTOGRAPHY:
+      case Communities.PHOTOGRAPHY:
         return PHOTOGRAPHY_FILLED_BG;
 
-      case CommunityIds.FASHION:
+      case Communities.FASHION:
         return FASHION_FILLED_BG;
 
-      case CommunityIds.DESIGN:
+      case Communities.DESIGN:
         return DESIGN_FILLED_BG;
 
-      case CommunityIds.EDIT_BORDER:
+      case Communities.EDIT_BORDER:
         return EDIT_BORDER;
     }
     return -1;
   }
 
-  public static int getCommunityIcon(int com_id) {
-    switch (com_id) {
-      case CommunityIds.EXPLORE:
+  public static int getCommunityIcon(String tag) {
+    switch (tag) {
+      case Communities.EXPLORE:
         return EXPLORE_ICON;
 
-      case CommunityIds.FEED:
+      case Communities.FEEDS:
         return FEED_ICON;
 
-      case CommunityIds.ART:
+      case Communities.ART:
         return ART_ICON;
 
-      case CommunityIds.DANCE:
+      case Communities.DANCE:
         return DANCE_ICON;
 
-      case CommunityIds.TRAVEL:
+      case Communities.TRAVEL:
         return TRAVEL_ICON;
 
-      case CommunityIds.LITERATURE:
+      case Communities.LITERATURE:
         return LITERATURE_ICON;
 
-      case CommunityIds.FILM:
+      case Communities.FILM:
         return FILM_ICON;
 
-      case CommunityIds.PHOTOGRAPHY:
+      case Communities.PHOTOGRAPHY:
         return PHOTOGRAPHY_ICON;
 
-      case CommunityIds.FASHION:
+      case Communities.FASHION:
         return FASHION_ICON;
 
-      case CommunityIds.DESIGN:
+      case Communities.DESIGN:
         return DESIGN_ICON;
 
-      case CommunityIds.EDIT_BORDER:
+      case Communities.EDIT_BORDER:
         return EDIT_COMMUNITY_ICON;
     }
     return -1;
@@ -163,7 +164,38 @@ public class CommunityUtils {
     return "#009988";
   }
 
-  public static String getCommunityTitleFromName(String name) {
+  public static int getCommunityIdFromTitle(String tag) {
+    tag = tag.toLowerCase().replace("hapramp-", "");
+    switch (tag) {
+
+      case "art":
+        return CommunityIds.ART;
+
+      case "dance":
+        return CommunityIds.DANCE;
+
+      case "travel":
+        return CommunityIds.TRAVEL;
+
+      case "literature":
+        return CommunityIds.LITERATURE;
+
+      case "film":
+        return CommunityIds.FILM;
+
+      case "photography":
+        return CommunityIds.PHOTOGRAPHY;
+
+      case "fashion":
+        return CommunityIds.FASHION;
+
+      case "design":
+        return CommunityIds.DESIGN;
+    }
+    return -1;
+  }
+
+  public static String getCommunityTitleFromTag(String name) {
     return name.replace("hapramp-", "");
   }
 }

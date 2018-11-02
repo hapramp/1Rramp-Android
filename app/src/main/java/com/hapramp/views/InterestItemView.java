@@ -8,13 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.utils.CommunityUtils;
-import com.hapramp.utils.PixelUtils;
 
 public class InterestItemView extends FrameLayout {
   ImageView interestIcon;
@@ -48,7 +46,7 @@ public class InterestItemView extends FrameLayout {
 
   public void setSelection(boolean selected) {
     if (selected) {
-      interestBackground.setBackgroundResource(CommunityUtils.getFilledBackground(mCommunity.getCommunityId()));
+      interestBackground.setBackgroundResource(CommunityUtils.getFilledBackground(mCommunity.getmTag()));
     } else {
       interestBackground.setBackgroundResource(CommunityUtils.getBorder(mCommunity.getCommunityId()));
     }
@@ -60,12 +58,17 @@ public class InterestItemView extends FrameLayout {
 
   public void setInterestDetails(CommunityModel communityModel) {
     this.mCommunity = communityModel;
-    setCommunityImage(CommunityUtils.getCommunityIcon(communityModel.getCommunityId()));
+    setCommunityImage(CommunityUtils.getCommunityIcon(communityModel.getmTag()));
     setInterestTitle(mCommunity.getmName());
   }
 
   private void setCommunityImage(int resId) {
-    interestIcon.setImageResource(resId);
+    try {
+      interestIcon.setImageResource(resId);
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   private void setInterestTitle(String title) {

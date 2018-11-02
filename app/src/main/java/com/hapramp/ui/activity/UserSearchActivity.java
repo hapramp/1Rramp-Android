@@ -36,8 +36,6 @@ import butterknife.ButterKnife;
 
 public class UserSearchActivity extends AppCompatActivity implements UserSearchCallback {
   private static boolean SEARCH_MODE = false;
-  private final String backTextIcon = "\uF04D";
-  private final String closeSearchTextIcon = "\uF156";
   @BindView(R.id.backBtn)
   ImageView backBtn;
   @BindView(R.id.searchInput)

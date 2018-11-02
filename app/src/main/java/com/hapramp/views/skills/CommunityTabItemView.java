@@ -48,7 +48,7 @@ public class CommunityTabItemView extends FrameLayout {
 
   private void setSelection(boolean selected) {
     if (selected) {
-      communityBackground.setBackgroundResource(CommunityUtils.getFilledBackground(community.getCommunityId()));
+      communityBackground.setBackgroundResource(CommunityUtils.getFilledBackground(community.getmTag()));
     } else {
       communityBackground.setBackgroundResource(CommunityUtils.getBorder(community.getCommunityId()));
     }
@@ -57,7 +57,7 @@ public class CommunityTabItemView extends FrameLayout {
   public void setCommunity(CommunityModel model) {
     this.community = model;
     communityTitle.setText(model.getmName());
-    communityIcon.setImageResource(CommunityUtils.getCommunityIcon(community.getCommunityId()));
+    communityIcon.setImageResource(CommunityUtils.getCommunityIcon(community.getmTag()));
   }
 
   public void setIndex(int index) {

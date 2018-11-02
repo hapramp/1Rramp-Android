@@ -5,9 +5,10 @@
     <size
         android:width="400dp"
         android:height="2dp" />
+
     <gradient
         android:angle="90"
         android:endColor="#00ffffff"
-        android:startColor="@color/Black12" />
+        android:startColor="#1f484848" />
 
 </shape>

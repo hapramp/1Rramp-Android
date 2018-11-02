@@ -6,7 +6,6 @@
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
-        android:layout_marginTop="4dp"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_below="@+id/tabs_container" />
@@ -20,6 +19,12 @@
         android:elevation="2dp"
         android:background="@color/white"
         app:tabMode="scrollable" />
+
+    <View
+        android:layout_below="@+id/tabs_container"
+        android:background="@drawable/toolbar_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"/>
 
 </RelativeLayout>
 

@@ -230,4 +230,14 @@ public class HaprampPreferenceManager {
   public boolean shouldShowPushNotifications() {
     return preferences.getBoolean("show_notifications", true);
   }
+
+  public void setCompetitionCreateEligibility(boolean eligible) {
+    editor.putBoolean("eligible_for_competition", eligible);
+    editor.apply();
+  }
+
+  public boolean isEligibleForCompetitionCreation() {
+    return preferences.getBoolean("eligible_for_competition", false);
+  }
+
 }
