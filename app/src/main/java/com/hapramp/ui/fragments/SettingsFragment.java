@@ -198,6 +198,7 @@ public class SettingsFragment extends Fragment {
       HaprampPreferenceManager.getInstance().getSC2AccessToken()
     );
     NotificationSubscriber.unsubscribeForUserTopic();
+    NotificationSubscriber.unsubscribeForNewCompetition();
     HaprampPreferenceManager.getInstance().clearPreferences();
 
     if (!ConnectionUtils.isConnected(mContext)) {

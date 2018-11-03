@@ -1,8 +1,11 @@
 package com.hapramp.notification;
 
 import com.hapramp.notification.model.BaseNotificationModel;
+import com.hapramp.notification.model.CompetitionResultNotificationModel;
+import com.hapramp.notification.model.CompetitionWinnerNotificationModel;
 import com.hapramp.notification.model.FollowNotificationModel;
 import com.hapramp.notification.model.MentionNotificationModel;
+import com.hapramp.notification.model.NewCompetitionNotificationModel;
 import com.hapramp.notification.model.ReblogNotificationModel;
 import com.hapramp.notification.model.ReplyNotificationModel;
 import com.hapramp.notification.model.TransferNotificationModel;
@@ -38,6 +41,7 @@ public class NotificationParser {
             );
 
           } else if (type.equals(NotificationKey.NOTIFICATION_TYPE_MENTION)) {
+
             baseNotificationType = new MentionNotificationModel(
               String.valueOf(map.get(NotificationKey.KEY_TYPE)),
               Boolean.valueOf(map.get(NotificationKey.KEY_IS_ROOT_POST)),
@@ -65,11 +69,37 @@ public class NotificationParser {
 
           } else if (type.equals(NotificationKey.NOTIFICATION_TYPE_TRANSFER)) {
 
-            baseNotificationType = new TransferNotificationModel(map.get(NotificationKey.KEY_TYPE),
+            baseNotificationType = new TransferNotificationModel(
+              map.get(NotificationKey.KEY_TYPE),
               String.valueOf(map.get(NotificationKey.KEY_SENDER)),
               String.valueOf(map.get(NotificationKey.KEY_AMOUNT)),
               String.valueOf(map.get(NotificationKey.KEY_MEMO)),
               String.valueOf(map.get(NotificationKey.KEY_TIMESTAMP)));
+          } else if (type.equals(NotificationKey.NOTIFICATION_TYPE_NEW_COMPETITION)) {
+
+            baseNotificationType = new NewCompetitionNotificationModel(
+              String.valueOf(map.get(NotificationKey.KEY_TYPE)),
+              String.valueOf(map.get(NotificationKey.KEY_TITLE)),
+              String.valueOf(map.get(NotificationKey.KEY_DESCRIPTION))
+            );
+          } else if (type.equals(NotificationKey.NOTIFICATION_TYPE_COMPETITION_RESULT)) {
+
+            baseNotificationType = new CompetitionResultNotificationModel(
+              String.valueOf(map.get(NotificationKey.KEY_TYPE)),
+              String.valueOf(map.get(NotificationKey.KEY_TITLE)),
+              String.valueOf(map.get(NotificationKey.KEY_COMPETITION_ID)),
+              String.valueOf(map.get(NotificationKey.KEY_COMPETITION_TITLE)),
+              String.valueOf(map.get(NotificationKey.KEY_DESCRIPTION))
+            );
+          } else if (type.equals(NotificationKey.NOTIFICATION_TYPE_WINNER)) {
+
+            baseNotificationType = new CompetitionWinnerNotificationModel(
+              String.valueOf(map.get(NotificationKey.KEY_TYPE)),
+              String.valueOf(map.get(NotificationKey.KEY_TITLE)),
+              String.valueOf(map.get(NotificationKey.KEY_COMPETITION_ID)),
+              String.valueOf(map.get(NotificationKey.KEY_COMPETITION_TITLE)),
+              String.valueOf(map.get(NotificationKey.KEY_DESCRIPTION))
+            );
           }
         }
       }
