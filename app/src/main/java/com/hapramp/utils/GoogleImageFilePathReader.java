@@ -53,6 +53,6 @@ public class GoogleImageFilePathReader {
         Log.e("GooglePhotosError", "IOException - Error while reading selected image");
       }
     }
-    return "";
+    return null;
   }
 }

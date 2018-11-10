@@ -46,11 +46,12 @@ public class NotificationHandler {
       BaseNotificationModel baseNotificationModel = NotificationParser.parseNotification(remoteMessage.getData());
       if (baseNotificationModel != null) {
         if (baseNotificationModel.getType() != null) {
+          //assign notification id
           baseNotificationModel.setNotificationId(String.valueOf(System.currentTimeMillis()));
+          //save some notifications to firebase
           _saveNotification(baseNotificationModel);
           boolean isForeground = new ForegroundCheckTask().execute(HapRampMain.getContext()).get(2, TimeUnit.SECONDS);
           if (!isForeground && HaprampPreferenceManager.getInstance().shouldShowPushNotifications()) {
-            Log.d("NotificationHandler", baseNotificationModel.getType().toString());
             switch (baseNotificationModel.getType()) {
               case NotificationKey.NOTIFICATION_TYPE_FOLLOW:
 
@@ -180,5 +181,4 @@ public class NotificationHandler {
       notificationManager.createNotificationChannel(channel);
     }
   }
-
 }

@@ -2,6 +2,7 @@ package com.hapramp.main;
 
 import android.content.Context;
 import android.support.multidex.MultiDexApplication;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.firebase.FirebaseApp;
@@ -28,6 +29,6 @@ public class HapRampMain extends MultiDexApplication {
   }
 
   public static Context getContext() {
-    return context;
+    return HapRampMain.context;
   }
 }

@@ -18,7 +18,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -216,7 +215,11 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
         handler.post(new Runnable() {
           @Override
           public void run() {
-            addImage(filePath);
+            if (filePath != null) {
+              addImage(filePath);
+            } else {
+              Toast.makeText(CreatePostActivity.this, "Failed to read shared image", Toast.LENGTH_LONG).show();
+            }
           }
         });
       }

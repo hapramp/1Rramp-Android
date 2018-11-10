@@ -1,6 +1,7 @@
 package com.hapramp.utils;
 
 import android.content.Context;
+
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.FollowingsCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -25,7 +26,7 @@ public class CompleteFollowingHelper implements FollowingsCallback {
   }
 
   private void fetchFollowingsFrom(String startUser) {
-    dataStore.requestFollowings(myUsername,startUser,this);
+    dataStore.requestFollowings(myUsername, startUser, this);
   }
 
   public void setFollowingsSyncCompleteListener(FollowingsSyncCompleteListener followingsSyncCompleteListener) {
@@ -37,8 +38,10 @@ public class CompleteFollowingHelper implements FollowingsCallback {
     if (lastUserInResult == null) {
       followingList.addAll(followings);
     } else {
-      followings.remove(0);
-      followingList.addAll(followings);
+      if (followings.size() > 0) {
+        followings.remove(0);
+        followingList.addAll(followings);
+      }
     }
     if (followings.size() > 0) {
       lastUserInResult = followings.get(followings.size() - 1);

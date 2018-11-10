@@ -262,6 +262,7 @@ public class CompetitionFeedItemView extends FrameLayout {
   }
 
   /**
+   * Timers are same for admin and user interface.
    * sets action button when competition is not started.
    */
   private void setWhenNotStarted(String startsIn) {
@@ -275,6 +276,7 @@ public class CompetitionFeedItemView extends FrameLayout {
   }
 
   /**
+   * Sets different action for users and admin interface.
    * @param isAdmin flag for admin.
    * @param endsAt  time when competition ends
    */

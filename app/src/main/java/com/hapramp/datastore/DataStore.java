@@ -24,8 +24,6 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
 
 import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.List;
 
 import okhttp3.Response;
@@ -91,8 +89,8 @@ public class DataStore extends DataDispatcher {
             dispatchUserCommunityError("Error Code:" + response.code(), communitiesCallback);
           }
         }
-        catch (IOException e) {
-          dispatchUserCommunityError("IOException " + e.toString(), communitiesCallback);
+        catch (Exception e) {
+          dispatchUserCommunityError("Exception " + e.toString(), communitiesCallback);
         }
       }
     }.start();
@@ -135,8 +133,7 @@ public class DataStore extends DataDispatcher {
         try {
           String url = UrlBuilder.competitionsListUrl();
           Response response = NetworkApi.getNetworkApiInstance().fetch(url);
-          String responseString = null;
-          // TODO: 30/10/18  issues
+          String responseString;
           responseString = response.body().string();
           dispatchCompetitionsList(responseString, competitionsListCallback);
         }
@@ -155,7 +152,7 @@ public class DataStore extends DataDispatcher {
         try {
           String url = UrlBuilder.rcInfoUrl(username);
           Response response = NetworkApi.getNetworkApiInstance().fetch(url);
-          String responseString = null;
+          String responseString;
           responseString = response.body().string();
           dispatchRc(responseString, resourceCreditCallback);
         }
@@ -173,11 +170,11 @@ public class DataStore extends DataDispatcher {
         try {
           String url = UrlBuilder.competitionEntryUrl(competitionId);
           Response response = NetworkApi.getNetworkApiInstance().fetch(url);
-          String responseString = null;
+          String responseString;
           responseString = response.body().string();
           dispatchCompetitionEntries(responseString, competitionEntriesFetchCallback);
         }
-        catch (IOException e) {
+        catch (Exception e) {
           e.printStackTrace();
           dispatchCompetitionEntriesError(competitionEntriesFetchCallback);
         }
@@ -192,11 +189,11 @@ public class DataStore extends DataDispatcher {
         try {
           String url = UrlBuilder.competitionWinnersUrl(competitionId);
           Response response = NetworkApi.getNetworkApiInstance().fetch(url);
-          String responseString = null;
+          String responseString;
           responseString = response.body().string();
           dispatchCompetitionEntries(responseString, competitionEntriesFetchCallback);
         }
-        catch (IOException e) {
+        catch (Exception e) {
           e.printStackTrace();
           dispatchCompetitionEntriesError(competitionEntriesFetchCallback);
         }
@@ -216,11 +213,11 @@ public class DataStore extends DataDispatcher {
           try {
             String url = UrlBuilder.competitionEligibilityCheckUrl(username);
             Response response = NetworkApi.getNetworkApiInstance().fetch(url);
-            String responseString = null;
+            String responseString;
             responseString = response.body().string();
             dispatchCompetitionEligibility(responseString);
           }
-          catch (IOException e) {
+          catch (Exception e) {
             e.printStackTrace();
           }
         }
@@ -240,11 +237,11 @@ public class DataStore extends DataDispatcher {
         try {
           String url = UrlBuilder.judgesListUrl();
           Response response = NetworkApi.getNetworkApiInstance().fetch(url);
-          String responseString = null;
+          String responseString;
           responseString = response.body().string();
           dispatchJudgesList(responseString, listFetchFromServerCallback);
         }
-        catch (IOException e) {
+        catch (Exception e) {
           e.printStackTrace();
         }
       }
@@ -282,8 +279,8 @@ public class DataStore extends DataDispatcher {
             dispatchUserCommunityError("Error Code:" + response.code(), communitiesCallback);
           }
         }
-        catch (IOException e) {
-          dispatchUserCommunityError("IOException " + e.toString(), communitiesCallback);
+        catch (Exception e) {
+          dispatchUserCommunityError("Exception " + e.toString(), communitiesCallback);
         }
       }
     }.start();
@@ -324,8 +321,8 @@ public class DataStore extends DataDispatcher {
             dispatchUserFeedsError("Error Code:" + response.code(), userFeedCallback);
           }
         }
-        catch (IOException e) {
-          dispatchUserFeedsError("IOException " + e.toString(), userFeedCallback);
+        catch (Exception e) {
+          dispatchUserFeedsError("Exception " + e.toString(), userFeedCallback);
         }
       }
     }.start();
@@ -368,8 +365,8 @@ public class DataStore extends DataDispatcher {
             dispatchUserFeedsError("Error Code:" + response.code(), userFeedCallback);
           }
         }
-        catch (IOException e) {
-          dispatchUserFeedsError("IOException " + e.toString(), userFeedCallback);
+        catch (Exception e) {
+          dispatchUserFeedsError("Exception " + e.toString(), userFeedCallback);
         }
       }
     }.start();
@@ -410,8 +407,8 @@ public class DataStore extends DataDispatcher {
             dispatchUserFeedsError("Error Code:" + response.code(), userFeedCallback);
           }
         }
-        catch (IOException e) {
-          dispatchUserFeedsError("IOException " + e.toString(), userFeedCallback);
+        catch (Exception e) {
+          dispatchUserFeedsError("Exception " + e.toString(), userFeedCallback);
         }
       }
     }.start();
@@ -446,8 +443,8 @@ public class DataStore extends DataDispatcher {
             dispatchUserProfileFetchError("Error Code:" + response.code(), userProfileCallback);
           }
         }
-        catch (IOException e) {
-          dispatchUserProfileFetchError("IOException " + e.toString(), userProfileCallback);
+        catch (Exception e) {
+          dispatchUserProfileFetchError("Exception " + e.toString(), userProfileCallback);
         }
       }
     }.start();
@@ -484,8 +481,8 @@ public class DataStore extends DataDispatcher {
             dispatchUserFeedsError("Error Code:" + response.code(), userFeedCallback);
           }
         }
-        catch (IOException e) {
-          dispatchUserFeedsError("IOException " + e.toString(), userFeedCallback);
+        catch (Exception e) {
+          dispatchUserFeedsError("Exception " + e.toString(), userFeedCallback);
         }
       }
     }.start();
@@ -519,8 +516,8 @@ public class DataStore extends DataDispatcher {
             dispatchCommunityFeedError("Error Code:" + response.code(), userFeedCallback);
           }
         }
-        catch (IOException e) {
-          dispatchCommunityFeedError("IOException " + e.toString(), userFeedCallback);
+        catch (Exception e) {
+          dispatchCommunityFeedError("Exception " + e.toString(), userFeedCallback);
         }
       }
     }.start();
@@ -572,8 +569,8 @@ public class DataStore extends DataDispatcher {
             dispatchUserFeedsError("Error Code:" + response.code(), userFeedCallback);
           }
         }
-        catch (IOException e) {
-          dispatchUserFeedsError("IOException " + e.toString(), userFeedCallback);
+        catch (Exception e) {
+          dispatchUserFeedsError("Exception " + e.toString(), userFeedCallback);
         }
       }
     }.start();
@@ -605,8 +602,8 @@ public class DataStore extends DataDispatcher {
             dispatchFollowInfoError("Error Code:" + response.code(), followInfoCallback);
           }
         }
-        catch (IOException e) {
-          dispatchFollowInfo("IOException " + e.toString(), followInfoCallback);
+        catch (Exception e) {
+          dispatchFollowInfo("Exception " + e.toString(), followInfoCallback);
         }
       }
     }.start();
@@ -636,8 +633,8 @@ public class DataStore extends DataDispatcher {
             dispatchUserSearchError("Error Code:" + response.code(), userSearchCallback);
           }
         }
-        catch (IOException e) {
-          dispatchUserSearchError("IOException " + e.toString(), userSearchCallback);
+        catch (Exception e) {
+          dispatchUserSearchError("Exception " + e.toString(), userSearchCallback);
         }
       }
     }.start();
@@ -664,8 +661,8 @@ public class DataStore extends DataDispatcher {
             dispatchTransferHistoryError("Error Code:" + response.code(), transferHistoryCallback);
           }
         }
-        catch (IOException e) {
-          dispatchTransferHistoryError("IOException " + e.toString(), transferHistoryCallback);
+        catch (Exception e) {
+          dispatchTransferHistoryError("Exception " + e.toString(), transferHistoryCallback);
         }
       }
     }.start();
@@ -710,8 +707,8 @@ public class DataStore extends DataDispatcher {
             dispatchUserFeedsError("Error Code:" + response.code(), userFeedCallback);
           }
         }
-        catch (IOException e) {
-          dispatchUserFeedsError("IOException " + e.toString(), userFeedCallback);
+        catch (Exception e) {
+          dispatchUserFeedsError("Exception " + e.toString(), userFeedCallback);
         }
       }
     }.start();
@@ -738,8 +735,8 @@ public class DataStore extends DataDispatcher {
             dispatchCommentsFetchError("Error Code:" + response.code(), commentsCallback);
           }
         }
-        catch (IOException e) {
-          dispatchCommentsFetchError("IOException " + e.toString(), commentsCallback);
+        catch (Exception e) {
+          dispatchCommentsFetchError("Exception " + e.toString(), commentsCallback);
         }
       }
     }.start();
@@ -941,8 +938,8 @@ public class DataStore extends DataDispatcher {
             dispatchUserFeedsError("Error Code:" + response.code(), userFeedCallback);
           }
         }
-        catch (IOException e) {
-          dispatchUserFeedsError("IOException " + e.toString(), userFeedCallback);
+        catch (Exception e) {
+          dispatchUserFeedsError("Exception " + e.toString(), userFeedCallback);
         }
       }
     }.start();

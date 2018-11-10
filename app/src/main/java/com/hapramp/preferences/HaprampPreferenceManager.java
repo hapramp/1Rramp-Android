@@ -35,7 +35,7 @@ public class HaprampPreferenceManager {
   public void clearPreferences() {
     editor.clear();
     editor.apply();
-    DataStoreCachePreference.getInstance().clearCaches();
+    DataStoreCachePreference.getInstance(HapRampMain.getContext()).clearCaches();
     setOnBoardingVisited();
   }
 

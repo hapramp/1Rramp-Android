@@ -243,22 +243,22 @@ public class UserInfoFragment extends Fragment implements FollowInfoCallback, Us
     }.start();
   }
 
-  private void navigateToFollowingListPage() {
+  private void navigateToFollowersListPage() {
     if (followInfoAvailable) {
       Intent intent = new Intent(mContext, FollowListActivity.class);
       intent.putExtra(EXTRA_KEY_USERNAME, mUsername);
-      intent.putExtra(EXTRA_KEY_TAB_INDEX, 1);
+      intent.putExtra(EXTRA_KEY_TAB_INDEX, 0);
       intent.putExtra(EXTRA_KEY_FOLLOWING, followingCount);
       intent.putExtra(EXTRA_KEY_FOLLOWERS, followersCount);
       mContext.startActivity(intent);
     }
   }
 
-  private void navigateToFollowersListPage() {
+  private void navigateToFollowingListPage() {
     if (followInfoAvailable) {
       Intent intent = new Intent(mContext, FollowListActivity.class);
       intent.putExtra(EXTRA_KEY_USERNAME, mUsername);
-      intent.putExtra(EXTRA_KEY_TAB_INDEX, 0);
+      intent.putExtra(EXTRA_KEY_TAB_INDEX, 1);
       intent.putExtra(EXTRA_KEY_FOLLOWING, followingCount);
       intent.putExtra(EXTRA_KEY_FOLLOWERS, followersCount);
       mContext.startActivity(intent);
@@ -555,9 +555,14 @@ public class UserInfoFragment extends Fragment implements FollowInfoCallback, Us
   }
 
   private void setFollowingCount(int count) {
-    String followingText = String.format(getContext().getString(R.string.profile_following_count_text_singular), count);
-    if (followersCountTv != null) {
-      followingsCountTv.setText(followingText);
+    try {
+      String followingText = String.format(getContext().getString(R.string.profile_following_count_text_singular), count);
+      if (followersCountTv != null) {
+        followingsCountTv.setText(followingText);
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
     }
   }
 

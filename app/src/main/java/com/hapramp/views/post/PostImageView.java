@@ -232,6 +232,7 @@ public class PostImageView extends FrameLayout implements ImageRotationHandler.I
       });
     }
     catch (Exception e) {
+      Log.d("FilePathUtils", "" + e.toString());
       informationTv.setText("Failed to load image.");
       Crashlytics.logException(e);
       progressBar.setVisibility(GONE);
