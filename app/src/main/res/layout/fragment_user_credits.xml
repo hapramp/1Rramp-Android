@@ -30,7 +30,7 @@
             <com.hapramp.views.CustomProgressBar
                 android:id="@+id/voting_power_progress"
                 android:layout_width="match_parent"
-                android:layout_height="16dp"
+                android:layout_height="18dp"
                 android:layout_below="@+id/vp_label"
                 android:layout_marginTop="8dp"
                 app:primaryColor="#D92196F3"
@@ -49,7 +49,7 @@
             <com.hapramp.views.CustomProgressBar
                 android:id="@+id/resource_credit_progress"
                 android:layout_width="match_parent"
-                android:layout_height="16dp"
+                android:layout_height="18dp"
                 android:layout_below="@+id/rc_label"
                 android:layout_marginTop="8dp"
                 app:primaryColor="#7ed321"
