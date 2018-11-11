@@ -54,7 +54,7 @@ public class DelegationListActivity extends AppCompatActivity implements Delegat
 
   private void initializeObjects() {
     dataStore = new DataStore();
-    delegationListAdapter = new DelegationListAdapter();
+    delegationListAdapter = new DelegationListAdapter(this);
     delegationsRv.setLayoutManager(new LinearLayoutManager(this));
     delegationsRv.setAdapter(delegationListAdapter);
   }

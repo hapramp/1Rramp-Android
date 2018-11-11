@@ -1,5 +1,8 @@
 package com.hapramp.ui.adapters;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +15,7 @@ import com.hapramp.R;
 import com.hapramp.models.DelegationModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.ImageHandler;
+import com.hapramp.utils.WalletOperations;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -22,9 +26,11 @@ import butterknife.ButterKnife;
 public class DelegationListAdapter extends RecyclerView.Adapter<DelegationListAdapter.DelegationItemViewHolder> {
   private ArrayList<DelegationModel> delegationModels;
   private String mCurrentUsername;
+  private Context mContext;
   private boolean shouldShowDelegationCancellationButton;
 
-  public DelegationListAdapter() {
+  public DelegationListAdapter(Context context) {
+    this.mContext = context;
     this.delegationModels = new ArrayList<>();
     mCurrentUsername = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
   }
@@ -55,8 +61,13 @@ public class DelegationListAdapter extends RecyclerView.Adapter<DelegationListAd
     return delegationModels.size();
   }
 
-  private void navigateToCancelDelegation() {
-
+  private void navigateToCancelDelegation(String delegatee) {
+    String url = WalletOperations.getDelegateUrl(
+      HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
+      delegatee,
+      "0 VESTS");
+    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+    mContext.startActivity(browserIntent);
   }
 
   class DelegationItemViewHolder extends RecyclerView.ViewHolder {
@@ -74,19 +85,19 @@ public class DelegationListAdapter extends RecyclerView.Adapter<DelegationListAd
       ButterKnife.bind(this, itemView);
     }
 
-    public void bind(DelegationModel delegation) {
+    public void bind(final DelegationModel delegation) {
       ImageHandler.loadCircularImage(itemView.getContext(), delegateeImage,
         String.format(itemView.getContext().getResources().getString(R.string.steem_user_profile_pic_format),
           delegation.getDelegatee()));
       delegateeUsername.setText(delegation.getDelegatee());
-      delegatedSp.setText(String.format(Locale.US,"%,.2f", delegation.getDelegatedSteemPower()));
+      delegatedSp.setText(String.format(Locale.US, "%,.2f", delegation.getDelegatedSteemPower()));
       if (shouldShowDelegationCancellationButton) {
         cancelDelegationBtn.setVisibility(View.VISIBLE);
         cancelDelegationBtn.setClickable(true);
         cancelDelegationBtn.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View view) {
-            navigateToCancelDelegation();
+            navigateToCancelDelegation(delegation.getDelegatee());
           }
         });
       } else {
