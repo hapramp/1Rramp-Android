@@ -72,7 +72,7 @@ public class DelegationListActivity extends AppCompatActivity implements Delegat
     Intent ri = getIntent();
     if (ri != null) {
       mUsername = ri.getStringExtra(EXTRA_KEY_DELEGATOR);
-      actionBarTitle.setText(String.format("%s DELEGATED TO ", mUsername));
+      actionBarTitle.setText(String.format("%s's Delegations", mUsername));
     }
   }
 

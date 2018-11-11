@@ -10,25 +10,32 @@ import android.widget.TextView;
 
 import com.hapramp.R;
 import com.hapramp.models.DelegationModel;
+import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.ImageHandler;
-import com.hapramp.utils.MomentsUtils;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DelegationListAdapter extends RecyclerView.Adapter<DelegationListAdapter.DelegationItemViewHolder> {
   private ArrayList<DelegationModel> delegationModels;
+  private String mCurrentUsername;
+  private boolean shouldShowDelegationCancellationButton;
 
   public DelegationListAdapter() {
     this.delegationModels = new ArrayList<>();
+    mCurrentUsername = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
   }
 
 
   public void setDelegationModels(ArrayList<DelegationModel> delegationModels) {
     this.delegationModels = delegationModels;
-    notifyDataSetChanged();
+    if (delegationModels.size() > 0) {
+      shouldShowDelegationCancellationButton = delegationModels.get(0).getDelegator().equals(mCurrentUsername);
+      notifyDataSetChanged();
+    }
   }
 
   @NonNull
@@ -48,6 +55,10 @@ public class DelegationListAdapter extends RecyclerView.Adapter<DelegationListAd
     return delegationModels.size();
   }
 
+  private void navigateToCancelDelegation() {
+
+  }
+
   class DelegationItemViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.delegatee_image)
     ImageView delegateeImage;
@@ -55,8 +66,8 @@ public class DelegationListAdapter extends RecyclerView.Adapter<DelegationListAd
     TextView delegateeUsername;
     @BindView(R.id.delegated_sp)
     TextView delegatedSp;
-    @BindView(R.id.delegation_time)
-    TextView delegationTime;
+    @BindView(R.id.cancel_delegation_btn)
+    TextView cancelDelegationBtn;
 
     public DelegationItemViewHolder(View itemView) {
       super(itemView);
@@ -68,8 +79,20 @@ public class DelegationListAdapter extends RecyclerView.Adapter<DelegationListAd
         String.format(itemView.getContext().getResources().getString(R.string.steem_user_profile_pic_format),
           delegation.getDelegatee()));
       delegateeUsername.setText(delegation.getDelegatee());
-      delegatedSp.setText(String.format("%.2f SP", delegation.getDelegatedSteemPower()));
-      delegationTime.setText(String.format("Delegation Time: %s", MomentsUtils.getFormattedTime(delegation.getTime())));
+      delegatedSp.setText(String.format(Locale.US,"%,.2f", delegation.getDelegatedSteemPower()));
+      if (shouldShowDelegationCancellationButton) {
+        cancelDelegationBtn.setVisibility(View.VISIBLE);
+        cancelDelegationBtn.setClickable(true);
+        cancelDelegationBtn.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View view) {
+            navigateToCancelDelegation();
+          }
+        });
+      } else {
+        cancelDelegationBtn.setVisibility(View.GONE);
+        cancelDelegationBtn.setClickable(false);
+      }
     }
   }
 }
