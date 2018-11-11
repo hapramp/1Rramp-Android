@@ -9,11 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
 import com.hapramp.models.DelegationModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.ui.activity.ProfileActivity;
+import com.hapramp.utils.Constants;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.WalletOperations;
 
@@ -71,14 +75,20 @@ public class DelegationListAdapter extends RecyclerView.Adapter<DelegationListAd
   }
 
   class DelegationItemViewHolder extends RecyclerView.ViewHolder {
+    @BindView(R.id.cancel_delegation_btn)
+    TextView cancelDelegationBtn;
     @BindView(R.id.delegatee_image)
     ImageView delegateeImage;
     @BindView(R.id.delegatee_username)
     TextView delegateeUsername;
+    @BindView(R.id.user_container)
+    LinearLayout userContainer;
     @BindView(R.id.delegated_sp)
     TextView delegatedSp;
-    @BindView(R.id.cancel_delegation_btn)
-    TextView cancelDelegationBtn;
+    @BindView(R.id.sp_label)
+    TextView spLabel;
+    @BindView(R.id.main_container)
+    RelativeLayout mainContainer;
 
     public DelegationItemViewHolder(View itemView) {
       super(itemView);
@@ -91,6 +101,12 @@ public class DelegationListAdapter extends RecyclerView.Adapter<DelegationListAd
           delegation.getDelegatee()));
       delegateeUsername.setText(delegation.getDelegatee());
       delegatedSp.setText(String.format(Locale.US, "%,.2f", delegation.getDelegatedSteemPower()));
+      userContainer.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          navigateToUserProfile(delegation.getDelegatee());
+        }
+      });
       if (shouldShowDelegationCancellationButton) {
         cancelDelegationBtn.setVisibility(View.VISIBLE);
         cancelDelegationBtn.setClickable(true);
@@ -105,5 +121,11 @@ public class DelegationListAdapter extends RecyclerView.Adapter<DelegationListAd
         cancelDelegationBtn.setClickable(false);
       }
     }
+  }
+
+  private void navigateToUserProfile(String username) {
+    Intent i = new Intent(mContext, ProfileActivity.class);
+    i.putExtra(Constants.EXTRAA_KEY_STEEM_USER_NAME, username);
+    mContext.startActivity(i);
   }
 }

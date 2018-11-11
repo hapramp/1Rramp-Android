@@ -25,6 +25,7 @@
         android:textColor="@color/white" />
 
     <RelativeLayout
+        android:clickable="false"
         android:id="@+id/main_container"
         android:layout_width="wrap_content"
         android:layout_height="84dp"
@@ -38,6 +39,8 @@
             android:src="@drawable/right_arrow" />
 
         <LinearLayout
+            android:clickable="true"
+            android:background="?selectableItemBackground"
             android:id="@+id/user_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
