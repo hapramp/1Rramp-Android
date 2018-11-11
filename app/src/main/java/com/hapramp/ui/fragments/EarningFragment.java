@@ -29,6 +29,7 @@ import com.hapramp.steemconnect4j.SteemConnectCallback;
 import com.hapramp.steemconnect4j.SteemConnectException;
 import com.hapramp.ui.activity.AccountHistoryActivity;
 import com.hapramp.ui.activity.DelegateActivity;
+import com.hapramp.ui.activity.DelegationListActivity;
 import com.hapramp.ui.activity.PowerDownActivity;
 import com.hapramp.ui.activity.PowerUpActivity;
 import com.hapramp.ui.activity.TransferActivity;
@@ -217,6 +218,12 @@ public class EarningFragment extends Fragment implements
   }
 
   private void attachListener() {
+    walletSteemPowerTv.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        navigateToDelegationsListPage();
+      }
+    });
     historyBtn.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -276,6 +283,12 @@ public class EarningFragment extends Fragment implements
         requestClaimReward();
       }
     });
+  }
+
+  private void navigateToDelegationsListPage() {
+    Intent intent = new Intent(mContext, DelegationListActivity.class);
+    intent.putExtra(DelegationListActivity.EXTRA_KEY_DELEGATOR, mUsername);
+    mContext.startActivity(intent);
   }
 
   private void disableWalletActions() {

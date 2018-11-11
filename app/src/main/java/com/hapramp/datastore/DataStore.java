@@ -6,6 +6,7 @@ import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
 import com.hapramp.datastore.callbacks.CompetitionEntriesFetchCallback;
 import com.hapramp.datastore.callbacks.CompetitionsListCallback;
+import com.hapramp.datastore.callbacks.DelegationsCallback;
 import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.datastore.callbacks.FollowersCallback;
 import com.hapramp.datastore.callbacks.FollowingsCallback;
@@ -24,6 +25,7 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
 
 import org.json.JSONObject;
+
 import java.util.List;
 
 import okhttp3.Response;
@@ -116,6 +118,25 @@ public class DataStore extends DataDispatcher {
         }
         catch (Exception e) {
 
+        }
+      }
+    }.start();
+  }
+
+  public void requestDelegations(final String username, final DelegationsCallback delegationsCallback) {
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          String url = UrlBuilder.steemUrl();
+          String rb = SteemRequestBody.getDelegationsListBody(username);
+          Response delegationsResponse = NetworkApi.getNetworkApiInstance().postAndFetch(url, rb);
+          String responseString = delegationsResponse.body().string();
+          dispatchDelegationsList(responseString, delegationsCallback);
+        }
+        catch (Exception e) {
+          e.printStackTrace();
+          dispatchDelegationsList(null, delegationsCallback);
         }
       }
     }.start();
@@ -819,6 +840,7 @@ public class DataStore extends DataDispatcher {
           Response userReponse = NetworkApi.getNetworkApiInstance().fetch(profileUrl);
           if (globalPropsResponse.isSuccessful() && userReponse.isSuccessful()) {
             String globalePropsResponseJson = globalPropsResponse.body().string();
+            HaprampPreferenceManager.getInstance().saveGlobalPropsInfo(globalePropsResponseJson);
             String userResponseJson = userReponse.body().string();
             dispatchWalletInfo(globalePropsResponseJson, userResponseJson, userWalletCallback);
           } else {

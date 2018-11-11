@@ -6,6 +6,7 @@ import com.hapramp.models.CommentModel;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.models.CompetitionAdmin;
 import com.hapramp.models.CompetitionModel;
+import com.hapramp.models.DelegationModel;
 import com.hapramp.models.JudgeModel;
 import com.hapramp.models.ResourceCreditModel;
 import com.hapramp.models.VestedShareModel;
@@ -595,6 +596,27 @@ public class JSONParser {
       e.printStackTrace();
     }
     return entries;
+  }
+
+  public ArrayList<DelegationModel> parseDelegations(String response) {
+    ArrayList<DelegationModel> delegationModels = new ArrayList<>();
+    try {
+      JSONObject jsonObject = new JSONObject(response);
+      JSONArray delegationsArray = jsonObject.getJSONArray("result");
+      for (int i = 0; i < delegationsArray.length(); i++) {
+        JSONObject item = delegationsArray.getJSONObject(i);
+        delegationModels.add(new DelegationModel(
+          item.optString("delegator", ""),
+          item.optString("delegatee", ""),
+          item.optString("vesting_shares", "0 VESTS"),
+          item.optString("min_delegation_time", "")
+        ));
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+    return delegationModels;
   }
 
   public ResourceCreditModel parseRc(String response) {

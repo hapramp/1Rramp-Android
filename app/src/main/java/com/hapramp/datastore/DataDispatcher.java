@@ -7,6 +7,7 @@ import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
 import com.hapramp.datastore.callbacks.CompetitionEntriesFetchCallback;
 import com.hapramp.datastore.callbacks.CompetitionsListCallback;
+import com.hapramp.datastore.callbacks.DelegationsCallback;
 import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.datastore.callbacks.FollowersCallback;
 import com.hapramp.datastore.callbacks.FollowingsCallback;
@@ -23,6 +24,7 @@ import com.hapramp.datastore.callbacks.UserWalletCallback;
 import com.hapramp.models.CommentModel;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.models.CompetitionModel;
+import com.hapramp.models.DelegationModel;
 import com.hapramp.models.FollowCountInfo;
 import com.hapramp.models.GlobalProperties;
 import com.hapramp.models.JudgeModel;
@@ -593,4 +595,24 @@ public class DataDispatcher {
     }
   }
 
+  void dispatchDelegationsList(String response, final DelegationsCallback delegationsCallback) {
+    if (delegationsCallback != null) {
+      if (response != null) {
+        final ArrayList<DelegationModel> delegationModels = jsonParser.parseDelegations(response);
+        handler.post(new Runnable() {
+          @Override
+          public void run() {
+            delegationsCallback.onDelegationsFetched(delegationModels);
+          }
+        });
+      } else {
+        handler.post(new Runnable() {
+          @Override
+          public void run() {
+            delegationsCallback.onDelegationsFetchFailed();
+          }
+        });
+      }
+    }
+  }
 }

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="@drawable/delegation_list_card_bg"
+    android:elevation="2dp"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/delegatee_image"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/circular_image_placeholder" />
+
+    <TextView
+        android:id="@+id/delegatee_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/delegatee_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="4dp"
+        android:text="bxute"
+        android:textColor="@color/Black87"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/delegated_sp"
+        android:layout_below="@+id/delegatee_username"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/photography"
+        android:textSize="20sp"
+        android:text="10034934 SP"
+        android:layout_marginTop="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/delegation_time"
+        android:layout_marginTop="8dp"
+        android:layout_below="@+id/delegated_sp"
+        android:text="Delegated 1 year ago"
+        android:layout_alignParentRight="true"
+        android:textColor="@color/Black54"
+        android:textSize="12sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

@@ -20,7 +20,6 @@ import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.UserSearchCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.ConnectionUtils;
-import com.hapramp.utils.FontManager;
 import com.hapramp.utils.WalletOperations;
 import com.hapramp.views.UserMentionSuggestionListView;
 
@@ -54,6 +53,10 @@ public class DelegateActivity extends AppCompatActivity implements UserSearchCal
   TextView continueBtn;
   @BindView(R.id.cancelBtn)
   TextView cancelBtn;
+  @BindView(R.id.steem_power_warning)
+  TextView steemPowerWarning;
+  @BindView(R.id.show_delegation_btn)
+  TextView showDelegationBtn;
   private double mSPBalance;
   private String finalTransferAmount;
   private DataStore dataStore;
@@ -73,11 +76,17 @@ public class DelegateActivity extends AppCompatActivity implements UserSearchCal
     if (intent != null) {
       String _balance = intent.getExtras().getString(EXTRA_SP_BALANCE, "0 SP");
       mSPBalance = Double.parseDouble(_balance.split(" ")[0]);
-      balanceTv.setText(String.format("Your balance: %s", _balance));
+      balanceTv.setText(String.format(Locale.US, "Your balance: %.2f SP", mSPBalance));
     }
   }
 
   private void attachListeners() {
+    showDelegationBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        navigateToDelegationsListPage();
+      }
+    });
     receiver_usernameEt.addTextChangedListener(new TextWatcher() {
       @Override
       public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -129,6 +138,12 @@ public class DelegateActivity extends AppCompatActivity implements UserSearchCal
         }
       }
     });
+  }
+
+  private void navigateToDelegationsListPage() {
+    Intent intent = new Intent(this, DelegationListActivity.class);
+    intent.putExtra(DelegationListActivity.EXTRA_KEY_DELEGATOR, HaprampPreferenceManager.getInstance().getCurrentSteemUsername());
+    startActivity(intent);
   }
 
   private void fetchSuggestions(String query) {

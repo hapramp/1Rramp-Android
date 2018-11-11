@@ -240,4 +240,12 @@ public class HaprampPreferenceManager {
     return preferences.getBoolean("eligible_for_competition", false);
   }
 
+  public void saveGlobalPropsInfo(String globalePropsResponseJson) {
+    editor.putString("globalprops", globalePropsResponseJson);
+    editor.apply();
+  }
+
+  public String getGlobalProps() {
+    return preferences.getString("globalprops", null);
+  }
 }
