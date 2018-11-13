@@ -13,7 +13,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,12 +25,12 @@ import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.analytics.EventReporter;
 import com.hapramp.api.URLS;
+import com.hapramp.draft.DraftsHelper;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
-import com.hapramp.utils.FontManager;
 import com.hapramp.utils.GoogleImageFilePathReader;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.PostHashTagPreprocessor;
@@ -46,10 +45,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import xute.markdeditor.EditorControlBar;
 import xute.markdeditor.MarkDEditor;
+import xute.markdeditor.models.DraftModel;
 
-public class CreateArticleActivity extends AppCompatActivity implements SteemPostCreator.SteemPostCreatorCallback, EditorControlBar.EditorControlListener {
+import static xute.markdeditor.Styles.TextComponentStyle.NORMAL;
 
+public class CreateArticleActivity extends AppCompatActivity implements SteemPostCreator.SteemPostCreatorCallback, EditorControlBar.EditorControlListener, DraftsHelper.DraftsDatabaseCallbacks {
+  public static final String EXTRA_KEY_DRAFT_ID = "draftId";
   private static final int REQUEST_IMAGE_SELECTOR = 119;
+  private final long NO_DRAFT = -1;
   @BindView(R.id.backBtn)
   ImageView closeBtn;
   @BindView(R.id.previewButton)
@@ -88,6 +91,9 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   private String generated_permalink;
   private String body;
   private List<String> images;
+  private DraftsHelper draftsHelper;
+  private long mDraftId;
+  private boolean blogPublished;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -100,11 +106,19 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   }
 
   private void init() {
+    draftsHelper = new DraftsHelper(this);
+    draftsHelper.setDatabaseCallbacks(this);
     progressDialog = new ProgressDialog(this);
     articleCategoryView.initCategory();
     editorControlBar.setEditorControlListener(this);
     editorControlBar.setEditor(markDEditor);
-    markDEditor.setServerInfo(URLS.BASE_URL, HaprampPreferenceManager.getInstance().getUserToken());
+    Intent receiveIntent = getIntent();
+    if (receiveIntent != null) {
+      long draftId = receiveIntent.getLongExtra(EXTRA_KEY_DRAFT_ID, NO_DRAFT);
+      configureEditor(draftId);
+    } else {
+      configureEditor(NO_DRAFT);
+    }
   }
 
   private void attachListeners() {
@@ -142,6 +156,27 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
 
   }
 
+  private void configureEditor(long draftId) {
+    this.mDraftId = draftId;
+    if (draftId != NO_DRAFT) {
+      showProgressDialog(true, "Loading Draft...");
+      //load draft
+      draftsHelper.fetchDraftById(draftId);
+      markDEditor.configureEditor(URLS.BASE_URL,
+        HaprampPreferenceManager.getInstance().getUserToken(),
+        true,
+        "",
+        NORMAL);
+      //must call loadDraft() when draft loaded
+    } else {
+      markDEditor.configureEditor(URLS.BASE_URL,
+        HaprampPreferenceManager.getInstance().getUserToken(),
+        false,
+        "Body here...",
+        NORMAL);
+    }
+  }
+
   private void showMetaData(boolean show) {
     int vis = show ? View.VISIBLE : View.GONE;
     metaView.setVisibility(vis);
@@ -160,6 +195,41 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     }
   }
 
+  private void showConnectivityError() {
+    Snackbar.make(toolbarContainer, "No Internet!", Snackbar.LENGTH_SHORT).show();
+  }
+
+  private void showExistAlert() {
+    AlertDialog.Builder builder = new AlertDialog.Builder(this)
+      .setTitle("Exit ?")
+      .setMessage("Your draft will be saved.")
+      .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+          close();
+        }
+      })
+      .setNegativeButton("No", null);
+    builder.show();
+  }
+
+  private void showProgressDialog(boolean show, String msg) {
+    if (progressDialog != null) {
+      if (show) {
+        progressDialog.setMessage(msg);
+        progressDialog.setCancelable(false);
+        progressDialog.setIndeterminate(true);
+        progressDialog.show();
+      } else {
+        progressDialog.dismiss();
+      }
+    }
+  }
+
+  private void includeCustomTags(ArrayList<String> tags) {
+    tags.addAll(tagsInputBox.getHashTags());
+  }
+
   private List<String> getImageLinks() {
     List<String> images = markDEditor.getImageList();
     for (int i = 0; i < images.size(); i++) {
@@ -169,7 +239,6 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     }
     return images;
   }
-
 
   private boolean validArticle() {
     if (title.length() > 0) {
@@ -189,7 +258,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   }
 
   private void sendPostToSteemBlockChain() {
-    showPublishingProgressDialog(true, "Publishing...");
+    showProgressDialog(true, "Publishing...");
     SteemPostCreator steemPostCreator = new SteemPostCreator();
     steemPostCreator.setSteemPostCreatorCallback(this);
     //add footer
@@ -197,64 +266,25 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     steemPostCreator.createPost(body, title, images, tags, generated_permalink);
   }
 
-  private void showConnectivityError() {
-    Snackbar.make(toolbarContainer, "No Internet!", Snackbar.LENGTH_SHORT).show();
-  }
-
-  private void showExistAlert() {
-    AlertDialog.Builder builder = new AlertDialog.Builder(this)
-      .setTitle("Discard ?")
-      .setMessage("You cannot recover discarded blogs.")
-      .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-          close();
-        }
-      })
-      .setNegativeButton("No", null);
-    builder.show();
+  private void close() {
+    finish();
+    overridePendingTransition(R.anim.slide_down_enter, R.anim.slide_down_exit);
   }
 
   private void toast(String s) {
     Toast.makeText(this, s, Toast.LENGTH_LONG).show();
   }
 
-  private void includeCustomTags(ArrayList<String> tags) {
-    tags.addAll(tagsInputBox.getHashTags());
-  }
-
-  private void close() {
-    finish();
-    overridePendingTransition(R.anim.slide_down_enter, R.anim.slide_down_exit);
-  }
-
-  private void showPublishingProgressDialog(boolean show, String msg) {
-    if (progressDialog != null) {
-      if (show) {
-        progressDialog.setMessage(msg);
-        progressDialog.setCancelable(false);
-        progressDialog.setIndeterminate(true);
-        progressDialog.show();
-      } else {
-        progressDialog.hide();
-      }
-    }
-  }
-
-  @Override
-  public void onBackPressed() {
-    showExistAlert();
-  }
-
   @Override
   public void onPostCreatedOnSteem() {
     toast("Published");
     HaprampPreferenceManager.getInstance().setLastPostCreatedAt(MomentsUtils.getCurrentTime());
+    blogPublished = true;
     closeEditor();
   }
 
   private void closeEditor() {
-    showPublishingProgressDialog(false, "");
+    showProgressDialog(false, "");
     AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_ARTICLE);
     new Handler().postDelayed(new Runnable() {
       @Override
@@ -267,7 +297,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   @Override
   public void onPostCreationFailedOnSteem(String msg) {
     toast("Cannot Create Blog");
-    showPublishingProgressDialog(false, "");
+    showProgressDialog(false, "");
   }
 
   @Override
@@ -279,24 +309,46 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     }
   }
 
-  private void handleImageResult(final Intent intent) {
-    final Handler handler = new Handler();
-    new Thread() {
-      @Override
-      public void run() {
-        final String filePath = GoogleImageFilePathReader.getImageFilePath(CreateArticleActivity.this, intent);
-        handler.post(new Runnable() {
-          @Override
-          public void run() {
-            addImage(filePath);
-          }
-        });
-      }
-    }.start();
+  @Override
+  protected void onPause() {
+    super.onPause();
+    invalidateDraft();
   }
 
-  public void addImage(String filePath) {
-    markDEditor.insertImage(filePath);
+  private void invalidateDraft() {
+    if (mDraftId != NO_DRAFT) {
+      if (blogPublished) {
+        //delete draft
+        deleteDraft();
+      } else {
+        //update draft
+        updateDraft();
+      }
+    } else {
+      if (!blogPublished) {
+        //save draft
+        addNewDraft();
+      }
+    }
+  }
+
+  private void deleteDraft() {
+    draftsHelper.deleteDraft(mDraftId);
+  }
+
+  private void updateDraft() {
+    DraftModel draftModel = markDEditor.getDraft();
+    String draftTitle = articleTitleEt.getText().toString().length() > 0 ? articleTitleEt.getText().toString() : "Untitled Draft";
+    draftModel.setDraftTitle(draftTitle);
+    draftsHelper.updateDraft(draftModel);
+  }
+
+  private void addNewDraft() {
+    DraftModel draftModel = markDEditor.getDraft();
+    showProgressDialog(true, "Saving draft...");
+    String draftTitle = articleTitleEt.getText().toString().length() > 0 ? articleTitleEt.getText().toString() : "Untitled Draft";
+    draftModel.setDraftTitle(draftTitle);
+    draftsHelper.insertDraft(draftModel);
   }
 
   @Override
@@ -329,6 +381,31 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     }
   }
 
+  private void handleImageResult(final Intent intent) {
+    final Handler handler = new Handler();
+    new Thread() {
+      @Override
+      public void run() {
+        final String filePath = GoogleImageFilePathReader.getImageFilePath(CreateArticleActivity.this, intent);
+        handler.post(new Runnable() {
+          @Override
+          public void run() {
+            addImage(filePath);
+          }
+        });
+      }
+    }.start();
+  }
+
+  public void addImage(String filePath) {
+    try {
+      markDEditor.insertImage(filePath);
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
   @Override
   public void onInsertImageClicked() {
     openGallery();
@@ -348,5 +425,37 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
       }
     });
     linkInsertDialog.show();
+  }
+
+  @Override
+  public void onDraftInserted(boolean success) {
+    showProgressDialog(false, "");
+    if (success) {
+      Toast.makeText(CreateArticleActivity.this, "Draft saved!", Toast.LENGTH_LONG).show();
+    } else {
+      Toast.makeText(CreateArticleActivity.this, "Failed to save draft!", Toast.LENGTH_LONG).show();
+    }
+  }
+
+  @Override
+  public void onDraftRead(DraftModel draft) {
+    showProgressDialog(false, "");
+    markDEditor.loadDraft(draft);
+    String title = draft.getDraftTitle() != null ? draft.getDraftTitle() : "";
+    articleTitleEt.setText(title);
+  }
+
+  @Override
+  public void onDraftsRead(ArrayList<DraftModel> drafts) {
+
+  }
+
+  @Override
+  public void onDraftUpdated(boolean success) {
+  }
+
+  @Override
+  public void onDraftDeleted(boolean success) {
+
   }
 }

@@ -59,6 +59,8 @@ import retrofit2.Response;
 import xute.markdeditor.EditorControlBar;
 import xute.markdeditor.MarkDEditor;
 
+import static xute.markdeditor.Styles.TextComponentStyle.NORMAL;
+
 public class ParticipateEditorActivity extends AppCompatActivity implements EditorControlBar.EditorControlListener, SteemPostCreator.SteemPostCreatorCallback {
 
   public static final String EXTRA_COMPETITION_ID = "competition_id";
@@ -137,7 +139,11 @@ public class ParticipateEditorActivity extends AppCompatActivity implements Edit
     setContestInfo();
     editorControlBar.setEditorControlListener(this);
     editorControlBar.setEditor(markDEditor);
-    markDEditor.setServerInfo(URLS.BASE_URL, HaprampPreferenceManager.getInstance().getUserToken());
+    markDEditor.configureEditor(URLS.BASE_URL,
+      HaprampPreferenceManager.getInstance().getUserToken(),
+      false,
+      "Body here...",
+      NORMAL);
   }
 
   private void attachListeners() {

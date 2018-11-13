@@ -82,7 +82,7 @@ dependencies {
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
     implementation 'com.github.hapramp:steemconnect4j:v1.3.2'
     implementation 'com.github.bxute:CryptoCoinView:v0.6'
-    implementation 'com.github.bxute:MarkDEditor:v0.14'
+    implementation 'com.github.bxute:MarkDEditor:v0.19'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':lib')
 }
