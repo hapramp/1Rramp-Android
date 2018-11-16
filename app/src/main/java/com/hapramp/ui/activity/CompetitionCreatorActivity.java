@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.DatePicker;
@@ -25,6 +26,9 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datastore.UrlBuilder;
+import com.hapramp.draft.ContestDraftModel;
+import com.hapramp.draft.DraftListItemModel;
+import com.hapramp.draft.DraftsHelper;
 import com.hapramp.models.CompetitionCreateResponse;
 import com.hapramp.models.FormattedBodyResponse;
 import com.hapramp.models.JudgeModel;
@@ -55,11 +59,11 @@ import retrofit2.Response;
 
 import static com.hapramp.ui.activity.JudgeSelectionActivity.EXTRA_SELECTED_JUDGES;
 
-public class CompetitionCreatorActivity extends AppCompatActivity implements JudgeSelectionView.JudgeSelectionCallback, SteemPostCreator.SteemPostCreatorCallback {
-
+public class CompetitionCreatorActivity extends AppCompatActivity implements JudgeSelectionView.JudgeSelectionCallback, SteemPostCreator.SteemPostCreatorCallback, DraftsHelper.ContestDraftsDatabaseCallbacks {
+  public static final long NO_COMP_DRAFT = -1;
+  public static final String EXTRA_KEY_DRAFT_ID = "draftId";
   private static final int REQUEST_IMAGE_SELECTOR = 1039;
   private static final int REQUEST_JUDGE_SELECTOR = 1037;
-
   @BindView(R.id.backBtn)
   ImageView backBtn;
   @BindView(R.id.toolbar_title)
@@ -147,6 +151,9 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
   private ArrayList<JudgeModel> selectedJudges;
   private ProgressDialog progressDialog;
   private SteemPostCreator steemPostCreator;
+  private boolean isCompetitionPosted;
+  private long mDraftId;
+  private DraftsHelper mDraftHelper;
   private CompetitionCreateBody competitionCreateBody;
 
   @Override
@@ -160,6 +167,8 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
 
   private void initialize() {
     hideKeyboardByDefault();
+    mDraftHelper = new DraftsHelper(this);
+    mDraftHelper.setContestDraftCallbacks(this);
     progressDialog = new ProgressDialog(this);
     selectedJudges = new ArrayList<>();
     competitionCommunityView.initCategory();
@@ -175,6 +184,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
         bannerImageDownloadUrl = downloadUrl;
       }
     });
+    collectExtras();
   }
 
   private void attachListeners() {
@@ -272,6 +282,16 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
 
   private void hideKeyboardByDefault() {
     getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+  }
+
+  private void collectExtras() {
+    Intent receiveIntent = getIntent();
+    if (receiveIntent != null) {
+      mDraftId = receiveIntent.getLongExtra(EXTRA_KEY_DRAFT_ID, NO_COMP_DRAFT);
+      if (mDraftId != NO_COMP_DRAFT) {
+        mDraftHelper.fetchContestDraftById(mDraftId);
+      }
+    }
   }
 
   private void showMetaView(boolean show) {
@@ -590,6 +610,66 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
   }
 
   @Override
+  protected void onPause() {
+    super.onPause();
+    if (mDraftId != NO_COMP_DRAFT) {
+      if (isCompetitionPosted) {
+        deleteDraft();
+      } else {
+        updateDraft();
+      }
+    } else {
+      if (!isCompetitionPosted) {
+        addNewDraft();
+      }
+    }
+  }
+
+  private void deleteDraft() {
+    mDraftHelper.deleteContestDraft(mDraftId);
+  }
+
+  private void updateDraft() {
+    ContestDraftModel competitionDraftModel = new ContestDraftModel();
+    competitionDraftModel.setDraftId(mDraftId);
+    competitionDraftModel.setCompetitionTitle(competitionTitle.getText().toString());
+    competitionDraftModel.setCompetitionDescription(competitionDescription.getText().toString());
+    competitionDraftModel.setCompetitionRules(competitionRules.getText().toString());
+    competitionDraftModel.setmCommunitySelection(competitionCommunityView.getSelectedTags());
+    competitionDraftModel.setCustomHashTags(tagsInputBox.getHashTags());
+    competitionDraftModel.setJudges(selectedJudges);
+    competitionDraftModel.setStartDate(startDateInput.getText().toString());
+    competitionDraftModel.setStartTime(startTimeInput.getText().toString());
+    competitionDraftModel.setEndDate(endDateInput.getText().toString());
+    competitionDraftModel.setEndTime(endTimeInput.getText().toString());
+    competitionDraftModel.setFirstPrize(firstPrizeInput.getText().toString());
+    competitionDraftModel.setCompetitionPosterDownloadUrl(competitionBanner.getDownloadUrl());
+    mDraftHelper.updateContestDraft(competitionDraftModel);
+    Log.d("ContestDraft","updating "+competitionDraftModel.toString());
+  }
+
+  /**
+   * Adds new draft to database.
+   */
+  private void addNewDraft() {
+    ContestDraftModel competitionDraftModel = new ContestDraftModel();
+    competitionDraftModel.setDraftId(System.currentTimeMillis());
+    competitionDraftModel.setCompetitionTitle(competitionTitle.getText().toString());
+    competitionDraftModel.setCompetitionDescription(competitionDescription.getText().toString());
+    competitionDraftModel.setCompetitionRules(competitionRules.getText().toString());
+    competitionDraftModel.setmCommunitySelection(competitionCommunityView.getSelectedTags());
+    competitionDraftModel.setCustomHashTags(tagsInputBox.getHashTags());
+    competitionDraftModel.setJudges(selectedJudges);
+    competitionDraftModel.setStartDate(startDateInput.getText().toString());
+    competitionDraftModel.setStartTime(startTimeInput.getText().toString());
+    competitionDraftModel.setEndDate(endDateInput.getText().toString());
+    competitionDraftModel.setEndTime(endTimeInput.getText().toString());
+    competitionDraftModel.setFirstPrize(firstPrizeInput.getText().toString());
+    competitionDraftModel.setCompetitionPosterDownloadUrl(competitionBanner.getDownloadUrl());
+    mDraftHelper.insertDraft(competitionDraftModel);
+  }
+
+  @Override
   public void onSelectJudge() {
     Intent i = new Intent(this, JudgeSelectionActivity.class);
     i.putParcelableArrayListExtra(EXTRA_SELECTED_JUDGES, selectedJudges);
@@ -607,6 +687,51 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
   public void onPostCreationFailedOnSteem(String msg) {
     showPublishingProgressDialog(false, "");
     toast("Contest post creation failed!");
+  }
+
+  @Override
+  public void onDraftInserted(boolean success) {
+    if (success) {
+      toast("Draft Saved");
+    } else {
+      toast("Failed to save draft");
+    }
+  }
+
+  @Override
+  public void onSingleContestDraftRead(ContestDraftModel draft) {
+    Log.d("ContestDraft",draft.toString());
+    loadDraft(draft);
+  }
+
+  @Override
+  public void onAllDraftsRead(ArrayList<DraftListItemModel> drafts) {
+
+  }
+
+  private void loadDraft(ContestDraftModel draft) {
+    Log.d("ContestDraft","loading "+draft.toString());
+    competitionTitle.setText(draft.getCompetitionTitle());
+    competitionDescription.setText(draft.getCompetitionDescription());
+    competitionRules.setText(draft.getCompetitionRules());
+    competitionCommunityView.setDefaultSelection(draft.getmCommunitySelection());
+    competitionCommunityView.initCategory();
+    tagsInputBox.setDefaultHashTags((ArrayList<String>) draft.getCustomHashTags());
+    judgeSelector.setJudgesList(draft.getJudges());
+    startTimeInput.setText(draft.getStartTime());
+    startDateInput.setText(draft.getStartDate());
+    endTimeInput.setText(draft.getEndTime());
+    endDateInput.setText(draft.getEndDate());
+    firstPrizeInput.setText(draft.getFirstPrize());
+    competitionBanner.setDownloadUrl(draft.getCompetitionPosterDownloadUrl());
+  }
+
+  @Override
+  public void onDraftUpdated(boolean success) {
+  }
+
+  @Override
+  public void onDraftDeleted(boolean success) {
   }
 }
 

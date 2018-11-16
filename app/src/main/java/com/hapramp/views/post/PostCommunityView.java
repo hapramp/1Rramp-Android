@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +32,7 @@ public class PostCommunityView extends FrameLayout {
   private List<CommunityModel> communities;
   private ArrayList<String> selectedTags;
   private CommunitySelectionChangeListener communitySelectionChangeListener;
+  private List<String> mDefaultSelections;
 
   public PostCommunityView(@NonNull Context context) {
     super(context);
@@ -45,6 +45,7 @@ public class PostCommunityView extends FrameLayout {
     rootView = view.findViewById(R.id.viewWrapper);
     selectedTags = new ArrayList<>();
     selectedTags.add(Communities.TAG_HAPRAMP);
+    mDefaultSelections = new ArrayList<>();
   }
 
   public PostCommunityView(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -63,6 +64,12 @@ public class PostCommunityView extends FrameLayout {
     return selectedTags;
   }
 
+  public void setDefaultSelection(List<String> coms) {
+    this.mDefaultSelections = coms;
+    selectedTags.clear();
+    selectedTags.addAll(mDefaultSelections);
+  }
+
   public void initCategory() {
     CommunityListWrapper cr = new Gson().fromJson(HaprampPreferenceManager.getInstance().getAllCommunityAsJson(), CommunityListWrapper.class);
     communities = cr.getCommunityModels();
@@ -70,10 +77,14 @@ public class PostCommunityView extends FrameLayout {
   }
 
   private void addViews() {
+    if (rootView != null) {
+      rootView.removeAllViews();
+    }
     for (int i = 0; i < communities.size(); i++) {
       final CategoryTextView view = new CategoryTextView(mContext);
       view.setText(communities.get(i).getmName());
       view.setTag(communities.get(i).getmTag());
+      view.setSelected(mDefaultSelections.contains(communities.get(i).getmTag()));
       view.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {

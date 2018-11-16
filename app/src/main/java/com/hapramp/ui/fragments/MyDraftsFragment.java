@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.hapramp.R;
+import com.hapramp.draft.ContestDraftModel;
+import com.hapramp.draft.DraftListItemModel;
+import com.hapramp.draft.DraftType;
 import com.hapramp.draft.DraftsHelper;
 import com.hapramp.ui.adapters.DraftsAdapter;
 
@@ -26,7 +28,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xute.markdeditor.models.DraftModel;
 
-public class MyDraftsFragment extends Fragment implements DraftsHelper.DraftsDatabaseCallbacks {
+public class MyDraftsFragment extends Fragment implements DraftsHelper.BlogDraftsDatabaseCallbacks, DraftsHelper.ContestDraftsDatabaseCallbacks {
   @BindView(R.id.drafts_list)
   RecyclerView draftsList;
   @BindView(R.id.swipe_refresh)
@@ -69,7 +71,8 @@ public class MyDraftsFragment extends Fragment implements DraftsHelper.DraftsDat
   private void initialize() {
     draftsAdapter = new DraftsAdapter(context);
     draftsHelper = new DraftsHelper(context);
-    draftsHelper.setDatabaseCallbacks(this);
+    draftsHelper.setBlogDraftCallbacks(this);
+    draftsHelper.setContestDraftCallbacks(this);
     draftsList.setLayoutManager(new LinearLayoutManager(context));
     draftsList.setAdapter(draftsAdapter);
     swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -82,7 +85,7 @@ public class MyDraftsFragment extends Fragment implements DraftsHelper.DraftsDat
   }
 
   private void readDrafts() {
-    draftsHelper.fetchAllDraft();
+    draftsHelper.fetchAllTypeOfDrafts();
   }
 
   private void setProgressVisibility(boolean show) {
@@ -107,12 +110,12 @@ public class MyDraftsFragment extends Fragment implements DraftsHelper.DraftsDat
   }
 
   @Override
-  public void onDraftRead(DraftModel draft) {
+  public void onSingleBlogDraftRead(DraftModel draft) {
 
   }
 
   @Override
-  public void onDraftsRead(ArrayList<DraftModel> drafts) {
+  public void onAllDraftsRead(ArrayList<DraftListItemModel> drafts) {
     setProgressVisibility(false);
     if (swipeRefresh != null) {
       if (swipeRefresh.isRefreshing()) {
@@ -150,5 +153,22 @@ public class MyDraftsFragment extends Fragment implements DraftsHelper.DraftsDat
         messagePanel.setVisibility(View.GONE);
       }
     }
+  }
+
+  private void populateBlogDraftItems(ArrayList<DraftModel> drafts) {
+    ArrayList<DraftListItemModel> draftList = new ArrayList<>();
+    for (int i = 0; i < drafts.size(); i++) {
+      DraftListItemModel draftListItemModel = new DraftListItemModel();
+      draftListItemModel.setDraftId(drafts.get(i).getDraftId());
+      draftListItemModel.setDraftType(DraftType.BLOG);
+      draftListItemModel.setTitle(drafts.get(i).getDraftTitle());
+      draftList.add(draftListItemModel);
+    }
+    draftsAdapter.setDrafts(draftList);
+  }
+
+  @Override
+  public void onSingleContestDraftRead(ContestDraftModel draft) {
+
   }
 }

@@ -10,7 +10,8 @@ import xute.markdeditor.models.DraftModel;
 public class DraftsHelper {
   DraftDatabaseHelper draftDatabaseHelper;
   private Handler handler;
-  private DraftsDatabaseCallbacks databaseCallbacks;
+  private BlogDraftsDatabaseCallbacks blogDraftCallback;
+  private ContestDraftsDatabaseCallbacks contestDraftCallback;
 
 
   public DraftsHelper(Context context) {
@@ -25,13 +26,13 @@ public class DraftsHelper {
     new Thread() {
       @Override
       public void run() {
-        final boolean success = draftDatabaseHelper.insertDraft(draft);
+        final boolean success = draftDatabaseHelper.insertBlogDraft(draft);
         handler.post(
           new Runnable() {
             @Override
             public void run() {
-              if (databaseCallbacks != null) {
-                databaseCallbacks.onDraftInserted(success);
+              if (blogDraftCallback != null) {
+                blogDraftCallback.onDraftInserted(success);
               }
             }
           }
@@ -40,17 +41,17 @@ public class DraftsHelper {
     }.start();
   }
 
-  public void fetchDraftById(final long id) {
+  public void insertDraft(final ContestDraftModel draft) {
     new Thread() {
       @Override
       public void run() {
-        final DraftModel draft = draftDatabaseHelper.findDraftById(id);
+        final boolean success = draftDatabaseHelper.insertContestDraft(draft);
         handler.post(
           new Runnable() {
             @Override
             public void run() {
-              if (databaseCallbacks != null) {
-                databaseCallbacks.onDraftRead(draft);
+              if (contestDraftCallback != null) {
+                contestDraftCallback.onDraftInserted(success);
               }
             }
           }
@@ -59,17 +60,17 @@ public class DraftsHelper {
     }.start();
   }
 
-  public void fetchAllDraft() {
+  public void fetchBlogDraftById(final long id) {
     new Thread() {
       @Override
       public void run() {
-        final ArrayList<DraftModel> drafts = draftDatabaseHelper.getAllDrafts();
+        final DraftModel draft = draftDatabaseHelper.findBlogDraftById(id);
         handler.post(
           new Runnable() {
             @Override
             public void run() {
-              if (databaseCallbacks != null) {
-                databaseCallbacks.onDraftsRead(drafts);
+              if (blogDraftCallback != null) {
+                blogDraftCallback.onSingleBlogDraftRead(draft);
               }
             }
           }
@@ -78,17 +79,22 @@ public class DraftsHelper {
     }.start();
   }
 
-  public void updateDraft(final DraftModel draft) {
+  /**
+   * Read Contest draft
+   *
+   * @param id contest id
+   */
+  public void fetchContestDraftById(final long id) {
     new Thread() {
       @Override
       public void run() {
-        final boolean success = draftDatabaseHelper.updateDraft(draft) != -1;
+        final ContestDraftModel draft = draftDatabaseHelper.findContestDraftById(id);
         handler.post(
           new Runnable() {
             @Override
             public void run() {
-              if (databaseCallbacks != null) {
-                databaseCallbacks.onDraftUpdated(success);
+              if (contestDraftCallback != null) {
+                contestDraftCallback.onSingleContestDraftRead(draft);
               }
             }
           }
@@ -97,7 +103,52 @@ public class DraftsHelper {
     }.start();
   }
 
-  public void deleteDraft(final long id) {
+  /**
+   * @param draft model of Blog Draft
+   */
+  public void updateBlogDraft(final DraftModel draft) {
+    new Thread() {
+      @Override
+      public void run() {
+        final boolean success = draftDatabaseHelper.updateBlogDraft(draft) != -1;
+        handler.post(
+          new Runnable() {
+            @Override
+            public void run() {
+              if (blogDraftCallback != null) {
+                blogDraftCallback.onDraftUpdated(success);
+              }
+            }
+          }
+        );
+      }
+    }.start();
+  }
+
+  /**
+   * @param draft model of Contest draft.
+   */
+  public void updateContestDraft(final ContestDraftModel draft) {
+    new Thread() {
+      @Override
+      public void run() {
+        final boolean success = draftDatabaseHelper.updateContestDraft(draft) != -1;
+        handler.post(
+          new Runnable() {
+            @Override
+            public void run() {
+              if (contestDraftCallback != null) {
+                contestDraftCallback.onDraftUpdated(success);
+              }
+            }
+          }
+        );
+      }
+    }.start();
+  }
+
+
+  public void deleteBlogDraft(final long id) {
     new Thread() {
       @Override
       public void run() {
@@ -106,8 +157,8 @@ public class DraftsHelper {
           new Runnable() {
             @Override
             public void run() {
-              if (databaseCallbacks != null) {
-                databaseCallbacks.onDraftDeleted(success);
+              if (blogDraftCallback != null) {
+                blogDraftCallback.onDraftDeleted(success);
               }
             }
           }
@@ -116,19 +167,90 @@ public class DraftsHelper {
     }.start();
   }
 
-  public void setDatabaseCallbacks(DraftsDatabaseCallbacks databaseCallbacks) {
-    this.databaseCallbacks = databaseCallbacks;
+  public void deleteContestDraft(final long id) {
+    new Thread() {
+      @Override
+      public void run() {
+        final boolean success = draftDatabaseHelper.deleteDraft(id);
+        handler.post(
+          new Runnable() {
+            @Override
+            public void run() {
+              if (contestDraftCallback != null) {
+                contestDraftCallback.onDraftDeleted(success);
+              }
+            }
+          }
+        );
+      }
+    }.start();
   }
 
-  public interface DraftsDatabaseCallbacks {
+  public void setBlogDraftCallbacks(BlogDraftsDatabaseCallbacks databaseCallbacks) {
+    this.blogDraftCallback = databaseCallbacks;
+  }
+
+  public void setContestDraftCallbacks(ContestDraftsDatabaseCallbacks contestDraftCallbacks) {
+    this.contestDraftCallback = contestDraftCallbacks;
+  }
+
+  public void fetchAllTypeOfDrafts() {
+    new Thread() {
+      @Override
+      public void run() {
+        final ArrayList<ContestDraftModel> contestDrafts = draftDatabaseHelper.getAllContestDrafts();
+        final ArrayList<DraftModel> blogDrafts = draftDatabaseHelper.getAllBlogDrafts();
+        final ArrayList<DraftListItemModel> listItemModels = new ArrayList<>();
+        for (int i = 0; i < contestDrafts.size(); i++) {
+          DraftListItemModel draftListItemModel = new DraftListItemModel();
+          draftListItemModel.setDraftId(contestDrafts.get(i).getDraftId());
+          draftListItemModel.setDraftType(DraftType.COMPETITION);
+          draftListItemModel.setTitle(contestDrafts.get(i).getCompetitionTitle().length() > 0 ? contestDrafts.get(i).getCompetitionTitle() : "Untitled Competition");
+          listItemModels.add(draftListItemModel);
+        }
+        for (int i = 0; i < blogDrafts.size(); i++) {
+          DraftListItemModel draftListItemModel = new DraftListItemModel();
+          draftListItemModel.setDraftId(blogDrafts.get(i).getDraftId());
+          draftListItemModel.setDraftType(DraftType.BLOG);
+          draftListItemModel.setTitle(blogDrafts.get(i).getDraftTitle().length() > 0 ? blogDrafts.get(i).getDraftTitle() : "Untitled Blog");
+          listItemModels.add(draftListItemModel);
+        }
+        handler.post(
+          new Runnable() {
+            @Override
+            public void run() {
+              if (contestDraftCallback != null) {
+                contestDraftCallback.onAllDraftsRead(listItemModels);
+              }
+            }
+          }
+        );
+      }
+    }.start();
+  }
+
+  public interface BlogDraftsDatabaseCallbacks {
     void onDraftInserted(boolean success);
 
-    void onDraftRead(DraftModel draft);
+    void onSingleBlogDraftRead(DraftModel draft);
 
-    void onDraftsRead(ArrayList<DraftModel> drafts);
+    void onAllDraftsRead(ArrayList<DraftListItemModel> drafts);
 
     void onDraftUpdated(boolean success);
 
     void onDraftDeleted(boolean success);
   }
+
+  public interface ContestDraftsDatabaseCallbacks {
+    void onDraftInserted(boolean success);
+
+    void onSingleContestDraftRead(ContestDraftModel draft);
+
+    void onAllDraftsRead(ArrayList<DraftListItemModel> drafts);
+
+    void onDraftUpdated(boolean success);
+
+    void onDraftDeleted(boolean success);
+  }
+
 }

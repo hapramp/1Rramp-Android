@@ -14,28 +14,32 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hapramp.R;
+import com.hapramp.draft.DraftListItemModel;
+import com.hapramp.draft.DraftType;
 import com.hapramp.draft.DraftsHelper;
+import com.hapramp.ui.activity.CompetitionCreatorActivity;
 import com.hapramp.ui.activity.CreateArticleActivity;
+import com.hapramp.utils.MomentsUtils;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import xute.markdeditor.models.DraftModel;
 
 public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftListItemViewHolder> {
-  private ArrayList<DraftModel> draftModels;
+
+  private ArrayList<DraftListItemModel> drafts;
   private Context mContext;
   private DraftsHelper draftsHelper;
 
   public DraftsAdapter(Context context) {
     this.mContext = context;
-    draftModels = new ArrayList<>();
+    drafts = new ArrayList<>();
     draftsHelper = new DraftsHelper(mContext);
   }
 
-  public void setDrafts(ArrayList<DraftModel> draftModels) {
-    this.draftModels = draftModels;
+  public void setDrafts(ArrayList<DraftListItemModel> draftModels) {
+    this.drafts = draftModels;
     notifyDataSetChanged();
   }
 
@@ -48,12 +52,12 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftListI
 
   @Override
   public void onBindViewHolder(@NonNull DraftListItemViewHolder holder, int position) {
-    holder.bind(draftModels.get(position));
+    holder.bind(drafts.get(position));
   }
 
   @Override
   public int getItemCount() {
-    return draftModels.size();
+    return drafts.size();
   }
 
   private void navigateToEditor(long draftId) {
@@ -62,36 +66,53 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftListI
     mContext.startActivity(intent);
   }
 
-  private void showDeleteAlert(final long draftID) {
+  private void showDeleteAlert(final long draftID, final DraftType draftType) {
     AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
       .setTitle("Delete ?")
       .setMessage("Draft will be permanently deleted!")
       .setPositiveButton("Ok, Delete", new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-          deleteDraft(draftID);
+          deleteDraft(draftID, draftType);
         }
       })
       .setNegativeButton("No", null);
     builder.show();
   }
 
-  private void deleteDraft(long draftId) {
-    draftsHelper.deleteDraft(draftId);
-    removeItemWithId(draftId);
+  private void deleteDraft(long draftId, DraftType draftType) {
+    if (draftType == DraftType.BLOG) {
+      draftsHelper.deleteBlogDraft(draftId);
+      removeItemWithId(draftId);
+    } else {
+      draftsHelper.deleteContestDraft(draftId);
+      removeItemWithId(draftId);
+    }
   }
 
   private void removeItemWithId(long draftId) {
-    for (int i = 0; i < draftModels.size(); i++) {
-      if (draftModels.get(i).getDraftId() == draftId) {
-        draftModels.remove(i);
+    for (int i = 0; i < drafts.size(); i++) {
+      if (drafts.get(i).getDraftId() == draftId) {
+        drafts.remove(i);
         break;
       }
     }
     notifyDataSetChanged();
   }
 
+  private void navigateToCompetitionCreatePage(long draftId) {
+    Intent intent = new Intent(mContext, CompetitionCreatorActivity.class);
+    intent.putExtra(CompetitionCreatorActivity.EXTRA_KEY_DRAFT_ID, draftId);
+    mContext.startActivity(intent);
+  }
+
   class DraftListItemViewHolder extends RecyclerView.ViewHolder {
+    @BindView(R.id.draft_icon)
+    ImageView draftIcon;
+    @BindView(R.id.draft_type)
+    TextView draftType;
+    @BindView(R.id.created_time)
+    TextView createdTime;
     @BindView(R.id.draft_title)
     TextView draftTitle;
     @BindView(R.id.delete_icon)
@@ -104,18 +125,30 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftListI
       ButterKnife.bind(this, itemView);
     }
 
-    public void bind(final DraftModel draft) {
-      draftTitle.setText(draft.getDraftTitle());
+    public void bind(final DraftListItemModel draft) {
+      createdTime.setText(" | " + MomentsUtils.getFormattedTime(MomentsUtils.getTimeFromMillis(draft.getDraftId())));
+      if (draft.getDraftType() == DraftType.BLOG) {
+        draftIcon.setImageResource(R.drawable.blog_icon_filled);
+        draftType.setText("Blog Draft");
+      } else {
+        draftIcon.setImageResource(R.drawable.competition_filled);
+        draftType.setText("Competition Draft");
+      }
+      draftTitle.setText(draft.getTitle());
       draftTitle.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-          navigateToEditor(draft.getDraftId());
+          if (draft.getDraftType() == DraftType.BLOG) {
+            navigateToEditor(draft.getDraftId());
+          } else {
+            navigateToCompetitionCreatePage(draft.getDraftId());
+          }
         }
       });
       deleteIcon.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-          showDeleteAlert(draft.getDraftId());
+          showDeleteAlert(draft.getDraftId(), draft.getDraftType());
         }
       });
     }

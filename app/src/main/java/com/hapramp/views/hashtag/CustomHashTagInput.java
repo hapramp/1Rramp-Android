@@ -35,6 +35,7 @@ public class CustomHashTagInput extends FrameLayout implements ChipView.RemoveTa
   WrapViewGroup chipsContainer;
   private Context context;
   private ArrayList<String> hashTags = new ArrayList<>();
+  private ArrayList<String> mDefaultHashTags = new ArrayList<>();
 
   public CustomHashTagInput(@NonNull Context context) {
     super(context);
@@ -111,6 +112,13 @@ public class CustomHashTagInput extends FrameLayout implements ChipView.RemoveTa
   public CustomHashTagInput(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     init(context);
+  }
+
+  public void setDefaultHashTags(ArrayList<String> mDefaultHashTags) {
+    this.mDefaultHashTags = mDefaultHashTags;
+    for (String hs : mDefaultHashTags) {
+      addChip(hs);
+    }
   }
 
   @Override

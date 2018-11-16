@@ -248,6 +248,13 @@ public class PostImageView extends FrameLayout implements ImageRotationHandler.I
     return downloadUrl;
   }
 
+  public void setDownloadUrl(String downloadUrl) {
+    if (downloadUrl != null) {
+      this.downloadUrl = downloadUrl;
+      ImageHandler.load(mContext, image, downloadUrl);
+    }
+  }
+
   public void setImageActionListener(ImageActionListener imageActionListener) {
     this.imageActionListener = imageActionListener;
   }

@@ -25,6 +25,7 @@ import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.analytics.EventReporter;
 import com.hapramp.api.URLS;
+import com.hapramp.draft.DraftListItemModel;
 import com.hapramp.draft.DraftsHelper;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.PermlinkGenerator;
@@ -49,7 +50,7 @@ import xute.markdeditor.models.DraftModel;
 
 import static xute.markdeditor.Styles.TextComponentStyle.NORMAL;
 
-public class CreateArticleActivity extends AppCompatActivity implements SteemPostCreator.SteemPostCreatorCallback, EditorControlBar.EditorControlListener, DraftsHelper.DraftsDatabaseCallbacks {
+public class CreateArticleActivity extends AppCompatActivity implements SteemPostCreator.SteemPostCreatorCallback, EditorControlBar.EditorControlListener, DraftsHelper.BlogDraftsDatabaseCallbacks {
   public static final String EXTRA_KEY_DRAFT_ID = "draftId";
   private static final int REQUEST_IMAGE_SELECTOR = 119;
   private final long NO_DRAFT = -1;
@@ -107,7 +108,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
 
   private void init() {
     draftsHelper = new DraftsHelper(this);
-    draftsHelper.setDatabaseCallbacks(this);
+    draftsHelper.setBlogDraftCallbacks(this);
     progressDialog = new ProgressDialog(this);
     articleCategoryView.initCategory();
     editorControlBar.setEditorControlListener(this);
@@ -161,7 +162,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     if (draftId != NO_DRAFT) {
       showProgressDialog(true, "Loading Draft...");
       //load draft
-      draftsHelper.fetchDraftById(draftId);
+      draftsHelper.fetchBlogDraftById(draftId);
       markDEditor.configureEditor(URLS.BASE_URL,
         HaprampPreferenceManager.getInstance().getUserToken(),
         true,
@@ -333,14 +334,14 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   }
 
   private void deleteDraft() {
-    draftsHelper.deleteDraft(mDraftId);
+    draftsHelper.deleteBlogDraft(mDraftId);
   }
 
   private void updateDraft() {
     DraftModel draftModel = markDEditor.getDraft();
     String draftTitle = articleTitleEt.getText().toString().length() > 0 ? articleTitleEt.getText().toString() : "Untitled Draft";
     draftModel.setDraftTitle(draftTitle);
-    draftsHelper.updateDraft(draftModel);
+    draftsHelper.updateBlogDraft(draftModel);
   }
 
   private void addNewDraft() {
@@ -438,7 +439,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   }
 
   @Override
-  public void onDraftRead(DraftModel draft) {
+  public void onSingleBlogDraftRead(DraftModel draft) {
     showProgressDialog(false, "");
     markDEditor.loadDraft(draft);
     String title = draft.getDraftTitle() != null ? draft.getDraftTitle() : "";
@@ -446,7 +447,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   }
 
   @Override
-  public void onDraftsRead(ArrayList<DraftModel> drafts) {
+  public void onAllDraftsRead(ArrayList<DraftListItemModel> drafts) {
 
   }
 
