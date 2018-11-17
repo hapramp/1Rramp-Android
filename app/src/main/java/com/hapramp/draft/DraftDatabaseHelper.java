@@ -39,21 +39,43 @@ public class DraftDatabaseHelper extends SQLiteOpenHelper {
    * @return
    */
   public boolean insertBlogDraft(DraftModel draftModel) {
+    return insertRawBlogDraft(draftModel.getDraftId(), new Gson().toJson(draftModel));
+  }
+
+  /**
+   * Inserts a row of raw blog draft
+   *
+   * @param draftId id of Draft (timestamp)
+   * @param json    de-serialized form of DraftModel
+   * @return status of insert
+   */
+  public boolean insertRawBlogDraft(long draftId, String json) {
     SQLiteDatabase db = this.getWritableDatabase();
     ContentValues contentValues = new ContentValues();
     contentValues.put(COLUMN_DRAFT_TYPE, String.valueOf(DraftType.BLOG));
-    contentValues.put(COLUMN_ID, draftModel.getDraftId());
-    contentValues.put(COLUMN_DRAFT, new Gson().toJson(draftModel));
+    contentValues.put(COLUMN_ID, draftId);
+    contentValues.put(COLUMN_DRAFT, json);
     long id = db.insert(TABLE_DRAFTS, null, contentValues);
     return id != -1;
   }
 
   public boolean insertContestDraft(ContestDraftModel draftModel) {
+    return insertRawContestDraft(draftModel.getDraftId(), new Gson().toJson(draftModel));
+  }
+
+  /**
+   * Inserts a row of raw contest draft
+   *
+   * @param draftId id of Draft (timestamp)
+   * @param json    de-serialized form of ContestDraftModel
+   * @return status of insert
+   */
+  public boolean insertRawContestDraft(long draftId, String json) {
     SQLiteDatabase db = this.getWritableDatabase();
     ContentValues contentValues = new ContentValues();
     contentValues.put(COLUMN_DRAFT_TYPE, String.valueOf(DraftType.COMPETITION));
-    contentValues.put(COLUMN_ID, draftModel.getDraftId());
-    contentValues.put(COLUMN_DRAFT, new Gson().toJson(draftModel));
+    contentValues.put(COLUMN_ID, draftId);
+    contentValues.put(COLUMN_DRAFT, json);
     long id = db.insert(TABLE_DRAFTS, null, contentValues);
     return id != -1;
   }
@@ -148,26 +170,32 @@ public class DraftDatabaseHelper extends SQLiteOpenHelper {
    * @param draftModel updated draft
    * @return position of update
    */
-  public int updateBlogDraft(DraftModel draftModel) {
-    SQLiteDatabase db = this.getWritableDatabase();
-    ContentValues values = new ContentValues();
-    values.put(COLUMN_ID, draftModel.getDraftId());
-    values.put(COLUMN_DRAFT, new Gson().toJson(draftModel));
-    values.put(COLUMN_DRAFT_TYPE,String.valueOf(DraftType.BLOG));
-    // updating row
-    return db.update(TABLE_DRAFTS, values, COLUMN_ID + " = ?",
-      new String[]{String.valueOf(draftModel.getDraftId())});
+  public boolean updateBlogDraft(DraftModel draftModel) {
+    return updateRawBlogDraft(draftModel.getDraftId(), new Gson().toJson(draftModel));
   }
 
-  public int updateContestDraft(ContestDraftModel draftModel) {
+  public boolean updateRawBlogDraft(long draftId, String json) {
     SQLiteDatabase db = this.getWritableDatabase();
     ContentValues values = new ContentValues();
-    values.put(COLUMN_ID, draftModel.getDraftId());
-    values.put(COLUMN_DRAFT, new Gson().toJson(draftModel));
-    values.put(COLUMN_DRAFT_TYPE,String.valueOf(DraftType.COMPETITION));
-    // updating row
+    values.put(COLUMN_ID, draftId);
+    values.put(COLUMN_DRAFT, json);
+    values.put(COLUMN_DRAFT_TYPE, String.valueOf(DraftType.BLOG));
     return db.update(TABLE_DRAFTS, values, COLUMN_ID + " = ?",
-      new String[]{String.valueOf(draftModel.getDraftId())});
+      new String[]{String.valueOf(draftId)}) != -1;
+  }
+
+  public boolean updateContestDraft(ContestDraftModel draftModel) {
+    return updateRawContestDraft(draftModel.getDraftId(), new Gson().toJson(draftModel));
+  }
+
+  public boolean updateRawContestDraft(long draftId, String json) {
+    SQLiteDatabase db = this.getWritableDatabase();
+    ContentValues values = new ContentValues();
+    values.put(COLUMN_ID, draftId);
+    values.put(COLUMN_DRAFT, json);
+    values.put(COLUMN_DRAFT_TYPE, String.valueOf(DraftType.COMPETITION));
+    return db.update(TABLE_DRAFTS, values, COLUMN_ID + " = ?",
+      new String[]{String.valueOf(draftId)}) != -1;
   }
 
   public boolean deleteDraft(long id) {
@@ -182,6 +210,8 @@ public class DraftDatabaseHelper extends SQLiteOpenHelper {
   public void onCreate(SQLiteDatabase sqLiteDatabase) {
     createTable(sqLiteDatabase);
   }
+
+
 
   @Override
   public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {

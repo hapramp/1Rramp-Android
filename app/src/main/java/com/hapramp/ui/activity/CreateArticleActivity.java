@@ -13,6 +13,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -349,6 +350,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     showProgressDialog(true, "Saving draft...");
     String draftTitle = articleTitleEt.getText().toString().length() > 0 ? articleTitleEt.getText().toString() : "Untitled Draft";
     draftModel.setDraftTitle(draftTitle);
+    mDraftId = draftModel.getDraftId();
     draftsHelper.insertDraft(draftModel);
   }
 
@@ -453,6 +455,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
 
   @Override
   public void onDraftUpdated(boolean success) {
+    Log.d("BlogDraft","updated "+success);
   }
 
   @Override

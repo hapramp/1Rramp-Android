@@ -251,6 +251,11 @@ public class PostImageView extends FrameLayout implements ImageRotationHandler.I
   public void setDownloadUrl(String downloadUrl) {
     if (downloadUrl != null) {
       this.downloadUrl = downloadUrl;
+      invalidateView();
+      mainView.setVisibility(VISIBLE);
+      informationTv.setVisibility(VISIBLE);
+      informationTv.setText("Uploaded");
+      actionContainer.setVisibility(VISIBLE);
       ImageHandler.load(mContext, image, downloadUrl);
     }
   }

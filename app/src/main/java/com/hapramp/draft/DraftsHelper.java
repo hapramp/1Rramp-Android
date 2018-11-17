@@ -110,7 +110,7 @@ public class DraftsHelper {
     new Thread() {
       @Override
       public void run() {
-        final boolean success = draftDatabaseHelper.updateBlogDraft(draft) != -1;
+        final boolean success = draftDatabaseHelper.updateBlogDraft(draft);
         handler.post(
           new Runnable() {
             @Override
@@ -132,7 +132,7 @@ public class DraftsHelper {
     new Thread() {
       @Override
       public void run() {
-        final boolean success = draftDatabaseHelper.updateContestDraft(draft) != -1;
+        final boolean success = draftDatabaseHelper.updateContestDraft(draft);
         handler.post(
           new Runnable() {
             @Override

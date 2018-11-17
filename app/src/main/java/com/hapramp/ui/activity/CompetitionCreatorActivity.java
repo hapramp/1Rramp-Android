@@ -645,15 +645,15 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
     competitionDraftModel.setFirstPrize(firstPrizeInput.getText().toString());
     competitionDraftModel.setCompetitionPosterDownloadUrl(competitionBanner.getDownloadUrl());
     mDraftHelper.updateContestDraft(competitionDraftModel);
-    Log.d("ContestDraft","updating "+competitionDraftModel.toString());
   }
 
   /**
    * Adds new draft to database.
    */
   private void addNewDraft() {
+    mDraftId = System.currentTimeMillis();
     ContestDraftModel competitionDraftModel = new ContestDraftModel();
-    competitionDraftModel.setDraftId(System.currentTimeMillis());
+    competitionDraftModel.setDraftId(mDraftId);
     competitionDraftModel.setCompetitionTitle(competitionTitle.getText().toString());
     competitionDraftModel.setCompetitionDescription(competitionDescription.getText().toString());
     competitionDraftModel.setCompetitionRules(competitionRules.getText().toString());
@@ -700,7 +700,6 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
 
   @Override
   public void onSingleContestDraftRead(ContestDraftModel draft) {
-    Log.d("ContestDraft",draft.toString());
     loadDraft(draft);
   }
 
@@ -709,29 +708,29 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
 
   }
 
-  private void loadDraft(ContestDraftModel draft) {
-    Log.d("ContestDraft","loading "+draft.toString());
-    competitionTitle.setText(draft.getCompetitionTitle());
-    competitionDescription.setText(draft.getCompetitionDescription());
-    competitionRules.setText(draft.getCompetitionRules());
-    competitionCommunityView.setDefaultSelection(draft.getmCommunitySelection());
-    competitionCommunityView.initCategory();
-    tagsInputBox.setDefaultHashTags((ArrayList<String>) draft.getCustomHashTags());
-    judgeSelector.setJudgesList(draft.getJudges());
-    startTimeInput.setText(draft.getStartTime());
-    startDateInput.setText(draft.getStartDate());
-    endTimeInput.setText(draft.getEndTime());
-    endDateInput.setText(draft.getEndDate());
-    firstPrizeInput.setText(draft.getFirstPrize());
-    competitionBanner.setDownloadUrl(draft.getCompetitionPosterDownloadUrl());
-  }
-
   @Override
   public void onDraftUpdated(boolean success) {
   }
 
   @Override
   public void onDraftDeleted(boolean success) {
+  }
+
+  private void loadDraft(ContestDraftModel draft) {
+    selectedJudges = (ArrayList<JudgeModel>) draft.getJudges();
+    competitionTitle.setText(draft.getCompetitionTitle());
+    competitionDescription.setText(draft.getCompetitionDescription());
+    competitionRules.setText(draft.getCompetitionRules());
+    competitionCommunityView.setDefaultSelection(draft.getmCommunitySelection());
+    competitionCommunityView.initCategory();
+    tagsInputBox.setDefaultHashTags((ArrayList<String>) draft.getCustomHashTags());
+    judgeSelector.setJudgesList(selectedJudges);
+    startTimeInput.setText(draft.getStartTime());
+    startDateInput.setText(draft.getStartDate());
+    endTimeInput.setText(draft.getEndTime());
+    endDateInput.setText(draft.getEndDate());
+    firstPrizeInput.setText(draft.getFirstPrize());
+    competitionBanner.setDownloadUrl(draft.getCompetitionPosterDownloadUrl());
   }
 }
 

@@ -3,41 +3,44 @@
     android:layout_width="match_parent"
     android:layout_height="72dp"
     android:layout_marginBottom="4dp"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
     android:layout_marginTop="4dp"
     android:background="@drawable/delegation_list_card_bg"
-    android:elevation="1dp">
+    android:elevation="1dp"
+    android:paddingTop="4dp">
 
     <ImageView
         android:id="@+id/draft_icon"
         android:layout_width="24dp"
         android:layout_height="24dp"
-       android:layout_marginTop="4dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="4dp"
         android:background="@drawable/circular_primary_color_bg"
         android:padding="4dp"
         android:src="@drawable/blog_icon_filled" />
 
     <TextView
-        android:layout_toRightOf="@+id/draft_icon"
-        android:textColor="@color/Black87"
-        android:textSize="12sp"
-        android:text="Blog Draft"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="8dp"
         android:id="@+id/draft_type"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_toRightOf="@+id/draft_icon"
+        android:text="Blog Draft"
+        android:textColor="@color/Black87"
+        android:textSize="12sp" />
 
     <TextView
-        android:layout_toRightOf="@+id/draft_type"
-        android:textColor="@color/Black38"
-        android:textSize="12sp"
-        android:text=" | 12 Hr ago"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="4dp"
         android:id="@+id/created_time"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="8dp"
+        android:layout_toRightOf="@+id/draft_type"
+        android:text=" | 12 Hr ago"
+        android:textColor="@color/Black38"
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/draft_title"
