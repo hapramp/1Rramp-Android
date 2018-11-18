@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-import static com.hapramp.analytics.EventReportUtils.getFormattedUserName;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -109,5 +108,31 @@ public class CommunitiesUnitTest {
     expectedList.add("hapramp-art");
     expectedList.add("dance");
     assertEquals(expectedList, PostHashTagPreprocessor.processHashtags(tags));
+  }
+
+  @Test
+  public void testString() {
+    ArrayList<Benf> benf = new ArrayList<>();
+    benf.add(new Benf("bxute", 10000));
+    benf.add(new Benf("bxute", 10000));
+    System.out.println(benf.toString());
+  }
+
+  class Benf {
+    private String author;
+    private int weight;
+
+    public Benf(String author, int weight) {
+      this.author = author;
+      this.weight = weight;
+    }
+
+    @Override
+    public String toString() {
+      return "{" +
+        "\"author\":\"" + author + '\"' +
+        ", \"weight\":" + weight +
+        '}';
+    }
   }
 }

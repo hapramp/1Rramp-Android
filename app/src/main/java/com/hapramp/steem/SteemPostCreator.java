@@ -6,11 +6,13 @@ import android.support.annotation.WorkerThread;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.JsonMetadata;
 import com.hapramp.steemconnect.SteemConnectUtils;
+import com.hapramp.steemconnect4j.Beneficiary;
 import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;
 import com.hapramp.steemconnect4j.SteemConnectException;
 import com.hapramp.utils.AccessTokenValidator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,10 +39,10 @@ public class SteemPostCreator {
     new Thread() {
       @Override
       public void run() {
-        SteemConnect steemConnect = SteemConnectUtils
+        final SteemConnect steemConnect = SteemConnectUtils
           .getSteemConnectInstance(HaprampPreferenceManager.getInstance()
             .getSC2AccessToken());
-        String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+        final String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
         String jsonMetadata = new JsonMetadata(tags, images).getJson();
         steemConnect.comment("",
           LocalConfig.PARENT_PERMALINK,
@@ -57,6 +59,7 @@ public class SteemPostCreator {
                   @Override
                   public void run() {
                     steemPostCreatorCallback.onPostCreatedOnSteem();
+                    broadcastCommentOptions(username, __permlink, steemConnect);
                   }
                 });
               }
@@ -77,6 +80,23 @@ public class SteemPostCreator {
         );
       }
     }.start();
+  }
+
+  private void broadcastCommentOptions(final String username, final String __permlink, final SteemConnect steemConnect) {
+    try {
+      new Thread() {
+        @Override
+        public void run() {
+          int percentSteemDollars = HaprampPreferenceManager.getInstance().getPercentSteemDollars();
+          ArrayList<Beneficiary> beneficiaries = new ArrayList<>();
+          beneficiaries.add(new Beneficiary(LocalConfig.BENEFICIARY_ACCOUNT, LocalConfig.BENEFICIARY_WEIGHT));
+          steemConnect.commentOption(username, __permlink, percentSteemDollars, beneficiaries, null);
+        }
+      }.start();
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   public void setSteemPostCreatorCallback(SteemPostCreatorCallback steemPostCreatorCallback) {

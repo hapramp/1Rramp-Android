@@ -248,4 +248,9 @@ public class HaprampPreferenceManager {
   public String getGlobalProps() {
     return preferences.getString("globalprops", null);
   }
+
+  public int getPercentSteemDollars() {
+    //100% SBD by default
+    return preferences.getInt("percentSteemDollars", 10000);
+  }
 }
