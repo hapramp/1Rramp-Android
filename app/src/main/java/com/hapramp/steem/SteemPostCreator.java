@@ -42,6 +42,12 @@ public class SteemPostCreator {
         final SteemConnect steemConnect = SteemConnectUtils
           .getSteemConnectInstance(HaprampPreferenceManager.getInstance()
             .getSC2AccessToken());
+        int percentSteemDollars = HaprampPreferenceManager.getInstance().getPercentSteemDollars();
+        String maxAcceptedPayout = HaprampPreferenceManager.getInstance().getMaxAcceptedPayout();
+        boolean allowVote = HaprampPreferenceManager.getInstance().getAllowVotes();
+        boolean allowCurationRewards = HaprampPreferenceManager.getInstance().getAllowCurationRewards();
+        ArrayList<Beneficiary> beneficiaries = new ArrayList<>();
+        beneficiaries.add(new Beneficiary(LocalConfig.BENEFICIARY_ACCOUNT, LocalConfig.BENEFICIARY_WEIGHT));
         final String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
         String jsonMetadata = new JsonMetadata(tags, images).getJson();
         steemConnect.comment("",
@@ -51,6 +57,11 @@ public class SteemPostCreator {
           com.hapramp.utils.StringUtils.stringify(title),
           com.hapramp.utils.StringUtils.stringify(body),
           com.hapramp.utils.StringUtils.stringify(jsonMetadata),
+          maxAcceptedPayout,
+          percentSteemDollars,
+          allowVote,
+          allowCurationRewards,
+          beneficiaries,
           new SteemConnectCallback() {
             @Override
             public void onResponse(String s) {
@@ -87,10 +98,7 @@ public class SteemPostCreator {
       new Thread() {
         @Override
         public void run() {
-          int percentSteemDollars = HaprampPreferenceManager.getInstance().getPercentSteemDollars();
-          ArrayList<Beneficiary> beneficiaries = new ArrayList<>();
-          beneficiaries.add(new Beneficiary(LocalConfig.BENEFICIARY_ACCOUNT, LocalConfig.BENEFICIARY_WEIGHT));
-          steemConnect.commentOption(username, __permlink, percentSteemDollars, beneficiaries, null);
+
         }
       }.start();
     }

@@ -253,4 +253,26 @@ public class HaprampPreferenceManager {
     //100% SBD by default
     return preferences.getInt("percentSteemDollars", 10000);
   }
+
+  public void setPercentSteemDollars(int percent){
+    editor.putInt("percentSteemDollars", percent);
+    editor.apply();
+  }
+
+  public String getMaxAcceptedPayout() {
+    return preferences.getString("maxAcceptedPayout","1000000.000 SBD");
+  }
+
+  public void setMaxAcceptedPayout(String maxAcceptedPayout){
+    editor.putString("maxAcceptedPayout",maxAcceptedPayout);
+    editor.apply();
+  }
+
+  public boolean getAllowVotes() {
+    return preferences.getBoolean("allowVotes",true);
+  }
+
+  public boolean getAllowCurationRewards() {
+    return preferences.getBoolean("allowCurationRewards",true);
+  }
 }

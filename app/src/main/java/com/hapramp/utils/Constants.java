@@ -21,4 +21,7 @@ public class Constants {
   public static final String EXTRAA_KEY_PARENT_PERMLINK = "parentPermlink";
   public static final String EXTRAA_KEY_NOTIFICATION_ID = "notification_id";
   public static final String COMPETITION_FOOTER = "";
+  public static final String DECLINED_PAYOUT_VALUE = "0.000 SBD";
+  public static final String MAX_PAYOUT_VALUE = "1000000.000 SBD";
+  public static final int MAX_PERCENT_STEEM_DOLLARS = 10000;
 }

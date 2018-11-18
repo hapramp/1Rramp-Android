@@ -6,6 +6,7 @@ import android.support.annotation.WorkerThread;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.JsonMetadata;
 import com.hapramp.steemconnect.SteemConnectUtils;
+import com.hapramp.steemconnect4j.Beneficiary;
 import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;
 import com.hapramp.steemconnect4j.SteemConnectException;
@@ -65,6 +66,12 @@ public class SteemCommentCreator {
         SteemConnect steemConnect = SteemConnectUtils
           .getSteemConnectInstance(HaprampPreferenceManager.getInstance()
             .getSC2AccessToken());
+        int percentSteemDollars = HaprampPreferenceManager.getInstance().getPercentSteemDollars();
+        String maxAcceptedPayout = HaprampPreferenceManager.getInstance().getMaxAcceptedPayout();
+        boolean allowVote = HaprampPreferenceManager.getInstance().getAllowVotes();
+        boolean allowCurationRewards = HaprampPreferenceManager.getInstance().getAllowCurationRewards();
+        ArrayList<Beneficiary> beneficiaries = new ArrayList<>();
+        beneficiaries.add(new Beneficiary(LocalConfig.BENEFICIARY_ACCOUNT, LocalConfig.BENEFICIARY_WEIGHT));
         String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
         String __permlink = PermlinkGenerator.getPermlink();
         steemConnect.comment(commentOnUser,
@@ -74,6 +81,11 @@ public class SteemCommentCreator {
           "",
           com.hapramp.utils.StringUtils.stringify(comment),
           StringUtils.stringify(jsonMetadata),
+          maxAcceptedPayout,
+          percentSteemDollars,
+          allowVote,
+          allowCurationRewards,
+          beneficiaries,
           new SteemConnectCallback() {
             @Override
             public void onResponse(String s) {
