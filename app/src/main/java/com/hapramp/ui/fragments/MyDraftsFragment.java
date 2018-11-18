@@ -155,18 +155,6 @@ public class MyDraftsFragment extends Fragment implements DraftsHelper.BlogDraft
     }
   }
 
-  private void populateBlogDraftItems(ArrayList<DraftModel> drafts) {
-    ArrayList<DraftListItemModel> draftList = new ArrayList<>();
-    for (int i = 0; i < drafts.size(); i++) {
-      DraftListItemModel draftListItemModel = new DraftListItemModel();
-      draftListItemModel.setDraftId(drafts.get(i).getDraftId());
-      draftListItemModel.setDraftType(DraftType.BLOG);
-      draftListItemModel.setTitle(drafts.get(i).getDraftTitle());
-      draftList.add(draftListItemModel);
-    }
-    draftsAdapter.setDrafts(draftList);
-  }
-
   @Override
   public void onSingleContestDraftRead(ContestDraftModel draft) {
 

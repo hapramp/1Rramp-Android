@@ -47,6 +47,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import xute.markdeditor.EditorControlBar;
 import xute.markdeditor.MarkDEditor;
+import xute.markdeditor.datatype.DraftDataItemModel;
 import xute.markdeditor.models.DraftModel;
 
 import static xute.markdeditor.Styles.TextComponentStyle.NORMAL;
@@ -347,11 +348,32 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
 
   private void addNewDraft() {
     DraftModel draftModel = markDEditor.getDraft();
-    showProgressDialog(true, "Saving draft...");
-    String draftTitle = articleTitleEt.getText().toString().length() > 0 ? articleTitleEt.getText().toString() : "Untitled Draft";
-    draftModel.setDraftTitle(draftTitle);
-    mDraftId = draftModel.getDraftId();
-    draftsHelper.insertDraft(draftModel);
+    if(checkValidSaveOption(draftModel)) {
+      showProgressDialog(true, "Saving draft...");
+      String draftTitle = articleTitleEt.getText().toString().length() > 0 ? articleTitleEt.getText().toString() : "Untitled Draft";
+      draftModel.setDraftTitle(draftTitle);
+      mDraftId = draftModel.getDraftId();
+      draftsHelper.insertDraft(draftModel);
+    }
+  }
+
+  private boolean checkValidSaveOption(DraftModel draftModel) {
+    if (draftModel.getItems().size() > 1) {
+      return true;
+    }
+    if (draftModel.getItems().size() > 0) {
+      DraftDataItemModel draftDataItemModel = draftModel.getItems().get(0);
+      if (draftDataItemModel.getDownloadUrl() != null) {
+        return true;
+      }
+
+      if (draftDataItemModel.getContent() != null) {
+        if (draftDataItemModel.getContent().trim().length() > 0) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   @Override
@@ -455,7 +477,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
 
   @Override
   public void onDraftUpdated(boolean success) {
-    Log.d("BlogDraft","updated "+success);
+    Log.d("BlogDraft", "updated " + success);
   }
 
   @Override

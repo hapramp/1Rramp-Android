@@ -666,7 +666,40 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
     competitionDraftModel.setEndTime(endTimeInput.getText().toString());
     competitionDraftModel.setFirstPrize(firstPrizeInput.getText().toString());
     competitionDraftModel.setCompetitionPosterDownloadUrl(competitionBanner.getDownloadUrl());
-    mDraftHelper.insertDraft(competitionDraftModel);
+    if (checkForValidSave(competitionDraftModel)) {
+      mDraftHelper.insertDraft(competitionDraftModel);
+    }
+  }
+
+  private boolean checkForValidSave(ContestDraftModel cd) {
+    if (cd.getCompetitionTitle().length() > 0) {
+      return true;
+    }
+    if (cd.getCompetitionDescription().length() > 0) {
+      return true;
+    }
+    if (cd.getCompetitionRules().length() > 0) {
+      return true;
+    }
+    if (cd.getmCommunitySelection().size() > 1) {
+      return true;
+    }
+    if (cd.getCustomHashTags().size() > 0) {
+      return true;
+    }
+    if (cd.getJudges().size() > 0) {
+      return true;
+    }
+    if (cd.getStartTime().length() > 0 || cd.getStartDate().length() > 0 || cd.getEndDate().length() > 0 || cd.getEndTime().length() > 0) {
+      return true;
+    }
+    if (cd.getFirstPrize().length() > 0) {
+      return true;
+    }
+    if (cd.getCompetitionPosterDownloadUrl() != null) {
+      return true;
+    }
+    return false;
   }
 
   @Override
