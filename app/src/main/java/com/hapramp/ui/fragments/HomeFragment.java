@@ -248,7 +248,7 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
   }
 
   private void refreshExplorePosts() {
-    dataStore.requestExploreFeeds(this);
+    dataStore.requestExploreFeeds(true,this);
   }
 
   private void refreshCommunityPosts(String tag) {

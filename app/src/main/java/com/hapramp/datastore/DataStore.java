@@ -967,5 +967,38 @@ public class DataStore extends DataDispatcher {
     }.start();
   }
 
+  public void requestExploreFeeds(final boolean refresh, final UserFeedCallback userFeedCallback) {
+    if (userFeedCallback != null) {
+      userFeedCallback.onFeedsFetching();
+    }
+    final String rtag = "user_explore_feeds_initial_ref";
+    this.currentFeedRequestTag = rtag;
+    new Thread() {
+      @Override
+      public void run() {
+        String url = UrlBuilder.explorePostsUrl();
+        String cachedResponse = DataCache.get(url);
+        if (cachedResponse != null && !refresh) {
+          dispatchExplorePosts(cachedResponse, false, false, userFeedCallback);
+        }
+        try {
+          Response response = NetworkApi.getNetworkApiInstance().fetch(url);
+          if (response.isSuccessful()) {
+            String res = response.body().string();
+            DataCache.cache(url, res);
+            if (isFeedRequestLive(rtag) && refresh) {
+              dispatchExplorePosts(res, true, false, userFeedCallback);
+            }
+          } else {
+            dispatchUserFeedsError("Error Code:" + response.code(), userFeedCallback);
+          }
+        }
+        catch (Exception e) {
+          dispatchUserFeedsError("Exception " + e.toString(), userFeedCallback);
+        }
+      }
+    }.start();
+  }
+
 }
 
