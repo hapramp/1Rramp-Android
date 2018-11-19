@@ -7,7 +7,7 @@ import com.hapramp.models.CompetitionEntryConfirmationBody;
 import com.hapramp.models.CompetitionEntryResponse;
 import com.hapramp.models.DeleteCompetitionResponse;
 import com.hapramp.models.FormattedBodyResponse;
-import com.hapramp.models.ResourceCreditModel;
+import com.hapramp.models.LookupAccount;
 import com.hapramp.models.VerificationDataBody;
 import com.hapramp.models.VerifiedToken;
 import com.hapramp.models.WinnersRankBody;
@@ -15,6 +15,7 @@ import com.hapramp.models.requests.CompetitionCreateBody;
 import com.hapramp.models.response.FileUploadReponse;
 import com.hapramp.steem.CommunitySelectionResponse;
 
+import io.reactivex.Single;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -66,4 +67,7 @@ public interface HaprampAPI {
   @Multipart
   @POST("upload")
   Call<FileUploadReponse> uploadFile(@Part MultipartBody.Part file);
+
+  @POST
+  Single<LookupAccount> getUsernames(@Url String url, @Body String body);
 }

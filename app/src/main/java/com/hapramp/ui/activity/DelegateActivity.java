@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -16,20 +14,33 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.api.RetrofitServiceGenerator;
+import com.hapramp.api.URLS;
 import com.hapramp.datastore.DataStore;
-import com.hapramp.datastore.callbacks.UserSearchCallback;
+import com.hapramp.datastore.SteemRequestBody;
+import com.hapramp.models.LookupAccount;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.WalletOperations;
 import com.hapramp.views.UserMentionSuggestionListView;
+import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.jakewharton.rxbinding2.widget.TextViewTextChangeEvent;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Function;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.PublishSubject;
 
-public class DelegateActivity extends AppCompatActivity implements UserSearchCallback {
+public class DelegateActivity extends AppCompatActivity {
   public static final String EXTRA_SP_BALANCE = "extra_sp_balance";
   @BindView(R.id.backBtn)
   ImageView backBtn;
@@ -57,6 +68,8 @@ public class DelegateActivity extends AppCompatActivity implements UserSearchCal
   TextView steemPowerWarning;
   @BindView(R.id.show_delegation_btn)
   TextView showDelegationBtn;
+  PublishSubject<String> publishSubject = PublishSubject.create();
+  CompositeDisposable compositeDisposable = new CompositeDisposable();
   private double mSPBalance;
   private String finalTransferAmount;
   private DataStore dataStore;
@@ -87,27 +100,36 @@ public class DelegateActivity extends AppCompatActivity implements UserSearchCal
         navigateToDelegationsListPage();
       }
     });
-    receiver_usernameEt.addTextChangedListener(new TextWatcher() {
-      @Override
-      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-      }
+    DisposableObserver<LookupAccount> usernameObserver = getUsernameObserver();
+    compositeDisposable.add(
+      RxTextView.textChangeEvents(receiver_usernameEt)
+        .skipInitialValue()
+        .distinctUntilChanged()
+        .debounce(300, TimeUnit.MILLISECONDS)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeWith(usernameTextWatcher())
+    );
 
-      @Override
-      public void onTextChanged(CharSequence s, int start, int before, int count) {
-        String searchTerm = receiver_usernameEt.getText().toString().trim().toLowerCase();
-        if (searchTerm.length() > 0 && receiver_usernameEt.getSelectionEnd() > 0) {
-          fetchSuggestions(searchTerm);
-        } else {
-          userMentionsSuggestionsView.setVisibility(View.GONE);
-        }
-      }
+    compositeDisposable.add(
+      publishSubject
+        .debounce(200, TimeUnit.MILLISECONDS)
+        .distinctUntilChanged()
+        .switchMapSingle(new Function<String, Single<LookupAccount>>() {
+          @Override
+          public Single<LookupAccount> apply(String username) {
+            return RetrofitServiceGenerator
+              .getService()
+              .getUsernames(URLS.STEEMIT_API_URL, SteemRequestBody.lookupAccounts(username))
+              .subscribeOn(Schedulers.io())
+              .observeOn(AndroidSchedulers.mainThread());
+          }
+        }).subscribeWith(usernameObserver)
+    );
 
-      @Override
-      public void afterTextChanged(Editable s) {
+    compositeDisposable.add(usernameObserver);
 
-      }
-    });
     userMentionsSuggestionsView.setMentionsSuggestionPickListener(new UserMentionSuggestionListView.MentionsSuggestionPickListener() {
       @Override
       public void onUserPicked(String username) {
@@ -146,13 +168,50 @@ public class DelegateActivity extends AppCompatActivity implements UserSearchCal
     startActivity(intent);
   }
 
-  private void fetchSuggestions(String query) {
-    if (ConnectionUtils.isConnected(DelegateActivity.this)) {
-      dataStore.requestUsernames(query, this);
-    } else {
-      Toast.makeText(this, "No Connectivity", Toast.LENGTH_LONG).show();
-    }
-    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_SEARCH_USER);
+  private DisposableObserver<LookupAccount> getUsernameObserver() {
+    return new DisposableObserver<LookupAccount>() {
+      @Override
+      public void onNext(LookupAccount lookupAccount) {
+        onUserSuggestionsAvailable(lookupAccount.getmResult());
+      }
+
+      @Override
+      public void onError(Throwable e) {
+
+      }
+
+      @Override
+      public void onComplete() {
+
+      }
+    };
+  }
+
+  private DisposableObserver<TextViewTextChangeEvent> usernameTextWatcher() {
+    return new DisposableObserver<TextViewTextChangeEvent>() {
+      @Override
+      public void onNext(TextViewTextChangeEvent textViewTextChangeEvent) {
+        String searchTerm = textViewTextChangeEvent.text().toString().trim().toLowerCase();
+        if (ConnectionUtils.isConnected(DelegateActivity.this)) {
+          if (searchTerm.length() > 0 && receiver_usernameEt.getSelectionEnd() > 0) {
+            onSearchingUser();
+            publishSubject.onNext(searchTerm);
+          }
+        } else {
+          Toast.makeText(DelegateActivity.this, "No Connectivity", Toast.LENGTH_LONG).show();
+        }
+      }
+
+      @Override
+      public void onError(Throwable e) {
+
+      }
+
+      @Override
+      public void onComplete() {
+
+      }
+    };
   }
 
   private boolean validateAmount() {
@@ -184,6 +243,20 @@ public class DelegateActivity extends AppCompatActivity implements UserSearchCal
     finish();
   }
 
+  public void onUserSuggestionsAvailable(List<String> users) {
+    if (userMentionsSuggestionsView != null) {
+      userMentionsSuggestionsView.setVisibility(View.VISIBLE);
+      userMentionsSuggestionsView.addSuggestions(users);
+    }
+  }
+
+  private void onSearchingUser() {
+    if (userMentionsSuggestionsView != null) {
+      userMentionsSuggestionsView.setVisibility(View.VISIBLE);
+      userMentionsSuggestionsView.onSearching();
+    }
+  }
+
   private void toast(String msg) {
     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
   }
@@ -194,21 +267,8 @@ public class DelegateActivity extends AppCompatActivity implements UserSearchCal
       amount * HaprampPreferenceManager.getInstance().getVestsPerSteem());
   }
 
-  @Override
-  public void onSearchingUsernames() {
+  private void fetchSuggestions(String query) {
 
-  }
-
-  @Override
-  public void onUserSuggestionsAvailable(List<String> users) {
-    if (userMentionsSuggestionsView != null) {
-      userMentionsSuggestionsView.setVisibility(View.VISIBLE);
-      userMentionsSuggestionsView.addSuggestions(users);
-    }
-  }
-
-  @Override
-  public void onUserSuggestionsError(String msg) {
-
+    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_SEARCH_USER);
   }
 }
