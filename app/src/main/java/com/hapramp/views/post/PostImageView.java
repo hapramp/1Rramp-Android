@@ -92,10 +92,15 @@ public class PostImageView extends FrameLayout implements ImageRotationHandler.I
       @Override
       public void onClick(View v) {
         scaleAndHideMainView();
-        if (imageActionListener != null) {
-          imageActionListener.onImageRemoved();
-          currentFilePath = null;
-          fileUploadReponseCall.cancel();
+        try {
+          if (imageActionListener != null) {
+            imageActionListener.onImageRemoved();
+            currentFilePath = null;
+            cancelUploadIfAny();
+          }
+        }
+        catch (Exception e) {
+          e.printStackTrace();
         }
       }
     });
@@ -140,6 +145,12 @@ public class PostImageView extends FrameLayout implements ImageRotationHandler.I
       public void onAnimationRepeat(Animation animation) {
       }
     });
+  }
+
+  private void cancelUploadIfAny() {
+    if (fileUploadReponseCall != null) {
+      fileUploadReponseCall.cancel();
+    }
   }
 
   public PostImageView(@NonNull Context context, @Nullable AttributeSet attrs) {

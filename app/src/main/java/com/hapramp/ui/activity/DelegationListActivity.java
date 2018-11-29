@@ -72,7 +72,7 @@ public class DelegationListActivity extends AppCompatActivity implements Delegat
     Intent ri = getIntent();
     if (ri != null) {
       mUsername = ri.getStringExtra(EXTRA_KEY_DELEGATOR);
-      actionBarTitle.setText(String.format("%s's Delegations", mUsername));
+      actionBarTitle.setText(String.format("%s's delegation(s)", mUsername));
     }
   }
 
@@ -110,7 +110,7 @@ public class DelegationListActivity extends AppCompatActivity implements Delegat
       delegationListAdapter.setDelegationModels(delegationModels);
       showMessage(false, "");
     } else {
-      showMessage(true, mUsername + " haven't delegated yet!");
+      showMessage(true, mUsername + " hasn’t delegated yet.");
     }
   }
 

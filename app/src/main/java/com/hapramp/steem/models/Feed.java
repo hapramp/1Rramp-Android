@@ -22,6 +22,7 @@ public class Feed implements Parcelable {
       return new Feed[size];
     }
   };
+  private String maxAcceptedPayoutValue;
   private boolean isResteemed;
   private String author;
   private String permlink;
@@ -52,6 +53,7 @@ public class Feed implements Parcelable {
   private String prize;
 
   protected Feed(Parcel in) {
+    maxAcceptedPayoutValue = in.readString();
     isResteemed = in.readByte() != 0x00;
     author = in.readString();
     permlink = in.readString();
@@ -107,6 +109,7 @@ public class Feed implements Parcelable {
 
   @Override
   public void writeToParcel(Parcel dest, int flags) {
+    dest.writeString(maxAcceptedPayoutValue);
     dest.writeByte((byte) (isResteemed ? 0x01 : 0x00));
     dest.writeString(author);
     dest.writeString(permlink);
@@ -166,6 +169,14 @@ public class Feed implements Parcelable {
 
   public void setCashOutTime(String cashOutTime) {
     this.cashOutTime = cashOutTime;
+  }
+
+  public String getMaxAcceptedPayoutValue() {
+    return maxAcceptedPayoutValue;
+  }
+
+  public void setMaxAcceptedPayoutValue(String maxAcceptedPayoutValue) {
+    this.maxAcceptedPayoutValue = maxAcceptedPayoutValue;
   }
 
   public boolean isResteemed() {

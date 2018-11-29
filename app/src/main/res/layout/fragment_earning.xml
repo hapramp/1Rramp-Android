@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
         android:background="@color/white"
-        android:padding="16dp"
+        android:paddingBottom="56dp"
         tools:context=".ui.fragments.EarningFragment">
 
         <android.support.v7.widget.CardView
@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/user_image"
-            android:layout_marginTop="16dp"
+            android:layout_margin="16dp"
             app:cardBackgroundColor="#ffffff"
             app:cardElevation="2dp">
 
@@ -179,8 +179,6 @@
                     android:paddingLeft="16dp"
                     android:layout_toRightOf="@+id/steem_power_label"
                     android:paddingRight="16dp"
-                    android:clickable="true"
-                    android:background="?selectableItemBackground"
                     android:textColor="@color/colorPrimary"
                     android:textSize="14sp" />
 
@@ -271,7 +269,7 @@
             android:id="@+id/account_operation_button_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_margin="16dp"
             android:layout_below="@+id/account_info_card">
 
             <RelativeLayout
@@ -310,7 +308,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_below="@+id/claim_reward_btn"
-                android:layout_marginTop="16dp"
                 android:background="@drawable/filled_btn_bg"
                 android:elevation="1dp"
                 android:clickable="true"
@@ -402,7 +399,8 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_below="@+id/account_operation_button_container"
-            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:background="@drawable/empty_btn_bg"
             android:clickable="true"
             android:elevation="1dp"
@@ -418,12 +416,37 @@
                 android:textStyle="bold" />
         </RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/delegations_btn"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_below="@+id/history_btn"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/empty_btn_bg"
+            android:clickable="true"
+            android:elevation="1dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="DELEGATIONS"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
         <xute.cryptocoinview.CoinView
             android:id="@+id/sbd_rate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/history_btn"
-            android:layout_marginTop="16dp" />
+            android:layout_below="@+id/delegations_btn"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"/>
 
         <xute.cryptocoinview.CoinView
             android:id="@+id/steem_rate"
@@ -431,7 +454,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/sbd_rate"
             android:layout_marginBottom="64dp"
-            android:layout_marginTop="16dp" />
+            android:layout_margin="16dp" />
 
     </RelativeLayout>
 

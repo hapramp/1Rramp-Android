@@ -23,9 +23,9 @@ import butterknife.ButterKnife;
  */
 
 public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+  public static final int VIEW_TYPE_LOADING = 3;
   private final int VIEW_TYPE_ITEM = 2;
   private final int VIEW_TYPE_PROFILE_HEADER = 1;
-  public static final int VIEW_TYPE_LOADING = 3;
   private final String mUsername;
   public Context mContext;
   private int s;
@@ -33,14 +33,13 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
   private boolean isLoading;
   private boolean hasChanceOfMoreFeeds;
   private boolean profileHeaderInitialized;
+  private OnLoadMoreListener onLoadMoreListener;
 
   public ProfileRecyclerAdapter(Context mContext, String username) {
     this.mContext = mContext;
     this.mUsername = username;
     feeds = new ArrayList<>();
   }
-
-  private OnLoadMoreListener onLoadMoreListener;
 
   @Override
   public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
@@ -61,10 +60,10 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
   @Override
   public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int pos) {
     if (viewHolder instanceof PostViewHolder) {
-      ((PostViewHolder) viewHolder).bind(feeds.get(pos - 1), new PostItemView.PostActionListener() {
+      ((PostViewHolder) viewHolder).bind(feeds.get(pos - 1), (pos - 1), new PostItemView.PostActionListener() {
         @Override
-        public void onPostDeleted() {
-          removeItemAt(pos);
+        public void onPostDeleted(int itemIndex) {
+          removeItemAt(itemIndex);
         }
       });
     } else if (viewHolder instanceof ProfileHeaderViewHolder) {
@@ -109,20 +108,6 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     return s == 0 ? 1 : s + 2;
   }
 
-  class PostViewHolder extends RecyclerView.ViewHolder {
-    PostItemView postItemView;
-    public PostViewHolder(View itemView) {
-      super(itemView);
-      postItemView = (PostItemView) itemView;
-    }
-
-    public void bind(final Feed postData, final PostItemView.PostActionListener postActionListener) {
-      postItemView.setPostActionListener(postActionListener);
-      postItemView.setPostData(postData);
-    }
-
-  }
-
   public void setPosts(List<Feed> newPosts) {
     isLoading = false;
     if (newPosts.size() == 0) {
@@ -153,6 +138,21 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
   public interface OnLoadMoreListener {
     void onLoadMore();
+  }
+
+  class PostViewHolder extends RecyclerView.ViewHolder {
+    PostItemView postItemView;
+
+    public PostViewHolder(View itemView) {
+      super(itemView);
+      postItemView = (PostItemView) itemView;
+    }
+
+    public void bind(final Feed postData, int itemIndex, final PostItemView.PostActionListener postActionListener) {
+      postItemView.setPostActionListener(postActionListener);
+      postItemView.setPostData(postData);
+      postItemView.setItemIndex(itemIndex);
+    }
   }
 
   class ProfileHeaderViewHolder extends RecyclerView.ViewHolder {

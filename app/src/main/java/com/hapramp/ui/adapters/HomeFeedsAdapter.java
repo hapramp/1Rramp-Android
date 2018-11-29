@@ -57,6 +57,17 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
   }
 
+  private void filterFeeds(List<Feed> feeds) {
+    for (int i = 0; i < feeds.size(); i++) {
+      String author = feeds.get(i).getAuthor();
+      if (author != null) {
+        if (author.length() == 0) {
+          feeds.remove(i);
+        }
+      }
+    }
+  }
+
   public void doneLoading() {
     if (feeds.size() > 0) {
       isLoading = false;
@@ -94,10 +105,10 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
   @Override
   public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
     if (holder instanceof FeedViewHolder) {
-      ((FeedViewHolder) holder).bind(feeds.get(position), new PostItemView.PostActionListener() {
+      ((FeedViewHolder) holder).bind(feeds.get(position), position, new PostItemView.PostActionListener() {
         @Override
-        public void onPostDeleted() {
-          removeItemAt(position);
+        public void onPostDeleted(int itemIndex) {
+          removeItemAt(itemIndex);
         }
       });
     } else if (holder instanceof LoadMoreViewHolder) {
@@ -141,14 +152,6 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     feeds.clear();
   }
 
-  private void filterFeeds(List<Feed> feeds) {
-    for (int i = 0; i < feeds.size(); i++) {
-      if (feeds.get(i).getAuthor().length() == 0) {
-        feeds.remove(i);
-      }
-    }
-  }
-
   public interface OnLoadMoreListener {
     void onLoadMore();
   }
@@ -161,9 +164,10 @@ public class HomeFeedsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
       postItemView = (PostItemView) itemView;
     }
 
-    public void bind(final Feed postData, final PostItemView.PostActionListener postActionListener) {
+    public void bind(final Feed postData, int itemIndex, final PostItemView.PostActionListener postActionListener) {
       postItemView.setPostActionListener(postActionListener);
       postItemView.setPostData(postData);
+      postItemView.setItemIndex(itemIndex);
     }
   }
 

@@ -50,10 +50,15 @@ public class ProfileFragmentPagerAdapter extends FragmentPagerAdapter {
 
   private void addDraftsTab(String username) {
     //username is same as logged-in user
-    if (username.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
-      MyDraftsFragment draftsFragment = new MyDraftsFragment();
+    try {
+      if (username.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
+        MyDraftsFragment draftsFragment = new MyDraftsFragment();
         fragments.add(draftsFragment);
-        titles.add("My Drafts");
+        titles.add("Drafts");
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
     }
   }
 

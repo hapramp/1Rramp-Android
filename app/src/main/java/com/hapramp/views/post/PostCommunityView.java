@@ -68,6 +68,7 @@ public class PostCommunityView extends FrameLayout {
     this.mDefaultSelections = coms;
     selectedTags.clear();
     selectedTags.addAll(mDefaultSelections);
+    addViews();
   }
 
   public void initCategory() {

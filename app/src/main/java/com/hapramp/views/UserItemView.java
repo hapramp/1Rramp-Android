@@ -59,6 +59,16 @@ public class UserItemView extends FrameLayout {
     init(context);
   }
 
+  private void init(Context context) {
+    this.mContext = context;
+    View view = LayoutInflater.from(context).inflate(R.layout.user_suggestions_item_row, this);
+    ButterKnife.bind(this, view);
+    mHandler = new Handler();
+    me = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+    steemConnect = SteemConnectUtils.getSteemConnectInstance(HaprampPreferenceManager.getInstance().getSC2AccessToken());
+    attachListeners();
+  }
+
   private void attachListeners() {
     followUnfollowBtn.setOnClickListener(new OnClickListener() {
       @Override
@@ -71,12 +81,17 @@ public class UserItemView extends FrameLayout {
       }
     });
 
+    userPic.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        openProfilePage();
+      }
+    });
+
     content.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        Intent i = new Intent(mContext, ProfileActivity.class);
-        i.putExtra(Constants.EXTRAA_KEY_STEEM_USER_NAME, getUsername());
-        mContext.startActivity(i);
+        openProfilePage();
       }
     });
   }
@@ -97,25 +112,6 @@ public class UserItemView extends FrameLayout {
       })
       .setNegativeButton("No", null);
     builder.show();
-  }
-
-  public UserItemView(@NonNull Context context, @Nullable AttributeSet attrs) {
-    super(context, attrs);
-    init(context);
-  }
-
-  private void init(Context context) {
-    this.mContext = context;
-    View view = LayoutInflater.from(context).inflate(R.layout.user_suggestions_item_row, this);
-    ButterKnife.bind(this, view);
-    mHandler = new Handler();
-    me = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-    steemConnect = SteemConnectUtils.getSteemConnectInstance(HaprampPreferenceManager.getInstance().getSC2AccessToken());
-    attachListeners();
-  }
-
-  private String getUsername() {
-    return this.mUsername;
   }
 
   private void requestFollowOnSteem() {
@@ -144,6 +140,51 @@ public class UserItemView extends FrameLayout {
                 @Override
                 public void run() {
                   userFollowFailed();
+                }
+              });
+            }
+          }
+        );
+      }
+    }.start();
+  }
+
+  private void openProfilePage() {
+    Intent i = new Intent(mContext, ProfileActivity.class);
+    i.putExtra(Constants.EXTRAA_KEY_STEEM_USER_NAME, getUsername());
+    mContext.startActivity(i);
+  }
+
+  private String getUsername() {
+    return this.mUsername;
+  }
+
+  private void requestUnFollowOnSteem() {
+    showProgress(true);
+    new Thread() {
+      @Override
+      public void run() {
+        steemConnect.unfollow(
+          me,
+          mUsername,
+          new SteemConnectCallback() {
+            @Override
+            public void onResponse(String s) {
+              mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                  userUnFollowedOnSteem();
+                }
+              });
+            }
+
+            @Override
+            public void onError(final SteemConnectException e) {
+              Log.d("UserFollow-Unfollow", e.toString());
+              mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                  userUnfollowFailed();
                 }
               });
             }
@@ -184,39 +225,18 @@ public class UserItemView extends FrameLayout {
     notFollowed();
   }
 
-  private void requestUnFollowOnSteem() {
-    showProgress(true);
-    new Thread() {
-      @Override
-      public void run() {
-        steemConnect.unfollow(
-          me,
-          mUsername,
-          new SteemConnectCallback() {
-            @Override
-            public void onResponse(String s) {
-              mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                  userUnFollowedOnSteem();
-                }
-              });
-            }
+  private void userUnFollowedOnSteem() {
+    showProgress(false);
+    notFollowed();
+    syncFollowings();
+    if (followStateChangeListener != null) {
+      followStateChangeListener.onFollowStateChanged();
+    }
+  }
 
-            @Override
-            public void onError(final SteemConnectException e) {
-              Log.d("UserFollow-Unfollow", e.toString());
-              mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                  userUnfollowFailed();
-                }
-              });
-            }
-          }
-        );
-      }
-    }.start();
+  private void userUnfollowFailed() {
+    showProgress(false);
+    alreadyFollowed();
   }
 
   private void alreadyFollowed() {
@@ -226,9 +246,8 @@ public class UserItemView extends FrameLayout {
     followed = true;
   }
 
-  public UserItemView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-    super(context, attrs, defStyleAttr);
-    init(context);
+  private void syncFollowings() {
+    FollowingsSyncUtils.syncFollowings(mContext);
   }
 
   private void notFollowed() {
@@ -267,22 +286,14 @@ public class UserItemView extends FrameLayout {
     }
   }
 
-  private void userUnFollowedOnSteem() {
-    showProgress(false);
-    notFollowed();
-    syncFollowings();
-    if (followStateChangeListener != null) {
-      followStateChangeListener.onFollowStateChanged();
-    }
+  public UserItemView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
+    init(context);
   }
 
-  private void syncFollowings() {
-    FollowingsSyncUtils.syncFollowings(mContext);
-  }
-
-  private void userUnfollowFailed() {
-    showProgress(false);
-    alreadyFollowed();
+  public UserItemView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+    init(context);
   }
 
   public void setFollowStateChangeListener(FollowStateChangeListener followStateChangeListener) {

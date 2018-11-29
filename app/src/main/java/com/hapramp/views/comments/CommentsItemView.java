@@ -107,6 +107,7 @@ public class CommentsItemView extends FrameLayout implements
   private String timestamp;
   private String content;
   private CommentActionListener commentActionListener;
+  private int mItemIndex;
 
   public CommentsItemView(@NonNull Context context) {
     super(context);
@@ -403,7 +404,7 @@ public class CommentsItemView extends FrameLayout implements
 
   private void deleteThisComment() {
     if (commentActionListener != null) {
-      commentActionListener.onCommentDeleted();
+      commentActionListener.onCommentDeleted(mItemIndex);
     }
     new Thread() {
       @Override
@@ -452,7 +453,11 @@ public class CommentsItemView extends FrameLayout implements
     this.commentActionListener = commenttActionListener;
   }
 
+  public void setItemIndex(int index) {
+    this.mItemIndex = index;
+  }
+
   public interface CommentActionListener {
-    void onCommentDeleted();
+    void onCommentDeleted(int itemIndex);
   }
 }

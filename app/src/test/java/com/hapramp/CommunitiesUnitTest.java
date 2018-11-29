@@ -1,5 +1,7 @@
 package com.hapramp;
 
+import com.hapramp.steemconnect4j.RpcJsonUtil;
+import com.hapramp.steemconnect4j.StringUtils;
 import com.hapramp.utils.HashTagUtils;
 import com.hapramp.utils.PostHashTagPreprocessor;
 import com.hapramp.utils.RegexUtils;
@@ -118,6 +120,30 @@ public class CommunitiesUnitTest {
     System.out.println(benf.toString());
   }
 
+  @Test
+  public void testReblog() {
+    String account = "bxute";
+    String author = "vikonomics";
+    String permlink = "what-dramatics-taught-me-about-handling-complexities";
+
+    String params = StringUtils.getCommanSeparatedObjectString(
+      RpcJsonUtil.getKeyValuePair("required_auths", "[]"),
+      RpcJsonUtil.getKeyValuePair("required_posting_auths", "[\"bxute\"]"),
+      RpcJsonUtil.getKeyValuePair("id", "\"follow\""),
+      RpcJsonUtil.getKeyValuePair("json",
+        "\""+ com.hapramp.utils.StringUtils.stringify(
+        StringUtils.getCommanSeparatedArrayString(
+          "\"reblog\"",
+         "{\"account\":\""+account+"\",\"author\":\""+author+"\",\"permlink\":\""+permlink+"\"}")) + "\""
+      ));
+
+    String operation = StringUtils.getOperationsString(
+      StringUtils.getCommanSeparatedArrayString(
+        StringUtils.getCommanSeparatedArrayString("\"custom_json\"", params)));
+
+    System.out.println(operation);
+  }
+
   class Benf {
     private String author;
     private int weight;
@@ -135,4 +161,5 @@ public class CommunitiesUnitTest {
         '}';
     }
   }
+
 }

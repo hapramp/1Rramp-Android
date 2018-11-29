@@ -19,26 +19,31 @@ import com.hapramp.draft.DraftType;
 import com.hapramp.draft.DraftsHelper;
 import com.hapramp.ui.activity.CompetitionCreatorActivity;
 import com.hapramp.ui.activity.CreateArticleActivity;
+import com.hapramp.ui.activity.CreatePostActivity;
 import com.hapramp.utils.MomentsUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.hapramp.ui.activity.CompetitionCreatorActivity.EXTRA_KEY_DRAFT_JSON;
+
 public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftListItemViewHolder> {
 
-  private ArrayList<DraftListItemModel> drafts;
+  private List<DraftListItemModel> drafts;
   private Context mContext;
   private DraftsHelper draftsHelper;
+  private EmptyDraftsAdapterCallback emptyDraftsAdapterCallback;
 
   public DraftsAdapter(Context context) {
     this.mContext = context;
     drafts = new ArrayList<>();
-    draftsHelper = new DraftsHelper(mContext);
+    draftsHelper = new DraftsHelper();
   }
 
-  public void setDrafts(ArrayList<DraftListItemModel> draftModels) {
+  public void setDrafts(List<DraftListItemModel> draftModels) {
     this.drafts = draftModels;
     notifyDataSetChanged();
   }
@@ -60,34 +65,23 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftListI
     return drafts.size();
   }
 
-  private void navigateToEditor(long draftId) {
-    Intent intent = new Intent(mContext, CreateArticleActivity.class);
-    intent.putExtra(CreateArticleActivity.EXTRA_KEY_DRAFT_ID, draftId);
-    mContext.startActivity(intent);
-  }
-
-  private void showDeleteAlert(final long draftID, final DraftType draftType) {
+  private void showDeleteAlert(final long draftID) {
     AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
-      .setTitle("Delete ?")
-      .setMessage("Draft will be permanently deleted!")
-      .setPositiveButton("Ok, Delete", new DialogInterface.OnClickListener() {
+      .setTitle("Delete this draft?")
+      .setMessage("The draft will be deleted permanently.")
+      .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-          deleteDraft(draftID, draftType);
+          deleteDraft(draftID);
         }
       })
       .setNegativeButton("No", null);
     builder.show();
   }
 
-  private void deleteDraft(long draftId, DraftType draftType) {
-    if (draftType == DraftType.BLOG) {
-      draftsHelper.deleteBlogDraft(draftId);
-      removeItemWithId(draftId);
-    } else {
-      draftsHelper.deleteContestDraft(draftId);
-      removeItemWithId(draftId);
-    }
+  private void deleteDraft(long draftId) {
+    draftsHelper.deleteDraft(draftId);
+    removeItemWithId(draftId);
   }
 
   private void removeItemWithId(long draftId) {
@@ -97,13 +91,41 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftListI
         break;
       }
     }
+    if (drafts.size() == 0) {
+      if (emptyDraftsAdapterCallback != null) {
+        emptyDraftsAdapterCallback.onAllDraftsDeleted();
+      }
+    }
     notifyDataSetChanged();
   }
 
-  private void navigateToCompetitionCreatePage(long draftId) {
+  private void navigateToCompetitionCreatePage(long draftId, String draftJson) {
     Intent intent = new Intent(mContext, CompetitionCreatorActivity.class);
     intent.putExtra(CompetitionCreatorActivity.EXTRA_KEY_DRAFT_ID, draftId);
+    intent.putExtra(EXTRA_KEY_DRAFT_JSON, draftJson);
     mContext.startActivity(intent);
+  }
+
+  private void navigateToShortPostPage(long draftId, String draftJson) {
+    Intent intent = new Intent(mContext, CreatePostActivity.class);
+    intent.putExtra(CreatePostActivity.EXTRA_KEY_DRAFT_ID, draftId);
+    intent.putExtra(EXTRA_KEY_DRAFT_JSON, draftJson);
+    mContext.startActivity(intent);
+  }
+
+  private void navigateToBlogEditor(long draftId, String draftJson) {
+    Intent intent = new Intent(mContext, CreateArticleActivity.class);
+    intent.putExtra(CreateArticleActivity.EXTRA_KEY_DRAFT_ID, draftId);
+    intent.putExtra(EXTRA_KEY_DRAFT_JSON, draftJson);
+    mContext.startActivity(intent);
+  }
+
+  public void setEmptyDraftsAdapter(EmptyDraftsAdapterCallback emptyDraftsAdapter) {
+    this.emptyDraftsAdapterCallback = emptyDraftsAdapter;
+  }
+
+  public interface EmptyDraftsAdapterCallback {
+    void onAllDraftsDeleted();
   }
 
   class DraftListItemViewHolder extends RecyclerView.ViewHolder {
@@ -126,29 +148,35 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftListI
     }
 
     public void bind(final DraftListItemModel draft) {
-      createdTime.setText(" | " + MomentsUtils.getFormattedTime(MomentsUtils.getTimeFromMillis(draft.getDraftId())));
-      if (draft.getDraftType() == DraftType.BLOG) {
+      createdTime.setText(" | Last updated: " + MomentsUtils.getFormattedTime(draft.getLastModified()));
+      if (draft.getDraftType().equals(DraftType.BLOG)) {
         draftIcon.setImageResource(R.drawable.blog_icon_filled);
         draftType.setText("Blog Draft");
-      } else {
-        draftIcon.setImageResource(R.drawable.competition_filled);
+      } else if (draft.getDraftType().equals(DraftType.CONTEST)) {
+        draftIcon.setImageResource(R.drawable.competition);
         draftType.setText("Competition Draft");
+      } else {
+        //short post draft
+        draftIcon.setImageResource(R.drawable.image);
+        draftType.setText("Short Post Draft");
       }
-      draftTitle.setText(draft.getTitle());
+      draftTitle.setText(draft.getTitle().length() > 0 ? draft.getTitle() : "Untitled Draft");
       draftTitle.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-          if (draft.getDraftType() == DraftType.BLOG) {
-            navigateToEditor(draft.getDraftId());
+          if (draft.getDraftType().equals(DraftType.BLOG)) {
+            navigateToBlogEditor(draft.getDraftId(), draft.getJson());
+          } else if (draft.getDraftType().equals(DraftType.CONTEST)) {
+            navigateToCompetitionCreatePage(draft.getDraftId(), draft.getJson());
           } else {
-            navigateToCompetitionCreatePage(draft.getDraftId());
+            navigateToShortPostPage(draft.getDraftId(), draft.getJson());
           }
         }
       });
       deleteIcon.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-          showDeleteAlert(draft.getDraftId(), draft.getDraftType());
+          showDeleteAlert(draft.getDraftId());
         }
       });
     }

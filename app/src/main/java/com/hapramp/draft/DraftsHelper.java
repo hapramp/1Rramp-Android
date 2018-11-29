@@ -1,256 +1,153 @@
 package com.hapramp.draft;
 
-import android.content.Context;
-import android.os.Handler;
+import com.google.gson.Gson;
+import com.hapramp.api.RetrofitServiceGenerator;
+import com.hapramp.models.DraftPostModel;
+import com.hapramp.models.DraftUploadResponse;
 
-import java.util.ArrayList;
-
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import xute.markdeditor.models.DraftModel;
 
 public class DraftsHelper {
-  DraftDatabaseHelper draftDatabaseHelper;
-  private Handler handler;
-  private BlogDraftsDatabaseCallbacks blogDraftCallback;
-  private ContestDraftsDatabaseCallbacks contestDraftCallback;
+  private DraftsHelperCallback draftsHelperCallback;
 
-
-  public DraftsHelper(Context context) {
-    handler = new Handler();
-    draftDatabaseHelper = new DraftDatabaseHelper(context);
+  public DraftsHelper() {
   }
 
   /*
    * Inserts asynchronously
    * */
-  public void insertDraft(final DraftModel draft) {
-    new Thread() {
-      @Override
-      public void run() {
-        final boolean success = draftDatabaseHelper.insertBlogDraft(draft);
-        handler.post(
-          new Runnable() {
-            @Override
-            public void run() {
-              if (blogDraftCallback != null) {
-                blogDraftCallback.onDraftInserted(success);
-              }
-            }
-          }
-        );
-      }
-    }.start();
+  public void saveBlogDraft(final DraftModel draft) {
+    postDraftToServer(
+      DraftType.BLOG,
+      draft.getDraftTitle(),
+      new Gson().toJson(draft)
+    );
   }
 
-  public void insertDraft(final ContestDraftModel draft) {
-    new Thread() {
+  private void postDraftToServer(String draftType, String title, String draftJson) {
+    DraftPostModel draftPostModel = new DraftPostModel();
+    draftPostModel.setmBody(draftJson);
+    draftPostModel.setmTitle(title);
+    draftPostModel.setDraftType(draftType);
+    draftPostModel.setmJsonMetadata("");
+    RetrofitServiceGenerator.getService().postDraft(draftPostModel).enqueue(new Callback<DraftUploadResponse>() {
       @Override
-      public void run() {
-        final boolean success = draftDatabaseHelper.insertContestDraft(draft);
-        handler.post(
-          new Runnable() {
-            @Override
-            public void run() {
-              if (contestDraftCallback != null) {
-                contestDraftCallback.onDraftInserted(success);
-              }
-            }
-          }
-        );
+      public void onResponse(Call<DraftUploadResponse> call, Response<DraftUploadResponse> response) {
+        if (draftsHelperCallback != null) {
+          draftsHelperCallback.onNewDraftSaved(response.isSuccessful());
+        }
       }
-    }.start();
+
+      @Override
+      public void onFailure(Call<DraftUploadResponse> call, Throwable t) {
+        if (draftsHelperCallback != null) {
+          draftsHelperCallback.onNewDraftSaved(false);
+        }
+      }
+    });
   }
 
-  public void fetchBlogDraftById(final long id) {
-    new Thread() {
-      @Override
-      public void run() {
-        final DraftModel draft = draftDatabaseHelper.findBlogDraftById(id);
-        handler.post(
-          new Runnable() {
-            @Override
-            public void run() {
-              if (blogDraftCallback != null) {
-                blogDraftCallback.onSingleBlogDraftRead(draft);
-              }
-            }
-          }
-        );
-      }
-    }.start();
+  /*
+   * Inserts asynchronously
+   * */
+  public void saveShortPostDraft(final ShortPostDraftModel draft) {
+    postDraftToServer(
+      DraftType.SHORT_POST,
+      draft.getTitle(),
+      new Gson().toJson(draft)
+    );
   }
 
-  /**
-   * Read Contest draft
-   *
-   * @param id contest id
-   */
-  public void fetchContestDraftById(final long id) {
-    new Thread() {
-      @Override
-      public void run() {
-        final ContestDraftModel draft = draftDatabaseHelper.findContestDraftById(id);
-        handler.post(
-          new Runnable() {
-            @Override
-            public void run() {
-              if (contestDraftCallback != null) {
-                contestDraftCallback.onSingleContestDraftRead(draft);
-              }
-            }
-          }
-        );
-      }
-    }.start();
+  public void saveContestDraft(final ContestDraftModel draft) {
+    postDraftToServer(
+      DraftType.CONTEST,
+      draft.getCompetitionTitle(),
+      new Gson().toJson(draft)
+    );
   }
 
   /**
    * @param draft model of Blog Draft
    */
   public void updateBlogDraft(final DraftModel draft) {
-    new Thread() {
-      @Override
-      public void run() {
-        final boolean success = draftDatabaseHelper.updateBlogDraft(draft);
-        handler.post(
-          new Runnable() {
-            @Override
-            public void run() {
-              if (blogDraftCallback != null) {
-                blogDraftCallback.onDraftUpdated(success);
-              }
-            }
-          }
-        );
-      }
-    }.start();
+    updateDraftAtServer(
+      DraftType.BLOG,
+      draft.getDraftId(),
+      draft.getDraftTitle(),
+      new Gson().toJson(draft)
+    );
   }
 
-  /**
-   * @param draft model of Contest draft.
-   */
+  private void updateDraftAtServer(String draftType, long draftId, String title, String draftJson) {
+    DraftPostModel draftPostModel = new DraftPostModel();
+    draftPostModel.setmBody(draftJson);
+    draftPostModel.setmTitle(title);
+    draftPostModel.setDraftType(draftType);
+    draftPostModel.setmJsonMetadata("");
+    RetrofitServiceGenerator.getService().updateDraft(draftId, draftPostModel).enqueue(new Callback<DraftUploadResponse>() {
+      @Override
+      public void onResponse(Call<DraftUploadResponse> call, Response<DraftUploadResponse> response) {
+        if (draftsHelperCallback != null) {
+          draftsHelperCallback.onDraftUpdated(response.isSuccessful());
+        }
+      }
+
+      @Override
+      public void onFailure(Call<DraftUploadResponse> call, Throwable t) {
+        draftsHelperCallback.onDraftUpdated(false);
+      }
+    });
+  }
+
+  public void updateShortPostDraft(final ShortPostDraftModel draft) {
+    updateDraftAtServer(
+      DraftType.SHORT_POST,
+      draft.getDraftId(),
+      draft.getTitle(),
+      new Gson().toJson(draft)
+    );
+  }
+
   public void updateContestDraft(final ContestDraftModel draft) {
-    new Thread() {
-      @Override
-      public void run() {
-        final boolean success = draftDatabaseHelper.updateContestDraft(draft);
-        handler.post(
-          new Runnable() {
-            @Override
-            public void run() {
-              if (contestDraftCallback != null) {
-                contestDraftCallback.onDraftUpdated(success);
-              }
-            }
+    updateDraftAtServer(
+      DraftType.CONTEST,
+      draft.getDraftId(),
+      draft.getCompetitionTitle(),
+      new Gson().toJson(draft)
+    );
+  }
+
+  public void deleteDraft(long draftId) {
+    RetrofitServiceGenerator
+      .getService()
+      .deleteDraft(draftId)
+      .enqueue(new Callback<DraftUploadResponse>() {
+        @Override
+        public void onResponse(Call<DraftUploadResponse> call, Response<DraftUploadResponse> response) {
+          if (draftsHelperCallback != null) {
+            draftsHelperCallback.onDraftDeleted(response.isSuccessful());
           }
-        );
-      }
-    }.start();
-  }
-
-
-  public void deleteBlogDraft(final long id) {
-    new Thread() {
-      @Override
-      public void run() {
-        final boolean success = draftDatabaseHelper.deleteDraft(id);
-        handler.post(
-          new Runnable() {
-            @Override
-            public void run() {
-              if (blogDraftCallback != null) {
-                blogDraftCallback.onDraftDeleted(success);
-              }
-            }
-          }
-        );
-      }
-    }.start();
-  }
-
-  public void deleteContestDraft(final long id) {
-    new Thread() {
-      @Override
-      public void run() {
-        final boolean success = draftDatabaseHelper.deleteDraft(id);
-        handler.post(
-          new Runnable() {
-            @Override
-            public void run() {
-              if (contestDraftCallback != null) {
-                contestDraftCallback.onDraftDeleted(success);
-              }
-            }
-          }
-        );
-      }
-    }.start();
-  }
-
-  public void setBlogDraftCallbacks(BlogDraftsDatabaseCallbacks databaseCallbacks) {
-    this.blogDraftCallback = databaseCallbacks;
-  }
-
-  public void setContestDraftCallbacks(ContestDraftsDatabaseCallbacks contestDraftCallbacks) {
-    this.contestDraftCallback = contestDraftCallbacks;
-  }
-
-  public void fetchAllTypeOfDrafts() {
-    new Thread() {
-      @Override
-      public void run() {
-        final ArrayList<ContestDraftModel> contestDrafts = draftDatabaseHelper.getAllContestDrafts();
-        final ArrayList<DraftModel> blogDrafts = draftDatabaseHelper.getAllBlogDrafts();
-        final ArrayList<DraftListItemModel> listItemModels = new ArrayList<>();
-        for (int i = 0; i < contestDrafts.size(); i++) {
-          DraftListItemModel draftListItemModel = new DraftListItemModel();
-          draftListItemModel.setDraftId(contestDrafts.get(i).getDraftId());
-          draftListItemModel.setDraftType(DraftType.COMPETITION);
-          draftListItemModel.setTitle(contestDrafts.get(i).getCompetitionTitle().length() > 0 ? contestDrafts.get(i).getCompetitionTitle() : "Untitled Competition");
-          listItemModels.add(draftListItemModel);
         }
-        for (int i = 0; i < blogDrafts.size(); i++) {
-          DraftListItemModel draftListItemModel = new DraftListItemModel();
-          draftListItemModel.setDraftId(blogDrafts.get(i).getDraftId());
-          draftListItemModel.setDraftType(DraftType.BLOG);
-          draftListItemModel.setTitle(blogDrafts.get(i).getDraftTitle().length() > 0 ? blogDrafts.get(i).getDraftTitle() : "Untitled Blog");
-          listItemModels.add(draftListItemModel);
+
+        @Override
+        public void onFailure(Call<DraftUploadResponse> call, Throwable t) {
+          draftsHelperCallback.onDraftDeleted(false);
         }
-        handler.post(
-          new Runnable() {
-            @Override
-            public void run() {
-              if (contestDraftCallback != null) {
-                contestDraftCallback.onAllDraftsRead(listItemModels);
-              }
-            }
-          }
-        );
-      }
-    }.start();
+      });
   }
 
-  public interface BlogDraftsDatabaseCallbacks {
-    void onDraftInserted(boolean success);
+  public void setDraftsHelperCallback(DraftsHelperCallback draftsHelperCallback) {
+    this.draftsHelperCallback = draftsHelperCallback;
+  }
 
-    void onSingleBlogDraftRead(DraftModel draft);
-
-    void onAllDraftsRead(ArrayList<DraftListItemModel> drafts);
+  public interface DraftsHelperCallback {
+    void onNewDraftSaved(boolean success);
 
     void onDraftUpdated(boolean success);
 
     void onDraftDeleted(boolean success);
   }
-
-  public interface ContestDraftsDatabaseCallbacks {
-    void onDraftInserted(boolean success);
-
-    void onSingleContestDraftRead(ContestDraftModel draft);
-
-    void onAllDraftsRead(ArrayList<DraftListItemModel> drafts);
-
-    void onDraftUpdated(boolean success);
-
-    void onDraftDeleted(boolean success);
-  }
-
 }

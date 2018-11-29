@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="24dp">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:id="@+id/action_bar_container"
@@ -34,7 +33,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@+id/action_bar_container"
         android:layout_marginTop="4dp"
         android:background="@color/white"
@@ -156,32 +155,36 @@
             android:paddingRight="16dp"
             android:text="@string/power_down_warning"
             android:textColor="@color/Black38"
-            android:textSize="12sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/show_delegation_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/steem_power_warning"
-            android:background="?actionBarItemBackground"
+            android:layout_below="@+id/help_message"
             android:clickable="true"
-            android:padding="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginLeft="8dp"
-            android:text="View My Delegations"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:background="@drawable/light_btn_bg"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="View My Delegation(s)"
             android:textColor="@color/colorPrimary"
-            android:textSize="12sp" />
+            android:textSize="14sp" />
 
         <TextView
+            android:id="@+id/help_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/show_delegation_btn"
-            android:layout_marginTop="16dp"
+            android:layout_below="@+id/steem_power_warning"
+            android:layout_marginTop="8dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:text="@string/undelegate_message"
             android:textColor="@color/Black38"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:textStyle="italic" />
 
     </RelativeLayout>

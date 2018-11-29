@@ -20,6 +20,7 @@ import com.hapramp.datastore.callbacks.UserProfileCallback;
 import com.hapramp.datastore.callbacks.UserSearchCallback;
 import com.hapramp.datastore.callbacks.UserVestedShareCallback;
 import com.hapramp.datastore.callbacks.UserWalletCallback;
+import com.hapramp.interfaces.RebloggedUserFetchCallback;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
@@ -33,6 +34,10 @@ import okhttp3.Response;
 public class DataStore extends DataDispatcher {
 
   private String currentFeedRequestTag;
+
+  /*
+   *   Fetch reblogged Users
+   * */
 
   /**
    * Fetches all communities
@@ -118,6 +123,28 @@ public class DataStore extends DataDispatcher {
         }
         catch (Exception e) {
 
+        }
+      }
+    }.start();
+  }
+
+  public void fetchRebloggedUsers(
+                                  final String reqTag,
+                                  final String author,
+                                  final String permlink,
+                                  final RebloggedUserFetchCallback rebloggedUserFetchCallback) {
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          String url = UrlBuilder.steemUrl();
+          String body = SteemRequestBody.getRebloggedByBody(author, permlink);
+          Response rebloggedUsers = NetworkApi.getNetworkApiInstance().postAndFetch(url, body);
+          String responseString = rebloggedUsers.body().string();
+          dispatchRebloggedUsers(reqTag,responseString, rebloggedUserFetchCallback);
+        }
+        catch (Exception e) {
+          e.printStackTrace();
         }
       }
     }.start();

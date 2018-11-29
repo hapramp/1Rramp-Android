@@ -228,6 +228,8 @@ public class JSONParser {
       String rootAuthor = rootObject.getString("root_author");
       //root permlink
       String rootPermlink = rootObject.getString("root_permlink");
+      //max accepted payout value
+      String maxAcceptedPayoutValue = rootObject.getString("max_accepted_payout");
       //url
       String url = rootObject.optString("url", "");
       //pending payout value
@@ -248,6 +250,7 @@ public class JSONParser {
       feed.setParentAuthor(parentAuthor);
       feed.setParentPermlink(parentPermlink);
       feed.setTitle(title);
+      feed.setMaxAcceptedPayoutValue(maxAcceptedPayoutValue);
       feed.setFeaturedImageUrl(featureImageUrl);
       feed.setFormat(format);
       feed.setTags(tags);

@@ -33,6 +33,7 @@
             android:layout_toLeftOf="@+id/searchBtn"
             android:background="#ffffff"
             android:hint="Search user.."
+            android:inputType="text"
             android:imeOptions="actionSearch"
             android:textColorHint="@color/Black38"
             android:textSize="14sp" />

@@ -37,10 +37,11 @@ android {
         applicationId "com.hapramp"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 84
-        versionName "0.1.11"
+        versionCode 88
+        versionName "0.1.12"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+        setProperty("archivesBaseName", "1ramp_" + versionCode + "_" + versionName)
     }
     buildTypes {
         debug {
@@ -80,7 +81,7 @@ dependencies {
     implementation 'android.arch.lifecycle:extensions:1.1.1'
     implementation 'org.jsoup:jsoup:1.11.3'
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
-    implementation 'com.github.hapramp:steemconnect4j:v1.3.4'
+    implementation 'com.github.hapramp:steemconnect4j:v1.3.5'
     implementation 'com.github.bxute:CryptoCoinView:v0.6'
     implementation 'com.github.bxute:MarkDEditor:v0.19'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
