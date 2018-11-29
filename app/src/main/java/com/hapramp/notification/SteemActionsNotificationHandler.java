@@ -44,8 +44,8 @@ public class SteemActionsNotificationHandler {
     Context context = HapRampMain.getContext();
     //you are the author of the post
     String author = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-    String title = "Reblog";
-    String content = reblogger + " shared your post";
+    String title = "Repost";
+    String content = reblogger + " reposted your post";
     PendingIntent pendingIntent = getPostNotificationPendingIntent(context, notificationId, author, "", permlink);
     addNotificationToTray(HapRampMain.getContext(), pendingIntent, title, content);
   }

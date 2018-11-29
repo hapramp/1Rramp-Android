@@ -47,6 +47,7 @@ public class SteemPostCreator {
         boolean allowVote = HaprampPreferenceManager.getInstance().getAllowVotes();
         boolean allowCurationRewards = HaprampPreferenceManager.getInstance().getAllowCurationRewards();
         ArrayList<Beneficiary> beneficiaries = new ArrayList<>();
+        //add beneficiaries later
         beneficiaries.add(new Beneficiary(LocalConfig.BENEFICIARY_ACCOUNT, LocalConfig.BENEFICIARY_WEIGHT));
         final String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
         String jsonMetadata = new JsonMetadata(tags, images).getJson();

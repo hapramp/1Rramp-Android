@@ -278,6 +278,7 @@
                 android:layout_height="72dp"
                 android:clickable="true"
                 android:visibility="gone"
+                android:layout_marginBottom="16dp"
                 android:background="#dd000000">
 
                 <TextView

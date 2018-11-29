@@ -542,6 +542,7 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
   @Override
   public void onPostCreationFailedOnSteem(String msg) {
     toast("Cannot create post.");
+    Log.d("PostCreate",msg);
     showPublishingProgressDialog(false, "");
   }
 
