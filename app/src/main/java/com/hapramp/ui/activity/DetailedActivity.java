@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -447,7 +448,7 @@ public class DetailedActivity extends AppCompatActivity implements
         return true;
       }
     });
-    webView.getSettings().setLoadWithOverviewMode(true);
+   // webView.getSettings().setLoadWithOverviewMode(true);
     webView.loadDataWithBaseURL("file:///android_asset/",
       "<link rel=\"stylesheet\" type=\"text/css\" href=\"md_theme.css\" />" + body,
       "text/html; charset=utf-8",
@@ -745,11 +746,11 @@ public class DetailedActivity extends AppCompatActivity implements
 
   private void setSteemEarnings(Feed feed) {
     try {
-      String briefPayoutValueString;
       double pendingPayoutValue = Double.parseDouble(feed.getPendingPayoutValue().split(" ")[0]);
       double totalPayoutValue = Double.parseDouble(feed.getTotalPayoutValue().split(" ")[0]);
       double curatorPayoutValue = Double.parseDouble(feed.getCuratorPayoutValue().split(" ")[0]);
-
+      double maxAcceptedValue = Double.parseDouble(feed.getMaxAcceptedPayoutValue().split(" ")[0]);
+      String briefPayoutValueString;
       if (pendingPayoutValue > 0) {
         payoutValue.setVisibility(VISIBLE);
         dollarIcon.setVisibility(VISIBLE);
@@ -764,6 +765,13 @@ public class DetailedActivity extends AppCompatActivity implements
       } else {
         payoutValue.setVisibility(GONE);
         dollarIcon.setVisibility(GONE);
+      }
+
+      //format payout string
+      if(maxAcceptedValue==0){
+        payoutValue.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+      }else{
+        payoutValue.setPaintFlags(Paint.LINEAR_TEXT_FLAG);
       }
     }
     catch (Exception e) {

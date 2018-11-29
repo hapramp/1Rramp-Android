@@ -700,12 +700,8 @@ public class PostItemView extends FrameLayout implements RebloggedUserFetchCallb
   }
 
   private void setRepostCount(int count) {
-    if (count > 0) {
       repostContainer.setVisibility(VISIBLE);
       repostCount.setText(String.valueOf(count));
-    } else {
-      repostContainer.setVisibility(GONE);
-    }
   }
 
   private String getRebloggedUserRequestTag() {

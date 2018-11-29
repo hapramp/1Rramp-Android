@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">1ramp</string>
-    <string name="onboarding_title_1">JOIN COMMUNITY</string>
-    <string name="onboarding_title_2">SHARE CONTENT</string>
-    <string name="onboarding_title_3">EARN REWARDS</string>
-    <string name="onboarding_content_1">Join community</string>
-    <string name="onboarding_content_2">Share your innovative content</string>
-    <string name="onboarding_content_3">Earn rewards for your work </string>
+    <string name="onboarding_title_1">Join communities</string>
+    <string name="onboarding_title_2">Share your work</string>
+    <string name="onboarding_title_3">Earn rewards</string>
+    <string name="onboarding_content_1">Grow with the communities of your interest</string>
+    <string name="onboarding_content_2">Share photos and write blogs</string>
+    <string name="onboarding_content_3">If you are good at something, don’t post it for free</string>
     <string name="star_info">%1$.1f star from %2$d</string>
     <string name="default_wall_pic">https://user-images.githubusercontent.com/10809719/34511255-2d3d8592-f080-11e7-9540-43d153a96c33.png</string>
     <string name="post_subtitle_format">| %1$s</string>
