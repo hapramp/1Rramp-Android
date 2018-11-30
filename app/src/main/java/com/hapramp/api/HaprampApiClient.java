@@ -1,6 +1,7 @@
 package com.hapramp.api;
 
 import com.hapramp.utils.RestrictedSocketFactory;
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -12,6 +13,7 @@ import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
  * Created by Ankit on 5/13/2017.
@@ -44,7 +46,9 @@ public class HaprampApiClient {
 
     retrofit = new Retrofit.Builder()
       .baseUrl(URLS.BASE_URL)
+      .addConverterFactory(ScalarsConverterFactory.create())
       .addConverterFactory(GsonConverterFactory.create())
+      .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
       .client(client)
       .build();
     return retrofit;

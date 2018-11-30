@@ -59,7 +59,7 @@ public class PowerDownActivity extends AppCompatActivity {
     if (intent != null) {
       String _balance = intent.getExtras().getString(EXTRA_SP_BALANCE, "0 SP");
       mSPBalance = Double.parseDouble(_balance.split(" ")[0]);
-      balanceTv.setText(String.format("Your balance: %s", _balance));
+      balanceTv.setText(String.format(Locale.US,"Your balance: %.2f SP", mSPBalance));
     }
   }
 

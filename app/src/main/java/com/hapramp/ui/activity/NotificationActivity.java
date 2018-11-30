@@ -50,6 +50,7 @@ public class NotificationActivity extends AppCompatActivity {
   private NotificationAdapter notificationAdapter;
   private ArrayList<BaseNotificationModel> mNotifications;
 
+  //todo: Mark all notifications when page opens
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);

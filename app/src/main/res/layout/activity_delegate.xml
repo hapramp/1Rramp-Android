@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:paddingBottom="24dp"
     android:layout_height="wrap_content">
 
     <RelativeLayout
@@ -14,8 +13,8 @@
             android:id="@+id/backBtn"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="?selectableItemBackgroundBorderless"
             android:layout_centerVertical="true"
+            android:background="?selectableItemBackgroundBorderless"
             android:padding="14dp"
             android:src="@drawable/back" />
 
@@ -28,19 +27,18 @@
             android:padding="8dp"
             android:text="DELEGATE"
             android:textColor="@color/Black87"
-            android:textSize="14sp"
-            />
+            android:textSize="14sp" />
 
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@+id/action_bar_container"
         android:layout_marginTop="4dp"
+        android:background="@color/white"
         android:paddingBottom="24dp"
-        android:paddingRight="16dp"
-        android:background="@color/white">
+        android:paddingRight="16dp">
 
         <TextView
             android:id="@+id/username_label"
@@ -50,9 +48,9 @@
             android:layout_marginTop="16dp"
             android:gravity="center"
             android:text="TO"
-            android:textStyle="bold"
             android:textColor="@color/Black54"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/username_et"
@@ -60,8 +58,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/username_label"
             android:layout_marginLeft="12dp"
-            android:hint="Delegatee's username"
             android:layout_marginTop="16dp"
+            android:hint="Delegatee's username"
             android:paddingBottom="16dp"
             android:textSize="14sp"
             android:theme="@style/MyEditTextStyle" />
@@ -79,16 +77,16 @@
 
         <TextView
             android:id="@+id/amount_label"
-            android:layout_below="@id/username_et"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/username_et"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:gravity="center"
             android:text="AMOUNT"
-            android:textStyle="bold"
             android:textColor="@color/Black54"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/amount_et"
@@ -96,11 +94,11 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/amount_label"
             android:layout_marginLeft="12dp"
-            android:hint="Amount to delegate"
             android:layout_marginTop="16dp"
+            android:hint="Amount to delegate"
+            android:inputType="numberDecimal"
             android:paddingBottom="16dp"
             android:textSize="14sp"
-            android:inputType="numberDecimal"
             android:theme="@style/MyEditTextStyle" />
 
         <TextView
@@ -108,68 +106,86 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/amount_et"
-            android:textSize="12sp"
             android:layout_marginLeft="16dp"
-            android:textColor="@color/colorPrimary"/>
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/continueBtn"
-            android:text="CONTINUE"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/balanceTv"
             android:layout_marginLeft="16dp"
+            android:layout_marginTop="24dp"
             android:background="@drawable/filled_btn_bg"
             android:elevation="1dp"
+            android:paddingBottom="8dp"
             android:paddingLeft="24dp"
             android:paddingRight="24dp"
             android:paddingTop="8dp"
-            android:paddingBottom="8dp"
+            android:text="CONTINUE"
             android:textColor="@color/white"
-            android:textSize="12sp"
-            android:layout_marginTop="24dp"
-            android:layout_below="@+id/balanceTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/cancelBtn"
-            android:text="CANCEL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/balanceTv"
             android:layout_marginLeft="16dp"
+            android:layout_marginTop="24dp"
             android:layout_toRightOf="@+id/continueBtn"
             android:background="@drawable/black_filled_btn_bg"
             android:elevation="1dp"
+            android:paddingBottom="8dp"
             android:paddingLeft="24dp"
             android:paddingRight="24dp"
             android:paddingTop="8dp"
-            android:paddingBottom="8dp"
+            android:text="CANCEL"
             android:textColor="@color/white"
-            android:textSize="12sp"
-            android:layout_marginTop="24dp"
-            android:layout_below="@+id/balanceTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/steem_power_warning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/continueBtn"
+            android:layout_marginTop="16dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:textSize="12sp"
-            android:layout_marginTop="16dp"
-            android:textColor="@color/Black38"
             android:text="@string/power_down_warning"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:textColor="@color/Black38"
+            android:textSize="14sp" />
 
         <TextView
-            android:layout_below="@+id/steem_power_warning"
+            android:id="@+id/show_delegation_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/help_message"
+            android:clickable="true"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:background="@drawable/light_btn_bg"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:textSize="12sp"
-            android:layout_marginTop="16dp"
-            android:textColor="@color/Black38"
-            android:text="@string/undelegate_message"
+            android:text="View My Delegation(s)"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/help_message"
             android:layout_width="wrap_content"
-            android:textStyle="italic"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/steem_power_warning"
+            android:layout_marginTop="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="@string/undelegate_message"
+            android:textColor="@color/Black38"
+            android:textSize="14sp"
+            android:textStyle="italic" />
 
     </RelativeLayout>
 

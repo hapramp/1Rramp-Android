@@ -92,10 +92,15 @@ public class PostImageView extends FrameLayout implements ImageRotationHandler.I
       @Override
       public void onClick(View v) {
         scaleAndHideMainView();
-        if (imageActionListener != null) {
-          imageActionListener.onImageRemoved();
-          currentFilePath = null;
-          fileUploadReponseCall.cancel();
+        try {
+          if (imageActionListener != null) {
+            imageActionListener.onImageRemoved();
+            currentFilePath = null;
+            cancelUploadIfAny();
+          }
+        }
+        catch (Exception e) {
+          e.printStackTrace();
         }
       }
     });
@@ -140,6 +145,12 @@ public class PostImageView extends FrameLayout implements ImageRotationHandler.I
       public void onAnimationRepeat(Animation animation) {
       }
     });
+  }
+
+  private void cancelUploadIfAny() {
+    if (fileUploadReponseCall != null) {
+      fileUploadReponseCall.cancel();
+    }
   }
 
   public PostImageView(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -232,6 +243,7 @@ public class PostImageView extends FrameLayout implements ImageRotationHandler.I
       });
     }
     catch (Exception e) {
+      Log.d("FilePathUtils", "" + e.toString());
       informationTv.setText("Failed to load image.");
       Crashlytics.logException(e);
       progressBar.setVisibility(GONE);
@@ -245,6 +257,18 @@ public class PostImageView extends FrameLayout implements ImageRotationHandler.I
 
   public String getDownloadUrl() {
     return downloadUrl;
+  }
+
+  public void setDownloadUrl(String downloadUrl) {
+    if (downloadUrl != null) {
+      this.downloadUrl = downloadUrl;
+      invalidateView();
+      mainView.setVisibility(VISIBLE);
+      informationTv.setVisibility(VISIBLE);
+      informationTv.setText("Uploaded");
+      actionContainer.setVisibility(VISIBLE);
+      ImageHandler.load(mContext, image, downloadUrl);
+    }
   }
 
   public void setImageActionListener(ImageActionListener imageActionListener) {

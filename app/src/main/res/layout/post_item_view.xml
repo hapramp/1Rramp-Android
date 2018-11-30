@@ -160,26 +160,32 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp">
 
-        <ImageView
-            android:id="@+id/comment_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_centerVertical="true"
+        <LinearLayout
+            android:id="@+id/comment_container"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
             android:background="?selectableItemBackgroundBorderless"
             android:clickable="true"
-            android:padding="4dp"
-            android:src="@drawable/comment" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/comment_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="4dp"
-            android:layout_toRightOf="@+id/comment_icon"
-            android:text="0"
-            android:textColor="@color/Black54"
-            android:textSize="16sp" />
+            <ImageView
+                android:id="@+id/comment_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:padding="4dp"
+                android:src="@drawable/comment" />
+
+            <TextView
+                android:id="@+id/comment_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:text="0"
+                android:textColor="@color/Black54"
+                android:textSize="16sp" />
+
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/dollar_icon"
@@ -187,7 +193,7 @@
             android:layout_height="24dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="8dp"
-            android:layout_toRightOf="@+id/comment_count"
+            android:layout_toRightOf="@+id/comment_container"
             android:padding="4dp"
             android:src="@drawable/dollor" />
 
@@ -201,22 +207,34 @@
             android:textColor="@color/Black54"
             android:textSize="16sp" />
 
-        <ImageView
-            android:id="@+id/resteemed_icon"
-            android:layout_width="14dp"
-            android:layout_height="14dp"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="4dp"
-            android:layout_toLeftOf="@+id/resteemed_label"
-            android:src="@drawable/resteem" />
-
-        <TextView
-            android:id="@+id/resteemed_label"
+        <LinearLayout
+            android:id="@+id/repost_container"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_height="48dp"
             android:layout_centerVertical="true"
-            android:text="resteemed" />
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@+id/payoutValue"
+            android:background="?selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp">
+
+            <ImageView
+                android:id="@+id/resteemed_icon"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/repost_icon" />
+
+            <TextView
+                android:id="@+id/repost_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="0" />
+        </LinearLayout>
+
 
     </RelativeLayout>
 

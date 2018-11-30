@@ -12,14 +12,14 @@ public class DataStoreCachePreference {
   private static SharedPreferences.Editor editor;
   private static DataStoreCachePreference mInstance;
 
-  public DataStoreCachePreference() {
-    preferences = HapRampMain.getContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+  public DataStoreCachePreference(Context context) {
+    preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     editor = preferences.edit();
   }
 
-  public static DataStoreCachePreference getInstance() {
+  public static DataStoreCachePreference getInstance(Context context) {
     if (mInstance == null) {
-      mInstance = new DataStoreCachePreference();
+      mInstance = new DataStoreCachePreference(context);
     }
     return mInstance;
   }

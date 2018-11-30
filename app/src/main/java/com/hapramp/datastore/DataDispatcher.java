@@ -7,6 +7,7 @@ import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
 import com.hapramp.datastore.callbacks.CompetitionEntriesFetchCallback;
 import com.hapramp.datastore.callbacks.CompetitionsListCallback;
+import com.hapramp.datastore.callbacks.DelegationsCallback;
 import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.datastore.callbacks.FollowersCallback;
 import com.hapramp.datastore.callbacks.FollowingsCallback;
@@ -20,9 +21,11 @@ import com.hapramp.datastore.callbacks.UserProfileCallback;
 import com.hapramp.datastore.callbacks.UserSearchCallback;
 import com.hapramp.datastore.callbacks.UserVestedShareCallback;
 import com.hapramp.datastore.callbacks.UserWalletCallback;
+import com.hapramp.interfaces.RebloggedUserFetchCallback;
 import com.hapramp.models.CommentModel;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.models.CompetitionModel;
+import com.hapramp.models.DelegationModel;
 import com.hapramp.models.FollowCountInfo;
 import com.hapramp.models.GlobalProperties;
 import com.hapramp.models.JudgeModel;
@@ -49,6 +52,28 @@ public class DataDispatcher {
   DataDispatcher() {
     handler = new Handler();
     jsonParser = new JSONParser();
+  }
+
+  void dispatchRebloggedUsers(final String reqTag, String response, final RebloggedUserFetchCallback rebloggedUserFetchCallback) {
+    final ArrayList<String> rebloggedUser = new ArrayList<>();
+    try {
+      JSONObject jsonObject = new JSONObject(response);
+      JSONArray jsonArray = jsonObject.getJSONArray("result");
+      for (int i = 0; i < jsonArray.length(); i++) {
+        rebloggedUser.add((String) jsonArray.get(i));
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+    if (rebloggedUserFetchCallback != null) {
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          rebloggedUserFetchCallback.onRebloggedUserFetched(reqTag,rebloggedUser);
+        }
+      });
+    }
   }
 
   void dispatchAllCommunity(String response, final boolean isFresh, final CommunitiesCallback communitiesCallback) {
@@ -593,4 +618,24 @@ public class DataDispatcher {
     }
   }
 
+  void dispatchDelegationsList(String response, final DelegationsCallback delegationsCallback) {
+    if (delegationsCallback != null) {
+      if (response != null) {
+        final ArrayList<DelegationModel> delegationModels = jsonParser.parseDelegations(response);
+        handler.post(new Runnable() {
+          @Override
+          public void run() {
+            delegationsCallback.onDelegationsFetched(delegationModels);
+          }
+        });
+      } else {
+        handler.post(new Runnable() {
+          @Override
+          public void run() {
+            delegationsCallback.onDelegationsFetchFailed();
+          }
+        });
+      }
+    }
+  }
 }

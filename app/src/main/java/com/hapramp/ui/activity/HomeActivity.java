@@ -139,6 +139,7 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
         EventReporter.reportDeviceId();
         EventReporter.reportOpenEvent();
         NotificationSubscriber.subscribeForUserTopic();
+        NotificationSubscriber.subscribeForNewCompetition();
         AppUpdateChecker.checkAppUpdatesNode(HomeActivity.this, new AppUpdateChecker.AppUpdateAvailableListener() {
           @Override
           public void onAppUpdateAvailable() {

@@ -35,7 +35,7 @@ public class HaprampPreferenceManager {
   public void clearPreferences() {
     editor.clear();
     editor.apply();
-    DataStoreCachePreference.getInstance().clearCaches();
+    DataStoreCachePreference.getInstance(HapRampMain.getContext()).clearCaches();
     setOnBoardingVisited();
   }
 
@@ -240,4 +240,48 @@ public class HaprampPreferenceManager {
     return preferences.getBoolean("eligible_for_competition", false);
   }
 
+  public void saveGlobalPropsInfo(String globalePropsResponseJson) {
+    editor.putString("globalprops", globalePropsResponseJson);
+    editor.apply();
+  }
+
+  public String getGlobalProps() {
+    return preferences.getString("globalprops", null);
+  }
+
+  public int getPercentSteemDollars() {
+    //100% SBD by default
+    return preferences.getInt("percentSteemDollars", 10000);
+  }
+
+  public void setPercentSteemDollars(int percent) {
+    editor.putInt("percentSteemDollars", percent);
+    editor.apply();
+  }
+
+  public String getMaxAcceptedPayout() {
+    return preferences.getString("maxAcceptedPayout", "1000000.000 SBD");
+  }
+
+  public void setMaxAcceptedPayout(String maxAcceptedPayout) {
+    editor.putString("maxAcceptedPayout", maxAcceptedPayout);
+    editor.apply();
+  }
+
+  public boolean getAllowVotes() {
+    return preferences.getBoolean("allowVotes", true);
+  }
+
+  public boolean getAllowCurationRewards() {
+    return preferences.getBoolean("allowCurationRewards", true);
+  }
+
+  public long getLastDraftSyncTime() {
+    return preferences.getLong("last_draft_sync", 0);
+  }
+
+  public void setLastDraftSyncTime(){
+    editor.putLong("last_draft_sync", System.currentTimeMillis());
+    editor.apply();
+  }
 }

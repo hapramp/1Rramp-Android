@@ -35,6 +35,7 @@ import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.api.URLS;
 import com.hapramp.models.CompetitionEntryConfirmationBody;
 import com.hapramp.models.CompetitionEntryResponse;
+import com.hapramp.notification.NotificationSubscriber;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.SteemPostCreator;
@@ -57,6 +58,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import xute.markdeditor.EditorControlBar;
 import xute.markdeditor.MarkDEditor;
+
+import static xute.markdeditor.Styles.TextComponentStyle.NORMAL;
 
 public class ParticipateEditorActivity extends AppCompatActivity implements EditorControlBar.EditorControlListener, SteemPostCreator.SteemPostCreatorCallback {
 
@@ -136,7 +139,11 @@ public class ParticipateEditorActivity extends AppCompatActivity implements Edit
     setContestInfo();
     editorControlBar.setEditorControlListener(this);
     editorControlBar.setEditor(markDEditor);
-    markDEditor.setServerInfo(URLS.BASE_URL, HaprampPreferenceManager.getInstance().getUserToken());
+    markDEditor.configureEditor(URLS.BASE_URL,
+      HaprampPreferenceManager.getInstance().getUserToken(),
+      false,
+      "Body here...",
+      NORMAL);
   }
 
   private void attachListeners() {
@@ -180,10 +187,6 @@ public class ParticipateEditorActivity extends AppCompatActivity implements Edit
     });
   }
 
-  private void openCompetitionDetails() {
-
-  }
-
   private void setContestInfo() {
     String comp_title_part1 = "Your submission for: ";
     String comp_title_part2 = mCompetitionTitle;
@@ -217,6 +220,10 @@ public class ParticipateEditorActivity extends AppCompatActivity implements Edit
 
     submissionInfo.setText(compTitleSpan);
     autoHashtagsText.setText(compHashtagSpan);
+  }
+
+  private void openCompetitionDetails() {
+
   }
 
   private void showMetaData(boolean show) {
@@ -340,6 +347,7 @@ public class ParticipateEditorActivity extends AppCompatActivity implements Edit
           showPublishingProgressDialog(false, "");
           if (response.isSuccessful()) {
             toast("Confirmed your entry!");
+            subscribeForNotification();
           } else {
             toast("Failed to confirm your entry!");
           }
@@ -357,6 +365,10 @@ public class ParticipateEditorActivity extends AppCompatActivity implements Edit
       showPublishingProgressDialog(false, "");
       toast("Failed to confirm your entry!");
     }
+  }
+
+  private void subscribeForNotification() {
+    NotificationSubscriber.subscribeForParticularCompetition(mCompetitionId);
   }
 
   private void closeEditor() {

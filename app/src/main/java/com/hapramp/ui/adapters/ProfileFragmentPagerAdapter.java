@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.ui.fragments.EarningFragment;
 import com.hapramp.ui.fragments.MyCompetitionsFragment;
+import com.hapramp.ui.fragments.MyDraftsFragment;
 import com.hapramp.ui.fragments.UserBlogFragment;
 import com.hapramp.ui.fragments.UserCreditsFragment;
 import com.hapramp.ui.fragments.UserInfoFragment;
@@ -43,7 +44,22 @@ public class ProfileFragmentPagerAdapter extends FragmentPagerAdapter {
     titles.add("Posts");
     titles.add("Credits");
     titles.add("Wallet");
+    addDraftsTab(username);
     addMyCompetitionsAfterEligibilityCheck(username);
+  }
+
+  private void addDraftsTab(String username) {
+    //username is same as logged-in user
+    try {
+      if (username.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
+        MyDraftsFragment draftsFragment = new MyDraftsFragment();
+        fragments.add(draftsFragment);
+        titles.add("Drafts");
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   private void addMyCompetitionsAfterEligibilityCheck(String username) {

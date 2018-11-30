@@ -29,6 +29,7 @@ import com.hapramp.steemconnect4j.SteemConnectCallback;
 import com.hapramp.steemconnect4j.SteemConnectException;
 import com.hapramp.ui.activity.AccountHistoryActivity;
 import com.hapramp.ui.activity.DelegateActivity;
+import com.hapramp.ui.activity.DelegationListActivity;
 import com.hapramp.ui.activity.PowerDownActivity;
 import com.hapramp.ui.activity.PowerUpActivity;
 import com.hapramp.ui.activity.TransferActivity;
@@ -108,6 +109,10 @@ public class EarningFragment extends Fragment implements
   CoinView sbdRate;
   @BindView(R.id.steem_rate)
   CoinView steemRate;
+  @BindView(R.id.steem_power_label)
+  TextView steemPowerLabel;
+  @BindView(R.id.delegations_btn)
+  RelativeLayout delegationsBtn;
   private Handler mHandler;
   private Unbinder unbinder;
   private String mUsername;
@@ -159,6 +164,9 @@ public class EarningFragment extends Fragment implements
     }
     if (!mUsername.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
       accountOperationButtonContainer.setVisibility(View.GONE);
+      delegationsBtn.setVisibility(View.VISIBLE);
+    } else {
+      delegationsBtn.setVisibility(View.GONE);
     }
     steemRate.setCoinId(Coins.STEEM);
     steemRate.setRateCallback(new CoinView.RateCallback() {
@@ -217,12 +225,20 @@ public class EarningFragment extends Fragment implements
   }
 
   private void attachListener() {
+
     historyBtn.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
         Intent intent = new Intent(mContext, AccountHistoryActivity.class);
         intent.putExtra(AccountHistoryActivity.EXTRA_USERNAME, mUsername);
         mContext.startActivity(intent);
+      }
+    });
+
+    delegationsBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        navigateToDelegationsListPage();
       }
     });
 
@@ -289,6 +305,12 @@ public class EarningFragment extends Fragment implements
     catch (Exception e) {
 
     }
+  }
+
+  private void navigateToDelegationsListPage() {
+    Intent intent = new Intent(mContext, DelegationListActivity.class);
+    intent.putExtra(DelegationListActivity.EXTRA_KEY_DELEGATOR, mUsername);
+    mContext.startActivity(intent);
   }
 
   private void requestClaimReward() {

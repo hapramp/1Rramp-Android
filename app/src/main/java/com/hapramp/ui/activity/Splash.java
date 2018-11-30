@@ -2,10 +2,8 @@ package com.hapramp.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
-import com.hapramp.analytics.EventReporter;
 import com.hapramp.notification.NotificationHandler;
 import com.hapramp.preferences.DataStoreCachePreference;
 import com.hapramp.preferences.HaprampPreferenceManager;
@@ -15,7 +13,7 @@ public class Splash extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    DataStoreCachePreference.getInstance();
+    DataStoreCachePreference.getInstance(this);
     NotificationHandler.createNotificationChannel(this);
     if (HaprampPreferenceManager.getInstance().isLoggedIn()) {
       navigateToHomePage();

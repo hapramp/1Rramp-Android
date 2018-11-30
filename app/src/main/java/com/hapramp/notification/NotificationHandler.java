@@ -2,41 +2,40 @@ package com.hapramp.notification;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.app.TaskStackBuilder;
+import android.util.Log;
 
 import com.google.firebase.messaging.RemoteMessage;
-import com.hapramp.R;
 import com.hapramp.main.HapRampMain;
 import com.hapramp.notification.model.BaseNotificationModel;
+import com.hapramp.notification.model.CompetitionResultNotificationModel;
+import com.hapramp.notification.model.CompetitionWinnerNotificationModel;
 import com.hapramp.notification.model.FollowNotificationModel;
 import com.hapramp.notification.model.MentionNotificationModel;
+import com.hapramp.notification.model.NewCompetitionNotificationModel;
 import com.hapramp.notification.model.ReblogNotificationModel;
 import com.hapramp.notification.model.ReplyNotificationModel;
 import com.hapramp.notification.model.TransferNotificationModel;
 import com.hapramp.notification.model.VoteNotificationModel;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.ui.activity.AccountHistoryActivity;
-import com.hapramp.ui.activity.DetailedActivity;
-import com.hapramp.ui.activity.ProfileActivity;
-import com.hapramp.utils.Constants;
 import com.hapramp.utils.ForegroundCheckTask;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static com.hapramp.ui.activity.AccountHistoryActivity.EXTRA_USERNAME;
+import static com.hapramp.notification.CompetitionNotificationHandler.showCompetitionListingDirectedNotification;
+import static com.hapramp.notification.CompetitionNotificationHandler.showCompetitionWinnersListDirectedNotification;
+import static com.hapramp.notification.SteemActionsNotificationHandler.CHANNEL_ID;
+import static com.hapramp.notification.SteemActionsNotificationHandler.showCommentDirectedNotification;
+import static com.hapramp.notification.SteemActionsNotificationHandler.showMentionDirectedNotification;
+import static com.hapramp.notification.SteemActionsNotificationHandler.showProfileDirectedNotification;
+import static com.hapramp.notification.SteemActionsNotificationHandler.showReblogDirectedNotification;
+import static com.hapramp.notification.SteemActionsNotificationHandler.showTransferDirectedNotification;
+import static com.hapramp.notification.SteemActionsNotificationHandler.showVoteDirectedNotification;
 
 public class NotificationHandler {
-  public static final String CHANNEL_ID = "com.1ramp.notifications_channel";
-
   /**
    * This method parses -> attache notification id -> save to firebase database and notifies the user.
    *
@@ -47,7 +46,9 @@ public class NotificationHandler {
       BaseNotificationModel baseNotificationModel = NotificationParser.parseNotification(remoteMessage.getData());
       if (baseNotificationModel != null) {
         if (baseNotificationModel.getType() != null) {
+          //assign notification id
           baseNotificationModel.setNotificationId(String.valueOf(System.currentTimeMillis()));
+          //save some notifications to firebase
           _saveNotification(baseNotificationModel);
           boolean isForeground = new ForegroundCheckTask().execute(HapRampMain.getContext()).get(2, TimeUnit.SECONDS);
           if (!isForeground && HaprampPreferenceManager.getInstance().shouldShowPushNotifications()) {
@@ -103,6 +104,33 @@ public class NotificationHandler {
                   ((MentionNotificationModel) baseNotificationModel).permlink
                 );
                 break;
+
+              case NotificationKey.NOTIFICATION_TYPE_NEW_COMPETITION:
+
+                showCompetitionListingDirectedNotification(
+                  ((NewCompetitionNotificationModel) baseNotificationModel).getTitle(),
+                  ((NewCompetitionNotificationModel) baseNotificationModel).getDescription()
+                );
+                break;
+
+              case NotificationKey.NOTIFICATION_TYPE_COMPETITION_RESULT:
+                showCompetitionWinnersListDirectedNotification(
+                  ((CompetitionResultNotificationModel) baseNotificationModel).getCompetitionId(),
+                  ((CompetitionResultNotificationModel) baseNotificationModel).getCompetitionTitle(),
+                  ((CompetitionResultNotificationModel) baseNotificationModel).getTitle(),
+                  ((CompetitionResultNotificationModel) baseNotificationModel).getDescription()
+                );
+                break;
+
+              case NotificationKey.NOTIFICATION_TYPE_WINNER:
+                showCompetitionWinnersListDirectedNotification(
+                  ((CompetitionWinnerNotificationModel) baseNotificationModel).getCompetitionId(),
+                  ((CompetitionWinnerNotificationModel) baseNotificationModel).getCompetitionTitle(),
+                  ((CompetitionWinnerNotificationModel) baseNotificationModel).getTitle(),
+                  ((CompetitionWinnerNotificationModel) baseNotificationModel).getDescription()
+                );
+                break;
+
             }
           }
         }
@@ -121,6 +149,7 @@ public class NotificationHandler {
 
   /**
    * saves notifications which are valid/supported.
+   *
    * @param baseNotificationModel notification object.
    */
   private static void _saveNotification(BaseNotificationModel baseNotificationModel) {
@@ -137,148 +166,6 @@ public class NotificationHandler {
           break;
       }
     }
-  }
-
-  /**
-   * Shows notification for following, on-click: Profile of follower opens up.
-   *
-   * @param notifId  notification Id of Notification
-   * @param follower user who followed me
-   */
-  private static void showProfileDirectedNotification(String notifId, String follower) {
-    Context context = HapRampMain.getContext();
-    String title = "Follow";
-    String content = follower + " started following you";
-    PendingIntent pendingIntent = getProfilePendingIntent(context, notifId, follower);
-    addNotificationToTray(context, pendingIntent, title, content);
-  }
-
-  /**
-   * @param notificationId
-   * @param reblogger      user who reblogged your post
-   * @param permlink       permlink of your re-blogged post.
-   */
-  private static void showReblogDirectedNotification(String notificationId, String reblogger, String permlink) {
-    Context context = HapRampMain.getContext();
-    //you are the author of the post
-    String author = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-    String title = "Reblog";
-    String content = reblogger + " shared your post";
-    PendingIntent pendingIntent = getPostNotificationPendingIntent(context, notificationId, author, "", permlink);
-    addNotificationToTray(HapRampMain.getContext(), pendingIntent, title, content);
-  }
-
-  /**
-   * @param notificationId
-   * @param commentor      user who created comment
-   * @param permlink       permlink of new comment/reply.
-   *                       Clicking on notification, opens the comment/reply created by commentor.
-   */
-  private static void showCommentDirectedNotification(String notificationId, String commentor, String parentPermlink, String permlink) {
-    Context context = HapRampMain.getContext();
-    String title = "Comment";
-    String content = commentor + " commented on your post";
-    PendingIntent pendingIntent = getPostNotificationPendingIntent(context, notificationId, commentor, parentPermlink, permlink);
-    addNotificationToTray(HapRampMain.getContext(), pendingIntent, title, content);
-  }
-
-  /**
-   * @param notificationId
-   * @param voter          someone who voted your post
-   * @param permlink       permlink of your post
-   */
-  private static void showVoteDirectedNotification(String notificationId, String voter, String permlink) {
-    Context context = HapRampMain.getContext();
-    //you are the author of the post
-    String author = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-    String title = "Vote";
-    String content = voter + " voted your post";
-    PendingIntent pendingIntent = getPostNotificationPendingIntent(context, notificationId, author, "", permlink);
-    addNotificationToTray(HapRampMain.getContext(), pendingIntent, title, content);
-  }
-
-  /**
-   * @param notificationId
-   * @param sender         user who sent the amount.
-   * @param memo           message attached with the transfer
-   * @param amount         amount being transferred
-   */
-  private static void showTransferDirectedNotification(String notificationId, String sender, String memo, String amount) {
-    Context context = HapRampMain.getContext();
-    String title = "Transfer";
-    String content = sender + " sent you " + amount + "\n\"" + memo + "\"\n";
-    PendingIntent pendingIntent = getTransferPendingIntent(context, notificationId);
-    addNotificationToTray(HapRampMain.getContext(), pendingIntent, title, content);
-  }
-
-  /**
-   * @param notificationId
-   * @param mentioner      user who mentioned you in his/her post.
-   * @param permlink       permlink of post in which you were mentioned.
-   *                       Clicking on notification, opens post in which user is mentioned
-   */
-  private static void showMentionDirectedNotification(String notificationId, String mentioner, String parentPermlink, String permlink) {
-    Context context = HapRampMain.getContext();
-    String title = "Mention";
-    String content = mentioner + " mentioned you in a post";
-    PendingIntent pendingIntent = getPostNotificationPendingIntent(context, notificationId, mentioner, parentPermlink, permlink);
-    addNotificationToTray(HapRampMain.getContext(), pendingIntent, title, content);
-  }
-
-  private static PendingIntent getProfilePendingIntent(Context context, String notifId, String username) {
-    Intent intent = new Intent(context, ProfileActivity.class);
-    Bundle bundle = new Bundle();
-    bundle.putString(Constants.EXTRAA_KEY_STEEM_USER_NAME, username);
-    bundle.putString(Constants.EXTRAA_KEY_NOTIFICATION_ID, notifId);
-    intent.putExtras(bundle);
-    TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-    stackBuilder.addNextIntentWithParentStack(intent);
-    return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-  }
-
-  public static void addNotificationToTray(Context context, PendingIntent pendingIntent, String title, String content) {
-    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)
-      .setSmallIcon(R.mipmap.hapramp_logo)
-      .setContentTitle(title)
-      .setContentText(content)
-      .setContentIntent(pendingIntent)
-      .setStyle(new NotificationCompat.BigTextStyle()
-        .bigText(content))
-      .setAutoCancel(true)
-      .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-    int notificationId = (int) System.currentTimeMillis();
-    notificationManager.notify(notificationId, mBuilder.build());
-  }
-
-  private static PendingIntent getPostNotificationPendingIntent(Context context,
-                                                                String notificationId,
-                                                                String author,
-                                                                String parentPermlink,
-                                                                String permlink) {
-    Intent intent = new Intent(context, DetailedActivity.class);
-    Bundle bundle = new Bundle();
-    bundle.putString(Constants.EXTRAA_KEY_NOTIFICATION_ID, notificationId);
-    bundle.putString(Constants.EXTRAA_KEY_POST_AUTHOR, author);
-    bundle.putString(Constants.EXTRAA_KEY_PARENT_PERMLINK, parentPermlink);
-    bundle.putString(Constants.EXTRAA_KEY_POST_PERMLINK, permlink);
-    intent.putExtras(bundle);
-    TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-    stackBuilder.addNextIntentWithParentStack(intent);
-    return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-  }
-
-  private static PendingIntent getTransferPendingIntent(Context context, String notificationId) {
-    Intent intent = new Intent(context, AccountHistoryActivity.class);
-    Bundle bundle = new Bundle();
-    String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-    bundle.putString(EXTRA_USERNAME, username);
-    bundle.putString(Constants.EXTRAA_KEY_NOTIFICATION_ID, notificationId);
-    intent.putExtras(bundle);
-    TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-    stackBuilder.addNextIntentWithParentStack(intent);
-    return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
   }
 
   public static void createNotificationChannel(Context context) {

@@ -67,19 +67,19 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   @Override
   public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
     if (holder instanceof CommentViewHolder) {
-      ((CommentViewHolder) holder).bind(commentsList.get(position), new CommentsItemView.CommentActionListener() {
+      ((CommentViewHolder) holder).bind(commentsList.get(position), position, new CommentsItemView.CommentActionListener() {
         @Override
-        public void onCommentDeleted() {
-          removeItemAt(position);
+        public void onCommentDeleted(int itemIndex) {
+          removeItemAt(itemIndex);
         }
       });
     } else if (holder instanceof NestedCommentItemViewHolder) {
       //if hasParent
       final int p = position - (hasParent ? 1 : 0);
-      ((NestedCommentItemViewHolder) holder).bind(commentsList.get(p), new CommentsItemView.CommentActionListener() {
+      ((NestedCommentItemViewHolder) holder).bind(commentsList.get(p), position, new CommentsItemView.CommentActionListener() {
         @Override
-        public void onCommentDeleted() {
-          removeItemAt(p);
+        public void onCommentDeleted(int itemIndex) {
+          removeItemAt(itemIndex);
         }
       });
     } else if (holder instanceof ParentCommentItemViewHolder) {
@@ -111,18 +111,18 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     return hasParent ? commentsList.size() + 1 : commentsList.size();
   }
 
-  public void resetList() {
-    commentsList.clear();
-  }
-
   public void addComments(List<CommentModel> comments) {
     resetList();
     commentsList.addAll(comments);
     if (hasParent) {
-      notifyItemRangeChanged(1,comments.size());
+      notifyItemRangeChanged(1, comments.size());
     } else {
       notifyDataSetChanged();
     }
+  }
+
+  public void resetList() {
+    commentsList.clear();
   }
 
   public void addSingleComment(CommentModel steemCommentModel) {
@@ -135,8 +135,9 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       super(itemView);
     }
 
-    public void bind(CommentModel comment, CommentsItemView.CommentActionListener commentActionListener) {
+    public void bind(CommentModel comment, int itemIndex, CommentsItemView.CommentActionListener commentActionListener) {
       ((CommentsItemView) itemView).setComment(comment);
+      ((CommentsItemView) itemView).setItemIndex(itemIndex);
       ((CommentsItemView) itemView).setCommenttActionListener(commentActionListener);
     }
   }
@@ -150,8 +151,9 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       ButterKnife.bind(this, itemView);
     }
 
-    public void bind(CommentModel commentModel, CommentsItemView.CommentActionListener commentActionListener) {
+    public void bind(CommentModel commentModel, int itemIndex, CommentsItemView.CommentActionListener commentActionListener) {
       commentsItemView.setComment(commentModel);
+      commentsItemView.setItemIndex(itemIndex);
       commentsItemView.setCommenttActionListener(commentActionListener);
     }
   }

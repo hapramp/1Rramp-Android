@@ -13,9 +13,11 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.Switch;
 
 import com.hapramp.R;
@@ -28,7 +30,9 @@ import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;
 import com.hapramp.steemconnect4j.SteemConnectException;
 import com.hapramp.ui.activity.LoginActivity;
+import com.hapramp.ui.adapters.PayoutSelectionAdapter;
 import com.hapramp.utils.ConnectionUtils;
+import com.hapramp.utils.Constants;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,9 +66,16 @@ public class SettingsFragment extends Fragment {
   RelativeLayout logoutRow;
   @BindView(R.id.push_notification_switch)
   Switch pushNotificationSwitch;
+  @BindView(R.id.img_payout)
+  ImageView imgPayout;
+  @BindView(R.id.payout_selector)
+  Spinner payoutSelector;
+  @BindView(R.id.payout_selector_row)
+  RelativeLayout payoutSelectorRow;
   private Context mContext;
   private ProgressDialog progressDialog;
   private Unbinder unbinder;
+  private PayoutSelectionAdapter payoutSelectionAdapter;
 
   public SettingsFragment() {
   }
@@ -93,6 +104,7 @@ public class SettingsFragment extends Fragment {
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+    initializePayoutSelector();
     if (HaprampPreferenceManager.getInstance().shouldShowPushNotifications()) {
       pushNotificationSwitch.setChecked(true);
     } else {
@@ -135,6 +147,48 @@ public class SettingsFragment extends Fragment {
         showPushNotifications(isChecked);
       }
     });
+  }
+
+  private void initializePayoutSelector() {
+    payoutSelectionAdapter = new PayoutSelectionAdapter(mContext);
+    payoutSelector.setAdapter(payoutSelectionAdapter);
+    payoutSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+      @Override
+      public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+        if (position == PayoutSelectionAdapter.FULL_POWER_UP_POS) {
+          //percent_steem_dollars: 0, // 10000 === 100% (of 50%)
+          HaprampPreferenceManager.getInstance().setPercentSteemDollars(0);
+          HaprampPreferenceManager.getInstance().setMaxAcceptedPayout(Constants.MAX_PAYOUT_VALUE);
+        } else if (position == PayoutSelectionAdapter.HALF_PAYOUT_POS) {
+          HaprampPreferenceManager.getInstance().setPercentSteemDollars(Constants.MAX_PERCENT_STEEM_DOLLARS);
+          HaprampPreferenceManager.getInstance().setMaxAcceptedPayout(Constants.MAX_PAYOUT_VALUE);
+        } else if (position == PayoutSelectionAdapter.PAYOUT_DECLINED_POS) {
+          HaprampPreferenceManager.getInstance().setPercentSteemDollars(Constants.MAX_PERCENT_STEEM_DOLLARS);
+          HaprampPreferenceManager.getInstance().setMaxAcceptedPayout(Constants.DECLINED_PAYOUT_VALUE);
+        } else {
+          HaprampPreferenceManager.getInstance().setPercentSteemDollars(Constants.MAX_PERCENT_STEEM_DOLLARS);
+          HaprampPreferenceManager.getInstance().setMaxAcceptedPayout(Constants.MAX_PAYOUT_VALUE);
+        }
+      }
+
+      @Override
+      public void onNothingSelected(AdapterView<?> adapterView) {
+        adapterView.setSelection(PayoutSelectionAdapter.HALF_PAYOUT_POS);
+      }
+    });
+
+    String maxPayoutValue = HaprampPreferenceManager.getInstance().getMaxAcceptedPayout();
+    if (maxPayoutValue.equals(Constants.DECLINED_PAYOUT_VALUE)) {
+      payoutSelector.setSelection(PayoutSelectionAdapter.PAYOUT_DECLINED_POS);
+    } else {
+      int psd = HaprampPreferenceManager.getInstance().getPercentSteemDollars();
+      if (psd == Constants.MAX_PERCENT_STEEM_DOLLARS) {
+        payoutSelector.setSelection(PayoutSelectionAdapter.HALF_PAYOUT_POS);
+      } else {
+        payoutSelector.setSelection(PayoutSelectionAdapter.FULL_POWER_UP_POS);
+      }
+    }
+
   }
 
   private void inviteAFriend() {
@@ -198,6 +252,7 @@ public class SettingsFragment extends Fragment {
       HaprampPreferenceManager.getInstance().getSC2AccessToken()
     );
     NotificationSubscriber.unsubscribeForUserTopic();
+    NotificationSubscriber.unsubscribeForNewCompetition();
     HaprampPreferenceManager.getInstance().clearPreferences();
 
     if (!ConnectionUtils.isConnected(mContext)) {

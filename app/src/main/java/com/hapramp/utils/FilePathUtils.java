@@ -12,6 +12,12 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * Created by Ankit on 5/14/2018.
  */
@@ -131,7 +137,12 @@ public class FilePathUtils {
         selection, selectionArgs, null);
       if (cursor != null && cursor.moveToFirst()) {
         final int index = cursor.getColumnIndexOrThrow(column);
-        return cursor.getString(index);
+        String col = cursor.getString(index);
+        if (col != null) {
+          return col;
+        } else {
+          returnPathAferSavingFile(context, uri);
+        }
       }
     }
     finally {
@@ -157,5 +168,30 @@ public class FilePathUtils {
   public static boolean isGooglePhotosUri(Uri uri) {
     return "com.google.android.apps.photos.content".equals(uri
       .getAuthority());
+  }
+
+  private static String returnPathAferSavingFile(Context context, Uri uri) {
+    try {
+      InputStream inputStream = context.getContentResolver().openInputStream(uri);
+      String filename = System.currentTimeMillis() + "_image.png";
+      File file = new File(context.getFilesDir(),filename);
+      FileOutputStream output = new FileOutputStream(file);
+      if (inputStream != null) {
+        byte[] buffer = new byte[4 * 1024]; // or other buffer size
+        int read;
+        while ((read = inputStream.read(buffer)) != -1) {
+          output.write(buffer, 0, read);
+        }
+        output.flush();
+        return file.getAbsolutePath();
+      }
+    }
+    catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 }

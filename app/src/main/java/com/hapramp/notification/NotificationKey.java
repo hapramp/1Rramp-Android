@@ -20,5 +20,12 @@ public class NotificationKey {
   public static final String NOTIFICATION_TYPE_FOLLOW = "follow";
   public static final String NOTIFICATION_TYPE_REBLOG = "reblog";
   public static final String NOTIFICATION_TYPE_TRANSFER = "transfer";
-  public static final String NOTIFICATION_TYPE_APP_UPDATE = "app_update";
+
+  public static final String KEY_TITLE = "title";
+  public static final String KEY_DESCRIPTION = "description";
+  public static final String KEY_COMPETITION_ID = "competition_id";
+  public static final String KEY_COMPETITION_TITLE = "competition_title";
+  public static final String NOTIFICATION_TYPE_NEW_COMPETITION = "new_competition";
+  public static final String NOTIFICATION_TYPE_COMPETITION_RESULT = "competition_result";
+  public static final String NOTIFICATION_TYPE_WINNER = "competition_winner";
 }

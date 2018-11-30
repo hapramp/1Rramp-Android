@@ -81,7 +81,6 @@ public class UserBlogFragment extends Fragment implements UserFeedCallback, Feed
 
   @Override
   public void onUserFeedsAvailable(List<Feed> feeds, boolean isFreshData, boolean isAppendable) {
-    injectResteemData(feeds);
     if (feedListView != null) {
       if (isAppendable) {
         if (feeds.size() > 0) {
@@ -103,14 +102,6 @@ public class UserBlogFragment extends Fragment implements UserFeedCallback, Feed
   public void onUserFeedFetchError(String err) {
     if (feedListView != null) {
       feedListView.failedToRefresh("");
-    }
-  }
-
-  private void injectResteemData(List<Feed> feeds) {
-    for (int i = 0; i < feeds.size(); i++) {
-      if (!feeds.get(i).getAuthor().equals(mUsername)) {
-        feeds.get(i).setResteemed(true);
-      }
     }
   }
 

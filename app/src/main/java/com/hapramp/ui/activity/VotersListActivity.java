@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
 
 public class VotersListActivity extends AppCompatActivity {
 
-  public static final String EXTRA_VOTERS = "extra_voters";
+  public static final String EXTRA_USER_LIST = "extra_user_list";
   @BindView(R.id.backBtn)
   ImageView backBtn;
   @BindView(R.id.action_bar_title)
@@ -31,7 +31,7 @@ public class VotersListActivity extends AppCompatActivity {
   @BindView(R.id.action_bar_container)
   RelativeLayout actionBarContainer;
   @BindView(R.id.voters_recyclerview)
-  RecyclerView votersRecyclerview;
+  RecyclerView userListRecyclerView;
   public String quote;
   public String base;
   private ArrayList<Voter> voters;
@@ -55,10 +55,10 @@ public class VotersListActivity extends AppCompatActivity {
   }
 
   private void initList() {
-    voters = getIntent().getParcelableArrayListExtra(EXTRA_VOTERS);
-    votersRecyclerview.setLayoutManager(new LinearLayoutManager(this));
+    voters = getIntent().getParcelableArrayListExtra(EXTRA_USER_LIST);
+    userListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     VoterListAdapter voterListAdapter = new VoterListAdapter();
-    votersRecyclerview.setAdapter(voterListAdapter);
+    userListRecyclerView.setAdapter(voterListAdapter);
     voterListAdapter.setVotersData(processVoterData(voters));
   }
 

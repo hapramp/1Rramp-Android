@@ -1,14 +1,17 @@
 package com.hapramp.ui.activity;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v4.widget.Space;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Html;
@@ -43,6 +46,7 @@ import com.hapramp.notification.FirebaseNotificationStore;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
 import com.hapramp.steem.SteemCommentCreator;
+import com.hapramp.steem.SteemRePoster;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.Voter;
 import com.hapramp.steemconnect4j.SteemConnect;
@@ -53,6 +57,7 @@ import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
+import com.hapramp.utils.PostMenu;
 import com.hapramp.utils.RegexUtils;
 import com.hapramp.utils.ShareUtils;
 import com.hapramp.utils.VoteUtils;
@@ -148,7 +153,8 @@ public class DetailedActivity extends AppCompatActivity implements
   private Feed post;
   private ProgressDialog progressDialog;
   private SteemCommentCreator steemCommentCreator;
-  private List<CommentModel> comments = new ArrayList<>();
+  private List<CommentModel> comments;
+  private ArrayList<String> mRebloggers;
   private SteemConnect steemConnect;
   private DataStore dataStore;
   private Runnable steemCastingVoteExceptionRunnable = new Runnable() {
@@ -163,6 +169,7 @@ public class DetailedActivity extends AppCompatActivity implements
       voteDeleteFailed();
     }
   };
+  private SteemRePoster steemRePoster;
 
   @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
   @Override
@@ -180,6 +187,8 @@ public class DetailedActivity extends AppCompatActivity implements
   private void init() {
     mHandler = new Handler();
     dataStore = new DataStore();
+    comments = new ArrayList<>();
+    mRebloggers = new ArrayList<>();
     steemCommentCreator = new SteemCommentCreator();
     steemCommentCreator.setSteemCommentCreateCallback(this);
     progressDialog = new ProgressDialog(this);
@@ -192,6 +201,7 @@ public class DetailedActivity extends AppCompatActivity implements
     Bundle bundle = getIntent().getExtras();
     if (bundle.getParcelable(Constants.EXTRAA_KEY_POST_DATA) != null) {
       post = bundle.getParcelable(Constants.EXTRAA_KEY_POST_DATA);
+      mRebloggers = bundle.getStringArrayList(Constants.EXTRA_KEY_REBLOGGERS);
       bindPostValues(post);
       return;
     }
@@ -326,18 +336,79 @@ public class DetailedActivity extends AppCompatActivity implements
   }
 
   private void showPopup() {
-    ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(this,
-      R.style.PopupMenuOverlapAnchor);
+    int menu_res_id = R.menu.popup_post;
+    String currentLoggedInUser = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+    ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(this, R.style.PopupMenuOverlapAnchor);
     PopupMenu popup = new PopupMenu(contextThemeWrapper, overflowBtn);
-    popup.getMenuInflater().inflate(R.menu.popup_post, popup.getMenu());
+    //customize menu items
+    //add Share
+    popup.getMenu().add(PostMenu.Share);
+    if (mRebloggers != null) {
+      if (!mRebloggers.contains(currentLoggedInUser) && !currentLoggedInUser.equals(post.getAuthor())) {
+        //add repost option
+        popup.getMenu().add(PostMenu.Repost);
+      }
+    }
+    popup.getMenuInflater().inflate(menu_res_id, popup.getMenu());
     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
       @Override
       public boolean onMenuItemClick(MenuItem item) {
-        ShareUtils.shareMixedContent(DetailedActivity.this, post);
-        return true;
+        if (item.getTitle().equals(PostMenu.Share)) {
+          ShareUtils.shareMixedContent(DetailedActivity.this, post);
+          return true;
+        } else if (item.getTitle().equals(PostMenu.Repost)) {
+          showAlertDialogForRepost();
+        }
+        return false;
       }
     });
     popup.show();
+  }
+
+  private void showAlertDialogForRepost() {
+    new AlertDialog.Builder(this)
+      .setTitle("Repost?")
+      .setMessage("This post will appear on your profile. This action cannot be reversed.")
+      .setPositiveButton("Repost", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+          repostThisPost();
+        }
+      })
+      .setNegativeButton("Cancel", null)
+      .show();
+  }
+
+  private void repostThisPost() {
+    showProgressDialog(true, "Reposting....");
+    steemRePoster = new SteemRePoster();
+    steemRePoster.setRepostCallback(new SteemRePoster.RepostCallback() {
+      @Override
+      public void reposted() {
+        showProgressDialog(false, "");
+        Toast.makeText(DetailedActivity.this, "Reposted", Toast.LENGTH_LONG).show();
+      }
+
+      @Override
+      public void failedToRepost() {
+        showProgressDialog(false, "");
+        Toast.makeText(DetailedActivity.this, "Failed to Repost", Toast.LENGTH_LONG).show();
+      }
+    });
+    steemRePoster.repost(post.getAuthor(), post.getPermlink());
+  }
+
+  private void showProgressDialog(boolean show, String msg) {
+    if (progressDialog != null) {
+      if (show) {
+        progressDialog.setMessage(msg);
+        progressDialog.setCancelable(false);
+        progressDialog.setIndeterminate(true);
+        progressDialog.show();
+      } else {
+        progressDialog.dismiss();
+      }
+    }
   }
 
   private void requestSingleFeed(String author, String permlink) {
@@ -377,7 +448,7 @@ public class DetailedActivity extends AppCompatActivity implements
         return true;
       }
     });
-    webView.getSettings().setLoadWithOverviewMode(true);
+   // webView.getSettings().setLoadWithOverviewMode(true);
     webView.loadDataWithBaseURL("file:///android_asset/",
       "<link rel=\"stylesheet\" type=\"text/css\" href=\"md_theme.css\" />" + body,
       "text/html; charset=utf-8",
@@ -623,7 +694,7 @@ public class DetailedActivity extends AppCompatActivity implements
 
   private void openVotersList() {
     Intent intent = new Intent(this, VotersListActivity.class);
-    intent.putParcelableArrayListExtra(VotersListActivity.EXTRA_VOTERS, post.getVoters());
+    intent.putParcelableArrayListExtra(VotersListActivity.EXTRA_USER_LIST, post.getVoters());
     startActivity(intent);
   }
 
@@ -675,11 +746,11 @@ public class DetailedActivity extends AppCompatActivity implements
 
   private void setSteemEarnings(Feed feed) {
     try {
-      String briefPayoutValueString;
       double pendingPayoutValue = Double.parseDouble(feed.getPendingPayoutValue().split(" ")[0]);
       double totalPayoutValue = Double.parseDouble(feed.getTotalPayoutValue().split(" ")[0]);
       double curatorPayoutValue = Double.parseDouble(feed.getCuratorPayoutValue().split(" ")[0]);
-
+      double maxAcceptedValue = Double.parseDouble(feed.getMaxAcceptedPayoutValue().split(" ")[0]);
+      String briefPayoutValueString;
       if (pendingPayoutValue > 0) {
         payoutValue.setVisibility(VISIBLE);
         dollarIcon.setVisibility(VISIBLE);
@@ -694,6 +765,13 @@ public class DetailedActivity extends AppCompatActivity implements
       } else {
         payoutValue.setVisibility(GONE);
         dollarIcon.setVisibility(GONE);
+      }
+
+      //format payout string
+      if(maxAcceptedValue==0){
+        payoutValue.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+      }else{
+        payoutValue.setPaintFlags(Paint.LINEAR_TEXT_FLAG);
       }
     }
     catch (Exception e) {
@@ -764,11 +842,12 @@ public class DetailedActivity extends AppCompatActivity implements
     CommentsItemView commentsItemView = new CommentsItemView(this);
     commentsItemView.setCommenttActionListener(new CommentsItemView.CommentActionListener() {
       @Override
-      public void onCommentDeleted() {
-        removeCommentAt(index);
+      public void onCommentDeleted(int itemIndex) {
+        removeCommentAt(itemIndex);
       }
     });
     commentsItemView.setComment(comment);
+    commentsItemView.setItemIndex(index);
     commentsViewContainer.addView(commentsItemView, index,
       new ViewGroup.LayoutParams(
         ViewGroup.LayoutParams.WRAP_CONTENT,

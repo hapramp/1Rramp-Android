@@ -34,7 +34,7 @@ public class ShareUtils {
     int len = (text.length() > 140 ? 140 : text.length());
     stringBuilder.append(text.substring(0, len));
     stringBuilder.append("...\n");
-    stringBuilder.append("https://alpha.hapramp.com/");
+    stringBuilder.append("https://alpha.1ramp.io/");
     stringBuilder.append("@").append(username).append("/").append(permlink);
     stringBuilder.append("\n\n1ramp, Social media for creators.");
     return stringBuilder.toString();

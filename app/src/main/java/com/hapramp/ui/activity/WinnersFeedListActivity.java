@@ -74,7 +74,7 @@ public class WinnersFeedListActivity extends AppCompatActivity implements Compet
     winnersFeedListAdapter = new WinnersFeedListAdapter(this);
     winnersList.setLayoutManager(new LinearLayoutManager(this));
     winnersList.setAdapter(winnersFeedListAdapter);
-    competitionTitle.setText("Winners List For : " + mCompetitionTitle);
+    competitionTitle.setText("Winners List For :" + mCompetitionTitle);
   }
 
   private void attachListeners() {

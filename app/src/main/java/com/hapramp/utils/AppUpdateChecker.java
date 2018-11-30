@@ -13,7 +13,7 @@ import com.hapramp.main.HapRampMain;
 
 public class AppUpdateChecker {
   public static void checkAppUpdatesNode(final Context context, final AppUpdateAvailableListener appUpdateAvailableListener) {
-    String rootNode = "A6:AB:E7:62:D6:3C:6A:DC:F3:12:A0:24:B7:D3:06:CE:0D:FF:D3:3E";//HapRampMain.getFp();
+    String rootNode = HapRampMain.getFp();
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     firebaseDatabase.getReference()
       .child(rootNode)

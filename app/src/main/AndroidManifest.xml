@@ -159,8 +159,17 @@
         <activity
             android:name=".ui.activity.WinnerDeclarationActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.activity.JudgeSelectionActivity" />
-        <activity android:name=".ui.activity.WinnersFeedListActivity"></activity>
+        <activity
+            android:name=".ui.activity.JudgeSelectionActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.WinnersFeedListActivity"
+            android:parentActivityName=".ui.activity.HomeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.DelegationListActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ui.activity.RebloggedListActivity"></activity>
     </application>
 
 </manifest>

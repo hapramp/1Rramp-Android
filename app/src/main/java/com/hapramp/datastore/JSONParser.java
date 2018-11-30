@@ -6,6 +6,7 @@ import com.hapramp.models.CommentModel;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.models.CompetitionAdmin;
 import com.hapramp.models.CompetitionModel;
+import com.hapramp.models.DelegationModel;
 import com.hapramp.models.JudgeModel;
 import com.hapramp.models.ResourceCreditModel;
 import com.hapramp.models.VestedShareModel;
@@ -227,6 +228,8 @@ public class JSONParser {
       String rootAuthor = rootObject.getString("root_author");
       //root permlink
       String rootPermlink = rootObject.getString("root_permlink");
+      //max accepted payout value
+      String maxAcceptedPayoutValue = rootObject.getString("max_accepted_payout");
       //url
       String url = rootObject.optString("url", "");
       //pending payout value
@@ -247,6 +250,7 @@ public class JSONParser {
       feed.setParentAuthor(parentAuthor);
       feed.setParentPermlink(parentPermlink);
       feed.setTitle(title);
+      feed.setMaxAcceptedPayoutValue(maxAcceptedPayoutValue);
       feed.setFeaturedImageUrl(featureImageUrl);
       feed.setFormat(format);
       feed.setTags(tags);
@@ -595,6 +599,27 @@ public class JSONParser {
       e.printStackTrace();
     }
     return entries;
+  }
+
+  public ArrayList<DelegationModel> parseDelegations(String response) {
+    ArrayList<DelegationModel> delegationModels = new ArrayList<>();
+    try {
+      JSONObject jsonObject = new JSONObject(response);
+      JSONArray delegationsArray = jsonObject.getJSONArray("result");
+      for (int i = 0; i < delegationsArray.length(); i++) {
+        JSONObject item = delegationsArray.getJSONObject(i);
+        delegationModels.add(new DelegationModel(
+          item.optString("delegator", ""),
+          item.optString("delegatee", ""),
+          item.optString("vesting_shares", "0 VESTS"),
+          item.optString("min_delegation_time", "")
+        ));
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+    return delegationModels;
   }
 
   public ResourceCreditModel parseRc(String response) {

@@ -157,6 +157,11 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
     });
   }
 
+  public void setDefaultCommunitySelection(List<String> coms){
+    inlinePostCommunityView.setDefaultSelection(coms);
+    invalidateCommunityStrips(coms);
+  }
+
   private void extractHashTagsAndDisplay(String body) {
     ArrayList<String> tags = HashTagUtils.getHashTags(body);
     ArrayList<String> added = new ArrayList<>();
@@ -184,6 +189,13 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
     placeholder.setVisibility(GONE);
     mediaSelected = true;
     postImageView.setImageSource(filePath);
+    cameraItemContainer.setVisibility(GONE);
+  }
+
+  public void setImageDownloadUrl(String url){
+    placeholder.setVisibility(GONE);
+    mediaSelected = true;
+    postImageView.setDownloadUrl(url);
     cameraItemContainer.setVisibility(GONE);
   }
 
@@ -238,10 +250,10 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
 
   @Override
   public void onCommunitySelectionChanged(List<String> communities) {
-    setCommunities(communities);
+    invalidateCommunityStrips(communities);
   }
 
-  public void setCommunities(List<String> communities) {
+  public void invalidateCommunityStrips(List<String> communities) {
     communityStripeView.setCommunities(communities);
   }
 

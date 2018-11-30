@@ -73,13 +73,24 @@ public class CustomProgressBar extends View {
     int h = getMeasuredHeight();
     int w = getMeasuredWidth();
     int progress = (w * percent) / 100;
+    if (percent < 10) {
+      textPaint.setColor(Color.RED);
+    } else {
+      textPaint.setColor(Color.WHITE);
+    }
     canvas.drawRoundRect(new RectF(0, 0, progress, h), h, h, primaryPaint);
     canvas.drawRoundRect(new RectF(0, 0, w, h), h, h, secondaryPaint);
     String text = percent + " % ";
     textPaint.getTextBounds(text, 0, text.length(), textRect);
-    int textStartY = (h - textRect.height()/2);
-    int textStartX = progress - textRect.width() - 24;
+    //int textStartY = (h - textRect.height()/2);
+    int textStartY = (int) ((canvas.getHeight() / 2) - ((textPaint.descent() + textPaint.ascent()) / 2));
+    int textStartX = getAppropriateStartX(progress);
     canvas.drawText(text, textStartX, textStartY, textPaint);
+  }
+
+  private int getAppropriateStartX(int progress) {
+    int ex = progress - textRect.width() - 24;
+    return ex < 24 ? 24 : ex;
   }
 
   @Override

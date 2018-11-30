@@ -1,5 +1,7 @@
 package com.hapramp;
 
+import com.hapramp.steemconnect4j.RpcJsonUtil;
+import com.hapramp.steemconnect4j.StringUtils;
 import com.hapramp.utils.HashTagUtils;
 import com.hapramp.utils.PostHashTagPreprocessor;
 import com.hapramp.utils.RegexUtils;
@@ -8,7 +10,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-import static com.hapramp.analytics.EventReportUtils.getFormattedUserName;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -110,4 +111,55 @@ public class CommunitiesUnitTest {
     expectedList.add("dance");
     assertEquals(expectedList, PostHashTagPreprocessor.processHashtags(tags));
   }
+
+  @Test
+  public void testString() {
+    ArrayList<Benf> benf = new ArrayList<>();
+    benf.add(new Benf("bxute", 10000));
+    benf.add(new Benf("bxute", 10000));
+    System.out.println(benf.toString());
+  }
+
+  @Test
+  public void testReblog() {
+    String account = "bxute";
+    String author = "vikonomics";
+    String permlink = "what-dramatics-taught-me-about-handling-complexities";
+
+    String params = StringUtils.getCommanSeparatedObjectString(
+      RpcJsonUtil.getKeyValuePair("required_auths", "[]"),
+      RpcJsonUtil.getKeyValuePair("required_posting_auths", "[\"bxute\"]"),
+      RpcJsonUtil.getKeyValuePair("id", "\"follow\""),
+      RpcJsonUtil.getKeyValuePair("json",
+        "\""+ com.hapramp.utils.StringUtils.stringify(
+        StringUtils.getCommanSeparatedArrayString(
+          "\"reblog\"",
+         "{\"account\":\""+account+"\",\"author\":\""+author+"\",\"permlink\":\""+permlink+"\"}")) + "\""
+      ));
+
+    String operation = StringUtils.getOperationsString(
+      StringUtils.getCommanSeparatedArrayString(
+        StringUtils.getCommanSeparatedArrayString("\"custom_json\"", params)));
+
+    System.out.println(operation);
+  }
+
+  class Benf {
+    private String author;
+    private int weight;
+
+    public Benf(String author, int weight) {
+      this.author = author;
+      this.weight = weight;
+    }
+
+    @Override
+    public String toString() {
+      return "{" +
+        "\"author\":\"" + author + '\"' +
+        ", \"weight\":" + weight +
+        '}';
+    }
+  }
+
 }

@@ -83,6 +83,7 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     mUsername = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+    Log.d("HomeFragment",HaprampPreferenceManager.getInstance().getSC2AccessToken());
   }
 
   @Override
@@ -248,7 +249,7 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
   }
 
   private void refreshExplorePosts() {
-    dataStore.requestExploreFeeds(this);
+    dataStore.requestExploreFeeds(true,this);
   }
 
   private void refreshCommunityPosts(String tag) {

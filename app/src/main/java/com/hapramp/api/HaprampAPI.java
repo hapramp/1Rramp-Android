@@ -6,8 +6,11 @@ import com.hapramp.models.CompetitionCreateResponse;
 import com.hapramp.models.CompetitionEntryConfirmationBody;
 import com.hapramp.models.CompetitionEntryResponse;
 import com.hapramp.models.DeleteCompetitionResponse;
+import com.hapramp.models.DraftPostModel;
+import com.hapramp.models.DraftUploadResponse;
 import com.hapramp.models.FormattedBodyResponse;
-import com.hapramp.models.ResourceCreditModel;
+import com.hapramp.models.LookupAccount;
+import com.hapramp.models.RebloggedModel;
 import com.hapramp.models.VerificationDataBody;
 import com.hapramp.models.VerifiedToken;
 import com.hapramp.models.WinnersRankBody;
@@ -15,6 +18,9 @@ import com.hapramp.models.requests.CompetitionCreateBody;
 import com.hapramp.models.response.FileUploadReponse;
 import com.hapramp.steem.CommunitySelectionResponse;
 
+import java.util.List;
+
+import io.reactivex.Single;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -66,4 +72,23 @@ public interface HaprampAPI {
   @Multipart
   @POST("upload")
   Call<FileUploadReponse> uploadFile(@Part MultipartBody.Part file);
+
+  @POST
+  Single<LookupAccount> getUsernames(@Url String url, @Body String body);
+
+  @GET("drafts")
+  Call<List<DraftUploadResponse>> getAllDrafts();
+
+  @POST("drafts")
+  Call<DraftUploadResponse> postDraft(@Body DraftPostModel draftPostModel);
+
+  @PUT("drafts/{draft_id}")
+  Call<DraftUploadResponse> updateDraft(@Path("draft_id") long draftId, @Body DraftPostModel draftPostModel);
+
+  @DELETE("drafts/{draft_id}")
+  Call<DraftUploadResponse> deleteDraft(@Path("draft_id") long draftId);
+
+  @POST
+  Call<RebloggedModel> getRebloggedByUsers(@Url String url, @Body String body);
+
 }

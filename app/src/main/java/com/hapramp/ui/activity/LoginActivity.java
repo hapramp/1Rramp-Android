@@ -226,6 +226,7 @@ public class LoginActivity extends AppCompatActivity {
           HaprampPreferenceManager.getInstance().saveUserToken(response.body().token);
           HaprampPreferenceManager.getInstance().setLoggedIn(true);
           NotificationSubscriber.subscribeForUserTopic();
+          NotificationSubscriber.subscribeForNewCompetition();
           syncAllCommunities();
         } else {
           Crashlytics.log("LoginError:" + response.toString());

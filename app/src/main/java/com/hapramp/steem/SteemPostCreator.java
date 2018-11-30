@@ -6,11 +6,13 @@ import android.support.annotation.WorkerThread;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.models.JsonMetadata;
 import com.hapramp.steemconnect.SteemConnectUtils;
+import com.hapramp.steemconnect4j.Beneficiary;
 import com.hapramp.steemconnect4j.SteemConnect;
 import com.hapramp.steemconnect4j.SteemConnectCallback;
 import com.hapramp.steemconnect4j.SteemConnectException;
 import com.hapramp.utils.AccessTokenValidator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,10 +39,17 @@ public class SteemPostCreator {
     new Thread() {
       @Override
       public void run() {
-        SteemConnect steemConnect = SteemConnectUtils
+        final SteemConnect steemConnect = SteemConnectUtils
           .getSteemConnectInstance(HaprampPreferenceManager.getInstance()
             .getSC2AccessToken());
-        String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+        int percentSteemDollars = HaprampPreferenceManager.getInstance().getPercentSteemDollars();
+        String maxAcceptedPayout = HaprampPreferenceManager.getInstance().getMaxAcceptedPayout();
+        boolean allowVote = HaprampPreferenceManager.getInstance().getAllowVotes();
+        boolean allowCurationRewards = HaprampPreferenceManager.getInstance().getAllowCurationRewards();
+        ArrayList<Beneficiary> beneficiaries = new ArrayList<>();
+        //add beneficiaries later
+        beneficiaries.add(new Beneficiary(LocalConfig.BENEFICIARY_ACCOUNT, LocalConfig.BENEFICIARY_WEIGHT));
+        final String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
         String jsonMetadata = new JsonMetadata(tags, images).getJson();
         steemConnect.comment("",
           LocalConfig.PARENT_PERMALINK,
@@ -49,6 +58,11 @@ public class SteemPostCreator {
           com.hapramp.utils.StringUtils.stringify(title),
           com.hapramp.utils.StringUtils.stringify(body),
           com.hapramp.utils.StringUtils.stringify(jsonMetadata),
+          maxAcceptedPayout,
+          percentSteemDollars,
+          allowVote,
+          allowCurationRewards,
+          beneficiaries,
           new SteemConnectCallback() {
             @Override
             public void onResponse(String s) {
@@ -57,6 +71,7 @@ public class SteemPostCreator {
                   @Override
                   public void run() {
                     steemPostCreatorCallback.onPostCreatedOnSteem();
+                    broadcastCommentOptions(username, __permlink, steemConnect);
                   }
                 });
               }
@@ -77,6 +92,20 @@ public class SteemPostCreator {
         );
       }
     }.start();
+  }
+
+  private void broadcastCommentOptions(final String username, final String __permlink, final SteemConnect steemConnect) {
+    try {
+      new Thread() {
+        @Override
+        public void run() {
+
+        }
+      }.start();
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   public void setSteemPostCreatorCallback(SteemPostCreatorCallback steemPostCreatorCallback) {

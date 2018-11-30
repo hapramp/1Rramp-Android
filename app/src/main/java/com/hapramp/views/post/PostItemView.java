@@ -1,10 +1,10 @@
 package com.hapramp.views.post;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
+import android.graphics.Paint;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,9 +30,9 @@ import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.SinglePostCallback;
-import com.hapramp.models.CommunityModel;
+import com.hapramp.interfaces.RebloggedUserFetchCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
-import com.hapramp.steem.Communities;
+import com.hapramp.steem.SteemRePoster;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.Voter;
 import com.hapramp.steemconnect.SteemConnectUtils;
@@ -41,11 +42,13 @@ import com.hapramp.steemconnect4j.SteemConnectException;
 import com.hapramp.ui.activity.CommentsActivity;
 import com.hapramp.ui.activity.DetailedActivity;
 import com.hapramp.ui.activity.ProfileActivity;
+import com.hapramp.ui.activity.RebloggedListActivity;
 import com.hapramp.ui.activity.VotersListActivity;
-import com.hapramp.utils.CommunityUtils;
+import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
+import com.hapramp.utils.PostMenu;
 import com.hapramp.utils.ShareUtils;
 import com.hapramp.views.CommunityStripView;
 import com.hapramp.views.VoterPeekView;
@@ -67,7 +70,7 @@ import static com.hapramp.utils.VoteUtils.getVotePercentSum;
  * Created by Ankit on 12/30/2017.
  */
 
-public class PostItemView extends FrameLayout {
+public class PostItemView extends FrameLayout implements RebloggedUserFetchCallback {
   public static final String TAG = PostItemView.class.getSimpleName();
   @BindView(R.id.feed_owner_pic)
   ImageView feedOwnerPic;
@@ -105,18 +108,25 @@ public class PostItemView extends FrameLayout {
   VoterPeekView votersPeekView;
   @BindView(R.id.resteemed_icon)
   ImageView resteemedIcon;
-  @BindView(R.id.resteemed_label)
-  TextView resteemedLabel;
+  @BindView(R.id.repost_count)
+  TextView repostCount;
+  @BindView(R.id.repost_container)
+  LinearLayout repostContainer;
   @BindView(R.id.community_stripe_view)
   CommunityStripView communityStripeView;
   @BindView(R.id.rate_info_container)
   RelativeLayout rateInfoContainer;
+  @BindView(R.id.comment_container)
+  LinearLayout commentContainer;
+
+  private SteemRePoster steemRePoster;
   private Context mContext;
   private Feed mFeed;
   private Handler mHandler;
   private SteemConnect steemConnect;
   private DataStore dataStore;
   private String briefPayoutValueString = "$";
+  private String mCurrentLoggedInUser = "";
 
   private Runnable steemCastingVoteExceptionRunnable = new Runnable() {
     @Override
@@ -131,6 +141,9 @@ public class PostItemView extends FrameLayout {
     }
   };
   private PostActionListener postActionListener;
+  private int mItemIndex;
+  private ArrayList<String> mRebloggers;
+  private ProgressDialog progressDialog;
 
   public PostItemView(@NonNull Context context) {
     super(context);
@@ -139,6 +152,9 @@ public class PostItemView extends FrameLayout {
 
   private void init(Context context) {
     this.mContext = context;
+    mRebloggers = new ArrayList<>();
+    progressDialog = new ProgressDialog(mContext);
+    mCurrentLoggedInUser = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
     View view = LayoutInflater.from(mContext).inflate(R.layout.post_item_view, this);
     ButterKnife.bind(this, view);
     mHandler = new Handler();
@@ -155,7 +171,13 @@ public class PostItemView extends FrameLayout {
         navigateToDetailsPage();
       }
     });
-    commentIcon.setOnClickListener(new OnClickListener() {
+    repostContainer.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        openRebloggedUserListPage(mRebloggers);
+      }
+    });
+    commentContainer.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
         navigateToDetailsPage();
@@ -191,12 +213,21 @@ public class PostItemView extends FrameLayout {
   private void navigateToDetailsPage() {
     Intent detailsIntent = new Intent(mContext, DetailedActivity.class);
     detailsIntent.putExtra(Constants.EXTRAA_KEY_POST_DATA, mFeed);
+    detailsIntent.putStringArrayListExtra(Constants.EXTRA_KEY_REBLOGGERS,mRebloggers);
     mContext.startActivity(detailsIntent);
+  }
+
+  private void openRebloggedUserListPage(ArrayList<String> users) {
+    Intent intent = new Intent(mContext, RebloggedListActivity.class);
+    intent.putStringArrayListExtra(RebloggedListActivity.EXTRA_USER_LIST, users);
+    intent.putExtra(RebloggedListActivity.EXTRA_AUTHOR, mFeed.getAuthor());
+    intent.putExtra(RebloggedListActivity.EXTRA_PERMLINK, mFeed.getPermlink());
+    mContext.startActivity(intent);
   }
 
   private void openVotersList() {
     Intent intent = new Intent(mContext, VotersListActivity.class);
-    intent.putParcelableArrayListExtra(VotersListActivity.EXTRA_VOTERS, mFeed.getVoters());
+    intent.putParcelableArrayListExtra(VotersListActivity.EXTRA_USER_LIST, mFeed.getVoters());
     mContext.startActivity(intent);
   }
 
@@ -212,6 +243,7 @@ public class PostItemView extends FrameLayout {
 
   private void bind(final Feed feed) {
     this.mFeed = feed;
+    fetchRebloggedUsers();
     postSnippet.setVisibility(VISIBLE);
     feedOwnerTitle.setText(feed.getAuthor());
     feedOwnerSubtitle.setText(String.format(mContext.getResources().getString(R.string.post_subtitle_format), MomentsUtils.getFormattedTime(feed.getCreatedAt())));
@@ -244,7 +276,6 @@ public class PostItemView extends FrameLayout {
     setCommentCount(feed.getChildren());
     attachListerOnAuthorHeader();
     attachListenerForOverlowIcon();
-    showResteem(feed.isResteemed());
   }
 
   private void attachListenerForOverlowIcon() {
@@ -276,7 +307,7 @@ public class PostItemView extends FrameLayout {
       double pendingPayoutValue = Double.parseDouble(feed.getPendingPayoutValue().split(" ")[0]);
       double totalPayoutValue = Double.parseDouble(feed.getTotalPayoutValue().split(" ")[0]);
       double curatorPayoutValue = Double.parseDouble(feed.getCuratorPayoutValue().split(" ")[0]);
-
+      double maxAcceptedValue = Double.parseDouble(feed.getMaxAcceptedPayoutValue().split(" ")[0]);
       if (pendingPayoutValue > 0) {
         payoutValue.setVisibility(VISIBLE);
         dollarIcon.setVisibility(VISIBLE);
@@ -291,6 +322,13 @@ public class PostItemView extends FrameLayout {
       } else {
         payoutValue.setVisibility(GONE);
         dollarIcon.setVisibility(GONE);
+      }
+
+      //format payout string
+      if(maxAcceptedValue==0){
+        payoutValue.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+      }else{
+        payoutValue.setPaintFlags(Paint.LINEAR_TEXT_FLAG);
       }
     }
     catch (Exception e) {
@@ -392,6 +430,13 @@ public class PostItemView extends FrameLayout {
     }
   }
 
+  private void fetchRebloggedUsers() {
+    String reqTag = getRebloggedUserRequestTag();
+    if (ConnectionUtils.isConnected(mContext)) {
+      dataStore.fetchRebloggedUsers(reqTag, mFeed.getAuthor(), mFeed.getPermlink(), this);
+    }
+  }
+
   private void castingVoteSuccess() {
     if (starView != null) {
       starView.castedVoteSuccessfully();
@@ -487,30 +532,87 @@ public class PostItemView extends FrameLayout {
   }
 
   private void showPopup() {
-    int menu_res_id;
-    if ((getActiveVoteCount() == 0) &&
-      mFeed.getAuthor().equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
-      menu_res_id = R.menu.post_menu_with_delete;
-    } else {
-      menu_res_id = R.menu.popup_post;
-    }
+    int menu_res_id = R.menu.popup_post;
     ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(getContext(), R.style.PopupMenuOverlapAnchor);
     PopupMenu popup = new PopupMenu(contextThemeWrapper, popupMenuDots);
+    //customize menu items
+    if ((getActiveVoteCount() == 0) &&
+      mFeed.getAuthor().equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
+      //add Delete Option
+      popup.getMenu().add(PostMenu.Delete);
+      //add share option
+      popup.getMenu().add(PostMenu.Share);
+    } else {
+      //add Share
+      popup.getMenu().add(PostMenu.Share);
+      if (!mRebloggers.contains(mCurrentLoggedInUser)) {
+        //add repost option
+        popup.getMenu().add(PostMenu.Repost);
+      }
+    }
     popup.getMenuInflater().inflate(menu_res_id, popup.getMenu());
     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
       @Override
       public boolean onMenuItemClick(MenuItem item) {
-        if (item.getItemId() == R.id.delete_post) {
+        if (item.getTitle().equals(PostMenu.Delete)) {
           showAlertDialogForDelete();
           return true;
-        } else if (item.getItemId() == R.id.share) {
+        } else if (item.getTitle().equals(PostMenu.Share)) {
           ShareUtils.shareMixedContent(mContext, mFeed);
           return true;
+        } else if (item.getTitle().equals(PostMenu.Repost)) {
+          showAlertDialogForRepost();
         }
         return false;
       }
     });
     popup.show();
+  }
+
+  private void showAlertDialogForRepost() {
+    new AlertDialog.Builder(mContext)
+      .setTitle("Repost?")
+      .setMessage("This post will appear on your profile. This action cannot be reversed.")
+      .setPositiveButton("Repost", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+          repostThisPost();
+        }
+      })
+      .setNegativeButton("Cancel", null)
+      .show();
+  }
+
+  private void repostThisPost() {
+    showProgressDialog(true, "Reposting....");
+    steemRePoster = new SteemRePoster();
+    steemRePoster.setRepostCallback(new SteemRePoster.RepostCallback() {
+      @Override
+      public void reposted() {
+        showProgressDialog(false, "");
+        Toast.makeText(mContext, "Reposted", Toast.LENGTH_LONG).show();
+      }
+
+      @Override
+      public void failedToRepost() {
+        showProgressDialog(false, "");
+        Toast.makeText(mContext, "Failed to Repost", Toast.LENGTH_LONG).show();
+      }
+    });
+    steemRePoster.repost(mFeed.getAuthor(), mFeed.getPermlink());
+  }
+
+  private void showProgressDialog(boolean show, String msg) {
+    if (progressDialog != null) {
+      if (show) {
+        progressDialog.setMessage(msg);
+        progressDialog.setCancelable(false);
+        progressDialog.setIndeterminate(true);
+        progressDialog.show();
+      } else {
+        progressDialog.dismiss();
+      }
+    }
   }
 
   private int getActiveVoteCount() {
@@ -539,7 +641,7 @@ public class PostItemView extends FrameLayout {
 
   private void deleteThisPostItem() {
     if (postActionListener != null) {
-      postActionListener.onPostDeleted();
+      postActionListener.onPostDeleted(this.mItemIndex);
     }
     new Thread() {
       @Override
@@ -570,22 +672,44 @@ public class PostItemView extends FrameLayout {
     this.postActionListener = postActionListener;
   }
 
-  private void showResteem(boolean show) {
-    if (show) {
-      resteemedIcon.setVisibility(VISIBLE);
-      resteemedLabel.setVisibility(VISIBLE);
-    } else {
-      resteemedIcon.setVisibility(GONE);
-      resteemedLabel.setVisibility(GONE);
-    }
-  }
-
   public void setCommunities(ArrayList<String> communities) {
     communityStripeView.setCommunities(communities);
   }
 
+  public void setItemIndex(int itemIndex) {
+    this.mItemIndex = itemIndex;
+  }
+
+  @Override
+  public void onRebloggedUserFetched(String reqTag, ArrayList<String> rebloggers) {
+    try {
+      if (rebloggers.contains(mFeed.getAuthor())) {
+        rebloggers.remove(mFeed.getAuthor());
+      }
+      this.mRebloggers = rebloggers;
+      setRepostCount(rebloggers.size());
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public void onRebloggedUserFailed() {
+
+  }
+
+  private void setRepostCount(int count) {
+      repostContainer.setVisibility(VISIBLE);
+      repostCount.setText(String.valueOf(count));
+  }
+
+  private String getRebloggedUserRequestTag() {
+    return String.format("%s_%s", mFeed.getAuthor(), mFeed.getPermlink());
+  }
+
   public interface PostActionListener {
-    void onPostDeleted();
+    void onPostDeleted(int itemIndex);
   }
 }
 

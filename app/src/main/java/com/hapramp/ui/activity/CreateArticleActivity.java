@@ -13,7 +13,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -21,17 +20,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.analytics.EventReporter;
 import com.hapramp.api.URLS;
+import com.hapramp.draft.DraftsHelper;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
-import com.hapramp.utils.FontManager;
 import com.hapramp.utils.GoogleImageFilePathReader;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.PostHashTagPreprocessor;
@@ -46,10 +46,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import xute.markdeditor.EditorControlBar;
 import xute.markdeditor.MarkDEditor;
+import xute.markdeditor.datatype.DraftDataItemModel;
+import xute.markdeditor.models.DraftModel;
 
-public class CreateArticleActivity extends AppCompatActivity implements SteemPostCreator.SteemPostCreatorCallback, EditorControlBar.EditorControlListener {
+import static xute.markdeditor.Styles.TextComponentStyle.NORMAL;
 
+public class CreateArticleActivity extends AppCompatActivity implements SteemPostCreator.SteemPostCreatorCallback, EditorControlBar.EditorControlListener, DraftsHelper.DraftsHelperCallback {
+  public static final String EXTRA_KEY_DRAFT_ID = "draftId";
+  public static final String EXTRA_KEY_DRAFT_JSON = "draftJson";
   private static final int REQUEST_IMAGE_SELECTOR = 119;
+  private final long NO_DRAFT = -1;
   @BindView(R.id.backBtn)
   ImageView closeBtn;
   @BindView(R.id.previewButton)
@@ -88,6 +94,12 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   private String generated_permalink;
   private String body;
   private List<String> images;
+  private DraftsHelper draftsHelper;
+  private long mDraftId;
+  private boolean blogPublished;
+  private boolean leftActivityWithPurpose = false;
+
+  private boolean shouldSaveOrUpdateDraft = true;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -100,11 +112,31 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   }
 
   private void init() {
+    draftsHelper = new DraftsHelper();
+    draftsHelper.setDraftsHelperCallback(this);
     progressDialog = new ProgressDialog(this);
     articleCategoryView.initCategory();
     editorControlBar.setEditorControlListener(this);
     editorControlBar.setEditor(markDEditor);
-    markDEditor.setServerInfo(URLS.BASE_URL, HaprampPreferenceManager.getInstance().getUserToken());
+    Intent receiveIntent = getIntent();
+    if (receiveIntent != null) {
+      mDraftId = receiveIntent.getLongExtra(EXTRA_KEY_DRAFT_ID, NO_DRAFT);
+      if (mDraftId != NO_DRAFT) {
+        String draftJson = receiveIntent.getStringExtra(EXTRA_KEY_DRAFT_JSON);
+        try {
+          DraftModel draftModel = new Gson().fromJson(draftJson, DraftModel.class);
+          configureEditor(draftModel);
+        }
+        catch (Exception e) {
+          e.printStackTrace();
+          configureEditor(null);
+        }
+      } else {
+        configureEditor(null);
+      }
+    } else {
+      configureEditor(null);
+    }
   }
 
   private void attachListeners() {
@@ -142,6 +174,24 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
 
   }
 
+  private void configureEditor(DraftModel draftModel) {
+    if (draftModel != null) {
+      showProgressDialog(true, "Loading Draft...");
+      markDEditor.configureEditor(URLS.BASE_URL,
+        HaprampPreferenceManager.getInstance().getUserToken(),
+        true,
+        "",
+        NORMAL);
+      loadBlogDraftIntoEditor(draftModel);
+    } else {
+      markDEditor.configureEditor(URLS.BASE_URL,
+        HaprampPreferenceManager.getInstance().getUserToken(),
+        false,
+        "Body here...",
+        NORMAL);
+    }
+  }
+
   private void showMetaData(boolean show) {
     int vis = show ? View.VISIBLE : View.GONE;
     metaView.setVisibility(vis);
@@ -160,6 +210,64 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     }
   }
 
+  private void showConnectivityError() {
+    Snackbar.make(toolbarContainer, "No Internet!", Snackbar.LENGTH_SHORT).show();
+  }
+
+  private void showExistAlert() {
+    //if there is already draft, show a progress with saving...
+    if (mDraftId != NO_DRAFT) {
+      showProgressDialog(true,"Saving changes...");
+      shouldSaveOrUpdateDraft = false;
+      updateDraft();
+      return;
+    }
+    AlertDialog.Builder builder = new AlertDialog.Builder(this)
+      .setTitle("Save as draft?")
+      .setMessage("You can edit and publish saved drafts later.")
+      .setPositiveButton("Save Draft", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+          //save or update draft
+          shouldSaveOrUpdateDraft = true;
+          closeEditor();
+        }
+      })
+      .setNegativeButton("Discard", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+          // in delete mode
+          shouldSaveOrUpdateDraft = false;
+          closeEditor();
+        }
+      });
+    builder.show();
+  }
+
+  private void showProgressDialog(boolean show, String msg) {
+    if (progressDialog != null) {
+      if (show) {
+        progressDialog.setMessage(msg);
+        progressDialog.setCancelable(false);
+        progressDialog.setIndeterminate(true);
+        progressDialog.show();
+      } else {
+        progressDialog.dismiss();
+      }
+    }
+  }
+
+  public void loadBlogDraftIntoEditor(DraftModel draft) {
+    showProgressDialog(false, "");
+    markDEditor.loadDraft(draft);
+    String title = draft.getDraftTitle() != null ? draft.getDraftTitle() : "";
+    articleTitleEt.setText(title);
+  }
+
+  private void includeCustomTags(ArrayList<String> tags) {
+    tags.addAll(tagsInputBox.getHashTags());
+  }
+
   private List<String> getImageLinks() {
     List<String> images = markDEditor.getImageList();
     for (int i = 0; i < images.size(); i++) {
@@ -169,7 +277,6 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     }
     return images;
   }
-
 
   private boolean validArticle() {
     if (title.length() > 0) {
@@ -189,7 +296,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   }
 
   private void sendPostToSteemBlockChain() {
-    showPublishingProgressDialog(true, "Publishing...");
+    showProgressDialog(true, "Publishing...");
     SteemPostCreator steemPostCreator = new SteemPostCreator();
     steemPostCreator.setSteemPostCreatorCallback(this);
     //add footer
@@ -197,30 +304,19 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     steemPostCreator.createPost(body, title, images, tags, generated_permalink);
   }
 
-  private void showConnectivityError() {
-    Snackbar.make(toolbarContainer, "No Internet!", Snackbar.LENGTH_SHORT).show();
-  }
-
-  private void showExistAlert() {
-    AlertDialog.Builder builder = new AlertDialog.Builder(this)
-      .setTitle("Discard ?")
-      .setMessage("You cannot recover discarded blogs.")
-      .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-          close();
-        }
-      })
-      .setNegativeButton("No", null);
-    builder.show();
+  private void closeEditor() {
+    showProgressDialog(false, "");
+    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_ARTICLE);
+    new Handler().postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        close();
+      }
+    }, 1000);
   }
 
   private void toast(String s) {
     Toast.makeText(this, s, Toast.LENGTH_LONG).show();
-  }
-
-  private void includeCustomTags(ArrayList<String> tags) {
-    tags.addAll(tagsInputBox.getHashTags());
   }
 
   private void close() {
@@ -228,54 +324,127 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     overridePendingTransition(R.anim.slide_down_enter, R.anim.slide_down_exit);
   }
 
-  private void showPublishingProgressDialog(boolean show, String msg) {
-    if (progressDialog != null) {
-      if (show) {
-        progressDialog.setMessage(msg);
-        progressDialog.setCancelable(false);
-        progressDialog.setIndeterminate(true);
-        progressDialog.show();
-      } else {
-        progressDialog.hide();
-      }
-    }
-  }
-
-  @Override
-  public void onBackPressed() {
-    showExistAlert();
-  }
-
   @Override
   public void onPostCreatedOnSteem() {
     toast("Published");
     HaprampPreferenceManager.getInstance().setLastPostCreatedAt(MomentsUtils.getCurrentTime());
+    blogPublished = true;
     closeEditor();
-  }
-
-  private void closeEditor() {
-    showPublishingProgressDialog(false, "");
-    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_ARTICLE);
-    new Handler().postDelayed(new Runnable() {
-      @Override
-      public void run() {
-        finish();
-      }
-    }, 1000);
   }
 
   @Override
   public void onPostCreationFailedOnSteem(String msg) {
     toast("Cannot Create Blog");
-    showPublishingProgressDialog(false, "");
+    showProgressDialog(false, "");
   }
 
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (requestCode == REQUEST_IMAGE_SELECTOR) {
       if (resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+        leftActivityWithPurpose = false;
         handleImageResult(data);
       }
+    }
+  }
+
+  @Override
+  protected void onPause() {
+    super.onPause();
+    invalidateDraft();
+  }
+
+  private void invalidateDraft() {
+    if (mDraftId != NO_DRAFT) {
+      if (blogPublished) {
+        //delete draft
+        deleteDraft();
+      } else {
+        //update draft
+        if (!leftActivityWithPurpose) {
+          if (shouldSaveOrUpdateDraft) {
+            updateDraft();
+          }
+        }
+      }
+    } else {
+      if (!blogPublished && !leftActivityWithPurpose) {
+        if (shouldSaveOrUpdateDraft) {
+          //save draft
+          addNewDraft();
+        }
+      }
+    }
+  }
+
+  private void deleteDraft() {
+    draftsHelper.deleteDraft(mDraftId);
+  }
+
+  private void updateDraft() {
+    DraftModel draftModel = markDEditor.getDraft();
+    String draftTitle = articleTitleEt.getText().toString();
+    draftModel.setDraftTitle(draftTitle);
+    draftModel.setDraftId(mDraftId);
+    draftsHelper.updateBlogDraft(draftModel);
+  }
+
+  private void addNewDraft() {
+    DraftModel draftModel = markDEditor.getDraft();
+    if (checkValidSaveOption(draftModel)) {
+      String draftTitle = articleTitleEt.getText().toString();
+      draftModel.setDraftTitle(draftTitle);
+      draftsHelper.saveBlogDraft(draftModel);
+    }
+  }
+
+  private boolean checkValidSaveOption(DraftModel draftModel) {
+    if (draftModel.getItems().size() > 1) {
+      return true;
+    }
+    if (draftModel.getItems().size() > 0) {
+      DraftDataItemModel draftDataItemModel = draftModel.getItems().get(0);
+      if (draftDataItemModel.getDownloadUrl() != null) {
+        return true;
+      }
+
+      if (draftDataItemModel.getContent() != null) {
+        if (draftDataItemModel.getContent().trim().length() > 0) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    switch (requestCode) {
+      case REQUEST_IMAGE_SELECTOR:
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+          openGallery();
+        } else {
+          Toast.makeText(this, "Permission not granted to access images.", Toast.LENGTH_SHORT).show();
+        }
+        break;
+    }
+  }
+
+  private void openGallery() {
+    try {
+      leftActivityWithPurpose = true;
+      if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+        ||
+        ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_SELECTOR);
+      } else {
+        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        startActivityForResult(intent, REQUEST_IMAGE_SELECTOR);
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
     }
   }
 
@@ -296,33 +465,8 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   }
 
   public void addImage(String filePath) {
-    markDEditor.insertImage(filePath);
-  }
-
-  @Override
-  public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
-    switch (requestCode) {
-      case REQUEST_IMAGE_SELECTOR:
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-          openGallery();
-        } else {
-          Toast.makeText(this, "Permission not granted to access images.", Toast.LENGTH_SHORT).show();
-        }
-        break;
-    }
-  }
-
-  private void openGallery() {
     try {
-      if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-        ||
-        ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_SELECTOR);
-      } else {
-        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        intent.setType("image/*");
-        startActivityForResult(intent, REQUEST_IMAGE_SELECTOR);
-      }
+      markDEditor.insertImage(filePath);
     }
     catch (Exception e) {
       e.printStackTrace();
@@ -348,5 +492,30 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
       }
     });
     linkInsertDialog.show();
+  }
+
+  @Override
+  public void onNewDraftSaved(boolean success) {
+    if (success) {
+      Toast.makeText(CreateArticleActivity.this, "Draft saved", Toast.LENGTH_LONG).show();
+    } else {
+      Toast.makeText(CreateArticleActivity.this, "Failed to save draft", Toast.LENGTH_LONG).show();
+    }
+  }
+
+  @Override
+  public void onDraftUpdated(boolean success) {
+    showProgressDialog(false,"");
+    closeEditor();
+  }
+
+  @Override
+  public void onDraftDeleted(boolean success) {
+
+  }
+
+  @Override
+  public void onBackPressed() {
+    showExistAlert();
   }
 }

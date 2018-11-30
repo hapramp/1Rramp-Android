@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="@drawable/delegation_list_card_bg"
+    android:elevation="2dp"
+    android:padding="0dp">
+
+    <TextView
+        android:id="@+id/cancel_delegation_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/main_container"
+        android:background="@drawable/filled_rectangle_btn"
+        android:clickable="true"
+        android:gravity="center"
+        android:paddingBottom="12dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp"
+        android:text="Cancel Delegation"
+        android:textAllCaps="true"
+        android:textColor="@color/white" />
+
+    <RelativeLayout
+        android:clickable="false"
+        android:id="@+id/main_container"
+        android:layout_width="wrap_content"
+        android:layout_height="84dp"
+        android:padding="8dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="48dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:src="@drawable/right_arrow" />
+
+        <LinearLayout
+            android:clickable="true"
+            android:background="?selectableItemBackground"
+            android:id="@+id/user_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:gravity="end"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/delegatee_image"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/circular_image_placeholder"/>
+
+            <TextView
+                android:id="@+id/delegatee_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/delegatee_image"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:text="bxute ankit kumar"
+                android:textColor="@color/Black87"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/delegated_sp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="8dp"
+            android:gravity="center_vertical"
+            android:text="100,349,34"
+            android:textColor="@color/ConnectivityGreen"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/sp_label"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@+id/delegated_sp"
+            android:gravity="center_vertical"
+            android:text="SP" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

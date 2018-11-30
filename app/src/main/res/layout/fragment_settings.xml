@@ -7,6 +7,43 @@
     tools:context=".ui.fragments.SettingsFragment">
 
     <RelativeLayout
+        android:id="@+id/payout_selector_row"
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+
+        <ImageView
+            android:id="@+id/img_payout"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:src="@drawable/dollor" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:layout_toRightOf="@+id/img_payout"
+            android:text="Payout Type"
+            android:textColor="@color/Black87" />
+
+        <Spinner
+            android:id="@+id/payout_selector"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="56dp"
+            android:drawSelectorOnTop="true" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/Black12" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/push_notification_row"
         android:layout_width="match_parent"
         android:layout_height="56dp">
@@ -30,12 +67,12 @@
 
         <Switch
             android:id="@+id/push_notification_switch"
-            android:theme="@style/SwitchTheme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="14dp" />
+            android:layout_marginRight="14dp"
+            android:theme="@style/SwitchTheme" />
 
         <View
             android:layout_width="match_parent"
@@ -46,9 +83,9 @@
 
     <RelativeLayout
         android:id="@+id/invite_a_friend_row"
-        android:background="?selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="56dp"
+        android:background="?selectableItemBackground"
         android:clickable="true">
 
         <ImageView
@@ -77,9 +114,9 @@
 
     <RelativeLayout
         android:id="@+id/feedback_row"
+        android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="?selectableItemBackground"
-        android:layout_width="match_parent"
         android:clickable="true">
 
         <ImageView
@@ -108,9 +145,9 @@
 
     <RelativeLayout
         android:id="@+id/help_row"
+        android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="?selectableItemBackground"
-        android:layout_width="match_parent"
         android:clickable="true">
 
         <ImageView
@@ -139,9 +176,9 @@
 
     <RelativeLayout
         android:id="@+id/term_row"
+        android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="?selectableItemBackground"
-        android:layout_width="match_parent"
         android:clickable="true">
 
         <ImageView
@@ -170,9 +207,9 @@
 
     <RelativeLayout
         android:id="@+id/logout_row"
+        android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="?selectableItemBackground"
-        android:layout_width="match_parent"
         android:clickable="true">
 
         <ImageView

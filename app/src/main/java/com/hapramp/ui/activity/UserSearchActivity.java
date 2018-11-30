@@ -4,8 +4,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -21,20 +20,33 @@ import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.analytics.EventReporter;
+import com.hapramp.api.RetrofitServiceGenerator;
+import com.hapramp.api.URLS;
 import com.hapramp.datastore.DataStore;
-import com.hapramp.datastore.callbacks.UserSearchCallback;
+import com.hapramp.datastore.SteemRequestBody;
+import com.hapramp.models.LookupAccount;
 import com.hapramp.ui.adapters.UserListAdapter;
 import com.hapramp.ui.adapters.ViewPagerAdapter;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FollowingsSyncUtils;
+import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.jakewharton.rxbinding2.widget.TextViewTextChangeEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Function;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.PublishSubject;
 
-public class UserSearchActivity extends AppCompatActivity implements UserSearchCallback {
+public class UserSearchActivity extends AppCompatActivity {
   private static boolean SEARCH_MODE = false;
   @BindView(R.id.backBtn)
   ImageView backBtn;
@@ -60,6 +72,9 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchC
   RelativeLayout suggestionsContainer;
   UserListAdapter adapter;
   DataStore dataStore;
+
+  CompositeDisposable compositeDisposable = new CompositeDisposable();
+  PublishSubject<String> publishSubject = PublishSubject.create();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -90,28 +105,34 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchC
       }
     });
 
-    usernameSearchInputField.addTextChangedListener(new TextWatcher() {
-      @Override
-      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    DisposableObserver<LookupAccount> accountDisposableObserver = usernamesObserver();
 
-      }
+    compositeDisposable.add(
+      RxTextView
+        .textChangeEvents(usernameSearchInputField)
+        .skipInitialValue()
+        .debounce(300, TimeUnit.MILLISECONDS)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeWith(searchUsernameTextWatcher()));
 
-      @Override
-      public void onTextChanged(CharSequence s, int start, int before, int count) {
-        String searchTerm = usernameSearchInputField.getText().toString().trim().toLowerCase();
-        if (searchTerm.length() > 0) {
-          fetchSuggestions(searchTerm);
-          setSearchMode();
-        } else {
-          hideKeyboardByDefault();
-        }
-      }
+    compositeDisposable.add(
+      publishSubject
+        .debounce(300, TimeUnit.MILLISECONDS)
+        .distinctUntilChanged()
+        .switchMapSingle(new Function<String, Single<LookupAccount>>() {
+          @Override
+          public Single<LookupAccount> apply(String username) {
+            return RetrofitServiceGenerator
+              .getService()
+              .getUsernames(URLS.STEEMIT_API_URL, SteemRequestBody.lookupAccounts(username))
+              .subscribeOn(Schedulers.io())
+              .observeOn(AndroidSchedulers.mainThread());
+          }
+        })
+        .subscribeWith(accountDisposableObserver));
 
-      @Override
-      public void afterTextChanged(Editable s) {
-
-      }
-    });
+    compositeDisposable.add(accountDisposableObserver);
 
     backBtn.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -140,27 +161,53 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchC
     usernameSearchInputField.setCursorVisible(false);
   }
 
-  private void fetchSuggestions(String query) {
-    if (suggestionsContainer != null) {
-      suggestionsContainer.setVisibility(View.VISIBLE);
-    }
-    if (ConnectionUtils.isConnected(UserSearchActivity.this)) {
-      dataStore.requestUsernames(query, this);
-    } else {
-      Toast.makeText(this, "No Connectivity", Toast.LENGTH_LONG).show();
-    }
-    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_SEARCH_USER);
+  private DisposableObserver<LookupAccount> usernamesObserver() {
+    return new DisposableObserver<LookupAccount>() {
+      @Override
+      public void onNext(LookupAccount lookupAccount) {
+        onUserSuggestionsAvailable(lookupAccount.getmResult());
+      }
+
+      @Override
+      public void onError(Throwable e) {
+      }
+
+      @Override
+      public void onComplete() {
+
+      }
+    };
   }
 
-  private void setSearchMode() {
-    SEARCH_MODE = true;
-    if (suggestionsContainer != null) {
-      suggestionsContainer.setVisibility(View.VISIBLE);
-    }
-    //change back icon to cross
-    if (backBtn != null) {
-      backBtn.setImageResource(R.drawable.close_icon);
-    }
+  private DisposableObserver<TextViewTextChangeEvent> searchUsernameTextWatcher() {
+    return new DisposableObserver<TextViewTextChangeEvent>() {
+      @Override
+      public void onNext(TextViewTextChangeEvent textViewTextChangeEvent) {
+        String searchTerm = textViewTextChangeEvent.text().toString().trim().toLowerCase();
+        if (searchTerm.length() > 0) {
+          Log.d("UsernameSearch", "text.. " + searchTerm);
+          if (ConnectionUtils.isConnected(UserSearchActivity.this)) {
+            onSearchingUsernames();
+            publishSubject.onNext(searchTerm);
+          } else {
+            Toast.makeText(UserSearchActivity.this, "No Connectivity", Toast.LENGTH_LONG).show();
+          }
+          setSearchMode();
+        } else {
+          hideKeyboardByDefault();
+        }
+      }
+
+      @Override
+      public void onError(Throwable e) {
+        e.printStackTrace();
+      }
+
+      @Override
+      public void onComplete() {
+
+      }
+    };
   }
 
   private void setBrowseMode() {
@@ -184,30 +231,6 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchC
     overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit);
   }
 
-  @Override
-  public void onBackPressed() {
-    close();
-  }
-
-  @Override
-  protected void onResume() {
-    super.onResume();
-    setBrowseMode();
-  }
-
-  @Override
-  public void onSearchingUsernames() {
-    try {
-      suggestionsListView.setVisibility(View.GONE);
-      messagePanel.setVisibility(View.VISIBLE);
-      suggestionsProgressBar.setVisibility(View.VISIBLE);
-      messagePanel.setText("Searching...");
-    }
-    catch (Exception e) {
-    }
-  }
-
-  @Override
   public void onUserSuggestionsAvailable(List<String> usernames) {
     try {
       if (suggestionsContainer != null) {
@@ -223,8 +246,50 @@ public class UserSearchActivity extends AppCompatActivity implements UserSearchC
     }
   }
 
-  @Override
-  public void onUserSuggestionsError(String msg) {
+  public void onSearchingUsernames() {
+    try {
+      suggestionsListView.setVisibility(View.GONE);
+      messagePanel.setVisibility(View.VISIBLE);
+      suggestionsProgressBar.setVisibility(View.VISIBLE);
+      messagePanel.setText("Searching...");
+    }
+    catch (Exception e) {
+    }
+  }
 
+  private void setSearchMode() {
+    SEARCH_MODE = true;
+    if (suggestionsContainer != null) {
+      suggestionsContainer.setVisibility(View.VISIBLE);
+    }
+    //change back icon to cross
+    if (backBtn != null) {
+      backBtn.setImageResource(R.drawable.close_icon);
+    }
+  }
+
+  private void fetchSuggestions(String query) {
+    if (suggestionsContainer != null) {
+      suggestionsContainer.setVisibility(View.VISIBLE);
+    }
+
+    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_SEARCH_USER);
+  }
+
+  @Override
+  public void onBackPressed() {
+    close();
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+    setBrowseMode();
+  }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    compositeDisposable.dispose();
   }
 }

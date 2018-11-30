@@ -47,6 +47,18 @@ public class UserMentionSuggestionListView extends FrameLayout {
     init(context);
   }
 
+  public void onSearching() {
+    try {
+      mentionsContainer.removeAllViews();
+      View view = LayoutInflater.from(context).inflate(R.layout.user_mention_suggestion_item_row_searching,
+        null);
+      mentionsContainer.addView(view, 0, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
   public void addSuggestions(List<String> suggestions) {
     int max = suggestions.size() > 8 ? 8 : suggestions.size();
     mentionsContainer.removeAllViews();

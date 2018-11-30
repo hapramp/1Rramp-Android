@@ -2,6 +2,14 @@ package com.hapramp.datastore;
 
 public class SteemRequestBody {
 
+  public static String getDelegationsListBody(String delegator) {
+    return "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_vesting_delegations\", \"params\":[\"" + delegator + "\",100], \"id\":1}";
+  }
+
+  public static String getRebloggedByBody(String author,String permlink) {
+    return "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_reblogged_by\", \"params\":[\""+author+"\",\""+permlink+"\"], \"id\":1}";
+  }
+
   public static String getResourceCreditBody(String username) {
     return "{\"jsonrpc\":\"2.0\", \"method\":\"rc_api.find_rc_accounts\"," +
       " \"params\":{\"accounts\": [\"" + username + "\"]}, \"id\":1}";

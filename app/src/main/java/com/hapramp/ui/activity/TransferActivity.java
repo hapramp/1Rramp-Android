@@ -5,8 +5,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -15,21 +13,30 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
-import com.hapramp.analytics.AnalyticsParams;
-import com.hapramp.analytics.AnalyticsUtil;
+import com.hapramp.api.RetrofitServiceGenerator;
+import com.hapramp.api.URLS;
 import com.hapramp.datastore.DataStore;
-import com.hapramp.datastore.callbacks.UserSearchCallback;
-import com.hapramp.utils.ConnectionUtils;
-import com.hapramp.utils.FontManager;
+import com.hapramp.datastore.SteemRequestBody;
+import com.hapramp.models.LookupAccount;
 import com.hapramp.utils.WalletOperations;
 import com.hapramp.views.UserMentionSuggestionListView;
+import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.jakewharton.rxbinding2.widget.TextViewTextChangeEvent;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Function;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.PublishSubject;
 
-public class TransferActivity extends AppCompatActivity implements UserSearchCallback {
+public class TransferActivity extends AppCompatActivity {
 
   public static final String EXTRA_SBD_BALANCE = "extra_sbd_balance";
   public static final String EXTRA_STEEM_BALANCE = "extra_steem_balance";
@@ -67,12 +74,14 @@ public class TransferActivity extends AppCompatActivity implements UserSearchCal
   RelativeLayout currencySelectorContainer;
   @BindView(R.id.user_suggestions)
   UserMentionSuggestionListView userMentionsSuggestionsView;
-
+  DataStore dataStore;
+  PublishSubject<String> publishSubject = PublishSubject.create();
+  CompositeDisposable compositeDisposable = new CompositeDisposable();
   private int currentCurrencyMode = 0;
   private double mSteemBalance = 0;
   private double mSBDBalance = 0;
   private String finalTransferAmount = "";
-  DataStore dataStore;
+  private DisposableObserver<LookupAccount> usernameObserver;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -96,27 +105,32 @@ public class TransferActivity extends AppCompatActivity implements UserSearchCal
   }
 
   private void attachListeners() {
-    usernameEt.addTextChangedListener(new TextWatcher() {
-      @Override
-      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-      }
-
-      @Override
-      public void onTextChanged(CharSequence s, int start, int before, int count) {
-        String searchTerm = usernameEt.getText().toString().trim().toLowerCase();
-        if (searchTerm.length() > 0 && usernameEt.getSelectionEnd() > 0) {
-          fetchSuggestions(searchTerm);
-        } else {
-          userMentionsSuggestionsView.setVisibility(View.GONE);
+    DisposableObserver<LookupAccount> usernameObserver = getUsernameObserver();
+    compositeDisposable.add(publishSubject
+      .debounce(200, TimeUnit.MILLISECONDS)
+      .distinctUntilChanged()
+      .switchMapSingle(new Function<String, Single<LookupAccount>>() {
+        @Override
+        public Single<LookupAccount> apply(String username) {
+          return RetrofitServiceGenerator
+            .getService()
+            .getUsernames(URLS.STEEMIT_API_URL, SteemRequestBody.lookupAccounts(username))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread());
         }
-      }
+      })
+      .subscribeWith(usernameObserver));
 
-      @Override
-      public void afterTextChanged(Editable s) {
+    compositeDisposable.add(RxTextView
+      .textChangeEvents(usernameEt)
+      .skipInitialValue()
+      .debounce(200, TimeUnit.MILLISECONDS)
+      .subscribeOn(Schedulers.io())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribeWith(userNameTextWatcher()));
 
-      }
-    });
+    compositeDisposable.add(usernameObserver);
+
     userMentionsSuggestionsView.setMentionsSuggestionPickListener(new UserMentionSuggestionListView.MentionsSuggestionPickListener() {
       @Override
       public void onUserPicked(String username) {
@@ -162,15 +176,6 @@ public class TransferActivity extends AppCompatActivity implements UserSearchCal
     });
   }
 
-  private void fetchSuggestions(String query) {
-    if (ConnectionUtils.isConnected(TransferActivity.this)) {
-      dataStore.requestUsernames(query, this);
-    } else {
-      Toast.makeText(this, "No Connectivity", Toast.LENGTH_LONG).show();
-    }
-    AnalyticsUtil.logEvent(AnalyticsParams.EVENT_SEARCH_USER);
-  }
-
   private void setCurrencyMode(int mode) {
     currentCurrencyMode = mode;
     if (mode == Cmode_sbd) {
@@ -186,6 +191,50 @@ public class TransferActivity extends AppCompatActivity implements UserSearchCal
       currencySelectorSbd.setTextColor(Color.parseColor("#8a000000"));
       balanceTv.setText(String.format("Your Balance: %s STEEM", mSteemBalance));
     }
+  }
+
+  public DisposableObserver<LookupAccount> getUsernameObserver() {
+    return new DisposableObserver<LookupAccount>() {
+      @Override
+      public void onNext(LookupAccount lookupAccount) {
+        onUserSuggestionsAvailable(lookupAccount.getmResult());
+      }
+
+      @Override
+      public void onError(Throwable e) {
+
+      }
+
+      @Override
+      public void onComplete() {
+
+      }
+    };
+  }
+
+  private DisposableObserver<TextViewTextChangeEvent> userNameTextWatcher() {
+    return new DisposableObserver<TextViewTextChangeEvent>() {
+      @Override
+      public void onNext(TextViewTextChangeEvent textViewTextChangeEvent) {
+        String searchTerm = textViewTextChangeEvent.text().toString().trim().toLowerCase();
+        if (searchTerm.length() > 0 && usernameEt.getSelectionEnd() > 0) {
+          onSearchingUser();
+          publishSubject.onNext(searchTerm);
+        } else {
+          userMentionsSuggestionsView.setVisibility(View.GONE);
+        }
+      }
+
+      @Override
+      public void onError(Throwable e) {
+
+      }
+
+      @Override
+      public void onComplete() {
+
+      }
+    };
   }
 
   private boolean validateAmount() {
@@ -229,16 +278,6 @@ public class TransferActivity extends AppCompatActivity implements UserSearchCal
     finish();
   }
 
-  private void toast(String msg) {
-    Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-  }
-
-  @Override
-  public void onSearchingUsernames() {
-
-  }
-
-  @Override
   public void onUserSuggestionsAvailable(List<String> users) {
     if (userMentionsSuggestionsView != null) {
       userMentionsSuggestionsView.setVisibility(View.VISIBLE);
@@ -246,8 +285,20 @@ public class TransferActivity extends AppCompatActivity implements UserSearchCal
     }
   }
 
-  @Override
-  public void onUserSuggestionsError(String msg) {
+  private void toast(String msg) {
+    Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+  }
 
+  private void onSearchingUser(){
+    if (userMentionsSuggestionsView != null) {
+      userMentionsSuggestionsView.setVisibility(View.VISIBLE);
+      userMentionsSuggestionsView.onSearching();
+    }
+  }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    compositeDisposable.dispose();
   }
 }
