@@ -10,26 +10,27 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
+import com.hapramp.steem.models.Voter;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FontManager;
-import com.hapramp.views.CustomRatingBar;
+import com.hapramp.utils.VoteUtils;
 import com.hapramp.views.OneRampRatingBar;
 
+import java.util.List;
 import java.util.Locale;
+
+import static com.hapramp.utils.VoteUtils.transformToRate;
 
 /**
  * Created by Ankit on 12/14/2017.
  */
 
 public class StarView extends FrameLayout {
-  private static final long REVEAL_DELAY = 500;
-  private static final float REVEAL_START_OFFSET = 84;
   private static final long HIDE_RATING_BAR_DELAY = 4000;
   ImageView starIndicator;
   TextView rateLabel;
@@ -124,14 +125,20 @@ public class StarView extends FrameLayout {
     });
   }
 
-  public StarView setVoteState(Vote voteState) {
+  public StarView setData(List<Voter> voters, String permlink) {
+    int rateSum = VoteUtils.getSumOfRatings(voters);
+    int votesConsideredAsRate = VoteUtils.getCountOfVotesConsideredAsRate(voters);
+    boolean amIVoted = VoteUtils.checkForMyVote(voters);
+    long myVotePercent = amIVoted ? VoteUtils.getMyVotePercent(voters) : 0;
+    long totalVotes = VoteUtils.getNonZeroVoters(voters);
     this.legacyState = new Vote(
-      voteState.iHaveVoted,
-      voteState.postPermlink,
-      voteState.myVotePercent,
-      voteState.totalVotedUsers,
-      voteState.totalVotePercentSum);
-    setCurrentState(voteState);
+      amIVoted,
+      permlink,
+      myVotePercent,
+      totalVotes,
+      votesConsideredAsRate,
+      rateSum);
+    setCurrentState(legacyState);
     return this;
   }
 
@@ -159,19 +166,15 @@ public class StarView extends FrameLayout {
   }
 
   private int getMappedRatingFromPercent(float myVotePercent) {
-    return (int) (myVotePercent / 2000);
+    return transformToRate(myVotePercent);
   }
 
   private String getRatingDescriptionWithAverage() {
-    float voteSum = getVoteSumFromVotePercentSum(currentState.getTotalVotePercentSum());
-    int _totalUser = (int) currentState.getTotalVotedUsers();
-    return _totalUser > 0 ? String.format(Locale.US, "<font color=\"black\">%1$.1f star </font>from %2$d",
-      ((voteSum) / _totalUser), _totalUser) : "";
-  }
-
-  // This method returns string with average and vote count
-  private float getVoteSumFromVotePercentSum(float totalVotePercentSum) {
-    return totalVotePercentSum / 2000;
+    float rateSum = currentState.getRateSum();
+    int rateCount = currentState.getVotesConsideredAsRate();
+    int totalVotes = (int) currentState.getTotalVotedUsers();
+    return rateCount > 0 ? String.format(Locale.US, "<font color=\"black\">%1$.1f star </font>from %2$d",
+      ((rateSum) / rateCount), totalVotes) : "";
   }
 
   public void onStarIndicatorTapped() {
@@ -223,14 +226,16 @@ public class StarView extends FrameLayout {
     currentState.setiHaveVoted(true);
     currentState.setMyVotePercent(getVotePercentFromRating(rating));
     currentState.totalVotedUsers += 1;
-    currentState.totalVotePercentSum += getVotePercentFromRating(rating);
+    currentState.votesConsideredAsRate += 1;
+    currentState.rateSum += rating;
     setCurrentState(currentState);
   }
 
   private void cancelMyRating() {
     currentState.setiHaveVoted(false);
     currentState.totalVotedUsers -= 1;
-    currentState.totalVotePercentSum -= currentState.myVotePercent;
+    currentState.votesConsideredAsRate -= 1;
+    currentState.rateSum -= VoteUtils.transformToRate(currentState.myVotePercent);
     currentState.myVotePercent = 0;
     ratingBar.setRating(0);
     setCurrentState(currentState);
@@ -359,17 +364,16 @@ public class StarView extends FrameLayout {
     String postPermlink;
     float myVotePercent;
     float totalVotedUsers;
-    float totalVotePercentSum;
+    int votesConsideredAsRate;
+    int rateSum;
 
-    public Vote() {
-    }
-
-    public Vote(boolean iHaveVoted, String postPermlink, float vote, float totalVotedUsers, float totalVotesSum) {
+    public Vote(boolean iHaveVoted, String postPermlink, float vote, float totalVotedUsers, int votesConsideredAsRate, int totalRateSum) {
       this.iHaveVoted = iHaveVoted;
       this.postPermlink = postPermlink;
       this.myVotePercent = vote;
       this.totalVotedUsers = totalVotedUsers;
-      this.totalVotePercentSum = totalVotesSum;
+      this.votesConsideredAsRate = votesConsideredAsRate;
+      this.rateSum = totalRateSum;
     }
 
     public boolean getiHaveVoted() {
@@ -378,6 +382,14 @@ public class StarView extends FrameLayout {
 
     public void setiHaveVoted(boolean iHaveVoted) {
       this.iHaveVoted = iHaveVoted;
+    }
+
+    public int getVotesConsideredAsRate() {
+      return votesConsideredAsRate;
+    }
+
+    public void setVotesConsideredAsRate(int votesConsideredAsRate) {
+      this.votesConsideredAsRate = votesConsideredAsRate;
     }
 
     public float getMyVotePercent() {
@@ -396,24 +408,8 @@ public class StarView extends FrameLayout {
       this.totalVotedUsers = totalVotedUsers;
     }
 
-    public float getTotalVotePercentSum() {
-      return totalVotePercentSum;
-    }
-
-    public void setTotalVotePercentSum(float totalVotePercentSum) {
-      this.totalVotePercentSum = totalVotePercentSum;
-    }
-
-    @Override
-    public String toString() {
-      return "Vote{" +
-        "iHaveVoted=" + iHaveVoted +
-        ", postPermlink=" + postPermlink +
-        ", myVotePercent=" + myVotePercent +
-        ", totalVotedUsers=" + totalVotedUsers +
-        ", totalVotePercentSum=" + totalVotePercentSum +
-        '}';
+    public int getRateSum() {
+      return rateSum;
     }
   }
-
 }
