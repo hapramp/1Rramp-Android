@@ -161,7 +161,7 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.DraftListI
         draftType.setText("Short Post Draft");
       }
       draftTitle.setText(draft.getTitle().length() > 0 ? draft.getTitle() : "Untitled Draft");
-      draftTitle.setOnClickListener(new View.OnClickListener() {
+      itemView.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
           if (draft.getDraftType().equals(DraftType.BLOG)) {

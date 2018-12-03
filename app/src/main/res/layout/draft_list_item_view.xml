@@ -2,15 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp">
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:clickable="true"
+    android:background="?selectableItemBackground"
+    android:id="@+id/draft_item_view">
 
     <TextView
         android:id="@+id/draft_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?selectableItemBackground"
-        android:clickable="true"
         android:ellipsize="end"
         android:lineSpacingExtra="2dp"
         android:maxLines="2"
@@ -68,7 +69,7 @@
             android:clickable="true"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:paddingBottom="8dp"
+            android:paddingBottom="16dp"
             android:src="@drawable/delete_filled" />
     </FrameLayout>
 
