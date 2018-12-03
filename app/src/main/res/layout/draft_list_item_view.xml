@@ -1,68 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="96dp"
-    android:background="@color/white"
-    android:layout_marginBottom="4dp"
-    android:elevation="1dp"
-    >
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp">
 
     <TextView
-        android:padding="8dp"
         android:id="@+id/draft_title"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="?selectableItemBackground"
         android:clickable="true"
         android:ellipsize="end"
-        android:maxLines="2"
         android:lineSpacingExtra="2dp"
+        android:maxLines="2"
+        android:paddingTop="16dp"
+        android:layout_marginBottom="16dp"
         android:text="ankit Kumar is a good boy i nice  thisd gs to be dgidf i thing i wou ld neot e didf ei thingkdf dflkdjfkdf"
         android:textColor="@color/colorPrimary"
         android:textSize="18sp" />
 
     <ImageView
-        android:layout_marginLeft="8dp"
-        android:layout_marginBottom="8dp"
         android:id="@+id/draft_icon"
-        android:layout_alignParentBottom="true"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:layout_marginTop="4dp"
+        android:layout_below="@+id/draft_title"
+        android:layout_marginBottom="16dp"
         android:src="@drawable/blog_icon_filled" />
 
     <TextView
-        android:layout_marginBottom="8dp"
         android:id="@+id/draft_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/draft_title"
+        android:layout_marginBottom="16dp"
         android:layout_marginLeft="8dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="8dp"
         android:layout_toRightOf="@+id/draft_icon"
         android:text="Blog Draft"
         android:textColor="@color/Black54"
         android:textSize="14sp" />
 
     <TextView
-        android:layout_marginBottom="8dp"
         android:id="@+id/created_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/draft_title"
+        android:layout_marginBottom="16dp"
         android:layout_marginLeft="4dp"
-        android:layout_marginTop="8dp"
-        android:layout_alignParentBottom="true"
         android:layout_toRightOf="@+id/draft_type"
         android:text=" | 12 Hr ago"
         android:textColor="@color/Black54"
         android:textSize="14sp" />
 
     <FrameLayout
-        android:layout_alignParentBottom="true"
         android:id="@+id/delete_icon_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:layout_below="@+id/draft_title"
         android:layout_centerVertical="true">
 
         <ImageView
@@ -71,7 +66,15 @@
             android:layout_height="36dp"
             android:background="?selectableItemBackground"
             android:clickable="true"
-            android:padding="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="8dp"
             android:src="@drawable/delete_filled" />
     </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/delete_icon_container"
+        android:background="@color/Black12" />
 </RelativeLayout>
