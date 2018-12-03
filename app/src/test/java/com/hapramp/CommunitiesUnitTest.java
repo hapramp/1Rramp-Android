@@ -5,10 +5,13 @@ import com.hapramp.steemconnect4j.StringUtils;
 import com.hapramp.utils.HashTagUtils;
 import com.hapramp.utils.PostHashTagPreprocessor;
 import com.hapramp.utils.RegexUtils;
+import com.hapramp.utils.VoteUtils;
 
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -131,10 +134,10 @@ public class CommunitiesUnitTest {
       RpcJsonUtil.getKeyValuePair("required_posting_auths", "[\"bxute\"]"),
       RpcJsonUtil.getKeyValuePair("id", "\"follow\""),
       RpcJsonUtil.getKeyValuePair("json",
-        "\""+ com.hapramp.utils.StringUtils.stringify(
-        StringUtils.getCommanSeparatedArrayString(
-          "\"reblog\"",
-         "{\"account\":\""+account+"\",\"author\":\""+author+"\",\"permlink\":\""+permlink+"\"}")) + "\""
+        "\"" + com.hapramp.utils.StringUtils.stringify(
+          StringUtils.getCommanSeparatedArrayString(
+            "\"reblog\"",
+            "{\"account\":\"" + account + "\",\"author\":\"" + author + "\",\"permlink\":\"" + permlink + "\"}")) + "\""
       ));
 
     String operation = StringUtils.getOperationsString(
@@ -142,6 +145,25 @@ public class CommunitiesUnitTest {
         StringUtils.getCommanSeparatedArrayString("\"custom_json\"", params)));
 
     System.out.println(operation);
+  }
+
+  @Test
+  public void testVotingTransformation() {
+    Map<Integer, Integer> voteVsRateMap = new HashMap<>();
+    voteVsRateMap.put(1200, 1);
+    voteVsRateMap.put(2200, 2);
+    voteVsRateMap.put(3500, 2);
+    voteVsRateMap.put(4000, 2);
+    voteVsRateMap.put(4500, 3);
+    voteVsRateMap.put(6000, 3);
+    voteVsRateMap.put(7800, 4);
+    voteVsRateMap.put(8000, 4);
+    voteVsRateMap.put(8900, 5);
+    for (Map.Entry<Integer, Integer> entry : voteVsRateMap.entrySet()) {
+      int expectedRate = entry.getValue();
+      int vote = VoteUtils.transformToRate(entry.getKey());
+      assertEquals(expectedRate,vote);
+    }
   }
 
   class Benf {
@@ -161,5 +183,4 @@ public class CommunitiesUnitTest {
         '}';
     }
   }
-
 }

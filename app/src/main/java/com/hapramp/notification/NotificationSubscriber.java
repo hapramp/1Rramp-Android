@@ -10,6 +10,7 @@ public class NotificationSubscriber {
    */
   public static void subscribeForUserTopic() {
     String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+    //todo: create topic from username
     FirebaseMessaging.getInstance().subscribeToTopic(username).addOnSuccessListener(new OnSuccessListener<Void>() {
       @Override
       public void onSuccess(Void aVoid) {
@@ -78,6 +79,7 @@ public class NotificationSubscriber {
    */
   public static void unsubscribeForUserTopic() {
     String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+    //todo: create topic
     FirebaseMessaging.getInstance().unsubscribeFromTopic(username).addOnSuccessListener(new OnSuccessListener<Void>() {
       @Override
       public void onSuccess(Void aVoid) {
