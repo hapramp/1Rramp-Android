@@ -6,6 +6,7 @@ public class StringUtils {
     s = s.replace("\n","\\n");
     s = s.replace("\"", "\\\"");
     s = s.replace("\\\\", "\\\\\\");
+    s = s.replace("\t","   ");
     return s;
   }
 }
