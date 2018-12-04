@@ -241,7 +241,7 @@ public class CommentsItemView extends FrameLayout implements
           if (amIVoted) {
             deleteVoteOnSteem();
           } else {
-            performVoteOnSteem(5);
+            performVoteOnSteem(10000);
           }
         } else {
           Toast.makeText(mContext, "Check Network Connection", Toast.LENGTH_LONG).show();
