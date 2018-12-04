@@ -215,6 +215,10 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   }
 
   private void showExistAlert() {
+    if (!checkValidSaveOption(markDEditor.getDraft())) {
+      closeEditor();
+      return;
+    }
     //if there is already draft, show a progress with saving...
     if (mDraftId != NO_DRAFT) {
       showProgressDialog(true, "Saving changes...");
@@ -302,6 +306,30 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     //add footer
     body = body + Constants.FOOTER_TEXT;
     steemPostCreator.createPost(body, title, images, tags, generated_permalink);
+  }
+
+  private boolean checkValidSaveOption(DraftModel draftModel) {
+    if (draftModel.getItems().size() > 1) {
+      return true;
+    }
+    if (draftModel.getItems().size() > 0) {
+      DraftDataItemModel draftDataItemModel = draftModel.getItems().get(0);
+      if (draftDataItemModel.getDownloadUrl() != null) {
+        return true;
+      }
+
+      if (draftDataItemModel.getContent() != null) {
+        if (draftDataItemModel.getContent().trim().length() > 0) {
+          return true;
+        }
+      }
+    }
+
+    if (articleTitleEt.getText().toString().trim().length() > 0) {
+      return true;
+    }
+
+    return false;
   }
 
   private void updateDraft() {
@@ -426,30 +454,6 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
       draftModel.setDraftTitle(draftTitle);
       draftsHelper.saveBlogDraft(draftModel);
     }
-  }
-
-  private boolean checkValidSaveOption(DraftModel draftModel) {
-    if (draftModel.getItems().size() > 1) {
-      return true;
-    }
-    if (draftModel.getItems().size() > 0) {
-      DraftDataItemModel draftDataItemModel = draftModel.getItems().get(0);
-      if (draftDataItemModel.getDownloadUrl() != null) {
-        return true;
-      }
-
-      if (draftDataItemModel.getContent() != null) {
-        if (draftDataItemModel.getContent().trim().length() > 0) {
-          return true;
-        }
-      }
-    }
-
-    if (articleTitleEt.getText().toString().trim().length() > 0) {
-      return true;
-    }
-
-    return false;
   }
 
   @Override
