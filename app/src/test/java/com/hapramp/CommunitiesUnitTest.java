@@ -7,6 +7,7 @@ import com.hapramp.utils.PostHashTagPreprocessor;
 import com.hapramp.utils.RegexUtils;
 import com.hapramp.utils.VoteUtils;
 
+import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class CommunitiesUnitTest {
     String tag7 = "#Syntax{}";
     String tag8 = "#Hello%2";
     assertTrue(HashTagUtils.isValidHashTag(tag1));
-    assertFalse(HashTagUtils.isValidHashTag(tag2));
+    assertTrue(HashTagUtils.isValidHashTag(tag2));
     assertFalse(HashTagUtils.isValidHashTag(tag3));
     assertTrue(HashTagUtils.isValidHashTag(tag4));
     assertFalse(HashTagUtils.isValidHashTag(tag5));

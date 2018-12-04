@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.DatePicker;
@@ -284,36 +285,6 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
 
   }
 
-  private void showExistAlert() {
-    //if there is already draft, show a progress with saving...
-    if (mDraftId != NO_COMP_DRAFT) {
-      showPublishingProgressDialog(true,"Saving changes...");
-      shouldSaveOrUpdateDraft = false;
-      updateDraft();
-      return;
-    }
-
-    AlertDialog.Builder builder = new AlertDialog.Builder(this)
-      .setTitle("Save as draft?")
-      .setMessage("You can edit and publish saved drafts later.")
-      .setPositiveButton("Save Draft", new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-          //save or update draft
-          shouldSaveOrUpdateDraft = true;
-          close();
-        }
-      })
-      .setNegativeButton("Discard", new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialogInterface, int i) {
-          // in delete mode
-          shouldSaveOrUpdateDraft = false;
-          close();
-        }
-      });
-    builder.show();
-  }
   private void hideKeyboardByDefault() {
     getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
   }
@@ -346,9 +317,35 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
     }
   }
 
-  private void close() {
-    finish();
-    overridePendingTransition(R.anim.slide_down_enter, R.anim.slide_down_exit);
+  private void showExistAlert() {
+    //if there is already draft, show a progress with saving...
+    if (mDraftId != NO_COMP_DRAFT) {
+      showPublishingProgressDialog(true, "Saving changes...");
+      shouldSaveOrUpdateDraft = false;
+      updateDraft();
+      return;
+    }
+
+    AlertDialog.Builder builder = new AlertDialog.Builder(this)
+      .setTitle("Save as draft?")
+      .setMessage("You can edit and publish saved drafts later.")
+      .setPositiveButton("Save Draft", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+          //save or update draft
+          shouldSaveOrUpdateDraft = true;
+          close();
+        }
+      })
+      .setNegativeButton("Discard", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+          // in delete mode
+          shouldSaveOrUpdateDraft = false;
+          close();
+        }
+      });
+    builder.show();
   }
 
   private boolean validateFields() {
@@ -493,11 +490,12 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
     endTimeInput.setText(draft.getEndTime());
     endDateInput.setText(draft.getEndDate());
     firstPrizeInput.setText(draft.getFirstPrize());
-    competitionBanner.setDownloadUrl(draft.getCompetitionPosterDownloadUrl());
-  }
-
-  private void toast(String msg) {
-    Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    String downloadUrl = draft.getCompetitionPosterDownloadUrl();
+    if (downloadUrl != null) {
+      bannerImageDownloadUrl = draft.getCompetitionPosterDownloadUrl();
+      competitionBanner.setDownloadUrl(bannerImageDownloadUrl);
+      isBannerSelected = true;
+    }
   }
 
   private void showPublishingProgressDialog(boolean show, String msg) {
@@ -511,6 +509,33 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
         progressDialog.dismiss();
       }
     }
+  }
+
+  private void updateDraft() {
+    ContestDraftModel competitionDraftModel = new ContestDraftModel();
+    competitionDraftModel.setDraftId(mDraftId);
+    competitionDraftModel.setCompetitionTitle(competitionTitle.getText().toString());
+    competitionDraftModel.setCompetitionDescription(competitionDescription.getText().toString());
+    competitionDraftModel.setCompetitionRules(competitionRules.getText().toString());
+    competitionDraftModel.setmCommunitySelection(competitionCommunityView.getSelectedTags());
+    competitionDraftModel.setCustomHashTags(tagsInputBox.getHashTags());
+    competitionDraftModel.setJudges(selectedJudges);
+    competitionDraftModel.setStartDate(startDateInput.getText().toString());
+    competitionDraftModel.setStartTime(startTimeInput.getText().toString());
+    competitionDraftModel.setEndDate(endDateInput.getText().toString());
+    competitionDraftModel.setEndTime(endTimeInput.getText().toString());
+    competitionDraftModel.setFirstPrize(firstPrizeInput.getText().toString());
+    competitionDraftModel.setCompetitionPosterDownloadUrl(competitionBanner.getDownloadUrl());
+    mDraftHelper.updateContestDraft(competitionDraftModel);
+  }
+
+  private void close() {
+    finish();
+    overridePendingTransition(R.anim.slide_down_enter, R.anim.slide_down_exit);
+  }
+
+  private void toast(String msg) {
+    Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
   }
 
   private String getStartTime() {
@@ -535,7 +560,10 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
     for (int i = 0; i < communities.size(); i++) {
       int _id = CommunityUtils.getCommunityIdFromTitle(communities.get(i));
       if (_id >= 0) {
-        ids.add(CommunityUtils.getCommunityIdFromTitle(communities.get(i)));
+        int comId = CommunityUtils.getCommunityIdFromTitle(communities.get(i));
+        if (!ids.contains(comId)) {
+          ids.add(comId);
+        }
       }
     }
     return ids;
@@ -622,6 +650,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
   }
 
   private void includeExtraTags(ArrayList<String> tags) {
+    tags.clear();
     tags.addAll(tagsInputBox.getHashTags());
   }
 
@@ -697,26 +726,9 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
       }
     }
   }
+
   private void deleteDraft() {
     mDraftHelper.deleteDraft(mDraftId);
-  }
-
-  private void updateDraft() {
-    ContestDraftModel competitionDraftModel = new ContestDraftModel();
-    competitionDraftModel.setDraftId(mDraftId);
-    competitionDraftModel.setCompetitionTitle(competitionTitle.getText().toString());
-    competitionDraftModel.setCompetitionDescription(competitionDescription.getText().toString());
-    competitionDraftModel.setCompetitionRules(competitionRules.getText().toString());
-    competitionDraftModel.setmCommunitySelection(competitionCommunityView.getSelectedTags());
-    competitionDraftModel.setCustomHashTags(tagsInputBox.getHashTags());
-    competitionDraftModel.setJudges(selectedJudges);
-    competitionDraftModel.setStartDate(startDateInput.getText().toString());
-    competitionDraftModel.setStartTime(startTimeInput.getText().toString());
-    competitionDraftModel.setEndDate(endDateInput.getText().toString());
-    competitionDraftModel.setEndTime(endTimeInput.getText().toString());
-    competitionDraftModel.setFirstPrize(firstPrizeInput.getText().toString());
-    competitionDraftModel.setCompetitionPosterDownloadUrl(competitionBanner.getDownloadUrl());
-    mDraftHelper.updateContestDraft(competitionDraftModel);
   }
 
   /**
@@ -807,7 +819,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
 
   @Override
   public void onDraftUpdated(boolean success) {
-    showPublishingProgressDialog(false,"");
+    showPublishingProgressDialog(false, "");
     close();
   }
 
