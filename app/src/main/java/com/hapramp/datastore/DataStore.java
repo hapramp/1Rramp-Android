@@ -1,6 +1,8 @@
 package com.hapramp.datastore;
 
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
@@ -129,10 +131,10 @@ public class DataStore extends DataDispatcher {
   }
 
   public void fetchRebloggedUsers(
-                                  final String reqTag,
-                                  final String author,
-                                  final String permlink,
-                                  final RebloggedUserFetchCallback rebloggedUserFetchCallback) {
+    final String reqTag,
+    final String author,
+    final String permlink,
+    final RebloggedUserFetchCallback rebloggedUserFetchCallback) {
     new Thread() {
       @Override
       public void run() {
@@ -141,7 +143,7 @@ public class DataStore extends DataDispatcher {
           String body = SteemRequestBody.getRebloggedByBody(author, permlink);
           Response rebloggedUsers = NetworkApi.getNetworkApiInstance().postAndFetch(url, body);
           String responseString = rebloggedUsers.body().string();
-          dispatchRebloggedUsers(reqTag,responseString, rebloggedUserFetchCallback);
+          dispatchRebloggedUsers(reqTag, responseString, rebloggedUserFetchCallback);
         }
         catch (Exception e) {
           e.printStackTrace();
@@ -973,7 +975,7 @@ public class DataStore extends DataDispatcher {
         String url = UrlBuilder.explorePostsUrl();
         String cachedResponse = DataCache.get(url);
         if (cachedResponse != null) {
-          dispatchExplorePosts(cachedResponse, false, false, userFeedCallback);
+          dispatchPosts(cachedResponse, false, false, userFeedCallback);
         }
         try {
           Response response = NetworkApi.getNetworkApiInstance().fetch(url);
@@ -981,7 +983,7 @@ public class DataStore extends DataDispatcher {
             String res = response.body().string();
             DataCache.cache(url, res);
             if (isFeedRequestLive(rtag)) {
-              dispatchExplorePosts(res, true, false, userFeedCallback);
+              dispatchPosts(res, true, false, userFeedCallback);
             }
           } else {
             dispatchUserFeedsError("Error Code:" + response.code(), userFeedCallback);
@@ -1006,7 +1008,7 @@ public class DataStore extends DataDispatcher {
         String url = UrlBuilder.explorePostsUrl();
         String cachedResponse = DataCache.get(url);
         if (cachedResponse != null && !refresh) {
-          dispatchExplorePosts(cachedResponse, false, false, userFeedCallback);
+          dispatchPosts(cachedResponse, false, false, userFeedCallback);
         }
         try {
           Response response = NetworkApi.getNetworkApiInstance().fetch(url);
@@ -1014,7 +1016,72 @@ public class DataStore extends DataDispatcher {
             String res = response.body().string();
             DataCache.cache(url, res);
             if (isFeedRequestLive(rtag) && refresh) {
-              dispatchExplorePosts(res, true, false, userFeedCallback);
+              dispatchPosts(res, true, false, userFeedCallback);
+            }
+          } else {
+            dispatchUserFeedsError("Error Code:" + response.code(), userFeedCallback);
+          }
+        }
+        catch (Exception e) {
+          dispatchUserFeedsError("Exception " + e.toString(), userFeedCallback);
+        }
+      }
+    }.start();
+  }
+
+  public void requestMicroCommunityPosts(final String tag,
+                                         final String order,
+                                         final boolean refresh,
+                                         final UserFeedCallback userFeedCallback) {
+    final String rtag = "micro_community_feeds_" + tag + "_" + order;
+    this.currentFeedRequestTag = rtag;
+    new Thread() {
+      @Override
+      public void run() {
+        String url = UrlBuilder.microCommunityPostsUrl(tag, order, 10);
+        String cachedResponse = DataCache.get(url);
+        if (cachedResponse != null && !refresh) {
+          dispatchUserFeeds(cachedResponse, false, false, userFeedCallback);
+        }
+        try {
+          Response response = NetworkApi.getNetworkApiInstance().fetch(url);
+          if (response.isSuccessful()) {
+            String res = response.body().string();
+            Log.d("Commp",res);
+            DataCache.cache(url, res);
+            if (isFeedRequestLive(rtag)) {
+              dispatchUserFeeds(res, true, false, userFeedCallback);
+            }
+          } else {
+            dispatchUserFeedsError("Error Code:" + response.code(), userFeedCallback);
+          }
+        }
+        catch (Exception e) {
+          dispatchUserFeedsError("Exception " + e.toString(), userFeedCallback);
+        }
+      }
+    }.start();
+  }
+
+  public void requestMicroCommunityPosts(final String tag,
+                                         final String order,
+                                         final String start_author,
+                                         final String start_permlink,
+                                         final UserFeedCallback userFeedCallback) {
+    final String rtag = String.format("micro_community_feeds_%s_%s_%s_%s", tag, order, start_author,
+      start_permlink);
+    this.currentFeedRequestTag = rtag;
+    new Thread() {
+      @Override
+      public void run() {
+        String url = UrlBuilder.microCommunityPostsUrl(tag, order, 10, start_author, start_permlink);
+        try {
+          Response response = NetworkApi.getNetworkApiInstance().fetch(url);
+          if (response.isSuccessful()) {
+            String res = response.body().string();
+            DataCache.cache(url, res);
+            if (isFeedRequestLive(rtag)) {
+              dispatchUserFeeds(res, true, true, userFeedCallback);
             }
           } else {
             dispatchUserFeedsError("Error Code:" + response.code(), userFeedCallback);

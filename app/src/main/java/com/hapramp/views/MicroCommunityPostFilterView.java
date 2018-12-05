@@ -10,14 +10,12 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
+import com.hapramp.ui.fragments.CommunityPostFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MicroCommunityPostFilterView extends FrameLayout {
-  public static final int TRENDING = 0;
-  public static final int HOT = 1;
-  public static final int NEW = 2;
   @BindView(R.id.trendingItem)
   TextView trendingItem;
   @BindView(R.id.newItem)
@@ -42,29 +40,35 @@ public class MicroCommunityPostFilterView extends FrameLayout {
     trendingItem.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View view) {
+        if (lastSelection == trendingItem)
+          return;
         select(trendingItem);
         deSelect(lastSelection);
         lastSelection = trendingItem;
-        sendSelection(TRENDING);
+        sendSelection(CommunityPostFragment.ORDER_TRENDING);
       }
     });
     newItem.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View view) {
+        if (lastSelection == newItem)
+          return;
         select(newItem);
         deSelect(lastSelection);
         lastSelection = newItem;
-        sendSelection(NEW);
+        sendSelection(CommunityPostFragment.ORDER_NEW);
       }
     });
 
     hotItem.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View view) {
+        if (lastSelection == hotItem)
+          return;
         select(hotItem);
         deSelect(lastSelection);
         lastSelection = hotItem;
-        sendSelection(HOT);
+        sendSelection(CommunityPostFragment.ORDER_HOT);
       }
     });
   }
@@ -80,7 +84,7 @@ public class MicroCommunityPostFilterView extends FrameLayout {
     tv.setTextColor(mContext.getResources().getColor(R.color.Black54));
   }
 
-  private void sendSelection(int item) {
+  private void sendSelection(String item) {
     if (filterItemSelectionCallback != null) {
       filterItemSelectionCallback.onItemSelected(item);
     }
@@ -101,6 +105,6 @@ public class MicroCommunityPostFilterView extends FrameLayout {
   }
 
   public interface FilterItemSelectionCallback {
-    void onItemSelected(int selectedItem);
+    void onItemSelected(String order);
   }
 }
