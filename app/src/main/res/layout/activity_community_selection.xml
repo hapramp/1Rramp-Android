@@ -64,7 +64,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_margin="16dp"
         android:layout_marginTop="16dp"
-        android:background="@drawable/filled_btn_bg"
+        android:background="@drawable/primary_filled_btn_bg"
         android:clickable="true"
         android:elevation="1dp"
         android:enabled="false"

@@ -305,7 +305,7 @@
                     android:layout_toRightOf="@+id/first_prize_caption"
                     android:paddingTop="4dp"
                     android:text="*"
-                    android:textColor="@color/ConnectivityRed" />
+                    android:textColor="@color/DarkRed" />
 
                 <EditText
                     android:id="@+id/first_prize_input"

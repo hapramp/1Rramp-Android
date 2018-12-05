@@ -27,7 +27,7 @@
             android:id="@+id/blog_icon"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="@drawable/filled_btn_bg"
+            android:background="@drawable/primary_filled_btn_bg"
             android:padding="12dp"
             android:src="@drawable/blog_icon_filled" />
 
@@ -58,7 +58,7 @@
             android:id="@+id/photo_icon"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="@drawable/filled_btn_bg"
+            android:background="@drawable/primary_filled_btn_bg"
             android:padding="12dp"
             android:src="@drawable/image_icon_filled" />
 
@@ -90,7 +90,7 @@
             android:id="@+id/competition_icon"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="@drawable/filled_btn_bg"
+            android:background="@drawable/primary_filled_btn_bg"
             android:padding="12dp"
             android:src="@drawable/competition_white" />
 

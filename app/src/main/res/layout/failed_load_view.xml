@@ -48,7 +48,7 @@
         android:layout_below="@+id/failed_message_card_container"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:background="@drawable/filled_btn_bg"
+        android:background="@drawable/primary_filled_btn_bg"
         android:clickable="true"
         android:enabled="true"
         android:focusable="true"

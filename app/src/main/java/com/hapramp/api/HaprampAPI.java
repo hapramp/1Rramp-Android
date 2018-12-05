@@ -1,5 +1,7 @@
 package com.hapramp.api;
 
+import android.support.v7.widget.CardView;
+
 import com.hapramp.models.AppServerUserModel;
 import com.hapramp.models.CommunitySelectionServerUpdateBody;
 import com.hapramp.models.CompetitionCreateResponse;
@@ -10,6 +12,7 @@ import com.hapramp.models.DraftPostModel;
 import com.hapramp.models.DraftUploadResponse;
 import com.hapramp.models.FormattedBodyResponse;
 import com.hapramp.models.LookupAccount;
+import com.hapramp.models.MicroCommunity;
 import com.hapramp.models.RebloggedModel;
 import com.hapramp.models.VerificationDataBody;
 import com.hapramp.models.VerifiedToken;
@@ -69,6 +72,9 @@ public interface HaprampAPI {
   @GET("users/user")
   Call<AppServerUserModel> fetchAppUser();
 
+  @GET("users/usernames/{username}")
+  Call<AppServerUserModel> fetchUserByUsername(@Path("username") String username);
+
   @Multipart
   @POST("upload")
   Call<FileUploadReponse> uploadFile(@Part MultipartBody.Part file);
@@ -91,4 +97,12 @@ public interface HaprampAPI {
   @POST
   Call<RebloggedModel> getRebloggedByUsers(@Url String url, @Body String body);
 
+  @GET("micro-communities")
+  Call<List<MicroCommunity>> fetchMicroCommunity();
+
+  @POST("micro-communities/{micro_community_tag}/join")
+  Call<AppServerUserModel> joinCommunity(@Path("micro_community_tag") String mc_id);
+
+  @DELETE("micro-communities/{micro_community_tag}/join")
+  Call<AppServerUserModel> leaveCommunity(@Path("micro_community_tag") String mc_id);
 }

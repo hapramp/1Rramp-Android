@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
+import com.hapramp.models.MicroCommunity;
 import com.hapramp.ui.adapters.MicroCommunityPagerAdapter;
 
 import butterknife.BindView;
@@ -18,7 +19,7 @@ import butterknife.ButterKnife;
 
 public class MicroCommunityActivity extends AppCompatActivity {
 
-  public static final String EXTRA_COMMUNITY_TAG = "communityTag";
+  public static final String EXTRA_COMMUNITY = "communityModel";
   @BindView(R.id.backBtn)
   ImageView backBtn;
   @BindView(R.id.action_bar_title)
@@ -30,7 +31,7 @@ public class MicroCommunityActivity extends AppCompatActivity {
   @BindView(R.id.tabs_container)
   TabLayout tabsContainer;
   private MicroCommunityPagerAdapter microCommunityPagerAdapter;
-  private String mCommunityTag;
+  private MicroCommunity mCommunity;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +45,15 @@ public class MicroCommunityActivity extends AppCompatActivity {
   private void collectExtras() {
     Intent intent = getIntent();
     if (intent != null) {
-      mCommunityTag = intent.getStringExtra(EXTRA_COMMUNITY_TAG);
+      mCommunity = intent.getParcelableExtra(EXTRA_COMMUNITY);
     }
   }
 
   private void initialize() {
-    if (mCommunityTag == null) {
+    if (mCommunity == null) {
       return;
     }
-    microCommunityPagerAdapter = new MicroCommunityPagerAdapter(getSupportFragmentManager(), mCommunityTag);
+    microCommunityPagerAdapter = new MicroCommunityPagerAdapter(getSupportFragmentManager(), mCommunity);
     tabsContainer.setupWithViewPager(viewpager);
     viewpager.setAdapter(microCommunityPagerAdapter);
 
