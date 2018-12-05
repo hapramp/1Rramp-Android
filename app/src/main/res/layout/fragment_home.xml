@@ -8,14 +8,13 @@
         android:id="@+id/feedListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        customNS:topOffset="108"
+        customNS:topOffset="140"
         customNS:wantTopSpaceOffset="true" />
 
     <com.hapramp.views.CommunityFilterView
         android:id="@+id/communityFilterView"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="#ffffff" />
+        android:layout_height="140dp" />
 
     <ProgressBar
         android:id="@+id/progressBarLoadingRecite"

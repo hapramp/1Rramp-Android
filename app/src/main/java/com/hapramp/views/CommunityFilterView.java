@@ -21,6 +21,8 @@ import butterknife.ButterKnife;
 public class CommunityFilterView extends FrameLayout {
   @BindView(R.id.container)
   LinearLayout container;
+  @BindView(R.id.micro_community_container_view)
+  MicroCommunityContainerView microCommunityContainerView;
   private Context mContext;
   private CommunityFilterCallback communityFilterCallback;
   private int childs;
@@ -80,6 +82,14 @@ public class CommunityFilterView extends FrameLayout {
         }
       }
     }
+  }
+
+  public void onHiding(){
+      microCommunityContainerView.setVisibility(GONE);
+  }
+
+  public void onShowing(){
+    microCommunityContainerView.setVisibility(VISIBLE);
   }
 
   public void setCommunityFilterCallback(CommunityFilterCallback communityFilterCallback) {

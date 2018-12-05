@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:background="@color/LightBlack"
+            android:id="@+id/tagsContainer"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" />
+
+    </HorizontalScrollView>
+
+    <ProgressBar
+        android:visibility="gone"
+        android:id="@+id/loading_progress_bar"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_centerInParent="true" />
+
+</RelativeLayout>
