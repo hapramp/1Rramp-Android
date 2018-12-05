@@ -49,7 +49,7 @@ public class ViewItemDecoration extends RecyclerView.ItemDecoration {
       return;
     }
     if (viewPosition == 0 && wantTopOffset) {
-      outRect.top = PixelUtils.dpToPx(104);
+      outRect.top = PixelUtils.dpToPx(topOffset);
       outRect.bottom = mDivider.getIntrinsicHeight();
     } else {
       outRect.bottom = mDivider.getIntrinsicHeight();

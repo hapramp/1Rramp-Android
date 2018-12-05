@@ -61,9 +61,6 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
   private Context mContext;
   private String currentSelectedTag = EXPLORE;
   private Unbinder unbinder;
-  private String mUsername;
-  private ProgressDialog progressDialog;
-  private AlertDialog alertDialog;
   private DataStore dataStore;
   private String last_author;
   private String last_permlink;
@@ -82,7 +79,6 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    mUsername = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
   }
 
   @Override
@@ -114,7 +110,7 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
         ((HomeActivity) mContext).overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit);
       }
     });
-    feedListView.setTopMarginForShimmer(104);
+    feedListView.setTopMarginForShimmer(140);
   }
 
   @Override
@@ -136,9 +132,6 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
 
   private void initCategoryView() {
     try {
-      Drawable drawable = ShadowUtils.generateBackgroundWithShadow(communityFilterView,
-        R.color.white, R.dimen.communitybar_shadow_radius, R.color.Black12, R.dimen.communitybar_shadow_elevation, Gravity.BOTTOM);
-      communityFilterView.setBackground(drawable);
       CommunityListWrapper cwr = new Gson().fromJson(HaprampPreferenceManager.getInstance()
         .getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
       if (cwr.getCommunityModels().size() == 0) {
@@ -228,6 +221,7 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
   }
 
   private void hideCategorySection() {
+    communityFilterView.onHiding();
     communityFilterView.animate().translationY(-communityFilterView.getMeasuredHeight());
     progressBarLoadingRecite.animate().translationY(-communityFilterView.getMeasuredHeight());
   }
@@ -238,6 +232,7 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
   }
 
   private void bringBackCategorySection() {
+    communityFilterView.onShowing();
     communityFilterView.animate().translationY(0);
     progressBarLoadingRecite.animate().translationY(0);
   }
