@@ -23,10 +23,14 @@ public class MicroCommunityPagerAdapter extends FragmentPagerAdapter {
     //prepare tabs and title
     MicroCommunityProfileFragment communityProfileFragment = new MicroCommunityProfileFragment();
     Bundle bundle = new Bundle();
-    bundle.putParcelable(MicroCommunityProfileFragment.EXTRA_COMMUNITY_MODEL,mCommunity);
+    bundle.putParcelable(MicroCommunityProfileFragment.EXTRA_COMMUNITY_MODEL, mCommunity);
     communityProfileFragment.setArguments(bundle);
 
     CommunityPostFragment communityPostFragment = new CommunityPostFragment();
+    Bundle cmpf = new Bundle();
+    cmpf.putString(CommunityPostFragment.COMMUNITY_TAG, mCommunity.getTag());
+    communityPostFragment.setArguments(cmpf);
+
     //profile
     fragments.add(communityProfileFragment);
     titles.add(mCommunity.getTag().toUpperCase());

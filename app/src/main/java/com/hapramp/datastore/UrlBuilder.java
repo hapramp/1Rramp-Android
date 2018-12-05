@@ -1,5 +1,7 @@
 package com.hapramp.datastore;
 
+import java.util.Locale;
+
 import static com.hapramp.api.URLS.BASE_URL;
 import static com.hapramp.api.URLS.STEEMIT_API_URL;
 
@@ -59,8 +61,16 @@ public class UrlBuilder {
     return BASE_URL + "communities";
   }
 
-  public static String updateCommunitySelectionUrl() {
-    return BASE_URL + "users/communities";
+  public static String microCommunityPostsUrl(String tag, String order, int limit) {
+    return String.format(Locale.US, "%smicro-communities/%s/posts/%s?limit=%d",
+      BASE_URL, tag, order, limit);
+  }
+
+  public static String microCommunityPostsUrl(String tag, String order, int limit, String start_author,
+                                              String start_permlink) {
+    return String.format(Locale.US,
+      "%smicro-communities/%s/posts/%s?limit=%d&start_author=%s&start_permlink=%s",
+      BASE_URL, tag, order, limit, start_author, start_permlink);
   }
 
   public static String uploadUrl() {

@@ -4,6 +4,14 @@
     android:background="@color/white"
     android:layout_height="match_parent">
 
+    <com.hapramp.views.feedlist.FeedListView
+        xmlns:customNS="http://schemas.android.com/apk/res/com.hapramp"
+        android:id="@+id/feedListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        customNS:topOffset="56"
+        customNS:wantTopSpaceOffset="true" />
+
     <com.hapramp.views.MicroCommunityPostFilterView
         android:id="@+id/filterView"
         android:layout_width="match_parent"
