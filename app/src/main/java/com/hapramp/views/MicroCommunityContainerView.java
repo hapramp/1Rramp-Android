@@ -1,6 +1,7 @@
 package com.hapramp.views;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -12,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.hapramp.R;
+import com.hapramp.ui.activity.MicroCommunityActivity;
 
 import java.util.ArrayList;
 
@@ -65,20 +67,34 @@ public class MicroCommunityContainerView extends FrameLayout {
     addMicrocommunitiesToView(names);
   }
 
-  private void addMicrocommunitiesToView(ArrayList<String> microcoms) {
+  private void addMicrocommunitiesToView(final ArrayList<String> microcoms) {
     try {
       tagsContainer.removeAllViews();
       TextView titileView = null;
       for (int i = 0; i < microcoms.size(); i++) {
+        final String communityTag = microcoms.get(i);
         View view = LayoutInflater.from(mContext).inflate(R.layout.micro_community_item_view, null);
         titileView = view.findViewById(R.id.micro_community_tag);
-        titileView.setText(String.format("#%s", microcoms.get(i)));
+        titileView.setText(String.format("#%s", communityTag));
+
+        titileView.setOnClickListener(new OnClickListener() {
+          @Override
+          public void onClick(View view) {
+            openCommunityDetailsPage(communityTag);
+          }
+        });
         tagsContainer.addView(view);
       }
     }
     catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  private void openCommunityDetailsPage(String tag) {
+    Intent intent = new Intent(mContext, MicroCommunityActivity.class);
+    intent.putExtra(MicroCommunityActivity.EXTRA_COMMUNITY_TAG, tag);
+    mContext.startActivity(intent);
   }
 
   public MicroCommunityContainerView(@NonNull Context context, @Nullable AttributeSet attrs) {
