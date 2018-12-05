@@ -43,7 +43,7 @@ public class CommunityFilterView extends FrameLayout {
     init(context);
   }
 
-  public void addCommunities(ArrayList<CommunityModel> communityModels) {
+  public void addCommunities(final ArrayList<CommunityModel> communityModels) {
     CommunityTabItemView itemView;
     childs = communityModels.size();
     for (int i = 0; i < childs; i++) {
@@ -52,6 +52,7 @@ public class CommunityFilterView extends FrameLayout {
         @Override
         public void onTouched(int index) {
           setSelection(index);
+          microCommunityContainerView.setParentCommunityId(communityModels.get(index).getCommunityId());
         }
       });
       itemView.setCommunity(communityModels.get(i));

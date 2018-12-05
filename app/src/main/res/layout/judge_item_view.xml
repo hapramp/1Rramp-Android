@@ -39,7 +39,7 @@
         android:id="@+id/judge_add_btn"
         android:text="Add"
         android:textSize="12sp"
-        android:background="@drawable/filled_btn_bg"
+        android:background="@drawable/primary_filled_btn_bg"
         android:paddingLeft="24dp"
         android:paddingRight="24dp"
         android:paddingTop="6dp"

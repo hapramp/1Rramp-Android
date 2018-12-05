@@ -117,7 +117,7 @@
             android:layout_below="@+id/balanceTv"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="24dp"
-            android:background="@drawable/filled_btn_bg"
+            android:background="@drawable/primary_filled_btn_bg"
             android:elevation="1dp"
             android:paddingBottom="8dp"
             android:paddingLeft="24dp"

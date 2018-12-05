@@ -39,19 +39,16 @@ public class UrlBuilder {
       username;
   }
 
-  // TODO: 23/10/18 remove test api
   public static String judgesListUrl() {
     return BASE_URL +
       "judges";
   }
 
-  // TODO: 23/10/18 remove test api
   public static String createCompetitionUrl() {
     return BASE_URL +
       "competitions";
   }
 
-  // TODO: 23/10/18 remove test api
   public static String competitionEligibilityCheckUrl(String username) {
     return BASE_URL +
       "users/usernames/" +
