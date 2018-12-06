@@ -92,6 +92,15 @@ public class CommunityPostFragment extends Fragment implements UserFeedCallback,
 
   }
 
+  private void hideFilterView() {
+    filterView.animate().translationY(-filterView.getMeasuredHeight());
+  }
+
+  private void revealFilterView() {
+    filterView.animate().translationY(0);
+  }
+
+
   @Override
   public void onUserFeedsAvailable(List<Feed> feeds, boolean isFreshData, boolean isAppendable) {
     if (feedListView != null) {
@@ -144,11 +153,11 @@ public class CommunityPostFragment extends Fragment implements UserFeedCallback,
 
   @Override
   public void onHideCommunityList() {
-
+    hideFilterView();
   }
 
   @Override
   public void onShowCommunityList() {
-
+    revealFilterView();
   }
 }
