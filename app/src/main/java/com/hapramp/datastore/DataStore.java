@@ -1047,7 +1047,6 @@ public class DataStore extends DataDispatcher {
           Response response = NetworkApi.getNetworkApiInstance().fetch(url);
           if (response.isSuccessful()) {
             String res = response.body().string();
-            Log.d("Commp",res);
             DataCache.cache(url, res);
             if (isFeedRequestLive(rtag)) {
               dispatchUserFeeds(res, true, false, userFeedCallback);

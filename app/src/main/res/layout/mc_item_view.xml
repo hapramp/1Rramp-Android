@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="72dp"
+    android:clickable="true"
+    android:id="@+id/main_container"
+    android:background="?selectableItemBackground"
+    android:layout_height="84dp">
+
+    <FrameLayout
+        android:id="@+id/mc_image_container"
+        android:layout_width="56dp"
+        android:layout_centerHorizontal="true"
+        android:layout_height="56dp">
+
+        <ImageView
+            android:id="@+id/mc_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:src="@drawable/art_filled" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/mc_title"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_below="@+id/mc_image_container"
+        android:textSize="12sp"
+        android:text="Travel Feed"
+        android:layout_marginTop="6dp"
+        android:textColor="@color/Black87" />
+
+</RelativeLayout>
