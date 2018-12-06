@@ -23,11 +23,14 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.hapramp.R;
+import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
 import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.datastore.callbacks.UserProfileCallback;
+import com.hapramp.models.AppServerUserModel;
 import com.hapramp.models.CommunityModel;
+import com.hapramp.models.MicroCommunity;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.models.User;
@@ -41,8 +44,10 @@ import com.hapramp.utils.CompleteFollowingHelper;
 import com.hapramp.utils.FollowingsSyncUtils;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.ReputationCalc;
+import com.hapramp.views.MicroCommunityView;
 import com.hapramp.views.skills.InterestsView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -50,6 +55,9 @@ import java.util.Set;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -108,6 +116,10 @@ public class UserInfoFragment extends Fragment implements FollowInfoCallback, Us
   RelativeLayout profileHeaderViewContainerMock;
   @BindView(R.id.bio1)
   View bio1;
+  @BindView(R.id.mcCaption)
+  TextView mcCaption;
+  @BindView(R.id.mcView)
+  MicroCommunityView mcView;
 
   private Context mContext;
   private String TICK_TEXT = "\u2713";
@@ -437,11 +449,18 @@ public class UserInfoFragment extends Fragment implements FollowInfoCallback, Us
         if (interestsView != null) {
           interestsView.setCommunities(listWrapper.getCommunityModels(), true);
         }
+
+        AppServerUserModel userModel = HaprampPreferenceManager.getInstance().getCurrentAppserverUser();
+        if (mcView != null) {
+          mcView.setMicroCommunityList(userModel.getMicroCommunities());
+        }
+
       } else {
         followBtn.setVisibility(VISIBLE);
         editBtn.setVisibility(GONE);
         invalidateFollowButton();
-        fetchUserCommunities();
+        fetchUserInterests();
+        fetchUserMC();
       }
     }
     catch (Exception e) {
@@ -488,7 +507,7 @@ public class UserInfoFragment extends Fragment implements FollowInfoCallback, Us
     }
   }
 
-  private void fetchUserCommunities() {
+  private void fetchUserInterests() {
     dataStore.requestUserCommunities(mUsername, new CommunitiesCallback() {
       @Override
       public void onCommunityFetching() {
@@ -506,9 +525,37 @@ public class UserInfoFragment extends Fragment implements FollowInfoCallback, Us
     });
   }
 
+  private void fetchUserMC() {
+    RetrofitServiceGenerator.getService().fetchUserByUsername(mUsername).enqueue(new Callback<AppServerUserModel>() {
+      @Override
+      public void onResponse(Call<AppServerUserModel> call, Response<AppServerUserModel> response) {
+        if (response.isSuccessful()) {
+          setMCData(response.body());
+        } else {
+          setMCData(null);
+        }
+      }
+
+      @Override
+      public void onFailure(Call<AppServerUserModel> call, Throwable t) {
+        setMCData(null);
+      }
+    });
+  }
+
   private void setCommunities(List<CommunityModel> communities) {
     if (interestsView != null) {
       interestsView.setCommunities(communities, false);
+    }
+  }
+
+  private void setMCData(AppServerUserModel userModel) {
+    if (mcView != null) {
+      if (userModel != null) {
+        mcView.setMicroCommunityList(userModel.getMicroCommunities());
+      } else {
+        mcView.setMicroCommunityList(new ArrayList<MicroCommunity>());
+      }
     }
   }
 

@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.hapramp.R;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.models.AppServerUserModel;
@@ -80,11 +81,19 @@ public class MicroCommunityProfileFragment extends Fragment {
       toast("No Internet connection!");
       return;
     }
+
+    AppServerUserModel userModel = HaprampPreferenceManager.getInstance().getCurrentAppserverUser();
+    if (userModel != null) {
+      invalidateJoinButton(userModel);
+      return;
+    }
+
     String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
     RetrofitServiceGenerator.getService().fetchUserByUsername(username).enqueue(new Callback<AppServerUserModel>() {
       @Override
       public void onResponse(Call<AppServerUserModel> call, Response<AppServerUserModel> response) {
         if (response.isSuccessful()) {
+          HaprampPreferenceManager.getInstance().saveCurrentAppServerUserAsJson(new Gson().toJson(response.body()));
           invalidateJoinButton(response.body());
         }
       }
@@ -161,6 +170,7 @@ public class MicroCommunityProfileFragment extends Fragment {
           mHasJoined = true;
           showLeaveButton();
           toast("Congratulation! You are now part of " + mCommunity.getTag());
+          updateUserCache(response.body());
         }
       }
 
@@ -190,6 +200,7 @@ public class MicroCommunityProfileFragment extends Fragment {
           mHasJoined = false;
           showJoinButton();
           toast("You left " + mCommunity.getTag());
+          updateUserCache(response.body());
         }
       }
 
@@ -214,4 +225,7 @@ public class MicroCommunityProfileFragment extends Fragment {
     }
   }
 
+  private void updateUserCache(AppServerUserModel userModel) {
+    HaprampPreferenceManager.getInstance().saveCurrentAppServerUserAsJson(new Gson().toJson(userModel));
+  }
 }

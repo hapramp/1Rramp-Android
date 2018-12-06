@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <com.hapramp.views.ManagedGridViewGroup
         android:id="@+id/viewWrapper"
@@ -9,13 +10,14 @@
         android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/no_interest_msg"
+        android:id="@+id/no_mc_msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginLeft="4dp"
         android:textColor="@color/Black54"
         android:paddingRight="4dp"
+        android:text="Nice man"
         android:visibility="gone" />
 
     <ProgressBar
