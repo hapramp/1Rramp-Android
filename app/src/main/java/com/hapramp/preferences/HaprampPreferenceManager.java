@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import com.google.gson.Gson;
 import com.hapramp.main.HapRampMain;
 import com.hapramp.models.AppServerUserModel;
+import com.hapramp.models.MCListWrapper;
+import com.hapramp.models.MicroCommunity;
 import com.hapramp.utils.MomentsUtils;
 
 import java.util.ArrayList;
@@ -300,5 +302,21 @@ public class HaprampPreferenceManager {
     return null;
   }
 
+  public void saveMicroCommunities(ArrayList<MicroCommunity> microCommunities) {
+    MCListWrapper mcListWrapper = new MCListWrapper();
+    mcListWrapper.setMicroCommunities(microCommunities);
+    String json = new Gson().toJson(mcListWrapper);
+    editor.putString("mcListJson", json);
+    editor.apply();
+  }
+
+  public ArrayList<MicroCommunity> getMicroCommunities() {
+    ArrayList<MicroCommunity> microCommunities = new ArrayList<>();
+    String savedJson = preferences.getString("mcListJson", null);
+    if (savedJson != null) {
+      microCommunities = new Gson().fromJson(savedJson, MCListWrapper.class).getMicroCommunities();
+    }
+    return microCommunities;
+  }
 
 }

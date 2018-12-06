@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -16,6 +15,7 @@ import android.widget.TextView;
 import com.hapramp.R;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.models.MicroCommunity;
+import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.ui.activity.MicroCommunityActivity;
 import com.hapramp.utils.CommunityIds;
 
@@ -54,14 +54,14 @@ public class MicroCommunityContainerView extends FrameLayout {
     if (loadingProgressBar != null) {
       loadingProgressBar.setVisibility(VISIBLE);
     }
+
     RetrofitServiceGenerator.getService().fetchMicroCommunity().enqueue(new Callback<List<MicroCommunity>>() {
       @Override
       public void onResponse(Call<List<MicroCommunity>> call, Response<List<MicroCommunity>> response) {
-        if (loadingProgressBar != null) {
-          loadingProgressBar.setVisibility(GONE);
-        }
         if (response.isSuccessful()) {
           handleCommunityListResponse(response.body());
+          //cache
+          HaprampPreferenceManager.getInstance().saveMicroCommunities((ArrayList<MicroCommunity>) response.body());
         }
       }
 
@@ -70,9 +70,17 @@ public class MicroCommunityContainerView extends FrameLayout {
 
       }
     });
+
+    ArrayList<MicroCommunity> cachedList = HaprampPreferenceManager.getInstance().getMicroCommunities();
+    if (cachedList.size() > 0) {
+      handleCommunityListResponse(cachedList);
+    }
   }
 
   private void handleCommunityListResponse(List<MicroCommunity> communityList) {
+    if (loadingProgressBar != null) {
+      loadingProgressBar.setVisibility(GONE);
+    }
     this.mCommunityList = communityList;
     addSubCommunityToView();
   }
@@ -117,7 +125,7 @@ public class MicroCommunityContainerView extends FrameLayout {
 
   private void openCommunityDetailsPage(MicroCommunity microCommunity) {
     Intent intent = new Intent(mContext, MicroCommunityActivity.class);
-    intent.putExtra(MicroCommunityActivity.EXTRA_COMMUNITY,microCommunity);
+    intent.putExtra(MicroCommunityActivity.EXTRA_COMMUNITY, microCommunity);
     mContext.startActivity(intent);
   }
 
