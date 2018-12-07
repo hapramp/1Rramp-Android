@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
 import com.hapramp.models.CommentModel;
+import com.hapramp.parser.MarkdownHandler;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.SteemVoterFetcher;
 import com.hapramp.steem.models.Voter;
@@ -151,16 +152,21 @@ public class CommentsItemView extends FrameLayout implements
     }
     setSteemEarnings(comment);
     attachListeners();
-
     Spannable html;
-    String htmlContent = RegexUtils.getHtmlContent(comment.getBody());
-    TextViewImageGetter imageGetter = new TextViewImageGetter(mContext, commentContent);
-    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-      html = (Spannable) Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_LEGACY, imageGetter, null);
-    } else {
-      html = (Spannable) Html.fromHtml(htmlContent, imageGetter, null);
+    try {
+      String htmlContent = MarkdownHandler.getHtmlFromMarkdown(comment.getBody());
+      TextViewImageGetter imageGetter = new TextViewImageGetter(mContext, commentContent);
+      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        html = (Spannable) Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_LEGACY, imageGetter, null);
+      } else {
+        html = (Spannable) Html.fromHtml(htmlContent, imageGetter, null);
+      }
+      commentContent.setText(html);
+    }catch (Exception e){
+      Log.d("CommentItemView",comment.getBody());
+      commentContent.setText(comment.getBody());
+      e.printStackTrace();
     }
-    commentContent.setText(html);
     commentContent.setMovementMethod(LinkMovementMethod.getInstance());
   }
 
