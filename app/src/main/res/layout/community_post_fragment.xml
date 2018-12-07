@@ -10,6 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         customNS:topOffset="56"
+        customNS:refreshStart="0"
+        customNS:refreshEnd="64"
         customNS:wantTopSpaceOffset="true" />
 
     <com.hapramp.views.MicroCommunityPostFilterView
