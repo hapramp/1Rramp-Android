@@ -143,8 +143,12 @@ public class JSONParser {
 
   private void parseAndStoreEligibility(JSONObject jsonObject) throws JSONException {
     if (jsonObject.has("is_competition_user")) {
-      boolean eligible = jsonObject.getBoolean("is_competition_user");
-      HaprampPreferenceManager.getInstance().setCompetitionCreateEligibility(eligible);
+      if (jsonObject.get("is_competition_user") instanceof Boolean) {
+        boolean eligible = jsonObject.getBoolean("is_competition_user");
+        HaprampPreferenceManager.getInstance().setCompetitionCreateEligibility(eligible);
+      }else{
+        HaprampPreferenceManager.getInstance().setCompetitionCreateEligibility(false);
+      }
     }
   }
 
