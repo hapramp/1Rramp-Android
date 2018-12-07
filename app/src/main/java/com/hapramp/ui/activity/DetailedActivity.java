@@ -43,6 +43,7 @@ import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.datastore.callbacks.SinglePostCallback;
 import com.hapramp.models.CommentModel;
 import com.hapramp.notification.FirebaseNotificationStore;
+import com.hapramp.parser.MarkdownHandler;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
 import com.hapramp.steem.SteemCommentCreator;
@@ -417,7 +418,7 @@ public class DetailedActivity extends AppCompatActivity implements
   }
 
   private void renderMarkdown(String body) {
-    body = RegexUtils.getHtmlContent(body);
+    body = MarkdownHandler.getHtmlFromMarkdown(body);
     webView.setWebChromeClient(new WebChromeClient());
     webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
     webView.getSettings().setJavaScriptEnabled(true);

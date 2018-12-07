@@ -77,7 +77,7 @@ public class DocumentParser implements ParserState {
     public DocumentParser(List<BlockParserFactory> blockParserFactories, InlineParser inlineParser) {
         this.blockParserFactories = blockParserFactories;
         this.inlineParser = inlineParser;
-        
+
         this.documentBlockParser = new DocumentBlockParser();
         activateBlockParser(this.documentBlockParser);
     }
@@ -114,10 +114,9 @@ public class DocumentParser implements ParserState {
         if (input.length() > 0 && (lineStart == 0 || lineStart < input.length())) {
             incorporateLine(Substring.of(input, lineStart, input.length()));
         }
-
         return finalizeAndProcess();
     }
-    
+
     public Document parse(Reader input) throws IOException {
         BufferedReader bufferedReader;
         if (input instanceof BufferedReader) {
@@ -125,7 +124,7 @@ public class DocumentParser implements ParserState {
         } else {
             bufferedReader = new BufferedReader(input);
         }
-        
+
         String line;
         while ((line = bufferedReader.readLine()) != null) {
             incorporateLine(line);
@@ -529,7 +528,7 @@ public class DocumentParser implements ParserState {
         this.processInlines();
         return this.documentBlockParser.getBlock();
     }
-    
+
     private static class MatchedBlockParserImpl implements MatchedBlockParser {
 
         private final BlockParser matchedBlockParser;
