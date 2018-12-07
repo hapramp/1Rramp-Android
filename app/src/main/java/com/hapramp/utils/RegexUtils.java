@@ -11,14 +11,19 @@ public class RegexUtils {
   private static Pattern pattern;
   private static Matcher matcher;
   public static String getHtmlContent(String md) {
-    Parser parser = Parser.builder().build();
-    Node document = parser.parse(md);
-    HtmlRenderer renderer = HtmlRenderer.builder().build();
-    String text = renderer.render(document);
-    text = RegexUtils.replaceMarkdownImage(text);
-    text = RegexUtils.replacePlainImageLinks(text);
-    text = RegexUtils.replaceMarkdownLinks(text);
-    return text;
+    try {
+      Parser parser = Parser.builder().build();
+      Node document = parser.parse(md);
+      HtmlRenderer renderer = HtmlRenderer.builder().build();
+      String text = renderer.render(document);
+      text = RegexUtils.replaceMarkdownImage(text);
+      text = RegexUtils.replacePlainImageLinks(text);
+      text = RegexUtils.replaceMarkdownLinks(text);
+      return text;
+    }catch (Exception e){
+      e.printStackTrace();
+    }
+    return md;
   }
 
   public static String replaceMarkdownImage(String body) {

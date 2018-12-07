@@ -37,8 +37,8 @@ android {
         applicationId "com.hapramp"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 92
-        versionName "0.1.12"
+        versionCode 96
+        versionName "0.1.21"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         setProperty("archivesBaseName", "1ramp_" + versionCode + "_" + versionName)
