@@ -1,6 +1,7 @@
 package com.hapramp.datastore;
 
 import android.os.Handler;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.hapramp.datastore.callbacks.CommentsCallback;
@@ -141,8 +142,8 @@ public class DataDispatcher {
     }
   }
 
-  void dispatchExplorePosts(String response, final boolean isFreshData, final boolean isAppendable,
-                            final UserFeedCallback userFeedCallback) {
+  void dispatchPosts(String response, final boolean isFreshData, final boolean isAppendable,
+                     final UserFeedCallback userFeedCallback) {
     final List<Feed> feeds = jsonParser.parseExplorePosts(response);
     if (userFeedCallback != null) {
       handler.post(new Runnable() {

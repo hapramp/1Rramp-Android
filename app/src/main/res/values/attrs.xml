@@ -3,6 +3,8 @@
     <declare-styleable name="FeedListView">
         <attr name="wantTopSpaceOffset" format="boolean" />
         <attr name="topOffset" format="integer" />
+        <attr name="refreshStart" format="integer"/>
+        <attr name="refreshEnd" format="integer"/>
         <attr name="wantBottomSpaceOffset" format="boolean" />
         <attr name="bottomOffset" format="integer" />
     </declare-styleable>

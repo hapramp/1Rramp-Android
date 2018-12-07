@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <FrameLayout
-        android:paddingBottom="56dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="56dp">
 
         <RelativeLayout
             android:id="@+id/profile_header_view_real"
@@ -210,14 +210,36 @@
                 android:paddingLeft="24sp"
                 android:paddingRight="18sp"
                 android:text="Interests"
+                android:textStyle="bold"
                 android:textColor="@color/colorPrimary"
-                android:textSize="14sp" />
+                android:textSize="16sp" />
 
             <com.hapramp.views.skills.InterestsView
                 android:id="@+id/interestsView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/interestCaption"
+                android:layout_margin="16dp" />
+
+            <TextView
+                android:id="@+id/mcCaption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/interestsView"
+                android:layout_marginTop="28dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="24sp"
+                android:paddingRight="18sp"
+                android:text="Community"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16sp" />
+
+            <com.hapramp.views.MicroCommunityView
+                android:id="@+id/mcView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/mcCaption"
                 android:layout_margin="16dp" />
 
         </RelativeLayout>

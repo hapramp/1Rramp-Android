@@ -309,7 +309,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_below="@+id/claim_reward_btn"
-                android:background="@drawable/filled_btn_bg"
+                android:background="@drawable/primary_filled_btn_bg"
                 android:elevation="1dp"
                 android:clickable="true"
                 android:gravity="center">

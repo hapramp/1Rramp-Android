@@ -109,6 +109,8 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
   @BindView(R.id.moveToTop)
   TextView moveToTop;
   private int topOffset;
+  private int refreshLayoutStartOffset = 72;
+  private int refreshLayoutEndOffset = 108;
   private int bottomOffset;
   private boolean wantBottomSpace = true;
   private boolean wantTopSpace = true;
@@ -145,7 +147,7 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
     feedRecyclerView.addItemDecoration(viewItemDecoration);
     feedRecyclerView.setAdapter(homeFeedsAdapter);
     feedRecyclerView.setNestedScrollingEnabled(false);
-    feedRefreshLayout.setProgressViewOffset(false, PixelUtils.dpToPx(72), PixelUtils.dpToPx(120));
+    feedRefreshLayout.setProgressViewOffset(false, PixelUtils.dpToPx(refreshLayoutStartOffset), PixelUtils.dpToPx(refreshLayoutEndOffset));
     feedRefreshLayout.setColorSchemeColors(mContext.getResources().getColor(R.color.colorPrimary));
   }
 
@@ -241,6 +243,8 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
       wantBottomSpace = typedArray.getBoolean(R.styleable.FeedListView_wantBottomSpaceOffset, false);
       topOffset = typedArray.getInt(R.styleable.FeedListView_topOffset, 108);
       bottomOffset = typedArray.getInt(R.styleable.FeedListView_bottomOffset, 0);
+      refreshLayoutStartOffset = typedArray.getInt(R.styleable.FeedListView_refreshStart, 72);
+      refreshLayoutEndOffset = typedArray.getInt(R.styleable.FeedListView_refreshEnd, 108);
     }
     finally {
       typedArray.recycle();
@@ -256,6 +260,8 @@ public class FeedListView extends FrameLayout implements HomeFeedsAdapter.OnLoad
       wantBottomSpace = typedArray.getBoolean(R.styleable.FeedListView_wantBottomSpaceOffset, false);
       topOffset = typedArray.getInt(R.styleable.FeedListView_topOffset, 108);
       bottomOffset = typedArray.getInt(R.styleable.FeedListView_bottomOffset, 0);
+      refreshLayoutStartOffset = typedArray.getInt(R.styleable.FeedListView_refreshStart, 72);
+      refreshLayoutEndOffset = typedArray.getInt(R.styleable.FeedListView_refreshEnd, 108);
     }
     finally {
       typedArray.recycle();

@@ -15,9 +15,6 @@ import com.hapramp.models.VoterData;
 import com.hapramp.ui.activity.ProfileActivity;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.ImageHandler;
-
-import org.commonmark.node.Text;
-
 import java.util.ArrayList;
 
 import butterknife.BindView;

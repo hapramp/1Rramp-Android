@@ -77,7 +77,7 @@
             android:id="@+id/continueBtn"
             android:text="CONTINUE"
             android:layout_marginLeft="16dp"
-            android:background="@drawable/filled_btn_bg"
+            android:background="@drawable/primary_filled_btn_bg"
             android:elevation="1dp"
             android:paddingLeft="24dp"
             android:paddingRight="24dp"

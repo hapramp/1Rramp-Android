@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.hapramp.R;
@@ -16,10 +17,13 @@ import com.hapramp.models.CommunityModel;
 import com.hapramp.steem.Communities;
 import com.hapramp.ui.activity.CommunitySelectionActivity;
 import com.hapramp.utils.CommunityIds;
-import com.hapramp.views.InterestGridViewGroup;
 import com.hapramp.views.InterestItemView;
+import com.hapramp.views.ManagedGridViewGroup;
 
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 import static com.hapramp.ui.activity.CommunitySelectionActivity.EXTRA_PRESELECTED_MODE;
 
@@ -28,10 +32,14 @@ import static com.hapramp.ui.activity.CommunitySelectionActivity.EXTRA_PRESELECT
  */
 
 public class InterestsView extends FrameLayout {
+  @BindView(R.id.viewWrapper)
+  ManagedGridViewGroup parentView;
+  @BindView(R.id.no_interest_msg)
+  TextView noInterestMessage;
+  @BindView(R.id.loading_progress_bar)
+  ProgressBar loadingProgressBar;
   private Context mContext;
-  private InterestGridViewGroup parentView;
   private List<CommunityModel> communities;
-  private TextView noInterestMessage;
   private boolean showEditButton;
 
   public InterestsView(@NonNull Context context) {
@@ -42,8 +50,7 @@ public class InterestsView extends FrameLayout {
 
   private void init() {
     View view = LayoutInflater.from(mContext).inflate(R.layout.interest_view, this);
-    parentView = view.findViewById(R.id.viewWrapper);
-    noInterestMessage = view.findViewById(R.id.no_interest_msg);
+    ButterKnife.bind(this, view);
   }
 
   public InterestsView(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -61,11 +68,15 @@ public class InterestsView extends FrameLayout {
   public void setCommunities(List<CommunityModel> communities, boolean editable) {
     this.communities = communities;
     this.showEditButton = editable;
+    if (loadingProgressBar != null) {
+      loadingProgressBar.setVisibility(GONE);
+    }
     if (communities != null) {
       if (communities.size() > 0) {
         addViews();
       } else {
         noInterestMessage.setVisibility(VISIBLE);
+        noInterestMessage.setText(mContext.getResources().getString(R.string.unregistered_user_profile_msg));
       }
     } else {
       noInterestMessage.setVisibility(VISIBLE);
@@ -104,7 +115,6 @@ public class InterestsView extends FrameLayout {
       parentView.addView(editCommunityItem);
     }
     noInterestMessage.setVisibility(GONE);
-
   }
 
   private void navigateToCommunitSelectionPage() {
@@ -112,5 +122,4 @@ public class InterestsView extends FrameLayout {
     i.putExtra(EXTRA_PRESELECTED_MODE, true);
     mContext.startActivity(i);
   }
-
 }

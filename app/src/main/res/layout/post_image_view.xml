@@ -33,7 +33,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="8dp"
-            android:background="@drawable/filled_btn_bg"
+            android:background="@drawable/primary_filled_btn_bg"
             android:paddingBottom="4dp"
             android:paddingRight="16dp"
             android:paddingLeft="16dp"

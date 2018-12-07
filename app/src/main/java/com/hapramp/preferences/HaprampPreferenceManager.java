@@ -3,7 +3,11 @@ package com.hapramp.preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
 import com.hapramp.main.HapRampMain;
+import com.hapramp.models.AppServerUserModel;
+import com.hapramp.models.MCListWrapper;
+import com.hapramp.models.MicroCommunity;
 import com.hapramp.utils.MomentsUtils;
 
 import java.util.ArrayList;
@@ -93,12 +97,12 @@ public class HaprampPreferenceManager {
     editor.apply();
   }
 
-  public void saveCurrentUserInfoAsJson(String json) {
+  public void saveCurrentSteemUserInfoAsJson(String json) {
     editor.putString("c_user", json);
     editor.apply();
   }
 
-  public String getCurrentUserInfoAsJson() {
+  public String getCurrentSteemUserInfoAsJson() {
     return preferences.getString("c_user", "");
   }
 
@@ -280,8 +284,39 @@ public class HaprampPreferenceManager {
     return preferences.getLong("last_draft_sync", 0);
   }
 
-  public void setLastDraftSyncTime(){
+  public void setLastDraftSyncTime() {
     editor.putLong("last_draft_sync", System.currentTimeMillis());
     editor.apply();
   }
+
+  public void saveCurrentAppServerUserAsJson(String json) {
+    editor.putString("c_app_server_user", json);
+    editor.apply();
+  }
+
+  public AppServerUserModel getCurrentAppserverUser() {
+    String json = preferences.getString("c_app_server_user", null);
+    if (json != null) {
+      return new Gson().fromJson(json, AppServerUserModel.class);
+    }
+    return null;
+  }
+
+  public void saveMicroCommunities(ArrayList<MicroCommunity> microCommunities) {
+    MCListWrapper mcListWrapper = new MCListWrapper();
+    mcListWrapper.setMicroCommunities(microCommunities);
+    String json = new Gson().toJson(mcListWrapper);
+    editor.putString("mcListJson", json);
+    editor.apply();
+  }
+
+  public ArrayList<MicroCommunity> getMicroCommunities() {
+    ArrayList<MicroCommunity> microCommunities = new ArrayList<>();
+    String savedJson = preferences.getString("mcListJson", null);
+    if (savedJson != null) {
+      microCommunities = new Gson().fromJson(savedJson, MCListWrapper.class).getMicroCommunities();
+    }
+    return microCommunities;
+  }
+
 }

@@ -169,7 +169,7 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
   }
 
   private void syncBasicInfo() {
-    if (HaprampPreferenceManager.getInstance().getCurrentUserInfoAsJson().length() == 0) {
+    if (HaprampPreferenceManager.getInstance().getCurrentSteemUserInfoAsJson().length() == 0) {
       showInterruptedProgressBar("Fetching profile info...");
     }
     checkSteemconnectTokenValidity();
@@ -184,6 +184,7 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
       @Override
       public void onResponse(Call<AppServerUserModel> call, Response<AppServerUserModel> response) {
         if (response.isSuccessful()) {
+          HaprampPreferenceManager.getInstance().saveCurrentAppServerUserAsJson(new Gson().toJson(response.body()));
           HaprampPreferenceManager.getInstance()
             .saveUserSelectedCommunitiesAsJson(new Gson().toJson(new CommunityListWrapper(response.body().getCommunityList())));
         } else if (response.code() == ResponseCodes.UNAUTHORIZED) {
@@ -510,7 +511,7 @@ public class HomeActivity extends AppCompatActivity implements CreateNewButtonVi
           public void onResponse(String response) {
             JSONParser jsonParser = new JSONParser();
             final User user = jsonParser.parseSC2UserJson(response);
-            HaprampPreferenceManager.getInstance().saveCurrentUserInfoAsJson(new Gson().toJson(user));
+            HaprampPreferenceManager.getInstance().saveCurrentSteemUserInfoAsJson(new Gson().toJson(user));
             hideInterruptedProgressBar();
           }
 

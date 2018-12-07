@@ -55,7 +55,6 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import xute.markdeditor.models.DraftModel;
 
 public class CreatePostActivity extends AppCompatActivity implements SteemPostCreator.SteemPostCreatorCallback, DraftsHelper.DraftsHelperCallback {
   public static final String EXTRA_KEY_DRAFT_ID = "draftId";
@@ -166,10 +165,37 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
     });
   }
 
+  private void handleSendText(Intent intent) {
+    String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+    postCreateComponent.setDefaultText(sharedText);
+  }
+
+  private void handleSendImage(Intent intent) {
+    try {
+      Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+      intent.setData(imageUri);
+      handleImageResult(intent);
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+      Toast.makeText(this, "Something went wrong!", Toast.LENGTH_LONG).show();
+    }
+  }
+
+  private void configureEditor(ShortPostDraftModel draftModel) {
+    if (draftModel != null) {
+      loadShortPostDraftIntoEditor(draftModel);
+    }
+  }
+
   private void showExistAlert() {
+    if (!isValidDraftToSave()) {
+      close();
+      return;
+    }
     //if there is already draft, show a progress with saving...
     if (mDraftId != NO_DRAFT) {
-      showPublishingProgressDialog(true,"Saving changes...");
+      showPublishingProgressDialog(true, "Saving changes...");
       shouldSaveOrUpdateDraft = false;
       updateDraft();
       return;
@@ -195,34 +221,6 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
         }
       });
     builder.show();
-  }
-
-  private void handleSendText(Intent intent) {
-    String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-    postCreateComponent.setDefaultText(sharedText);
-  }
-
-  private void handleSendImage(Intent intent) {
-    try {
-      Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-      intent.setData(imageUri);
-      handleImageResult(intent);
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-      Toast.makeText(this, "Something went wrong!", Toast.LENGTH_LONG).show();
-    }
-  }
-
-  private void configureEditor(ShortPostDraftModel draftModel) {
-    if (draftModel != null) {
-      loadShortPostDraftIntoEditor(draftModel);
-    }
-  }
-
-  private void close() {
-    closeCreatePostPage();
-    overridePendingTransition(R.anim.slide_down_enter, R.anim.slide_down_exit);
   }
 
   private void publishPost() {
@@ -295,8 +293,56 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
     }.start();
   }
 
-  private void closeCreatePostPage() {
-    finish();
+  public void loadShortPostDraftIntoEditor(ShortPostDraftModel draft) {
+    //set image
+    String imageUrl = draft.getPostImageUrl();
+    if (imageUrl != null) {
+      if (imageUrl.length() > 0) {
+        postCreateComponent.setImageDownloadUrl(imageUrl);
+      }
+    }
+    //set text
+    postCreateComponent.setDefaultText(draft.getText());
+    //set community
+    postCreateComponent.setDefaultCommunitySelection(draft.getCommunities());
+  }
+
+  private boolean isValidDraftToSave() {
+    return postCreateComponent.getImageList().size() > 0 || postCreateComponent.getContent().length() > 0;
+  }
+
+  private void close() {
+    closeCreatePostPage();
+    overridePendingTransition(R.anim.slide_down_enter, R.anim.slide_down_exit);
+  }
+
+  private void showPublishingProgressDialog(boolean show, String msg) {
+    if (progressDialog != null) {
+      if (show) {
+        progressDialog.setMessage(msg);
+        progressDialog.setIndeterminate(true);
+        progressDialog.show();
+      } else {
+        progressDialog.dismiss();
+      }
+    } else {
+      progressDialog.dismiss();
+    }
+  }
+
+  private void updateDraft() {
+    ShortPostDraftModel shortPostDraftModel = new ShortPostDraftModel();
+    if (postCreateComponent.getImageList().size() > 0) {
+      shortPostDraftModel.setPostImageUrl(postCreateComponent.getImageList().get(0));
+    }
+    if (postCreateComponent.getBody().length() > 0) {
+      shortPostDraftModel.setText(postCreateComponent.getContent());
+    }
+    shortPostDraftModel.setCommunities(postCreateComponent.getSelectedCommunityTags());
+    String draftTitle = postCreateComponent.getContent();
+    shortPostDraftModel.setTitle(draftTitle);
+    shortPostDraftModel.setDraftId(mDraftId);
+    draftsHelper.updateShortPostDraft(shortPostDraftModel);
   }
 
   private void showConnectivityError() {
@@ -323,20 +369,6 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
       toast("Select atleast 1 community");
     }
     return false;
-  }
-
-  private void showPublishingProgressDialog(boolean show, String msg) {
-    if (progressDialog != null) {
-      if (show) {
-        progressDialog.setMessage(msg);
-        progressDialog.setIndeterminate(true);
-        progressDialog.show();
-      } else {
-        progressDialog.dismiss();
-      }
-    } else {
-      progressDialog.dismiss();
-    }
   }
 
   private void preparePost() {
@@ -378,6 +410,10 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
 
   private void addImage(String filePath) {
     postCreateComponent.setImageResource(filePath);
+  }
+
+  private void closeCreatePostPage() {
+    finish();
   }
 
   private void toast(String s) {
@@ -483,40 +519,22 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
     draftsHelper.deleteDraft(mDraftId);
   }
 
-  private void updateDraft() {
+  private void addNewDraft() {
+    if (!isValidDraftToSave()) {
+      return;
+    }
     ShortPostDraftModel shortPostDraftModel = new ShortPostDraftModel();
     if (postCreateComponent.getImageList().size() > 0) {
       shortPostDraftModel.setPostImageUrl(postCreateComponent.getImageList().get(0));
     }
 
-    if (postCreateComponent.getBody().length() > 0) {
+    if (postCreateComponent.getContent().length() > 0) {
       shortPostDraftModel.setText(postCreateComponent.getContent());
     }
     shortPostDraftModel.setCommunities(postCreateComponent.getSelectedCommunityTags());
     String draftTitle = postCreateComponent.getContent();
     shortPostDraftModel.setTitle(draftTitle);
-    shortPostDraftModel.setDraftId(mDraftId);
-    draftsHelper.updateShortPostDraft(shortPostDraftModel);
-  }
-
-  private void addNewDraft() {
-    ShortPostDraftModel shortPostDraftModel = new ShortPostDraftModel();
-    boolean isValidDraftToSave = false;
-    if (postCreateComponent.getImageList().size() > 0) {
-      shortPostDraftModel.setPostImageUrl(postCreateComponent.getImageList().get(0));
-      isValidDraftToSave = true;
-    }
-
-    if (postCreateComponent.getContent().length() > 0) {
-      isValidDraftToSave = true;
-      shortPostDraftModel.setText(postCreateComponent.getContent());
-    }
-    shortPostDraftModel.setCommunities(postCreateComponent.getSelectedCommunityTags());
-    if (isValidDraftToSave) {
-      String draftTitle = postCreateComponent.getContent();
-      shortPostDraftModel.setTitle(draftTitle);
-      draftsHelper.saveShortPostDraft(shortPostDraftModel);
-    }
+    draftsHelper.saveShortPostDraft(shortPostDraftModel);
   }
 
   @Override
@@ -542,22 +560,8 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
   @Override
   public void onPostCreationFailedOnSteem(String msg) {
     toast("Cannot create post.");
-    Log.d("PostCreate",msg);
+    Log.d("PostCreate", msg);
     showPublishingProgressDialog(false, "");
-  }
-
-  public void loadShortPostDraftIntoEditor(ShortPostDraftModel draft) {
-    //set image
-    String imageUrl = draft.getPostImageUrl();
-    if (imageUrl != null) {
-      if (imageUrl.length() > 0) {
-        postCreateComponent.setImageDownloadUrl(imageUrl);
-      }
-    }
-    //set text
-    postCreateComponent.setDefaultText(draft.getText());
-    //set community
-    postCreateComponent.setDefaultCommunitySelection(draft.getCommunities());
   }
 
   @Override
@@ -566,7 +570,7 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
 
   @Override
   public void onDraftUpdated(boolean success) {
-    showPublishingProgressDialog(false,"");
+    showPublishingProgressDialog(false, "");
     close();
   }
 

@@ -150,7 +150,7 @@ public class LoginActivity extends AppCompatActivity {
   private void showConnectivityErrorBar() {
     connectivityText.setVisibility(View.VISIBLE);
     connectivityText.setText(R.string.connectivity_lost);
-    connectivityText.setBackgroundColor(getResources().getColor(R.color.ConnectivityRed));
+    connectivityText.setBackgroundColor(getResources().getColor(R.color.DarkRed));
   }
 
   private void navigateToWebLogin() {

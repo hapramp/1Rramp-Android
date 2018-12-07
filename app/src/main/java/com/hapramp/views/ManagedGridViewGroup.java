@@ -11,7 +11,7 @@ import android.view.WindowManager;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.PixelUtils;
 
-public class InterestGridViewGroup  extends ViewGroup {
+public class ManagedGridViewGroup extends ViewGroup {
   private int mCols = 5;
   private int verticalSpaceBetweenChild;
   private int horizontalSpaceBetweenChild;
@@ -20,7 +20,7 @@ public class InterestGridViewGroup  extends ViewGroup {
   private int measureHeight;
   private int measureWidth;
 
-  public InterestGridViewGroup(Context context) {
+  public ManagedGridViewGroup(Context context) {
     super(context);
     init(context);
   }
@@ -31,12 +31,12 @@ public class InterestGridViewGroup  extends ViewGroup {
     display.getSize(deviceDisplay);
   }
 
-  public InterestGridViewGroup(Context context, AttributeSet attrs) {
+  public ManagedGridViewGroup(Context context, AttributeSet attrs) {
     super(context, attrs);
     init(context);
   }
 
-  public InterestGridViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
+  public ManagedGridViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     init(context);
   }

@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:scrollbars="none"
-    android:layout_height="100dp">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp"
-        android:id="@+id/container"
+    <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal" />
+        android:layout_height="92dp"
+        android:background="@color/white"
+        android:paddingTop="4dp"
+        android:scrollbars="none">
 
-</HorizontalScrollView>
+        <LinearLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp" />
+
+    </HorizontalScrollView>
+    <com.hapramp.views.MicroCommunityContainerView
+        android:id="@+id/micro_community_container_view"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"/>
+</LinearLayout>

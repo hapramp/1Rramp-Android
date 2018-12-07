@@ -215,9 +215,13 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   }
 
   private void showExistAlert() {
+    if (!checkValidSaveOption(markDEditor.getDraft())) {
+      closeEditor();
+      return;
+    }
     //if there is already draft, show a progress with saving...
     if (mDraftId != NO_DRAFT) {
-      showProgressDialog(true,"Saving changes...");
+      showProgressDialog(true, "Saving changes...");
       shouldSaveOrUpdateDraft = false;
       updateDraft();
       return;
@@ -304,6 +308,38 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     steemPostCreator.createPost(body, title, images, tags, generated_permalink);
   }
 
+  private boolean checkValidSaveOption(DraftModel draftModel) {
+    if (draftModel.getItems().size() > 1) {
+      return true;
+    }
+    if (draftModel.getItems().size() > 0) {
+      DraftDataItemModel draftDataItemModel = draftModel.getItems().get(0);
+      if (draftDataItemModel.getDownloadUrl() != null) {
+        return true;
+      }
+
+      if (draftDataItemModel.getContent() != null) {
+        if (draftDataItemModel.getContent().trim().length() > 0) {
+          return true;
+        }
+      }
+    }
+
+    if (articleTitleEt.getText().toString().trim().length() > 0) {
+      return true;
+    }
+
+    return false;
+  }
+
+  private void updateDraft() {
+    DraftModel draftModel = markDEditor.getDraft();
+    String draftTitle = articleTitleEt.getText().toString();
+    draftModel.setDraftTitle(draftTitle);
+    draftModel.setDraftId(mDraftId);
+    draftsHelper.updateBlogDraft(draftModel);
+  }
+
   private void closeEditor() {
     showProgressDialog(false, "");
     AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_ARTICLE);
@@ -348,6 +384,36 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     }
   }
 
+  private void handleImageResult(final Intent intent) {
+    final Handler handler = new Handler();
+    new Thread() {
+      @Override
+      public void run() {
+        final String filePath = GoogleImageFilePathReader.getImageFilePath(CreateArticleActivity.this, intent);
+        handler.post(new Runnable() {
+          @Override
+          public void run() {
+            addImage(filePath);
+          }
+        });
+      }
+    }.start();
+  }
+
+  public void addImage(String filePath) {
+    try {
+      markDEditor.insertImage(filePath);
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public void onBackPressed() {
+    showExistAlert();
+  }
+
   @Override
   protected void onPause() {
     super.onPause();
@@ -381,14 +447,6 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     draftsHelper.deleteDraft(mDraftId);
   }
 
-  private void updateDraft() {
-    DraftModel draftModel = markDEditor.getDraft();
-    String draftTitle = articleTitleEt.getText().toString();
-    draftModel.setDraftTitle(draftTitle);
-    draftModel.setDraftId(mDraftId);
-    draftsHelper.updateBlogDraft(draftModel);
-  }
-
   private void addNewDraft() {
     DraftModel draftModel = markDEditor.getDraft();
     if (checkValidSaveOption(draftModel)) {
@@ -396,25 +454,6 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
       draftModel.setDraftTitle(draftTitle);
       draftsHelper.saveBlogDraft(draftModel);
     }
-  }
-
-  private boolean checkValidSaveOption(DraftModel draftModel) {
-    if (draftModel.getItems().size() > 1) {
-      return true;
-    }
-    if (draftModel.getItems().size() > 0) {
-      DraftDataItemModel draftDataItemModel = draftModel.getItems().get(0);
-      if (draftDataItemModel.getDownloadUrl() != null) {
-        return true;
-      }
-
-      if (draftDataItemModel.getContent() != null) {
-        if (draftDataItemModel.getContent().trim().length() > 0) {
-          return true;
-        }
-      }
-    }
-    return false;
   }
 
   @Override
@@ -442,31 +481,6 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
         intent.setType("image/*");
         startActivityForResult(intent, REQUEST_IMAGE_SELECTOR);
       }
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
-  private void handleImageResult(final Intent intent) {
-    final Handler handler = new Handler();
-    new Thread() {
-      @Override
-      public void run() {
-        final String filePath = GoogleImageFilePathReader.getImageFilePath(CreateArticleActivity.this, intent);
-        handler.post(new Runnable() {
-          @Override
-          public void run() {
-            addImage(filePath);
-          }
-        });
-      }
-    }.start();
-  }
-
-  public void addImage(String filePath) {
-    try {
-      markDEditor.insertImage(filePath);
     }
     catch (Exception e) {
       e.printStackTrace();
@@ -505,17 +519,12 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
 
   @Override
   public void onDraftUpdated(boolean success) {
-    showProgressDialog(false,"");
+    showProgressDialog(false, "");
     closeEditor();
   }
 
   @Override
   public void onDraftDeleted(boolean success) {
 
-  }
-
-  @Override
-  public void onBackPressed() {
-    showExistAlert();
   }
 }

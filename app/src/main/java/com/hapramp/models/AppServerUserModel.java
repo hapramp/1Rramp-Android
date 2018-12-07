@@ -10,23 +10,24 @@ public class AppServerUserModel {
   @SerializedName("communities")
   List<CommunityModel> communityList;
   @Expose
+  @SerializedName("micro_communities")
+  List<MicroCommunity> microCommunities;
+  @Expose
   @SerializedName("username")
   private String mUsername;
   @Expose
-  @SerializedName("email")
-  private String mEmail;
-  @Expose
   @SerializedName("id")
   private int mId;
+  @Expose
+  @SerializedName("is_competition_user")
+  private boolean isCompetitionUser;
 
-  public AppServerUserModel() {
+  public List<CommunityModel> getCommunityList() {
+    return communityList;
   }
 
-  public AppServerUserModel(List<CommunityModel> communityList, String mUsername, String mEmail, int mId) {
+  public void setCommunityList(List<CommunityModel> communityList) {
     this.communityList = communityList;
-    this.mUsername = mUsername;
-    this.mEmail = mEmail;
-    this.mId = mId;
   }
 
   public String getmUsername() {
@@ -37,14 +38,6 @@ public class AppServerUserModel {
     this.mUsername = mUsername;
   }
 
-  public String getmEmail() {
-    return mEmail;
-  }
-
-  public void setmEmail(String mEmail) {
-    this.mEmail = mEmail;
-  }
-
   public int getmId() {
     return mId;
   }
@@ -53,11 +46,19 @@ public class AppServerUserModel {
     this.mId = mId;
   }
 
-  public List<CommunityModel> getCommunityList() {
-    return communityList;
+  public boolean isCompetitionUser() {
+    return isCompetitionUser;
   }
 
-  public void setCommunityList(List<CommunityModel> communityList) {
-    this.communityList = communityList;
+  public void setCompetitionUser(boolean competitionUser) {
+    isCompetitionUser = competitionUser;
+  }
+
+  public List<MicroCommunity> getMicroCommunities() {
+    return microCommunities;
+  }
+
+  public void setMicroCommunities(List<MicroCommunity> microCommunities) {
+    this.microCommunities = microCommunities;
   }
 }

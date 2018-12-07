@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:layout_height="match_parent">
+
+    <com.hapramp.views.feedlist.FeedListView
+        xmlns:customNS="http://schemas.android.com/apk/res/com.hapramp"
+        android:id="@+id/feedListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        customNS:topOffset="56"
+        customNS:refreshStart="0"
+        customNS:refreshEnd="64"
+        customNS:wantTopSpaceOffset="true" />
+
+    <com.hapramp.views.MicroCommunityPostFilterView
+        android:id="@+id/filterView"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"/>
+
+</RelativeLayout>

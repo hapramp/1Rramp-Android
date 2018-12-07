@@ -143,9 +143,12 @@ public class JSONParser {
 
   private void parseAndStoreEligibility(JSONObject jsonObject) throws JSONException {
     if (jsonObject.has("is_competition_user")) {
-      boolean eligible = jsonObject.getBoolean("is_competition_user");
-      Log.d("ParsingCompetition", "eligible " + eligible);
-      HaprampPreferenceManager.getInstance().setCompetitionCreateEligibility(eligible);
+      if (jsonObject.get("is_competition_user") instanceof Boolean) {
+        boolean eligible = jsonObject.getBoolean("is_competition_user");
+        HaprampPreferenceManager.getInstance().setCompetitionCreateEligibility(eligible);
+      }else{
+        HaprampPreferenceManager.getInstance().setCompetitionCreateEligibility(false);
+      }
     }
   }
 
@@ -153,8 +156,7 @@ public class JSONParser {
     List<CommunityModel> communityModels = new ArrayList<>();
     try {
       JSONObject ro = new JSONObject(response);
-      // TODO: 23/10/18 remove comment when migrating to production api
-      //parseAndStoreEligibility(ro);
+      parseAndStoreEligibility(ro);
       JSONArray jsonArray = ro.getJSONArray("communities");
       for (int i = 0; i < jsonArray.length(); i++) {
         JSONObject jsonObject = jsonArray.getJSONObject(i);

@@ -64,7 +64,6 @@ import butterknife.ButterKnife;
 import static com.hapramp.utils.VoteUtils.checkForMyVote;
 import static com.hapramp.utils.VoteUtils.getMyVotePercent;
 import static com.hapramp.utils.VoteUtils.getNonZeroVoters;
-import static com.hapramp.utils.VoteUtils.getVotePercentSum;
 
 /**
  * Created by Ankit on 12/30/2017.
@@ -337,17 +336,7 @@ public class PostItemView extends FrameLayout implements RebloggedUserFetchCallb
   }
 
   private void bindVotes(List<Voter> votes, String permlink) {
-    long votePercentSum = getVotePercentSum(votes);
-    boolean amIVoted = checkForMyVote(votes);
-    long myVotePercent = amIVoted ? getMyVotePercent(votes) : 0;
-    long totalVotes = getNonZeroVoters(votes);
-    starView.setVoteState(
-      new StarView.Vote(
-        amIVoted,
-        permlink,
-        myVotePercent,
-        totalVotes,
-        votePercentSum))
+    starView.setData(votes,permlink)
       .setOnVoteUpdateCallback(new StarView.onVoteUpdateCallback() {
         @Override
         public void onVoted(String full_permlink, int _vote) {

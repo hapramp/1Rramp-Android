@@ -110,7 +110,7 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_gravity="end|bottom"
-                        android:background="@drawable/filled_btn_bg"
+                        android:background="@drawable/primary_filled_btn_bg"
                         android:gravity="center"
                         android:text=""
                         android:textColor="#ffffff"

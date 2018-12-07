@@ -1,8 +1,5 @@
 package com.hapramp.utils;
 
-import org.commonmark.node.Node;
-import org.commonmark.parser.Parser;
-import org.commonmark.renderer.html.HtmlRenderer;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,16 +7,6 @@ import java.util.regex.Pattern;
 public class RegexUtils {
   private static Pattern pattern;
   private static Matcher matcher;
-  public static String getHtmlContent(String md) {
-    Parser parser = Parser.builder().build();
-    Node document = parser.parse(md);
-    HtmlRenderer renderer = HtmlRenderer.builder().build();
-    String text = renderer.render(document);
-    text = RegexUtils.replaceMarkdownImage(text);
-    text = RegexUtils.replacePlainImageLinks(text);
-    text = RegexUtils.replaceMarkdownLinks(text);
-    return text;
-  }
 
   public static String replaceMarkdownImage(String body) {
     return body.replaceAll("!\\[(.*?)\\]\\((.*?)[)]", "<img alt=\"$1\" src=\"$2\"/>");

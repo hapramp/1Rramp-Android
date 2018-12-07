@@ -24,6 +24,8 @@ import butterknife.ButterKnife;
 public class VotersListActivity extends AppCompatActivity {
 
   public static final String EXTRA_USER_LIST = "extra_user_list";
+  public String quote;
+  public String base;
   @BindView(R.id.backBtn)
   ImageView backBtn;
   @BindView(R.id.action_bar_title)
@@ -32,8 +34,6 @@ public class VotersListActivity extends AppCompatActivity {
   RelativeLayout actionBarContainer;
   @BindView(R.id.voters_recyclerview)
   RecyclerView userListRecyclerView;
-  public String quote;
-  public String base;
   private ArrayList<Voter> voters;
 
   @Override

@@ -21,6 +21,8 @@ import butterknife.ButterKnife;
 public class CommunityFilterView extends FrameLayout {
   @BindView(R.id.container)
   LinearLayout container;
+  @BindView(R.id.micro_community_container_view)
+  MicroCommunityContainerView microCommunityContainerView;
   private Context mContext;
   private CommunityFilterCallback communityFilterCallback;
   private int childs;
@@ -41,7 +43,7 @@ public class CommunityFilterView extends FrameLayout {
     init(context);
   }
 
-  public void addCommunities(ArrayList<CommunityModel> communityModels) {
+  public void addCommunities(final ArrayList<CommunityModel> communityModels) {
     CommunityTabItemView itemView;
     childs = communityModels.size();
     for (int i = 0; i < childs; i++) {
@@ -50,6 +52,7 @@ public class CommunityFilterView extends FrameLayout {
         @Override
         public void onTouched(int index) {
           setSelection(index);
+          microCommunityContainerView.setParentCommunityId(communityModels.get(index).getCommunityId());
         }
       });
       itemView.setCommunity(communityModels.get(i));
@@ -80,6 +83,14 @@ public class CommunityFilterView extends FrameLayout {
         }
       }
     }
+  }
+
+  public void onHiding(){
+      microCommunityContainerView.setVisibility(GONE);
+  }
+
+  public void onShowing(){
+    microCommunityContainerView.setVisibility(VISIBLE);
   }
 
   public void setCommunityFilterCallback(CommunityFilterCallback communityFilterCallback) {

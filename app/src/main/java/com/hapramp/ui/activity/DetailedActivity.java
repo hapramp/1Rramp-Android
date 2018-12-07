@@ -43,6 +43,7 @@ import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.datastore.callbacks.SinglePostCallback;
 import com.hapramp.models.CommentModel;
 import com.hapramp.notification.FirebaseNotificationStore;
+import com.hapramp.parser.MarkdownHandler;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.Communities;
 import com.hapramp.steem.SteemCommentCreator;
@@ -304,18 +305,8 @@ public class DetailedActivity extends AppCompatActivity implements
     startActivity(intent);
   }
 
-  private void bindVotes(List<Voter> votes, String permlink) {
-    long votePercentSum = VoteUtils.getVotePercentSum(votes);
-    boolean amIVoted = VoteUtils.checkForMyVote(votes);
-    long myVotePercent = amIVoted ? VoteUtils.getMyVotePercent(votes) : 0;
-    long totalVotes = VoteUtils.getNonZeroVoters(votes);
-    starView.setVoteState(
-      new StarView.Vote(
-        amIVoted,
-        permlink,
-        myVotePercent,
-        totalVotes,
-        votePercentSum))
+  private void bindVotes(List<Voter> votersList, String permlink) {
+    starView.setData(votersList, permlink)
       .setOnVoteUpdateCallback(new StarView.onVoteUpdateCallback() {
         @Override
         public void onVoted(String full_permlink, int _vote) {
@@ -427,7 +418,7 @@ public class DetailedActivity extends AppCompatActivity implements
   }
 
   private void renderMarkdown(String body) {
-    body = RegexUtils.getHtmlContent(body);
+    body = MarkdownHandler.getHtmlFromMarkdown(body);
     webView.setWebChromeClient(new WebChromeClient());
     webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
     webView.getSettings().setJavaScriptEnabled(true);
@@ -448,7 +439,7 @@ public class DetailedActivity extends AppCompatActivity implements
         return true;
       }
     });
-   // webView.getSettings().setLoadWithOverviewMode(true);
+    // webView.getSettings().setLoadWithOverviewMode(true);
     webView.loadDataWithBaseURL("file:///android_asset/",
       "<link rel=\"stylesheet\" type=\"text/css\" href=\"md_theme.css\" />" + body,
       "text/html; charset=utf-8",
@@ -768,9 +759,9 @@ public class DetailedActivity extends AppCompatActivity implements
       }
 
       //format payout string
-      if(maxAcceptedValue==0){
+      if (maxAcceptedValue == 0) {
         payoutValue.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-      }else{
+      } else {
         payoutValue.setPaintFlags(Paint.LINEAR_TEXT_FLAG);
       }
     }

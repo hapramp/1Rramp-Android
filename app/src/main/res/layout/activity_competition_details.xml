@@ -83,7 +83,7 @@
             android:id="@+id/actionButton"
             android:clickable="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/filled_btn_bg"
+            android:background="@drawable/primary_filled_btn_bg"
             android:textColor="@color/white"
             android:paddingLeft="24dp"
             android:paddingRight="24dp"

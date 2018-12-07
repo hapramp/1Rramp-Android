@@ -47,7 +47,7 @@
             android:layout_height="36dp"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="8dp"
-            android:background="@drawable/filled_btn_bg"
+            android:background="@drawable/primary_filled_btn_bg"
             android:gravity="center"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
