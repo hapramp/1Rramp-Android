@@ -179,7 +179,7 @@ public class PostItemView extends FrameLayout implements RebloggedUserFetchCallb
     commentContainer.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        navigateToDetailsPage();
+        navigateToCommentsPage();
       }
     });
     featuredImagePost.setOnClickListener(new OnClickListener() {
@@ -191,7 +191,7 @@ public class PostItemView extends FrameLayout implements RebloggedUserFetchCallb
     commentCount.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        navigateToDetailsPage();
+       navigateToCommentsPage();
       }
     });
     postSnippet.setOnClickListener(new OnClickListener() {
@@ -500,9 +500,10 @@ public class PostItemView extends FrameLayout implements RebloggedUserFetchCallb
     return false;
   }
 
-  private void navigateToCommentCreateActivity(int postId) {
+  private void navigateToCommentsPage() {
     Intent intent = new Intent(mContext, CommentsActivity.class);
-    intent.putExtra(Constants.EXTRAA_KEY_POST_ID, String.valueOf(postId));
+    intent.putExtra(Constants.EXTRAA_KEY_POST_AUTHOR, mFeed.getAuthor());
+    intent.putExtra(Constants.EXTRAA_KEY_POST_PERMLINK, mFeed.getPermlink());
     mContext.startActivity(intent);
   }
 
