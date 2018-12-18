@@ -76,7 +76,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     } else if (holder instanceof NestedCommentItemViewHolder) {
       //if hasParent
       final int p = position - (hasParent ? 1 : 0);
-      ((NestedCommentItemViewHolder) holder).bind(commentsList.get(p), position, new CommentsItemView.CommentActionListener() {
+      ((NestedCommentItemViewHolder) holder).bind(commentsList.get(p), p, new CommentsItemView.CommentActionListener() {
         @Override
         public void onCommentDeleted(int itemIndex) {
           removeItemAt(itemIndex);

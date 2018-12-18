@@ -20,7 +20,7 @@ public class EventReporter {
       EventReportUtils.getAppOpenEventNodeRef(ver, date, time).setValue("open");
     }
     catch (Exception e) {
-
+      e.printStackTrace();
     }
   }
 
