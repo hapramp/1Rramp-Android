@@ -53,14 +53,14 @@
         android:id="@+id/commentLoadingProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/commentLoadingProgressMessage"
         android:layout_centerInParent="true" />
 
     <TextView
         android:padding="4dp"
         android:id="@+id/commentLoadingProgressMessage"
         android:text="Loading comments"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/commentLoadingProgressBar"
+        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
