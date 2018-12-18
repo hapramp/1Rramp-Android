@@ -61,9 +61,6 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
   private Context mContext;
   private String currentSelectedTag = EXPLORE;
   private Unbinder unbinder;
-  private String mUsername;
-  private ProgressDialog progressDialog;
-  private AlertDialog alertDialog;
   private DataStore dataStore;
   private String last_author;
   private String last_permlink;
@@ -82,7 +79,6 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    mUsername = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
   }
 
   @Override
@@ -225,6 +221,7 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
   }
 
   private void hideCategorySection() {
+    communityFilterView.onHiding();
     communityFilterView.animate().translationY(-communityFilterView.getMeasuredHeight());
     progressBarLoadingRecite.animate().translationY(-communityFilterView.getMeasuredHeight());
   }
@@ -235,6 +232,7 @@ public class HomeFragment extends Fragment implements LikePostCallback, FeedList
   }
 
   private void bringBackCategorySection() {
+    communityFilterView.onShowing();
     communityFilterView.animate().translationY(0);
     progressBarLoadingRecite.animate().translationY(0);
   }
