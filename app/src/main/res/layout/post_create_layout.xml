@@ -140,44 +140,17 @@
             android:layout_height="wrap_content"
             android:visibility="gone" />
 
-        <RelativeLayout
-            android:id="@+id/youtube_item_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
-
-            <ImageView
-                android:id="@+id/youtube_thumbnailIv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true" />
-
-            <ImageView
-                android:id="@+id/youtube_indicator"
-                android:layout_width="64dp"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:adjustViewBounds="true"
-                android:src="@drawable/ytb" />
-
-            <TextView
-                android:id="@+id/btn_remove"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/remove_video_bg"
-                android:clickable="true"
-                android:paddingBottom="4dp"
-                android:paddingRight="8dp"
-                android:paddingLeft="8dp"
-                android:paddingTop="4dp"
-                android:text="Remove"
-                android:textColor="#ffffff"
-                android:textSize="12sp" />
-
-        </RelativeLayout>
+        <EditText
+            android:hint="Post title"
+            android:layout_width="match_parent"
+            android:minHeight="48dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp"
+            android:background="@drawable/post_editor_bg"
+            android:id="@+id/short_post_title"
+            android:layout_height="wrap_content" />
 
         <EditText
             android:id="@+id/content"
@@ -188,7 +161,8 @@
             android:hint="Write something ..."
             android:lineSpacingExtra="2dp"
             android:minHeight="100dp"
-            android:padding="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             android:textColor="@color/Black54"
             android:textColorHint="@color/Black38"
             android:textSize="16sp" />

@@ -84,6 +84,7 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
   private DraftsHelper draftsHelper;
   private boolean leftActivityWithPurpose = false;
   private boolean shouldSaveOrUpdateDraft = true;
+  private String title;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -301,6 +302,8 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
         postCreateComponent.setImageDownloadUrl(imageUrl);
       }
     }
+    //set title
+    postCreateComponent.setTitle(draft.getTitle());
     //set text
     postCreateComponent.setDefaultText(draft.getText());
     //set community
@@ -339,7 +342,7 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
       shortPostDraftModel.setText(postCreateComponent.getContent());
     }
     shortPostDraftModel.setCommunities(postCreateComponent.getSelectedCommunityTags());
-    String draftTitle = postCreateComponent.getContent();
+    String draftTitle = postCreateComponent.getTitle();
     shortPostDraftModel.setTitle(draftTitle);
     shortPostDraftModel.setDraftId(mDraftId);
     draftsHelper.updateShortPostDraft(shortPostDraftModel);
@@ -373,6 +376,7 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
 
   private void preparePost() {
     generated_permalink = PermlinkGenerator.getPermlink();
+    title = postCreateComponent.getTitle();
     body = postCreateComponent.getBody();
     body = body + Constants.FOOTER_TEXT;
     tags = postCreateComponent.getSelectedCommunityTags();
@@ -384,7 +388,7 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
 
   private void sendPostToSteemBlockChain() {
     showPublishingProgressDialog(true, "Publishing...");
-    steemPostCreator.createPost(body, "", images, tags, generated_permalink);
+    steemPostCreator.createPost(body, title, images, tags, generated_permalink);
   }
 
   private void openCameraIntent() {
@@ -532,7 +536,7 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
       shortPostDraftModel.setText(postCreateComponent.getContent());
     }
     shortPostDraftModel.setCommunities(postCreateComponent.getSelectedCommunityTags());
-    String draftTitle = postCreateComponent.getContent();
+    String draftTitle = postCreateComponent.getTitle();
     shortPostDraftModel.setTitle(draftTitle);
     draftsHelper.saveShortPostDraft(shortPostDraftModel);
   }

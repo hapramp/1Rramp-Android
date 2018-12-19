@@ -54,14 +54,6 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
   LinearLayout placeholder;
   @BindView(R.id.postImageView)
   PostImageView postImageView;
-  @BindView(R.id.youtube_thumbnailIv)
-  ImageView youtubeThumbnailIv;
-  @BindView(R.id.youtube_indicator)
-  ImageView youtubeIndicator;
-  @BindView(R.id.btn_remove)
-  TextView btnRemove;
-  @BindView(R.id.youtube_item_container)
-  RelativeLayout cameraItemContainer;
   @BindView(R.id.content)
   EditText content;
   @BindView(R.id.inline_category_caption)
@@ -76,10 +68,13 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
   RelativeLayout hashtagsContainer;
   @BindView(R.id.community_stripe_view)
   CommunityStripView communityStripeView;
+  @BindView(R.id.short_post_title)
+  EditText shortPostTitle;
   private Context mContext;
   private boolean mediaSelected = false;
   private MediaSelectorListener mediaSelectorListener;
   private String defaultText;
+  private String title;
 
   public PostCreateComponent(@NonNull Context context) {
     super(context);
@@ -107,15 +102,6 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
       @Override
       public void onImageUploaded(String downloadUrl) {
 
-      }
-    });
-
-    btnRemove.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        mediaSelected = false;
-        cameraItemContainer.setVisibility(GONE);
-        placeholder.setVisibility(VISIBLE);
       }
     });
 
@@ -157,7 +143,11 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
     });
   }
 
-  public void setDefaultCommunitySelection(List<String> coms){
+  public String getTitle(){
+    return shortPostTitle.getText().toString().trim();
+  }
+
+  public void setDefaultCommunitySelection(List<String> coms) {
     inlinePostCommunityView.setDefaultSelection(coms);
     invalidateCommunityStrips(coms);
   }
@@ -189,14 +179,12 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
     placeholder.setVisibility(GONE);
     mediaSelected = true;
     postImageView.setImageSource(filePath);
-    cameraItemContainer.setVisibility(GONE);
   }
 
-  public void setImageDownloadUrl(String url){
+  public void setImageDownloadUrl(String url) {
     placeholder.setVisibility(GONE);
     mediaSelected = true;
     postImageView.setDownloadUrl(url);
-    cameraItemContainer.setVisibility(GONE);
   }
 
   public List<String> getSelectedCommunityTags() {
@@ -259,6 +247,10 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
 
   public void setDefaultText(String defaultText) {
     content.setText(defaultText);
+  }
+
+  public void setTitle(String title) {
+    shortPostTitle.setText(title);
   }
 
   public interface MediaSelectorListener {

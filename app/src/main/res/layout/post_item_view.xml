@@ -69,15 +69,6 @@
             android:scaleType="fitCenter"
             android:visibility="gone" />
 
-        <ImageView
-            android:id="@+id/youtube_indicator"
-            android:layout_width="64dp"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:adjustViewBounds="true"
-            android:src="@drawable/ytb"
-            android:visibility="gone" />
-
     </RelativeLayout>
 
     <TextView

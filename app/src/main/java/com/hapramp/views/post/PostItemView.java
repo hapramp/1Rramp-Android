@@ -81,8 +81,6 @@ public class PostItemView extends FrameLayout implements RebloggedUserFetchCallb
   ImageView popupMenuDots;
   @BindView(R.id.featured_image_post)
   ImageView featuredImagePost;
-  @BindView(R.id.youtube_indicator)
-  ImageView youtubeIndicator;
   @BindView(R.id.image_container)
   RelativeLayout imageContainer;
   @BindView(R.id.post_title)
