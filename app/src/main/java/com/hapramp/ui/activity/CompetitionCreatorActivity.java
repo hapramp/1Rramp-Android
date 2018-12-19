@@ -36,11 +36,13 @@ import com.hapramp.models.FormattedBodyResponse;
 import com.hapramp.models.JudgeModel;
 import com.hapramp.models.error.ErrorResponse;
 import com.hapramp.models.requests.CompetitionCreateBody;
+import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.utils.CommunityUtils;
 import com.hapramp.utils.ErrorUtils;
 import com.hapramp.utils.GoogleImageFilePathReader;
+import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.PostHashTagPreprocessor;
 import com.hapramp.views.JudgeSelectionView;
 import com.hapramp.views.hashtag.CustomHashTagInput;
@@ -797,6 +799,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
   @Override
   public void onPostCreatedOnSteem() {
     isCompetitionPosted = true;
+    HaprampPreferenceManager.getInstance().setLastPostCreatedAt(MomentsUtils.getCurrentTime());
     showPublishingProgressDialog(false, "");
     toast("Contest created successfully!");
     close();
