@@ -69,7 +69,7 @@ import static com.hapramp.utils.VoteUtils.getNonZeroVoters;
  * Created by Ankit on 12/30/2017.
  */
 
-public class PostItemView extends FrameLayout implements RebloggedUserFetchCallback {
+public class PostItemView extends FrameLayout{
   public static final String TAG = PostItemView.class.getSimpleName();
   @BindView(R.id.feed_owner_pic)
   ImageView feedOwnerPic;
@@ -103,12 +103,6 @@ public class PostItemView extends FrameLayout implements RebloggedUserFetchCallb
   TextView ratingDesc;
   @BindView(R.id.voters_peek_view)
   VoterPeekView votersPeekView;
-  @BindView(R.id.resteemed_icon)
-  ImageView resteemedIcon;
-  @BindView(R.id.repost_count)
-  TextView repostCount;
-  @BindView(R.id.repost_container)
-  LinearLayout repostContainer;
   @BindView(R.id.community_stripe_view)
   CommunityStripView communityStripeView;
   @BindView(R.id.rate_info_container)
@@ -166,12 +160,6 @@ public class PostItemView extends FrameLayout implements RebloggedUserFetchCallb
       @Override
       public void onClick(View view) {
         navigateToDetailsPage();
-      }
-    });
-    repostContainer.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        openRebloggedUserListPage(mRebloggers);
       }
     });
     commentContainer.setOnClickListener(new OnClickListener() {
@@ -240,7 +228,7 @@ public class PostItemView extends FrameLayout implements RebloggedUserFetchCallb
 
   private void bind(final Feed feed) {
     this.mFeed = feed;
-    fetchRebloggedUsers();
+    //fetchRebloggedUsers();
     postSnippet.setVisibility(VISIBLE);
     feedOwnerTitle.setText(feed.getAuthor());
     feedOwnerSubtitle.setText(String.format(mContext.getResources().getString(R.string.post_subtitle_format), MomentsUtils.getFormattedTime(feed.getCreatedAt())));
@@ -417,12 +405,13 @@ public class PostItemView extends FrameLayout implements RebloggedUserFetchCallb
     }
   }
 
-  private void fetchRebloggedUsers() {
-    String reqTag = getRebloggedUserRequestTag();
-    if (ConnectionUtils.isConnected(mContext)) {
-      dataStore.fetchRebloggedUsers(reqTag, mFeed.getAuthor(), mFeed.getPermlink(), this);
-    }
-  }
+  //Deprecated
+//  private void fetchRebloggedUsers() {
+//    String reqTag = getRebloggedUserRequestTag();
+//    if (ConnectionUtils.isConnected(mContext)) {
+//      dataStore.fetchRebloggedUsers(reqTag, mFeed.getAuthor(), mFeed.getPermlink(), this);
+//    }
+//  }
 
   private void castingVoteSuccess() {
     if (starView != null) {
@@ -666,34 +655,6 @@ public class PostItemView extends FrameLayout implements RebloggedUserFetchCallb
 
   public void setItemIndex(int itemIndex) {
     this.mItemIndex = itemIndex;
-  }
-
-  @Override
-  public void onRebloggedUserFetched(String reqTag, ArrayList<String> rebloggers) {
-    try {
-      if (rebloggers.contains(mFeed.getAuthor())) {
-        rebloggers.remove(mFeed.getAuthor());
-      }
-      this.mRebloggers = rebloggers;
-      setRepostCount(rebloggers.size());
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
-  @Override
-  public void onRebloggedUserFailed() {
-
-  }
-
-  private void setRepostCount(int count) {
-      repostContainer.setVisibility(VISIBLE);
-      repostCount.setText(String.valueOf(count));
-  }
-
-  private String getRebloggedUserRequestTag() {
-    return String.format("%s_%s", mFeed.getAuthor(), mFeed.getPermlink());
   }
 
   public interface PostActionListener {

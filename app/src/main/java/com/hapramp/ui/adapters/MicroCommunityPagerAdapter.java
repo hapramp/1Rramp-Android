@@ -37,7 +37,7 @@ public class MicroCommunityPagerAdapter extends FragmentPagerAdapter {
 
     //profile
     fragments.add(communityProfileFragment);
-    titles.add("About Us");
+    titles.add("About");
   }
 
   @Override
