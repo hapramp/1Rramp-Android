@@ -118,6 +118,7 @@ public class CompetitionFeedItemView extends FrameLayout {
         navigateToCompetitionDetailsPage();
       }
     });
+
     popupMenuDots.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -134,12 +135,7 @@ public class CompetitionFeedItemView extends FrameLayout {
 
   private void showPopup() {
     int menu_res_id;
-    if (mCompetition.getmAdmin().getmUsername().equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername()) &&
-      competitionNotStarted()) {
-      menu_res_id = R.menu.competition_post_menu_with_delete;
-    } else {
-      return;
-    }
+    menu_res_id = R.menu.competition_post_menu_with_delete;
     ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(getContext(), R.style.PopupMenuOverlapAnchor);
     PopupMenu popup = new PopupMenu(contextThemeWrapper, popupMenuDots);
     popup.getMenuInflater().inflate(menu_res_id, popup.getMenu());
@@ -154,12 +150,6 @@ public class CompetitionFeedItemView extends FrameLayout {
       }
     });
     popup.show();
-  }
-
-  private boolean competitionNotStarted() {
-    long now = System.currentTimeMillis();
-    long startTime = MomentsUtils.getMillisFromTime(mCompetition.getmStartsAt());
-    return now < startTime;
   }
 
   private void showAlertDialogForDelete() {
@@ -206,8 +196,30 @@ public class CompetitionFeedItemView extends FrameLayout {
     init(context);
   }
 
+  private boolean isAdminOfThisCompetition() {
+    return mCompetition
+      .getmAdmin()
+      .getmUsername()
+      .equals(HaprampPreferenceManager
+        .getInstance()
+        .getCurrentSteemUsername());
+  }
+
+  private boolean competitionNotStarted() {
+    long now = System.currentTimeMillis();
+    long startTime = MomentsUtils.getMillisFromTime(mCompetition.getmStartsAt());
+    return now < startTime;
+  }
+
   public void bindCompetitionData(CompetitionModel competition) {
     this.mCompetition = competition;
+
+    if (isAdminOfThisCompetition() && competitionNotStarted()) {
+      popupMenuDots.setVisibility(VISIBLE);
+    } else {
+      popupMenuDots.setVisibility(GONE);
+    }
+
     ImageHandler.loadCircularImage(mContext, feedOwnerPic,
       String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format),
         competition.getmAdmin().getmUsername()));
@@ -277,6 +289,7 @@ public class CompetitionFeedItemView extends FrameLayout {
 
   /**
    * Sets different action for users and admin interface.
+   *
    * @param isAdmin flag for admin.
    * @param endsAt  time when competition ends
    */
@@ -298,15 +311,6 @@ public class CompetitionFeedItemView extends FrameLayout {
         }
       });
     }
-  }
-
-  private boolean isAdminOfThisCompetition() {
-    return mCompetition
-      .getmAdmin()
-      .getmUsername()
-      .equals(HaprampPreferenceManager
-        .getInstance()
-        .getCurrentSteemUsername());
   }
 
   /**

@@ -147,18 +147,12 @@ public class WinnerFeedItemView extends FrameLayout {
     prizeWon.setText(data.getPrize());
     setPrize();
     setRank();
-    //rankTip.setText(String.valueOf(data.getRank()));
   }
 
   private void setSteemEarnings(RankableCompetitionFeedItem feed) {
     try {
-      double pendingPayoutValue = Double.parseDouble(feed.getPayout().split(" ")[0]);
-      if (pendingPayoutValue > 0) {
-        briefPayoutValueString = String.format(Locale.US, "%1$.3f", pendingPayoutValue);
-      } else {
-        //cashed out
-        briefPayoutValueString = String.format(Locale.US, "%1$.3f", pendingPayoutValue);
-      }
+      double payout = feed.getPayout();
+      briefPayoutValueString = String.format(Locale.US, "%1$.3f", payout);
       payoutValue.setText(briefPayoutValueString);
     }
     catch (Exception e) {

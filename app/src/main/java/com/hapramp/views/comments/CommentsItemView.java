@@ -163,7 +163,6 @@ public class CommentsItemView extends FrameLayout implements
       }
       commentContent.setText(html);
     }catch (Exception e){
-      Log.d("CommentItemView",comment.getBody());
       commentContent.setText(comment.getBody());
       e.printStackTrace();
     }

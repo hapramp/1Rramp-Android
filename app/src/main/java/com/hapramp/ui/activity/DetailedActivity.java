@@ -155,7 +155,7 @@ public class DetailedActivity extends AppCompatActivity implements
   private ProgressDialog progressDialog;
   private SteemCommentCreator steemCommentCreator;
   private List<CommentModel> comments;
-  private ArrayList<String> mRebloggers;
+  //private ArrayList<String> mRebloggers;
   private SteemConnect steemConnect;
   private DataStore dataStore;
   private Runnable steemCastingVoteExceptionRunnable = new Runnable() {
@@ -189,7 +189,7 @@ public class DetailedActivity extends AppCompatActivity implements
     mHandler = new Handler();
     dataStore = new DataStore();
     comments = new ArrayList<>();
-    mRebloggers = new ArrayList<>();
+    //mRebloggers = new ArrayList<>();
     steemCommentCreator = new SteemCommentCreator();
     steemCommentCreator.setSteemCommentCreateCallback(this);
     progressDialog = new ProgressDialog(this);
@@ -202,7 +202,7 @@ public class DetailedActivity extends AppCompatActivity implements
     Bundle bundle = getIntent().getExtras();
     if (bundle.getParcelable(Constants.EXTRAA_KEY_POST_DATA) != null) {
       post = bundle.getParcelable(Constants.EXTRAA_KEY_POST_DATA);
-      mRebloggers = bundle.getStringArrayList(Constants.EXTRA_KEY_REBLOGGERS);
+//      mRebloggers = bundle.getStringArrayList(Constants.EXTRA_KEY_REBLOGGERS);
       bindPostValues(post);
       return;
     }
@@ -334,12 +334,7 @@ public class DetailedActivity extends AppCompatActivity implements
     //customize menu items
     //add Share
     popup.getMenu().add(PostMenu.Share);
-    if (mRebloggers != null) {
-      if (!mRebloggers.contains(currentLoggedInUser) && !currentLoggedInUser.equals(post.getAuthor())) {
-        //add repost option
-        popup.getMenu().add(PostMenu.Repost);
-      }
-    }
+    popup.getMenu().add(PostMenu.Repost);
     popup.getMenuInflater().inflate(menu_res_id, popup.getMenu());
     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
       @Override
