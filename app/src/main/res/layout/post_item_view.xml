@@ -69,15 +69,6 @@
             android:scaleType="fitCenter"
             android:visibility="gone" />
 
-        <ImageView
-            android:id="@+id/youtube_indicator"
-            android:layout_width="64dp"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:adjustViewBounds="true"
-            android:src="@drawable/ytb"
-            android:visibility="gone" />
-
     </RelativeLayout>
 
     <TextView
@@ -206,35 +197,6 @@
             android:text="0"
             android:textColor="@color/Black54"
             android:textSize="16sp" />
-
-        <LinearLayout
-            android:id="@+id/repost_container"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="8dp"
-            android:layout_toRightOf="@+id/payoutValue"
-            android:background="?selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp">
-
-            <ImageView
-                android:id="@+id/resteemed_icon"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@drawable/repost_icon" />
-
-            <TextView
-                android:id="@+id/repost_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:text="0" />
-        </LinearLayout>
-
 
     </RelativeLayout>
 

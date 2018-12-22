@@ -2,6 +2,9 @@ package com.hapramp.ui.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +13,10 @@ import android.widget.TextView;
 
 import com.hapramp.R;
 import com.hapramp.models.CommentModel;
+import com.hapramp.parser.MarkdownHandler;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
+import com.hapramp.utils.TextViewImageGetter;
 import com.hapramp.views.comments.CommentsItemView;
 
 import java.util.ArrayList;
@@ -76,7 +81,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     } else if (holder instanceof NestedCommentItemViewHolder) {
       //if hasParent
       final int p = position - (hasParent ? 1 : 0);
-      ((NestedCommentItemViewHolder) holder).bind(commentsList.get(p), position, new CommentsItemView.CommentActionListener() {
+      ((NestedCommentItemViewHolder) holder).bind(commentsList.get(p), p, new CommentsItemView.CommentActionListener() {
         @Override
         public void onCommentDeleted(int itemIndex) {
           removeItemAt(itemIndex);
@@ -180,7 +185,25 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
           author));
       timestampTv.setText(MomentsUtils.getFormattedTime(timestamp));
       commentOwnerUsername.setText(author);
-      commentContent.setText(body);
+      setSpannedString(commentContent,body);
     }
+  }
+
+  private void setSpannedString(TextView commentContent, String commentBody){
+    Spannable html;
+    try {
+      String htmlContent = MarkdownHandler.getHtmlFromMarkdown(commentBody);
+      TextViewImageGetter imageGetter = new TextViewImageGetter(mContext, commentContent);
+      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        html = (Spannable) Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_LEGACY, imageGetter, null);
+      } else {
+        html = (Spannable) Html.fromHtml(htmlContent, imageGetter, null);
+      }
+      commentContent.setText(html);
+    }catch (Exception e){
+      commentContent.setText(commentBody);
+      e.printStackTrace();
+    }
+    commentContent.setMovementMethod(LinkMovementMethod.getInstance());
   }
 }
