@@ -196,19 +196,19 @@ public class JSONParser {
     try {
       JSONObject jsonMetaDataObj = getJsonMetaDataObject(rootObject);
       //author
-      String author = rootObject.getString("author");
+      String author = rootObject.optString("author","");
       //permlink
-      String permlink = rootObject.getString("permlink");
+      String permlink = rootObject.optString("permlink","");
       //category
-      String category = rootObject.getString("category");
+      String category = rootObject.optString("category","");
       //parentAuthor
-      String parentAuthor = rootObject.getString("parent_author");
+      String parentAuthor = rootObject.optString("parent_author","");
       //parent permlink
-      String parentPermlink = rootObject.getString("parent_permlink");
+      String parentPermlink = rootObject.optString("parent_permlink","");
       //title
-      String title = rootObject.getString("title");
+      String title = rootObject.optString("title","");
       //body
-      String body = rootObject.getString("body");
+      String body = rootObject.optString("body","");
       body = body.split(Constants.FOOTER_START_MARK)[0];
       //featured image
       String featureImageUrl = extractFeatureImageUrl(jsonMetaDataObj, body);
@@ -217,21 +217,21 @@ public class JSONParser {
       //tags
       ArrayList<String> tags = extractTags(jsonMetaDataObj);
       //createdAt
-      String createdAt = rootObject.getString("created");
+      String createdAt = rootObject.optString("created","");
       //depth
-      int depth = rootObject.getInt("depth");
+      int depth = rootObject.optInt("depth",0);
       //children
-      int children = rootObject.getInt("children");
+      int children = rootObject.optInt("children",0);
       //totalPayoutValue
-      String totalPayoutValue = rootObject.getString("total_payout_value");
+      String totalPayoutValue = rootObject.optString("total_payout_value","0.000 SBD");
       //curator payout value
-      String curatorPayoutValue = rootObject.getString("curator_payout_value");
+      String curatorPayoutValue = rootObject.optString("curator_payout_value","0.000 SBD");
       //root author
-      String rootAuthor = rootObject.getString("root_author");
+      String rootAuthor = rootObject.optString("root_author","");
       //root permlink
-      String rootPermlink = rootObject.getString("root_permlink");
+      String rootPermlink = rootObject.optString("root_permlink","");
       //max accepted payout value
-      String maxAcceptedPayoutValue = rootObject.getString("max_accepted_payout");
+      String maxAcceptedPayoutValue = rootObject.optString("max_accepted_payout","");
       //url
       String url = rootObject.optString("url", "");
       //pending payout value
@@ -345,10 +345,10 @@ public class JSONParser {
       for (int i = 0; i < __voters.length(); i++) {
         JSONObject __voter = __voters.getJSONObject(i);
         voters.add(new Voter(
-          __voter.getString("voter"),
-          __voter.getInt("percent"),
-          __voter.getString("reputation"),
-          __voter.getString("time")
+          __voter.optString("voter",""),
+          __voter.optInt("percent",0),
+          __voter.optString("reputation",""),
+          __voter.optString("time","")
         ));
       }
     }
@@ -389,6 +389,7 @@ public class JSONParser {
     try {
       JSONObject ro = new JSONObject(response);
       JSONArray feedsArray = ro.getJSONArray("result");
+      Log.d("JSONParser","feedarray "+feedsArray);
       for (int i = 0; i < feedsArray.length(); i++) {
         feeds.add(parseCoreFeedData((JSONObject) feedsArray.get(i)));
       }
@@ -396,6 +397,7 @@ public class JSONParser {
     catch (JSONException e) {
       e.printStackTrace();
     }
+
     return feeds;
   }
 

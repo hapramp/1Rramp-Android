@@ -6,6 +6,7 @@ import com.hapramp.steem.models.Voter;
 import java.util.ArrayList;
 
 public class RankableCompetitionFeedItem {
+  public static final double DECLINED_PAYOUT = -1;
   private int rank;
   private String itemId;
   private String username;
@@ -18,7 +19,7 @@ public class RankableCompetitionFeedItem {
   private String description;
   private ArrayList<Voter> voters;
   private int childrens;
-  private String payout;
+  private double payout;
 
   public RankableCompetitionFeedItem(Feed feed) {
     this.itemId = feed.getPermlink();
@@ -32,8 +33,20 @@ public class RankableCompetitionFeedItem {
     this.description = feed.getCleanedBody();
     this.voters = feed.getVoters();
     this.childrens = feed.getChildren();
-    this.payout = feed.getPendingPayoutValue();
+    this.payout = extractPayout(feed);
     this.rank = feed.getRank();
+  }
+
+  private double extractPayout(Feed feed) {
+    double pendingPayoutValue = Double.parseDouble(feed.getPendingPayoutValue().split(" ")[0]);
+    double totalPayoutValue = Double.parseDouble(feed.getTotalPayoutValue().split(" ")[0]);
+    double curatorPayoutValue = Double.parseDouble(feed.getCuratorPayoutValue().split(" ")[0]);
+    if (pendingPayoutValue > 0) {
+      return pendingPayoutValue;
+    } else if ((totalPayoutValue + curatorPayoutValue) > 0) {
+      return totalPayoutValue + curatorPayoutValue;
+    }
+    return 0;
   }
 
   public RankableCompetitionFeedItem() {
@@ -135,11 +148,11 @@ public class RankableCompetitionFeedItem {
     this.childrens = childrens;
   }
 
-  public String getPayout() {
+  public double getPayout() {
     return payout;
   }
 
-  public void setPayout(String payout) {
+  public void setPayout(double payout) {
     this.payout = payout;
   }
 

@@ -185,7 +185,6 @@ public class UserSearchActivity extends AppCompatActivity {
       public void onNext(TextViewTextChangeEvent textViewTextChangeEvent) {
         String searchTerm = textViewTextChangeEvent.text().toString().trim().toLowerCase();
         if (searchTerm.length() > 0) {
-          Log.d("UsernameSearch", "text.. " + searchTerm);
           if (ConnectionUtils.isConnected(UserSearchActivity.this)) {
             onSearchingUsernames();
             publishSubject.onNext(searchTerm);

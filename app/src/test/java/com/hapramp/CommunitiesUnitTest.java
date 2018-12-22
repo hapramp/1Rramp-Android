@@ -4,6 +4,7 @@ import com.hapramp.steemconnect4j.RpcJsonUtil;
 import com.hapramp.steemconnect4j.StringUtils;
 import com.hapramp.utils.HashTagUtils;
 import com.hapramp.utils.PostHashTagPreprocessor;
+import com.hapramp.utils.PrizeMoneyFilter;
 import com.hapramp.utils.RegexUtils;
 import com.hapramp.utils.VoteUtils;
 
@@ -12,6 +13,9 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;

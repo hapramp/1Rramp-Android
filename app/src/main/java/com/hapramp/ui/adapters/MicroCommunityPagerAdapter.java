@@ -31,12 +31,13 @@ public class MicroCommunityPagerAdapter extends FragmentPagerAdapter {
     cmpf.putString(CommunityPostFragment.COMMUNITY_TAG, mCommunity.getTag());
     communityPostFragment.setArguments(cmpf);
 
-    //profile
-    fragments.add(communityProfileFragment);
-    titles.add(mCommunity.getTag().toUpperCase());
     //posts
     fragments.add(communityPostFragment);
     titles.add("POSTS");
+
+    //profile
+    fragments.add(communityProfileFragment);
+    titles.add("About");
   }
 
   @Override

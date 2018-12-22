@@ -20,14 +20,6 @@ public class SteemRequestBody {
       " \"" + permlink + "\"], \"id\":1}";
   }
 
-  /*
-   * For: New in 1ramp section [Posts with tag hapramp tag]
-   * */
-  public static String discussionsByCreated(String tag, int limit) {
-    return "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_discussions_by_created\"," +
-      " \"params\":[{\"tag\":\"" + tag + "\",\"limit\":" + limit + "}], \"id\":1}";
-  }
-
   public static String discussionsByCreated(String tag) {
     return "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_discussions_by_created\"," +
       " \"params\":[{\"tag\":\"" + tag + "\",\"limit\":8}], \"id\":1}";

@@ -29,11 +29,13 @@ import com.hapramp.models.CompetitionWinnerModel;
 import com.hapramp.models.FormattedBodyResponse;
 import com.hapramp.models.RankableCompetitionFeedItem;
 import com.hapramp.models.WinnersRankBody;
+import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.steem.models.Feed;
 import com.hapramp.ui.adapters.RankableCompetitionItemRecyclerAdapter;
 import com.hapramp.utils.ErrorUtils;
+import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.PostHashTagPreprocessor;
 import com.hapramp.views.competition.RankableCompetitionFeedItemView;
 import com.hapramp.views.competition.WinnerItemView;
@@ -134,7 +136,11 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
     publishCompetitionResultBtn.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        showAlertDialogForResultPublish();
+        if(MomentsUtils.isAllowedToCreatePost()) {
+          showAlertDialogForResultPublish();
+        }else{
+          Toast.makeText(WinnerDeclarationActivity.this, "You can declared next result " + MomentsUtils.getTimeLeftInPostCreation(), Toast.LENGTH_LONG).show();
+        }
       }
     });
     backBtn.setOnClickListener(new View.OnClickListener() {
@@ -495,6 +501,7 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
   @Override
   public void onPostCreatedOnSteem() {
     showProgressDialog(false, "");
+    HaprampPreferenceManager.getInstance().setLastPostCreatedAt(MomentsUtils.getCurrentTime());
     Toast.makeText(this, "Winners blog posted!", Toast.LENGTH_LONG).show();
     finish();
   }
