@@ -170,7 +170,9 @@
             android:name=".ui.activity.DelegationListActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".ui.activity.RebloggedListActivity" />
-        <activity android:name=".ui.activity.MicroCommunityActivity"></activity>
+        <activity
+            android:name=".ui.activity.MicroCommunityActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

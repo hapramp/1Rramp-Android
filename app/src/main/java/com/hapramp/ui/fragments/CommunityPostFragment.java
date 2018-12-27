@@ -26,6 +26,7 @@ public class CommunityPostFragment extends Fragment implements UserFeedCallback,
   public static final String ORDER_TRENDING = "trending";
   public static final String ORDER_NEW = "created";
   public static final String ORDER_HOT = "hot";
+  public static final String ORDER_SELECT = "select";
   public static final String COMMUNITY_TAG = "community_tag";
   @BindView(R.id.feedListView)
   FeedListView feedListView;

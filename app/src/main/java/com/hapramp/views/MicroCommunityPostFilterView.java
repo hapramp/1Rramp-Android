@@ -22,6 +22,8 @@ public class MicroCommunityPostFilterView extends FrameLayout {
   TextView newItem;
   @BindView(R.id.hotItem)
   TextView hotItem;
+  @BindView(R.id.selectsItem)
+  TextView selectsItem;
   private Context mContext;
   private TextView lastSelection;
   private FilterItemSelectionCallback filterItemSelectionCallback;
@@ -35,8 +37,19 @@ public class MicroCommunityPostFilterView extends FrameLayout {
     this.mContext = context;
     View view = LayoutInflater.from(mContext).inflate(R.layout.micro_community_post_filter_tab, this);
     ButterKnife.bind(this, view);
-    //default selection: Trending
-    lastSelection = trendingItem;
+    //default selection: Selects
+    lastSelection = selectsItem;
+    selectsItem.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        if (lastSelection == selectsItem)
+          return;
+        select(selectsItem);
+        deSelect(lastSelection);
+        lastSelection = selectsItem;
+        sendSelection(CommunityPostFragment.ORDER_SELECT);
+      }
+    });
     trendingItem.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View view) {
