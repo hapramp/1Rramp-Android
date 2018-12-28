@@ -1,44 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="56dp"
-    android:layout_marginTop="-4dp"
-    android:background="@color/LightBlack"
-    android:gravity="center_vertical"
-    android:animateLayoutChanges="true"
-    android:paddingLeft="24dp">
+    android:fillViewport="true"
+    android:scrollbars="none"
+    android:layout_height="56dp">
 
-    <TextView
-        android:id="@+id/trendingItem"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="32dp"
-        android:background="@drawable/light_black_button_bg"
+        android:layout_height="56dp"
+        android:background="@color/LightBlack"
         android:gravity="center_vertical"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:text="Trending"
-        android:textColor="@color/colorPrimary"
-        android:textStyle="bold" />
+        android:paddingLeft="24dp">
 
-    <TextView
-        android:id="@+id/newItem"
-        android:layout_width="wrap_content"
-        android:layout_height="32dp"
-        android:gravity="center_vertical"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:text="New"
-        android:textColor="@color/Black54"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/selectsItem"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:background="@drawable/light_black_button_bg"
+            android:gravity="center_vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="Selects"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/hotItem"
-        android:layout_width="wrap_content"
-        android:layout_height="32dp"
-        android:gravity="center_vertical"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:text="Hot"
-        android:textColor="@color/Black54"
-        android:textStyle="bold" />
-</LinearLayout>
+        <TextView
+            android:id="@+id/trendingItem"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="Trending"
+            android:textColor="@color/Black54"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/newItem"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="New"
+            android:textColor="@color/Black54"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/hotItem"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="Hot"
+            android:textColor="@color/Black54"
+            android:textStyle="bold" />
+    </LinearLayout>
+</HorizontalScrollView>
