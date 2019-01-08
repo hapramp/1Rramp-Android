@@ -1,12 +1,12 @@
 package com.hapramp.notification;
 
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -54,29 +54,19 @@ public class SteemActionsNotificationHandler {
   }
 
   public static void addNotificationToTray(final Context context, final String photoUrl, final PendingIntent pendingIntent, final String title, final String content) {
-    final Handler mHandler = new Handler();
-    new Thread() {
-      @Override
-      public void run() {
-        try {
-          FutureTarget<Bitmap> futureTarget = Glide.with(context)
-            .asBitmap()
-            .load(photoUrl)
-            .submit();
-          final Bitmap bitmap = futureTarget.get();
-          Glide.with(context).clear(futureTarget);
-          mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-              postNotificationWithBitmap(context, bitmap, title, content, pendingIntent);
-            }
-          });
-        }
-        catch (Exception e) {
-          e.printStackTrace();
-        }
-      }
-    }.start();
+    try {
+      FutureTarget<Bitmap> futureTarget = Glide.with(context)
+        .asBitmap()
+        .load(photoUrl)
+        .submit();
+      final Bitmap bitmap = futureTarget.get();
+      Glide.with(context).clear(futureTarget);
+      postNotificationWithBitmap(context, bitmap, title, content, pendingIntent);
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+      postNotificationWithBitmap(context, null, title, content, pendingIntent);
+    }
   }
 
   private static void postNotificationWithBitmap(Context context, Bitmap bitmap, String title, String content, PendingIntent pendingIntent) {
@@ -94,6 +84,7 @@ public class SteemActionsNotificationHandler {
 
     if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       mBuilder.setSmallIcon(R.drawable.logo_white_72);
+      mBuilder.setCategory(Notification.CATEGORY_SOCIAL);
       mBuilder.setColor(context.getResources().getColor(R.color.colorPrimary));
     } else {
       mBuilder.setSmallIcon(R.drawable.logo_white_24);

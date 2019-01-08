@@ -5,13 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
 
 import com.hapramp.main.HapRampMain;
 import com.hapramp.ui.activity.HomeActivity;
 import com.hapramp.ui.activity.WinnersFeedListActivity;
 
-import static com.hapramp.notification.SteemActionsNotificationHandler.addNotificationToTray;
 import static com.hapramp.ui.activity.HomeActivity.EXTRA_TAB_INDEX;
 import static com.hapramp.ui.activity.WinnersFeedListActivity.EXTRA_COMPETITION_ID;
 import static com.hapramp.ui.activity.WinnersFeedListActivity.EXTRA_COMPETITION_TITLE;
