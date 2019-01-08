@@ -14,7 +14,6 @@ public class NotificationSubscriber {
   public static void subscribeForUserTopic() {
     String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
     String topic = HashGenerator.getMD5Hash(username);
-    Log.d("NotificationSubscriber","subscribed to "+topic);
     FirebaseMessaging.getInstance().subscribeToTopic(topic).addOnSuccessListener(new OnSuccessListener<Void>() {
       @Override
       public void onSuccess(Void aVoid) {

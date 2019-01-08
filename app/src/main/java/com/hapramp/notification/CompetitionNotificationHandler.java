@@ -27,7 +27,7 @@ public class CompetitionNotificationHandler {
   public static void showCompetitionWinnersListDirectedNotification(String compId, String compTitle, String title, String description) {
     Context context = HapRampMain.getContext();
     PendingIntent pendingIntent = getCompetitionWinnersListPendingIntent(context, compId, compTitle);
-    addNotificationToTray(context, pendingIntent, title, description);
+    //addNotificationToTray(context, pendingIntent, title, description);
   }
 
 
@@ -55,7 +55,7 @@ public class CompetitionNotificationHandler {
   public static void showCompetitionListingDirectedNotification(String title, String description) {
     Context context = HapRampMain.getContext();
     PendingIntent pendingIntent = getCompetitionListingPendingIntent(context);
-    addNotificationToTray(context, pendingIntent, title, description);
+    //addNotificationToTray(context, pendingIntent, title, description);
   }
 
   /**
