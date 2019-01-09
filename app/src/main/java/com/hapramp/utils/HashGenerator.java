@@ -10,15 +10,11 @@ import java.security.NoSuchAlgorithmException;
 
 public class HashGenerator {
 
-  public static String getSHA2(String s) {
-
+  public static String getMD5Hash(String s) {
     try {
-
-      MessageDigest digest = MessageDigest.getInstance("SHA-256");
-
+      MessageDigest digest = MessageDigest.getInstance("MD5");
       byte[] hash = digest.digest(s.getBytes("UTF-8"));
       return convertByteToHex(hash);
-
     }
     catch (NoSuchAlgorithmException e) {
       e.printStackTrace();
@@ -27,17 +23,13 @@ public class HashGenerator {
       e.printStackTrace();
     }
     return "";
-
   }
 
   private static String convertByteToHex(byte[] byteData) {
-
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < byteData.length; i++) {
       sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
     }
-
     return sb.toString();
   }
-
 }

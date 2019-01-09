@@ -1,5 +1,10 @@
 package com.hapramp.datastore;
 
+import android.content.Context;
+
+import com.hapramp.R;
+import com.hapramp.main.HapRampMain;
+
 import java.util.Locale;
 
 import static com.hapramp.api.URLS.BASE_URL;
@@ -105,5 +110,9 @@ public class UrlBuilder {
 
   public static String userProfileUrl(String username) {
     return String.format("https://steemit.com/@%s.json", username);
+  }
+
+  public static String getUserProfileUrl(String username) {
+    return String.format(HapRampMain.getContext().getString(R.string.steem_user_profile_pic_format), username);
   }
 }
