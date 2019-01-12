@@ -41,7 +41,7 @@ public class CompetitionNotificationHandler {
     addNotificationToTray(context,
       contestStartedNotificationModel.getImage(),
       pendingIntent,
-      "Contest is live!! Participate now",
+      "Contest is live, participate now!",
       contestStartedNotificationModel.getTitle());
   }
 
@@ -103,7 +103,7 @@ public class CompetitionNotificationHandler {
     addNotificationToTray(context,
       contestWinnerDeclaredNotificationModel.getImage(),
       pendingIntent,
-      "Winners declared",
+      "Winners declared, see winning entries!",
       contestWinnerDeclaredNotificationModel.getTitle());
   }
 
@@ -128,7 +128,7 @@ public class CompetitionNotificationHandler {
     addNotificationToTray(context,
       contestCreatedNotificationModel.getImage(),
       pendingIntent,
-      "New contest coming up!",
+      "New contest listed. Check it out!",
       contestCreatedNotificationModel.getTitle());
   }
 
