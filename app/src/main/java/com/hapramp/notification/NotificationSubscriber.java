@@ -18,7 +18,6 @@ public class NotificationSubscriber {
         HaprampPreferenceManager.getInstance().setUserTopicSubscribed(true);
       }
     });
-
     unsubscribeToUnrequiredTopic();
   }
 
@@ -26,7 +25,7 @@ public class NotificationSubscriber {
    * subscribe to listening to new competitions.
    */
   public static void subscribeForNewCompetition() {
-    final String topic = "competitionstest";
+    final String topic = "competitions";
     FirebaseMessaging.getInstance().subscribeToTopic(topic).addOnSuccessListener(new OnSuccessListener<Void>() {
       @Override
       public void onSuccess(Void aVoid) {

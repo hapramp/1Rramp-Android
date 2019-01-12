@@ -4,6 +4,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.hapramp.main.HapRampMain;
@@ -120,13 +121,7 @@ public class NotificationHandler {
         }
       }
     }
-    catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-    catch (ExecutionException e) {
-      e.printStackTrace();
-    }
-    catch (TimeoutException e) {
+    catch (Exception e) {
       e.printStackTrace();
     }
   }
