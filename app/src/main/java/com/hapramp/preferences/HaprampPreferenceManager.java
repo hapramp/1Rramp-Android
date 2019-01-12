@@ -48,6 +48,15 @@ public class HaprampPreferenceManager {
     editor.apply();
   }
 
+  public boolean isRatingSliderEnabled() {
+    return preferences.getBoolean("rate_slider", false);
+  }
+
+  public void setRatingSliderEnabled(boolean enabled) {
+    editor.putBoolean("rate_slider", enabled);
+    editor.apply();
+  }
+
   public boolean isOnBoardingDone() {
     return preferences.getBoolean("onBoardingDone", false);
   }

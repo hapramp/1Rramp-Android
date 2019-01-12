@@ -385,6 +385,7 @@ public class ParticipateEditorActivity extends AppCompatActivity implements Edit
   @Override
   public void onPostCreationFailedOnSteem(String msg) {
     toast("Cannot Create Blog");
+    System.out.println(msg);
     showPublishingProgressDialog(false, "");
   }
 

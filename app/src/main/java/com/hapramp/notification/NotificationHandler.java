@@ -4,16 +4,15 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
-import android.util.Log;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.hapramp.main.HapRampMain;
 import com.hapramp.notification.model.BaseNotificationModel;
-import com.hapramp.notification.model.CompetitionResultNotificationModel;
-import com.hapramp.notification.model.CompetitionWinnerNotificationModel;
+import com.hapramp.notification.model.ContestCreatedNotificationModel;
+import com.hapramp.notification.model.ContestStartedNotificationModel;
+import com.hapramp.notification.model.ContestWinnerDeclaredNotificationModel;
 import com.hapramp.notification.model.FollowNotificationModel;
 import com.hapramp.notification.model.MentionNotificationModel;
-import com.hapramp.notification.model.NewCompetitionNotificationModel;
 import com.hapramp.notification.model.ReblogNotificationModel;
 import com.hapramp.notification.model.ReplyNotificationModel;
 import com.hapramp.notification.model.TransferNotificationModel;
@@ -25,8 +24,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static com.hapramp.notification.CompetitionNotificationHandler.showCompetitionListingDirectedNotification;
-import static com.hapramp.notification.CompetitionNotificationHandler.showCompetitionWinnersListDirectedNotification;
 import static com.hapramp.notification.SteemActionsNotificationHandler.CHANNEL_ID;
 import static com.hapramp.notification.SteemActionsNotificationHandler.showCommentDirectedNotification;
 import static com.hapramp.notification.SteemActionsNotificationHandler.showMentionDirectedNotification;
@@ -105,32 +102,19 @@ public class NotificationHandler {
                 );
                 break;
 
-              case NotificationKey.NOTIFICATION_TYPE_NEW_COMPETITION:
-
-                showCompetitionListingDirectedNotification(
-                  ((NewCompetitionNotificationModel) baseNotificationModel).getTitle(),
-                  ((NewCompetitionNotificationModel) baseNotificationModel).getDescription()
-                );
+              case NotificationKey.NOTIFICATION_TYPE_CONTEST_CREATED:
+                CompetitionNotificationHandler.showContestCreateNotification(
+                  (ContestCreatedNotificationModel) baseNotificationModel);
                 break;
 
-              case NotificationKey.NOTIFICATION_TYPE_COMPETITION_RESULT:
-                showCompetitionWinnersListDirectedNotification(
-                  ((CompetitionResultNotificationModel) baseNotificationModel).getCompetitionId(),
-                  ((CompetitionResultNotificationModel) baseNotificationModel).getCompetitionTitle(),
-                  ((CompetitionResultNotificationModel) baseNotificationModel).getTitle(),
-                  ((CompetitionResultNotificationModel) baseNotificationModel).getDescription()
-                );
+              case NotificationKey.NOTIFICATION_TYPE_CONTEST_STARTED:
+                CompetitionNotificationHandler.showContestStartedNotification((ContestStartedNotificationModel)
+                  baseNotificationModel);
                 break;
 
-              case NotificationKey.NOTIFICATION_TYPE_WINNER:
-                showCompetitionWinnersListDirectedNotification(
-                  ((CompetitionWinnerNotificationModel) baseNotificationModel).getCompetitionId(),
-                  ((CompetitionWinnerNotificationModel) baseNotificationModel).getCompetitionTitle(),
-                  ((CompetitionWinnerNotificationModel) baseNotificationModel).getTitle(),
-                  ((CompetitionWinnerNotificationModel) baseNotificationModel).getDescription()
-                );
+              case NotificationKey.NOTIFICATION_TYPE_CONTEST_WINNERS_ANNOUNCED:
+                CompetitionNotificationHandler.showContestWinnerDeclaredNotification((ContestWinnerDeclaredNotificationModel) baseNotificationModel);
                 break;
-
             }
           }
         }

@@ -37,8 +37,8 @@ android {
         applicationId "com.hapramp"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 110
-        versionName "1.1"
+        versionCode 114
+        versionName "1.1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         setProperty("archivesBaseName", "1ramp_" + versionCode + "_" + versionName)
@@ -100,6 +100,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-scalars:2.1.0'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.vladsch.flexmark:flexmark-all:0.34.58'
+    implementation 'com.xw.repo:bubbleseekbar:3.19-lite'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -1,7 +1,5 @@
 package com.hapramp.notification.model;
 
-import com.google.gson.Gson;
-
 public class FollowNotificationModel extends BaseNotificationModel {
   public String type;
   public String follower;

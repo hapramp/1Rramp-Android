@@ -3,6 +3,7 @@ package com.hapramp.notification;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.hapramp.preferences.HaprampPreferenceManager;
+import com.hapramp.utils.HashGenerator;
 
 public class NotificationSubscriber {
   /**
@@ -10,24 +11,25 @@ public class NotificationSubscriber {
    */
   public static void subscribeForUserTopic() {
     String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-    //todo: create topic from username
-    FirebaseMessaging.getInstance().subscribeToTopic(username).addOnSuccessListener(new OnSuccessListener<Void>() {
+    String topic = HashGenerator.getMD5Hash(username);
+    FirebaseMessaging.getInstance().subscribeToTopic(topic).addOnSuccessListener(new OnSuccessListener<Void>() {
       @Override
       public void onSuccess(Void aVoid) {
         HaprampPreferenceManager.getInstance().setUserTopicSubscribed(true);
       }
     });
+
+    unsubscribeToUnrequiredTopic();
   }
 
   /**
    * subscribe to listening to new competitions.
    */
   public static void subscribeForNewCompetition() {
-    String topic = "competition";
+    final String topic = "competitionstest";
     FirebaseMessaging.getInstance().subscribeToTopic(topic).addOnSuccessListener(new OnSuccessListener<Void>() {
       @Override
       public void onSuccess(Void aVoid) {
-
       }
     });
   }
@@ -79,7 +81,17 @@ public class NotificationSubscriber {
    */
   public static void unsubscribeForUserTopic() {
     String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-    //todo: create topic
+    String topic = HashGenerator.getMD5Hash(username);
+    FirebaseMessaging.getInstance().unsubscribeFromTopic(topic).addOnSuccessListener(new OnSuccessListener<Void>() {
+      @Override
+      public void onSuccess(Void aVoid) {
+        HaprampPreferenceManager.getInstance().setUserTopicSubscribed(false);
+      }
+    });
+  }
+
+  public static void unsubscribeToUnrequiredTopic(){
+    String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
     FirebaseMessaging.getInstance().unsubscribeFromTopic(username).addOnSuccessListener(new OnSuccessListener<Void>() {
       @Override
       public void onSuccess(Void aVoid) {

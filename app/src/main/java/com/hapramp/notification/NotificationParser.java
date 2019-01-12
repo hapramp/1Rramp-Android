@@ -3,6 +3,9 @@ package com.hapramp.notification;
 import com.hapramp.notification.model.BaseNotificationModel;
 import com.hapramp.notification.model.CompetitionResultNotificationModel;
 import com.hapramp.notification.model.CompetitionWinnerNotificationModel;
+import com.hapramp.notification.model.ContestCreatedNotificationModel;
+import com.hapramp.notification.model.ContestStartedNotificationModel;
+import com.hapramp.notification.model.ContestWinnerDeclaredNotificationModel;
 import com.hapramp.notification.model.FollowNotificationModel;
 import com.hapramp.notification.model.MentionNotificationModel;
 import com.hapramp.notification.model.NewCompetitionNotificationModel;
@@ -75,30 +78,31 @@ public class NotificationParser {
               String.valueOf(map.get(NotificationKey.KEY_AMOUNT)),
               String.valueOf(map.get(NotificationKey.KEY_MEMO)),
               String.valueOf(map.get(NotificationKey.KEY_TIMESTAMP)));
-          } else if (type.equals(NotificationKey.NOTIFICATION_TYPE_NEW_COMPETITION)) {
-
-            baseNotificationType = new NewCompetitionNotificationModel(
-              String.valueOf(map.get(NotificationKey.KEY_TYPE)),
-              String.valueOf(map.get(NotificationKey.KEY_TITLE)),
-              String.valueOf(map.get(NotificationKey.KEY_DESCRIPTION))
+          } else if (type.equals(NotificationKey.NOTIFICATION_TYPE_CONTEST_CREATED)) {
+            baseNotificationType = new ContestCreatedNotificationModel(
+              String.valueOf(map.get(NotificationKey.STARTS_AT)),
+              String.valueOf(map.get(NotificationKey.DESC)),
+              String.valueOf(map.get(NotificationKey.ENDS_AT)),
+              map.get(NotificationKey.PRIZES).split(""), //need parsing
+              String.valueOf(map.get(NotificationKey.ID)),
+              String.valueOf(map.get(NotificationKey.TAG)),
+              String.valueOf(map.get(NotificationKey.TYPE)),
+              String.valueOf(map.get(NotificationKey.IMAGE)),
+              String.valueOf(map.get(NotificationKey.TITLE)));
+          } else if(type.equals(NotificationKey.NOTIFICATION_TYPE_CONTEST_STARTED)){
+            baseNotificationType = new ContestStartedNotificationModel(
+              String.valueOf(map.get(NotificationKey.TITLE)),
+              String.valueOf(map.get(NotificationKey.IMAGE)),
+              String.valueOf(map.get(NotificationKey.TYPE)),
+              String.valueOf(map.get(NotificationKey.ID)),
+              String.valueOf(map.get(NotificationKey.TAG))
             );
-          } else if (type.equals(NotificationKey.NOTIFICATION_TYPE_COMPETITION_RESULT)) {
-
-            baseNotificationType = new CompetitionResultNotificationModel(
-              String.valueOf(map.get(NotificationKey.KEY_TYPE)),
-              String.valueOf(map.get(NotificationKey.KEY_TITLE)),
-              String.valueOf(map.get(NotificationKey.KEY_COMPETITION_ID)),
-              String.valueOf(map.get(NotificationKey.KEY_COMPETITION_TITLE)),
-              String.valueOf(map.get(NotificationKey.KEY_DESCRIPTION))
-            );
-          } else if (type.equals(NotificationKey.NOTIFICATION_TYPE_WINNER)) {
-
-            baseNotificationType = new CompetitionWinnerNotificationModel(
-              String.valueOf(map.get(NotificationKey.KEY_TYPE)),
-              String.valueOf(map.get(NotificationKey.KEY_TITLE)),
-              String.valueOf(map.get(NotificationKey.KEY_COMPETITION_ID)),
-              String.valueOf(map.get(NotificationKey.KEY_COMPETITION_TITLE)),
-              String.valueOf(map.get(NotificationKey.KEY_DESCRIPTION))
+          }else if(type.equals(NotificationKey.NOTIFICATION_TYPE_CONTEST_WINNERS_ANNOUNCED)){
+            baseNotificationType = new ContestWinnerDeclaredNotificationModel(
+              String.valueOf(map.get(NotificationKey.TITLE)),
+              String.valueOf(map.get(NotificationKey.ID)),
+              String.valueOf(map.get(NotificationKey.TYPE)),
+              String.valueOf(map.get(NotificationKey.IMAGE))
             );
           }
         }
