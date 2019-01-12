@@ -9,9 +9,11 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.Layout;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -30,7 +32,6 @@ import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.SinglePostCallback;
-import com.hapramp.interfaces.RebloggedUserFetchCallback;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.SteemRePoster;
 import com.hapramp.steem.models.Feed;
@@ -44,13 +45,13 @@ import com.hapramp.ui.activity.DetailedActivity;
 import com.hapramp.ui.activity.ProfileActivity;
 import com.hapramp.ui.activity.RebloggedListActivity;
 import com.hapramp.ui.activity.VotersListActivity;
-import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.PostMenu;
 import com.hapramp.utils.ShareUtils;
 import com.hapramp.views.CommunityStripView;
+import com.hapramp.views.SliderView;
 import com.hapramp.views.VoterPeekView;
 import com.hapramp.views.extraa.StarView;
 
@@ -61,15 +62,11 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.hapramp.utils.VoteUtils.checkForMyVote;
-import static com.hapramp.utils.VoteUtils.getMyVotePercent;
-import static com.hapramp.utils.VoteUtils.getNonZeroVoters;
-
 /**
  * Created by Ankit on 12/30/2017.
  */
 
-public class PostItemView extends FrameLayout{
+public class PostItemView extends FrameLayout {
   public static final String TAG = PostItemView.class.getSimpleName();
   @BindView(R.id.feed_owner_pic)
   ImageView feedOwnerPic;
@@ -109,6 +106,8 @@ public class PostItemView extends FrameLayout{
   RelativeLayout rateInfoContainer;
   @BindView(R.id.comment_container)
   LinearLayout commentContainer;
+  @BindView(R.id.rate_slider_view)
+  SliderView rateSliderView;
 
   private SteemRePoster steemRePoster;
   private Context mContext;
@@ -135,6 +134,7 @@ public class PostItemView extends FrameLayout{
   private int mItemIndex;
   private ArrayList<String> mRebloggers;
   private ProgressDialog progressDialog;
+  private boolean isSliderEnabled = false;
 
   public PostItemView(@NonNull Context context) {
     super(context);
@@ -143,6 +143,7 @@ public class PostItemView extends FrameLayout{
 
   private void init(Context context) {
     this.mContext = context;
+    this.isSliderEnabled = HaprampPreferenceManager.getInstance().isRatingSliderEnabled();
     mRebloggers = new ArrayList<>();
     progressDialog = new ProgressDialog(mContext);
     mCurrentLoggedInUser = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
@@ -177,7 +178,7 @@ public class PostItemView extends FrameLayout{
     commentCount.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-       navigateToCommentsPage();
+        navigateToCommentsPage();
       }
     });
     postSnippet.setOnClickListener(new OnClickListener() {
@@ -198,15 +199,14 @@ public class PostItemView extends FrameLayout{
   private void navigateToDetailsPage() {
     Intent detailsIntent = new Intent(mContext, DetailedActivity.class);
     detailsIntent.putExtra(Constants.EXTRAA_KEY_POST_DATA, mFeed);
-    detailsIntent.putStringArrayListExtra(Constants.EXTRA_KEY_REBLOGGERS,mRebloggers);
+    detailsIntent.putStringArrayListExtra(Constants.EXTRA_KEY_REBLOGGERS, mRebloggers);
     mContext.startActivity(detailsIntent);
   }
 
-  private void openRebloggedUserListPage(ArrayList<String> users) {
-    Intent intent = new Intent(mContext, RebloggedListActivity.class);
-    intent.putStringArrayListExtra(RebloggedListActivity.EXTRA_USER_LIST, users);
-    intent.putExtra(RebloggedListActivity.EXTRA_AUTHOR, mFeed.getAuthor());
-    intent.putExtra(RebloggedListActivity.EXTRA_PERMLINK, mFeed.getPermlink());
+  private void navigateToCommentsPage() {
+    Intent intent = new Intent(mContext, CommentsActivity.class);
+    intent.putExtra(Constants.EXTRAA_KEY_POST_AUTHOR, mFeed.getAuthor());
+    intent.putExtra(Constants.EXTRAA_KEY_POST_PERMLINK, mFeed.getPermlink());
     mContext.startActivity(intent);
   }
 
@@ -224,6 +224,26 @@ public class PostItemView extends FrameLayout{
   public PostItemView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     init(context);
+  }
+
+  @Override
+  protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+    ((RecyclerView) getParent()).addOnScrollListener(new RecyclerView.OnScrollListener() {
+      @Override
+      public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        super.onScrolled(recyclerView, dx, dy);
+        rateSliderView.correctOffsetWhenContainerOnScrolling();
+      }
+    });
+  }
+
+  private void openRebloggedUserListPage(ArrayList<String> users) {
+    Intent intent = new Intent(mContext, RebloggedListActivity.class);
+    intent.putStringArrayListExtra(RebloggedListActivity.EXTRA_USER_LIST, users);
+    intent.putExtra(RebloggedListActivity.EXTRA_AUTHOR, mFeed.getAuthor());
+    intent.putExtra(RebloggedListActivity.EXTRA_PERMLINK, mFeed.getPermlink());
+    mContext.startActivity(intent);
   }
 
   private void bind(final Feed feed) {
@@ -256,11 +276,33 @@ public class PostItemView extends FrameLayout{
     ImageHandler.loadCircularImage(mContext, feedOwnerPic,
       String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format),
         feed.getAuthor()));
-    updateVotersPeekView(feed.getActiveVoters());
-    bindVotes(feed.getVoters(), feed.getPermlink());
+
+    if (isSliderEnabled) {
+      rateSliderView.setVisibility(VISIBLE);
+      rateInfoContainer.setVisibility(GONE);
+      setupSlider(feed.getVoters(), feed.getPermlink(), feed.getAuthor());
+    } else {
+      rateSliderView.setVisibility(GONE);
+      rateInfoContainer.setVisibility(VISIBLE);
+      updateVotersPeekView(feed.getActiveVoters());
+      bindVotes(feed.getVoters(), feed.getPermlink());
+    }
+
     setCommentCount(feed.getChildren());
     attachListerOnAuthorHeader();
     attachListenerForOverlowIcon();
+  }
+
+  private void setupSlider(ArrayList<Voter> voters, String permlink, String author) {
+    if (rateSliderView != null) {
+      rateSliderView.setVoteInfo(voters, permlink, author);
+      rateSliderView.setOnVoteChangedFromSlider(new SliderView.OnVoteChangedFromSlider() {
+        @Override
+        public void onVoteChanged() {
+          updatePostFromBlockchain();
+        }
+      });
+    }
   }
 
   private void attachListenerForOverlowIcon() {
@@ -310,9 +352,9 @@ public class PostItemView extends FrameLayout{
       }
 
       //format payout string
-      if(maxAcceptedValue==0){
+      if (maxAcceptedValue == 0) {
         payoutValue.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-      }else{
+      } else {
         payoutValue.setPaintFlags(Paint.LINEAR_TEXT_FLAG);
       }
     }
@@ -322,7 +364,7 @@ public class PostItemView extends FrameLayout{
   }
 
   private void bindVotes(List<Voter> votes, String permlink) {
-    starView.setData(votes,permlink)
+    starView.setData(votes, permlink)
       .setOnVoteUpdateCallback(new StarView.onVoteUpdateCallback() {
         @Override
         public void onVoted(String full_permlink, int _vote) {
@@ -405,14 +447,6 @@ public class PostItemView extends FrameLayout{
     }
   }
 
-  //Deprecated
-//  private void fetchRebloggedUsers() {
-//    String reqTag = getRebloggedUserRequestTag();
-//    if (ConnectionUtils.isConnected(mContext)) {
-//      dataStore.fetchRebloggedUsers(reqTag, mFeed.getAuthor(), mFeed.getPermlink(), this);
-//    }
-//  }
-
   private void castingVoteSuccess() {
     if (starView != null) {
       starView.castedVoteSuccessfully();
@@ -485,13 +519,6 @@ public class PostItemView extends FrameLayout{
       }
     }
     return false;
-  }
-
-  private void navigateToCommentsPage() {
-    Intent intent = new Intent(mContext, CommentsActivity.class);
-    intent.putExtra(Constants.EXTRAA_KEY_POST_AUTHOR, mFeed.getAuthor());
-    intent.putExtra(Constants.EXTRAA_KEY_POST_PERMLINK, mFeed.getPermlink());
-    mContext.startActivity(intent);
   }
 
   private void navigateToUserProfile() {

@@ -100,6 +100,7 @@
         android:visibility="gone" />
 
     <RelativeLayout
+        android:visibility="gone"
         android:id="@+id/rate_info_container"
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -135,11 +136,20 @@
 
     </RelativeLayout>
 
+    <com.hapramp.views.SliderView
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:visibility="visible"
+        android:id="@+id/rate_slider_view"
+        android:layout_below="@+id/rate_info_container"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"/>
+
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@+id/rate_info_container"
+        android:layout_below="@+id/rate_slider_view"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:background="#d7d7d7" />

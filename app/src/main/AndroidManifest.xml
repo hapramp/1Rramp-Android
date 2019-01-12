@@ -154,6 +154,7 @@
             android:name=".ui.activity.CompetitionDetailsActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:parentActivityName=".ui.activity.HomeActivity"
             android:name=".ui.activity.ParticipateEditorActivity"
             android:screenOrientation="portrait" />
         <activity

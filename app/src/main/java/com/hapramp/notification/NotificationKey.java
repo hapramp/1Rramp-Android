@@ -21,11 +21,18 @@ public class NotificationKey {
   public static final String NOTIFICATION_TYPE_REBLOG = "reblog";
   public static final String NOTIFICATION_TYPE_TRANSFER = "transfer";
 
-  public static final String KEY_TITLE = "title";
-  public static final String KEY_DESCRIPTION = "description";
-  public static final String KEY_COMPETITION_ID = "competition_id";
-  public static final String KEY_COMPETITION_TITLE = "competition_title";
-  public static final String NOTIFICATION_TYPE_NEW_COMPETITION = "new_competition";
-  public static final String NOTIFICATION_TYPE_COMPETITION_RESULT = "competition_result";
-  public static final String NOTIFICATION_TYPE_WINNER = "competition_winner";
+  //competitions
+  public static final String NOTIFICATION_TYPE_CONTEST_CREATED = "competitions.created";
+  public static final String NOTIFICATION_TYPE_CONTEST_STARTED = "competitions.started";
+  public static final String NOTIFICATION_TYPE_CONTEST_WINNERS_ANNOUNCED = "competitions.winners_declared";
+  public static final String STARTS_AT = "starts_at";
+  public static final String DESC = "description";
+  public static final String ENDS_AT = "ends_at";
+  public static final String PRIZES = "prizes";
+  public static final String ID ="id";
+  public static final String TAG = "tag";
+  public static final String TYPE = "type";
+  public static final String IMAGE = "image";
+  public static final String TITLE = "title";
+
 }

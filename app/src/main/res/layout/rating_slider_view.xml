@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:background="#009988"
+    android:clickable="true"
+    android:id="@+id/rate_slider_container"
+    android:visibility="visible">
+
+    <com.xw.repo.BubbleSeekBar
+        android:id="@+id/bubbleSeekbar"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/done_btn_container"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        app:bsb_bubble_color="@color/colorPrimary"
+        app:bsb_bubble_text_color="@color/white"
+        app:bsb_max="100"
+        app:bsb_min="0"
+        app:bsb_progress="0"
+        app:bsb_second_track_color="@color/colorPrimary"
+        app:bsb_section_count="5"
+        app:bsb_section_text_color="@color/colorPrimary"
+        app:bsb_section_text_size="12sp"
+        app:bsb_show_progress_in_float="true"
+        app:bsb_show_section_mark="true"
+        app:bsb_show_section_text="true"
+        app:bsb_show_thumb_text="false"
+        app:bsb_track_color="@color/Black12" />
+
+    <RelativeLayout
+        android:background="@drawable/filled_rectangle_btn"
+        android:id="@+id/done_btn_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true">
+
+        <TextView
+            android:clickable="true"
+            android:id="@+id/done_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:paddingBottom="4dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="4dp"
+            android:text="DONE"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:visibility="visible" />
+
+        <ProgressBar
+            android:visibility="gone"
+            android:id="@+id/rating_progress"
+            android:layout_centerInParent="true"
+            android:theme="@style/progressBarWhite"
+            android:layout_width="18dp"
+            android:layout_height="18dp" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
