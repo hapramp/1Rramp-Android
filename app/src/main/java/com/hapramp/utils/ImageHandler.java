@@ -11,13 +11,16 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.Key;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.signature.ObjectKey;
 import com.crashlytics.android.Crashlytics;
 import com.hapramp.R;
+import com.hapramp.main.HapRampMain;
 
 /**
  * Created by Ankit on 12/17/2017.
@@ -175,7 +178,8 @@ public class ImageHandler {
       RequestOptions options = new RequestOptions()
         .centerCrop()
         .placeholder(R.drawable.circular_image_placeholder)
-        .diskCacheStrategy(DiskCacheStrategy.ALL)
+        .diskCacheStrategy(DiskCacheStrategy.DATA)
+        .signature(new ObjectKey(HapRampMain.getSessionId()))
         .priority(Priority.HIGH);
       Glide.with(context)
         .asBitmap()

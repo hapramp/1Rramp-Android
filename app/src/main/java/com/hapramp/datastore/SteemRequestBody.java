@@ -6,8 +6,8 @@ public class SteemRequestBody {
     return "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_vesting_delegations\", \"params\":[\"" + delegator + "\",100], \"id\":1}";
   }
 
-  public static String getRebloggedByBody(String author,String permlink) {
-    return "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_reblogged_by\", \"params\":[\""+author+"\",\""+permlink+"\"], \"id\":1}";
+  public static String getRebloggedByBody(String author, String permlink) {
+    return "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_reblogged_by\", \"params\":[\"" + author + "\",\"" + permlink + "\"], \"id\":1}";
   }
 
   public static String getResourceCreditBody(String username) {
@@ -16,19 +16,20 @@ public class SteemRequestBody {
   }
 
   public static String getSinglePostBody(String author, String permlink) {
-    return "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_content\", \"params\":[\"" + author + "\"," +
+    return "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_content\"," +
+      " \"params\":[\"" + author + "\"," +
       " \"" + permlink + "\"], \"id\":1}";
   }
 
   public static String discussionsByCreated(String tag) {
-    return "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_discussions_by_created\"," +
-      " \"params\":[{\"tag\":\"" + tag + "\",\"limit\":8}], \"id\":1}";
+    return "{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"call\",\"params\":[\"database_api\"," +
+      "\"get_discussions_by_created\",[{\"tag\":\"" + tag + "\",\"limit\":\"50\"}]]}";
   }
 
   public static String discussionsByCreated(String tag, String start_author, String start_permlink) {
-    return "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_discussions_by_created\"," +
-      "\"params\":[{\"start_author\":\"" + start_author + "\",\"start_permlink\":\"" + start_permlink +
-      "\",\"tag\":\"" + tag + "\",\"limit\":8}], \"id\":1}";
+    return "{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"call\",\"params\":[\"database_api\"," +
+      "\"get_discussions_by_created\",[{\"tag\":\"" + tag + "\",\"start_author\":\"" + start_author +
+      "\",\"start_permlink\":\"" + start_permlink + "\",\"limit\":\"50\"}]]}";
   }
 
   public static String contentReplies(String author, String permlink) {
