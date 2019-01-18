@@ -67,7 +67,7 @@
             android:layout_height="216dp"
             android:background="#4db7b7b7"
             android:orientation="horizontal"
-            android:weightSum="2">
+            android:weightSum="3">
 
             <RelativeLayout
                 android:layout_width="0dp"
@@ -110,6 +110,41 @@
                 android:layout_weight="1">
 
                 <ImageView
+                    android:id="@+id/quote_create"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:layout_centerInParent="true"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:padding="16dp"
+                    android:src="@drawable/quote_icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/quote_create"
+                    android:layout_centerHorizontal="true"
+                    android:padding="8dp"
+                    android:text="Quote"
+                    android:textColor="@color/Black54"
+                    android:textSize="16sp" />
+
+            </RelativeLayout>
+
+            <FrameLayout
+                android:id="@+id/central_divider"
+                android:layout_width="1dp"
+                android:layout_height="64dp"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_vertical"
+                android:background="@color/white" />
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageView
                     android:id="@+id/camera_capture"
                     android:layout_width="96dp"
                     android:layout_height="96dp"
@@ -130,7 +165,6 @@
                     android:textSize="16sp" />
 
             </RelativeLayout>
-
 
         </LinearLayout>
 

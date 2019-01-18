@@ -3,15 +3,24 @@
     <declare-styleable name="FeedListView">
         <attr name="wantTopSpaceOffset" format="boolean" />
         <attr name="topOffset" format="integer" />
-        <attr name="refreshStart" format="integer"/>
-        <attr name="refreshEnd" format="integer"/>
+        <attr name="refreshStart" format="integer" />
+        <attr name="refreshEnd" format="integer" />
         <attr name="wantBottomSpaceOffset" format="boolean" />
         <attr name="bottomOffset" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="CustomProgressBar">
-        <attr name="primaryColor" format="string"/>
-        <attr name="secondaryColor" format="string"/>
-        <attr name="progressHeight" format="integer"/>
+        <attr name="primaryColor" format="string" />
+        <attr name="secondaryColor" format="string" />
+        <attr name="progressHeight" format="integer" />
+    </declare-styleable>
+
+    <!-- Declare custom theme attributes that allow changing which styles are
+         used for button bars depending on the API level.
+         ?android:attr/buttonBarStyle is new as of API 11 so this is
+         necessary to support previous API levels. -->
+    <declare-styleable name="ButtonBarContainerTheme">
+        <attr name="metaButtonBarStyle" format="reference" />
+        <attr name="metaButtonBarButtonStyle" format="reference" />
     </declare-styleable>
 </resources>

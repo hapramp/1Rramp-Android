@@ -61,6 +61,8 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
   public static final String EXTRA_KEY_DRAFT_JSON = "draftJson";
   private static final int REQUEST_IMAGE_SELECTOR = 101;
   private static final int REQUEST_CAPTURE_IMAGE = 100;
+  private static final int REQUEST_WRITE_PERMISSION = 1023;
+  private static final int RC_QUOTE = 103;
   private final long NO_DRAFT = -1;
   @BindView(R.id.backBtn)
   ImageView closeBtn;
@@ -160,6 +162,11 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
       }
 
       @Override
+      public void onQuoteInsertOptionSelected() {
+        checkWritePermissionAndOpenQuoteEditor();
+      }
+
+      @Override
       public void onCameraImageSelected() {
         checkCameraPermission();
       }
@@ -252,6 +259,24 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
     }
     catch (Exception e) {
       e.printStackTrace();
+    }
+  }
+
+  private void checkWritePermissionAndOpenQuoteEditor() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      try {
+        if (ActivityCompat.checkSelfPermission(CreatePostActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+          != PackageManager.PERMISSION_GRANTED) {
+          ActivityCompat.requestPermissions(CreatePostActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_PERMISSION);
+        } else {
+          openQuoteEditor();
+        }
+      }
+      catch (Exception e) {
+        e.printStackTrace();
+      }
+    } else {
+      openQuoteEditor();
     }
   }
 
@@ -391,6 +416,11 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
     steemPostCreator.createPost(body, title, images, tags, generated_permalink);
   }
 
+  private void openQuoteEditor() {
+    Intent intent = new Intent(this, QuoteEditorActivity.class);
+    startActivityForResult(intent, RC_QUOTE);
+  }
+
   private void openCameraIntent() {
     leftActivityWithPurpose = true;
     Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -446,7 +476,9 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
 
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    if (requestCode == REQUEST_IMAGE_SELECTOR && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+    if (requestCode == REQUEST_IMAGE_SELECTOR &&
+      resultCode == Activity.RESULT_OK &&
+      data != null && data.getData() != null) {
       leftActivityWithPurpose = false;
       handleImageResult(data);
     }
@@ -455,6 +487,16 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
       leftActivityWithPurpose = false;
       addImage(cameraImageFilePath);
     }
+
+    if (requestCode == RC_QUOTE && resultCode == RESULT_OK) {
+      Bundle bundle = data.getExtras();
+      String quoteUrl = bundle.getString(QuoteEditorActivity.QUOTE_IMAGE_URL);
+      addImage(quoteUrl, true);
+    }
+  }
+
+  private void addImage(String filePath, boolean deleteAfterUse) {
+    postCreateComponent.setImageResource(filePath, deleteAfterUse);
   }
 
   @Override

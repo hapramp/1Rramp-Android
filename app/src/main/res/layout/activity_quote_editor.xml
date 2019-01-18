@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary">
+
+    <RelativeLayout
+        android:id="@+id/quote_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:padding="16dp">
+
+        <com.hapramp.views.AutoFitEditText
+            android:id="@+id/quote_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="256dp"
+            android:maxHeight="480dp"
+            android:background="@null"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:hint="\u0022 Write your quote... \u0022"
+            android:inputType="textMultiLine|textNoSuggestions"
+            android:isScrollContainer="false"
+            android:lineSpacingExtra="2dp"
+            android:textColor="@android:color/white"
+            android:textColorHint="#2eeeeeee"
+            android:textCursorDrawable="@null"
+            android:textSize="36sp"
+            android:textStyle="bold" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/quote_source"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/quote_box"
+            android:background="@null"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:hint="-- Source"
+            android:padding="12dp"
+            android:textColor="@color/white"
+            android:textColorHint="#2eeeeeee"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/switchColorBtn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:background="?android:selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:padding="14dp"
+        android:src="@drawable/change_color" />
+
+    <TextView
+        android:id="@+id/switchFontBtn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="2dp"
+        android:layout_toRightOf="@+id/switchColorBtn"
+        android:background="?android:selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="22dp"
+        android:textStyle="bold"
+        android:text="T" />
+
+    <FrameLayout
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="16dp"
+        android:background="@drawable/send_button_bg"
+        android:elevation="2dp">
+
+        <ImageView
+            android:id="@+id/sendBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginLeft="2dp"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:padding="12dp"
+            android:src="@drawable/send_button" />
+    </FrameLayout>
+
+</RelativeLayout>

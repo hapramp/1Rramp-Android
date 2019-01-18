@@ -27,4 +27,6 @@
     <color name="design">#0097a7</color>
     <color name="travel">#8bc34a</color>
 
+    <color name="black_overlay">#66000000</color>
+
 </resources>

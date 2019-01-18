@@ -22,6 +22,7 @@ import com.hapramp.utils.HashTagUtils;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.views.CommunityStripView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +47,8 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
   RelativeLayout postHeaderContainer;
   @BindView(R.id.image_selector)
   ImageView imageSelector;
+  @BindView(R.id.quote_create)
+  ImageView quoteCreate;
   @BindView(R.id.central_divider)
   FrameLayout centralDivider;
   @BindView(R.id.camera_capture)
@@ -75,6 +78,8 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
   private MediaSelectorListener mediaSelectorListener;
   private String defaultText;
   private String title;
+  private boolean deleteAfterUse;
+  private String filePath;
 
   public PostCreateComponent(@NonNull Context context) {
     super(context);
@@ -97,11 +102,20 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
       public void onImageRemoved() {
         placeholder.setVisibility(VISIBLE);
         mediaSelected = false;
+        if (deleteAfterUse) {
+          if (filePath != null) {
+            tryDeleteFilePath(filePath);
+          }
+        }
       }
 
       @Override
       public void onImageUploaded(String downloadUrl) {
-
+        if (deleteAfterUse) {
+          if (filePath != null) {
+            tryDeleteFilePath(filePath);
+          }
+        }
       }
     });
 
@@ -110,6 +124,15 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
       public void onClick(View view) {
         if (mediaSelectorListener != null) {
           mediaSelectorListener.onImageInsertOptionSelected();
+        }
+      }
+    });
+
+    quoteCreate.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        if (mediaSelectorListener != null) {
+          mediaSelectorListener.onQuoteInsertOptionSelected();
         }
       }
     });
@@ -143,13 +166,16 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
     });
   }
 
-  public String getTitle(){
-    return shortPostTitle.getText().toString().trim();
-  }
-
-  public void setDefaultCommunitySelection(List<String> coms) {
-    inlinePostCommunityView.setDefaultSelection(coms);
-    invalidateCommunityStrips(coms);
+  private void tryDeleteFilePath(String filePath) {
+    try {
+      File file = new File(filePath);
+      if (file.exists()) {
+        file.delete();
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   private void extractHashTagsAndDisplay(String body) {
@@ -175,9 +201,35 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
     init(context);
   }
 
+  public String getTitle() {
+    return shortPostTitle.getText().toString().trim();
+  }
+
+  public void setTitle(String title) {
+    shortPostTitle.setText(title);
+  }
+
+  public void setDefaultCommunitySelection(List<String> coms) {
+    inlinePostCommunityView.setDefaultSelection(coms);
+    invalidateCommunityStrips(coms);
+  }
+
+  public void invalidateCommunityStrips(List<String> communities) {
+    communityStripeView.setCommunities(communities);
+  }
+
   public void setImageResource(String filePath) {
     placeholder.setVisibility(GONE);
     mediaSelected = true;
+    this.deleteAfterUse = false;
+    postImageView.setImageSource(filePath);
+  }
+
+  public void setImageResource(String filePath, boolean deleteAfterUse) {
+    placeholder.setVisibility(GONE);
+    mediaSelected = true;
+    this.filePath = filePath;
+    this.deleteAfterUse = deleteAfterUse;
     postImageView.setImageSource(filePath);
   }
 
@@ -241,21 +293,13 @@ public class PostCreateComponent extends FrameLayout implements PostCommunityVie
     invalidateCommunityStrips(communities);
   }
 
-  public void invalidateCommunityStrips(List<String> communities) {
-    communityStripeView.setCommunities(communities);
-  }
-
   public void setDefaultText(String defaultText) {
     content.setText(defaultText);
   }
 
-  public void setTitle(String title) {
-    shortPostTitle.setText(title);
-  }
-
   public interface MediaSelectorListener {
     void onImageInsertOptionSelected();
-
+    void onQuoteInsertOptionSelected();
     void onCameraImageSelected();
   }
 }
