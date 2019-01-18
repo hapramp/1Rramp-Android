@@ -347,7 +347,6 @@ public class ParticipateEditorActivity extends AppCompatActivity implements Edit
           showPublishingProgressDialog(false, "");
           if (response.isSuccessful()) {
             toast("Confirmed your entry!");
-            subscribeForNotification();
           } else {
             toast("Failed to confirm your entry!");
           }
@@ -365,10 +364,6 @@ public class ParticipateEditorActivity extends AppCompatActivity implements Edit
       showPublishingProgressDialog(false, "");
       toast("Failed to confirm your entry!");
     }
-  }
-
-  private void subscribeForNotification() {
-    NotificationSubscriber.subscribeForParticularCompetition(mCompetitionId);
   }
 
   private void closeEditor() {

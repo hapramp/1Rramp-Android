@@ -33,40 +33,12 @@ public class NotificationSubscriber {
     });
   }
 
-  /**
-   * subscribe to listen for particular competition.
-   *
-   * @param competition_id is the topic to target participants
-   */
-  public static void subscribeForParticularCompetition(String competition_id) {
-    competition_id = "test_comp";
-    FirebaseMessaging.getInstance().subscribeToTopic(competition_id).addOnSuccessListener(new OnSuccessListener<Void>() {
-      @Override
-      public void onSuccess(Void aVoid) {
-
-      }
-    });
-  }
-
-  /**
-   * unsubscribe from listening for particular competition.
-   *
-   * @param competition_id is the topic to target participants
-   */
-  public static void unsubscribeForParticularCompetition(String competition_id) {
-    FirebaseMessaging.getInstance().unsubscribeFromTopic(competition_id).addOnSuccessListener(new OnSuccessListener<Void>() {
-      @Override
-      public void onSuccess(Void aVoid) {
-
-      }
-    });
-  }
 
   /**
    * unsubscribe from listening to new competitions.
    */
   public static void unsubscribeForNewCompetition() {
-    String topic = "competition";
+    String topic = "competitions";
     FirebaseMessaging.getInstance().unsubscribeFromTopic(topic).addOnSuccessListener(new OnSuccessListener<Void>() {
       @Override
       public void onSuccess(Void aVoid) {
