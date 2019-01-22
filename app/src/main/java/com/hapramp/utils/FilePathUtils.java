@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.ContentUris;
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -146,9 +145,8 @@ public class FilePathUtils {
       e.printStackTrace();
       returnPathAferSavingFile(context, uri);
     }
-    finally {
-      if (cursor != null)
-        cursor.close();
+    catch (Exception e) {
+      e.printStackTrace();
     }
     return nopath;
   }
