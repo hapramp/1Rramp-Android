@@ -16,6 +16,7 @@ public class HapRampMain extends MultiDexApplication {
 
   private static Context context;
   private static String fp;
+  private static String sessionId;
 
   public static String getFp() {
     return fp;
@@ -26,6 +27,11 @@ public class HapRampMain extends MultiDexApplication {
     HapRampMain.context = getApplicationContext();
     FirebaseApp.initializeApp(context);
     fp = FingerprintManager.getCertificateSHA1Fingerprint(context);
+    sessionId = String.valueOf(System.currentTimeMillis());
+  }
+
+  public static String getSessionId(){
+    return sessionId;
   }
 
   public static Context getContext() {
