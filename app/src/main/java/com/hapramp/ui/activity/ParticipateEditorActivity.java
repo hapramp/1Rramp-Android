@@ -35,13 +35,13 @@ import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.api.URLS;
 import com.hapramp.models.CompetitionEntryConfirmationBody;
 import com.hapramp.models.CompetitionEntryResponse;
-import com.hapramp.notification.NotificationSubscriber;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.GoogleImageFilePathReader;
+import com.hapramp.utils.ImageRotationHandler;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.PostHashTagPreprocessor;
 import com.hapramp.views.editor.LinkInsertDialog;
@@ -61,7 +61,7 @@ import xute.markdeditor.MarkDEditor;
 
 import static xute.markdeditor.Styles.TextComponentStyle.NORMAL;
 
-public class ParticipateEditorActivity extends AppCompatActivity implements EditorControlBar.EditorControlListener, SteemPostCreator.SteemPostCreatorCallback {
+public class ParticipateEditorActivity extends AppCompatActivity implements EditorControlBar.EditorControlListener, SteemPostCreator.SteemPostCreatorCallback, ImageRotationHandler.ImageRotationOperationListner {
 
   public static final String EXTRA_COMPETITION_ID = "competition_id";
   public static final String EXTRA_COMPETITION_TITLE = "competition_title";
@@ -112,6 +112,8 @@ public class ParticipateEditorActivity extends AppCompatActivity implements Edit
   private String mCompetitionHashtag;
   private String mCompetitionId;
   private String mCompetitionTitle;
+  private ImageRotationHandler imageRotationHandler;
+  private Handler handler;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +136,10 @@ public class ParticipateEditorActivity extends AppCompatActivity implements Edit
   }
 
   private void init() {
+    handler = new Handler();
     progressDialog = new ProgressDialog(this);
+    imageRotationHandler = new ImageRotationHandler(this);
+    imageRotationHandler.setImageRotationOperationListner(this);
     articleCategoryView.initCategory();
     setContestInfo();
     editorControlBar.setEditorControlListener(this);
@@ -429,23 +434,13 @@ public class ParticipateEditorActivity extends AppCompatActivity implements Edit
   }
 
   private void handleImageResult(final Intent intent) {
-    final Handler handler = new Handler();
     new Thread() {
       @Override
       public void run() {
         final String filePath = GoogleImageFilePathReader.getImageFilePath(ParticipateEditorActivity.this, intent);
-        handler.post(new Runnable() {
-          @Override
-          public void run() {
-            addImage(filePath);
-          }
-        });
+        imageRotationHandler.checkOrientationAndFixImage(filePath, 0);
       }
     }.start();
-  }
-
-  public void addImage(String filePath) {
-    markDEditor.insertImage(filePath);
   }
 
   @Override
@@ -472,5 +467,19 @@ public class ParticipateEditorActivity extends AppCompatActivity implements Edit
   @Override
   public void onPointerCaptureChanged(boolean hasCapture) {
 
+  }
+
+  @Override
+  public void onImageRotationFixed(final String filePath, boolean fileShouldBeDeleted, long uid) {
+    handler.post(new Runnable() {
+      @Override
+      public void run() {
+        addImage(filePath);
+      }
+    });
+  }
+
+  public void addImage(String filePath) {
+    markDEditor.insertImage(filePath);
   }
 }

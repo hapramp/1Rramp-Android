@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.ContentUris;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -126,11 +127,25 @@ public class FilePathUtils {
                                      Uri uri,
                                      String selection,
                                      String[] selectionArgs) {
+    Cursor cursor = null;
+    final String column = "_data";
+    final String[] projection = {column};
     try {
-      returnPathAferSavingFile(context, uri);
+      cursor = context.getContentResolver().query(uri, projection,
+        selection, selectionArgs, null);
+      if (cursor != null && cursor.moveToFirst()) {
+        final int index = cursor.getColumnIndexOrThrow(column);
+        String col = cursor.getString(index);
+        if (col != null) {
+          return col;
+        } else {
+          returnPathAferSavingFile(context, uri);
+        }
+      }
     }
     catch (Exception e) {
       e.printStackTrace();
+      returnPathAferSavingFile(context, uri);
     }
     return nopath;
   }
