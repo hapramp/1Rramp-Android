@@ -142,12 +142,16 @@ public class JSONParser {
   }
 
   private void parseAndStoreEligibility(JSONObject jsonObject) throws JSONException {
-    if (jsonObject.has("is_competition_user")) {
-      if (jsonObject.get("is_competition_user") instanceof Boolean) {
-        boolean eligible = jsonObject.getBoolean("is_competition_user");
-        HaprampPreferenceManager.getInstance().setCompetitionCreateEligibility(eligible);
-      }else{
-        HaprampPreferenceManager.getInstance().setCompetitionCreateEligibility(false);
+    String username = jsonObject.optString("username", "");
+    String loggedInUser = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+    if (username.equals(loggedInUser) && loggedInUser.length() > 0) {
+      if (jsonObject.has("is_competition_user")) {
+        if (jsonObject.get("is_competition_user") instanceof Boolean) {
+          boolean eligible = jsonObject.getBoolean("is_competition_user");
+          HaprampPreferenceManager.getInstance().setCompetitionCreateEligibility(eligible);
+        } else {
+          HaprampPreferenceManager.getInstance().setCompetitionCreateEligibility(false);
+        }
       }
     }
   }
