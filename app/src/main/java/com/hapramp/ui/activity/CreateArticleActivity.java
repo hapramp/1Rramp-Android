@@ -33,6 +33,7 @@ import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.GoogleImageFilePathReader;
+import com.hapramp.utils.ImageRotationHandler;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.PostHashTagPreprocessor;
 import com.hapramp.views.editor.LinkInsertDialog;
@@ -51,7 +52,7 @@ import xute.markdeditor.models.DraftModel;
 
 import static xute.markdeditor.Styles.TextComponentStyle.NORMAL;
 
-public class CreateArticleActivity extends AppCompatActivity implements SteemPostCreator.SteemPostCreatorCallback, EditorControlBar.EditorControlListener, DraftsHelper.DraftsHelperCallback {
+public class CreateArticleActivity extends AppCompatActivity implements SteemPostCreator.SteemPostCreatorCallback, EditorControlBar.EditorControlListener, DraftsHelper.DraftsHelperCallback, ImageRotationHandler.ImageRotationOperationListner {
   public static final String EXTRA_KEY_DRAFT_ID = "draftId";
   public static final String EXTRA_KEY_DRAFT_JSON = "draftJson";
   private static final int REQUEST_IMAGE_SELECTOR = 119;
@@ -100,6 +101,8 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   private boolean leftActivityWithPurpose = false;
 
   private boolean shouldSaveOrUpdateDraft = true;
+  private ImageRotationHandler imageRotationHandler;
+  private Handler handler;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +115,10 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   }
 
   private void init() {
+    handler = new Handler();
     draftsHelper = new DraftsHelper();
+    imageRotationHandler = new ImageRotationHandler(this);
+    imageRotationHandler.setImageRotationOperationListner(this);
     draftsHelper.setDraftsHelperCallback(this);
     progressDialog = new ProgressDialog(this);
     articleCategoryView.initCategory();
@@ -332,14 +338,6 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     return false;
   }
 
-  private void updateDraft() {
-    DraftModel draftModel = markDEditor.getDraft();
-    String draftTitle = articleTitleEt.getText().toString();
-    draftModel.setDraftTitle(draftTitle);
-    draftModel.setDraftId(mDraftId);
-    draftsHelper.updateBlogDraft(draftModel);
-  }
-
   private void closeEditor() {
     showProgressDialog(false, "");
     AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_ARTICLE);
@@ -349,6 +347,14 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
         close();
       }
     }, 1000);
+  }
+
+  private void updateDraft() {
+    DraftModel draftModel = markDEditor.getDraft();
+    String draftTitle = articleTitleEt.getText().toString();
+    draftModel.setDraftTitle(draftTitle);
+    draftModel.setDraftId(mDraftId);
+    draftsHelper.updateBlogDraft(draftModel);
   }
 
   private void toast(String s) {
@@ -390,23 +396,9 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
       @Override
       public void run() {
         final String filePath = GoogleImageFilePathReader.getImageFilePath(CreateArticleActivity.this, intent);
-        handler.post(new Runnable() {
-          @Override
-          public void run() {
-            addImage(filePath);
-          }
-        });
+        imageRotationHandler.checkOrientationAndFixImage(filePath, 0);
       }
     }.start();
-  }
-
-  public void addImage(String filePath) {
-    try {
-      markDEditor.insertImage(filePath);
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
   }
 
   @Override
@@ -526,5 +518,24 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   @Override
   public void onDraftDeleted(boolean success) {
 
+  }
+
+  @Override
+  public void onImageRotationFixed(final String filePath, boolean fileShouldBeDeleted, long uid) {
+    handler.post(new Runnable() {
+      @Override
+      public void run() {
+        addImage(filePath);
+      }
+    });
+  }
+
+  public void addImage(String filePath) {
+    try {
+      markDEditor.insertImage(filePath);
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }
