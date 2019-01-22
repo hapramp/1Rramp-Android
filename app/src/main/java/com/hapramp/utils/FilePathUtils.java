@@ -4,13 +4,11 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.ContentUris;
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -55,8 +53,7 @@ public class FilePathUtils {
       else if (isDownloadsDocument(uri)) {
         final String id = DocumentsContract.getDocumentId(uri);
         final Uri contentUri = ContentUris.withAppendedId(
-          Uri.parse("content://downloads/public_downloads"),
-          Long.valueOf(id));
+          Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
         return getDataColumn(context, contentUri, null, null);
       }
       // MediaProvider
@@ -86,7 +83,6 @@ public class FilePathUtils {
       // Return the remote address
       if (isGooglePhotosUri(uri))
         return uri.getLastPathSegment();
-
       return getDataColumn(context, uri, null, null);
     }
     // File
@@ -126,28 +122,15 @@ public class FilePathUtils {
    * @param selectionArgs (Optional) Selection arguments used in the query.
    * @return The value of the _data column, which is typically a file path.
    */
-  public static String getDataColumn(Context context, Uri uri,
-                                     String selection, String[] selectionArgs) {
-    Cursor cursor = null;
-    final String column = "_data";
-    final String[] projection = {column};
-
+  public static String getDataColumn(Context context,
+                                     Uri uri,
+                                     String selection,
+                                     String[] selectionArgs) {
     try {
-      cursor = context.getContentResolver().query(uri, projection,
-        selection, selectionArgs, null);
-      if (cursor != null && cursor.moveToFirst()) {
-        final int index = cursor.getColumnIndexOrThrow(column);
-        String col = cursor.getString(index);
-        if (col != null) {
-          return col;
-        } else {
-          returnPathAferSavingFile(context, uri);
-        }
-      }
+      returnPathAferSavingFile(context, uri);
     }
-    finally {
-      if (cursor != null)
-        cursor.close();
+    catch (Exception e) {
+      e.printStackTrace();
     }
     return nopath;
   }
@@ -174,7 +157,7 @@ public class FilePathUtils {
     try {
       InputStream inputStream = context.getContentResolver().openInputStream(uri);
       String filename = System.currentTimeMillis() + "_image.png";
-      File file = new File(context.getFilesDir(),filename);
+      File file = new File(context.getFilesDir(), filename);
       FileOutputStream output = new FileOutputStream(file);
       if (inputStream != null) {
         byte[] buffer = new byte[4 * 1024]; // or other buffer size
