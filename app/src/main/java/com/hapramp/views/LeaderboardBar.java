@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.hapramp.R;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.models.LeaderboardModel;
+import com.hapramp.ui.activity.LeaderboardActivity;
 import com.hapramp.ui.activity.ProfileActivity;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.ImageHandler;
@@ -53,7 +54,7 @@ public class LeaderboardBar extends FrameLayout {
 
   // variable to store disposables
   private CompositeDisposable compositeDisposable;
-  private List<LeaderboardModel.Winners> winners = new ArrayList<>();
+  private ArrayList<LeaderboardModel.Winners> winners = new ArrayList<>();
 
   public LeaderboardBar(@NonNull Context context) {
     this(context, null);
@@ -80,7 +81,7 @@ public class LeaderboardBar extends FrameLayout {
     View view = LayoutInflater.from(mContext).inflate(R.layout.leaderboard_bar, this);
     ButterKnife.bind(this, view);
     loadLeaders();
-    attachAvatarClickHandlers();
+    attachClickHandlers();
   }
 
   /**
@@ -141,17 +142,17 @@ public class LeaderboardBar extends FrameLayout {
       if (size > 0) {
         LeaderboardModel.Winners leader1Info = winners.get(0);
         leader1.setVisibility(VISIBLE);
-        loadImageTo(leader1Icon, avatarUrlOf(leader1Info.getmAuthor()));
+        loadImageTo(leader1Icon, leader1Info.avatarUrl(mContext));
 
         if (size > 1) {
           LeaderboardModel.Winners leader2Info = winners.get(1);
           leader2.setVisibility(VISIBLE);
-          loadImageTo(leader2Icon, avatarUrlOf(leader2Info.getmAuthor()));
+          loadImageTo(leader2Icon, leader2Info.avatarUrl(mContext));
 
           if (size > 2) {
             LeaderboardModel.Winners leader3Info = winners.get(2);
             leader3.setVisibility(VISIBLE);
-            loadImageTo(leader3Icon, avatarUrlOf(leader3Info.getmAuthor()));
+            loadImageTo(leader3Icon, leader3Info.avatarUrl(mContext));
 
             if (size > 3) {
               viewAll.setVisibility(VISIBLE);
@@ -168,7 +169,7 @@ public class LeaderboardBar extends FrameLayout {
   /**
    * attache click listeners to avatars
    */
-  private void attachAvatarClickHandlers(){
+  private void attachClickHandlers(){
     leader1.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -187,7 +188,15 @@ public class LeaderboardBar extends FrameLayout {
         navigateToProfilePageOf(winners.get(2).getmAuthor());
       }
     });
+
+    viewAll.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        openCompleteLeadeboardPage();
+      }
+    });
   }
+
 
   /**
    * opens profile page of given username
@@ -199,6 +208,12 @@ public class LeaderboardBar extends FrameLayout {
     mContext.startActivity(intent);
   }
 
+  private void openCompleteLeadeboardPage(){
+    Intent intent = new Intent(mContext, LeaderboardActivity.class);
+    intent.putParcelableArrayListExtra(LeaderboardActivity.EXTRA_LEADERBOARD, winners);
+    mContext.startActivity(intent);
+  }
+
   /**
    * loads image
    *
@@ -207,17 +222,6 @@ public class LeaderboardBar extends FrameLayout {
    */
   private void loadImageTo(ImageView imageView, String url) {
     ImageHandler.loadCircularImage(mContext, imageView, url);
-  }
-
-  /**
-   * format user avatar image url
-   *
-   * @param username of avar
-   * @return formatted username
-   */
-  private String avatarUrlOf(String username) {
-    return String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format),
-      username);
   }
 
   @Override

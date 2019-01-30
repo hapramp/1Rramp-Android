@@ -1,6 +1,5 @@
 package com.hapramp.ui.fragments;
 
-import android.animation.Animator;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -9,9 +8,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.AbsListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -183,6 +184,17 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
     }
   }
 
+  private void setMessagePanel(boolean show, String msg) {
+    if (messagePanel != null) {
+      if (show) {
+        messagePanel.setText(msg);
+        messagePanel.setVisibility(View.VISIBLE);
+      } else {
+        messagePanel.setVisibility(View.GONE);
+      }
+    }
+  }
+
   @Override
   public void onCompetitionsFetchError() {
     try {
@@ -194,17 +206,6 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
     }
     catch (Exception e) {
 
-    }
-  }
-
-  private void setMessagePanel(boolean show, String msg) {
-    if (messagePanel != null) {
-      if (show) {
-        messagePanel.setText(msg);
-        messagePanel.setVisibility(View.VISIBLE);
-      } else {
-        messagePanel.setVisibility(View.GONE);
-      }
     }
   }
 
