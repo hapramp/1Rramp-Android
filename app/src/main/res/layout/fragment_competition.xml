@@ -19,6 +19,7 @@
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <com.hapramp.views.LeaderboardBar
+        android:alpha="0"
         android:id="@+id/leader_board_bar"
         android:layout_width="match_parent"
         android:layout_height="64dp"/>

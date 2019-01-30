@@ -81,7 +81,6 @@ public class LeaderboardBar extends FrameLayout {
     View view = LayoutInflater.from(mContext).inflate(R.layout.leaderboard_bar, this);
     ButterKnife.bind(this, view);
     loadLeaders();
-    attachClickHandlers();
   }
 
   /**
@@ -160,6 +159,7 @@ public class LeaderboardBar extends FrameLayout {
           }
         }
       }
+      attachClickHandlers();
     }
     catch (Exception e) {
       e.printStackTrace();

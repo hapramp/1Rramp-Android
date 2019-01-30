@@ -11,7 +11,7 @@
     <TextView
         android:id="@+id/rank"
         android:layout_width="48dp"
-        android:text="1"
+        android:text=""
         android:layout_centerVertical="true"
         android:gravity="center"
         android:textSize="16sp"
@@ -20,11 +20,12 @@
 
     <ImageView
         android:id="@+id/avatar"
-        android:src="@drawable/winner_item_rank"
         android:layout_toRightOf="@+id/rank"
         android:layout_marginLeft="12dp"
         android:layout_centerVertical="true"
+        android:background="@drawable/leader_avatar_border"
         android:layout_width="36dp"
+        android:padding="3dp"
         android:layout_height="36dp" />
 
     <TextView
@@ -32,7 +33,7 @@
         android:layout_toLeftOf="@+id/earning"
         android:layout_toRightOf="@+id/avatar"
         android:layout_width="48dp"
-        android:text="bxute"
+        android:text=""
         android:textStyle="bold"
         android:layout_centerVertical="true"
         android:layout_marginLeft="8dp"
@@ -45,7 +46,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_width="48dp"
-        android:text="100$"
         android:layout_centerVertical="true"
         android:textColor="@color/Black87"
         android:gravity="center"

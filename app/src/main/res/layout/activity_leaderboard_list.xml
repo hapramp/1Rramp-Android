@@ -50,12 +50,12 @@
 
         <TextView
             android:id="@+id/rank_header"
-            android:text="RANK"
+            android:text="RANKS"
             android:textStyle="bold"
             android:textColor="@color/Black87"
             android:layout_width="wrap_content"
             android:gravity="center"
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="12dp"
             android:layout_marginRight="8dp"
             android:layout_height="match_parent" />
 
@@ -79,7 +79,7 @@
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginRight="12dp"
             android:layout_height="match_parent" />
 
     </RelativeLayout>

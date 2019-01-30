@@ -1,7 +1,9 @@
 package com.hapramp.ui.activity;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +19,7 @@ import com.hapramp.steem.models.Voter;
 import com.hapramp.ui.adapters.LeaderboardAdapter;
 import com.hapramp.ui.adapters.VoterListAdapter;
 import com.hapramp.utils.ReputationCalc;
+import com.hapramp.utils.ViewItemDecoration;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -58,6 +61,9 @@ public class LeaderboardActivity extends AppCompatActivity {
 
   private void initList() {
     leaders = getIntent().getParcelableArrayListExtra(EXTRA_LEADERBOARD);
+    Drawable drawable = ContextCompat.getDrawable(this, R.drawable.leaderboard_item_divider);
+    ViewItemDecoration viewItemDecoration = new ViewItemDecoration(drawable);
+    leaderboardRecyclerview.addItemDecoration(viewItemDecoration);
     leaderboardRecyclerview.setLayoutManager(new LinearLayoutManager(this));
     LeaderboardAdapter adapter = new LeaderboardAdapter();
     leaderboardRecyclerview.setAdapter(adapter);

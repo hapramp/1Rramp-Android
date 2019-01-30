@@ -2,6 +2,7 @@ package com.hapramp.ui.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.hapramp.R;
 import com.hapramp.models.LeaderboardModel;
+import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.ui.activity.ProfileActivity;
 import com.hapramp.utils.Constants;
 import com.hapramp.utils.ImageHandler;
@@ -23,9 +25,11 @@ import butterknife.ButterKnife;
 
 public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.LeaderItemViewHolder> {
   private ArrayList<LeaderboardModel.Winners> leaders;
+  private String myUsername;
 
   public LeaderboardAdapter() {
     this.leaders = new ArrayList<>();
+    myUsername = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
   }
 
   public void setLeaders(ArrayList<LeaderboardModel.Winners> leaders) {
@@ -72,6 +76,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
       username.setText(winner.getmAuthor());
       rank.setText(String.format("%d", pos));
       ImageHandler.loadCircularImage(avatar.getContext(), avatar, winner.avatarUrl(avatar.getContext()));
+      checkAndMakeMyRankOutstand(winner.getmAuthor());
       itemView.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -84,6 +89,14 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
       Intent intent = new Intent(context, ProfileActivity.class);
       intent.putExtra(Constants.EXTRAA_KEY_STEEM_USER_NAME, username);
       context.startActivity(intent);
+    }
+
+    private void checkAndMakeMyRankOutstand(String leader){
+      if(leader.equals(myUsername)){
+        avatar.setBackgroundResource(R.drawable.leader_avatar_border);
+      }else{
+        avatar.setBackgroundResource(0);
+      }
     }
   }
 }

@@ -149,12 +149,27 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
     });
   }
 
+  /**
+   * turns on the visibility of leaderboard bar
+   */
+  private void makeLeaderboardVisible(){
+    if(leaderBoardBar!=null){
+      leaderBoardBar.animate().alpha(1).setDuration(800).setInterpolator(new DecelerateInterpolator(2.0f));
+    }
+  }
+
+  /**
+   * animate leaderboard bar back to its position
+   */
   private void showLeaderboardBar() {
     if (leaderBoardBar != null) {
       leaderBoardBar.animate().translationY(0);
     }
   }
 
+  /**
+   * push up leaderboard bar and hide
+   */
   private void hideLeaderboardBar() {
     if (leaderBoardBar != null) {
       leaderBoardBar.animate().translationY(-leaderBoardBar.getMeasuredHeight());
@@ -164,6 +179,7 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
   @Override
   public void onCompetitionsListAvailable(List<CompetitionModel> competitions) {
     try {
+      makeLeaderboardVisible();
       if (swipeRefresh.isRefreshing()) {
         swipeRefresh.setRefreshing(false);
       }
