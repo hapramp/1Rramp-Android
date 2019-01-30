@@ -13,9 +13,30 @@ import java.util.List;
 
 public class LeaderboardModel implements Parcelable {
 
+  @SuppressWarnings("unused")
+  public static final Parcelable.Creator<LeaderboardModel> CREATOR = new Parcelable.Creator<LeaderboardModel>() {
+    @Override
+    public LeaderboardModel createFromParcel(Parcel in) {
+      return new LeaderboardModel(in);
+    }
+
+    @Override
+    public LeaderboardModel[] newArray(int size) {
+      return new LeaderboardModel[size];
+    }
+  };
   @Expose
   @SerializedName("winners")
   private ArrayList<Winners> mWinners;
+
+  protected LeaderboardModel(Parcel in) {
+    if (in.readByte() == 0x01) {
+      mWinners = new ArrayList<Winners>();
+      in.readList(mWinners, Winners.class.getClassLoader());
+    } else {
+      mWinners = null;
+    }
+  }
 
   public ArrayList<Winners> getmWinners() {
     return mWinners;
@@ -25,8 +46,26 @@ public class LeaderboardModel implements Parcelable {
     this.mWinners = mWinners;
   }
 
+  @Override
+  public String toString() {
+    return "LeaderboardModel{" +
+      "mWinners=" + mWinners +
+      '}';
+  }
 
   public static class Entries implements Parcelable {
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Entries> CREATOR = new Parcelable.Creator<Entries>() {
+      @Override
+      public Entries createFromParcel(Parcel in) {
+        return new Entries(in);
+      }
+
+      @Override
+      public Entries[] newArray(int size) {
+        return new Entries[size];
+      }
+    };
     @Expose
     @SerializedName("competition")
     private String mCompetition;
@@ -52,33 +91,18 @@ public class LeaderboardModel implements Parcelable {
       return 0;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-      dest.writeString(mCompetition);
-      dest.writeString(mPrize);
-      dest.writeInt(mRank);
-      dest.writeString(mPermlink);
-    }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Entries> CREATOR = new Parcelable.Creator<Entries>() {
-      @Override
-      public Entries createFromParcel(Parcel in) {
-        return new Entries(in);
-      }
-
-      @Override
-      public Entries[] newArray(int size) {
-        return new Entries[size];
-      }
-    };
-
     public String getmCompetition() {
       return mCompetition;
     }
 
     public void setmCompetition(String mCompetition) {
       this.mCompetition = mCompetition;
+    }    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+      dest.writeString(mCompetition);
+      dest.writeString(mPrize);
+      dest.writeInt(mRank);
+      dest.writeString(mPermlink);
     }
 
     public String getmPrize() {
@@ -104,9 +128,25 @@ public class LeaderboardModel implements Parcelable {
     public void setmPermlink(String mPermlink) {
       this.mPermlink = mPermlink;
     }
+
+
+
+
   }
 
   public static class Winners implements Parcelable {
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Winners> CREATOR = new Parcelable.Creator<Winners>() {
+      @Override
+      public Winners createFromParcel(Parcel in) {
+        return new Winners(in);
+      }
+
+      @Override
+      public Winners[] newArray(int size) {
+        return new Winners[size];
+      }
+    };
     @Expose
     @SerializedName("author")
     private String mAuthor;
@@ -128,37 +168,29 @@ public class LeaderboardModel implements Parcelable {
       }
     }
 
-    @Override
+    public int[] getRanks() {
+      int[] ranks = new int[3];
+      for (int i = 0; i < getmEntries().size(); i++) {
+        int rank = getmEntries().get(i).getmRank();
+        ranks[rank-1] += 1;
+      }
+      return ranks;
+    }
+
+    public List<Entries> getmEntries() {
+      return mEntries;
+    }
+
+    public void setmEntries(List<Entries> mEntries) {
+      this.mEntries = mEntries;
+    }    @Override
     public int describeContents() {
       return 0;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-      dest.writeString(mAuthor);
-      dest.writeFloat(mScore);
-      if (mEntries == null) {
-        dest.writeByte((byte) (0x00));
-      } else {
-        dest.writeByte((byte) (0x01));
-        dest.writeList(mEntries);
-      }
-    }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Winners> CREATOR = new Parcelable.Creator<Winners>() {
-      @Override
-      public Winners createFromParcel(Parcel in) {
-        return new Winners(in);
-      }
-
-      @Override
-      public Winners[] newArray(int size) {
-        return new Winners[size];
-      }
-    };
     /**
      * format user avatar image url
+     *
      * @return formatted username
      */
     public String avatarUrl(Context context) {
@@ -172,6 +204,16 @@ public class LeaderboardModel implements Parcelable {
 
     public void setmAuthor(String mAuthor) {
       this.mAuthor = mAuthor;
+    }    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+      dest.writeString(mAuthor);
+      dest.writeFloat(mScore);
+      if (mEntries == null) {
+        dest.writeByte((byte) (0x00));
+      } else {
+        dest.writeByte((byte) (0x01));
+        dest.writeList(mEntries);
+      }
     }
 
     public float getmScore() {
@@ -182,29 +224,11 @@ public class LeaderboardModel implements Parcelable {
       this.mScore = mScore;
     }
 
-    public List<Entries> getmEntries() {
-      return mEntries;
-    }
 
-    public void setmEntries(List<Entries> mEntries) {
-      this.mEntries = mEntries;
-    }
-  }
 
-  @Override
-  public String toString() {
-    return "LeaderboardModel{" +
-      "mWinners=" + mWinners +
-      '}';
-  }
 
-  protected LeaderboardModel(Parcel in) {
-    if (in.readByte() == 0x01) {
-      mWinners = new ArrayList<Winners>();
-      in.readList(mWinners, Winners.class.getClassLoader());
-    } else {
-      mWinners = null;
-    }
+
+
   }
 
   @Override
@@ -222,16 +246,5 @@ public class LeaderboardModel implements Parcelable {
     }
   }
 
-  @SuppressWarnings("unused")
-  public static final Parcelable.Creator<LeaderboardModel> CREATOR = new Parcelable.Creator<LeaderboardModel>() {
-    @Override
-    public LeaderboardModel createFromParcel(Parcel in) {
-      return new LeaderboardModel(in);
-    }
 
-    @Override
-    public LeaderboardModel[] newArray(int size) {
-      return new LeaderboardModel[size];
-    }
-  };
 }

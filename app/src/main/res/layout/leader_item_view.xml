@@ -5,6 +5,7 @@
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
     android:clickable="true"
+    android:animateLayoutChanges="true"
     android:background="?android:selectableItemBackground"
     android:layout_height="wrap_content">
 
@@ -12,7 +13,6 @@
         android:id="@+id/rank"
         android:layout_width="48dp"
         android:text=""
-        android:layout_centerVertical="true"
         android:gravity="center"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -22,10 +22,10 @@
         android:id="@+id/avatar"
         android:layout_toRightOf="@+id/rank"
         android:layout_marginLeft="12dp"
-        android:layout_centerVertical="true"
         android:background="@drawable/leader_avatar_border"
         android:layout_width="38dp"
         android:padding="3dp"
+        android:layout_marginTop="4dp"
         android:layout_height="38dp" />
 
     <TextView
@@ -35,7 +35,6 @@
         android:layout_width="48dp"
         android:text=""
         android:textStyle="bold"
-        android:layout_centerVertical="true"
         android:layout_marginLeft="8dp"
         android:gravity="center_vertical"
         android:textSize="16sp"
@@ -45,13 +44,101 @@
         android:id="@+id/earning"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_width="48dp"
-        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         android:textColor="@color/Black87"
         android:gravity="center"
         android:textSize="16sp"
         android:textStyle="bold"
+        android:clickable="true"
+        android:background="?android:selectableItemBackgroundBorderless"
         android:layout_marginRight="8dp"
         android:layout_height="48dp" />
 
+    <RelativeLayout
+        android:visibility="gone"
+        android:paddingLeft="36dp"
+        android:paddingRight="36dp"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:clickable="true"
+        android:id="@+id/winning_details_container"
+        android:layout_below="@+id/rank"
+        android:layout_width="match_parent"
+        android:layout_height="72dp">
+
+        <TextView
+            android:id="@+id/first_rank_count"
+            android:text="4"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:gravity="center"
+            android:background="@drawable/leader_rank_times_bg"
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
+
+        <TextView
+            android:layout_below="@+id/first_rank_count"
+            android:text="1st"
+            android:textSize="12sp"
+            android:layout_marginTop="-10dp"
+            android:layout_width="48dp"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:background="@drawable/rank_bg_label_bg"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/second_rank_count"
+            android:text="1"
+            android:layout_centerHorizontal="true"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:gravity="center"
+            android:background="@drawable/leader_rank_times_bg"
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
+
+        <TextView
+            android:layout_below="@+id/second_rank_count"
+            android:text="2nd"
+            android:layout_centerHorizontal="true"
+            android:textSize="12sp"
+            android:layout_marginTop="-10dp"
+            android:layout_width="48dp"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:background="@drawable/rank_bg_label_bg"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/third_rank_count"
+            android:layout_alignParentRight="true"
+            android:text="1"
+            android:layout_centerHorizontal="true"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:gravity="center"
+            android:background="@drawable/leader_rank_times_bg"
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
+
+        <TextView
+            android:layout_below="@+id/third_rank_count"
+            android:text="3rd"
+            android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true"
+            android:textSize="12sp"
+            android:layout_marginTop="-10dp"
+            android:layout_width="48dp"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:background="@drawable/rank_bg_label_bg"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
 </RelativeLayout>
