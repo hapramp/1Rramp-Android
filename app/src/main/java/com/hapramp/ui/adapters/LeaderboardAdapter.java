@@ -152,12 +152,12 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
       animation.setAnimationListener(new Animation.AnimationListener() {
         @Override
         public void onAnimationStart(Animation animation) {
-
+          winningDetailsContainer.setVisibility(View.VISIBLE);
         }
 
         @Override
         public void onAnimationEnd(Animation animation) {
-          winningDetailsContainer.setVisibility(View.VISIBLE);
+
         }
 
         @Override
