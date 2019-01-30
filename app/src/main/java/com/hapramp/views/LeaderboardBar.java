@@ -4,11 +4,11 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hapramp.R;
@@ -32,14 +32,20 @@ import io.reactivex.schedulers.Schedulers;
 public class LeaderboardBar extends FrameLayout {
   @BindView(R.id.leader_board_icon)
   ImageView leaderBoardIcon;
-  @BindView(R.id.leader1)
-  ImageView leader1Icon;
-  @BindView(R.id.leader2)
-  ImageView leader2Icon;
-  @BindView(R.id.leader3)
-  ImageView leader3Icon;
   @BindView(R.id.view_all)
   TextView viewAll;
+  @BindView(R.id.leader1_icon)
+  ImageView leader1Icon;
+  @BindView(R.id.leader1)
+  RelativeLayout leader1;
+  @BindView(R.id.leader2_icon)
+  ImageView leader2Icon;
+  @BindView(R.id.leader2)
+  RelativeLayout leader2;
+  @BindView(R.id.leader3_icon)
+  ImageView leader3Icon;
+  @BindView(R.id.leader3)
+  RelativeLayout leader3;
   private Context mContext;
 
   // variable to store disposables
@@ -123,28 +129,28 @@ public class LeaderboardBar extends FrameLayout {
   private void addLeadersToView() {
     try {
       int size = winners.size();
-      leader1Icon.setVisibility(GONE);
-      leader2Icon.setVisibility(GONE);
-      leader3Icon.setVisibility(GONE);
+      leader1.setVisibility(GONE);
+      leader2.setVisibility(GONE);
+      leader3.setVisibility(GONE);
       viewAll.setVisibility(GONE);
 
       if (size > 0) {
-        LeaderboardModel.Winners leader1 = winners.get(0);
-        leader1Icon.setVisibility(VISIBLE);
-        loadImageTo(leader1Icon, avatarUrlOf(leader1.getmAuthor()));
+        LeaderboardModel.Winners leader1Info = winners.get(0);
+        leader1.setVisibility(VISIBLE);
+        loadImageTo(leader1Icon, avatarUrlOf(leader1Info.getmAuthor()));
 
         if (size > 1) {
-          LeaderboardModel.Winners leader2 = winners.get(1);
-          leader2Icon.setVisibility(VISIBLE);
-          loadImageTo(leader2Icon, avatarUrlOf(leader2.getmAuthor()));
+          LeaderboardModel.Winners leader2Info = winners.get(1);
+          leader2.setVisibility(VISIBLE);
+          loadImageTo(leader2Icon, avatarUrlOf(leader2Info.getmAuthor()));
 
           if (size > 2) {
-            LeaderboardModel.Winners leader3 = winners.get(2);
-            leader3Icon.setVisibility(VISIBLE);
-            loadImageTo(leader3Icon, avatarUrlOf(leader3.getmAuthor()));
+            LeaderboardModel.Winners leader3Info = winners.get(2);
+            leader3.setVisibility(VISIBLE);
+            loadImageTo(leader3Icon, avatarUrlOf(leader3Info.getmAuthor()));
 
             if (size > 3) {
-             viewAll.setVisibility(VISIBLE);
+              viewAll.setVisibility(VISIBLE);
             }
           }
         }

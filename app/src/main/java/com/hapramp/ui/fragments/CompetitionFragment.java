@@ -1,5 +1,6 @@
 package com.hapramp.ui.fragments;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -148,12 +149,15 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
   }
 
   private void showLeaderboardBar() {
-    leaderBoardBar.animate().translationY(0);
-
+    if (leaderBoardBar != null) {
+      leaderBoardBar.animate().translationY(0);
+    }
   }
 
   private void hideLeaderboardBar() {
-    leaderBoardBar.animate().translationY(-leaderBoardBar.getMeasuredHeight());
+    if (leaderBoardBar != null) {
+      leaderBoardBar.animate().translationY(-leaderBoardBar.getMeasuredHeight());
+    }
   }
 
   @Override
