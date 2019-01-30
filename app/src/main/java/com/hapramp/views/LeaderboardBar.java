@@ -1,6 +1,7 @@
 package com.hapramp.views;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 import com.hapramp.R;
 import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.models.LeaderboardModel;
+import com.hapramp.ui.activity.ProfileActivity;
+import com.hapramp.utils.Constants;
 import com.hapramp.utils.ImageHandler;
 
 import java.util.ArrayList;
@@ -77,6 +80,7 @@ public class LeaderboardBar extends FrameLayout {
     View view = LayoutInflater.from(mContext).inflate(R.layout.leaderboard_bar, this);
     ButterKnife.bind(this, view);
     loadLeaders();
+    attachAvatarClickHandlers();
   }
 
   /**
@@ -159,6 +163,40 @@ public class LeaderboardBar extends FrameLayout {
     catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  /**
+   * attache click listeners to avatars
+   */
+  private void attachAvatarClickHandlers(){
+    leader1.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        navigateToProfilePageOf(winners.get(0).getmAuthor());
+      }
+    });
+    leader2.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        navigateToProfilePageOf(winners.get(1).getmAuthor());
+      }
+    });
+    leader3.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        navigateToProfilePageOf(winners.get(2).getmAuthor());
+      }
+    });
+  }
+
+  /**
+   * opens profile page of given username
+   * @param username of profile
+   */
+  private void navigateToProfilePageOf(String username){
+    Intent intent = new Intent(mContext, ProfileActivity.class);
+    intent.putExtra(Constants.EXTRAA_KEY_STEEM_USER_NAME, username);
+    mContext.startActivity(intent);
   }
 
   /**
