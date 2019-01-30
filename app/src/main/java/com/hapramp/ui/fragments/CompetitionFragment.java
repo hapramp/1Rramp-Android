@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -19,7 +20,9 @@ import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.CompetitionsListCallback;
 import com.hapramp.models.CompetitionModel;
 import com.hapramp.ui.adapters.CompetitionsListRecyclerAdapter;
+import com.hapramp.utils.PixelUtils;
 import com.hapramp.utils.ViewItemDecoration;
+import com.hapramp.views.LeaderboardBar;
 import com.hapramp.views.competition.CompetitionFeedItemView;
 
 import java.util.List;
@@ -41,8 +44,11 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
   TextView messagePanel;
   @BindView(R.id.swipe_refresh)
   SwipeRefreshLayout swipeRefresh;
+  @BindView(R.id.leader_board_bar)
+  LeaderboardBar leaderBoardBar;
   private Context mContext;
   private DataStore dataStore;
+  private int y;
 
   public CompetitionFragment() {
     // Required empty public constructor
@@ -106,18 +112,48 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
     dataStore = new DataStore();
     Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
     ViewItemDecoration viewItemDecoration = new ViewItemDecoration(drawable);
-    viewItemDecoration.setWantTopOffset(false, 0);
+    viewItemDecoration.setWantTopOffset(true, 64);
     competitionsListRecyclerAdapter = new CompetitionsListRecyclerAdapter(mContext);
     competitionsListRecyclerAdapter.setDeleteListener(this);
     competitionList.setLayoutManager(new LinearLayoutManager(mContext));
     competitionList.addItemDecoration(viewItemDecoration);
     competitionList.setAdapter(competitionsListRecyclerAdapter);
+    swipeRefresh.setProgressViewOffset(false, PixelUtils.dpToPx(0), PixelUtils.dpToPx(68));
     swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
       @Override
       public void onRefresh() {
         fetchCompetitionsList();
       }
     });
+
+    competitionList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+      @Override
+      public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+        super.onScrollStateChanged(recyclerView, newState);
+        if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL || newState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
+          if (y > 0) {
+            hideLeaderboardBar();
+          } else {
+            showLeaderboardBar();
+          }
+        }
+      }
+
+      @Override
+      public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        super.onScrolled(recyclerView, dx, dy);
+        y = dy;
+      }
+    });
+  }
+
+  private void showLeaderboardBar() {
+    leaderBoardBar.animate().translationY(0);
+
+  }
+
+  private void hideLeaderboardBar() {
+    leaderBoardBar.animate().translationY(-leaderBoardBar.getMeasuredHeight());
   }
 
   @Override

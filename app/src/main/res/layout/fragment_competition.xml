@@ -18,6 +18,11 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
+    <com.hapramp.views.LeaderboardBar
+        android:id="@+id/leader_board_bar"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"/>
+
     <TextView
         android:id="@+id/messagePanel"
         android:layout_width="wrap_content"
