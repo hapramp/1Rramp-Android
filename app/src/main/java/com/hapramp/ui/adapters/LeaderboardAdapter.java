@@ -30,6 +30,7 @@ import butterknife.ButterKnife;
 
 public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.LeaderItemViewHolder> {
 
+
   private ArrayList<LeaderboardModel.Winners> leaders;
   private String myUsername;
 
@@ -71,14 +72,25 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
     TextView username;
     @BindView(R.id.earning)
     TextView earning;
+    @BindView(R.id.expand_btn)
+    ImageView expandBtn;
+    @BindView(R.id.first_rank_medal)
+    ImageView firstRankMedal;
     @BindView(R.id.first_rank_count)
     TextView firstRankCount;
+    @BindView(R.id.second_rank_medal)
+    ImageView secondRankMedal;
     @BindView(R.id.second_rank_count)
     TextView secondRankCount;
+    @BindView(R.id.third_rank_medal)
+    ImageView thirdRankMedal;
     @BindView(R.id.third_rank_count)
     TextView thirdRankCount;
+    @BindView(R.id.collapse_btn)
+    ImageView collapseBtn;
     @BindView(R.id.winning_details_container)
     RelativeLayout winningDetailsContainer;
+
     private boolean isExpaned = false;
     private int fixedHeight = PixelUtils.dpToPx(64);
     private int ANIMATION_DURATION = 300;
@@ -101,29 +113,35 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
       itemView.getLayoutParams().height = fixedHeight;
       isExpaned = false;
       itemView.requestLayout();
-      itemView.setOnClickListener(new View.OnClickListener() {
+      avatar.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
           navigateToProfile(avatar.getContext(), winner.getmAuthor());
         }
       });
-      earning.setOnClickListener(new View.OnClickListener() {
+      username.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-          if (!isExpaned) {
-            scaleHeightAndShowView();
-            isExpaned = true;
-          } else {
-            scaleHeightAndHideView();
-            isExpaned = false;
-          }
+          navigateToProfile(avatar.getContext(), winner.getmAuthor());
+        }
+      });
+      expandBtn.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          expand();
+        }
+      });
+
+      itemView.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          expand();
         }
       });
       winningDetailsContainer.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-          scaleHeightAndHideView();
-          isExpaned = false;
+         collapse();
         }
       });
     }
@@ -142,22 +160,37 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
       context.startActivity(intent);
     }
 
-    private void scaleHeightAndShowView() {
+    private void expand() {
+      if (!isExpaned) {
+        scaleHeightAndShowView();
+        isExpaned = true;
+      } else {
+       collapse();
+      }
+    }
+
+
+    private void collapse() {
+      scaleHeightAndHideView();
+      isExpaned = false;
+    }
+
+    private void scaleHeightAndHideView() {
       HeightScaleAnimation animation = new HeightScaleAnimation();
-      int px = PixelUtils.dpToPx(72);
-      animation.setInterpolator(new DecelerateInterpolator(1.0f));
-      animation.setConfig(itemView, fixedHeight, true, px);
       animation.setDuration(ANIMATION_DURATION);
-      // animation.setFillAfter(true);
+      int px = PixelUtils.dpToPx(72);
+      animation.setInterpolator(new AccelerateInterpolator(1.0f));
+      animation.setConfig(itemView, fixedHeight, false, px);
+      winningDetailsContainer.setVisibility(View.GONE);
       animation.setAnimationListener(new Animation.AnimationListener() {
         @Override
         public void onAnimationStart(Animation animation) {
-          winningDetailsContainer.setVisibility(View.VISIBLE);
+
         }
 
         @Override
         public void onAnimationEnd(Animation animation) {
-
+          expandBtn.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -168,18 +201,17 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
       itemView.startAnimation(animation);
     }
 
-    private void scaleHeightAndHideView() {
+    private void scaleHeightAndShowView() {
       HeightScaleAnimation animation = new HeightScaleAnimation();
-      animation.setDuration(ANIMATION_DURATION);
       int px = PixelUtils.dpToPx(72);
-      animation.setInterpolator(new AccelerateInterpolator(1.0f));
-      animation.setConfig(itemView, fixedHeight, false, px);
-      //animation.setFillAfter(true);
-      winningDetailsContainer.setVisibility(View.GONE);
+      animation.setInterpolator(new DecelerateInterpolator(1.0f));
+      animation.setConfig(itemView, fixedHeight, true, px);
+      animation.setDuration(ANIMATION_DURATION);
       animation.setAnimationListener(new Animation.AnimationListener() {
         @Override
         public void onAnimationStart(Animation animation) {
-
+          expandBtn.setVisibility(View.INVISIBLE);
+          winningDetailsContainer.setVisibility(View.VISIBLE);
         }
 
         @Override

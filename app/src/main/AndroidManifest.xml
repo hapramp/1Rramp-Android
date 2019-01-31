@@ -174,7 +174,7 @@
         <activity
             android:name=".ui.activity.MicroCommunityActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.activity.LeaderboardActivity"></activity>
+        <activity android:name=".ui.activity.LeaderboardActivity" android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

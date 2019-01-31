@@ -1,144 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
-    android:clickable="true"
+    android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
-    android:background="?android:selectableItemBackground"
-    android:layout_height="wrap_content">
-
+    android:clickable="true"
+    android:paddingBottom="8dp"
+    android:paddingTop="8dp">
+    <!--android:background="?android:selectableItemBackground"-->
     <TextView
         android:id="@+id/rank"
         android:layout_width="48dp"
-        android:text=""
+        android:layout_height="48dp"
         android:gravity="center"
+        android:text=""
         android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_height="48dp" />
+        android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/avatar"
-        android:layout_toRightOf="@+id/rank"
-        android:layout_marginLeft="12dp"
-        android:background="@drawable/leader_avatar_border"
         android:layout_width="38dp"
-        android:padding="3dp"
+        android:layout_height="38dp"
+        android:layout_marginLeft="12dp"
         android:layout_marginTop="4dp"
-        android:layout_height="38dp" />
+        android:layout_toRightOf="@+id/rank"
+        android:background="@drawable/leader_avatar_border"
+        android:clickable="true"
+        android:padding="3dp" />
 
     <TextView
         android:id="@+id/username"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginLeft="8dp"
         android:layout_toLeftOf="@+id/earning"
         android:layout_toRightOf="@+id/avatar"
-        android:layout_width="48dp"
-        android:text=""
-        android:textStyle="bold"
-        android:layout_marginLeft="8dp"
+        android:clickable="true"
         android:gravity="center_vertical"
+        android:text=""
         android:textSize="16sp"
-        android:layout_height="48dp" />
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/earning"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginRight="8dp"
+        android:layout_toLeftOf="@+id/expand_btn"
+        android:gravity="center"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:textColor="@color/Black87"
-        android:gravity="center"
         android:textSize="16sp"
-        android:textStyle="bold"
-        android:clickable="true"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/expand_btn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentRight="true"
+        android:alpha="0.5"
         android:background="?android:selectableItemBackgroundBorderless"
-        android:layout_marginRight="8dp"
-        android:layout_height="48dp" />
+        android:clickable="true"
+        android:padding="16dp"
+        android:src="@drawable/drop_down" />
 
     <RelativeLayout
-        android:visibility="gone"
-        android:paddingLeft="36dp"
-        android:paddingRight="36dp"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp"
-        android:clickable="true"
         android:id="@+id/winning_details_container"
-        android:layout_below="@+id/rank"
         android:layout_width="match_parent"
-        android:layout_height="72dp">
+        android:layout_height="72dp"
+        android:layout_below="@+id/rank"
+        android:clickable="true"
+        android:paddingBottom="8dp"
+        android:paddingLeft="36dp"
+        android:paddingTop="8dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/first_rank_medal"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="12dp"
+            android:src="@drawable/medal_1" />
 
         <TextView
             android:id="@+id/first_rank_count"
-            android:text="4"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/colorPrimary"
-            android:gravity="center"
-            android:background="@drawable/leader_rank_times_bg"
             android:layout_width="48dp"
-            android:layout_height="48dp" />
-
-        <TextView
-            android:layout_below="@+id/first_rank_count"
-            android:text="1st"
-            android:textSize="12sp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/first_rank_medal"
             android:layout_marginTop="-10dp"
-            android:layout_width="48dp"
             android:gravity="center"
-            android:textColor="#ffffff"
-            android:background="@drawable/rank_bg_label_bg"
-            android:layout_height="wrap_content" />
+            android:text="4"
+            android:textColor="#dd8d2c"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/second_rank_medal"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_toRightOf="@+id/first_rank_medal"
+            android:gravity="center"
+            android:padding="12dp"
+            android:src="@drawable/medal_2" />
 
         <TextView
             android:id="@+id/second_rank_count"
-            android:text="1"
-            android:layout_centerHorizontal="true"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/colorPrimary"
-            android:gravity="center"
-            android:background="@drawable/leader_rank_times_bg"
             android:layout_width="48dp"
-            android:layout_height="48dp" />
-
-        <TextView
-            android:layout_below="@+id/second_rank_count"
-            android:text="2nd"
-            android:layout_centerHorizontal="true"
-            android:textSize="12sp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/second_rank_medal"
             android:layout_marginTop="-10dp"
-            android:layout_width="48dp"
+            android:layout_toRightOf="@+id/first_rank_medal"
             android:gravity="center"
-            android:textColor="#ffffff"
-            android:background="@drawable/rank_bg_label_bg"
-            android:layout_height="wrap_content" />
+            android:text="2"
+            android:textColor="#adab9e"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/third_rank_medal"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_toRightOf="@+id/second_rank_medal"
+            android:padding="12dp"
+            android:src="@drawable/medal_3" />
 
         <TextView
             android:id="@+id/third_rank_count"
-            android:layout_alignParentRight="true"
-            android:text="1"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/third_rank_medal"
             android:layout_centerHorizontal="true"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/colorPrimary"
+            android:layout_marginTop="-10dp"
+            android:layout_toRightOf="@+id/second_rank_medal"
             android:gravity="center"
-            android:background="@drawable/leader_rank_times_bg"
+            android:text="3"
+            android:textColor="#8d6e62"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/collapse_btn"
+            android:src="@drawable/up_arrow"
+            android:layout_alignParentRight="true"
+            android:padding="16dp"
+            android:alpha="0.5"
             android:layout_width="48dp"
             android:layout_height="48dp" />
-
-        <TextView
-            android:layout_below="@+id/third_rank_count"
-            android:text="3rd"
-            android:layout_alignParentRight="true"
-            android:layout_centerHorizontal="true"
-            android:textSize="12sp"
-            android:layout_marginTop="-10dp"
-            android:layout_width="48dp"
-            android:gravity="center"
-            android:textColor="#ffffff"
-            android:background="@drawable/rank_bg_label_bg"
-            android:layout_height="wrap_content" />
 
     </RelativeLayout>
 </RelativeLayout>
