@@ -43,6 +43,7 @@
         android:layout_below="@+id/column_headers" />
 
     <RelativeLayout
+        android:visibility="gone"
         android:id="@+id/column_headers"
         android:layout_width="match_parent"
         android:layout_below="@+id/action_bar_container"

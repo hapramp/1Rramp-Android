@@ -100,18 +100,47 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
       ButterKnife.bind(this, itemView);
     }
 
+    private void setRanks(int[] ranks) {
+      firstRankMedal.setVisibility(View.GONE);
+      firstRankCount.setVisibility(View.GONE);
+      secondRankCount.setVisibility(View.GONE);
+      secondRankMedal.setVisibility(View.GONE);
+      thirdRankCount.setVisibility(View.GONE);
+      thirdRankMedal.setVisibility(View.GONE);
+
+      //rank 1
+      if (ranks[0] > 0) {
+        firstRankMedal.setVisibility(View.VISIBLE);
+        firstRankCount.setVisibility(View.VISIBLE);
+        firstRankCount.setText(String.valueOf(ranks[0]));
+      }
+
+      //rank 2
+      if (ranks[1] > 0) {
+        secondRankMedal.setVisibility(View.VISIBLE);
+        secondRankCount.setVisibility(View.VISIBLE);
+        secondRankCount.setText(String.valueOf(ranks[1]));
+      }
+
+      //rank 3
+      if (ranks[2] > 0) {
+        thirdRankMedal.setVisibility(View.VISIBLE);
+        thirdRankCount.setVisibility(View.VISIBLE);
+        thirdRankCount.setText(String.valueOf(ranks[2]));
+      }
+    }
+
     public void bind(final LeaderboardModel.Winners winner, int pos) {
       earning.setText(String.format("$%s", winner.getmScore()));
       username.setText(winner.getmAuthor());
       rank.setText(String.format("%d", pos));
       ImageHandler.loadCircularImage(avatar.getContext(), avatar, winner.avatarUrl(avatar.getContext()));
       checkAndMakeMyRankOutstand(winner.getmAuthor());
-      firstRankCount.setText(String.valueOf(winner.getRanks()[0]));
-      secondRankCount.setText(String.valueOf(winner.getRanks()[1]));
-      thirdRankCount.setText(String.valueOf(winner.getRanks()[2]));
+      setRanks(winner.getRanks());
       winningDetailsContainer.setVisibility(View.GONE);
       itemView.getLayoutParams().height = fixedHeight;
       isExpaned = false;
+      expandBtn.setVisibility(View.VISIBLE);
       itemView.requestLayout();
       avatar.setOnClickListener(new View.OnClickListener() {
         @Override
@@ -141,7 +170,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
       winningDetailsContainer.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-         collapse();
+          collapse();
         }
       });
     }
@@ -165,7 +194,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         scaleHeightAndShowView();
         isExpaned = true;
       } else {
-       collapse();
+        collapse();
       }
     }
 
