@@ -24,6 +24,7 @@ import com.hapramp.api.RetrofitServiceGenerator;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.CompetitionEntriesFetchCallback;
 import com.hapramp.models.CommunityModel;
+import com.hapramp.models.CompetitionCreateResponse;
 import com.hapramp.models.CompetitionEntryResponse;
 import com.hapramp.models.CompetitionWinnerModel;
 import com.hapramp.models.FormattedBodyResponse;
@@ -49,6 +50,10 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -104,6 +109,8 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
   private ProgressDialog progressDialog;
   private ArrayList<CommunityModel> mCompetitionHashtags;
   private SteemPostCreator steemPostCreator;
+  private String REGISTER_PERMLINK_WINNER_DECLARE_TYPE = "declare_winners";
+  private String winnerDeclarationSteemPostPermlink = "";
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -292,13 +299,13 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
   }
 
   private void postWinnersBlogOnSteem(String body) {
-    String postPermlink = PermlinkGenerator.getPermlink("winner-list-" + mCompetitionTitle + "-" + mCompetitionId);
+    winnerDeclarationSteemPostPermlink = PermlinkGenerator.getPermlink("winner-list-" + mCompetitionTitle + "-" + mCompetitionId);
     ArrayList<String> tags = getHashTags();
     List<String> images = new ArrayList<>();
     images.add(mCompetitionImage);
     tags = PostHashTagPreprocessor.processHashtags(tags);
     String postTitle = "Winners announcement for \"" + mCompetitionTitle + "\"";
-    steemPostCreator.createPost(body, postTitle, images, tags, postPermlink);
+    steemPostCreator.createPost(body, postTitle, images, tags, winnerDeclarationSteemPostPermlink);
   }
 
   private ArrayList<String> getHashTags() {
@@ -500,11 +507,43 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
 
   @Override
   public void onPostCreatedOnSteem() {
-    showProgressDialog(false, "");
-    HaprampPreferenceManager.getInstance().setLastPostCreatedAt(MomentsUtils.getCurrentTime());
-    Toast.makeText(this, "Winners blog posted!", Toast.LENGTH_LONG).show();
-    finish();
+    registerPostPermlink();
   }
+
+
+  private void registerPostPermlink() {
+    SingleObserver<CompetitionCreateResponse> temp = RetrofitServiceGenerator.getService().registerCompetitionPermlink(
+      mCompetitionId,
+      REGISTER_PERMLINK_WINNER_DECLARE_TYPE,
+      getFullpermlink())
+      .subscribeOn(Schedulers.io())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribeWith(new SingleObserver<CompetitionCreateResponse>() {
+        @Override
+        public void onSubscribe(Disposable d) {
+
+        }
+
+        @Override
+        public void onSuccess(CompetitionCreateResponse competitionCreateResponse) {
+          showProgressDialog(false, "");
+          HaprampPreferenceManager.getInstance().setLastPostCreatedAt(MomentsUtils.getCurrentTime());
+          Toast.makeText(WinnerDeclarationActivity.this, "Winners blog posted!", Toast.LENGTH_LONG).show();
+          finish();
+        }
+
+        @Override
+        public void onError(Throwable e) {
+          e.printStackTrace();
+        }
+      });
+  }
+
+  private String getFullpermlink() {
+    String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+    return String.format("%s/%s", username, winnerDeclarationSteemPostPermlink);
+  }
+
 
   private void showProgressDialog(boolean show, String msg) {
     if (progressDialog != null) {
