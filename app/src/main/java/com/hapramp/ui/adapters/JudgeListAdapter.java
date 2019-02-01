@@ -65,8 +65,6 @@ public class JudgeListAdapter extends RecyclerView.Adapter<JudgeListAdapter.Judg
   public class JudgeItemViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.judge_image)
     ImageView judgeImage;
-    @BindView(R.id.judge_fullname)
-    TextView judgeFullname;
     @BindView(R.id.judge_username)
     TextView judgeUsername;
     @BindView(R.id.judge_add_btn)
@@ -81,7 +79,6 @@ public class JudgeListAdapter extends RecyclerView.Adapter<JudgeListAdapter.Judg
       ImageHandler.loadCircularImage(mContext, judgeImage,
         String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format),
           judge.getmUsername()));
-      judgeFullname.setText(judge.getmFullName());
       judgeUsername.setText(judge.getmUsername());
       if (judge.isSelected()) {
         judgeAddBtn.setText("Remove");

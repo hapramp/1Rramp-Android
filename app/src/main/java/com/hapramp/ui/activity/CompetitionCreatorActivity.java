@@ -14,7 +14,6 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.DatePicker;
@@ -548,12 +547,8 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
     return String.format("%sT%s", endDateInput.getText().toString(), endTimeInput.getText().toString());
   }
 
-  private List<Integer> getSelectedJudgesIds() {
-    List<Integer> sjs = new ArrayList<>();
-    for (int i = 0; i < selectedJudges.size(); i++) {
-      sjs.add(selectedJudges.get(i).getmId());
-    }
-    return sjs;
+  private List<String> getSelectedJudgesIds() {
+    return JudgeModel.getJudgesStringArrayListOf(selectedJudges);
   }
 
   private List<Integer> getSelectedCommunityIds() {

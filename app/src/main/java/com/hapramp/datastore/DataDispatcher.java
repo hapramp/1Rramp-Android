@@ -196,18 +196,6 @@ public class DataDispatcher {
     }
   }
 
-  void dispatchJudgesList(String response, final JudgesListFetchFromServerCallback judgesListCallback) {
-    if (judgesListCallback != null) {
-      final ArrayList<JudgeModel> judges = jsonParser.parseJudges(response);
-      handler.post(new Runnable() {
-        @Override
-        public void run() {
-          judgesListCallback.onJudgesListAvailable(judges);
-        }
-      });
-    }
-  }
-
   public void dispatchRc(String response, final ResourceCreditCallback resourceCreditCallback) {
     if (resourceCreditCallback != null) {
       if (response != null) {

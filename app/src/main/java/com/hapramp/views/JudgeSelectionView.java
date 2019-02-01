@@ -14,21 +14,19 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.models.JudgeModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class JudgeSelectionView extends FrameLayout {
-  public static final int MAX_JUDGES_ALLOWED = 2;
+  public static final int MAX_JUDGES_ALLOWED = 3;
   @BindView(R.id.judge_container)
   LinearLayout judgeContainer;
   @BindView(R.id.addBtn)
   ImageView addBtn;
   private Context mContext;
   private JudgeSelectionCallback judgeSelectionCallback;
-  private ArrayList<Object> judeges;
 
   public JudgeSelectionView(@NonNull Context context) {
     super(context);
@@ -37,7 +35,6 @@ public class JudgeSelectionView extends FrameLayout {
 
   private void init(Context context) {
     this.mContext = context;
-    judeges = new ArrayList<>();
     View view = LayoutInflater.from(context).inflate(R.layout.judges_selection_view, this);
     ButterKnife.bind(this, view);
     attachListener();
@@ -84,8 +81,10 @@ public class JudgeSelectionView extends FrameLayout {
           addBtn.setVisibility(GONE);
         }
       }
-    }catch (Exception e){
-      Toast.makeText(mContext,"Error while selecting judges!",Toast.LENGTH_LONG).show();
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+      Toast.makeText(mContext, "Error while selecting judges!", Toast.LENGTH_LONG).show();
     }
   }
 

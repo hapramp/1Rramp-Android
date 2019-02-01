@@ -129,6 +129,7 @@ public class CreateNewButtonView extends FrameLayout {
 
 
   private void setCompetitionCreationEligibility(boolean eligiblity){
+    eligiblity = true;
     eligibleForCompetitionCreation = eligiblity;
     if(eligiblity) {
       competitionBtn.setVisibility(VISIBLE);
@@ -196,6 +197,7 @@ public class CreateNewButtonView extends FrameLayout {
   }
 
   private void showCompetitionButton() {
+    //todo: enabled all users to create contest
     if (eligibleForCompetitionCreation) {
       competitionBtn.setClickable(true);
       competitionBtn.setVisibility(VISIBLE);

@@ -276,29 +276,6 @@ public class DataStore extends DataDispatcher {
   }
 
   /**
-   * fetches judges list.
-   *
-   * @param listFetchFromServerCallback callback to return results
-   */
-  public void requestsJudges(final JudgesListFetchFromServerCallback listFetchFromServerCallback) {
-    new Thread() {
-      @Override
-      public void run() {
-        try {
-          String url = UrlBuilder.judgesListUrl();
-          Response response = NetworkApi.getNetworkApiInstance().fetch(url);
-          String responseString;
-          responseString = response.body().string();
-          dispatchJudgesList(responseString, listFetchFromServerCallback);
-        }
-        catch (Exception e) {
-          e.printStackTrace();
-        }
-      }
-    }.start();
-  }
-
-  /**
    * @param username            communities for username
    * @param communitiesCallback callback
    */

@@ -68,7 +68,7 @@ public class JudgeRemovableItemView extends FrameLayout {
     ImageHandler.loadCircularImage(context, judgeImage,
       String.format(context.getResources().getString(R.string.steem_user_profile_pic_format),
         judge.getmUsername()));
-    judgeName.setText(judge.getmFullName());
+    judgeName.setText(judge.getmUsername());
   }
 
   public void setmJudgeRemoveListener(JudgeRemoveListener mJudgeRemoveListener) {

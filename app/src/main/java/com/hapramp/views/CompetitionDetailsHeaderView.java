@@ -177,12 +177,6 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
         final JudgeModel judgeModel = judges.get(i);
         JudgeItemView itemView = new JudgeItemView(mContext);
         itemView.setJudgeInfo(judgeModel);
-        itemView.setOnClickListener(new OnClickListener() {
-          @Override
-          public void onClick(View view) {
-            showJudgeDetails(judgeModel);
-          }
-        });
         //add to view
         judgeContainer.addView(itemView, i);
       }
@@ -251,17 +245,6 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
       header = getPrizeHeader(i);
       prizeRowItemView.setPrizeData(header, mCompetition.getPrizes().get(i));
       prizeDescriptionContainer.addView(prizeRowItemView, i);
-    }
-  }
-
-  private void showJudgeDetails(JudgeModel judgeModel) {
-    try {
-      JudgeProfileDialog judgeProfileDialog = new JudgeProfileDialog((AppCompatActivity) mContext);
-      judgeProfileDialog.setJudgeInfo(judgeModel);
-      judgeProfileDialog.show();
-    }
-    catch (Exception e) {
-      e.printStackTrace();
     }
   }
 

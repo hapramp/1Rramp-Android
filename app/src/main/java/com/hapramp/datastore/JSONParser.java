@@ -57,7 +57,6 @@ public class JSONParser {
         competitionModel.setmStartsAt(comp_item.optString("starts_at"));
         competitionModel.setmEndsAt(comp_item.optString("ends_at"));
         competitionModel.setmRules(comp_item.optString("rules"));
-        competitionModel.setmJudges(parseJudgesJsonArray(comp_item.getJSONArray("judges")));
         competitionModel.setCommunities(parseAllCommunity(comp_item.getJSONArray("communities").toString()));
         competitionModel.setPrizes(parsePrizes(comp_item.getJSONArray("prizes")));
         competitionModel.setWinners_announced(comp_item.getBoolean("winners_announced"));
@@ -68,26 +67,6 @@ public class JSONParser {
       e.printStackTrace();
     }
     return cps;
-  }
-
-  private ArrayList<JudgeModel> parseJudgesJsonArray(JSONArray array) {
-    ArrayList<JudgeModel> judgeModels = new ArrayList<>();
-    try {
-      JudgeModel jm;
-      for (int i = 0; i < array.length(); i++) {
-        JSONObject j = array.getJSONObject(i);
-        jm = new JudgeModel();
-        jm.setmBio(j.optString("bio"));
-        jm.setmFullName(j.optString("full_name"));
-        jm.setmId(j.optInt("id"));
-        jm.setmUsername(j.optString("username"));
-        judgeModels.add(jm);
-      }
-    }
-    catch (JSONException e) {
-      Log.d("JSONException", e.toString());
-    }
-    return judgeModels;
   }
 
   public ArrayList<CommunityModel> parseAllCommunity(String response) {
@@ -118,17 +97,6 @@ public class JSONParser {
       prizes.add(prizesJsonArray.getString(i));
     }
     return prizes;
-  }
-
-  public ArrayList<JudgeModel> parseJudges(String response) {
-    try {
-      JSONArray jsonArray = new JSONArray(response);
-      return parseJudgesJsonArray(jsonArray);
-    }
-    catch (JSONException e) {
-      e.printStackTrace();
-    }
-    return new ArrayList<>();
   }
 
   public void parseCompetitionEligibilityResponse(String response) {
