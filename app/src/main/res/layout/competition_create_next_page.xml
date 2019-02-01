@@ -109,7 +109,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Judges (Max 2)"
+                    android:text="Judges (Max 3)"
                     android:textColor="@color/colorAccent"
                     android:textSize="14sp"
                     android:textStyle="bold" />
