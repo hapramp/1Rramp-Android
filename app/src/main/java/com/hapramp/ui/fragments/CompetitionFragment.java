@@ -8,7 +8,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -129,32 +128,37 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
 
   @Override
   public void onCompetitionsListAvailable(CompetitionListResponse competitionsResponse, boolean isAppendable) {
-    lastCompetitionId = competitionsResponse.getLastId();
-    if (isAppendable) {
-      if (competitionsResponse.getCompetitionModels() != null) {
-        if (competitionsResponse.getCompetitionModels().size() > 0) {
-          competitionsListRecyclerAdapter.appendCompetitions(competitionsResponse.getCompetitionModels());
+    try {
+      lastCompetitionId = competitionsResponse.getLastId();
+      if (isAppendable) {
+        if (competitionsResponse.getCompetitionModels() != null) {
+          if (competitionsResponse.getCompetitionModels().size() > 0) {
+            competitionsListRecyclerAdapter.appendCompetitions(competitionsResponse.getCompetitionModels());
+          } else {
+            competitionsListRecyclerAdapter.noMoreCompetitionsAvailableToLoad();
+          }
         } else {
           competitionsListRecyclerAdapter.noMoreCompetitionsAvailableToLoad();
         }
       } else {
-        competitionsListRecyclerAdapter.noMoreCompetitionsAvailableToLoad();
-      }
-    } else {
-      if (swipeRefresh.isRefreshing()) {
-        swipeRefresh.setRefreshing(false);
-      }
-      setProgressVisibility(false);
-      if (competitionsResponse.getCompetitionModels() != null) {
-        if (competitionsResponse.getCompetitionModels().size() == 0) {
-          setMessagePanel(true, "No competitions!");
-        } else {
-          setMessagePanel(false, "");
-          competitionsListRecyclerAdapter.setCompetitions(competitionsResponse.getCompetitionModels());
+        if (swipeRefresh.isRefreshing()) {
+          swipeRefresh.setRefreshing(false);
         }
-      } else {
-        setMessagePanel(true, "Something went wrong!");
+        setProgressVisibility(false);
+        if (competitionsResponse.getCompetitionModels() != null) {
+          if (competitionsResponse.getCompetitionModels().size() == 0) {
+            setMessagePanel(true, "No competitions!");
+          } else {
+            setMessagePanel(false, "");
+            competitionsListRecyclerAdapter.setCompetitions(competitionsResponse.getCompetitionModels());
+          }
+        } else {
+          setMessagePanel(true, "Something went wrong!");
+        }
       }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
     }
   }
 
