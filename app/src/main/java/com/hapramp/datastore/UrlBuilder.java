@@ -23,6 +23,10 @@ public class UrlBuilder {
       "competitions";
   }
 
+  public static String competitionsListUrlAfterId(String id) {
+    return String.format("%scompetitions/~list?limit=4&start_after_id=%s", BASE_URL, id);
+  }
+
   public static String rcInfoUrl(String username) {
     return BASE_URL +
       "rc/" + username;

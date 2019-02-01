@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,18 +18,18 @@ import android.widget.TextView;
 import com.hapramp.R;
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.CompetitionsListCallback;
-import com.hapramp.models.CompetitionModel;
+import com.hapramp.models.CompetitionListResponse;
 import com.hapramp.ui.adapters.CompetitionsListRecyclerAdapter;
 import com.hapramp.utils.ViewItemDecoration;
 import com.hapramp.views.competition.CompetitionFeedItemView;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class CompetitionFragment extends Fragment implements CompetitionsListCallback, CompetitionFeedItemView.CompetitionItemDeleteListener {
+public class CompetitionFragment extends Fragment implements CompetitionsListCallback,
+  CompetitionFeedItemView.CompetitionItemDeleteListener,
+  CompetitionsListRecyclerAdapter.LoadMoreCompetitionsCallback {
 
   @BindView(R.id.competition_list)
   RecyclerView competitionList;
@@ -43,6 +44,8 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
   SwipeRefreshLayout swipeRefresh;
   private Context mContext;
   private DataStore dataStore;
+  private String lastCompetitionId = "";
+  private String lastLoadedOrLoadingId = "";
 
   public CompetitionFragment() {
     // Required empty public constructor
@@ -66,17 +69,27 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
     View view = inflater.inflate(R.layout.fragment_competition, container, false);
     unbinder = ButterKnife.bind(this, view);
     initializeList();
-    fetchCompetitionsList();
     return view;
   }
 
   @Override
   public void onResume() {
     super.onResume();
-    fetchCompetitionsList();
+    fetchCompetitions();
   }
 
-  private void fetchCompetitionsList() {
+  @Override
+  public void onDestroyView() {
+    super.onDestroyView();
+    unbinder.unbind();
+  }
+
+  @Override
+  public void onDetach() {
+    super.onDetach();
+  }
+
+  private void fetchCompetitions() {
     setProgressVisibility(true);
     dataStore.requestCompetitionLists(this);
   }
@@ -91,17 +104,6 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
     }
   }
 
-  @Override
-  public void onDestroyView() {
-    super.onDestroyView();
-    unbinder.unbind();
-  }
-
-  @Override
-  public void onDetach() {
-    super.onDetach();
-  }
-
   private void initializeList() {
     dataStore = new DataStore();
     Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
@@ -109,51 +111,50 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
     viewItemDecoration.setWantTopOffset(false, 0);
     competitionsListRecyclerAdapter = new CompetitionsListRecyclerAdapter(mContext);
     competitionsListRecyclerAdapter.setDeleteListener(this);
+    competitionsListRecyclerAdapter.setLoadMoreCallback(this);
     competitionList.setLayoutManager(new LinearLayoutManager(mContext));
     competitionList.addItemDecoration(viewItemDecoration);
     competitionList.setAdapter(competitionsListRecyclerAdapter);
     swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
       @Override
       public void onRefresh() {
-        fetchCompetitionsList();
+        refreshCompetitions();
       }
     });
   }
 
-  @Override
-  public void onCompetitionsListAvailable(List<CompetitionModel> competitions) {
-    try {
-      if (swipeRefresh.isRefreshing()) {
-        swipeRefresh.setRefreshing(false);
-      }
-    }
-    catch (Exception e) {
-
-    }
-    setProgressVisibility(false);
-    if (competitions != null) {
-      if (competitions.size() == 0) {
-        setMessagePanel(true, "No competitions!");
-      } else {
-        setMessagePanel(false, "");
-        competitionsListRecyclerAdapter.setCompetitions(competitions);
-      }
-    } else {
-      setMessagePanel(true, "Something went wrong!");
-    }
+  private void refreshCompetitions() {
+    dataStore.requestCompetitionLists(this);
   }
 
   @Override
-  public void onCompetitionsFetchError() {
-    try {
+  public void onCompetitionsListAvailable(CompetitionListResponse competitionsResponse, boolean isAppendable) {
+    lastCompetitionId = competitionsResponse.getLastId();
+    if (isAppendable) {
+      if (competitionsResponse.getCompetitionModels() != null) {
+        if (competitionsResponse.getCompetitionModels().size() > 0) {
+          competitionsListRecyclerAdapter.appendCompetitions(competitionsResponse.getCompetitionModels());
+        } else {
+          competitionsListRecyclerAdapter.noMoreCompetitionsAvailableToLoad();
+        }
+      } else {
+        competitionsListRecyclerAdapter.noMoreCompetitionsAvailableToLoad();
+      }
+    } else {
       if (swipeRefresh.isRefreshing()) {
         swipeRefresh.setRefreshing(false);
       }
       setProgressVisibility(false);
-      setMessagePanel(true, "Something went wrong!");
-    }
-    catch (Exception e) {
-
+      if (competitionsResponse.getCompetitionModels() != null) {
+        if (competitionsResponse.getCompetitionModels().size() == 0) {
+          setMessagePanel(true, "No competitions!");
+        } else {
+          setMessagePanel(false, "");
+          competitionsListRecyclerAdapter.setCompetitions(competitionsResponse.getCompetitionModels());
+        }
+      } else {
+        setMessagePanel(true, "Something went wrong!");
+      }
     }
   }
 
@@ -169,7 +170,33 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
   }
 
   @Override
+  public void onCompetitionsFetchError() {
+    try {
+      if (swipeRefresh.isRefreshing()) {
+        swipeRefresh.setRefreshing(false);
+      }
+      setProgressVisibility(false);
+      setMessagePanel(true, "Something went wrong!");
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
   public void onCompetitionItemDeleted() {
-    fetchCompetitionsList();
+    fetchCompetitions();
+  }
+
+  @Override
+  public void loadMoreCompetitions() {
+    fetchMoreCompetitions();
+  }
+
+  private void fetchMoreCompetitions() {
+    if (lastLoadedOrLoadingId != lastCompetitionId) {
+      dataStore.requestCompetitionLists(lastCompetitionId, this);
+      lastLoadedOrLoadingId = lastCompetitionId;
+    }
   }
 }

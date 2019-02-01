@@ -5,6 +5,7 @@ import android.util.Log;
 import com.hapramp.models.CommentModel;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.models.CompetitionAdmin;
+import com.hapramp.models.CompetitionListResponse;
 import com.hapramp.models.CompetitionModel;
 import com.hapramp.models.DelegationModel;
 import com.hapramp.models.JudgeModel;
@@ -31,11 +32,24 @@ public class JSONParser {
     markdownPreProcessor = new MarkdownPreProcessor();
   }
 
-  public List<CompetitionModel> parseCompetitionList(String response) {
+  public CompetitionListResponse parseCompetitionListResponse(String response){
+    CompetitionListResponse competitionListResponse = new CompetitionListResponse();
+    try{
+      JSONObject rootObject = new JSONObject(response);
+      competitionListResponse
+        .setLastId(rootObject.getString("last_id"));
+      competitionListResponse
+        .setCompetitionModels((ArrayList<CompetitionModel>) parseCompetitionList(rootObject.getJSONArray("competitions")));
+    }catch (Exception e){
+      e.printStackTrace();
+    }
+    return competitionListResponse;
+  }
+
+  public List<CompetitionModel> parseCompetitionList(JSONArray carray) {
     List<CompetitionModel> cps = new ArrayList<>();
     CompetitionModel competitionModel = null;
     try {
-      JSONArray carray = new JSONArray(response);
       for (int i = 0; i < carray.length(); i++) {
         competitionModel = new CompetitionModel();
         JSONObject comp_item = carray.getJSONObject(i);
@@ -60,7 +74,7 @@ public class JSONParser {
         JSONArray judgesJsonArray = comp_item.optJSONArray("judge_usernames");
         ArrayList<String> judgesList = new ArrayList<>();
         for(int j=0;j<judgesJsonArray.length();j++){
-          judgesList.add(judgesJsonArray.get(i).toString());
+          judgesList.add(judgesJsonArray.get(j).toString());
         }
         competitionModel.setmJudges(JudgeModel.getJudgeModelsFrom(judgesList));
         competitionModel.setCommunities(parseAllCommunity(comp_item.getJSONArray("communities").toString()));
