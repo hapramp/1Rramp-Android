@@ -57,6 +57,12 @@ public class JSONParser {
         competitionModel.setmStartsAt(comp_item.optString("starts_at"));
         competitionModel.setmEndsAt(comp_item.optString("ends_at"));
         competitionModel.setmRules(comp_item.optString("rules"));
+        JSONArray judgesJsonArray = comp_item.optJSONArray("judge_usernames");
+        ArrayList<String> judgesList = new ArrayList<>();
+        for(int j=0;j<judgesJsonArray.length();j++){
+          judgesList.add(judgesJsonArray.get(i).toString());
+        }
+        competitionModel.setmJudges(JudgeModel.getJudgeModelsFrom(judgesList));
         competitionModel.setCommunities(parseAllCommunity(comp_item.getJSONArray("communities").toString()));
         competitionModel.setPrizes(parsePrizes(comp_item.getJSONArray("prizes")));
         competitionModel.setWinners_announced(comp_item.getBoolean("winners_announced"));

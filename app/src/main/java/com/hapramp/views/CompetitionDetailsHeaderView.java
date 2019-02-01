@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -170,18 +169,21 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
 
   public void setJudges(final List<JudgeModel> judges) {
     try {
-      int len = judges.size() > MAX_JUDGES_ALLOWED ? MAX_JUDGES_ALLOWED : judges.size();
-      judgeContainer.removeAllViews();
-      //add items
-      for (int i = 0; i < len; i++) {
-        final JudgeModel judgeModel = judges.get(i);
-        JudgeItemView itemView = new JudgeItemView(mContext);
-        itemView.setJudgeInfo(judgeModel);
-        //add to view
-        judgeContainer.addView(itemView, i);
+      if (judges != null) {
+        int len = judges.size() > MAX_JUDGES_ALLOWED ? MAX_JUDGES_ALLOWED : judges.size();
+        judgeContainer.removeAllViews();
+        //add items
+        for (int i = 0; i < len; i++) {
+          final JudgeModel judgeModel = judges.get(i);
+          JudgeItemView itemView = new JudgeItemView(mContext);
+          itemView.setJudgeInfo(judgeModel);
+          //add to view
+          judgeContainer.addView(itemView, i);
+        }
       }
     }
     catch (Exception e) {
+      e.printStackTrace();
       Toast.makeText(mContext, "Error while selecting judges!", Toast.LENGTH_LONG).show();
     }
   }

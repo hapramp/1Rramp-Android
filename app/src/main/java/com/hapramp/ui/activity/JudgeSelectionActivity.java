@@ -95,7 +95,6 @@ public class JudgeSelectionActivity extends AppCompatActivity implements JudgeLi
         }
       }).subscribeWith(usernamesResponseObserver()));
 
-    hideKeyboardByDefault();
     hideSearchingProgress();
   }
 
@@ -158,7 +157,6 @@ public class JudgeSelectionActivity extends AppCompatActivity implements JudgeLi
   private void hideKeyboardByDefault() {
     getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     judgeSearchBar.clearFocus();
-    judgeSearchBar.setCursorVisible(false);
   }
 
   private void onSearchingUsernames() {

@@ -14,7 +14,7 @@ public class CompetitionCreateBody {
   @SerializedName("communities")
   private List<Integer> mCommunities;
   @Expose
-  @SerializedName("judges")
+  @SerializedName("judge_usernames")
   private List<String> mJudges;
   @Expose
   @SerializedName("rules")
