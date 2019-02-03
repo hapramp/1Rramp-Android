@@ -1,125 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="64dp"
+    android:layout_height="128dp"
     android:animateLayoutChanges="true"
-    android:background="#ededed">
-
-    <ImageView
-        android:id="@+id/leader_board_icon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="8dp"
-        android:src="@drawable/leader_cup_filled" />
+    android:background="#f4f4f4">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:id="@+id/create_new_contest_btn"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_toRightOf="@+id/leader_board_icon"
-        android:text="Leaderboard"
-        android:textStyle="bold"
-        android:textColor="@color/Black87"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/create_contest_bg"
+        android:hint="Create new contest..."
+        android:gravity="center_vertical"
+        android:paddingLeft="24dp"
         android:textSize="14sp" />
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/lb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="4dp"
-        android:orientation="horizontal">
+        android:layout_below="@+id/create_new_contest_btn">
 
-        <RelativeLayout
-            android:id="@+id/leader1"
-            android:clickable="true"
-            android:background="?selectableItemBackgroundBorderless"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/leader1_icon"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_centerVertical="true"
-                android:src="@drawable/leader_image_placeholder" />
-
-            <ImageView
-                android:src="@drawable/medal_1"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@+id/leader1_icon"
-                android:layout_marginTop="-4dp"
-                android:layout_width="20dp"
-                android:layout_height="20dp" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/leader2"
-            android:clickable="true"
-            android:background="?selectableItemBackgroundBorderless"
+        <ImageView
+            android:id="@+id/leader_board_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/leader2_icon"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_centerVertical="true"
-                android:src="@drawable/leader_image_placeholder" />
-
-            <ImageView
-                android:src="@drawable/medal_2"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@+id/leader2_icon"
-                android:layout_marginTop="-4dp"
-                android:layout_width="20dp"
-                android:layout_height="20dp" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:clickable="true"
-            android:background="?selectableItemBackgroundBorderless"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:id="@+id/leader3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/leader3_icon"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_centerVertical="true"
-                android:src="@drawable/leader_image_placeholder" />
-
-            <ImageView
-                android:src="@drawable/medal_3"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@+id/leader3_icon"
-                android:layout_marginTop="-4dp"
-                android:layout_width="20dp"
-                android:layout_height="20dp" />
-
-        </RelativeLayout>
+            android:src="@drawable/leader_cup_filled" />
 
         <TextView
-            android:id="@+id/view_all"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="8dp"
-            android:background="?selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:text="View All"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@+id/leader_board_icon"
+            android:text="Leaderboard"
             android:textColor="@color/Black87"
             android:textSize="14sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
-    </LinearLayout>
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:id="@+id/leader1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackgroundBorderless"
+                android:clickable="true">
+
+                <ImageView
+                    android:id="@+id/leader1_icon"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/leader_image_placeholder" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_below="@+id/leader1_icon"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="-4dp"
+                    android:src="@drawable/medal_1" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/leader2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:clickable="true">
+
+                <ImageView
+                    android:id="@+id/leader2_icon"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/leader_image_placeholder" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_below="@+id/leader2_icon"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="-4dp"
+                    android:src="@drawable/medal_2" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/leader3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:clickable="true">
+
+                <ImageView
+                    android:id="@+id/leader3_icon"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/leader_image_placeholder" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_below="@+id/leader3_icon"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="-4dp"
+                    android:src="@drawable/medal_3" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/view_all"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="8dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="View All"
+                android:textColor="@color/Black87"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+        </LinearLayout>
+    </RelativeLayout>
+
 </RelativeLayout>

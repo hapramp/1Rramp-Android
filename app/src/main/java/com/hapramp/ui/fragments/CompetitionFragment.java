@@ -114,7 +114,7 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
     dataStore = new DataStore();
     Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
     ViewItemDecoration viewItemDecoration = new ViewItemDecoration(drawable);
-    viewItemDecoration.setWantTopOffset(true, 64);
+    viewItemDecoration.setWantTopOffset(true, 128);
     competitionsListRecyclerAdapter = new CompetitionsListRecyclerAdapter(mContext);
     competitionsListRecyclerAdapter.setDeleteListener(this);
     competitionList.setLayoutManager(new LinearLayoutManager(mContext));
@@ -154,7 +154,7 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
    */
   private void makeLeaderboardVisible(){
     if(leaderBoardBar!=null){
-      leaderBoardBar.animate().alpha(1).setDuration(800).setInterpolator(new DecelerateInterpolator(2.0f));
+      leaderBoardBar.animate().alpha(1).setDuration(500).setInterpolator(new DecelerateInterpolator(2.0f));
     }
   }
 
