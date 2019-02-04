@@ -9,6 +9,7 @@ import com.hapramp.models.DeleteCompetitionResponse;
 import com.hapramp.models.DraftPostModel;
 import com.hapramp.models.DraftUploadResponse;
 import com.hapramp.models.FormattedBodyResponse;
+import com.hapramp.models.LeaderboardModel;
 import com.hapramp.models.LookupAccount;
 import com.hapramp.models.MicroCommunity;
 import com.hapramp.models.RebloggedModel;
@@ -86,6 +87,9 @@ public interface HaprampAPI {
     @Path("competition_id") String competitionId,
     @Path("blog_type") String blog_type,
     @Query("permlink") String permlink);
+  
+  @GET("competitions/leaderboard")
+  Single<LeaderboardModel> getLeaderboardList();
 
   @GET("drafts")
   Call<List<DraftUploadResponse>> getAllDrafts();
@@ -110,4 +114,6 @@ public interface HaprampAPI {
 
   @DELETE("micro-communities/{micro_community_tag}/join")
   Call<AppServerUserModel> leaveCommunity(@Path("micro_community_tag") String mc_id);
+
+
 }

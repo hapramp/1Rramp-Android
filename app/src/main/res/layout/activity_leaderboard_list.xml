@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.activity.VotersListActivity">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/action_bar_container"
@@ -29,25 +28,60 @@
             android:layout_toRightOf="@+id/backBtn"
             android:gravity="center"
             android:padding="8dp"
-            android:text="VOTERS"
+            android:textStyle="bold"
+            android:text="Contests Leaderboard"
             android:textColor="@color/Black87"
             android:textSize="16sp" />
 
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/voters_recyclerview"
+        android:id="@+id/leaderboard_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ffffff"
-        android:layout_below="@+id/action_bar_container" />
+        android:layout_below="@+id/column_headers" />
 
     <RelativeLayout
-        android:layout_below="@+id/action_bar_container"
+        android:visibility="gone"
+        android:id="@+id/column_headers"
         android:layout_width="match_parent"
+        android:layout_below="@+id/action_bar_container"
         android:layout_height="36dp">
 
+        <TextView
+            android:id="@+id/rank_header"
+            android:text="RANK"
+            android:textStyle="bold"
+            android:textColor="@color/Black87"
+            android:layout_width="wrap_content"
+            android:gravity="center"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="8dp"
+            android:layout_height="match_parent" />
 
+
+        <TextView
+            android:text="WINNERS"
+            android:layout_toRightOf="@+id/rank_header"
+            android:textStyle="bold"
+            android:textColor="@color/Black87"
+            android:layout_width="wrap_content"
+            android:gravity="center"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="8dp"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:text="EARNINGS"
+            android:layout_alignParentRight="true"
+            android:textStyle="bold"
+            android:textColor="@color/Black87"
+            android:layout_width="wrap_content"
+            android:gravity="center"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="12dp"
+            android:layout_height="match_parent" />
 
     </RelativeLayout>
 
