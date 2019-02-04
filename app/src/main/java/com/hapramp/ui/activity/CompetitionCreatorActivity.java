@@ -14,7 +14,6 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.DatePicker;
@@ -57,6 +56,10 @@ import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -69,6 +72,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
   public static final String EXTRA_KEY_DRAFT_JSON = "draftJson";
   private static final int REQUEST_IMAGE_SELECTOR = 1039;
   private static final int REQUEST_JUDGE_SELECTOR = 1037;
+  private static final String REGISTER_PERMLINK_ANNOUNCE_TYPE = "announce";
   @BindView(R.id.backBtn)
   ImageView backBtn;
   @BindView(R.id.toolbar_title)
@@ -162,6 +166,8 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
   private CompetitionCreateBody competitionCreateBody;
   private boolean shouldSaveOrUpdateDraft = true;
   private boolean leftActivityWithPurpose = false;
+  private String contestAnnouncementSteemPostPermlink;
+  private String contestId = "";
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -548,12 +554,8 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
     return String.format("%sT%s", endDateInput.getText().toString(), endTimeInput.getText().toString());
   }
 
-  private List<Integer> getSelectedJudgesIds() {
-    List<Integer> sjs = new ArrayList<>();
-    for (int i = 0; i < selectedJudges.size(); i++) {
-      sjs.add(selectedJudges.get(i).getmId());
-    }
-    return sjs;
+  private List<String> getSelectedJudgesIds() {
+    return JudgeModel.getJudgesStringArrayListOf(selectedJudges);
   }
 
   private List<Integer> getSelectedCommunityIds() {
@@ -595,7 +597,8 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
         @Override
         public void onResponse(Call<CompetitionCreateResponse> call, Response<CompetitionCreateResponse> response) {
           if (response.isSuccessful()) {
-            fetchFormattedBody(response.body().getCompetitionID());
+            contestId = response.body().getCompetitionID();
+            fetchFormattedBody(contestId);
           } else {
             showPublishingProgressDialog(false, "");
             ErrorResponse er = ErrorUtils.parseError(response);
@@ -640,7 +643,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
   private void createPostOnSteem(String body, String mCompetitionId) {
     steemPostCreator = new SteemPostCreator();
     steemPostCreator.setSteemPostCreatorCallback(this);
-    String postPermlink = PermlinkGenerator.getPermlink("Contest-" + competitionCreateBody.getmTitle() + "-" + mCompetitionId);
+    contestAnnouncementSteemPostPermlink = PermlinkGenerator.getPermlink("Contest-" + competitionCreateBody.getmTitle() + "-" + mCompetitionId);
     ArrayList<String> tags = (ArrayList<String>) competitionCommunityView.getSelectedTags();
     List<String> images = new ArrayList<>();
     //include extra hashtags
@@ -648,7 +651,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
     PostHashTagPreprocessor.processHashtags(tags);
     images.add(competitionCreateBody.getmImage());
     tags = PostHashTagPreprocessor.processHashtags(tags);
-    steemPostCreator.createPost(body, competitionCreateBody.getmTitle(), images, tags, postPermlink);
+    steemPostCreator.createPost(body, competitionCreateBody.getmTitle(), images, tags, contestAnnouncementSteemPostPermlink);
   }
 
   private void includeExtraTags(ArrayList<String> tags) {
@@ -798,11 +801,36 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
 
   @Override
   public void onPostCreatedOnSteem() {
-    isCompetitionPosted = true;
-    HaprampPreferenceManager.getInstance().setLastPostCreatedAt(MomentsUtils.getCurrentTime());
-    showPublishingProgressDialog(false, "");
-    toast("Contest created successfully!");
-    close();
+    registerPostPermlink();
+  }
+
+  private void registerPostPermlink() {
+    SingleObserver<CompetitionCreateResponse> temp = RetrofitServiceGenerator.getService().registerCompetitionPermlink(
+      contestId,
+      REGISTER_PERMLINK_ANNOUNCE_TYPE,
+      getFullpermlink())
+      .subscribeOn(Schedulers.io())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribeWith(new SingleObserver<CompetitionCreateResponse>() {
+        @Override
+        public void onSubscribe(Disposable d) {
+
+        }
+
+        @Override
+        public void onSuccess(CompetitionCreateResponse competitionCreateResponse) {
+          isCompetitionPosted = true;
+          HaprampPreferenceManager.getInstance().setLastPostCreatedAt(MomentsUtils.getCurrentTime());
+          showPublishingProgressDialog(false, "");
+          toast("Contest created successfully!");
+          close();
+        }
+
+        @Override
+        public void onError(Throwable e) {
+          e.printStackTrace();
+        }
+      });
   }
 
   @Override
@@ -829,6 +857,11 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
   @Override
   public void onDraftDeleted(boolean success) {
 
+  }
+
+  private String getFullpermlink(){
+    final String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+    return String.format("%s/%s", username, contestAnnouncementSteemPostPermlink);
   }
 }
 

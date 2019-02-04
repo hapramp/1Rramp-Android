@@ -248,19 +248,16 @@ public class SettingsFragment extends Fragment {
   private void revokeAccessToken() {
     final Handler mHanlder = new Handler();
     showLogoutProgress();
+    NotificationSubscriber.unsubscribeToAllTopics();
     final SteemConnect steemConnect = SteemConnectUtils.getSteemConnectInstance(
       HaprampPreferenceManager.getInstance().getSC2AccessToken()
     );
-    NotificationSubscriber.unsubscribeForUserTopic();
-    NotificationSubscriber.unsubscribeForNewCompetition();
     HaprampPreferenceManager.getInstance().clearPreferences();
-
     if (!ConnectionUtils.isConnected(mContext)) {
       hideLogoutProgress();
       navigateToLoginPage();
       return;
     }
-
     new Thread() {
       @Override
       public void run() {

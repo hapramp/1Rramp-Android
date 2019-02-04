@@ -5,6 +5,7 @@ import android.util.Log;
 import com.hapramp.models.CommentModel;
 import com.hapramp.models.CommunityModel;
 import com.hapramp.models.CompetitionAdmin;
+import com.hapramp.models.CompetitionListResponse;
 import com.hapramp.models.CompetitionModel;
 import com.hapramp.models.DelegationModel;
 import com.hapramp.models.JudgeModel;
@@ -31,11 +32,24 @@ public class JSONParser {
     markdownPreProcessor = new MarkdownPreProcessor();
   }
 
-  public List<CompetitionModel> parseCompetitionList(String response) {
+  public CompetitionListResponse parseCompetitionListResponse(String response){
+    CompetitionListResponse competitionListResponse = new CompetitionListResponse();
+    try{
+      JSONObject rootObject = new JSONObject(response);
+      competitionListResponse
+        .setLastId(rootObject.getString("last_id"));
+      competitionListResponse
+        .setCompetitionModels((ArrayList<CompetitionModel>) parseCompetitionList(rootObject.getJSONArray("competitions")));
+    }catch (Exception e){
+      e.printStackTrace();
+    }
+    return competitionListResponse;
+  }
+
+  public List<CompetitionModel> parseCompetitionList(JSONArray carray) {
     List<CompetitionModel> cps = new ArrayList<>();
     CompetitionModel competitionModel = null;
     try {
-      JSONArray carray = new JSONArray(response);
       for (int i = 0; i < carray.length(); i++) {
         competitionModel = new CompetitionModel();
         JSONObject comp_item = carray.getJSONObject(i);
@@ -57,7 +71,12 @@ public class JSONParser {
         competitionModel.setmStartsAt(comp_item.optString("starts_at"));
         competitionModel.setmEndsAt(comp_item.optString("ends_at"));
         competitionModel.setmRules(comp_item.optString("rules"));
-        competitionModel.setmJudges(parseJudgesJsonArray(comp_item.getJSONArray("judges")));
+        JSONArray judgesJsonArray = comp_item.optJSONArray("judge_usernames");
+        ArrayList<String> judgesList = new ArrayList<>();
+        for(int j=0;j<judgesJsonArray.length();j++){
+          judgesList.add(judgesJsonArray.get(j).toString());
+        }
+        competitionModel.setmJudges(JudgeModel.getJudgeModelsFrom(judgesList));
         competitionModel.setCommunities(parseAllCommunity(comp_item.getJSONArray("communities").toString()));
         competitionModel.setPrizes(parsePrizes(comp_item.getJSONArray("prizes")));
         competitionModel.setWinners_announced(comp_item.getBoolean("winners_announced"));
@@ -68,26 +87,6 @@ public class JSONParser {
       e.printStackTrace();
     }
     return cps;
-  }
-
-  private ArrayList<JudgeModel> parseJudgesJsonArray(JSONArray array) {
-    ArrayList<JudgeModel> judgeModels = new ArrayList<>();
-    try {
-      JudgeModel jm;
-      for (int i = 0; i < array.length(); i++) {
-        JSONObject j = array.getJSONObject(i);
-        jm = new JudgeModel();
-        jm.setmBio(j.optString("bio"));
-        jm.setmFullName(j.optString("full_name"));
-        jm.setmId(j.optInt("id"));
-        jm.setmUsername(j.optString("username"));
-        judgeModels.add(jm);
-      }
-    }
-    catch (JSONException e) {
-      Log.d("JSONException", e.toString());
-    }
-    return judgeModels;
   }
 
   public ArrayList<CommunityModel> parseAllCommunity(String response) {
@@ -118,17 +117,6 @@ public class JSONParser {
       prizes.add(prizesJsonArray.getString(i));
     }
     return prizes;
-  }
-
-  public ArrayList<JudgeModel> parseJudges(String response) {
-    try {
-      JSONArray jsonArray = new JSONArray(response);
-      return parseJudgesJsonArray(jsonArray);
-    }
-    catch (JSONException e) {
-      e.printStackTrace();
-    }
-    return new ArrayList<>();
   }
 
   public void parseCompetitionEligibilityResponse(String response) {

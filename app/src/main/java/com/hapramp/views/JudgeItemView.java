@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
 public class JudgeItemView extends FrameLayout {
   @BindView(R.id.judge_image)
   ImageView judgeImage;
-  @BindView(R.id.judge_name)
+  @BindView(R.id.judge_username)
   TextView judgeName;
   private Context mContext;
 
@@ -50,7 +50,6 @@ public class JudgeItemView extends FrameLayout {
     ImageHandler.loadCircularImage(mContext, judgeImage,
       String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format),
         judgeInfo.getmUsername()));
-
-    judgeName.setText(judgeInfo.getmFullName());
+    judgeName.setText(judgeInfo.getmUsername());
   }
 }

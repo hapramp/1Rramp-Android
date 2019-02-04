@@ -1,7 +1,5 @@
 package com.hapramp.api;
 
-import android.support.v7.widget.CardView;
-
 import com.hapramp.models.AppServerUserModel;
 import com.hapramp.models.CommunitySelectionServerUpdateBody;
 import com.hapramp.models.CompetitionCreateResponse;
@@ -35,6 +33,7 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import retrofit2.http.Url;
 
 /**
@@ -83,6 +82,12 @@ public interface HaprampAPI {
   @POST
   Single<LookupAccount> getUsernames(@Url String url, @Body String body);
 
+  @GET("competitions/{competition_id}/register-permlink/{blog_type}")
+  Single<CompetitionCreateResponse> registerCompetitionPermlink(
+    @Path("competition_id") String competitionId,
+    @Path("blog_type") String blog_type,
+    @Query("permlink") String permlink);
+  
   @GET("competitions/leaderboard")
   Single<LeaderboardModel> getLeaderboardList();
 

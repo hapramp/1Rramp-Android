@@ -27,16 +27,28 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="8dp"
             android:layout_toRightOf="@+id/backBtn"
-            android:text="Select Judge"
+            android:text="Select Judge (Max 3)"
             android:textColor="@color/Black87"
             android:textSize="16sp" />
     </RelativeLayout>
+
+    <EditText
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:layout_margin="4dp"
+        android:textSize="14sp"
+        android:background="@drawable/text_input_bg"
+        android:layout_below="@+id/toolbar_container"
+        android:id="@+id/judge_search_bar"
+        android:layout_width="match_parent"
+        android:hint="Search judges by username"
+        android:layout_height="48dp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/judges_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar_container" />
+        android:layout_below="@+id/judge_search_bar" />
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -54,9 +66,10 @@
         android:id="@+id/selected_judge_wrapper"
         android:layout_width="match_parent"
         android:layout_height="108dp"
+        android:background="#ffffff"
         android:layout_alignParentBottom="true"
         android:paddingRight="8dp"
-        android:visibility="gone">
+        android:visibility="invisible">
 
         <HorizontalScrollView
             android:layout_width="match_parent"

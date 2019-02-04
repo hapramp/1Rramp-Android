@@ -14,8 +14,8 @@ public class CompetitionCreateBody {
   @SerializedName("communities")
   private List<Integer> mCommunities;
   @Expose
-  @SerializedName("judges")
-  private List<Integer> mJudges;
+  @SerializedName("judge_usernames")
+  private List<String> mJudges;
   @Expose
   @SerializedName("rules")
   private String mRules;
@@ -54,11 +54,11 @@ public class CompetitionCreateBody {
     this.mCommunities = mCommunities;
   }
 
-  public List<Integer> getmJudges() {
+  public List<String> getmJudges() {
     return mJudges;
   }
 
-  public void setmJudges(List<Integer> mJudges) {
+  public void setmJudges(List<String> mJudges) {
     this.mJudges = mJudges;
   }
 

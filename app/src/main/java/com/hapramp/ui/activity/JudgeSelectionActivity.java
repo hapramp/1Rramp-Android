@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -14,20 +16,34 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hapramp.R;
-import com.hapramp.datastore.DataStore;
-import com.hapramp.datastore.callbacks.JudgesListFetchFromServerCallback;
+import com.hapramp.api.RetrofitServiceGenerator;
+import com.hapramp.api.URLS;
+import com.hapramp.datastore.SteemRequestBody;
 import com.hapramp.models.JudgeModel;
+import com.hapramp.models.LookupAccount;
 import com.hapramp.ui.adapters.JudgeListAdapter;
+import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.views.JudgeRemovableItemView;
+import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.jakewharton.rxbinding2.widget.TextViewTextChangeEvent;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.SingleSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Function;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.PublishSubject;
 
 import static com.hapramp.views.JudgeSelectionView.MAX_JUDGES_ALLOWED;
 
-public class JudgeSelectionActivity extends AppCompatActivity implements JudgesListFetchFromServerCallback, JudgeListAdapter.JudgeListListener {
+public class JudgeSelectionActivity extends AppCompatActivity implements JudgeListAdapter.JudgeListListener {
   public static final String EXTRA_SELECTED_JUDGES = "selected_judges";
   @BindView(R.id.backBtn)
   ImageView backBtn;
@@ -47,10 +63,113 @@ public class JudgeSelectionActivity extends AppCompatActivity implements JudgesL
   RelativeLayout selectedJudgeWrapper;
   @BindView(R.id.shadow)
   View shadow;
-  private DataStore dataStore;
+  @BindView(R.id.judge_search_bar)
+  EditText judgeSearchBar;
+  PublishSubject<String> publishSubject = PublishSubject.create();
   private JudgeListAdapter judgeListAdapter;
   private ArrayList<JudgeModel> selectedJudges;
   private ArrayList<JudgeModel> mAllJudges;
+  private CompositeDisposable compositeDisposable = new CompositeDisposable();
+
+  private void setupSearch() {
+    //Add text change watcher
+    compositeDisposable.add(
+      RxTextView.textChangeEvents(judgeSearchBar)
+        .skipInitialValue()
+        .debounce(300, TimeUnit.MILLISECONDS)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeWith(getSearchInputObserver()));
+
+    compositeDisposable.add(publishSubject
+      .debounce(300, TimeUnit.MILLISECONDS)
+      .distinctUntilChanged()
+      .switchMapSingle(new Function<String, SingleSource<LookupAccount>>() {
+        @Override
+        public SingleSource<LookupAccount> apply(String username) {
+          return RetrofitServiceGenerator
+            .getService()
+            .getUsernames(URLS.STEEMIT_API_URL, SteemRequestBody.lookupAccounts(username))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread());
+        }
+      }).subscribeWith(usernamesResponseObserver()));
+
+    hideSearchingProgress();
+  }
+
+  private DisposableObserver<LookupAccount> usernamesResponseObserver() {
+    return new DisposableObserver<LookupAccount>() {
+      @Override
+      public void onNext(LookupAccount accounts) {
+        onUserSuggestionsAvailable(accounts.getmResult());
+      }
+
+      @Override
+      public void onError(Throwable e) {
+
+      }
+
+      @Override
+      public void onComplete() {
+
+      }
+    };
+  }
+
+  private void onUserSuggestionsAvailable(List<String> usernames) {
+    if (progressBar != null) {
+      progressBar.setVisibility(View.GONE);
+    }
+    updateJudgesSelectionInList(JudgeModel.getJudgeModelsFrom((ArrayList<String>) usernames));
+    updateBottomBarView();
+  }
+
+  private DisposableObserver<TextViewTextChangeEvent> getSearchInputObserver() {
+    return new DisposableObserver<TextViewTextChangeEvent>() {
+      @Override
+      public void onNext(TextViewTextChangeEvent textViewTextChangeEvent) {
+        String searchTerm = textViewTextChangeEvent.text().toString().trim().toLowerCase();
+        if (searchTerm.length() > 0) {
+          if (ConnectionUtils.isConnected(JudgeSelectionActivity.this)) {
+            onSearchingUsernames();
+            publishSubject.onNext(searchTerm);
+          } else {
+            Toast.makeText(JudgeSelectionActivity.this, "No Connectivity", Toast.LENGTH_LONG).show();
+          }
+        } else {
+          hideKeyboardByDefault();
+        }
+      }
+
+      @Override
+      public void onError(Throwable e) {
+        hideKeyboardByDefault();
+      }
+
+      @Override
+      public void onComplete() {
+
+      }
+    };
+  }
+
+  private void hideKeyboardByDefault() {
+    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    judgeSearchBar.clearFocus();
+  }
+
+  private void onSearchingUsernames() {
+    if(progressBar!=null){
+      progressBar.setVisibility(View.VISIBLE);
+    }
+  }
+
+  private void hideSearchingProgress(){
+    if(progressBar!=null){
+      progressBar.setVisibility(View.GONE);
+    }
+  }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +179,7 @@ public class JudgeSelectionActivity extends AppCompatActivity implements JudgesL
     collectAlreadySelectedJudges();
     init();
     attachListeners();
-    fetchJudges();
+    setupSearch();
   }
 
   private void collectAlreadySelectedJudges() {
@@ -93,11 +212,6 @@ public class JudgeSelectionActivity extends AppCompatActivity implements JudgesL
     });
   }
 
-  private void fetchJudges() {
-    dataStore = new DataStore();
-    dataStore.requestsJudges(this);
-  }
-
   private void returnResult() {
     Intent intent = new Intent();
     intent.putParcelableArrayListExtra(EXTRA_SELECTED_JUDGES, selectedJudges);
@@ -105,26 +219,12 @@ public class JudgeSelectionActivity extends AppCompatActivity implements JudgesL
     finish();
   }
 
-  @Override
-  public void onJudgesListAvailable(ArrayList<JudgeModel> judgeList) {
-    if (progressBar != null) {
-      progressBar.setVisibility(View.GONE);
-    }
-    updateJudgesSelectionInList(judgeList);
-    updateBottomBarView();
-  }
-
-  @Override
-  public void onJudgesFetchError(String msg) {
-
-  }
-
   private void updateJudgesSelectionInList(ArrayList<JudgeModel> judgeList) {
     this.mAllJudges = judgeList;
     for (int i = 0; i < judgeList.size(); i++) {
       boolean found = false;
       for (int j = 0; j < selectedJudges.size(); j++) {
-        if (judgeList.get(i).getmId() == selectedJudges.get(j).getmId()) {
+        if (judgeList.get(i).getmUsername().equals(selectedJudges.get(j).getmUsername())) {
           found = true;
           break;
         }
@@ -142,6 +242,7 @@ public class JudgeSelectionActivity extends AppCompatActivity implements JudgesL
   public void onAddJudge(JudgeModel judge) {
     addJudge(judge);
     updateBottomBarView();
+    hideKeyboardByDefault();
   }
 
   @Override
@@ -199,7 +300,7 @@ public class JudgeSelectionActivity extends AppCompatActivity implements JudgesL
 
   private void removeJudge(JudgeModel judgeModel) {
     for (int i = 0; i < selectedJudges.size(); i++) {
-      if (selectedJudges.get(i).getmId() == judgeModel.getmId()) {
+      if (selectedJudges.get(i).getmUsername().equals(judgeModel.getmUsername())) {
         selectedJudges.remove(i);
       }
     }

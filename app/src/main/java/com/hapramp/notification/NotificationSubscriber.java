@@ -70,4 +70,10 @@ public class NotificationSubscriber {
       }
     });
   }
+
+  public static void unsubscribeToAllTopics(){
+    unsubscribeToUnrequiredTopic();
+    unsubscribeForUserTopic();
+    unsubscribeForNewCompetition();
+  }
 }

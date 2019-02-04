@@ -1,8 +1,6 @@
 package com.hapramp.datastore;
 
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.hapramp.datastore.callbacks.CommentsCallback;
 import com.hapramp.datastore.callbacks.CommunitiesCallback;
@@ -12,7 +10,6 @@ import com.hapramp.datastore.callbacks.DelegationsCallback;
 import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.datastore.callbacks.FollowersCallback;
 import com.hapramp.datastore.callbacks.FollowingsCallback;
-import com.hapramp.datastore.callbacks.JudgesListFetchFromServerCallback;
 import com.hapramp.datastore.callbacks.ResourceCreditCallback;
 import com.hapramp.datastore.callbacks.RewardFundMedianPriceCallback;
 import com.hapramp.datastore.callbacks.SinglePostCallback;
@@ -181,11 +178,35 @@ public class DataStore extends DataDispatcher {
       @Override
       public void run() {
         try {
-          String url = UrlBuilder.competitionsListUrl();
+          String url = UrlBuilder.competitionsListUrlAfterId("");
           Response response = NetworkApi.getNetworkApiInstance().fetch(url);
           String responseString;
           responseString = response.body().string();
-          dispatchCompetitionsList(responseString, competitionsListCallback);
+          dispatchCompetitionsList(responseString, competitionsListCallback, false);
+        }
+        catch (Exception e) {
+          e.printStackTrace();
+          dispatchCompetitionListFetchError(competitionsListCallback);
+        }
+      }
+    }.start();
+  }
+
+  /**
+   * fetches competitions list.
+   *
+   * @param competitionsListCallback callback to return results.
+   */
+  public void requestCompetitionLists(final String afterCompetitionId, final CompetitionsListCallback competitionsListCallback) {
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          String url = UrlBuilder.competitionsListUrlAfterId(afterCompetitionId);
+          Response response = NetworkApi.getNetworkApiInstance().fetch(url);
+          String responseString;
+          responseString = response.body().string();
+          dispatchCompetitionsList(responseString, competitionsListCallback, true);
         }
         catch (Exception e) {
           e.printStackTrace();
@@ -270,29 +291,6 @@ public class DataStore extends DataDispatcher {
           catch (Exception e) {
             e.printStackTrace();
           }
-        }
-      }
-    }.start();
-  }
-
-  /**
-   * fetches judges list.
-   *
-   * @param listFetchFromServerCallback callback to return results
-   */
-  public void requestsJudges(final JudgesListFetchFromServerCallback listFetchFromServerCallback) {
-    new Thread() {
-      @Override
-      public void run() {
-        try {
-          String url = UrlBuilder.judgesListUrl();
-          Response response = NetworkApi.getNetworkApiInstance().fetch(url);
-          String responseString;
-          responseString = response.body().string();
-          dispatchJudgesList(responseString, listFetchFromServerCallback);
-        }
-        catch (Exception e) {
-          e.printStackTrace();
         }
       }
     }.start();
