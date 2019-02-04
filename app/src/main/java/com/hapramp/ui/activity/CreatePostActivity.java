@@ -569,11 +569,13 @@ public class CreatePostActivity extends AppCompatActivity implements SteemPostCr
   }
 
   @Override
-  public void onNewDraftSaved(boolean success) {
+  public void onNewDraftSaved(boolean success,int mDraftId) {
+    this.mDraftId = mDraftId;
   }
 
   @Override
-  public void onDraftUpdated(boolean success) {
+  public void onDraftUpdated(boolean success,int draftId) {
+    this.mDraftId = draftId;
     showPublishingProgressDialog(false, "");
     close();
   }

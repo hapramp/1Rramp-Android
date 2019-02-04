@@ -96,7 +96,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   private String body;
   private List<String> images;
   private DraftsHelper draftsHelper;
-  private long mDraftId;
+  private long mDraftId = NO_DRAFT;
   private boolean blogPublished;
   private boolean leftActivityWithPurpose = false;
 
@@ -501,7 +501,8 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   }
 
   @Override
-  public void onNewDraftSaved(boolean success) {
+  public void onNewDraftSaved(boolean success,int draftId) {
+    mDraftId = draftId;
     if (success) {
       Toast.makeText(CreateArticleActivity.this, "Draft saved", Toast.LENGTH_LONG).show();
     } else {
@@ -510,7 +511,8 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   }
 
   @Override
-  public void onDraftUpdated(boolean success) {
+  public void onDraftUpdated(boolean success,int draftId) {
+    mDraftId = draftId;
     showProgressDialog(false, "");
     closeEditor();
   }

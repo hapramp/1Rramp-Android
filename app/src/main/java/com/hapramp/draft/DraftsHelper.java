@@ -37,14 +37,14 @@ public class DraftsHelper {
       @Override
       public void onResponse(Call<DraftUploadResponse> call, Response<DraftUploadResponse> response) {
         if (draftsHelperCallback != null) {
-          draftsHelperCallback.onNewDraftSaved(response.isSuccessful());
+          draftsHelperCallback.onNewDraftSaved(response.isSuccessful(), response.body().getmId());
         }
       }
 
       @Override
       public void onFailure(Call<DraftUploadResponse> call, Throwable t) {
         if (draftsHelperCallback != null) {
-          draftsHelperCallback.onNewDraftSaved(false);
+          draftsHelperCallback.onNewDraftSaved(false, 0);
         }
       }
     });
@@ -91,13 +91,13 @@ public class DraftsHelper {
       @Override
       public void onResponse(Call<DraftUploadResponse> call, Response<DraftUploadResponse> response) {
         if (draftsHelperCallback != null) {
-          draftsHelperCallback.onDraftUpdated(response.isSuccessful());
+          draftsHelperCallback.onDraftUpdated(response.isSuccessful(), response.body().getmId());
         }
       }
 
       @Override
       public void onFailure(Call<DraftUploadResponse> call, Throwable t) {
-        draftsHelperCallback.onDraftUpdated(false);
+        draftsHelperCallback.onDraftUpdated(false, 0);
       }
     });
   }
@@ -144,9 +144,9 @@ public class DraftsHelper {
   }
 
   public interface DraftsHelperCallback {
-    void onNewDraftSaved(boolean success);
+    void onNewDraftSaved(boolean success, int draftId);
 
-    void onDraftUpdated(boolean success);
+    void onDraftUpdated(boolean success, int draftId);
 
     void onDraftDeleted(boolean success);
   }
