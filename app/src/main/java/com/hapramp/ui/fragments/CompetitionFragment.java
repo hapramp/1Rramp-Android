@@ -211,25 +211,15 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
         } else {
           setMessagePanel(true, "Something went wrong!");
         }
-        
-      makeLeaderboardVisible();
-      if (swipeRefresh.isRefreshing()) {
-        swipeRefresh.setRefreshing(false);
+
+        makeLeaderboardVisible();
+        if (swipeRefresh.isRefreshing()) {
+          swipeRefresh.setRefreshing(false);
+        }
       }
     }
     catch (Exception e) {
       e.printStackTrace();
-    }
-  }
-
-  private void setMessagePanel(boolean show, String msg) {
-    if (messagePanel != null) {
-      if (show) {
-        messagePanel.setText(msg);
-        messagePanel.setVisibility(View.VISIBLE);
-      } else {
-        messagePanel.setVisibility(View.GONE);
-      }
     }
   }
 
