@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:clickable="true"
+    android:paddingBottom="8dp"
+    android:paddingTop="8dp">
+    <!--android:background="?android:selectableItemBackground"-->
+    <TextView
+        android:id="@+id/rank"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:text=""
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="4dp"
+        android:layout_toRightOf="@+id/rank"
+        android:background="@drawable/leader_avatar_border"
+        android:clickable="true"
+        android:padding="3dp" />
+
+    <TextView
+        android:id="@+id/username"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginLeft="8dp"
+        android:layout_toLeftOf="@+id/earning"
+        android:layout_toRightOf="@+id/avatar"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:text=""
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/earning"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginRight="8dp"
+        android:layout_toLeftOf="@+id/expand_btn"
+        android:gravity="center"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:textColor="@color/Black87"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/expand_btn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentRight="true"
+        android:background="?android:selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:padding="16dp"
+        android:src="@drawable/drop_down" />
+
+    <RelativeLayout
+        android:id="@+id/winning_details_container"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_below="@+id/rank"
+        android:clickable="true"
+        android:paddingBottom="8dp"
+        android:paddingLeft="36dp"
+        android:paddingTop="8dp"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/first_rank_medal"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="12dp"
+            android:src="@drawable/medal_1" />
+
+        <TextView
+            android:id="@+id/first_rank_count"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/first_rank_medal"
+            android:layout_marginTop="-10dp"
+            android:gravity="center"
+            android:text="4"
+            android:textColor="#dd8d2c"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/second_rank_medal"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_toRightOf="@+id/first_rank_medal"
+            android:gravity="center"
+            android:padding="12dp"
+            android:visibility="gone"
+            android:src="@drawable/medal_2" />
+
+        <TextView
+            android:id="@+id/second_rank_count"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/second_rank_medal"
+            android:layout_marginTop="-10dp"
+            android:visibility="gone"
+            android:layout_toRightOf="@+id/first_rank_medal"
+            android:gravity="center"
+            android:text="2"
+            android:textColor="#adab9e"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/third_rank_medal"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_toRightOf="@+id/second_rank_medal"
+            android:padding="12dp"
+            android:src="@drawable/medal_3" />
+
+        <TextView
+            android:id="@+id/third_rank_count"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/third_rank_medal"
+            android:layout_marginTop="-10dp"
+            android:layout_toRightOf="@+id/second_rank_medal"
+            android:gravity="center"
+            android:text="3"
+            android:textColor="#8d6e62"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/collapse_btn"
+            android:src="@drawable/up_arrow"
+            android:layout_alignParentRight="true"
+            android:padding="16dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
+
+    </RelativeLayout>
+</RelativeLayout>
