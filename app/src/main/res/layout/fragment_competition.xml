@@ -22,7 +22,7 @@
         android:alpha="0"
         android:id="@+id/leader_board_bar"
         android:layout_width="match_parent"
-        android:layout_height="64dp"/>
+        android:layout_height="68dp"/>
 
     <TextView
         android:id="@+id/messagePanel"

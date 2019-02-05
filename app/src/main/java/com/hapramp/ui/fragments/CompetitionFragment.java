@@ -115,7 +115,7 @@ public class CompetitionFragment extends Fragment implements CompetitionsListCal
     dataStore = new DataStore();
     Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.post_item_divider_view);
     ViewItemDecoration viewItemDecoration = new ViewItemDecoration(drawable);
-    viewItemDecoration.setWantTopOffset(true, 64);
+    viewItemDecoration.setWantTopOffset(true, 68);
     competitionsListRecyclerAdapter = new CompetitionsListRecyclerAdapter(mContext);
     competitionsListRecyclerAdapter.setDeleteListener(this);
     competitionsListRecyclerAdapter.setLoadMoreCallback(this);

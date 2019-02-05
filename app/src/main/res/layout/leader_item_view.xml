@@ -68,8 +68,7 @@
         android:layout_height="72dp"
         android:layout_below="@+id/rank"
         android:clickable="true"
-        android:paddingBottom="8dp"
-        android:paddingLeft="36dp"
+        android:paddingLeft="40dp"
         android:paddingTop="8dp"
         android:visibility="visible">
 
@@ -77,7 +76,7 @@
             android:id="@+id/first_rank_medal"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:padding="12dp"
+            android:padding="6dp"
             android:src="@drawable/medal_1" />
 
         <TextView
@@ -85,11 +84,11 @@
             android:layout_width="48dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/first_rank_medal"
-            android:layout_marginTop="-10dp"
+            android:layout_marginTop="-4dp"
             android:gravity="center"
             android:text="4"
             android:textColor="#dd8d2c"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <ImageView
@@ -98,7 +97,7 @@
             android:layout_height="48dp"
             android:layout_toRightOf="@+id/first_rank_medal"
             android:gravity="center"
-            android:padding="12dp"
+            android:padding="6dp"
             android:visibility="gone"
             android:src="@drawable/medal_2" />
 
@@ -107,13 +106,13 @@
             android:layout_width="48dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/second_rank_medal"
-            android:layout_marginTop="-10dp"
+            android:layout_marginTop="-4dp"
             android:visibility="gone"
             android:layout_toRightOf="@+id/first_rank_medal"
             android:gravity="center"
             android:text="2"
             android:textColor="#adab9e"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <ImageView
@@ -121,7 +120,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_toRightOf="@+id/second_rank_medal"
-            android:padding="12dp"
+            android:padding="6dp"
             android:src="@drawable/medal_3" />
 
         <TextView
@@ -129,12 +128,12 @@
             android:layout_width="48dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/third_rank_medal"
-            android:layout_marginTop="-10dp"
+            android:layout_marginTop="-4dp"
             android:layout_toRightOf="@+id/second_rank_medal"
             android:gravity="center"
             android:text="3"
             android:textColor="#8d6e62"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <ImageView
