@@ -1,6 +1,8 @@
 package com.hapramp.ui.activity;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,8 +15,11 @@ import com.hapramp.R;
 import com.hapramp.models.VoterData;
 import com.hapramp.steem.models.Voter;
 import com.hapramp.ui.adapters.VoterListAdapter;
+import com.hapramp.utils.ViewItemDecoration;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -33,6 +38,13 @@ public class VotersListActivity extends AppCompatActivity {
   RecyclerView userListRecyclerView;
   private ArrayList<Voter> voters;
   private double totalEarning = 0;
+  private Comparator<? super VoterData> votersComparator = new Comparator<VoterData>() {
+    @Override
+    public int compare(VoterData voter1, VoterData voter2) {
+      int comp = voter1.getRshare() > voter2.getRshare() ? -1 : 1;
+      return comp;
+    }
+  };
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +67,9 @@ public class VotersListActivity extends AppCompatActivity {
   private void initList() {
     totalEarning = getIntent().getDoubleExtra(EXTRA_TOTAL_EARNING, 0);
     voters = getIntent().getParcelableArrayListExtra(EXTRA_USER_LIST);
+    Drawable drawable = ContextCompat.getDrawable(this, R.drawable.leaderboard_item_divider);
+    ViewItemDecoration viewItemDecoration = new ViewItemDecoration(drawable);
+    userListRecyclerView.addItemDecoration(viewItemDecoration);
     userListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     VoterListAdapter voterListAdapter = new VoterListAdapter();
     userListRecyclerView.setAdapter(voterListAdapter);
@@ -70,12 +85,16 @@ public class VotersListActivity extends AppCompatActivity {
 
     for (int i = 0; i < voters.size(); i++) {
       double percent = voters.get(i).getPercent();
-      double rshare = voters.get(i).getRshare();
+      long rshare = voters.get(i).getRshare();
       double voteValue = calculateVoteValueFrom(rshare, totalRshares, totalEarning);
+      voteValue = Double.parseDouble(String.format("%.3f", voteValue));
+      String voteValueString = voteValue > 0 ? String.format(Locale.US, "$%.3f", voteValue) : "";
+
       processedData.add(new VoterData(voters.get(i).getVoter(),
-        String.format(Locale.US, String.format(Locale.US, "%.2f", percent / 100)),
-        String.format(Locale.US, "$%.2f", voteValue)));
+        String.format(Locale.US, String.format(Locale.US, "%.2f", percent / 100)) + "%",
+        rshare, voteValueString));
     }
+    Collections.sort(processedData, votersComparator);
     return processedData;
   }
 
