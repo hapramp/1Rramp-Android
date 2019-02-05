@@ -59,9 +59,7 @@ import com.hapramp.utils.Constants;
 import com.hapramp.utils.ImageHandler;
 import com.hapramp.utils.MomentsUtils;
 import com.hapramp.utils.PostMenu;
-import com.hapramp.utils.RegexUtils;
 import com.hapramp.utils.ShareUtils;
-import com.hapramp.utils.VoteUtils;
 import com.hapramp.views.CommunityStripView;
 import com.hapramp.views.VoterPeekView;
 import com.hapramp.views.comments.CommentsItemView;
@@ -680,6 +678,7 @@ public class DetailedActivity extends AppCompatActivity implements
 
   private void openVotersList() {
     Intent intent = new Intent(this, VotersListActivity.class);
+    intent.putExtra(VotersListActivity.EXTRA_TOTAL_EARNING, post.getManagedPayout());
     intent.putParcelableArrayListExtra(VotersListActivity.EXTRA_USER_LIST, post.getVoters());
     startActivity(intent);
   }

@@ -19,23 +19,23 @@ public class Voter implements Parcelable {
   };
   private String voter;
   private int percent;
-  private String reputation;
+  private long rshare;
   private String voteTime;
 
   protected Voter(Parcel in) {
     voter = in.readString();
     percent = in.readInt();
-    reputation = in.readString();
+    rshare = in.readLong();
     voteTime = in.readString();
   }
 
   public Voter() {
   }
 
-  public Voter(String voter, int percent, String reputation, String voteTime) {
+  public Voter(String voter, int percent, long rshare, String voteTime) {
     this.voter = voter;
     this.percent = percent;
-    this.reputation = reputation;
+    this.rshare = rshare;
     this.voteTime = voteTime;
   }
 
@@ -48,7 +48,7 @@ public class Voter implements Parcelable {
   public void writeToParcel(Parcel dest, int flags) {
     dest.writeString(voter);
     dest.writeInt(percent);
-    dest.writeString(reputation);
+    dest.writeLong(rshare);
     dest.writeString(voteTime);
   }
 
@@ -68,12 +68,12 @@ public class Voter implements Parcelable {
     this.percent = percent;
   }
 
-  public void setReputation(String reputation) {
-    this.reputation = reputation;
+  public long getRshare() {
+    return rshare;
   }
 
-  public String getReputation() {
-    return reputation;
+  public void setRshare(long rshare) {
+    this.rshare = rshare;
   }
 
   public void setVoteTime(String voteTime) {
@@ -85,7 +85,7 @@ public class Voter implements Parcelable {
     return "Voter{" +
       "voter='" + voter + '\'' +
       ", percent=" + percent +
-      ", reputation='" + reputation + '\'' +
+      ", reputation='" + rshare + '\'' +
       ", voteTime='" + voteTime + '\'' +
       '}';
   }

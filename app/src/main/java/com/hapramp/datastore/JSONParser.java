@@ -339,7 +339,7 @@ public class JSONParser {
         voters.add(new Voter(
           __voter.optString("voter",""),
           __voter.optInt("percent",0),
-          __voter.optString("reputation",""),
+          __voter.optLong("rshares",0),
           __voter.optString("time","")
         ));
       }

@@ -102,6 +102,55 @@ public class Feed implements Parcelable {
   public Feed() {
   }
 
+  public double getManagedPayout() {
+    try {
+      double pendingPayoutValue = Double.parseDouble(getPendingPayoutValue().split(" ")[0]);
+      double totalPayoutValue = Double.parseDouble(getTotalPayoutValue().split(" ")[0]);
+      double curatorPayoutValue = Double.parseDouble(getCuratorPayoutValue().split(" ")[0]);
+      if (pendingPayoutValue > 0) {
+        return pendingPayoutValue;
+      } else if ((totalPayoutValue + curatorPayoutValue) > 0) {
+        return (totalPayoutValue + curatorPayoutValue);
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+    return 0;
+  }
+
+  public String getPendingPayoutValue() {
+    return pendingPayoutValue;
+  }
+
+  public String getTotalPayoutValue() {
+    return totalPayoutValue;
+  }
+
+  public void setTotalPayoutValue(String totalPayoutValue) {
+    this.totalPayoutValue = totalPayoutValue;
+  }
+
+  public String getCuratorPayoutValue() {
+    return curatorPayoutValue;
+  }
+
+  public void setCuratorPayoutValue(String curatorPayoutValue) {
+    this.curatorPayoutValue = curatorPayoutValue;
+  }
+
+  public void setPendingPayoutValue(String pendingPayoutValue) {
+    this.pendingPayoutValue = pendingPayoutValue;
+  }
+
+  public String getMaxAcceptedPayoutValue() {
+    return maxAcceptedPayoutValue;
+  }
+
+  public void setMaxAcceptedPayoutValue(String maxAcceptedPayoutValue) {
+    this.maxAcceptedPayoutValue = maxAcceptedPayoutValue;
+  }
+
   @Override
   public int describeContents() {
     return 0;
@@ -169,14 +218,6 @@ public class Feed implements Parcelable {
 
   public void setCashOutTime(String cashOutTime) {
     this.cashOutTime = cashOutTime;
-  }
-
-  public String getMaxAcceptedPayoutValue() {
-    return maxAcceptedPayoutValue;
-  }
-
-  public void setMaxAcceptedPayoutValue(String maxAcceptedPayoutValue) {
-    this.maxAcceptedPayoutValue = maxAcceptedPayoutValue;
   }
 
   public boolean isResteemed() {
@@ -299,22 +340,6 @@ public class Feed implements Parcelable {
     this.children = children;
   }
 
-  public String getTotalPayoutValue() {
-    return totalPayoutValue;
-  }
-
-  public void setTotalPayoutValue(String totalPayoutValue) {
-    this.totalPayoutValue = totalPayoutValue;
-  }
-
-  public String getCuratorPayoutValue() {
-    return curatorPayoutValue;
-  }
-
-  public void setCuratorPayoutValue(String curatorPayoutValue) {
-    this.curatorPayoutValue = curatorPayoutValue;
-  }
-
   public String getRootAuthor() {
     return rootAuthor;
   }
@@ -337,14 +362,6 @@ public class Feed implements Parcelable {
 
   public void setUrl(String url) {
     this.url = url;
-  }
-
-  public String getPendingPayoutValue() {
-    return pendingPayoutValue;
-  }
-
-  public void setPendingPayoutValue(String pendingPayoutValue) {
-    this.pendingPayoutValue = pendingPayoutValue;
   }
 
   public String getTotalPendingPayoutValue() {

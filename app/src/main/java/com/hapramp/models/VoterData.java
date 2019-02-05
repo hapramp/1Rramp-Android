@@ -3,12 +3,12 @@ package com.hapramp.models;
 public class VoterData {
   private String username;
   private String perecent;
-  private String reputation;
+  private String voteValue;
 
-  public VoterData(String username, String perecent, String reputation) {
+  public VoterData(String username, String perecent, String voteValue) {
     this.username = username;
     this.perecent = perecent;
-    this.reputation = reputation;
+    this.voteValue = voteValue;
   }
 
   public String getUsername() {
@@ -27,11 +27,11 @@ public class VoterData {
     this.perecent = perecent;
   }
 
-  public String getReputation() {
-    return reputation;
+  public String getVoteValue() {
+    return voteValue;
   }
 
-  public void setReputation(String reputation) {
-    this.reputation = reputation;
+  public void setVoteValue(String reputation) {
+    this.voteValue = reputation;
   }
 }

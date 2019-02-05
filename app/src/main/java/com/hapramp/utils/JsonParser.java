@@ -179,7 +179,7 @@ public class JsonParser {
         voters.add(new Voter(
           __voter.getString("voter"),
           __voter.getInt("percent"),
-          __voter.getString("reputation"),
+          __voter.getLong("rshares"),
           __voter.getString("time")
         ));
       }
@@ -342,7 +342,7 @@ public class JsonParser {
         voters.add(new Voter(
           __voter.getString("voter"),
           __voter.getInt("percent"),
-          __voter.getString("reputation"),
+          __voter.getLong("rshares"),
           __voter.getString("time")
         ));
       }

@@ -58,8 +58,8 @@ public class VoterListAdapter extends RecyclerView.Adapter<VoterListAdapter.Vote
     TextView voterName;
     @BindView(R.id.vote_percent)
     TextView votePercent;
-    @BindView(R.id.reputation)
-    TextView reputation;
+    @BindView(R.id.vote_value)
+    TextView voteValue;
 
     public VoterItemViewHolder(View itemView) {
       super(itemView);
@@ -73,7 +73,7 @@ public class VoterListAdapter extends RecyclerView.Adapter<VoterListAdapter.Vote
           voterData.getUsername()));
       voterName.setText(voterData.getUsername());
       votePercent.setText(voterData.getPerecent());
-      reputation.setText(voterData.getReputation());
+      voteValue.setText(voterData.getVoteValue());
       itemView.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {

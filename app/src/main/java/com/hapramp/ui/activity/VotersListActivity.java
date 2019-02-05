@@ -13,7 +13,6 @@ import com.hapramp.R;
 import com.hapramp.models.VoterData;
 import com.hapramp.steem.models.Voter;
 import com.hapramp.ui.adapters.VoterListAdapter;
-import com.hapramp.utils.ReputationCalc;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -22,10 +21,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class VotersListActivity extends AppCompatActivity {
-
   public static final String EXTRA_USER_LIST = "extra_user_list";
-  public String quote;
-  public String base;
+  public static final String EXTRA_TOTAL_EARNING = "total_earning";
   @BindView(R.id.backBtn)
   ImageView backBtn;
   @BindView(R.id.action_bar_title)
@@ -35,6 +32,7 @@ public class VotersListActivity extends AppCompatActivity {
   @BindView(R.id.voters_recyclerview)
   RecyclerView userListRecyclerView;
   private ArrayList<Voter> voters;
+  private double totalEarning = 0;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +53,7 @@ public class VotersListActivity extends AppCompatActivity {
   }
 
   private void initList() {
+    totalEarning = getIntent().getDoubleExtra(EXTRA_TOTAL_EARNING, 0);
     voters = getIntent().getParcelableArrayListExtra(EXTRA_USER_LIST);
     userListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     VoterListAdapter voterListAdapter = new VoterListAdapter();
@@ -64,11 +63,23 @@ public class VotersListActivity extends AppCompatActivity {
 
   private ArrayList<VoterData> processVoterData(ArrayList<Voter> voters) {
     ArrayList<VoterData> processedData = new ArrayList<>();
+    long totalRshares = 0;
     for (int i = 0; i < voters.size(); i++) {
+      totalRshares += voters.get(i).getRshare();
+    }
+
+    for (int i = 0; i < voters.size(); i++) {
+      double percent = voters.get(i).getPercent();
+      double rshare = voters.get(i).getRshare();
+      double voteValue = calculateVoteValueFrom(rshare, totalRshares, totalEarning);
       processedData.add(new VoterData(voters.get(i).getVoter(),
-        String.format(Locale.US, "%d%%", voters.get(i).getPercent() / 100),
-        String.format(Locale.US, "(%.2f)", ReputationCalc.calculateReputation(Long.valueOf(voters.get(i).getReputation())))));
+        String.format(Locale.US, String.format(Locale.US, "%.2f", percent / 100)),
+        String.format(Locale.US, "$%.2f", voteValue)));
     }
     return processedData;
+  }
+
+  private double calculateVoteValueFrom(double rshare, long totalRshares, double totalEarning) {
+    return (totalEarning * rshare) / totalRshares;
   }
 }
