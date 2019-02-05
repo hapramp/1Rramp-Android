@@ -212,6 +212,7 @@ public class PostItemView extends FrameLayout {
 
   private void openVotersList() {
     Intent intent = new Intent(mContext, VotersListActivity.class);
+    intent.putExtra(VotersListActivity.EXTRA_TOTAL_EARNING,mFeed.getManagedPayout());
     intent.putParcelableArrayListExtra(VotersListActivity.EXTRA_USER_LIST, mFeed.getVoters());
     mContext.startActivity(intent);
   }
