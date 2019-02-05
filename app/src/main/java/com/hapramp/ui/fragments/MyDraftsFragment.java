@@ -187,12 +187,12 @@ public class MyDraftsFragment extends Fragment implements DraftsHelper.DraftsHel
   }
 
   @Override
-  public void onNewDraftSaved(boolean success) {
+  public void onNewDraftSaved(boolean success,int draftId) {
 
   }
 
   @Override
-  public void onDraftUpdated(boolean success) {
+  public void onDraftUpdated(boolean success,int draftId) {
 
   }
 

@@ -161,7 +161,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
   private ProgressDialog progressDialog;
   private SteemPostCreator steemPostCreator;
   private boolean isCompetitionPosted;
-  private long mDraftId;
+  private long mDraftId = NO_COMP_DRAFT;
   private DraftsHelper mDraftHelper;
   private CompetitionCreateBody competitionCreateBody;
   private boolean shouldSaveOrUpdateDraft = true;
@@ -331,6 +331,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
       showPublishingProgressDialog(true, "Saving changes...");
       shouldSaveOrUpdateDraft = false;
       updateDraft();
+      closeAfterSomeTime();
       return;
     }
 
@@ -537,6 +538,16 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
     mDraftHelper.updateContestDraft(competitionDraftModel);
   }
 
+  private void closeAfterSomeTime() {
+    new Handler().postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        showPublishingProgressDialog(false, "");
+        close();
+      }
+    }, 2000);
+  }
+
   private void close() {
     finish();
     overridePendingTransition(R.anim.slide_down_enter, R.anim.slide_down_exit);
@@ -740,9 +751,8 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
    * Adds new draft to database.
    */
   private void addNewDraft() {
-    mDraftId = System.currentTimeMillis();
     ContestDraftModel competitionDraftModel = new ContestDraftModel();
-    competitionDraftModel.setDraftId(mDraftId);
+    competitionDraftModel.setDraftId(0);
     competitionDraftModel.setCompetitionTitle(competitionTitle.getText().toString());
     competitionDraftModel.setCompetitionDescription(competitionDescription.getText().toString());
     competitionDraftModel.setCompetitionRules(competitionRules.getText().toString());
@@ -833,6 +843,11 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
       });
   }
 
+  private String getFullpermlink() {
+    final String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
+    return String.format("%s/%s", username, contestAnnouncementSteemPostPermlink);
+  }
+
   @Override
   public void onPostCreationFailedOnSteem(String msg) {
     showPublishingProgressDialog(false, "");
@@ -840,7 +855,8 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
   }
 
   @Override
-  public void onNewDraftSaved(boolean success) {
+  public void onNewDraftSaved(boolean success, int draftId) {
+    mDraftId = draftId;
     if (success) {
       toast("Draft Saved");
     } else {
@@ -849,19 +865,13 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
   }
 
   @Override
-  public void onDraftUpdated(boolean success) {
+  public void onDraftUpdated(boolean success, int draftId) {
     showPublishingProgressDialog(false, "");
-    close();
   }
 
   @Override
   public void onDraftDeleted(boolean success) {
 
-  }
-
-  private String getFullpermlink(){
-    final String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-    return String.format("%s/%s", username, contestAnnouncementSteemPostPermlink);
   }
 }
 

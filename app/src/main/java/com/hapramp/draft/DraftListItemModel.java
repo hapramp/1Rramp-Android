@@ -2,7 +2,7 @@ package com.hapramp.draft;
 
 public class DraftListItemModel {
   private String title;
-  private long draftId;
+  private int draftId;
   private String draftType;
   private String json;
   private String lastModified;
@@ -35,7 +35,7 @@ public class DraftListItemModel {
     return draftId;
   }
 
-  public void setDraftId(long draftId) {
+  public void setDraftId(int draftId) {
     this.draftId = draftId;
   }
 

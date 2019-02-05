@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.ui.fragments.EarningFragment;
@@ -45,7 +46,10 @@ public class ProfileFragmentPagerAdapter extends FragmentPagerAdapter {
     titles.add("Credits");
     titles.add("Wallet");
     addDraftsTab(username);
-    addMyCompetitionsAfterEligibilityCheck(username);
+    Log.d("DraftingTest",username);
+    MyCompetitionsFragment myCompetitionsFragment = new MyCompetitionsFragment();
+    fragments.add(myCompetitionsFragment);
+    titles.add("My Competitions");
   }
 
   private void addDraftsTab(String username) {
@@ -59,18 +63,6 @@ public class ProfileFragmentPagerAdapter extends FragmentPagerAdapter {
     }
     catch (Exception e) {
       e.printStackTrace();
-    }
-  }
-
-  private void addMyCompetitionsAfterEligibilityCheck(String username) {
-    //username is same as logged-in user
-    //and eligible for competitions creation
-    if (username.equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
-      if (HaprampPreferenceManager.getInstance().isEligibleForCompetitionCreation()) {
-        MyCompetitionsFragment myCompetitionsFragment = new MyCompetitionsFragment();
-        fragments.add(myCompetitionsFragment);
-        titles.add("My Competitions");
-      }
     }
   }
 
