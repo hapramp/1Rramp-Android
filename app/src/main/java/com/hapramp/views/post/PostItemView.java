@@ -13,7 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.Layout;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -212,7 +211,7 @@ public class PostItemView extends FrameLayout {
 
   private void openVotersList() {
     Intent intent = new Intent(mContext, VotersListActivity.class);
-    intent.putExtra(VotersListActivity.EXTRA_TOTAL_EARNING,mFeed.getManagedPayout());
+    intent.putExtra(VotersListActivity.EXTRA_TOTAL_EARNING, mFeed.getManagedPayout());
     intent.putParcelableArrayListExtra(VotersListActivity.EXTRA_USER_LIST, mFeed.getVoters());
     mContext.startActivity(intent);
   }
