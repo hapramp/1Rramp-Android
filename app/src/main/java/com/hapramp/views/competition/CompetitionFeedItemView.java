@@ -84,6 +84,7 @@ public class CompetitionFeedItemView extends FrameLayout {
   private boolean mShowDeclareResultButton;
   private CompetitionItemDeleteListener deleteListener;
   private CountDownTimerUtils countDownTimerUtils;
+  private int countDownTargetId = 230;
 
   public CompetitionFeedItemView(@NonNull Context context) {
     super(context);
@@ -213,7 +214,7 @@ public class CompetitionFeedItemView extends FrameLayout {
 
   public void bindCompetitionData(CompetitionModel competition) {
     this.mCompetition = competition;
-
+    this.countDownTargetId = (int) System.currentTimeMillis();
     if (isAdminOfThisCompetition() && competitionNotStarted()) {
       popupMenuDots.setVisibility(VISIBLE);
     } else {
@@ -357,15 +358,15 @@ public class CompetitionFeedItemView extends FrameLayout {
     long now = System.currentTimeMillis();
     long starts = MomentsUtils.getMillisFromTime(mCompetition.getmStartsAt());
     long left = starts - now;
-    countDownTimerUtils.setTimerWith(left, 1000, new CountDownTimerUtils.TimerUpdateListener() {
+    countDownTimerUtils.setTimerWith(countDownTargetId, left, 1000, new CountDownTimerUtils.TimerUpdateListener() {
       @Override
-      public void onFinished() {
+      public void onFinished(int targetId) {
         setStartedTime();
         invalidateActionButton();
       }
 
       @Override
-      public void onRunningTimeUpdate(String updateTime) {
+      public void onRunningTimeUpdate(int targetId, String updateTime) {
         if (actionButton != null) {
           setStartedTime();
           actionButton.setText("Starts In " + updateTime);
@@ -379,20 +380,22 @@ public class CompetitionFeedItemView extends FrameLayout {
     long now = System.currentTimeMillis();
     long ends = MomentsUtils.getMillisFromTime(mCompetition.getmEndsAt());
     long left = ends - now;
-    countDownTimerUtils.setTimerWith(left, 1000, new CountDownTimerUtils.TimerUpdateListener() {
+    countDownTimerUtils.setTimerWith(countDownTargetId, left, 1000, new CountDownTimerUtils.TimerUpdateListener() {
       @Override
-      public void onFinished() {
-        invalidateActionButton();
-      }
-
-      @Override
-      public void onRunningTimeUpdate(String updateTime) {
-        if (actionButton != null) {
+      public void onRunningTimeUpdate(int targetId, String updateTime) {
+        if (actionButton != null && targetId == countDownTargetId) {
           if (isAdminOfThisCompetition()) {
             actionButton.setText("Ends In: " + updateTime);
           }
         }
+      }      @Override
+      public void onFinished(int targetId) {
+        if (targetId == countDownTargetId) {
+          invalidateActionButton();
+        }
       }
+
+
     });
     countDownTimerUtils.start();
   }

@@ -11,17 +11,17 @@ public class CountDownTimerUtils {
   final static long MILLIS_IN_SEC = 1000;
   private CountDownTimer timer;
 
-  public void setTimerWith(long finishTime, long tickInterval, final TimerUpdateListener timerUpdateListener) {
+  public void setTimerWith(int targetId, long finishTime, long tickInterval, final TimerUpdateListener timerUpdateListener) {
     timer = new CountDownTimer(finishTime, tickInterval) {
       public void onTick(long millisLeft) {
         if (timerUpdateListener != null) {
-          timerUpdateListener.onRunningTimeUpdate(getDescriptiveCountdown(millisLeft));
+          timerUpdateListener.onRunningTimeUpdate(targetId, getDescriptiveCountdown(millisLeft));
         }
       }
 
       public void onFinish() {
         if (timerUpdateListener != null) {
-          timerUpdateListener.onFinished();
+          timerUpdateListener.onFinished(targetId);
         }
       }
     };
@@ -96,8 +96,8 @@ public class CountDownTimerUtils {
   }
 
   public interface TimerUpdateListener {
-    void onFinished();
+    void onFinished(int targetId);
 
-    void onRunningTimeUpdate(String updateTime);
+    void onRunningTimeUpdate(int targetId, String updateTime);
   }
 }
