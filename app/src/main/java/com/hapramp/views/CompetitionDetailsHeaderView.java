@@ -114,14 +114,11 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
   }
 
   private void attachListeners() {
-    copyHashtagButton.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("hashtag", mCompetition.getmParticipationHashtag());
-        clipboard.setPrimaryClip(clip);
-        Toast.makeText(mContext, "Competition hashtag copied", Toast.LENGTH_LONG).show();
-      }
+    copyHashtagButton.setOnClickListener(view -> {
+      ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(CLIPBOARD_SERVICE);
+      ClipData clip = ClipData.newPlainText("hashtag", mCompetition.getmParticipationHashtag());
+      clipboard.setPrimaryClip(clip);
+      Toast.makeText(mContext, "Competition hashtag copied", Toast.LENGTH_LONG).show();
     });
   }
 

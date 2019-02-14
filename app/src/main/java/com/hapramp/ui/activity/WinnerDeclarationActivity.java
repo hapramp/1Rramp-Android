@@ -320,12 +320,7 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
     new AlertDialog.Builder(this)
       .setTitle("Publish Results")
       .setMessage("This will create a results announcement blog from your account.")
-      .setPositiveButton("Publish", new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-          updateServerWithRanks();
-        }
-      })
+      .setPositiveButton("Publish", (dialog, which) -> updateServerWithRanks())
       .setNegativeButton("Cancel", null)
       .show();
   }
@@ -375,12 +370,7 @@ public class WinnerDeclarationActivity extends AppCompatActivity implements Rank
 
   private void addWinnerView(CompetitionWinnerModel winnerModel) {
     WinnerItemView itemView = new WinnerItemView(this);
-    itemView.setWinnerItemViewCallback(new WinnerItemView.WinnerItemViewCallback() {
-      @Override
-      public void onItemRemoveClicked(int rank) {
-        removeFromWinnerList(rank);
-      }
-    });
+    itemView.setWinnerItemViewCallback(rank -> removeFromWinnerList(rank));
     itemView.setWinnerData(winnerModel);
     if (winnerListContainer != null) {
       winnerListContainer.addView(itemView);

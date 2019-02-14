@@ -24,7 +24,7 @@ public class RankableCompetitionFeedItem {
   private double payout;
 
   public RankableCompetitionFeedItem(Feed feed) {
-    this.itemId = feed.getPermlink();
+    this.itemId = String.format("%s_%s", feed.getPermlink(), feed.getCreatedAt());
     this.username = feed.getAuthor();
     this.createdAt = feed.getCreatedAt();
     this.permlink = feed.getPermlink();
