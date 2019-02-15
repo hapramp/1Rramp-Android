@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -16,12 +15,10 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -39,6 +36,7 @@ import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.PermlinkGenerator;
 import com.hapramp.steem.SteemPostCreator;
 import com.hapramp.utils.CommunityUtils;
+import com.hapramp.utils.DateConverter;
 import com.hapramp.utils.ErrorUtils;
 import com.hapramp.utils.GoogleImageFilePathReader;
 import com.hapramp.utils.MomentsUtils;
@@ -201,96 +199,27 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
   }
 
   private void attachListeners() {
-    nextButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        showMetaView(true);
-      }
-    });
-    backBtnFromCompetionMeta.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        showMetaView(false);
-      }
-    });
+    nextButton.setOnClickListener(view -> showMetaView(true));
+    backBtnFromCompetionMeta.setOnClickListener(view -> showMetaView(false));
 
-    backBtn.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        showExistAlert();
-      }
-    });
+    backBtn.setOnClickListener(view -> showExistAlert());
 
-    publishButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        if (validateFields()) {
-          prepareCompetition();
-        }
-      }
+    publishButton.setOnClickListener(view -> {
+      getStartTime();
+//      if (validateFields()) {
+//        prepareCompetition();
+//      }
     });
-
-    startTimeInput.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        showTimePicker("Select competition start time", startTimeInput);
-      }
-    });
-    startClockIcon.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        showTimePicker("Select competition start time", startTimeInput);
-      }
-    });
-
-    startDateInput.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        showDatePicker("Select competition start date", startDateInput);
-      }
-    });
-    startDateIcon.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        showDatePicker("Select competition start date", startDateInput);
-      }
-    });
-
-    endTimeInput.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        showTimePicker("Select competition end time", endTimeInput);
-      }
-    });
-    endClockIcon.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        showTimePicker("Select competition end time", endTimeInput);
-      }
-    });
-
-    endDateInput.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        showDatePicker("Select competition end date", endDateInput);
-      }
-    });
-    endDateIcon.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        showDatePicker("Select competition end date", endDateInput);
-      }
-    });
-
-    chooseBannerImageButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        openGallery();
-      }
-    });
-
+    startTimeInput.setOnClickListener(view -> showTimePicker("Select competition start time", startTimeInput));
+    startClockIcon.setOnClickListener(view -> showTimePicker("Select competition start time", startTimeInput));
+    startDateInput.setOnClickListener(view -> showDatePicker("Select competition start date", startDateInput));
+    startDateIcon.setOnClickListener(view -> showDatePicker("Select competition start date", startDateInput));
+    endTimeInput.setOnClickListener(view -> showTimePicker("Select competition end time", endTimeInput));
+    endClockIcon.setOnClickListener(view -> showTimePicker("Select competition end time", endTimeInput));
+    endDateInput.setOnClickListener(view -> showDatePicker("Select competition end date", endDateInput));
+    endDateIcon.setOnClickListener(view -> showDatePicker("Select competition end date", endDateInput));
+    chooseBannerImageButton.setOnClickListener(view -> openGallery());
     judgeSelector.setJudgeSelectionCallback(this);
-
   }
 
   private void hideKeyboardByDefault() {
@@ -338,23 +267,187 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
     AlertDialog.Builder builder = new AlertDialog.Builder(this)
       .setTitle("Save as draft?")
       .setMessage("You can edit and publish saved drafts later.")
-      .setPositiveButton("Save Draft", new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-          //save or update draft
-          shouldSaveOrUpdateDraft = true;
-          close();
-        }
+      .setPositiveButton("Save Draft", (dialog, which) -> {
+        //save or update draft
+        shouldSaveOrUpdateDraft = true;
+        close();
       })
-      .setNegativeButton("Discard", new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialogInterface, int i) {
-          // in delete mode
-          shouldSaveOrUpdateDraft = false;
-          close();
-        }
+      .setNegativeButton("Discard", (dialogInterface, i) -> {
+        // in delete mode
+        shouldSaveOrUpdateDraft = false;
+        close();
       });
     builder.show();
+  }
+
+  private String getStartTime() {
+    String locaTime = String.format("%sT%s", startDateInput.getText().toString(), startTimeInput.getText().toString());
+    return DateConverter.getInstance().toGmt(locaTime);
+  }
+
+  private void showTimePicker(String msg, final EditText targetInput) {
+    Calendar mcurrentTime = Calendar.getInstance(TimeZone.getDefault());
+    int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+    int minute = mcurrentTime.get(Calendar.MINUTE);
+    TimePickerDialog mTimePicker;
+    mTimePicker = new TimePickerDialog(CompetitionCreatorActivity.this,
+      (timePicker, selectedHour, selectedMinute) -> {
+        if (targetInput != null) {
+          targetInput.setText(String.format(Locale.US, "%02d:%02d:00.000Z", selectedHour, selectedMinute));
+        }
+      }, hour, minute, true);//Yes 24 hour time
+    mTimePicker.setTitle(msg);
+    mTimePicker.show();
+  }
+
+  private void showDatePicker(String msg, final EditText targetInput) {
+    final Calendar c = Calendar.getInstance(TimeZone.getDefault());
+    int mYear = c.get(Calendar.YEAR);
+    int mMonth = c.get(Calendar.MONTH);
+    int mDay = c.get(Calendar.DAY_OF_MONTH);
+    DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+      (view, year, monthOfYear, dayOfMonth) -> {
+        if (targetInput != null) {
+          targetInput.setText(String.format(Locale.US, "%02d-%02d-%02d", year, 1 + monthOfYear, dayOfMonth));
+        }
+      }, mYear, mMonth, mDay);
+    datePickerDialog.setMessage(msg);
+    datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+    datePickerDialog.show();
+  }
+
+  private void openGallery() {
+    leftActivityWithPurpose = true;
+    try {
+      if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+        ||
+        ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_SELECTOR);
+      } else {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        startActivityForResult(intent, REQUEST_IMAGE_SELECTOR);
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void loadDraft(ContestDraftModel draft) {
+    selectedJudges = (ArrayList<JudgeModel>) draft.getJudges();
+    competitionTitle.setText(draft.getCompetitionTitle());
+    competitionDescription.setText(draft.getCompetitionDescription());
+    competitionRules.setText(draft.getCompetitionRules());
+    competitionCommunityView.setDefaultSelection(draft.getmCommunitySelection());
+    competitionCommunityView.initCategory();
+    tagsInputBox.setDefaultHashTags((ArrayList<String>) draft.getCustomHashTags());
+    judgeSelector.setJudgesList(selectedJudges);
+    //perform time format before setting to views
+    //draft times are in gmt
+    //we need local time here
+    String gmtStartTime = String.format("%sT%s", draft.getStartDate(), draft.getStartTime());
+    setDateToView(startDateInput, gmtStartTime);
+    setTimeToView(startTimeInput, gmtStartTime);
+
+    String gmtEndTime = String.format("%sT%s", draft.getEndDate(), draft.getEndTime());
+    setDateToView(endDateInput, gmtEndTime);
+    setTimeToView(endTimeInput, gmtEndTime);
+
+    firstPrizeInput.setText(draft.getFirstPrize());
+    String downloadUrl = draft.getCompetitionPosterDownloadUrl();
+    if (downloadUrl != null) {
+      bannerImageDownloadUrl = draft.getCompetitionPosterDownloadUrl();
+      competitionBanner.setDownloadUrl(bannerImageDownloadUrl);
+      isBannerSelected = true;
+    }
+  }
+
+  private void showPublishingProgressDialog(boolean show, String msg) {
+    if (progressDialog != null) {
+      if (show) {
+        progressDialog.setMessage(msg);
+        progressDialog.setCancelable(false);
+        progressDialog.setIndeterminate(true);
+        progressDialog.show();
+      } else {
+        progressDialog.dismiss();
+      }
+    }
+  }
+
+  private void updateDraft() {
+    ContestDraftModel competitionDraftModel = new ContestDraftModel();
+    competitionDraftModel.setDraftId(mDraftId);
+    competitionDraftModel.setCompetitionTitle(competitionTitle.getText().toString());
+    competitionDraftModel.setCompetitionDescription(competitionDescription.getText().toString());
+    competitionDraftModel.setCompetitionRules(competitionRules.getText().toString());
+    competitionDraftModel.setmCommunitySelection(competitionCommunityView.getSelectedTags());
+    competitionDraftModel.setCustomHashTags(tagsInputBox.getHashTags());
+    competitionDraftModel.setJudges(selectedJudges);
+
+    competitionDraftModel.setStartDate(getDateFromView(startDateInput, startTimeInput));
+    competitionDraftModel.setStartTime(getTimeFromView(startDateInput, startTimeInput));
+    competitionDraftModel.setEndDate(getDateFromView(endDateInput, endTimeInput));
+    competitionDraftModel.setEndTime(getTimeFromView(endDateInput, endTimeInput));
+
+    competitionDraftModel.setFirstPrize(firstPrizeInput.getText().toString());
+    competitionDraftModel.setCompetitionPosterDownloadUrl(competitionBanner.getDownloadUrl());
+    mDraftHelper.updateContestDraft(competitionDraftModel);
+  }
+
+  private void closeAfterSomeTime() {
+    new Handler().postDelayed(() -> {
+      showPublishingProgressDialog(false, "");
+      close();
+    }, 2000);
+  }
+
+  private void close() {
+    finish();
+    overridePendingTransition(R.anim.slide_down_enter, R.anim.slide_down_exit);
+  }
+
+  /**
+   * convert gmt dateTime to local date and set to text view
+   *
+   * @param dateTime dateTime in yyyy-MM-dd'T'HH:mm:ss.SSS'Z' pattern
+   */
+  private void setDateToView(EditText view, String dateTime) {
+    String localDateTime = DateConverter.getInstance().toLocalTime(dateTime);
+    String date = DateConverter.getInstance().getDateFrom(localDateTime, TimeZone.getDefault());
+    view.setText(date);
+  }
+
+  /**
+   * convert gmt dateTime to local time and set to text view
+   *
+   * @param dateTime dateTime in yyyy-MM-dd'T'HH:mm:ss.SSS'Z' pattern
+   */
+  private void setTimeToView(EditText view, String dateTime) {
+    String localDateTime = DateConverter.getInstance().toLocalTime(dateTime);
+    String time = DateConverter.getInstance().getTimeFrom(localDateTime, TimeZone.getDefault());
+    view.setText(time);
+  }
+
+  /**
+   * @param dateInput
+   * @param timeInput
+   * @return gmt date from local date
+   */
+  public String getDateFromView(EditText dateInput, EditText timeInput) {
+    String locaTime = String.format("%sT%s", dateInput.getText().toString(), timeInput.getText().toString());
+    String gmtTime = DateConverter.getInstance().toGmt(locaTime);
+    return DateConverter.getInstance().getDateFrom(gmtTime, TimeZone.getTimeZone("GMT"));
+  }
+
+  /**
+   * @return gmt date from local date
+   */
+  public String getTimeFromView(EditText dateInput, EditText timeInput) {
+    String locaTime = String.format("%sT%s", dateInput.getText().toString(), timeInput.getText().toString());
+    String gmtTime = DateConverter.getInstance().toGmt(locaTime);
+    return DateConverter.getInstance().getTimeFrom(gmtTime, TimeZone.getTimeZone("GMT"));
   }
 
   private boolean validateFields() {
@@ -414,6 +507,10 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
     return true;
   }
 
+  private void toast(String msg) {
+    Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+  }
+
   private void prepareCompetition() {
     showPublishingProgressDialog(true, "Publishing your contest...");
     competitionCreateBody = new CompetitionCreateBody();
@@ -429,140 +526,13 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
     createCompetition(competitionCreateBody);
   }
 
-  private void showTimePicker(String msg, final EditText targetInput) {
-    Calendar mcurrentTime = Calendar.getInstance(TimeZone.getTimeZone("GMT+0"));
-    int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-    int minute = mcurrentTime.get(Calendar.MINUTE);
-    TimePickerDialog mTimePicker;
-    mTimePicker = new TimePickerDialog(CompetitionCreatorActivity.this, new TimePickerDialog.OnTimeSetListener() {
-      @Override
-      public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-        if (targetInput != null) {
-          targetInput.setText(String.format(Locale.US, "%02d:%02d:00.000Z", selectedHour, selectedMinute));
-        }
-      }
-    }, hour, minute, true);//Yes 24 hour time
-    mTimePicker.setTitle(msg);
-    mTimePicker.show();
-  }
-
-  private void showDatePicker(String msg, final EditText targetInput) {
-    final Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT+0"));
-    int mYear = c.get(Calendar.YEAR);
-    int mMonth = c.get(Calendar.MONTH);
-    int mDay = c.get(Calendar.DAY_OF_MONTH);
-    DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-      new DatePickerDialog.OnDateSetListener() {
-
-        @Override
-        public void onDateSet(DatePicker view, int year,
-                              int monthOfYear, int dayOfMonth) {
-          if (targetInput != null) {
-            targetInput.setText(String.format(Locale.US, "%02d-%02d-%02d", year, 1 + monthOfYear, dayOfMonth));
-          }
-        }
-      }, mYear, mMonth, mDay);
-    datePickerDialog.setMessage(msg);
-    datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
-    datePickerDialog.show();
-  }
-
-  private void openGallery() {
-    leftActivityWithPurpose = true;
-    try {
-      if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-        ||
-        ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_SELECTOR);
-      } else {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        intent.setType("image/*");
-        startActivityForResult(intent, REQUEST_IMAGE_SELECTOR);
-      }
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
-  private void loadDraft(ContestDraftModel draft) {
-    selectedJudges = (ArrayList<JudgeModel>) draft.getJudges();
-    competitionTitle.setText(draft.getCompetitionTitle());
-    competitionDescription.setText(draft.getCompetitionDescription());
-    competitionRules.setText(draft.getCompetitionRules());
-    competitionCommunityView.setDefaultSelection(draft.getmCommunitySelection());
-    competitionCommunityView.initCategory();
-    tagsInputBox.setDefaultHashTags((ArrayList<String>) draft.getCustomHashTags());
-    judgeSelector.setJudgesList(selectedJudges);
-    startTimeInput.setText(draft.getStartTime());
-    startDateInput.setText(draft.getStartDate());
-    endTimeInput.setText(draft.getEndTime());
-    endDateInput.setText(draft.getEndDate());
-    firstPrizeInput.setText(draft.getFirstPrize());
-    String downloadUrl = draft.getCompetitionPosterDownloadUrl();
-    if (downloadUrl != null) {
-      bannerImageDownloadUrl = draft.getCompetitionPosterDownloadUrl();
-      competitionBanner.setDownloadUrl(bannerImageDownloadUrl);
-      isBannerSelected = true;
-    }
-  }
-
-  private void showPublishingProgressDialog(boolean show, String msg) {
-    if (progressDialog != null) {
-      if (show) {
-        progressDialog.setMessage(msg);
-        progressDialog.setCancelable(false);
-        progressDialog.setIndeterminate(true);
-        progressDialog.show();
-      } else {
-        progressDialog.dismiss();
-      }
-    }
-  }
-
-  private void updateDraft() {
-    ContestDraftModel competitionDraftModel = new ContestDraftModel();
-    competitionDraftModel.setDraftId(mDraftId);
-    competitionDraftModel.setCompetitionTitle(competitionTitle.getText().toString());
-    competitionDraftModel.setCompetitionDescription(competitionDescription.getText().toString());
-    competitionDraftModel.setCompetitionRules(competitionRules.getText().toString());
-    competitionDraftModel.setmCommunitySelection(competitionCommunityView.getSelectedTags());
-    competitionDraftModel.setCustomHashTags(tagsInputBox.getHashTags());
-    competitionDraftModel.setJudges(selectedJudges);
-    competitionDraftModel.setStartDate(startDateInput.getText().toString());
-    competitionDraftModel.setStartTime(startTimeInput.getText().toString());
-    competitionDraftModel.setEndDate(endDateInput.getText().toString());
-    competitionDraftModel.setEndTime(endTimeInput.getText().toString());
-    competitionDraftModel.setFirstPrize(firstPrizeInput.getText().toString());
-    competitionDraftModel.setCompetitionPosterDownloadUrl(competitionBanner.getDownloadUrl());
-    mDraftHelper.updateContestDraft(competitionDraftModel);
-  }
-
-  private void closeAfterSomeTime() {
-    new Handler().postDelayed(new Runnable() {
-      @Override
-      public void run() {
-        showPublishingProgressDialog(false, "");
-        close();
-      }
-    }, 2000);
-  }
-
-  private void close() {
-    finish();
-    overridePendingTransition(R.anim.slide_down_enter, R.anim.slide_down_exit);
-  }
-
-  private void toast(String msg) {
-    Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-  }
-
-  private String getStartTime() {
-    return String.format("%sT%s", startDateInput.getText().toString(), startTimeInput.getText().toString());
-  }
-
   private String getEndTime() {
-    return String.format("%sT%s", endDateInput.getText().toString(), endTimeInput.getText().toString());
+    String localTime = String.format("%sT%s", endDateInput.getText().toString(), endTimeInput.getText().toString());
+    return DateConverter.getInstance().toGmt(localTime);
+  }
+
+  private void setEndTime(String dateTime) {
+
   }
 
   private List<String> getSelectedJudgesIds() {
@@ -690,12 +660,7 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
       @Override
       public void run() {
         final String filePath = GoogleImageFilePathReader.getImageFilePath(CompetitionCreatorActivity.this, intent);
-        handler.post(new Runnable() {
-          @Override
-          public void run() {
-            selectImage(filePath);
-          }
-        });
+        handler.post(() -> selectImage(filePath));
       }
     }.start();
   }
@@ -759,10 +724,12 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
     competitionDraftModel.setmCommunitySelection(competitionCommunityView.getSelectedTags());
     competitionDraftModel.setCustomHashTags(tagsInputBox.getHashTags());
     competitionDraftModel.setJudges(selectedJudges);
-    competitionDraftModel.setStartDate(startDateInput.getText().toString());
-    competitionDraftModel.setStartTime(startTimeInput.getText().toString());
-    competitionDraftModel.setEndDate(endDateInput.getText().toString());
-    competitionDraftModel.setEndTime(endTimeInput.getText().toString());
+
+    competitionDraftModel.setStartDate(getDateFromView(startDateInput, startTimeInput));
+    competitionDraftModel.setStartTime(getTimeFromView(startDateInput, startTimeInput));
+    competitionDraftModel.setEndDate(getDateFromView(endDateInput, endTimeInput));
+    competitionDraftModel.setEndTime(getTimeFromView(endDateInput, endTimeInput));
+
     competitionDraftModel.setFirstPrize(firstPrizeInput.getText().toString());
     competitionDraftModel.setCompetitionPosterDownloadUrl(competitionBanner.getDownloadUrl());
     if (checkForValidSave(competitionDraftModel)) {
