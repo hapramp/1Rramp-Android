@@ -58,6 +58,7 @@ public class CompetitionDetailsActivity extends AppCompatActivity implements Com
   @BindView(R.id.actionButton)
   TextView actionButton;
   private CountDownTimerUtils countDownTimerUtils;
+  private int countDownTargetId = 10323;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -285,14 +286,16 @@ public class CompetitionDetailsActivity extends AppCompatActivity implements Com
     long now = System.currentTimeMillis();
     long ends = MomentsUtils.getMillisFromTime(headerData.getmEndsAt());
     long left = ends - now;
-    countDownTimerUtils.setTimerWith(left, 1000, new CountDownTimerUtils.TimerUpdateListener() {
+    countDownTimerUtils.setTimerWith(countDownTargetId, left, 1000, new CountDownTimerUtils.TimerUpdateListener() {
       @Override
-      public void onFinished() {
-        invalidateActionButton();
+      public void onFinished(int targetId) {
+        if (targetId == countDownTargetId) {
+          invalidateActionButton();
+        }
       }
 
       @Override
-      public void onRunningTimeUpdate(String updateTime) {
+      public void onRunningTimeUpdate(int targetId, String updateTime) {
       }
     });
     countDownTimerUtils.start();
@@ -317,15 +320,19 @@ public class CompetitionDetailsActivity extends AppCompatActivity implements Com
     long now = System.currentTimeMillis();
     long starts = MomentsUtils.getMillisFromTime(headerData.getmStartsAt());
     long left = starts - now;
-    countDownTimerUtils.setTimerWith(left, 1000, new CountDownTimerUtils.TimerUpdateListener() {
+    countDownTimerUtils.setTimerWith(countDownTargetId, left, 1000, new CountDownTimerUtils.TimerUpdateListener() {
       @Override
-      public void onFinished() {
-        invalidateActionButton();
+      public void onFinished(int targetId) {
+        if (targetId == countDownTargetId) {
+          invalidateActionButton();
+        }
       }
 
       @Override
-      public void onRunningTimeUpdate(String updateTime) {
+      public void onRunningTimeUpdate(int targetId, String updateTime) {
       }
+
+
     });
     countDownTimerUtils.start();
   }

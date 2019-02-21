@@ -213,12 +213,7 @@ public class DataDispatcher {
           });
         }
       } else {
-        handler.post(new Runnable() {
-          @Override
-          public void run() {
-            resourceCreditCallback.onResourceCreditError("");
-          }
-        });
+        handler.post(() -> resourceCreditCallback.onResourceCreditError(""));
       }
     }
   }
@@ -226,23 +221,13 @@ public class DataDispatcher {
   void dispatchCompetitionEntries(String response, final CompetitionEntriesFetchCallback entriesFetchCallback) {
     if (entriesFetchCallback != null) {
       final List<Feed> entries = jsonParser.parseCompetitionEntries(response);
-      handler.post(new Runnable() {
-        @Override
-        public void run() {
-          entriesFetchCallback.onCompetitionsEntriesAvailable(entries);
-        }
-      });
+      handler.post(() -> entriesFetchCallback.onCompetitionsEntriesAvailable(entries));
     }
   }
 
   void dispatchCompetitionEntriesError(final CompetitionEntriesFetchCallback entriesFetchCallback) {
     if (entriesFetchCallback != null) {
-      handler.post(new Runnable() {
-        @Override
-        public void run() {
-          entriesFetchCallback.onCompetitionsEntriesFetchError();
-        }
-      });
+      handler.post(() -> entriesFetchCallback.onCompetitionsEntriesFetchError());
     }
   }
 

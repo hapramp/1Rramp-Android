@@ -16,7 +16,6 @@ import android.widget.Toast;
 import com.hapramp.R;
 import com.hapramp.analytics.AnalyticsParams;
 import com.hapramp.analytics.AnalyticsUtil;
-import com.hapramp.datastore.CompetitionCreationEligibilityChecker;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.utils.ConnectionUtils;
 import com.hapramp.utils.FontManager;
@@ -95,7 +94,6 @@ public class CreateNewButtonView extends FrameLayout {
 
   private void init(Context context) {
     this.mContext = context;
-    CompetitionCreationEligibilityChecker.checkEligibilityForCompetitionCreation();
     View v = LayoutInflater.from(context).inflate(R.layout.create_new_button_view, this);
     addBlogBtn = v.findViewById(R.id.blog_btn);
     addPhotoBtn = v.findViewById(R.id.photo_btn);

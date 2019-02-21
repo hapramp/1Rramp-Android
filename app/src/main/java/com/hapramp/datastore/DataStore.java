@@ -273,30 +273,6 @@ public class DataStore extends DataDispatcher {
   }
 
   /**
-   * Fetches user information and update eligibility of competition creation.
-   */
-  public void performCompetitionEligibilitySync() {
-    new Thread() {
-      @Override
-      public void run() {
-        String username = HaprampPreferenceManager.getInstance().getCurrentSteemUsername();
-        if (username.length() > 0) {
-          try {
-            String url = UrlBuilder.competitionEligibilityCheckUrl(username);
-            Response response = NetworkApi.getNetworkApiInstance().fetch(url);
-            String responseString;
-            responseString = response.body().string();
-            dispatchCompetitionEligibility(responseString);
-          }
-          catch (Exception e) {
-            e.printStackTrace();
-          }
-        }
-      }
-    }.start();
-  }
-
-  /**
    * @param username            communities for username
    * @param communitiesCallback callback
    */

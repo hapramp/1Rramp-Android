@@ -1,5 +1,7 @@
 package com.hapramp.models;
 
+import android.util.Log;
+
 import com.hapramp.steem.models.Feed;
 import com.hapramp.steem.models.Voter;
 
@@ -22,7 +24,7 @@ public class RankableCompetitionFeedItem {
   private double payout;
 
   public RankableCompetitionFeedItem(Feed feed) {
-    this.itemId = feed.getPermlink();
+    this.itemId = String.format("%s_%s", feed.getPermlink(), feed.getCreatedAt());
     this.username = feed.getAuthor();
     this.createdAt = feed.getCreatedAt();
     this.permlink = feed.getPermlink();
@@ -38,13 +40,18 @@ public class RankableCompetitionFeedItem {
   }
 
   private double extractPayout(Feed feed) {
-    double pendingPayoutValue = Double.parseDouble(feed.getPendingPayoutValue().split(" ")[0]);
-    double totalPayoutValue = Double.parseDouble(feed.getTotalPayoutValue().split(" ")[0]);
-    double curatorPayoutValue = Double.parseDouble(feed.getCuratorPayoutValue().split(" ")[0]);
-    if (pendingPayoutValue > 0) {
-      return pendingPayoutValue;
-    } else if ((totalPayoutValue + curatorPayoutValue) > 0) {
-      return totalPayoutValue + curatorPayoutValue;
+    try {
+      double pendingPayoutValue = Double.parseDouble(feed.getPendingPayoutValue().split(" ")[0]);
+      double totalPayoutValue = Double.parseDouble(feed.getTotalPayoutValue().split(" ")[0]);
+      double curatorPayoutValue = Double.parseDouble(feed.getCuratorPayoutValue().split(" ")[0]);
+      if (pendingPayoutValue > 0) {
+        return pendingPayoutValue;
+      } else if ((totalPayoutValue + curatorPayoutValue) > 0) {
+        return totalPayoutValue + curatorPayoutValue;
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
     }
     return 0;
   }

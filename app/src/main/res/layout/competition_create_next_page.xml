@@ -29,10 +29,10 @@
             android:layout_marginRight="16dp"
             android:background="@drawable/light_btn_bg"
             android:gravity="center"
-            android:paddingBottom="6dp"
             android:paddingLeft="16dp"
-            android:paddingRight="16dp"
             android:paddingTop="6dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="6dp"
             android:text="PUBLISH"
             android:textColor="@color/colorPrimary"
             android:textSize="12sp" />
@@ -70,8 +70,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/community_caption"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="4dp" />
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="16dp" />
 
             <TextView
                 android:id="@+id/tagsCaption"
@@ -91,8 +91,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tagsCaption"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp"
                 android:animateLayoutChanges="true" />
 
             <LinearLayout
@@ -101,8 +101,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tagsInputBox"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
                 android:layout_marginTop="28dp"
+                android:layout_marginRight="16dp"
                 android:layout_marginBottom="16dp"
                 android:orientation="vertical">
 
@@ -124,13 +124,13 @@
 
             <TextView
                 android:id="@+id/timingCaption"
-                android:layout_marginTop="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/judge_container"
                 android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
-                android:text="Timings (in GMT+0)"
+                android:text="Timings"
                 android:textColor="@color/colorAccent"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -142,10 +142,10 @@
                 android:layout_below="@+id/timingCaption"
                 android:layout_marginTop="8dp"
                 android:background="#4de1e1e1"
-                android:paddingBottom="8dp"
                 android:paddingLeft="16dp"
+                android:paddingTop="8dp"
                 android:paddingRight="16dp"
-                android:paddingTop="8dp">
+                android:paddingBottom="8dp">
 
                 <TextView
                     android:id="@+id/starts_on_caption"
@@ -182,8 +182,8 @@
                     android:layout_height="36dp"
                     android:layout_below="@+id/start_time_input"
                     android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
                     android:layout_marginTop="8dp"
+                    android:layout_marginRight="8dp"
                     android:layout_toRightOf="@+id/starts_on_caption"
                     android:focusable="false"
                     android:hint="YYYY:MM:DD"
@@ -209,10 +209,10 @@
                 android:layout_below="@+id/start_timing_container"
                 android:layout_marginTop="8dp"
                 android:background="#4de1e1e1"
-                android:paddingBottom="8dp"
                 android:paddingLeft="16dp"
+                android:paddingTop="8dp"
                 android:paddingRight="16dp"
-                android:paddingTop="8dp">
+                android:paddingBottom="8dp">
 
                 <TextView
                     android:id="@+id/ends_on_caption"
@@ -250,8 +250,8 @@
                     android:layout_height="36dp"
                     android:layout_below="@+id/end_time_input"
                     android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
                     android:layout_marginTop="8dp"
+                    android:layout_marginRight="8dp"
                     android:layout_toRightOf="@+id/ends_on_caption"
                     android:focusable="false"
                     android:hint="YYYY:MM:DD"
@@ -288,8 +288,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/prizeCaption"
                 android:layout_marginLeft="16sp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp">
 
                 <TextView
                     android:id="@+id/first_prize_caption"
@@ -374,16 +374,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/bannerCaption"
-                android:layout_marginBottom="16dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/post_category_item_view_bg"
                 android:clickable="true"
-                android:paddingBottom="8dp"
-                android:paddingEnd="16dp"
                 android:paddingStart="16dp"
                 android:paddingTop="8dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="8dp"
                 android:text="Select Image"
                 android:textColor="@color/Black54" />
 

@@ -98,6 +98,7 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
   private CompetitionModel mCompetition;
   private boolean mEntriesLoaded;
   private CountDownTimerUtils countDownTimerUtils;
+  private int countDownTargetId = 343;
 
   public CompetitionDetailsHeaderView(@NonNull Context context) {
     super(context);
@@ -113,14 +114,11 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
   }
 
   private void attachListeners() {
-    copyHashtagButton.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("hashtag", mCompetition.getmParticipationHashtag());
-        clipboard.setPrimaryClip(clip);
-        Toast.makeText(mContext, "Competition hashtag copied", Toast.LENGTH_LONG).show();
-      }
+    copyHashtagButton.setOnClickListener(view -> {
+      ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(CLIPBOARD_SERVICE);
+      ClipData clip = ClipData.newPlainText("hashtag", mCompetition.getmParticipationHashtag());
+      clipboard.setPrimaryClip(clip);
+      Toast.makeText(mContext, "Competition hashtag copied", Toast.LENGTH_LONG).show();
     });
   }
 
@@ -136,6 +134,7 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
 
   public void bindCompetitionHeaderData(CompetitionModel competition) {
     this.mCompetition = competition;
+    this.countDownTargetId = (int) System.currentTimeMillis();
     ImageHandler.loadCircularImage(mContext, feedOwnerPic,
       String.format(mContext.getResources().getString(R.string.steem_user_profile_pic_format),
         competition.getmAdmin().getmUsername()));
@@ -322,15 +321,17 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
     long now = System.currentTimeMillis();
     final long starts = MomentsUtils.getMillisFromTime(mCompetition.getmStartsAt());
     long left = starts - now;
-    countDownTimerUtils.setTimerWith(left, 1000, new CountDownTimerUtils.TimerUpdateListener() {
+    countDownTimerUtils.setTimerWith(countDownTargetId, left, 1000, new CountDownTimerUtils.TimerUpdateListener() {
       @Override
-      public void onFinished() {
-        invalidateCompetitionTime();
+      public void onFinished(int targetId) {
+        if (targetId == countDownTargetId) {
+          invalidateCompetitionTime();
+        }
       }
 
       @Override
-      public void onRunningTimeUpdate(String updateTime) {
-        if (startsTime != null) {
+      public void onRunningTimeUpdate(int targetId, String updateTime) {
+        if (startsTime != null && targetId == countDownTargetId) {
           startsTime.setText(updateTime);
         }
       }
@@ -342,15 +343,17 @@ public class CompetitionDetailsHeaderView extends FrameLayout {
     long now = System.currentTimeMillis();
     long ends = MomentsUtils.getMillisFromTime(mCompetition.getmEndsAt());
     long left = ends - now;
-    countDownTimerUtils.setTimerWith(left, 1000, new CountDownTimerUtils.TimerUpdateListener() {
+    countDownTimerUtils.setTimerWith(countDownTargetId, left, 1000, new CountDownTimerUtils.TimerUpdateListener() {
       @Override
-      public void onFinished() {
-        invalidateCompetitionTime();
+      public void onFinished(int targetId) {
+        if (targetId == countDownTargetId) {
+          invalidateCompetitionTime();
+        }
       }
 
       @Override
-      public void onRunningTimeUpdate(String updateTime) {
-        if (endTime != null) {
+      public void onRunningTimeUpdate(int targetId, String updateTime) {
+        if (endTime != null && targetId == countDownTargetId) {
           endTime.setText(updateTime);
         }
       }
