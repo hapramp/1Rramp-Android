@@ -3,7 +3,6 @@ package com.hapramp.ui.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -52,11 +51,17 @@ import xute.markdeditor.models.DraftModel;
 
 import static xute.markdeditor.Styles.TextComponentStyle.NORMAL;
 
-public class CreateArticleActivity extends AppCompatActivity implements SteemPostCreator.SteemPostCreatorCallback, EditorControlBar.EditorControlListener, DraftsHelper.DraftsHelperCallback, ImageRotationHandler.ImageRotationOperationListner {
+public class CreateArticleActivity extends AppCompatActivity
+  implements SteemPostCreator.SteemPostCreatorCallback,
+  EditorControlBar.EditorControlListener,
+  DraftsHelper.DraftsHelperCallback,
+  ImageRotationHandler.ImageRotationOperationListner {
+
   public static final String EXTRA_KEY_DRAFT_ID = "draftId";
   public static final String EXTRA_KEY_DRAFT_JSON = "draftJson";
   private static final int REQUEST_IMAGE_SELECTOR = 119;
   private final long NO_DRAFT = -1;
+
   @BindView(R.id.backBtn)
   ImageView closeBtn;
   @BindView(R.id.previewButton)
@@ -89,6 +94,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   MarkDEditor markDEditor;
   @BindView(R.id.controlBar)
   EditorControlBar editorControlBar;
+
   private ProgressDialog progressDialog;
   private String title;
   private ArrayList<String> tags;
@@ -146,38 +152,16 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   }
 
   private void attachListeners() {
-    nextButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        showMetaData(true);
+    nextButton.setOnClickListener(v -> showMetaData(true));
+    backBtnFromArticleMeta.setOnClickListener(v -> showMetaData(false));
+    publishButton.setOnClickListener(v -> {
+      if (ConnectionUtils.isConnected(CreateArticleActivity.this)) {
+        publishArticle();
+      } else {
+        showConnectivityError();
       }
     });
-
-    backBtnFromArticleMeta.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        showMetaData(false);
-      }
-    });
-
-    publishButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        if (ConnectionUtils.isConnected(CreateArticleActivity.this)) {
-          publishArticle();
-        } else {
-          showConnectivityError();
-        }
-      }
-    });
-
-    closeBtn.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        showExistAlert();
-      }
-    });
-
+    closeBtn.setOnClickListener(v -> showExistAlert());
   }
 
   private void configureEditor(DraftModel draftModel) {
@@ -230,26 +214,21 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
       showProgressDialog(true, "Saving changes...");
       shouldSaveOrUpdateDraft = false;
       updateDraft();
+      closeEditor();
       return;
     }
     AlertDialog.Builder builder = new AlertDialog.Builder(this)
       .setTitle("Save as draft?")
       .setMessage("You can edit and publish saved drafts later.")
-      .setPositiveButton("Save Draft", new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-          //save or update draft
-          shouldSaveOrUpdateDraft = true;
-          closeEditor();
-        }
+      .setPositiveButton("Save Draft", (dialog, which) -> {
+        //save or update draft
+        shouldSaveOrUpdateDraft = true;
+        closeEditor();
       })
-      .setNegativeButton("Discard", new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialogInterface, int i) {
-          // in delete mode
-          shouldSaveOrUpdateDraft = false;
-          closeEditor();
-        }
+      .setNegativeButton("Discard", (dialogInterface, i) -> {
+        // in delete mode
+        shouldSaveOrUpdateDraft = false;
+        closeEditor();
       });
     builder.show();
   }
@@ -334,18 +313,14 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
     if (articleTitleEt.getText().toString().trim().length() > 0) {
       return true;
     }
-
     return false;
   }
 
   private void closeEditor() {
-    showProgressDialog(false, "");
     AnalyticsUtil.logEvent(AnalyticsParams.EVENT_CREATE_ARTICLE);
-    new Handler().postDelayed(new Runnable() {
-      @Override
-      public void run() {
-        close();
-      }
+    new Handler().postDelayed(() -> {
+      showProgressDialog(false, "");
+      close();
     }, 1000);
   }
 
@@ -391,7 +366,6 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   }
 
   private void handleImageResult(final Intent intent) {
-    final Handler handler = new Handler();
     new Thread() {
       @Override
       public void run() {
@@ -491,17 +465,12 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
 
   private void showLinkInsertDialog() {
     LinkInsertDialog linkInsertDialog = new LinkInsertDialog(this);
-    linkInsertDialog.setOnLinkInsertedListener(new LinkInsertDialog.OnLinkInsertedListener() {
-      @Override
-      public void onLinkAdded(String text, String link) {
-        markDEditor.addLink(text, link);
-      }
-    });
+    linkInsertDialog.setOnLinkInsertedListener((text, link) -> markDEditor.addLink(text, link));
     linkInsertDialog.show();
   }
 
   @Override
-  public void onNewDraftSaved(boolean success,int draftId) {
+  public void onNewDraftSaved(boolean success, int draftId) {
     mDraftId = draftId;
     if (success) {
       Toast.makeText(CreateArticleActivity.this, "Draft saved", Toast.LENGTH_LONG).show();
@@ -511,10 +480,9 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
   }
 
   @Override
-  public void onDraftUpdated(boolean success,int draftId) {
+  public void onDraftUpdated(boolean success, int draftId) {
     mDraftId = draftId;
     showProgressDialog(false, "");
-    closeEditor();
   }
 
   @Override
@@ -524,12 +492,7 @@ public class CreateArticleActivity extends AppCompatActivity implements SteemPos
 
   @Override
   public void onImageRotationFixed(final String filePath, boolean fileShouldBeDeleted, long uid) {
-    handler.post(new Runnable() {
-      @Override
-      public void run() {
-        addImage(filePath);
-      }
-    });
+    handler.post(() -> addImage(filePath));
   }
 
   public void addImage(String filePath) {
