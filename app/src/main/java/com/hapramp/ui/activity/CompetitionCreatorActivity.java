@@ -205,10 +205,9 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
     backBtn.setOnClickListener(view -> showExistAlert());
 
     publishButton.setOnClickListener(view -> {
-      getStartTime();
-//      if (validateFields()) {
-//        prepareCompetition();
-//      }
+      if (validateFields()) {
+        prepareCompetition();
+      }
     });
     startTimeInput.setOnClickListener(view -> showTimePicker("Select competition start time", startTimeInput));
     startClockIcon.setOnClickListener(view -> showTimePicker("Select competition start time", startTimeInput));
@@ -280,9 +279,76 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
     builder.show();
   }
 
-  private String getStartTime() {
-    String locaTime = String.format("%sT%s", startDateInput.getText().toString(), startTimeInput.getText().toString());
-    return DateConverter.getInstance().toGmt(locaTime);
+  private boolean validateFields() {
+    if (competitionTitle.getText().toString().trim().length() == 0) {
+      toast("Title required!");
+      return false;
+    }
+    if (competitionDescription.getText().toString().trim().length() == 0) {
+      toast("Competition description required!");
+      return false;
+    }
+    if (competitionCommunityView.getSelectedTags().size() <= 1) {
+      toast("Atleast 1 community required!");
+      return false;
+    }
+
+    if (startTimeInput.getText().length() == 0) {
+      toast("Select competition start time!");
+      return false;
+    }
+
+    if (startDateInput.getText().length() == 0) {
+      toast("Select competition start date!");
+      return false;
+    }
+
+    if (endTimeInput.getText().length() == 0) {
+      toast("Select competition end time!");
+      return false;
+    }
+
+    if (endDateInput.getText().length() == 0) {
+      toast("Select competition end date!");
+      return false;
+    }
+
+    if (firstPrizeInput.getText().toString().trim().length() == 0) {
+      toast("First prize is required!");
+      return false;
+    }
+
+    if (isBannerSelected) {
+      if (bannerImageDownloadUrl.length() == 0) {
+        toast("Still uploading banner image. Please wait...");
+        return false;
+      }
+    } else {
+      toast("Select competition banner image.");
+      return false;
+    }
+
+    if (selectedJudges.size() == 0) {
+      toast("Select Atleast 1 Judge.");
+      return false;
+    }
+
+    return true;
+  }
+
+  private void prepareCompetition() {
+    showPublishingProgressDialog(true, "Publishing your contest...");
+    competitionCreateBody = new CompetitionCreateBody();
+    competitionCreateBody.setmImage(bannerImageDownloadUrl);
+    competitionCreateBody.setmTitle(competitionTitle.getText().toString().trim());
+    competitionCreateBody.setmDescription(competitionDescription.getText().toString().trim());
+    competitionCreateBody.setmStartsAt(getStartTime());
+    competitionCreateBody.setmEndsAt(getEndTime());
+    competitionCreateBody.setmRules(competitionRules.getText().toString());
+    competitionCreateBody.setmJudges(getSelectedJudgesIds());
+    competitionCreateBody.setmCommunities(getSelectedCommunityIds());
+    competitionCreateBody.setmPrizes(getPrizes());
+    createCompetition(competitionCreateBody);
   }
 
   private void showTimePicker(String msg, final EditText targetInput) {
@@ -408,122 +474,13 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
     overridePendingTransition(R.anim.slide_down_enter, R.anim.slide_down_exit);
   }
 
-  /**
-   * convert gmt dateTime to local date and set to text view
-   *
-   * @param dateTime dateTime in yyyy-MM-dd'T'HH:mm:ss.SSS'Z' pattern
-   */
-  private void setDateToView(EditText view, String dateTime) {
-    String localDateTime = DateConverter.getInstance().toLocalTime(dateTime);
-    String date = DateConverter.getInstance().getDateFrom(localDateTime, TimeZone.getDefault());
-    view.setText(date);
-  }
-
-  /**
-   * convert gmt dateTime to local time and set to text view
-   *
-   * @param dateTime dateTime in yyyy-MM-dd'T'HH:mm:ss.SSS'Z' pattern
-   */
-  private void setTimeToView(EditText view, String dateTime) {
-    String localDateTime = DateConverter.getInstance().toLocalTime(dateTime);
-    String time = DateConverter.getInstance().getTimeFrom(localDateTime, TimeZone.getDefault());
-    view.setText(time);
-  }
-
-  /**
-   * @param dateInput
-   * @param timeInput
-   * @return gmt date from local date
-   */
-  public String getDateFromView(EditText dateInput, EditText timeInput) {
-    String locaTime = String.format("%sT%s", dateInput.getText().toString(), timeInput.getText().toString());
-    String gmtTime = DateConverter.getInstance().toGmt(locaTime);
-    return DateConverter.getInstance().getDateFrom(gmtTime, TimeZone.getTimeZone("GMT"));
-  }
-
-  /**
-   * @return gmt date from local date
-   */
-  public String getTimeFromView(EditText dateInput, EditText timeInput) {
-    String locaTime = String.format("%sT%s", dateInput.getText().toString(), timeInput.getText().toString());
-    String gmtTime = DateConverter.getInstance().toGmt(locaTime);
-    return DateConverter.getInstance().getTimeFrom(gmtTime, TimeZone.getTimeZone("GMT"));
-  }
-
-  private boolean validateFields() {
-    if (competitionTitle.getText().toString().trim().length() == 0) {
-      toast("Title required!");
-      return false;
-    }
-    if (competitionDescription.getText().toString().trim().length() == 0) {
-      toast("Competition description required!");
-      return false;
-    }
-    if (competitionCommunityView.getSelectedTags().size() <= 1) {
-      toast("Atleast 1 community required!");
-      return false;
-    }
-
-    if (startTimeInput.getText().length() == 0) {
-      toast("Select competition start time!");
-      return false;
-    }
-
-    if (startDateInput.getText().length() == 0) {
-      toast("Select competition start date!");
-      return false;
-    }
-
-    if (endTimeInput.getText().length() == 0) {
-      toast("Select competition end time!");
-      return false;
-    }
-
-    if (endDateInput.getText().length() == 0) {
-      toast("Select competition end date!");
-      return false;
-    }
-
-    if (firstPrizeInput.getText().toString().trim().length() == 0) {
-      toast("First prize is required!");
-      return false;
-    }
-
-    if (isBannerSelected) {
-      if (bannerImageDownloadUrl.length() == 0) {
-        toast("Still uploading banner image. Please wait...");
-        return false;
-      }
-    } else {
-      toast("Select competition banner image.");
-      return false;
-    }
-
-    if (selectedJudges.size() == 0) {
-      toast("Select Atleast 1 Judge.");
-      return false;
-    }
-
-    return true;
-  }
-
   private void toast(String msg) {
     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
   }
 
-  private void prepareCompetition() {
-    showPublishingProgressDialog(true, "Publishing your contest...");
-    competitionCreateBody = new CompetitionCreateBody();
-    competitionCreateBody.setmImage(bannerImageDownloadUrl);
-    competitionCreateBody.setmTitle(competitionTitle.getText().toString().trim());
-    competitionCreateBody.setmDescription(competitionDescription.getText().toString().trim());
-    competitionCreateBody.setmStartsAt(getStartTime());
-    competitionCreateBody.setmEndsAt(getEndTime());
-    competitionCreateBody.setmRules(competitionRules.getText().toString());
-    competitionCreateBody.setmJudges(getSelectedJudgesIds());
-    competitionCreateBody.setmCommunities(getSelectedCommunityIds());
-    competitionCreateBody.setmPrizes(getPrizes());
-    createCompetition(competitionCreateBody);
+  private String getStartTime() {
+    String locaTime = String.format("%sT%s", startDateInput.getText().toString(), startTimeInput.getText().toString());
+    return DateConverter.getInstance().toGmt(locaTime);
   }
 
   private String getEndTime() {
@@ -599,6 +556,48 @@ public class CompetitionCreatorActivity extends AppCompatActivity implements Jud
       showPublishingProgressDialog(false, "");
       toast("Failed to create competition");
     }
+  }
+
+  /**
+   * convert gmt dateTime to local date and set to text view
+   *
+   * @param dateTime dateTime in yyyy-MM-dd'T'HH:mm:ss.SSS'Z' pattern
+   */
+  private void setDateToView(EditText view, String dateTime) {
+    String localDateTime = DateConverter.getInstance().toLocalTime(dateTime);
+    String date = DateConverter.getInstance().getDateFrom(localDateTime, TimeZone.getDefault());
+    view.setText(date);
+  }
+
+  /**
+   * convert gmt dateTime to local time and set to text view
+   *
+   * @param dateTime dateTime in yyyy-MM-dd'T'HH:mm:ss.SSS'Z' pattern
+   */
+  private void setTimeToView(EditText view, String dateTime) {
+    String localDateTime = DateConverter.getInstance().toLocalTime(dateTime);
+    String time = DateConverter.getInstance().getTimeFrom(localDateTime, TimeZone.getDefault());
+    view.setText(time);
+  }
+
+  /**
+   * @param dateInput
+   * @param timeInput
+   * @return gmt date from local date
+   */
+  public String getDateFromView(EditText dateInput, EditText timeInput) {
+    String locaTime = String.format("%sT%s", dateInput.getText().toString(), timeInput.getText().toString());
+    String gmtTime = DateConverter.getInstance().toGmt(locaTime);
+    return DateConverter.getInstance().getDateFrom(gmtTime, TimeZone.getTimeZone("GMT"));
+  }
+
+  /**
+   * @return gmt date from local date
+   */
+  public String getTimeFromView(EditText dateInput, EditText timeInput) {
+    String locaTime = String.format("%sT%s", dateInput.getText().toString(), timeInput.getText().toString());
+    String gmtTime = DateConverter.getInstance().toGmt(locaTime);
+    return DateConverter.getInstance().getTimeFrom(gmtTime, TimeZone.getTimeZone("GMT"));
   }
 
   private void fetchFormattedBody(final String comp_id) {
