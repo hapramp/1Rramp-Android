@@ -84,12 +84,7 @@ public class MyDraftsFragment extends Fragment implements DraftsHelper.DraftsHel
     draftsHelper.setDraftsHelperCallback(this);
     draftsList.setLayoutManager(new LinearLayoutManager(context));
     draftsList.setAdapter(draftsAdapter);
-    swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-      @Override
-      public void onRefresh() {
-        refreshDrafts();
-      }
-    });
+    swipeRefresh.setOnRefreshListener(() -> refreshDrafts());
   }
 
   private void refreshDrafts() {
@@ -97,10 +92,12 @@ public class MyDraftsFragment extends Fragment implements DraftsHelper.DraftsHel
   }
 
   private void loadDrafts() {
+    showDialog(true, "Refreshing draft...");
     //fetch drafts from server
     RetrofitServiceGenerator.getService().getAllDrafts().enqueue(new Callback<List<DraftUploadResponse>>() {
       @Override
       public void onResponse(Call<List<DraftUploadResponse>> call, Response<List<DraftUploadResponse>> response) {
+        showDialog(false, "");
         if (response.isSuccessful()) {
           onAllDraftsLoaded(response.body());
         }
@@ -108,9 +105,23 @@ public class MyDraftsFragment extends Fragment implements DraftsHelper.DraftsHel
 
       @Override
       public void onFailure(Call<List<DraftUploadResponse>> call, Throwable t) {
-
+        showDialog(false, "");
       }
     });
+  }
+
+  private void showDialog(boolean show, String message) {
+    if (progressDialog == null) {
+      progressDialog = new ProgressDialog(context);
+    } else {
+      if (show) {
+        progressDialog.setMessage(message);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+      } else {
+        progressDialog.dismiss();
+      }
+    }
   }
 
   private void onAllDraftsLoaded(List<DraftUploadResponse> drafts) {
@@ -187,32 +198,18 @@ public class MyDraftsFragment extends Fragment implements DraftsHelper.DraftsHel
   }
 
   @Override
-  public void onNewDraftSaved(boolean success,int draftId) {
+  public void onNewDraftSaved(boolean success, int draftId) {
 
   }
 
   @Override
-  public void onDraftUpdated(boolean success,int draftId) {
+  public void onDraftUpdated(boolean success, int draftId) {
 
   }
 
   @Override
   public void onDraftDeleted(boolean success) {
 
-  }
-
-  private void showDialog(boolean show, String message) {
-    if (progressDialog == null) {
-      progressDialog = new ProgressDialog(context);
-    } else {
-      if (show) {
-        progressDialog.setMessage(message);
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-      } else {
-        progressDialog.dismiss();
-      }
-    }
   }
 
   @Override
