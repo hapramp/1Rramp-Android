@@ -2,7 +2,6 @@ package com.hapramp.views.post;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Handler;
@@ -15,7 +14,6 @@ import android.text.Layout;
 import android.util.AttributeSet;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -117,18 +115,8 @@ public class PostItemView extends FrameLayout {
   private String briefPayoutValueString = "$";
   private String mCurrentLoggedInUser = "";
 
-  private Runnable steemCastingVoteExceptionRunnable = new Runnable() {
-    @Override
-    public void run() {
-      castingVoteFailed();
-    }
-  };
-  private Runnable steemCancellingVoteExceptionRunnable = new Runnable() {
-    @Override
-    public void run() {
-      voteDeleteFailed();
-    }
-  };
+  private Runnable steemCastingVoteExceptionRunnable = () -> castingVoteFailed();
+  private Runnable steemCancellingVoteExceptionRunnable = () -> voteDeleteFailed();
   private PostActionListener postActionListener;
   private int mItemIndex;
   private ArrayList<String> mRebloggers;
@@ -156,43 +144,13 @@ public class PostItemView extends FrameLayout {
   }
 
   private void attachListeners() {
-    postTitle.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        navigateToDetailsPage();
-      }
-    });
-    commentContainer.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        navigateToCommentsPage();
-      }
-    });
-    featuredImagePost.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        navigateToDetailsPage();
-      }
-    });
-    commentCount.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        navigateToCommentsPage();
-      }
-    });
-    postSnippet.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        navigateToDetailsPage();
-      }
-    });
+    postTitle.setOnClickListener(view -> navigateToDetailsPage());
+    commentContainer.setOnClickListener(v -> navigateToCommentsPage());
+    featuredImagePost.setOnClickListener(v -> navigateToDetailsPage());
+    commentCount.setOnClickListener(v -> navigateToCommentsPage());
+    postSnippet.setOnClickListener(v -> navigateToDetailsPage());
 
-    votersPeekView.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        openVotersList();
-      }
-    });
+    votersPeekView.setOnClickListener(view -> openVotersList());
   }
 
   private void navigateToDetailsPage() {
@@ -296,37 +254,17 @@ public class PostItemView extends FrameLayout {
   private void setupSlider(ArrayList<Voter> voters, String permlink, String author) {
     if (rateSliderView != null) {
       rateSliderView.setVoteInfo(voters, permlink, author);
-      rateSliderView.setOnVoteChangedFromSlider(new SliderView.OnVoteChangedFromSlider() {
-        @Override
-        public void onVoteChanged() {
-          updatePostFromBlockchain();
-        }
-      });
+      rateSliderView.setOnVoteChangedFromSlider(() -> updatePostFromBlockchain());
     }
   }
 
   private void attachListenerForOverlowIcon() {
-    popupMenuDots.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        showPopup();
-      }
-    });
+    popupMenuDots.setOnClickListener(v -> showPopup());
   }
 
   private void attachListerOnAuthorHeader() {
-    feedOwnerPic.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        navigateToUserProfile();
-      }
-    });
-    feedOwnerTitle.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        navigateToUserProfile();
-      }
-    });
+    feedOwnerPic.setOnClickListener(v -> navigateToUserProfile());
+    feedOwnerTitle.setOnClickListener(v -> navigateToUserProfile());
   }
 
   private void setSteemEarnings(Feed feed) {
@@ -396,12 +334,7 @@ public class PostItemView extends FrameLayout {
    * */
   private void deleteVoteOnSteem() {
     starView.voteProcessing();
-    new Handler().postDelayed(new Runnable() {
-      @Override
-      public void run() {
-        starView.deletedVoteTemporarily();
-      }
-    }, 500);
+    new Handler().postDelayed(() -> starView.deletedVoteTemporarily(), 500);
     new Thread() {
       @Override
       public void run() {
@@ -409,12 +342,7 @@ public class PostItemView extends FrameLayout {
           @Override
           public void onResponse(String s) {
             updatePostFromBlockchain();
-            mHandler.post(new Runnable() {
-              @Override
-              public void run() {
-                voteDeleteSuccess();
-              }
-            });
+            mHandler.post(() -> voteDeleteSuccess());
           }
 
           @Override
@@ -539,36 +467,32 @@ public class PostItemView extends FrameLayout {
     int menu_res_id = R.menu.popup_post;
     ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(getContext(), R.style.PopupMenuOverlapAnchor);
     PopupMenu popup = new PopupMenu(contextThemeWrapper, popupMenuDots);
+    //add share option
+    popup.getMenu().add(PostMenu.Share);
     //customize menu items
     if ((getActiveVoteCount() == 0) &&
       mFeed.getAuthor().equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
       //add Delete Option
       popup.getMenu().add(PostMenu.Delete);
-      //add share option
-      popup.getMenu().add(PostMenu.Share);
-    } else {
-      //add Share
-      popup.getMenu().add(PostMenu.Share);
-      if (!mRebloggers.contains(mCurrentLoggedInUser)) {
-        //add repost option
-        popup.getMenu().add(PostMenu.Repost);
-      }
     }
+
+    if (!mFeed.getAuthor().equals(HaprampPreferenceManager.getInstance().getCurrentSteemUsername())) {
+      //add repost option
+      popup.getMenu().add(PostMenu.Repost);
+    }
+
     popup.getMenuInflater().inflate(menu_res_id, popup.getMenu());
-    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-      @Override
-      public boolean onMenuItemClick(MenuItem item) {
-        if (item.getTitle().equals(PostMenu.Delete)) {
-          showAlertDialogForDelete();
-          return true;
-        } else if (item.getTitle().equals(PostMenu.Share)) {
-          ShareUtils.shareMixedContent(mContext, mFeed);
-          return true;
-        } else if (item.getTitle().equals(PostMenu.Repost)) {
-          showAlertDialogForRepost();
-        }
-        return false;
+    popup.setOnMenuItemClickListener(item -> {
+      if (item.getTitle().equals(PostMenu.Delete)) {
+        showAlertDialogForDelete();
+        return true;
+      } else if (item.getTitle().equals(PostMenu.Share)) {
+        ShareUtils.shareMixedContent(mContext, mFeed);
+        return true;
+      } else if (item.getTitle().equals(PostMenu.Repost)) {
+        showAlertDialogForRepost();
       }
+      return false;
     });
     popup.show();
   }
@@ -577,12 +501,7 @@ public class PostItemView extends FrameLayout {
     new AlertDialog.Builder(mContext)
       .setTitle("Repost?")
       .setMessage("This post will appear on your profile. This action cannot be reversed.")
-      .setPositiveButton("Repost", new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-          repostThisPost();
-        }
-      })
+      .setPositiveButton("Repost", (dialog, which) -> repostThisPost())
       .setNegativeButton("Cancel", null)
       .show();
   }
@@ -633,12 +552,7 @@ public class PostItemView extends FrameLayout {
     new AlertDialog.Builder(mContext)
       .setTitle("Delete Post")
       .setMessage("Do you want to Delete ? ")
-      .setPositiveButton("Yes, Delete", new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-          deleteThisPostItem();
-        }
-      })
+      .setPositiveButton("Yes, Delete", (dialog, which) -> deleteThisPostItem())
       .setNegativeButton("Cancel", null)
       .show();
   }
@@ -660,12 +574,7 @@ public class PostItemView extends FrameLayout {
 
           @Override
           public void onError(SteemConnectException e) {
-            mHandler.post(new Runnable() {
-              @Override
-              public void run() {
-                Toast.makeText(mContext, "Error occurred while deleting post.", Toast.LENGTH_LONG).show();
-              }
-            });
+            mHandler.post(() -> Toast.makeText(mContext, "Error occurred while deleting post.", Toast.LENGTH_LONG).show());
           }
         });
       }
