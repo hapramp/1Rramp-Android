@@ -6,7 +6,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -38,12 +37,9 @@ public class VotersListActivity extends AppCompatActivity {
   RecyclerView userListRecyclerView;
   private ArrayList<Voter> voters;
   private double totalEarning = 0;
-  private Comparator<? super VoterData> votersComparator = new Comparator<VoterData>() {
-    @Override
-    public int compare(VoterData voter1, VoterData voter2) {
-      int comp = voter1.getRshare() > voter2.getRshare() ? -1 : 1;
-      return comp;
-    }
+  private Comparator<? super VoterData> votersComparator = (Comparator<VoterData>) (voter1, voter2) -> {
+    int comp = voter1.getRshare() > voter2.getRshare() ? -1 : 1;
+    return comp;
   };
 
   @Override
@@ -56,12 +52,7 @@ public class VotersListActivity extends AppCompatActivity {
   }
 
   private void attachListeners() {
-    backBtn.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        finish();
-      }
-    });
+    backBtn.setOnClickListener(view -> finish());
   }
 
   private void initList() {
@@ -78,23 +69,26 @@ public class VotersListActivity extends AppCompatActivity {
 
   private ArrayList<VoterData> processVoterData(ArrayList<Voter> voters) {
     ArrayList<VoterData> processedData = new ArrayList<>();
-    long totalRshares = 0;
-    for (int i = 0; i < voters.size(); i++) {
-      totalRshares += voters.get(i).getRshare();
+    try {
+      long totalRshares = 0;
+      for (int i = 0; i < voters.size(); i++) {
+        totalRshares += voters.get(i).getRshare();
+      }
+      for (int i = 0; i < voters.size(); i++) {
+        double percent = voters.get(i).getPercent();
+        long rshare = voters.get(i).getRshare();
+        double voteValue = calculateVoteValueFrom(rshare, totalRshares, totalEarning);
+        voteValue = Double.parseDouble(String.format(Locale.US, "%.3f", voteValue));
+        String voteValueString = voteValue > 0 ? String.format(Locale.US, "$%.3f", voteValue) : "";
+        processedData.add(new VoterData(voters.get(i).getVoter(),
+          String.format(Locale.US, String.format(Locale.US, "%.2f", percent / 100)) + "%",
+          rshare, voteValueString));
+      }
+      Collections.sort(processedData, votersComparator);
     }
-
-    for (int i = 0; i < voters.size(); i++) {
-      double percent = voters.get(i).getPercent();
-      long rshare = voters.get(i).getRshare();
-      double voteValue = calculateVoteValueFrom(rshare, totalRshares, totalEarning);
-      voteValue = Double.parseDouble(String.format("%.3f", voteValue));
-      String voteValueString = voteValue > 0 ? String.format(Locale.US, "$%.3f", voteValue) : "";
-
-      processedData.add(new VoterData(voters.get(i).getVoter(),
-        String.format(Locale.US, String.format(Locale.US, "%.2f", percent / 100)) + "%",
-        rshare, voteValueString));
+    catch (Exception e) {
+      e.printStackTrace();
     }
-    Collections.sort(processedData, votersComparator);
     return processedData;
   }
 
