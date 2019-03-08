@@ -1,6 +1,7 @@
 package com.hapramp.utils;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.hapramp.datastore.DataStore;
 import com.hapramp.datastore.callbacks.FollowingsCallback;
@@ -51,6 +52,7 @@ public class CompleteFollowingHelper implements FollowingsCallback {
     if (followings.size() >= 19) {
       fetchFollowingsFrom(lastUserInResult);
     } else {
+      Log.d("UserInfo","fetched followings "+followings.toString());
       HaprampPreferenceManager.getInstance().saveCurrentUserFollowings(followingList);
       if (followingsSyncCompleteListener != null) {
         followingsSyncCompleteListener.onSyncCompleted();

@@ -32,4 +32,5 @@
     <string name="power_down_warning">Leaving less than 5 STEEM POWER in your account is not recommended and can leave your account in an unusable state.</string>
     <string name="undelegate_message">To cancel (take back) delegation: Delegate 0 STEEM to the account you delegated to.</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="contest_structure"><![CDATA[<center>My entry for the [%s](https://alpha.1ramp.io/competitions/%s) - 1Ramp Contests</center>]]></string>
 </resources>
