@@ -21,6 +21,7 @@ import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -103,6 +104,9 @@ public class ParticipateEditorActivity extends AppCompatActivity implements Edit
   TextView submissionInfo;
   @BindView(R.id.auto_hashtags_text)
   TextView autoHashtagsText;
+  @BindView(R.id.attach_link_check)
+  CheckBox attachLinkCheckBox;
+
   private ProgressDialog progressDialog;
   private String title;
   private String generated_permalink;
@@ -307,9 +311,11 @@ public class ParticipateEditorActivity extends AppCompatActivity implements Edit
     showPublishingProgressDialog(true, "Publishing...");
     SteemPostCreator steemPostCreator = new SteemPostCreator();
     steemPostCreator.setSteemPostCreatorCallback(this);
-    //add competition link
-    String url = String.format(getString(R.string.contest_structure), mCompetitionTitle, mCompetitionId);
-    body = body + url;
+    if(attachLinkCheckBox.isChecked()) {
+      //add competition link
+      String url = String.format(getString(R.string.contest_structure), mCompetitionTitle, mCompetitionId);
+      body = body + url;
+    }
     //add footer
     body = body + Constants.COMPETITION_FOOTER;
     steemPostCreator.createPost(body, title, imageLinks, tags, generated_permalink);

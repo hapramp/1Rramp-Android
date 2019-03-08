@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/metaView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="gon">
+
+    <RelativeLayout
+        android:id="@+id/meta_toolbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="#ffffff">
+
+        <ImageView
+            android:id="@+id/backBtnFromArticleMeta"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:layout_centerVertical="true"
+            android:padding="14dp"
+            android:src="@drawable/back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@+id/backBtnFromArticleMeta"
+            android:text="Add Meta"
+            android:textSize="18sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/publishButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/light_btn_bg"
+            android:gravity="center"
+            android:paddingBottom="6dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="6dp"
+            android:text="PUBLISH"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp" />
+
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/meta_toolbar_container"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:id="@+id/skills_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff">
+
+            <TextView
+                android:id="@+id/community_caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:text="SELECT COMMUNITY"
+                android:textColor="@color/colorAccent"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <com.hapramp.views.post.PostCommunityView
+                android:id="@+id/articleCategoryView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/community_caption"
+                android:padding="8dp" />
+
+            <TextView
+                android:id="@+id/tagsCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/articleCategoryView"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Add tags (Space separated,max 5)"
+                android:textColor="@color/colorAccent"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <com.hapramp.views.hashtag.CustomHashTagInput
+                android:id="@+id/tagsInputBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tagsCaption"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                android:animateLayoutChanges="true" />
+
+
+            <CheckBox
+                android:id="@+id/attach_link_check"
+                android:text="Add Contest Post Url with Submission"
+                android:checked="true"
+                android:layout_below="@+id/tagsInputBox"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/meta_toolbar_container"
+        android:background="@drawable/toolbar_shadow" />
+
+</RelativeLayout>

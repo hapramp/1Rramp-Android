@@ -142,7 +142,7 @@
 
     <include
         android:id="@+id/metaView"
-        layout="@layout/article_meta_view"
+        layout="@layout/contest_participate_meta_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
