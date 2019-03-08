@@ -2,6 +2,7 @@ package com.hapramp.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.hapramp.main.HapRampMain;
@@ -182,7 +183,8 @@ public class HaprampPreferenceManager {
     Set<String> set = new HashSet<String>();
     set.addAll(followings);
     editor.putStringSet("followings", set);
-    editor.apply();
+    editor.commit();
+    Log.d("UserInfo","saving followings "+set.toString());
   }
 
   public Set<String> getFollowingsSet() {

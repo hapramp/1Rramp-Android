@@ -1,7 +1,6 @@
 package com.hapramp.ui.fragments;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +30,6 @@ import com.hapramp.datastore.callbacks.FollowInfoCallback;
 import com.hapramp.datastore.callbacks.UserProfileCallback;
 import com.hapramp.models.AppServerUserModel;
 import com.hapramp.models.CommunityModel;
-import com.hapramp.models.MicroCommunity;
 import com.hapramp.preferences.HaprampPreferenceManager;
 import com.hapramp.steem.CommunityListWrapper;
 import com.hapramp.steem.models.User;
@@ -66,7 +65,8 @@ import static com.hapramp.ui.activity.FollowListActivity.EXTRA_KEY_FOLLOWING;
 import static com.hapramp.ui.activity.FollowListActivity.EXTRA_KEY_TAB_INDEX;
 import static com.hapramp.ui.activity.FollowListActivity.EXTRA_KEY_USERNAME;
 
-public class UserInfoFragment extends Fragment implements FollowInfoCallback, UserProfileCallback, CompleteFollowingHelper.FollowingsSyncCompleteListener {
+public class UserInfoFragment extends Fragment implements FollowInfoCallback, UserProfileCallback,
+  CompleteFollowingHelper.FollowingsSyncCompleteListener {
   Unbinder unbinder;
   @BindView(R.id.profile_wall_pic)
   ImageView profileWallPic;
@@ -147,7 +147,8 @@ public class UserInfoFragment extends Fragment implements FollowInfoCallback, Us
 
   @Nullable
   @Override
-  public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+  public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                           @Nullable Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.user_info_fragment, null);
     unbinder = ButterKnife.bind(this, view);
     init(mContext);
@@ -172,32 +173,18 @@ public class UserInfoFragment extends Fragment implements FollowInfoCallback, Us
     }
   }
 
-
   private void attachListeners() {
-    followBtn.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        if (isFollowed) {
-          confirmUnfollowAction();
-        } else {
-          requestFollowOnSteem();
-        }
+    followBtn.setOnClickListener(v -> {
+      if (isFollowed) {
+        confirmUnfollowAction();
+      } else {
+        requestFollowOnSteem();
       }
     });
 
-    followersCountTv.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        navigateToFollowersListPage();
-      }
-    });
+    followersCountTv.setOnClickListener(view -> navigateToFollowersListPage());
 
-    followingsCountTv.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        navigateToFollowingListPage();
-      }
-    });
+    followingsCountTv.setOnClickListener(view -> navigateToFollowingListPage());
   }
 
   private void fetchUserInfo() {
@@ -209,12 +196,7 @@ public class UserInfoFragment extends Fragment implements FollowInfoCallback, Us
     AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
       .setTitle("Unfollow")
       .setMessage("Do you want to Unfollow " + mUsername + " ?")
-      .setPositiveButton("UnFollow", new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-          requestUnFollowOnSteem();
-        }
-      })
+      .setPositiveButton("UnFollow", (dialog, which) -> requestUnFollowOnSteem())
       .setNegativeButton("No", null);
     builder.show();
   }
@@ -230,23 +212,17 @@ public class UserInfoFragment extends Fragment implements FollowInfoCallback, Us
           new SteemConnectCallback() {
             @Override
             public void onResponse(String s) {
-              mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                  showFollowProgress(false);
-                  userFollowedOnSteem();
-                }
+              mHandler.post(() -> {
+                showFollowProgress(false);
+                userFollowedOnSteem();
               });
             }
 
             @Override
             public void onError(SteemConnectException e) {
-              mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                  showFollowProgress(false);
-                  userFollowFailed();
-                }
+              mHandler.post(() -> {
+                showFollowProgress(false);
+                userFollowFailed();
               });
             }
           }
@@ -292,23 +268,17 @@ public class UserInfoFragment extends Fragment implements FollowInfoCallback, Us
           new SteemConnectCallback() {
             @Override
             public void onResponse(String s) {
-              mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                  showFollowProgress(false);
-                  userUnFollowedOnSteem();
-                }
+              mHandler.post(() -> {
+                showFollowProgress(false);
+                userUnFollowedOnSteem();
               });
             }
 
             @Override
             public void onError(SteemConnectException e) {
-              mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                  showFollowProgress(false);
-                  userUnfollowFailed();
-                }
+              mHandler.post(() -> {
+                showFollowProgress(false);
+                userUnfollowFailed();
               });
             }
           }
@@ -371,6 +341,7 @@ public class UserInfoFragment extends Fragment implements FollowInfoCallback, Us
   }
 
   private void setFollowState(boolean state) {
+    Log.d("UserInfo", "setting follow " + state);
     try { // to avoid dead view access
       if (state) {
         followBtn.setText(TICK_TEXT + " Following");
@@ -386,7 +357,10 @@ public class UserInfoFragment extends Fragment implements FollowInfoCallback, Us
   }
 
   private void syncFollowings() {
-    FollowingsSyncUtils.syncFollowings(mContext, this);
+    new Handler().postDelayed(() -> {
+      Log.d("UserInfo","firing fetch...");
+      FollowingsSyncUtils.syncFollowings(mContext, this);
+    }, 10000);
   }
 
   private void t(String s) {
@@ -438,12 +412,7 @@ public class UserInfoFragment extends Fragment implements FollowInfoCallback, Us
         followBtn.setVisibility(GONE);
         editBtn.setVisibility(VISIBLE);
         editBtn.setEnabled(true);
-        editBtn.setOnClickListener(new View.OnClickListener() {
-          @Override
-          public void onClick(View view) {
-            navigateToProfileEditActivity();
-          }
-        });
+        editBtn.setOnClickListener(view -> navigateToProfileEditActivity());
         CommunityListWrapper listWrapper = new Gson().fromJson(HaprampPreferenceManager
           .getInstance().getUserSelectedCommunityAsJson(), CommunityListWrapper.class);
         if (interestsView != null) {
@@ -495,6 +464,8 @@ public class UserInfoFragment extends Fragment implements FollowInfoCallback, Us
         if (followBtn != null) {
           followBtn.setVisibility(VISIBLE);
         }
+        Log.d("UserInfo", "New Following set " + followings.toString());
+        Log.d("UserInfo", "invalidating follow=" + followings.contains(mUsername));
         setFollowState(followings.contains(mUsername));
       } else {
         if (followBtn != null) {
@@ -554,7 +525,7 @@ public class UserInfoFragment extends Fragment implements FollowInfoCallback, Us
       if (userModel != null) {
         mcView.setMicroCommunityList(userModel.getMicroCommunities());
       } else {
-        mcView.setMicroCommunityList(new ArrayList<MicroCommunity>());
+        mcView.setMicroCommunityList(new ArrayList<>());
       }
     }
   }
@@ -578,12 +549,9 @@ public class UserInfoFragment extends Fragment implements FollowInfoCallback, Us
     this.followersCount = followers;
     this.followingCount = followings;
     followInfoAvailable = true;
-    mHandler.post(new Runnable() {
-      @Override
-      public void run() {
-        setFollowerCount(followers);
-        setFollowingCount(followings);
-      }
+    mHandler.post(() -> {
+      setFollowerCount(followers);
+      setFollowingCount(followings);
     });
   }
 
