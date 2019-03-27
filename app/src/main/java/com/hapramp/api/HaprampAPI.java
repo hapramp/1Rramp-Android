@@ -19,6 +19,10 @@ import com.hapramp.models.WinnersRankBody;
 import com.hapramp.models.requests.CompetitionCreateBody;
 import com.hapramp.models.response.FileUploadReponse;
 import com.hapramp.steem.CommunitySelectionResponse;
+import com.hapramp.v3.models.LoginReequestPayload;
+import com.hapramp.v3.models.LoginResponse;
+import com.hapramp.v3.models.SignupRequestPayload;
+import com.hapramp.v3.models.SignupResponse;
 
 import java.util.List;
 
@@ -41,6 +45,15 @@ import retrofit2.http.Url;
  */
 
 public interface HaprampAPI {
+
+  //---------V3---------------
+  @POST("auth/signin")
+  Single<LoginResponse> performLogin(LoginReequestPayload loginReequestPayload);
+
+  @POST("auth/signup")
+  Single<SignupResponse> performSignup(SignupRequestPayload signupRequestPayload);
+  //----------V3--------------
+
   @POST("login")
   Call<VerifiedToken> verifyUser(@Body VerificationDataBody verificationDataBody);
 

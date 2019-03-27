@@ -32,4 +32,21 @@
     <string name="power_down_warning">Leaving less than 5 STEEM POWER in your account is not recommended and can leave your account in an unusable state.</string>
     <string name="undelegate_message">To cancel (take back) delegation: Delegate 0 STEEM to the account you delegated to.</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_login2">Sign in</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="cnf_prompt_password">Re-enter Password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="title_activity_register">Register in</string>
+    <string name="prompt_password">Password</string>
+    <string name="prompt_username">Username</string>
+    <string name="action_register">Register</string>
 </resources>
