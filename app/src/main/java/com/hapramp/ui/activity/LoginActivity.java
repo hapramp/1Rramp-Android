@@ -11,6 +11,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,20 +51,33 @@ public class LoginActivity extends AppCompatActivity {
   private static final int ACCESS_TOKEN_REQUEST_CODE = 109;
   @BindView(R.id.connectivityText)
   TextView connectivityText;
+  @BindView(R.id.logo)
+  ImageView logo;
   @BindView(R.id.loginButton)
   TextView loginButton;
-  @BindView(R.id.createSteemAccountBtn)
-  TextView createSteemAccountBtn;
-  @BindView(R.id.progress_container)
-  RelativeLayout progressContainer;
+  @BindView(R.id.divider)
+  View divider;
+  @BindView(R.id.bottom_text_container)
+  LinearLayout bottomTextContainer;
+  @BindView(R.id.tip_text)
+  TextView tipText;
+  @BindView(R.id.temp_progress)
+  ProgressBar tempProgress;
   @BindView(R.id.shaded_progress_message)
   TextView shadedProgressMessage;
+  @BindView(R.id.progress_container)
+  RelativeLayout progressContainer;
+  @BindView(R.id.request_invite)
+  TextView requestInvite;
+  @BindView(R.id.question_mark_icon)
+  TextView questionMarkIcon;
 
   private ConnectivityViewModel connectivityViewModel;
   private SteemConnect steemConnect;
   private ProgressDialog progressDialog;
   private String loginUrl;
   private DataStore dataStore;
+  private boolean mTipShown;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -78,32 +94,24 @@ public class LoginActivity extends AppCompatActivity {
     EventReporter.addEvent(AnalyticsParams.SCREEN_LOGIN);
   }
 
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    if (requestCode == ACCESS_TOKEN_REQUEST_CODE) {
-      if (resultCode == RESULT_OK) {
-        //save token
-        String accessToken = data.getStringExtra(Constants.EXTRA_ACCESS_TOKEN);
-        String username = data.getStringExtra(Constants.EXTRA_USERNAME);
-        HaprampPreferenceManager.getInstance()
-          .setTokenExpireTime(AccessTokenValidator.getNextExpiryTime());
-        HaprampPreferenceManager.getInstance().setSC2AccessToken(accessToken);
-        requestUserTokenFromAppServer(accessToken, username);
-      } else {
-        showToast("Login Failed");
+  private void init() {
+    progressDialog = new ProgressDialog(this);
+    dataStore = new DataStore();
+    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    steemConnect = SteemConnectUtils.getSteemConnectInstance();
+    connectivityViewModel = ViewModelProviders.of(this).get(ConnectivityViewModel.class);
+    connectivityViewModel.getConnectivityState().observeForever(new Observer<Boolean>() {
+      @Override
+      public void onChanged(@Nullable Boolean isConnected) {
+        if (isConnected) {
+          enableSigninButton();
+          showConnectivityBar();
+        } else {
+          disableSigninButton();
+          showConnectivityErrorBar();
+        }
       }
-    }
-  }
-
-  private void cacheAllCommunities(List<CommunityModel> communities) {
-    for (int i = 0; i < communities.size(); i++) {
-      CommunityModel cm = communities.get(i);
-      HaprampPreferenceManager.getInstance().setCommunityTagToColorPair(cm.getmTag(), cm.getmColor());
-      HaprampPreferenceManager.getInstance().setCommunityTagToNamePair(cm.getmTag(), cm.getmName());
-    }
-    HaprampPreferenceManager.getInstance()
-      .saveAllCommunityListAsJson(new Gson()
-        .toJson(new CommunityListWrapper(communities)));
+    });
   }
 
   private void attachListeners() {
@@ -113,18 +121,18 @@ public class LoginActivity extends AppCompatActivity {
         navigateToWebLogin();
       }
     });
-    createSteemAccountBtn.setOnClickListener(new View.OnClickListener() {
+    requestInvite.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        openSteemitSignUp();
+        openRequestInvitePage();
       }
     });
-  }
-
-  private void navigateToHomePage() {
-    Intent i = new Intent(this, HomeActivity.class);
-    startActivity(i);
-    finish();
+    questionMarkIcon.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        showTemporaryTip();
+      }
+    });
   }
 
   private void enableSigninButton() {
@@ -165,9 +173,82 @@ public class LoginActivity extends AppCompatActivity {
     }
   }
 
-  private void openSteemitSignUp() {
-    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.steemit_signup)));
+  private void openRequestInvitePage() {
+    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.request_invite_url)));
     startActivity(browserIntent);
+  }
+
+  private void showTemporaryTip() {
+    if (mTipShown) {
+      tipText.setVisibility(View.GONE);
+      return;
+    }
+    mTipShown = true;
+    tipText.setVisibility(View.VISIBLE);
+    new Handler().postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        if (tipText != null) {
+          mTipShown = false;
+          tipText.setVisibility(View.GONE);
+        }
+      }
+    }, 5000);
+  }
+
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (requestCode == ACCESS_TOKEN_REQUEST_CODE) {
+      if (resultCode == RESULT_OK) {
+        //save token
+        String accessToken = data.getStringExtra(Constants.EXTRA_ACCESS_TOKEN);
+        String username = data.getStringExtra(Constants.EXTRA_USERNAME);
+        HaprampPreferenceManager.getInstance()
+          .setTokenExpireTime(AccessTokenValidator.getNextExpiryTime());
+        HaprampPreferenceManager.getInstance().setSC2AccessToken(accessToken);
+        requestUserTokenFromAppServer(accessToken, username);
+      } else {
+        showToast("Login Failed");
+      }
+    }
+  }
+
+  private void requestUserTokenFromAppServer(final String userAccessToken, final String username) {
+    showShadedProgress(getString(R.string.token_request_loading_message));
+    VerificationDataBody verificationDataBody = new VerificationDataBody(userAccessToken, username);
+    RetrofitServiceGenerator.getService().verifyUser(verificationDataBody).
+      enqueue(new Callback<VerifiedToken>() {
+        @Override
+        public void onResponse(Call<VerifiedToken> call, Response<VerifiedToken> response) {
+          hideShadedProgress();
+          if (response.isSuccessful()) {
+            HaprampPreferenceManager.getInstance().saveCurrentSteemUsername(username);
+            HaprampPreferenceManager.getInstance().saveUserToken(response.body().token);
+            HaprampPreferenceManager.getInstance().setLoggedIn(true);
+            NotificationSubscriber.subscribeForUserTopic();
+            NotificationSubscriber.subscribeForNewCompetition();
+            syncAllCommunities();
+          } else {
+            Crashlytics.log("LoginError:" + response.toString());
+            Toast.makeText(LoginActivity.this, "Verification failed!!",
+              Toast.LENGTH_LONG).show();
+          }
+          hideProgressDialog();
+        }
+
+        @Override
+        public void onFailure(Call<VerifiedToken> call, Throwable t) {
+          hideShadedProgress();
+          Crashlytics.log("LoginError:" + t.toString());
+          Toast.makeText(LoginActivity.this, "Verification failed!!",
+            Toast.LENGTH_LONG).show();
+          hideProgressDialog();
+        }
+      });
+  }
+
+  private void showToast(String msg) {
+    Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
   }
 
   private void showShadedProgress(String msg) {
@@ -181,70 +262,6 @@ public class LoginActivity extends AppCompatActivity {
     if (progressContainer != null) {
       progressContainer.setVisibility(View.GONE);
     }
-  }
-
-  private void navigateToCommunityPage() {
-    Intent i = new Intent(this, CommunitySelectionActivity.class);
-    startActivity(i);
-    finish();
-  }
-
-  private void showToast(String msg) {
-    Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-  }
-
-  private void init() {
-    progressDialog = new ProgressDialog(this);
-    dataStore = new DataStore();
-    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-    steemConnect = SteemConnectUtils.getSteemConnectInstance();
-    connectivityViewModel = ViewModelProviders.of(this).get(ConnectivityViewModel.class);
-    connectivityViewModel.getConnectivityState().observeForever(new Observer<Boolean>() {
-      @Override
-      public void onChanged(@Nullable Boolean isConnected) {
-        if (isConnected) {
-          enableSigninButton();
-          showConnectivityBar();
-        } else {
-          disableSigninButton();
-          showConnectivityErrorBar();
-        }
-      }
-    });
-  }
-
-  private void requestUserTokenFromAppServer(final String userAccessToken, final String username) {
-    showShadedProgress(getString(R.string.token_request_loading_message));
-    VerificationDataBody verificationDataBody = new VerificationDataBody(userAccessToken, username);
-    RetrofitServiceGenerator.getService().verifyUser(verificationDataBody).
-      enqueue(new Callback<VerifiedToken>() {
-      @Override
-      public void onResponse(Call<VerifiedToken> call, Response<VerifiedToken> response) {
-        hideShadedProgress();
-        if (response.isSuccessful()) {
-          HaprampPreferenceManager.getInstance().saveCurrentSteemUsername(username);
-          HaprampPreferenceManager.getInstance().saveUserToken(response.body().token);
-          HaprampPreferenceManager.getInstance().setLoggedIn(true);
-          NotificationSubscriber.subscribeForUserTopic();
-          NotificationSubscriber.subscribeForNewCompetition();
-          syncAllCommunities();
-        } else {
-          Crashlytics.log("LoginError:" + response.toString());
-          Toast.makeText(LoginActivity.this, "Verification failed!!",
-            Toast.LENGTH_LONG).show();
-        }
-        hideProgressDialog();
-      }
-
-      @Override
-      public void onFailure(Call<VerifiedToken> call, Throwable t) {
-        hideShadedProgress();
-        Crashlytics.log("LoginError:" + t.toString());
-        Toast.makeText(LoginActivity.this, "Verification failed!!",
-          Toast.LENGTH_LONG).show();
-        hideProgressDialog();
-      }
-    });
   }
 
   private void syncAllCommunities() {
@@ -274,6 +291,17 @@ public class LoginActivity extends AppCompatActivity {
     }
   }
 
+  private void cacheAllCommunities(List<CommunityModel> communities) {
+    for (int i = 0; i < communities.size(); i++) {
+      CommunityModel cm = communities.get(i);
+      HaprampPreferenceManager.getInstance().setCommunityTagToColorPair(cm.getmTag(), cm.getmColor());
+      HaprampPreferenceManager.getInstance().setCommunityTagToNamePair(cm.getmTag(), cm.getmName());
+    }
+    HaprampPreferenceManager.getInstance()
+      .saveAllCommunityListAsJson(new Gson()
+        .toJson(new CommunityListWrapper(communities)));
+  }
+
   private void syncUserSelectedCommunity() {
     showShadedProgress(getString(R.string.loading_community_message));
     dataStore.requestUserCommunities(HaprampPreferenceManager.getInstance().getCurrentSteemUsername(),
@@ -301,5 +329,17 @@ public class LoginActivity extends AppCompatActivity {
           showToast("Failed to get your communities. Try again!");
         }
       });
+  }
+
+  private void navigateToCommunityPage() {
+    Intent i = new Intent(this, CommunitySelectionActivity.class);
+    startActivity(i);
+    finish();
+  }
+
+  private void navigateToHomePage() {
+    Intent i = new Intent(this, HomeActivity.class);
+    startActivity(i);
+    finish();
   }
 }

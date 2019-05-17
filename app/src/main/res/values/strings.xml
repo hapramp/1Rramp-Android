@@ -13,7 +13,7 @@
     <string name="hapcoins_format">$%1$s Earned</string>
     <string name="comment_format">%1d Comments</string>
     <string name="unregistered_user_profile_msg"> User not registered on 1ramp </string>
-    <string name="steemit_signup">https://signup.steemit.com/</string>
+    <string name="request_invite_url">https://1ramp.io/</string>
     <string name="connectivity_lost">Connectivity Lost!</string>
     <string name="connectivity_established">Connection established !</string>
     <string name="failed_to_update_communities">Failed to update communities</string>
@@ -32,4 +32,10 @@
     <string name="power_down_warning">Leaving less than 5 STEEM POWER in your account is not recommended and can leave your account in an unusable state.</string>
     <string name="undelegate_message">To cancel (take back) delegation: Delegate 0 STEEM to the account you delegated to.</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="_1ramp_is_only_available_for_steem_users_if_you_do_not_have_a_steem_account_please_join_the_invite_list_we_ll_notify_you_when_it_s_ready">1Ramp is only available for Steem users. If you do not have a Steem account, please join the invite list. We\'ll notify you when it\'s ready.</string>
+    <string name="request_an_invite">Request an invite</string>
+    <string name="fetching_communities">Fetching Communities..</string>
+    <string name="new_on_1ramp">New on 1Ramp?</string>
+    <string name="sign_in_with_steemconnect">SIGN IN WITH STEEMCONNECT</string>
+    <string name="questionmark">\?</string>
 </resources>
